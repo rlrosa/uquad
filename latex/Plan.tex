@@ -1,0 +1,152 @@
+\documentclass[spanish,12pt,a4paper,titlepage]{article}
+\usepackage[latin1]{inputenc}
+\usepackage{graphicx}
+\usepackage{subfig}
+\usepackage{wrapfig}
+\usepackage{caption}
+\usepackage{babel}
+\usepackage[dvips]{hyperref}
+\usepackage{amssymb}
+\usepackage{listings}
+
+
+\begin{document}
+
+\begin{center}
+
+\begin{huge}Proyecto de Fin de Estudios en la Carrera de Ingenierí­a Eléctrica\\
+\emph{}
+\\
+\end{huge}
+
+\begin{Large}Implementación de un UAV con arquitectura de quadcopter\end{Large}
+\end{center}
+
+\begin{flushright}
+\begin{tabular}{ll}
+Autores:	&Manuel López\\
+		&Santiago Paternain\\
+		&Rodrigo Rosa\\
+		&Matí­as Talianián\\
+\\
+Tutor:		&Rafael Canetti\\
+\\
+Fecha:		&13/05/11\\
+\end{tabular}
+\end{flushright}
+
+\newpage
+
+\section{Resumen}
+\begin{itemize}
+ \item Estudiante: Manuel López
+    \subitem CI: 4.086.135-1
+    \subitem e-mail: manololopezrad@gmail.com
+\item Estudiante: Santiago Paternain
+    \subitem CI: 4.131.180-2
+    \subitem e-mail: spaternain@gmail.com
+\item Estudiante: Rodrigo Rosa
+    \subitem CI: 3.942.087-5
+    \subitem e-mail: rodrigorosa.lg@gmail.com
+\item Estudiante: Matías Tailanián
+    \subitem CI: 4.555.937-1
+    \subitem e-mail: matias@tailanian.com
+\item Cliente: Rafael Canetti
+\item Tutor: Rafael Canetti
+\item Fecha prevista de finalización: 30 de mayo de 2012 % TODO
+\item Total de horas a realizar previstas por el grupo de Proyecto:
+\item Primer hito:
+    \subitem Fecha:15/09/11
+    \subitem Descripción: Instrumentación completa y adelanto del modelo físico del quadcopter.
+\item Segundo hito:
+    \subitem Fecha:15/02/12
+    \subitem Descripción:
+\end{itemize}
+
+\newpage
+\section{Descripción}
+Diseñar e integrar un sistema de control que permita el vuelo autónomo de un dispositivo comercial con arquitectura de quadcopter. 
+Se entiende por vuelo autónomo la capacidad de mantener una posición y altitud determinada o la de seguir una ruta programable. 
+Se deberá integrar la instrumentación adecuada para obtener medidas de variables físicas fundamentales para realizar el control.\\
+\\
+Se plantean varias aplicaciones en diversas áreas, entre ellas la agropecuaria (seguimiento de ganado, monitoreo de cultivos), cinematográfica (tomas aéreas), etc.\\
+\\
+Existen antecedentes de proyectos basados en el control de dispositivos voladores pero de características distintas. 
+En este caso se trata de un equipo de dimensiones y requerimiento de espacio de escala de laboratorio. 
+El control de vuelo resulta más sencillo ya que no habrá modificación de la superficie de vuelo, sino que se actuará directamente 
+sobre los motores.
+
+\section{Objetivo}
+Lograr que el quadcopter sea capaz de realizar el seguimiento de una ruta en forma autónoma en base a información obtenida mediante la instrumentación, obteniendo así un dispositivo apto para una amplia gama de aplicaciones en diversas áreas.\\
+\\
+El dispositivo será capaz de realizar maniobras simples y seguir una ruta de vuelo preestablecida sin desviarse de la misma en un rango de un metro.\\	
+El peso total de la electrónica adicional debe ser tal que el dispositivo no solamente sea capaz de volar con autonomía cargando la misma, sino que además cuente con cierta carga útil disponible de al menos doscientos gramos.\\
+EL dispositivo tendrá una autonomí­a de vuelo de al menos diez minutos.\\
+El costo total del dispositivo no superará los mil dolares.\\
+
+\section{Actores, Supuestos, Restricciones}
+\subsection*{Actores}
+\begin{itemize}
+  \item Tutor
+  \item Equipo de proyecto.
+  \item Casas de venta de vehí­culos radio-controlados.
+  \item Casas de venta de electrónica.
+  \item Aduana.
+\end{itemize}
+
+\subsection*{Supuestos}
+\begin{itemize}
+  \item Todo elemento fabricado por terceros será entregado en tiempo y forma. 
+  \item Los mismos también cumplirán con las especificaciones que declaran en sus manuales. 	
+  \item A efectos de construir el cronograma, se asume que toda importación a realizar no tendrá retrasos ni contratiempos significativos en el traslado o despacho de aduana. Por ende no superara los 3 meses. 
+  \item Se podrán reponer en tiempo y forma aquellos componentes que por fallas así lo requieran. 
+\end{itemize}
+
+\subsection*{Restricciones}
+\begin{itemize}
+  \item Se dispone de un monto determinado de dinero para llevar a cabo el proyecto.
+  \item La instrumentación debe ser tal que cumpla los requerimientos necesarios sin exceder la máxima carga que puede soportar el Quadcopter.
+  \item Carencia de información acerca de la estructura interna del dispositivo comercial con arquitectura de quadcopter. 
+\end{itemize}
+
+\section{Especificación Funcional del Producto}
+Partiendo de un quadcopter radiocontrolado de uso comercial se diseñará un dispositivo autónomo.\\
+Para ello se deberán incorporar elementos de instrumentación:
+
+\begin{itemize}
+\item Acelerómetro de tres ejes
+\item Giróscopo de tres ejes
+\item GPS
+\end{itemize}
+
+La instrumentación se comunicará directamente a un PCB que implemente el control, montado en el quadcopter.\\
+Dicho PCB cuenta con diversos elementos para implementar el control, entre ellos:
+
+\begin{itemize}
+  \item Microprocesador
+  \item DSP
+  \item Sistema de almacenamiento
+  \item Puertos de entrada y salida (tanto analógicos como digitales)
+\end{itemize}
+
+El control actuará mediante PWM sobre los motores.\\
+\\
+La comunicación entre la instrumNentación y el controlador será a través de un puerto serie.\\
+\\
+Se implementará un enlace inalámbrico entre el dispositivo y un PC con el fin de que éste último posea cierta influencia sobre el control y permita, además, programar el microprocesador sin necesidad de desmontar el dispositivo.
+
+\section{Alcance del Proyecto}
+
+En el presente proyecto no se contempla el diseño o construcción del quadcopter. Se partirá de un dispositivo radio controlado ya funcional.\\
+Se prevee la adquisición de un PCB conteniendo la instrumentación necesaria, así como un PCB que se encargará de computar los algoritmos de control, es decir, tampoco se contempla la construcción de dicha electrónica, solamente su análisis funcional y su interconexión.\\
+
+Se programará el hardware para su correcta interacción y funcionamiento.\\
+Se diseñarán algoritmos de control para el sistema.\\
+Se diseñará un software de simulación y testeo de algoritmos para probar los mismos.\\
+Los algoritmos de control se implementarán en el lenguaje \textit{C} y se programará el hardware del sistema para ejecutar dichos algoritmos.\\
+
+\section{Análisis de Riesgos}
+
+
+\end{document}          
+
