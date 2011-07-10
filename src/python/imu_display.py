@@ -1,8 +1,18 @@
+# Reads and displays gyro data from the Atomic IMU (sparkfun)
+# Requieres a serial (UART) connection to the IMU.
+# Arguments:
+#   - Device name (optional).
+#   Example:
+#       python imu_display.py /dev/ttyUSB0
+# Usage:
+#   Press Ctrl+C to reset zero level.
+
 # Based on script:
 #		Test for Razor 9DOF IMU
 #		Jose Julio @2009
 
 from visual import * # For display
+import serial # To read data from IMU
 import string # For parsing
 import math # For math XD
 import sys # For script arguments
@@ -13,16 +23,18 @@ from time import time
 grad2rad = 3.141592/180.0
 
 # Check your COM port and baud rate
-#ser = serial.Serial(port='/dev/ttyUSB0',baudrate=115200, timeout=1)
-if len(sys.argv) > 2:
+#ser = 
+if len(sys.argv) > 1:
     device = sys.argv[1]
 else:
     device = '/dev/ttyUSB0'
 print 'Opening %s ...' % (device)
 try:
-    imu_data = open(device,'r')
+    imu_data = serial.Serial(port=device,baudrate=115200, timeout=1)
+    imu_data.open()
 except:
     print 'Could not open device %s' % (device)
+    quit()
 print 'Opened %s !' % (device)
 
 
@@ -101,7 +113,14 @@ print '%s opened!' % (log_file_name)
 roll=0
 pitch=0
 yaw=0
+roll_str = '0'
+pitch_str = '0'
+yaw_str = '0'
+roll_zero=-1
+pitch_zero=-1
+yaw_zero=-1
 run = 1
+print 'Ctrl+C to reset zeros position'
 while run==1:
     try:
         # IMU set to ASCII outputs data starting with 'A', separated by '\t' and
@@ -116,15 +135,20 @@ while run==1:
         f.write(line)                     # Write to the output log file
         words = string.split(line,"\t")    # Fields split
         words_len = len(words)
-        if words_len > 5:        
+        if words_len == 6:        
             try:
                 roll_str = words[2]
                 pitch_str = words[3]
                 yaw_str = words[4]
+                if (roll_zero == -1):
+                    # Set the first value as flat reference
+                    roll_zero = float(roll_str)
+                    pitch_zero = float(pitch_str)
+                    yaw_zero = float(yaw_str)
                 # !??!
-                yaw = float(yaw_str)*grad2rad
-                roll = (float(roll_str))*grad2rad
-                pitch = float(pitch_str)*grad2rad
+                yaw = (float(yaw_str) - yaw_zero)*grad2rad
+                roll = (float(roll_str) - roll_zero)*grad2rad
+                pitch = (float(pitch_str) - pitch_zero)*grad2rad
             except:
                 print "Invalid line"
                 
@@ -151,7 +175,12 @@ while run==1:
             # If len<5 then not enough sensors are on.
             print "I need pitch, roll and yaw."
     except KeyboardInterrupt:
-        run = 0
-        print 'User interrupt! \n Please close windows to terminate...'
-imu_data.close
+        # Set the first value as flat reference
+        roll_zero = float(roll_str)
+        pitch_zero = float(pitch_str)
+        yaw_zero = float(yaw_str)
+        print 'Zero angle reset.'
+
+        
+imu_data.close()
 f.close
