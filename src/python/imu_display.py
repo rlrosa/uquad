@@ -20,7 +20,17 @@ import os # To check if path exists
 
 from time import time
 
+# Convert from degrees to rad
 grad2rad = 3.141592/180.0
+## Adjust data read from imu
+adc_bits = 10
+vref = 3.3
+volt_zero_rate_level = 1.65 # 5@uquad/doc/gyro/datasheet_LISY300AL.pdf
+volt_max = 2**adc_bits-1
+zero = volt_zero_rate_level * volt_max / vref
+# Better off setting zero according to whatever bias caused by setup.
+# Experimental result: data*90/300
+unit_adjust = 0.29999
 
 # Check your COM port and baud rate
 #ser = 
@@ -120,6 +130,7 @@ roll_zero=-1
 pitch_zero=-1
 yaw_zero=-1
 run = 1
+
 print 'Ctrl+C to reset zeros position'
 while run==1:
     try:
@@ -145,10 +156,10 @@ while run==1:
                     roll_zero = float(roll_str)
                     pitch_zero = float(pitch_str)
                     yaw_zero = float(yaw_str)
-                # !??!
-                yaw = (float(yaw_str) - yaw_zero)*grad2rad
-                roll = (float(roll_str) - roll_zero)*grad2rad
-                pitch = (float(pitch_str) - pitch_zero)*grad2rad
+                #TODO yaw readings are crap
+                yaw = 0 #(float(yaw_str) - yaw_zero)*unit_adjust*grad2rad
+                roll = (float(roll_str) - roll_zero)*unit_adjust*grad2rad
+                pitch = (float(pitch_str) - pitch_zero)*unit_adjust*grad2rad
             except:
                 print "Invalid line"
                 
@@ -168,9 +179,9 @@ while run==1:
             cil_pitch.axis=(0.2*cos(pitch),0.2*sin(pitch),0)
             cil_pitch2.axis=(-0.2*cos(pitch),-0.2*sin(pitch),0)
             arrow_course.axis=(0.2*sin(yaw),0.2*cos(yaw),0)
-            L1.text = roll_str
-            L2.text = pitch_str
-            L3.text = yaw_str
+            L1.text = str(roll/grad2rad)[0:6]
+            L2.text = str(pitch/grad2rad)[0:6]
+            L3.text = str(yaw/grad2rad)[0:6]
         else:
             # If len<5 then not enough sensors are on.
             print "I need pitch, roll and yaw."
