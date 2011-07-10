@@ -30,7 +30,7 @@ else:
     device = '/dev/ttyUSB0'
 print 'Opening %s ...' % (device)
 try:
-    imu_data = serial.Serial(port=device,baudrate=115200, timeout=1)
+    imu_data = serial.Serial(port=device,baudrate=115200, stopbits=serial.STOPBITS_TWO,timeout=1)
     imu_data.open()
 except:
     print 'Could not open device %s' % (device)
