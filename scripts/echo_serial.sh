@@ -9,6 +9,9 @@ else
 fi
 DEVICE=$1
 SHOW=0
+# Configure comm for 115200 baudrate
+stty -F $DEVICE 115200
+# Start
 cat $DEVICE &
 while IFS="";read myline
 do
