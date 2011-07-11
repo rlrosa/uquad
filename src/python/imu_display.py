@@ -21,7 +21,7 @@ import threading # To read from serial as background task
 
 from time import time
 
-# Convert from degrees to rad
+## Convert from degrees to rad
 grad2rad = 3.141592/180.0
 ## Adjust data read from imu
 adc_bits = 10
@@ -30,8 +30,14 @@ volt_zero_rate_level = 1.65 # 5@uquad/doc/gyro/datasheet_LISY300AL.pdf
 volt_max = 2**adc_bits-1
 zero = volt_zero_rate_level * volt_max / vref
 # Better off setting zero according to whatever bias caused by setup.
-# Experimental result: data*90/300
-unit_adjust = .2 #0.29999
+## Convert from voltage to degrees/sec
+# Full scale is 300deg/sec, and in a 10 bit ADC that corresponds to 20***(10-1)=512
+# The adjustment is input_v*300/512 approx input_v*0.5859375
+unit_adjust = .5859375
+## Is frequency is modifiec
+#
+len_frec_line = 35 # Length of '5) Set output frequency, currently '
+frec = 80
 
 # IMU set to ASCII outputs data starting with 'A', separated by '\t' and
 # ending with "Z\n"
@@ -150,7 +156,9 @@ except:
 print '%s opened!' % (log_file_name)
 
 # Data input loop
-def read_loop(do_calib):
+def read_loop():
+    global calibrate
+    global frec
     roll=0
     pitch=0
     yaw=0
@@ -179,6 +187,14 @@ def read_loop(do_calib):
         if not ((words[0] == start_symbol) & (words[words_len-1] == end_symbol)):
             # Print out menu stuff
             print line
+            try:
+                if(len(line) > len_frec_line):
+                    if(line[0:len_frec_line] == '5) Set output frequency, currently '):
+                        words = string.split(line,' ')                    
+                        frec = int(words[len(words)-1])
+                        print 'Frequency detected: %d' % frec
+            except:
+                print 'Failed to adjust frec!'
             continue
         if (words_len < 9):
             # Parsing limited to all sensors enabled case
@@ -188,7 +204,7 @@ def read_loop(do_calib):
             continue
         else:
             request_printed = False
-            #print line
+            print line
             f.write(line)# Write to the output log file
         # Input looks correct, one last check
         if (words_len > 9 ):
@@ -205,12 +221,15 @@ def read_loop(do_calib):
                 # Set the first value as flat reference
                 roll_zero = float(roll_str)
                 pitch_zero = float(pitch_str)
-                yaw_zero = float(yaw_str) #TODO yaw readings are crap
-            yaw = (float(yaw_str) - yaw_zero)*unit_adjust*grad2rad
-            roll = (float(roll_str) - roll_zero)*unit_adjust*grad2rad
-            pitch = (float(pitch_str) - pitch_zero)*unit_adjust*grad2rad
+                yaw_zero = float(yaw_str)
+                roll = 0
+                pitch = 0
+                yaw = 0
+            yaw = ((float(yaw_str) - yaw_zero)*unit_adjust/frec*grad2rad + yaw)
+            roll = ((float(roll_str) - roll_zero)*unit_adjust/frec*grad2rad + roll)
+            pitch = ((float(pitch_str) - pitch_zero)*unit_adjust/frec*grad2rad + pitch)
         except:
-            print "Invalid line"
+            print "Invalid line: %s" % line
         axis=(cos(pitch)*cos(yaw),-cos(pitch)*sin(yaw),sin(pitch)) 
         up=(sin(roll)*sin(yaw)+cos(roll)*sin(pitch)*cos(yaw),sin(roll)*cos(yaw)-cos(roll)*sin(pitch)*sin(yaw),-cos(roll)*cos(pitch))
         platform.axis=axis
@@ -231,16 +250,19 @@ def read_loop(do_calib):
         L2.text = str(pitch/grad2rad)[0:6]
         L3.text = str(yaw/grad2rad)[0:6]
             
-        if ( do_calib == True ):
+        if ( calibrate ):
             # Set the first value as flat reference
             roll_zero = float(roll_str)
             pitch_zero = float(pitch_str)
             yaw_zero = float(yaw_str)
+            roll = 0
+            pitch = 0
+            yaw = 0
             print 'Gyros calibrated!'
-            do_calib = False
+            calibrate = False
 
 # Run read loop
-read_thread = threading.Thread(target=read_loop,args=(calibrate,))
+read_thread = threading.Thread(target=read_loop)
 read_thread.setDaemon(True)
 read_thread.start()# Command exec loop
 
