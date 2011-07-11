@@ -33,7 +33,7 @@ print 'Opening %s ...' % (device)
 try:
     ser = serial.Serial(port=device,baudrate=baudrate_, stopbits=stopbits_,timeout=timeout_)
     ser.open()
-except:
+except IOerror:
     print 'Could not open device %s' % (device)
     quit()
 print 'Opened %s:\nBaudrate: %s\nStopbits: %s\nTimeout: %s ' % (device,baudrate_,stopbits_,timeout_)
@@ -44,8 +44,8 @@ print 'Opened %s:\nBaudrate: %s\nStopbits: %s\nTimeout: %s ' % (device,baudrate_
 def read_ser():
     while 1:
         line = ser.readline()
-        if len(line) > 1:
-            print line
+        if len(line) > 0:
+            sys.stdout.write(line)
 
 errors = 0
 max_errors = 20
@@ -55,18 +55,19 @@ read_thread.setDaemon(True)
 read_thread.start()
 
 # Main loop
+escape_sequence = 'killconsole'
+print 'Enter %s to quit' % escape_sequence
 while 1:
     try:
         cmd = raw_input()
+        if(cmd == escape_sequence):
+            print '\nEscape sequence read, terminating program...\n'
+            quit()
+        if(cmd == ''):
+            ser.write('\n')
+            continue
         ser.write(cmd)
-    except KeyboardInterrupt:
-        print '\n Terminating...\n'
-        break
-    except:
-        print 'error!'
-        if errors > max_errors:
-            print 'Too many errors, terminating...'
-            break
-        else:
-            errors = errors + 1
+    except KeyboardInterrupt: 
+       ser.write('%c' % 0x03)
+
 quit()
