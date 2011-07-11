@@ -98,18 +98,18 @@ try:
 
     scene2.select()
     #Roll, Pitch, Yaw
-    cil_roll = cylinder(pos=(-0.4,0,0),axis=(0.2,0,0),radius=0.01,color=color.red)
-    cil_roll2 = cylinder(pos=(-0.4,0,0),axis=(-0.2,0,0),radius=0.01,color=color.red)
-    cil_pitch = cylinder(pos=(0.1,0,0),axis=(0.2,0,0),radius=0.01,color=color.green)
-    cil_pitch2 = cylinder(pos=(0.1,0,0),axis=(-0.2,0,0),radius=0.01,color=color.green)
+    cil_roll = cylinder(pos=(-0.7,0,0),axis=(0.2,0,0),radius=0.01,color=color.red)
+    cil_roll2 = cylinder(pos=(-0.7,0,0),axis=(-0.2,0,0),radius=0.01,color=color.red)
+    cil_pitch = cylinder(pos=(0.0,0,0),axis=(0.2,0,0),radius=0.01,color=color.green)
+    cil_pitch2 = cylinder(pos=(0.0,0,0),axis=(-0.2,0,0),radius=0.01,color=color.green)
     #cil_course = cylinder(pos=(0.6,0,0),axis=(0.2,0,0),radius=0.01,color=color.blue)
     #cil_course2 = cylinder(pos=(0.6,0,0),axis=(-0.2,0,0),radius=0.01,color=color.blue)
     arrow_course = arrow(pos=(0.6,0,0),color=color.cyan,axis=(-0.2,0,0), shaftwidth=0.02, fixedwidth=1)
     
     #Roll,Pitch,Yaw labels
-    label(pos=(-0.4,0.3,0),text="Roll",box=0,opacity=0)
-    label(pos=(0.1,0.3,0),text="Pitch",box=0,opacity=0)
-    label(pos=(0.55,0.3,0),text="Yaw",box=0,opacity=0)
+    label(pos=(-0.7,0.3,0),text="Roll",box=0,opacity=0)
+    label(pos=(0.0,0.3,0),text="Pitch",box=0,opacity=0)
+    label(pos=(0.45,0.3,0),text="Yaw",box=0,opacity=0)
     label(pos=(0.6,0.22,0),text="N",box=0,opacity=0,color=color.yellow)
     label(pos=(0.6,-0.22,0),text="S",box=0,opacity=0,color=color.yellow)
     label(pos=(0.38,0,0),text="W",box=0,opacity=0,color=color.yellow)
@@ -119,8 +119,8 @@ try:
     label(pos=(0.75,-0.15,0),height=7,text="SE",box=0,color=color.yellow)
     label(pos=(0.45,-0.15,0),height=7,text="SW",box=0,color=color.yellow)
     
-    L1 = label(pos=(-0.4,0.22,0),text="-",box=0,opacity=0)
-    L2 = label(pos=(0.1,0.22,0),text="-",box=0,opacity=0)
+    L1 = label(pos=(-0.7,0.22,0),text="-",box=0,opacity=0)
+    L2 = label(pos=(0.0,0.22,0),text="-",box=0,opacity=0)
     L3 = label(pos=(0.7,0.3,0),text="-",box=0,opacity=0)
     
     # Main scene objects
