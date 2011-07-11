@@ -87,7 +87,7 @@ try:
     scene=display(title="win-main",background=(1,1,1))
     scene.range=(1.2,1.2,1.2)
     #scene.forward = (0,-1,-0.25)
-    scene.forward = (1,0,-0.25)
+    scene.forward = (-1,-.01,-0.25)
     scene.up=(0,0,1)
     
     # Second scene (Roll, Pitch, Yaw)
@@ -126,14 +126,14 @@ try:
     # Main scene objects
     scene.select()
     # Reference axis (x,y,z)
-    arrow(color=color.green,axis=(1,0,0), shaftwidth=0.02, fixedwidth=1)
-    arrow(color=color.green,axis=(0,-1,0), shaftwidth=0.02 , fixedwidth=1)
-    arrow(color=color.green,axis=(0,0,-1), shaftwidth=0.02, fixedwidth=1)
+    arrow(color=color.green,axis=(-1,0,0), shaftwidth=0.04, fixedwidth=1)
+    arrow(color=color.green,axis=(0,1,0), shaftwidth=0.02 , fixedwidth=1)
+    arrow(color=color.green,axis=(0,0,1), shaftwidth=0.02, fixedwidth=1)
     # labels
     label(pos=(0,0,0.8),text="imu test",box=0,opacity=0)
     label(pos=(1,0,0),text="X",box=0,opacity=0)
-    label(pos=(0,-1,0),text="Y",box=0,opacity=0)
-    label(pos=(0,0,-1),text="Z",box=0,opacity=0)
+    label(pos=(0,1,0),text="Y",box=0,opacity=0)
+    label(pos=(0,0,1),text="Z",box=0,opacity=0)
     # IMU object
     platform = box(length=1, height=0.05, width=1, color=color.red)
     p_line = box(length=1,height=0.08,width=0.1,color=color.yellow)
@@ -230,8 +230,8 @@ def read_loop():
             pitch = ((float(pitch_str) - pitch_zero)*unit_adjust/frec*grad2rad + pitch)
         except:
             print "Invalid line: %s" % line
-        axis=(cos(pitch)*cos(yaw),-cos(pitch)*sin(yaw),sin(pitch)) 
-        up=(sin(roll)*sin(yaw)+cos(roll)*sin(pitch)*cos(yaw),sin(roll)*cos(yaw)-cos(roll)*sin(pitch)*sin(yaw),-cos(roll)*cos(pitch))
+        axis=(-cos(pitch)*cos(yaw),-cos(pitch)*sin(yaw),sin(pitch)) 
+        up=(sin(roll)*sin(yaw)-cos(roll)*sin(pitch)*cos(yaw),-sin(roll)*cos(yaw)-cos(roll)*sin(pitch)*sin(yaw),-cos(roll)*cos(pitch))
         platform.axis=axis
         platform.up=up
         platform.length=1.0
