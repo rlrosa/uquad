@@ -15,6 +15,7 @@ from visual import * # For display
 import serial # To read data from IMU
 import string # For parsing
 import math # For math XD
+import random # for noise
 import sys # For script arguments
 import os # To check if path exists
 import threading # To read from serial as background task
@@ -155,6 +156,10 @@ except:
     print 'Failed to open log file %s ...' % (log_file_name)
 print '%s opened!' % (log_file_name)
 
+
+def rand_noise():
+    return random.uniform(-1,1)*.001
+
 # Data input loop
 def read_loop():
     global calibrate
@@ -225,9 +230,9 @@ def read_loop():
                 roll = 0
                 pitch = 0
                 yaw = 0
-            yaw = ((float(yaw_str) - yaw_zero)*unit_adjust/frec*grad2rad + yaw)
-            roll = ((float(roll_str) - roll_zero)*unit_adjust/frec*grad2rad + roll)
-            pitch = ((float(pitch_str) - pitch_zero)*unit_adjust/frec*grad2rad + pitch)
+            yaw = ((float(yaw_str) - yaw_zero)*unit_adjust/frec*grad2rad + yaw +  + rand_noise())
+            roll = ((float(roll_str) - roll_zero)*unit_adjust/frec*grad2rad + roll +  + rand_noise())
+            pitch = ((float(pitch_str) - pitch_zero)*unit_adjust/frec*grad2rad + pitch + rand_noise())
         except:
             print "Invalid line: %s" % line
         axis=(-cos(pitch)*cos(yaw),-cos(pitch)*sin(yaw),sin(pitch)) 
