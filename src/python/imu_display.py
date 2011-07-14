@@ -38,7 +38,10 @@ unit_adjust = .5859375
 ## Is frequency is modifiec
 #
 len_frec_line = 35 # Length of '5) Set output frequency, currently '
+len_sens_line = 44 # Length of '4) Set accelerometer sensitivity, currently '
+
 frec = 80
+sens = 1.5
 
 # IMU set to ASCII outputs data starting with 'A', separated by '\t' and
 # ending with "Z\n"
@@ -54,7 +57,7 @@ if len(sys.argv) > 1:
     else:
         device = sys.argv[1]
 else:
-    device = '/dev/tty/USB0'
+    device = '/dev/ttyUSB0'
 if len(sys.argv) > 2:
     baudrate_ = sys.argv[2]
 else:
@@ -158,12 +161,13 @@ print '%s opened!' % (log_file_name)
 
 
 def rand_noise():
-    return random.uniform(-1,1)*.001
+    return random.uniform(-1,1)*.0001
 
 # Data input loop
 def read_loop():
     global calibrate
     global frec
+    global sens
     roll=0
     pitch=0
     yaw=0
@@ -198,6 +202,15 @@ def read_loop():
                         words = string.split(line,' ')                    
                         frec = int(words[len(words)-1])
                         print 'Frequency detected: %d' % frec
+                if(len(line) > len_sens_line):
+                    if(line[0:len_sens_line] == '4) Set accelerometer sensitivity, currently '):
+                        words = string.split(line,' ')
+                        last_word = words[len(words)-1]
+                        if (len(last_word) > 3):
+                            sens = 1.5
+                        else:
+                            sens = float(last_word[0])
+                        print 'Sensibility detected: %s' % str(sens)
             except:
                 print 'Failed to adjust frec!'
             continue
@@ -216,23 +229,29 @@ def read_loop():
             print 'Read too much data.\nGarbage?'
             continue
         try:
-            roll_str = words[6]
+            acc_x_str = words[2]
+            acc_y_str = words[3]
+            acc_z_str = words[4]
             pitch_str = words[5]
-            yaw_str = words[7]
-            #roll_str = words[2]
-            #pitch_str = words[3]
-            #yaw_str = words[4]
+            roll_str = words[6]
+            yaw_str = words[7]            
             if (roll_zero == -1):
                 # Set the first value as flat reference
-                roll_zero = float(roll_str)
                 pitch_zero = float(pitch_str)
+                roll_zero = float(roll_str)
                 yaw_zero = float(yaw_str)
-                roll = 0
                 pitch = 0
+                roll = 0
                 yaw = 0
-            yaw = ((float(yaw_str) - yaw_zero)*unit_adjust/frec*grad2rad + yaw +  + rand_noise())
-            roll = ((float(roll_str) - roll_zero)*unit_adjust/frec*grad2rad + roll +  + rand_noise())
+                acc_x_zero = float(acc_x_str)
+                acc_y_zero = float(acc_y_str)
+                acc_z_zero = float(acc_z_str)
+                acc_x = 0
+                acc_y = 0
+                acc_z = 0
             pitch = ((float(pitch_str) - pitch_zero)*unit_adjust/frec*grad2rad + pitch + rand_noise())
+            roll = ((float(roll_str) - roll_zero)*unit_adjust/frec*grad2rad + roll +  + rand_noise())
+            yaw = ((float(yaw_str) - yaw_zero)*unit_adjust/frec*grad2rad + yaw +  + rand_noise())
         except:
             print "Invalid line: %s" % line
         axis=(-cos(pitch)*cos(yaw),-cos(pitch)*sin(yaw),sin(pitch)) 
@@ -257,13 +276,20 @@ def read_loop():
             
         if ( calibrate ):
             # Set the first value as flat reference
-            roll_zero = float(roll_str)
             pitch_zero = float(pitch_str)
+            roll_zero = float(roll_str)
             yaw_zero = float(yaw_str)
-            roll = 0
             pitch = 0
+            roll = 0
             yaw = 0
             print 'Gyros calibrated!'
+            acc_x_zero = float(acc_x_str)
+            acc_y_zero = float(acc_y_str)
+            acc_z_zero = float(acc_z_str)
+            acc_x = 0
+            acc_y = 0
+            acc_z = 0
+            print 'Accs calibrated!'
             calibrate = False
 
 # Run read loop
