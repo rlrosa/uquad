@@ -237,9 +237,9 @@ def read_loop():
             yaw_str = words[7]            
             if (roll_zero == -1):
                 # Set the first value as flat reference
-                pitch_zero = float(pitch_str)
-                roll_zero = float(roll_str)
-                yaw_zero = float(yaw_str)
+                pitch_zero = float(pitch_str)*unit_adjust/frec*grad2rad
+                roll_zero = float(roll_str)*unit_adjust/frec*grad2rad
+                yaw_zero = float(yaw_str)*unit_adjust/frec*grad2rad
                 pitch = 0
                 roll = 0
                 yaw = 0
@@ -249,9 +249,10 @@ def read_loop():
                 acc_x = 0
                 acc_y = 0
                 acc_z = 0
-            pitch = ((float(pitch_str) - pitch_zero)*unit_adjust/frec*grad2rad + pitch + rand_noise())
-            roll = ((float(roll_str) - roll_zero)*unit_adjust/frec*grad2rad + roll +  + rand_noise())
-            yaw = ((float(yaw_str) - yaw_zero)*unit_adjust/frec*grad2rad + yaw +  + rand_noise())
+            pitch = ((float(pitch_str)*unit_adjust/frec*grad2rad - pitch_zero) + pitch + rand_noise())
+            
+            roll = ((float(roll_str)*unit_adjust/frec*grad2rad - roll_zero) + roll +  + rand_noise())
+            yaw = ((float(yaw_str)*unit_adjust/frec*grad2rad - yaw_zero) + yaw +  + rand_noise())
         except:
             print "Invalid line: %s" % line
         axis=(-cos(pitch)*cos(yaw),-cos(pitch)*sin(yaw),sin(pitch)) 
@@ -276,9 +277,9 @@ def read_loop():
             
         if ( calibrate ):
             # Set the first value as flat reference
-            pitch_zero = float(pitch_str)
-            roll_zero = float(roll_str)
-            yaw_zero = float(yaw_str)
+            pitch_zero = float(pitch_str)*unit_adjust/frec*grad2rad
+            roll_zero = float(roll_str)*unit_adjust/frec*grad2rad
+            yaw_zero = float(yaw_str)*unit_adjust/frec*grad2rad
             pitch = 0
             roll = 0
             yaw = 0
