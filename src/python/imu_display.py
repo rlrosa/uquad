@@ -171,6 +171,9 @@ def read_loop():
     roll=0
     pitch=0
     yaw=0
+    roll_sensor=0
+    pitch_sensor=0
+    yaw_sensor=0
     roll_str = '0'
     pitch_str = '0'
     yaw_str = '0'
@@ -249,10 +252,12 @@ def read_loop():
                 acc_x = 0
                 acc_y = 0
                 acc_z = 0
-            pitch = ((float(pitch_str)*unit_adjust/frec*grad2rad - pitch_zero) + pitch + rand_noise())
-            
-            roll = ((float(roll_str)*unit_adjust/frec*grad2rad - roll_zero) + roll +  + rand_noise())
-            yaw = ((float(yaw_str)*unit_adjust/frec*grad2rad - yaw_zero) + yaw +  + rand_noise())
+            pitch_sensor = (float(pitch_str)*unit_adjust/frec*grad2rad
+            pitch = (pitch_sensor - pitch_zero) + pitch + rand_noise())
+            roll_sensor = (float(roll_str)*unit_adjust/frec*grad2rad
+            roll = (roll_sensor - roll_zero) + roll + rand_noise())
+            yaw_sensor = (float(yaw_str)*unit_adjust/frec*grad2rad
+            yaw = (yaw_sensor - yaw_zero) + yaw + rand_noise())
         except:
             print "Invalid line: %s" % line
         axis=(-cos(pitch)*cos(yaw),-cos(pitch)*sin(yaw),sin(pitch)) 
