@@ -22,6 +22,18 @@ import threading # To read from serial as background task
 
 from time import time
 
+## Constants
+gravity = 9.8
+# IMU setting
+len_frec_line = 35 # Length of '5) Set output frequency, currently '
+len_sens_line = 44 # Length of '4) Set accelerometer sensitivity, currently '
+# IMU set to ASCII outputs data starting with 'A', separated by '\t' and
+# ending with "Z\n"
+frec = 80
+start_symbol = '\rA'
+end_symbol = 'Z\n'
+sep_symbol = "\t"
+
 ## Convert from degrees to rad
 grad2rad = 3.141592/180.0
 ## Adjust data read from imu
@@ -31,23 +43,25 @@ volt_zero_rate_level = 1.65 # 5@uquad/doc/gyro/datasheet_LISY300AL.pdf
 volt_max = 2**adc_bits-1
 zero = volt_zero_rate_level * volt_max / vref
 # Better off setting zero according to whatever bias caused by setup.
-## Convert from voltage to degrees/sec
+
+## Gyros
+# Convert from voltage to degrees/sec
 # Full scale is 300deg/sec, and in a 10 bit ADC that corresponds to 20***(10-1)=512
 # The adjustment is input_v*300/512 approx input_v*0.5859375
 unit_adjust = .5859375
-## Is frequency is modifiec
-#
-len_frec_line = 35 # Length of '5) Set output frequency, currently '
-len_sens_line = 44 # Length of '4) Set accelerometer sensitivity, currently '
 
-frec = 80
+## Acc
+# Convert according to sens
+# It is x mv per g
+# sens - mV/g
+# 1.5  - 800
+# 2    - 600
+# 4    - 400
+# 6    - 300
+# Go from V to mV and then use sens
 sens = 1.5
+get_g = 1000/(1200/sens)
 
-# IMU set to ASCII outputs data starting with 'A', separated by '\t' and
-# ending with "Z\n"
-start_symbol = '\rA'
-end_symbol = 'Z\n'
-sep_symbol = "\t"
 
 # Check your COM port and baud rate
 if len(sys.argv) > 1:
@@ -159,15 +173,26 @@ except:
     print 'Failed to open log file %s ...' % (log_file_name)
 print '%s opened!' % (log_file_name)
 
-
 def rand_noise():
     return random.uniform(-1,1)*.0001
 
+def get_angle_acc(acc,acc_perp):
+    return math.atan2(acc_perp/gravity,acc/gravity)
+
 # Data input loop
 def read_loop():
+    # IMU settings
     global calibrate
     global frec
     global sens
+    # Kalman
+    global p_pitch
+    global p_roll
+    global p_yaw
+    global p_x
+    global p_y
+    global p_z
+    # Data storage
     roll=0
     pitch=0
     yaw=0
@@ -252,12 +277,12 @@ def read_loop():
                 acc_x = 0
                 acc_y = 0
                 acc_z = 0
-            pitch_sensor = (float(pitch_str)*unit_adjust/frec*grad2rad
-            pitch = (pitch_sensor - pitch_zero) + pitch + rand_noise())
-            roll_sensor = (float(roll_str)*unit_adjust/frec*grad2rad
-            roll = (roll_sensor - roll_zero) + roll + rand_noise())
-            yaw_sensor = (float(yaw_str)*unit_adjust/frec*grad2rad
-            yaw = (yaw_sensor - yaw_zero) + yaw + rand_noise())
+            pitch_sensor = float(pitch_str)*unit_adjust/frec*grad2rad
+            pitch = (pitch_sensor - pitch_zero) + pitch + rand_noise()
+            roll_sensor = float(roll_str)*unit_adjust/frec*grad2rad
+            roll = (roll_sensor - roll_zero) + roll + rand_noise()
+            yaw_sensor = float(yaw_str)*unit_adjust/frec*grad2rad
+            yaw = (yaw_sensor - yaw_zero) + yaw + rand_noise()
         except:
             print "Invalid line: %s" % line
         axis=(-cos(pitch)*cos(yaw),-cos(pitch)*sin(yaw),sin(pitch)) 
