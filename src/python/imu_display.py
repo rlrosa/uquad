@@ -46,8 +46,8 @@ zero = volt_zero_rate_level * volt_max / vref
 
 ## Gyros
 # Convert from voltage to degrees/sec
-# Full scale is 300deg/sec, and in a 10 bit ADC that corresponds to 20***(10-1)=512
-# The adjustment is input_v*300/512 approx input_v*0.5859375
+# Full scale is 300deg/sec, and in a 10 bit ADC that corresponds to 20**10-1=1023
+# The adjustment is input_v*300/1024 approx input_v*0.5859375
 unit_adjust = .5859375
 
 ## Acc
@@ -176,6 +176,25 @@ print '%s opened!' % (log_file_name)
 def rand_noise():
     return random.uniform(-1,1)*.0001
 
+def gyro_read(data_str,zero):
+    ## Convert data read from gyro to rad/s
+    #
+    # Gyro outputs ~1.65v for 0deg/sec, then this goes through a
+    # 10bit ADC on the Atmega which compares 0-3.3v.
+    # The data received is the result of the ADC.
+    #
+    # Note: Should be /300, but /450 seems to work better. This may
+    # be wrong, but a possible explanation is that fullscale is not
+    # at 0-3.3v.
+    # This may need adjustment per sensor
+    # 
+    # @param data_str : String read from ADC conversion of gyro output
+    # @param zero : Float of value read from the gyro when staying still.
+    # 
+    # @return Rate of turn (rad/sec)
+    global grad2rad
+    return (1023.0-zero)/450.0*(float(data_str) - zero)*grad2rad
+
 def get_angle_acc(acc,acc_perp):
     return math.atan2(acc_perp/gravity,acc/gravity)
 
@@ -265,9 +284,9 @@ def read_loop():
             yaw_str = words[7]            
             if (roll_zero == -1):
                 # Set the first value as flat reference
-                pitch_zero = float(pitch_str)*unit_adjust/frec*grad2rad
-                roll_zero = float(roll_str)*unit_adjust/frec*grad2rad
-                yaw_zero = float(yaw_str)*unit_adjust/frec*grad2rad
+                pitch_zero = float(pitch_str)
+                roll_zero = float(roll_str)
+                yaw_zero = float(yaw_str)
                 pitch = 0
                 roll = 0
                 yaw = 0
@@ -277,12 +296,12 @@ def read_loop():
                 acc_x = 0
                 acc_y = 0
                 acc_z = 0
-            pitch_sensor = float(pitch_str)*unit_adjust/frec*grad2rad
-            pitch = (pitch_sensor - pitch_zero) + pitch + rand_noise()
-            roll_sensor = float(roll_str)*unit_adjust/frec*grad2rad
-            roll = (roll_sensor - roll_zero) + roll + rand_noise()
-            yaw_sensor = float(yaw_str)*unit_adjust/frec*grad2rad
-            yaw = (yaw_sensor - yaw_zero) + yaw + rand_noise()
+            pitch_sensor = gyro_read(pitch_str,pitch_zero)
+            pitch = pitch_sensor/frec + pitch + rand_noise()
+            roll_sensor = gyro_read(roll_str,roll_zero)
+            roll = roll_sensor/frec + roll + rand_noise()
+            yaw_sensor = gyro_read(yaw_str,yaw_zero)
+            yaw = yaw_sensor/frec + yaw + rand_noise()
         except:
             print "Invalid line: %s" % line
         axis=(-cos(pitch)*cos(yaw),-cos(pitch)*sin(yaw),sin(pitch)) 
@@ -307,9 +326,9 @@ def read_loop():
             
         if ( calibrate ):
             # Set the first value as flat reference
-            pitch_zero = float(pitch_str)*unit_adjust/frec*grad2rad
-            roll_zero = float(roll_str)*unit_adjust/frec*grad2rad
-            yaw_zero = float(yaw_str)*unit_adjust/frec*grad2rad
+            pitch_zero = float(pitch_str)
+            roll_zero = float(roll_str)
+            yaw_zero = float(yaw_str)
             pitch = 0
             roll = 0
             yaw = 0
