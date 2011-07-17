@@ -36,6 +36,7 @@ sep_symbol = "\t"
 
 ## Convert from degrees to rad
 grad2rad = 3.141592/180.0
+rad2grad = 180.0/3.141592
 ## Adjust data read from imu
 adc_bits = 10
 vref = 3.3
@@ -47,8 +48,8 @@ zero = volt_zero_rate_level * volt_max / vref
 ## Gyros
 # Convert from voltage to degrees/sec
 # Full scale is 300deg/sec, and in a 10 bit ADC that corresponds to 20**10-1=1023
-# The adjustment is input_v*300/1024 approx input_v*0.5859375
-unit_adjust = .5859375
+# The adjustment is input_v*300/(1023-512) approx input_v*0.58708414872798431
+gyro_adjust = 475.0/(1023.0-512.0)
 
 ## Acc
 # Convert according to sens
@@ -193,7 +194,8 @@ def gyro_read(data_str,zero):
     # 
     # @return Rate of turn (rad/sec)
     global grad2rad
-    return (1023.0-zero)/450.0*(float(data_str) - zero)*grad2rad
+    global gyro_adjust
+    return gyro_adjust*(float(data_str)-zero)*grad2rad
 
 def get_angle_acc(acc,acc_perp):
     return math.atan2(acc_perp/gravity,acc/gravity)
@@ -320,9 +322,9 @@ def read_loop():
         cil_pitch.axis=(0.2*cos(pitch),0.2*sin(pitch),0)
         cil_pitch2.axis=(-0.2*cos(pitch),-0.2*sin(pitch),0)
         arrow_course.axis=(0.2*sin(yaw),0.2*cos(yaw),0)
-        L1.text = str(roll/grad2rad)[0:6]
-        L2.text = str(pitch/grad2rad)[0:6]
-        L3.text = str(yaw/grad2rad)[0:6]
+        L1.text = str(roll*rad2grad % 180)[0:6]
+        L2.text = str(pitch*rad2grad % 180)[0:6]
+        L3.text = str(yaw*rad2grad % 180)[0:6]
             
         if ( calibrate ):
             # Set the first value as flat reference
