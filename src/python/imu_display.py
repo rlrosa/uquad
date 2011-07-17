@@ -15,6 +15,7 @@ from visual import * # For display
 import serial # To read data from IMU
 import string # For parsing
 import math # For math XD
+from math import atan2,cos,sin,asin,pi # for vago
 import random # for noise
 import sys # For script arguments
 import os # To check if path exists
@@ -24,6 +25,10 @@ from time import time
 
 ## Constants
 gravity = 9.8
+MODE_GYRO = 0
+MODE_ACC = 1
+MODE_KALMAN = 2
+mode = MODE_ACC
 # IMU setting
 len_frec_line = 35 # Length of '5) Set output frequency, currently '
 len_sens_line = 44 # Length of '4) Set accelerometer sensitivity, currently '
@@ -61,8 +66,8 @@ gyro_adjust = 475.0/(1023.0-512.0)
 # 6    - 300
 # Go from V to mV and then use sens
 sens = 1.5
-get_g = 1000/(1200/sens)
-
+#acc_adjust = 3.3/1023.0
+acc_adjust = 3.3/1023.0
 
 # Check your COM port and baud rate
 if len(sys.argv) > 1:
@@ -197,8 +202,33 @@ def gyro_read(data_str,zero):
     global gyro_adjust
     return gyro_adjust*(float(data_str)-zero)*grad2rad
 
-def get_angle_acc(acc,acc_perp):
-    return math.atan2(acc_perp/gravity,acc/gravity)
+## Uses acc readings to calculate pitch and roll
+# Inputs in m/s**2
+# Returns [pitch, roll]
+def get_angle_acc(ax,ay,az):
+    global gravity
+    g = gravity;
+    try:
+#        b = atan2(ay,ax)
+#        a = asin(az/g)
+#        gxz = g*cos(b)*cos(a)
+#        gyz = g*sin(b)*cos(a)
+#        p = atan2(az/gxz,ax/gxz)
+#        r = atan2(az/gyz,ay/gyz)
+        r = atan2(az,ax ) - pi/2
+        p = atan2(az,ay) - pi/2
+    except:
+        print 'Math error!'
+    return [p,r]
+
+## Acc data handling
+# Returns in m/s**2
+def acc_read(counts,zero,sens):
+    global acc_adjust
+    global gravity
+    volts = (counts-zero)*acc_adjust
+    #volts*1000/(1200/sens)
+    return volts*1.0/(1.2/sens)*gravity
 
 # Data input loop
 def read_loop():
@@ -206,6 +236,7 @@ def read_loop():
     global calibrate
     global frec
     global sens
+    global mode
     # Kalman
     global p_pitch
     global p_roll
@@ -226,6 +257,9 @@ def read_loop():
     roll_zero=-1
     pitch_zero=-1
     yaw_zero=-1
+    acc_x_zero = 470.0
+    acc_y_zero = 500.0
+    acc_z_zero = 560.0
     request_printed = False
 
     print 'Ctrl+C to reset zeros position'
@@ -292,20 +326,34 @@ def read_loop():
                 pitch = 0
                 roll = 0
                 yaw = 0
-                acc_x_zero = float(acc_x_str)
-                acc_y_zero = float(acc_y_str)
-                acc_z_zero = float(acc_z_str)
-                acc_x = 0
-                acc_y = 0
-                acc_z = 0
-            pitch_sensor = gyro_read(pitch_str,pitch_zero)
-            pitch = pitch_sensor/frec + pitch + rand_noise()
-            roll_sensor = gyro_read(roll_str,roll_zero)
-            roll = roll_sensor/frec + roll + rand_noise()
-            yaw_sensor = gyro_read(yaw_str,yaw_zero)
-            yaw = yaw_sensor/frec + yaw + rand_noise()
+                acc_x = acc_x_zero
+                acc_y = acc_y_zero
+                acc_z = acc_z_zero
+            if (mode==MODE_GYRO):
+                ## Gyro only
+                pitch_sensor = gyro_read(pitch_str,pitch_zero)
+                pitch = pitch_sensor/frec + pitch + rand_noise()
+                roll_sensor = gyro_read(roll_str,roll_zero)
+                roll = roll_sensor/frec + roll + rand_noise()
+                yaw_sensor = gyro_read(yaw_str,yaw_zero)
+                yaw = yaw_sensor/frec + yaw + rand_noise()
+            elif (mode==MODE_ACC):
+                ## Acc only
+                acc_x_sensor = acc_read(float(acc_x_str),acc_x_zero,sens)
+                acc_y_sensor = acc_read(float(acc_y_str),acc_y_zero,sens)
+                acc_z_sensor = acc_read(float(acc_z_str),acc_z_zero,sens)
+                [pitch,roll] = get_angle_acc(acc_x_sensor,acc_y_sensor,acc_z_sensor)
+                yaw_sensor = gyro_read(yaw_str,yaw_zero)
+                yaw = yaw_sensor/frec + yaw + rand_noise()
+            elif (mode == MODE_KALMAN):
+                print 'ya va...'
+                quit()
+            else:
+                print 'invalid mode'
+                quit()
+
         except:
-            print "Invalid line: %s" % line
+            print 'Invalid line: %s' % line
         axis=(-cos(pitch)*cos(yaw),-cos(pitch)*sin(yaw),sin(pitch)) 
         up=(sin(roll)*sin(yaw)-cos(roll)*sin(pitch)*cos(yaw),-sin(roll)*cos(yaw)-cos(roll)*sin(pitch)*sin(yaw),-cos(roll)*cos(pitch))
         platform.axis=axis
@@ -322,9 +370,9 @@ def read_loop():
         cil_pitch.axis=(0.2*cos(pitch),0.2*sin(pitch),0)
         cil_pitch2.axis=(-0.2*cos(pitch),-0.2*sin(pitch),0)
         arrow_course.axis=(0.2*sin(yaw),0.2*cos(yaw),0)
-        L1.text = str(roll*rad2grad % 180)[0:6]
-        L2.text = str(pitch*rad2grad % 180)[0:6]
-        L3.text = str(yaw*rad2grad % 180)[0:6]
+        L1.text = str(roll*rad2grad % 360)[0:6]
+        L2.text = str(pitch*rad2grad % 360)[0:6]
+        L3.text = str(yaw*rad2grad % 360)[0:6]
             
         if ( calibrate ):
             # Set the first value as flat reference
@@ -335,12 +383,9 @@ def read_loop():
             roll = 0
             yaw = 0
             print 'Gyros calibrated!'
-            acc_x_zero = float(acc_x_str)
-            acc_y_zero = float(acc_y_str)
-            acc_z_zero = float(acc_z_str)
-            acc_x = 0
-            acc_y = 0
-            acc_z = 0
+            acc_x = acc_x_zero
+            acc_y = acc_y_zero
+            acc_z = acc_z_zero
             print 'Accs calibrated!'
             calibrate = False
 
