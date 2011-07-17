@@ -28,13 +28,14 @@ gravity = 9.8
 MODE_GYRO = 0
 MODE_ACC = 1
 MODE_KALMAN = 2
-mode = MODE_ACC
+mode = MODE_KALMAN
 # IMU setting
 len_frec_line = 35 # Length of '5) Set output frequency, currently '
 len_sens_line = 44 # Length of '4) Set accelerometer sensitivity, currently '
 # IMU set to ASCII outputs data starting with 'A', separated by '\t' and
 # ending with "Z\n"
 frec = 80
+T = 1.0/frec
 start_symbol = '\rA'
 end_symbol = 'Z\n'
 sep_symbol = "\t"
@@ -230,20 +231,32 @@ def acc_read(counts,zero,sens):
     #volts*1000/(1200/sens)
     return volts*1.0/(1.2/sens)*gravity
 
+def kalman(st,cov,gyro,acc_angle,T):
+    # Tweak?
+    proc_noise = 0.0001
+    measure_noise = 0.001
+    # Prediction
+    st_ = st + gyro*T
+    cov_ = cov + proc_noise
+    # Update
+    y = acc_angle - st_
+    s = cov_ + measure_noise
+    k = cov_/s
+    st = st_ + k*y
+    cov = (1-k)*cov_
+    return [st,cov]
+    
 # Data input loop
 def read_loop():
     # IMU settings
     global calibrate
     global frec
+    global T
     global sens
     global mode
     # Kalman
-    global p_pitch
-    global p_roll
-    global p_yaw
-    global p_x
-    global p_y
-    global p_z
+    cov_pitch = 0.1
+    cov_roll = 0.1
     # Data storage
     roll=0
     pitch=0
@@ -284,6 +297,7 @@ def read_loop():
                     if(line[0:len_frec_line] == '5) Set output frequency, currently '):
                         words = string.split(line,' ')                    
                         frec = int(words[len(words)-1])
+                        T = 1.0/frec
                         print 'Frequency detected: %d' % frec
                 if(len(line) > len_sens_line):
                     if(line[0:len_sens_line] == '4) Set accelerometer sensitivity, currently '):
@@ -332,25 +346,31 @@ def read_loop():
             if (mode==MODE_GYRO):
                 ## Gyro only
                 pitch_sensor = gyro_read(pitch_str,pitch_zero)
-                pitch = pitch_sensor/frec + pitch + rand_noise()
+                pitch = pitch_sensor*T + pitch + rand_noise()
                 roll_sensor = gyro_read(roll_str,roll_zero)
-                roll = roll_sensor/frec + roll + rand_noise()
-                yaw_sensor = gyro_read(yaw_str,yaw_zero)
-                yaw = yaw_sensor/frec + yaw + rand_noise()
+                roll = roll_sensor*T + roll + rand_noise()
             elif (mode==MODE_ACC):
                 ## Acc only
                 acc_x_sensor = acc_read(float(acc_x_str),acc_x_zero,sens)
                 acc_y_sensor = acc_read(float(acc_y_str),acc_y_zero,sens)
                 acc_z_sensor = acc_read(float(acc_z_str),acc_z_zero,sens)
                 [pitch,roll] = get_angle_acc(acc_x_sensor,acc_y_sensor,acc_z_sensor)
-                yaw_sensor = gyro_read(yaw_str,yaw_zero)
-                yaw = yaw_sensor/frec + yaw + rand_noise()
             elif (mode == MODE_KALMAN):
-                print 'ya va...'
-                quit()
+                acc_x_sensor = acc_read(float(acc_x_str),acc_x_zero,sens)
+                acc_y_sensor = acc_read(float(acc_y_str),acc_y_zero,sens)
+                acc_z_sensor = acc_read(float(acc_z_str),acc_z_zero,sens)
+                pitch_sensor = gyro_read(pitch_str,pitch_zero)
+                roll_sensor = gyro_read(roll_str,roll_zero)
+                [pitch_acc,roll_acc] = get_angle_acc(acc_x_sensor,acc_y_sensor,acc_z_sensor)
+                [pitch,cov_pitch] = kalman(pitch,cov_pitch,pitch_sensor,pitch_acc,T)
+                [roll,cov_roll] = kalman(roll,cov_roll,roll_sensor,roll_acc,T)
             else:
                 print 'invalid mode'
                 quit()
+            # No cure for yaw drift
+            yaw_sensor = gyro_read(yaw_str,yaw_zero)
+            yaw = yaw_sensor*T + yaw + rand_noise()
+
 
         except:
             print 'Invalid line: %s' % line
