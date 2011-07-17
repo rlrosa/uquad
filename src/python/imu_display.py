@@ -24,7 +24,8 @@ import threading # To read from serial as background task
 from time import time
 
 ## Constants
-gravity = 9.8
+gravity = 9.81
+calibration_sample_size = 300 # enough
 MODE_GYRO = 0
 MODE_ACC = 1
 MODE_KALMAN = 2
@@ -68,7 +69,8 @@ gyro_adjust = 475.0/(1023.0-512.0)
 # Go from V to mV and then use sens
 sens = 1.5
 #acc_adjust = 3.3/1023.0
-acc_adjust = 3.3/1023.0
+acc_v_per_counts = 3.3/1023.0
+acc_counts_per_v = 1023.0/3.3
 
 # Check your COM port and baud rate
 if len(sys.argv) > 1:
@@ -155,10 +157,11 @@ try:
     arrow(color=color.green,axis=(0,1,0), shaftwidth=0.02 , fixedwidth=1)
     arrow(color=color.green,axis=(0,0,1), shaftwidth=0.02, fixedwidth=1)
     # labels
-    label(pos=(0,0,0.8),text="imu test",box=0,opacity=0)
-    label(pos=(1,0,0),text="X",box=0,opacity=0)
-    label(pos=(0,1,0),text="Y",box=0,opacity=0)
-    label(pos=(0,0,1),text="Z",box=0,opacity=0)
+    label(pos=(0,0.4,0.8),text="imu test",box=0,opacity=0,color=color.black)
+    label(pos=(.5,0,0),text="X",box=0,opacity=0,color=color.black)
+    label(pos=(0,.5,0),text="Y",box=0,opacity=0,color=color.black)
+    label(pos=(0,0,.5),text="Z",box=0,opacity=0,color=color.black)
+    L_calib = label(pos=(0,0,0),text='',box=0,opacity=0,height=30,color=color.black)
     # IMU object
     platform = box(length=1, height=0.05, width=1, color=color.red)
     p_line = box(length=1,height=0.08,width=0.1,color=color.yellow)
@@ -216,20 +219,27 @@ def get_angle_acc(ax,ay,az):
 #        gyz = g*sin(b)*cos(a)
 #        p = atan2(az/gxz,ax/gxz)
 #        r = atan2(az/gyz,ay/gyz)
-        r = atan2(az,ax ) - pi/2
+        r = atan2(az,ax) - pi/2
         p = atan2(az,ay) - pi/2
     except:
         print 'Math error!'
     return [p,r]
 
-## Acc data handling
+# Return Volts pero g
+def acc_v_per_g(sens):
+    return 1.2/sens
+
+# Returns m/s**2
+def acc_volt_to_g(volts,sens):
+    global gravity
+    return volts/acc_v_per_g(sens)*gravity
+
 # Returns in m/s**2
 def acc_read(counts,zero,sens):
-    global acc_adjust
+    global acc_v_per_counts
     global gravity
-    volts = (counts-zero)*acc_adjust
-    #volts*1000/(1200/sens)
-    return volts*1.0/(1.2/sens)*gravity
+    volts = (counts-zero)*acc_v_per_counts
+    return acc_volt_to_g(volts,sens)
 
 def kalman(st,cov,gyro,acc_angle,T):
     # Tweak?
@@ -250,10 +260,13 @@ def kalman(st,cov,gyro,acc_angle,T):
 def read_loop():
     # IMU settings
     global calibrate
+    global calibration_sample_size
     global frec
     global T
     global sens
     global mode
+    # Initial calibration
+    calibrate = calibration_sample_size
     # Kalman
     cov_pitch = 0.1
     cov_roll = 0.1
@@ -332,30 +345,20 @@ def read_loop():
             pitch_str = words[5]
             roll_str = words[6]
             yaw_str = words[7]            
-            if (roll_zero == -1):
-                # Set the first value as flat reference
-                pitch_zero = float(pitch_str)
-                roll_zero = float(roll_str)
-                yaw_zero = float(yaw_str)
-                pitch = 0
-                roll = 0
-                yaw = 0
-                acc_x = acc_x_zero
-                acc_y = acc_y_zero
-                acc_z = acc_z_zero
             if (mode==MODE_GYRO):
-                ## Gyro only
+                # Gyro only
                 pitch_sensor = gyro_read(pitch_str,pitch_zero)
                 pitch = pitch_sensor*T + pitch + rand_noise()
                 roll_sensor = gyro_read(roll_str,roll_zero)
                 roll = roll_sensor*T + roll + rand_noise()
             elif (mode==MODE_ACC):
-                ## Acc only
+                # Acc only
                 acc_x_sensor = acc_read(float(acc_x_str),acc_x_zero,sens)
                 acc_y_sensor = acc_read(float(acc_y_str),acc_y_zero,sens)
                 acc_z_sensor = acc_read(float(acc_z_str),acc_z_zero,sens)
                 [pitch,roll] = get_angle_acc(acc_x_sensor,acc_y_sensor,acc_z_sensor)
             elif (mode == MODE_KALMAN):
+                # Use Kalman filter to integrate gyros and acc for pitch and roll
                 acc_x_sensor = acc_read(float(acc_x_str),acc_x_zero,sens)
                 acc_y_sensor = acc_read(float(acc_y_str),acc_y_zero,sens)
                 acc_z_sensor = acc_read(float(acc_z_str),acc_z_zero,sens)
@@ -393,21 +396,51 @@ def read_loop():
         L1.text = str(roll*rad2grad % 360)[0:6]
         L2.text = str(pitch*rad2grad % 360)[0:6]
         L3.text = str(yaw*rad2grad % 360)[0:6]
-            
-        if ( calibrate ):
-            # Set the first value as flat reference
-            pitch_zero = float(pitch_str)
-            roll_zero = float(roll_str)
-            yaw_zero = float(yaw_str)
+
+        if( calibrate == calibration_sample_size):
+            # Reset accums
+            pitch_zero_sum = 0
+            roll_zero_sum = 0
+            yaw_zero_sum = 0
+            acc_x_zero_sum = 0
+            acc_y_zero_sum = 0
+            acc_z_zero_sum = 0
+            L_calib.text = 'CALIBRATING...'
+        if ( calibrate > 0 ):
+            # Accumulate readings
+            pitch_zero_sum = pitch_zero_sum + float(pitch_str)
+            roll_zero_sum = roll_zero_sum + float(roll_str)
+            yaw_zero_sum = yaw_zero_sum + float(yaw_str)
+            acc_x_zero_sum = acc_x_zero_sum + float(acc_x_str)
+            acc_y_zero_sum = acc_y_zero_sum + float(acc_y_str)
+            acc_z_zero_sum = acc_z_zero_sum + float(acc_z_str)
+            calibrate = calibrate - 1
+            # Show current status
+            if ((calibrate % 20)==0):
+                # Flash text on imu display at a visible rate
+                if(len(L_calib.text)>0):
+                    L_calib.text = ''
+                else:
+                    L_calib.text = 'CALIBRATING...'
+            print 'calibrating...'
+        elif (calibrate == 0):
+            # Set the mean as a zero ref
+            pitch_zero = pitch_zero_sum/calibration_sample_size
+            roll_zero = roll_zero_sum/calibration_sample_size
+            yaw_zero = yaw_zero_sum/calibration_sample_size
             pitch = 0
             roll = 0
             yaw = 0
             print 'Gyros calibrated!'
-            acc_x = acc_x_zero
-            acc_y = acc_y_zero
-            acc_z = acc_z_zero
+            acc_x_zero = acc_x_zero_sum/calibration_sample_size
+            acc_y_zero = acc_y_zero_sum/calibration_sample_size
+            acc_z_zero = acc_z_zero_sum/calibration_sample_size
+            # Fix z, since g=1g instead of zero (device flat)
+            counts_per_g = acc_counts_per_v*acc_v_per_g(sens)
+            acc_z_zero = acc_z_zero - counts_per_g
+            L_calib.text = ''
             print 'Accs calibrated!'
-            calibrate = False
+            calibrate = calibrate - 1
 
 # Run read loop
 read_thread = threading.Thread(target=read_loop)
@@ -420,7 +453,7 @@ while 1:
         imu_data.write(cmd)
     except KeyboardInterrupt:
         print 'Calibrating gyros...'
-        calibrate = True        
+        calibrate = calibration_sample_size
     except:
         print 'error!'
         if errors > max_errors:
