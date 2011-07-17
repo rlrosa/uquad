@@ -243,8 +243,8 @@ def acc_read(counts,zero,sens):
 
 def kalman(st,cov,gyro,acc_angle,T):
     # Tweak?
-    proc_noise = 0.0001
-    measure_noise = 0.001
+    proc_noise = 0.001
+    measure_noise = 0.1
     # Prediction
     st_ = st + gyro*T
     cov_ = cov + proc_noise
