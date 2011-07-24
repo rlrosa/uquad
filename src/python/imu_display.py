@@ -210,17 +210,9 @@ def gyro_read(data_str,zero):
 # Inputs in m/s**2
 # Returns [pitch, roll]
 def get_angle_acc(ax,ay,az):
-    global gravity
-    g = gravity;
     try:
-#        b = atan2(ay,ax)
-#        a = asin(az/g)
-#        gxz = g*cos(b)*cos(a)
-#        gyz = g*sin(b)*cos(a)
-#        p = atan2(az/gxz,ax/gxz)
-#        r = atan2(az/gyz,ay/gyz)
-        r = atan2(az,ax) - pi/2
-        p = atan2(az,ay) - pi/2
+        r = atan2(-ax,az)
+        p = -atan2(ay,az)
     except:
         print 'Math error!'
     return [p,r]
