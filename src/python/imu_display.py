@@ -29,7 +29,7 @@ calibration_sample_size = 300 # enough
 MODE_GYRO = 0
 MODE_ACC = 1
 MODE_KALMAN = 2
-mode = MODE_ACC
+mode = MODE_KALMAN
 # IMU setting
 len_frec_line = 35 # Length of '5) Set output frequency, currently '
 len_sens_line = 44 # Length of '4) Set accelerometer sensitivity, currently '
@@ -215,11 +215,6 @@ def get_angle_acc(ax,ay,az):
         p = atan2(-ay,az)
     except:
         print 'Math error!'
-    # Map results to [0,2*pi)
-    if(p<0):
-        p = p + 2*pi        
-    if(r<0):
-        r = r + 2*pi
     return [p,r]
 
 # Return Volts pero g
@@ -370,7 +365,6 @@ def read_loop():
             # No cure for yaw drift
             yaw_sensor = gyro_read(yaw_str,yaw_zero)
             yaw = yaw_sensor*T + yaw + rand_noise()
-
 
         except:
             print 'Invalid line: %s' % line
