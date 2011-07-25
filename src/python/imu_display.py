@@ -15,7 +15,7 @@ from visual import * # For display
 import serial # To read data from IMU
 import string # For parsing
 import math # For math XD
-from math import atan2,cos,sin,asin,pi # for vago
+from math import atan2,cos,sin,asin,pi,copysign # for vago
 import random # for noise
 import sys # For script arguments
 import os # To check if path exists
@@ -24,6 +24,7 @@ import threading # To read from serial as background task
 from time import time
 
 ## Constants
+DEBUG = 0
 gravity = 9.81
 calibration_sample_size = 300 # enough
 MODE_GYRO = 0
@@ -211,11 +212,15 @@ def gyro_read(data_str,zero):
 # Inputs in m/s**2
 # Returns [pitch, roll]
 def get_angle_acc(ax,ay,az):
+    global gravity
     try:
         r = atan2(-ax,az)
         p = atan2(-ay,az)
     except:
         print 'Math error!'
+    if(DEBUG):
+        print 'acc:xyz: %.2f ||  %.2f ||  %.2f' % (ax,ay,az)
+        print 'acc:pr:  %.2f ||  %.2f' % (p,r)
     return [p,r]
 
 # Return Volts pero g
