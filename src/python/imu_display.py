@@ -71,6 +71,7 @@ sens = 1.5
 #acc_adjust = 3.3/1023.0
 acc_v_per_counts = 3.3/1023.0
 acc_counts_per_v = 1023.0/3.3
+th = 0.3*pi/2
 
 # Check your COM port and baud rate
 if len(sys.argv) > 1:
@@ -257,6 +258,7 @@ def read_loop():
     global T
     global sens
     global mode
+    global th
     # Initial calibration
     calibrate = calibration_sample_size
     # Kalman
@@ -355,10 +357,19 @@ def read_loop():
                 acc_y_sensor = acc_read(float(acc_y_str),acc_y_zero,sens)
                 acc_z_sensor = acc_read(float(acc_z_str),acc_z_zero,sens)
                 pitch_sensor = gyro_read(pitch_str,pitch_zero)
-                roll_sensor = gyro_read(roll_str,roll_zero)
+                roll_sensor = gyro_read(roll_str,roll_zero)            
                 [pitch_acc,roll_acc] = get_angle_acc(acc_x_sensor,acc_y_sensor,acc_z_sensor)
-                [pitch,cov_pitch] = kalman(pitch,cov_pitch,pitch_sensor,pitch_acc,T)
-                [roll,cov_roll] = kalman(roll,cov_roll,roll_sensor,roll_acc,T)
+                print 'p,r : %.2f %.2f' % (pitch_acc,roll_acc)                
+                if (abs(abs(roll_acc) - pi/2) < th):
+                    print 'pitch only gyro'
+                    pitch = pitch_sensor*T + pitch + rand_noise()
+                else:
+                    [pitch,cov_pitch] = kalman(pitch,cov_pitch,pitch_sensor,pitch_acc,T)
+                if (abs(abs(pitch_acc) - pi/2) < th):
+                    print 'roll only gyro'
+                    roll = roll_sensor*T + roll + rand_noise()
+                else:
+                    [roll,cov_roll] = kalman(roll,cov_roll,roll_sensor,roll_acc,T)
             else:
                 print 'invalid mode'
                 quit()
