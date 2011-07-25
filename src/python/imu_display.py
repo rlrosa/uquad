@@ -29,7 +29,7 @@ calibration_sample_size = 300 # enough
 MODE_GYRO = 0
 MODE_ACC = 1
 MODE_KALMAN = 2
-mode = MODE_KALMAN
+mode = MODE_ACC
 # IMU setting
 len_frec_line = 35 # Length of '5) Set output frequency, currently '
 len_sens_line = 44 # Length of '4) Set accelerometer sensitivity, currently '
@@ -212,9 +212,14 @@ def gyro_read(data_str,zero):
 def get_angle_acc(ax,ay,az):
     try:
         r = atan2(-ax,az)
-        p = -atan2(ay,az)
+        p = atan2(-ay,az)
     except:
         print 'Math error!'
+    # Map results to [0,2*pi)
+    if(p<0):
+        p = p + 2*pi        
+    if(r<0):
+        r = r + 2*pi
     return [p,r]
 
 # Return Volts pero g
