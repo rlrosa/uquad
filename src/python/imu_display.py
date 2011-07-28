@@ -15,7 +15,7 @@ from visual import * # For display
 import serial # To read data from IMU
 import string # For parsing
 import math # For math XD
-from math import atan2,cos,sin,asin,pi,copysign # for vago
+from math import atan2,cos,sin,asin,pi,copysign,sqrt # for vago
 import random # for noise
 import sys # For script arguments
 import os # To check if path exists
@@ -23,14 +23,14 @@ import threading # To read from serial as background task
 
 from time import time
 
-## Constants
-DEBUG = 0
+## Costants
+DEBUG = 1
 gravity = 9.81
 calibration_sample_size = 300 # enough
 MODE_GYRO = 0
 MODE_ACC = 1
 MODE_KALMAN = 2
-mode = MODE_KALMAN
+mode = MODE_ACC
 # IMU setting
 len_frec_line = 35 # Length of '5) Set output frequency, currently '
 len_sens_line = 44 # Length of '4) Set accelerometer sensitivity, currently '
@@ -209,10 +209,33 @@ def gyro_read(data_str,zero):
     return gyro_adjust*(float(data_str)-zero)*grad2rad
 
 ## Uses acc readings to calculate pitch and roll
+#TODO Assumes axis are normalized (which is not true):
+#   ax**2 + ay**2 + az**2 = 1
+# Inputs in m/s**2
+# Returns [pitch, roll]
+# http://www.euclideanspace.com/maths/geometry/rotations/conversions/angleToEuler/index.htm
+def get_angle_acc_yaw(x,y,z,angle):
+    # Normalize
+    norm = sqrt(x**2 + y**2 + z**2)
+    [x,y,z] = [x/norm,y/norm,z/norm]
+    # heading == yaw (-yaw?)
+    yaw = (-1)*atan2(y * sin(angle)- x * z * (1 - cos(angle)) , 1 - (y**2 + z**2 ) * (1 - cos(angle)))
+    # attitue == pitch (-pitch?)
+    pitch = (-1)*asin(x * y * (1 - cos(angle)) + z * sin(angle)) 
+    # heading == roll
+    roll = atan2(x * sin(angle)-y * z * (1 - cos(angle)) , 1 - (x**2 + z**2) * (1 - cos(angle)))
+    if(DEBUG):        
+        print 'get_angle_acc_yaw: x,y,z,angle: %.2f ||  %.2f ||  %.2f ||  %.2f' % (x,y,z,angle)
+        print 'get_angle_acc_yaw: p,r,y:  %.2f ||  %.2f ||  %.2f' % (pitch,roll,yaw)
+    return [pitch,roll,yaw]
+
+## Uses acc readings to calculate pitch and roll
 # Inputs in m/s**2
 # Returns [pitch, roll]
 def get_angle_acc(ax,ay,az):
     global gravity
+    norm = sqrt(ax**2 + ay**2 + az**2)
+    [ax,ay,az] = [ax/norm,ay/norm,az/norm]
     try:
         r = atan2(-ax,az)
         p = atan2(-ay,az)
@@ -285,6 +308,7 @@ def read_loop():
     acc_x_zero = 470.0
     acc_y_zero = 500.0
     acc_z_zero = 560.0
+    dummy = 0.0
     request_printed = False
 
     print 'Ctrl+C to reset zeros position'
@@ -356,6 +380,7 @@ def read_loop():
                 acc_y_sensor = acc_read(float(acc_y_str),acc_y_zero,sens)
                 acc_z_sensor = acc_read(float(acc_z_str),acc_z_zero,sens)
                 [pitch,roll] = get_angle_acc(acc_x_sensor,acc_y_sensor,acc_z_sensor)
+#                [pitch,roll,dummy] = get_angle_acc_yaw(acc_x_sensor,acc_y_sensor,acc_z_sensor,yaw)
             elif (mode == MODE_KALMAN):
                 # Use Kalman filter to integrate gyros and acc for pitch and roll
                 acc_x_sensor = acc_read(float(acc_x_str),acc_x_zero,sens)
@@ -364,7 +389,8 @@ def read_loop():
                 pitch_sensor = gyro_read(pitch_str,pitch_zero)
                 roll_sensor = gyro_read(roll_str,roll_zero)            
                 [pitch_acc,roll_acc] = get_angle_acc(acc_x_sensor,acc_y_sensor,acc_z_sensor)
-                print 'p,r : %.2f %.2f' % (pitch_acc,roll_acc)                
+                if(DEBUG):
+                    print 'p,r : %.2f %.2f' % (pitch_acc,roll_acc)                
                 if (abs(abs(roll_acc) - pi/2) < th):
                     print 'pitch only gyro'
                     pitch = pitch_sensor*T + pitch + rand_noise()
