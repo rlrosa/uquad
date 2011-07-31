@@ -20,6 +20,7 @@ import random # for noise
 import sys # For script arguments
 import os # To check if path exists
 import threading # To read from serial as background task
+from sympy import Matrix,Symbol,cos,sin
 
 from time import time
 
@@ -208,26 +209,24 @@ def gyro_read(data_str,zero):
     global gyro_adjust
     return gyro_adjust*(float(data_str)-zero)*grad2rad
 
-## Uses acc readings to calculate pitch and roll
-#TODO Assumes axis are normalized (which is not true):
-#   ax**2 + ay**2 + az**2 = 1
-# Inputs in m/s**2
-# Returns [pitch, roll]
-# http://www.euclideanspace.com/maths/geometry/rotations/conversions/angleToEuler/index.htm
-def get_angle_acc_yaw(x,y,z,angle):
-    # Normalize
-    norm = sqrt(x**2 + y**2 + z**2)
-    [x,y,z] = [x/norm,y/norm,z/norm]
-    # heading == yaw (-yaw?)
-    yaw = (-1)*atan2(y * sin(angle)- x * z * (1 - cos(angle)) , 1 - (y**2 + z**2 ) * (1 - cos(angle)))
-    # attitue == pitch (-pitch?)
-    pitch = (-1)*asin(x * y * (1 - cos(angle)) + z * sin(angle)) 
-    # heading == roll
-    roll = atan2(x * sin(angle)-y * z * (1 - cos(angle)) , 1 - (x**2 + z**2) * (1 - cos(angle)))
-    if(DEBUG):        
-        print 'get_angle_acc_yaw: x,y,z,angle: %.2f ||  %.2f ||  %.2f ||  %.2f' % (x,y,z,angle)
-        print 'get_angle_acc_yaw: p,r,y:  %.2f ||  %.2f ||  %.2f' % (pitch,roll,yaw)
-    return [pitch,roll,yaw]
+## Angles from acc data
+# implementation of attitude
+# x,y,z == -pitch,roll,-yaw
+def wip(ax,ay,az,x_0,y_0,z_0):
+    x = Symbol('x')
+    y = Symbol('y')
+    z = Symbol('z')
+    x_0 = (-1)*x_0
+    z_0 = (-1)*z_0    
+    # Formulas from MatLab
+    A = matrix(3,3,[cos(z)*sin(x)*sin(y) - cos(x)*sin(z), -cos(x)*cos(y)*cos(z),  cos(x)*sin(y)*sin(z) - cos(z)*sin(x), \
+    cos(x)*cos(z) + sin(x)*sin(y)*sin(z)  , -cos(x)*cos(y)*sin(z),  - sin(x)*sin(z) - cos(x)*cos(z)*sin(y), \
+    -cos(y)*sin(x),-cos(x)*sin(y),0])    
+    b = matrix(3,1,[ ax + sin(x_0)*sin(z_0) - x_0*(cos(x)*sin(z) - cos(z)*sin(x)*sin(y)) - z_0*(cos(z)*sin(x) - cos(x)*sin(y)*sin(z)) + cos(x_0)*cos(z_0)*sin(y_0) - y_0*cos(x)*cos(y)*cos(z),\
+    ay - cos(z_0)*sin(x_0) + x_0*(cos(x)*cos(z) + sin(x)*sin(y)*sin(z)) - z_0*(sin(x)*sin(z) + cos(x)*cos(z)*sin(y)) + cos(x_0)*sin(y_0)*sin(z_0) - y_0*cos(x)*cos(y)*sin(z),\
+    az - cos(x_0)*cos(y_0) - x_0*cos(y)*sin(x) - y_0*cos(x)*sin(y)])
+    sol = A.Inv()*b
+    return [(-1)*sol[0],sol[1],(-1)*sol[2]]
 
 ## Uses acc readings to calculate pitch and roll
 # Inputs in m/s**2
@@ -374,6 +373,18 @@ def read_loop():
                 pitch = pitch_sensor*T + pitch + rand_noise()
                 roll_sensor = gyro_read(roll_str,roll_zero)
                 roll = roll_sensor*T + roll + rand_noise()
+            elif (mode==MODE_TEST):
+                pitch_sensor = gyro_read(pitch_str,pitch_zero)
+                pitch = pitch_sensor*T + pitch + rand_noise()
+                roll_sensor = gyro_read(roll_str,roll_zero)
+                roll = roll_sensor*T + roll + rand_noise()
+                yaw_sensor = gyro_read(yaw_str,yaw_zero)
+                yaw = yaw_sensor*T + yaw + rand_noise()
+                acc_x_sensor = acc_read(float(acc_x_str),acc_x_zero,sens)
+                acc_y_sensor = acc_read(float(acc_y_str),acc_y_zero,sens)
+                acc_z_sensor = acc_read(float(acc_z_str),acc_z_zero,sens)
+                wip(acc_x_sensor,acc_y_sensor,acc_z_sensor,pitch,roll,yaw)
+                
             elif (mode==MODE_ACC):
                 # Acc only
                 acc_x_sensor = acc_read(float(acc_x_str),acc_x_zero,sens)
