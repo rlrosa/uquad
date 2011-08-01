@@ -20,18 +20,20 @@ import random # for noise
 import sys # For script arguments
 import os # To check if path exists
 import threading # To read from serial as background task
-from sympy import Matrix,Symbol,cos,sin
+from numpy import matrix,linalg
 
 from time import time
 
 ## Costants
 DEBUG = 1
 gravity = 9.81
-calibration_sample_size = 300 # enough
+calibration_sample_size = 200 # enough
 MODE_GYRO = 0
 MODE_ACC = 1
 MODE_KALMAN = 2
-mode = MODE_ACC
+MODE_ACC_GYRO = 3
+MODE_TEST = 4
+mode = MODE_KALMAN
 # IMU setting
 len_frec_line = 35 # Length of '5) Set output frequency, currently '
 len_sens_line = 44 # Length of '4) Set accelerometer sensitivity, currently '
@@ -213,20 +215,26 @@ def gyro_read(data_str,zero):
 # implementation of attitude
 # x,y,z == -pitch,roll,-yaw
 def wip(ax,ay,az,x_0,y_0,z_0):
-    x = Symbol('x')
-    y = Symbol('y')
-    z = Symbol('z')
-    x_0 = (-1)*x_0
-    z_0 = (-1)*z_0    
+    norm = sqrt(ax**2 + ay**2 + az**2)
+    if(norm>0):
+        [ax,ay,az] = [ax/norm,ay/norm,az/norm]
+    x_0 = (+1)*x_0
+    y_0 = (-1)*y_0
+    z_0 = (+1)*z_0    
     # Formulas from MatLab
-    A = matrix(3,3,[cos(z)*sin(x)*sin(y) - cos(x)*sin(z), -cos(x)*cos(y)*cos(z),  cos(x)*sin(y)*sin(z) - cos(z)*sin(x), \
-    cos(x)*cos(z) + sin(x)*sin(y)*sin(z)  , -cos(x)*cos(y)*sin(z),  - sin(x)*sin(z) - cos(x)*cos(z)*sin(y), \
-    -cos(y)*sin(x),-cos(x)*sin(y),0])    
-    b = matrix(3,1,[ ax + sin(x_0)*sin(z_0) - x_0*(cos(x)*sin(z) - cos(z)*sin(x)*sin(y)) - z_0*(cos(z)*sin(x) - cos(x)*sin(y)*sin(z)) + cos(x_0)*cos(z_0)*sin(y_0) - y_0*cos(x)*cos(y)*cos(z),\
-    ay - cos(z_0)*sin(x_0) + x_0*(cos(x)*cos(z) + sin(x)*sin(y)*sin(z)) - z_0*(sin(x)*sin(z) + cos(x)*cos(z)*sin(y)) + cos(x_0)*sin(y_0)*sin(z_0) - y_0*cos(x)*cos(y)*sin(z),\
-    az - cos(x_0)*cos(y_0) - x_0*cos(y)*sin(x) - y_0*cos(x)*sin(y)])
-    sol = A.Inv()*b
-    return [(-1)*sol[0],sol[1],(-1)*sol[2]]
+    A = matrix([[cos(x_0)*sin(z_0) - cos(z_0)*sin(x_0)*sin(y_0)  , cos(x_0)*cos(y_0)*cos(z_0), cos(z_0)*sin(x_0) - cos(x_0)*sin(y_0)*sin(z_0)], \
+    [- cos(x_0)*cos(z_0) - sin(x_0)*sin(y_0)*sin(z_0), cos(x_0)*cos(y_0)*sin(z_0), sin(x_0)*sin(z_0) + cos(x_0)*cos(z_0)*sin(y_0)],\
+    [-cos(y_0)*sin(x_0)                        ,       -cos(x_0)*sin(y_0), 0                                     ]])
+
+    b = matrix([[ax - sin(x_0)*sin(z_0) + x_0*(cos(x_0)*sin(z_0) - cos(z_0)*sin(x_0)*sin(y_0)) + z_0*(cos(z_0)*sin(x_0) - cos(x_0)*sin(y_0)*sin(z_0)) - cos(x_0)*cos(z_0)*sin(y_0) + y_0*cos(x_0)*cos(y_0)*cos(z_0)],\
+    [ay + cos(z_0)*sin(x_0) - x_0*(cos(x_0)*cos(z_0) + sin(x_0)*sin(y_0)*sin(z_0)) + z_0*(sin(x_0)*sin(z_0) + cos(x_0)*cos(z_0)*sin(y_0)) - cos(x_0)*sin(y_0)*sin(z_0) + y_0*cos(x_0)*cos(y_0)*sin(z_0)],\
+    [az - cos(x_0)*cos(y_0) - x_0*cos(y_0)*sin(x_0) - y_0*cos(x_0)*sin(y_0)]])
+    try:
+        sol = linalg.lstsq(A,b)
+    except:
+        print 'lstsq did not converge!'
+    sol = sol[0]
+    return [(+1)*sol.item(0),(-1)*sol.item(1),(+1)*sol.item(2)]
 
 ## Uses acc readings to calculate pitch and roll
 # Inputs in m/s**2
@@ -237,7 +245,7 @@ def get_angle_acc(ax,ay,az):
     [ax,ay,az] = [ax/norm,ay/norm,az/norm]
     try:
         r = atan2(-ax,az)
-        p = atan2(-ay,az)
+        p = atan2(ay,az)
     except:
         print 'Math error!'
     if(DEBUG):
@@ -291,6 +299,7 @@ def read_loop():
     # Kalman
     cov_pitch = 0.1
     cov_roll = 0.1
+    cov_yaw = 0.1
     # Data storage
     roll=0
     pitch=0
@@ -367,38 +376,47 @@ def read_loop():
             pitch_str = words[5]
             roll_str = words[6]
             yaw_str = words[7]            
+            pitch_sensor = - gyro_read(pitch_str,pitch_zero)
+            roll_sensor = gyro_read(roll_str,roll_zero)
+            yaw_sensor = gyro_read(yaw_str,yaw_zero)
+            acc_x_sensor = acc_read(float(acc_x_str),acc_x_zero,sens)
+            acc_y_sensor = acc_read(float(acc_y_str),acc_y_zero,sens)
+            acc_z_sensor = acc_read(float(acc_z_str),acc_z_zero,sens)
             if (mode==MODE_GYRO):
                 # Gyro only
-                pitch_sensor = gyro_read(pitch_str,pitch_zero)
                 pitch = pitch_sensor*T + pitch + rand_noise()
-                roll_sensor = gyro_read(roll_str,roll_zero)
                 roll = roll_sensor*T + roll + rand_noise()
+            elif (mode==MODE_ACC_GYRO):
+                # Estimate of current pos, to use in Taylor expansion
+                pitch_tmp = pitch_sensor*T + pitch + rand_noise()
+                roll_tmp = roll_sensor*T + roll + rand_noise()
+                yaw_tmp = yaw_sensor*T + yaw + rand_noise()
+                if(DEBUG):
+                    print 'pred values: p: %.2f || r: %.2f  || y: %.2f' % (pitch_tmp,roll_tmp,yaw_tmp)
+                [pitch_acc,roll_acc,yaw_acc] = wip(acc_x_sensor,acc_y_sensor,acc_z_sensor,pitch_tmp,roll_tmp,yaw_tmp)
+                pitch = pitch_acc
+                roll = roll_acc
+                yaw = yaw_acc
             elif (mode==MODE_TEST):
-                pitch_sensor = gyro_read(pitch_str,pitch_zero)
-                pitch = pitch_sensor*T + pitch + rand_noise()
-                roll_sensor = gyro_read(roll_str,roll_zero)
-                roll = roll_sensor*T + roll + rand_noise()
-                yaw_sensor = gyro_read(yaw_str,yaw_zero)
-                yaw = yaw_sensor*T + yaw + rand_noise()
-                acc_x_sensor = acc_read(float(acc_x_str),acc_x_zero,sens)
-                acc_y_sensor = acc_read(float(acc_y_str),acc_y_zero,sens)
-                acc_z_sensor = acc_read(float(acc_z_str),acc_z_zero,sens)
-                wip(acc_x_sensor,acc_y_sensor,acc_z_sensor,pitch,roll,yaw)
-                
+                # Estimate of current pos, to use in Taylor expansion
+                pitch_tmp = pitch_sensor*T + pitch + rand_noise()
+                roll_tmp = roll_sensor*T + roll + rand_noise()
+                yaw_tmp = yaw_sensor*T + yaw + rand_noise()
+                [pitch_acc,roll_acc,yaw_acc] = wip(acc_x_sensor,acc_y_sensor,acc_z_sensor,pitch_tmp,roll_tmp,yaw_tmp)
+                if(DEBUG):
+                    print 'lstsq sol: p: %.2f || r: %.2f  || y: %.2f' % (pitch_tmp,roll_tmp,yaw_tmp)
+                    print 'pred values: p: %.2f || r: %.2f  || y: %.2f' % (pitch_acc,roll_acc,yaw_acc)
+                [pitch,cov_pitch] = kalman(pitch,cov_pitch,pitch_sensor,pitch_acc,T)
+                [roll,cov_roll] = kalman(roll,cov_roll,roll_sensor,roll_acc,T)
+                [yaw,cov_yaw] = kalman(yaw,cov_yaw,yaw_sensor,yaw_acc,T)
+                #pitch = pitch_tmp
+                #roll = roll_tmp
+                #yaw = yaw_tmp
             elif (mode==MODE_ACC):
                 # Acc only
-                acc_x_sensor = acc_read(float(acc_x_str),acc_x_zero,sens)
-                acc_y_sensor = acc_read(float(acc_y_str),acc_y_zero,sens)
-                acc_z_sensor = acc_read(float(acc_z_str),acc_z_zero,sens)
                 [pitch,roll] = get_angle_acc(acc_x_sensor,acc_y_sensor,acc_z_sensor)
-#                [pitch,roll,dummy] = get_angle_acc_yaw(acc_x_sensor,acc_y_sensor,acc_z_sensor,yaw)
             elif (mode == MODE_KALMAN):
                 # Use Kalman filter to integrate gyros and acc for pitch and roll
-                acc_x_sensor = acc_read(float(acc_x_str),acc_x_zero,sens)
-                acc_y_sensor = acc_read(float(acc_y_str),acc_y_zero,sens)
-                acc_z_sensor = acc_read(float(acc_z_str),acc_z_zero,sens)
-                pitch_sensor = gyro_read(pitch_str,pitch_zero)
-                roll_sensor = gyro_read(roll_str,roll_zero)            
                 [pitch_acc,roll_acc] = get_angle_acc(acc_x_sensor,acc_y_sensor,acc_z_sensor)
                 if(DEBUG):
                     print 'p,r : %.2f %.2f' % (pitch_acc,roll_acc)                
@@ -416,13 +434,20 @@ def read_loop():
                 print 'invalid mode'
                 quit()
             # No cure for yaw drift
-            yaw_sensor = gyro_read(yaw_str,yaw_zero)
-            yaw = yaw_sensor*T + yaw + rand_noise()
+            if(mode == MODE_GYRO) or (mode == MODE_ACC) or (mode == MODE_KALMAN):
+                yaw = yaw_sensor*T + yaw + rand_noise()
 
         except:
             print 'Invalid line: %s' % line
-        axis=(-cos(pitch)*cos(yaw),-cos(pitch)*sin(yaw),sin(pitch)) 
-        up=(sin(roll)*sin(yaw)-cos(roll)*sin(pitch)*cos(yaw),-sin(roll)*cos(yaw)-cos(roll)*sin(pitch)*sin(yaw),-cos(roll)*cos(pitch))
+        # ZYX
+        # Order: roll,pitch then yaw (must be in this order)
+        # Rotate (1,0,0):            
+        axis=(cos(yaw)*cos(pitch),sin(yaw)*cos(pitch),-sin(pitch))
+        up=(cos(yaw)*sin(pitch)*cos(roll) + sin(yaw)*sin(pitch),sin(yaw)*sin(pitch)*cos(roll) - cos(yaw)*sin(roll),cos(pitch)*cos(roll))
+
+        if (DEBUG):
+            print axis
+            print up
         platform.axis=axis
         platform.up=up
         platform.length=1.0
