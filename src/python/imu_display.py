@@ -25,7 +25,7 @@ from numpy import matrix,linalg
 from time import time
 
 ## Costants
-DEBUG = 0
+DEBUG = 1
 gravity = 9.81
 if DEBUG:
     calibration_sample_size = 200 # enough
@@ -222,7 +222,7 @@ def get_angle_acc(ax,ay,az):
     [ax,ay,az] = [ax/norm,ay/norm,az/norm]
     try:
         r = atan2(-ax,az)
-        p = atan2(ay,az)
+        p = - atan2(ay,az)
     except:
         print 'Math error!'
     if(DEBUG):
@@ -353,7 +353,7 @@ def read_loop():
             pitch_str = words[5]
             roll_str = words[6]
             yaw_str = words[7]            
-            pitch_sensor = - gyro_read(pitch_str,pitch_zero)
+            pitch_sensor = gyro_read(pitch_str,pitch_zero)
             roll_sensor = gyro_read(roll_str,roll_zero)
             yaw_sensor = gyro_read(yaw_str,yaw_zero)
             acc_x_sensor = acc_read(float(acc_x_str),acc_x_zero,sens)
@@ -382,9 +382,10 @@ def read_loop():
             print 'Invalid line: %s' % line
         # ZYX
         # Order: roll,pitch then yaw (must be in this order)
-        # Rotate (1,0,0):            
-        axis=(cos(yaw)*cos(pitch),sin(yaw)*cos(pitch),-sin(pitch))
-        up=(cos(yaw)*sin(pitch)*cos(roll) + sin(yaw)*sin(pitch),sin(yaw)*sin(pitch)*cos(roll) - cos(yaw)*sin(roll),cos(pitch)*cos(roll))
+        # Rotate (1,0,0):
+        pitch_display = -pitch
+        axis=(cos(yaw)*cos(pitch_display),sin(yaw)*cos(pitch_display),-sin(pitch_display))
+        up=(cos(yaw)*sin(pitch_display)*cos(roll) + sin(yaw)*sin(pitch_display),sin(yaw)*sin(pitch_display)*cos(roll) - cos(yaw)*sin(roll),cos(pitch_display)*cos(roll))
 
         if (DEBUG):
             print axis
@@ -402,7 +403,7 @@ def read_loop():
         cil_roll2.axis=(-0.2*cos(roll),-0.2*sin(roll),0)
         cil_pitch.axis=(0.2*cos(pitch),0.2*sin(pitch),0)
         cil_pitch2.axis=(-0.2*cos(pitch),-0.2*sin(pitch),0)
-        arrow_course.axis=(0.2*sin(yaw),0.2*cos(yaw),0)
+        arrow_course.axis=(0.2*sin(-yaw),0.2*cos(yaw),0)
         L1.text = str(roll*rad2grad % 360)[0:6]
         L2.text = str(pitch*rad2grad % 360)[0:6]
         L3.text = str(yaw*rad2grad % 360)[0:6]
