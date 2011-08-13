@@ -1,0 +1,256 @@
+\documentclass[spanish,12pt,a4paper,titlepage]{article}
+\usepackage[latin1]{inputenc}
+\usepackage{graphicx}
+\usepackage{subfig}
+\usepackage{wrapfig}
+\usepackage{multirow}
+\usepackage{caption}
+\usepackage{babel}
+\usepackage[dvips]{hyperref}
+\usepackage{amssymb}
+\usepackage{listings}
+\usepackage{epsfig}
+\usepackage{amsmath}
+%\usepackage[Lenny]{fncychap}
+
+\setlength{\topmargin}{-1.5cm}
+\setlength{\textheight}{25cm}
+\setlength{\oddsidemargin}{0.3cm} 
+\setlength{\textwidth}{15cm}
+\setlength{\columnsep}{0cm}
+
+\begin{document}
+
+\part{Elección de Hardware}
+%\thispagestyle{plain}
+
+
+La elección del Hardware significa una parte muy importante del Proyecto, ya que las decisiones tomadas condicionan el resto del mismo. Una mala elección de alguno de los componentes puede resultar en complicaciones no previstas a la hora de la ejecución, causando contratiempos inesperados y trabajo excesivo. Es necesario entonces para evitar dichos problemas el estudio detallado de cada uno de los componentes a utilizar, comparando características, rendimientos y utilidades. \\
+Elegir adecuadamente el Hardware necesario agiliza las etapas siguientes de todo el Proyecto. Resulta fundamental la toma de buenas decisiones, las cuales deben estar basadas en un previo estudio de cada etapa del proyecto, sus requerimientos, un estudio comparativo de las posibles soluciones y el conocimiento cabal de los componentes a utilizar.\\
+
+% estudiar funcionamiento requerimientos, toma de decisiones, elección de mecanismos para lograr ciertos objetivos.
+
+\section{Elección de plataforma Cuadricópteros}
+\vspace*{15pt}
+
+A la hora de la planificación del Proyecto se plantean dos opciones que se diferencian básicamente en el punto de partida. Ambas tienen como objetivo principal diseñar e integrar un sistema de control que permita al Cuadricóptero mantener un vuelo autónomo, pero una de ellas consta además del en  el diseño y el armado del mismo. \\Esta última incluye desafíos de ingeniería mecánica, conocimientos de resistencia, flexibilidad y peso de materiales, así como también diversas complicaciones a la hora de fabricar y armar las partes. \\ Teniendo en cuenta que se trata de un proyecto con tiempo acotado y su objetivo se centra en el control del vehículo, la necesidad de partir de con un hardware ya construido resulta imperiosa. Por ello se realiza un estudio sobre las opciones que el mercado ofrece en esta materia. Desafortunadamente las opciones no son muy numerosas, disponiendo de Cuadricópteros comerciales controlados a control remoto. Todos ellos incluyen un pequeño sistema de control integrado de los cuales no es posible obtener información ya que se trata de software privativo. Las opciones que el mercado ofrece son: 
+\begin{itemize}
+	\item Gaui 330X
+	\item XAircraft X650
+	\item Turbo Ace X720
+\end{itemize}
+Se procede a la comparación de los equipos mencionados mediante la tabla \ref{tab:quads}
+
+\begin{table}
+	\begin{tabular}{|p{40pt}||p{80pt}|p{130pt}|p{130pt}|} 
+\hline  & \textbf{GAUI 330X} & \textbf{XAircraft X650} & \textbf{Turbo Ace X720} \\ \hline
+\hline \textbf{Motor} & Hélices de 8 pulgadas, 4 motores brushless con 4 Escs de 10A & Hélices de 12 pulgadas. Las hélices impulsadas por el motor tienen una eficiencia de 9g/W bajo carga nominal. Cada grupo hélice-motor proporciona un empuje de 700g & Hélices de 12 pulgadas. Tiene una eficiencia de hasta 12g/W. 4 motores de accionamiento mejorado con 4 $ESCS$ de 10A.\\ 
+\hline \textbf{Tiempo de vuelo} & Con batería de $2200 mAh$ vuela entre 7 y 20 minutos & Vuela 12 minutos con batería de $2200mAh$ y carga menor a $1.5kg$ & Con batería de $2200mAh$ vuela 15 minutos a carga nominal y puede llegar a la media hora de vuelo con una batería de $10.000mAh$ \\ 
+\hline \textbf{Peso} & 700 g & Versión de fibra de vidrio: $1100 g$. Versión de fibra de carbono: $950 g$ & $990 g$ \\ 
+\hline \textbf{Carga útil} & 500 g & Versión de fibra de vidrio: $700 g$. Versión de fibra de vidrio: $850 g$ & $1300 g$ \\ 
+\hline \textbf{Batería} & Litio. De $7.4V$ a $11.1V$ & Litio: $3S$ $2200mAh~5500mAh$ ó $4S$ $2200mAh~5500mAh$  & Litio. Para levantar vuelo necesita una batería de por lo menos $1800 mAh$ \\ 
+\hline \textbf{Instru- mentación} & Sistema de estabilización integrado \emph{GU344} & Puede usar hasta 13 sensores para chequiar actitud de vuelo, altitud, dirección, posición, temperatura, consumo energético,etc. 
+ & Giróscopo y acelerómetro de 3 ejes integrados. Se vende por separado el módulo GPS que incluye barómetro como medidor de altitud y el compás electrónico.\\ 
+\hline \textbf{Control} & - & Software de configuración incluido. Dispositivo de control de 4 velocidades diseñado todo en 1. Soporta protocolos $Ultra$ $PWM$ y control de frecuencia hasta $500Hz$. Posee algoritmos de control de vuelo incorporados que hacen q sea mas fácil volarlo & Nivelación automática con control de altitud \\ 
+\hline \textbf{Dimen- siones} & 33 cm entre ejes diagonalmente opuestos & 61.5 cm entre ejes diagonalmente opuestos & 61.5 cm entre ejes diagonalmente opuestos \\ 
+\hline 
+	\end{tabular} 
+	\caption{Tabla comparativa de Cuadricópteros comerciales}
+	\label{tab:quads}
+\end{table} 
+
+\begin{figure} [h!]
+  \centering
+  \subfloat[GAUI 330X]{\label{fig:gaui}
+  		\includegraphics[width=0.3\textwidth]
+  			{./Pics/gaui.eps}}
+  \subfloat[XAircraft X650]{\label{fig:aircraft} 
+  		\includegraphics[width=0.36\textwidth]
+  			{./Pics/aircraft.eps}}
+  \subfloat[Turbo Ace X720]{\label{fig:turboace} 
+  		\includegraphics[width=0.32\textwidth]
+  			{./Pics/turboace.eps}}
+  \caption{Fotos de las posibles plataformas a utilizar}
+  \label{fig:cuadricopteros}
+\end{figure}
+
+
+\newpage
+\section{Inteligencia}
+\vspace*{15pt}
+
+Micro. decir pa q lo usamos, q tiene q hacer. payar
+
+\subsection{Definición de la inteligencia}
+\vspace*{15pt}
+
+
+\section{Comunicación}
+\vspace*{15pt}
+
+Ver las alternativas para las 3 comunicaciones q hay q resolver: PC, sensores y motores. Cualquier cambio de titulo es bienvenido. chau
+
+\subsection{Comunicación con PC}
+\vspace*{15pt}
+
+\subsection{Comunicación con instrumentación}
+\vspace*{15pt}
+
+\subsection{Comunicación con motores}
+\vspace*{15pt}
+
+\newpage
+\section{Instrumentación}
+\vspace*{15pt}
+
+
+\newpage
+\subsection{Acelerómetro}
+\label{acelerometro}
+\vspace*{15pt}
+
+Previo a definir el acelerómetro, su principio básico de funcionamiento y su interés en la aplicación presentada se debe realizar una discusión física sobre la caída libre como sistema de referencia.
+En la física clásica, la fuerza gravitatoria que se ejerce sobre una masa es proporcional a la intensidad del campo gravitatorio en la posición en la cual se encuentra. 
+La teoría general de la relatividad es una teoría métrica de la gravitación. Los fenómenos que en la mecánica clásica se le atribuyen a la acción de la fuerza de gravedad, corresponden a movimientos inerciales en una geometría curvada del espacio-tiempo en la teoría de la relatividad general.
+En este caso la gravedad no es una fuerza, sino una geodésica\footnote{Línea de mínima longitud que une dos puntos en una superficie dada y está contenida en esta superficie.}.
+
+Por lo tanto, desde el punto de vista de la física clásica, un sistema de referencia en caída libre es un sistema acelerado por la fuerza de la gravedad, y como tal, es no inercial.
+Por el contrario, desde el punto de vista de la física relativista, el sistema está acelerado en el espacio, pero no en el espacio-tiempo, por lo tanto el sistema de referencia es inercial.
+
+Saldada esta discusión se define un acelerómetro como un dispositivo capaz de medir su aceleración propia en el marco de referencia de la caída libre relativista. Esto implica que el dispositivo no mide siempre su cambio de velocidad en el espacio.
+Por ejemplo, la medida de un acelerómetro en caída libre será cero a pesar de que su velocidad crezca, de la misma forma se puede observar que un acelerómetro en reposo respecto de la Tierra, no dará una medida nula, sino que por el contrario medirá como aceleración g.
+% voy a hablar un poco de xq elejimos acelerometros en un chip (costo, peso) así no tengo que explicar el funcionamiento de todos los tipos de acelerómetros que son re distintos.
+Existen diversos tipos de acelerómetro, en este caso se eligió trabajar con un acelerómetro contenido en un circuito integrado (tecnología MEMS). Las razones de esta elección son fundamentalmente, tamaño y peso (críticos en la aplicación) y económicos. Los mismos son más pequeños, livianos y baratos que otras tecnologías.
+Dicho acelerómetro, procesa las medidas y las convierte a una salida eléctrica, la forma de dicha salida depende si el integrado es analógico, o digital.
+Los acelerómetros basados en tecnologías MEMS miden cambios internos, de la transferencia de calor causada por la aceleración, ofreciendo ventajas significativas sobre el empleo de una estructura tradicional sólida de masas de prueba.
+Ya que la masa de prueba en el diseño de los sensores MEMS son moléculas de gas, las estructuras móviles mecánicas son eliminadas dentro del acelerómetro.
+
+%TODO Referencia a MEMS
+Un acelerómetro de tres ejes, no es otra cosa que un acelerómetro capaz de medir su aceleración propia en tres ejes de coordenadas.
+
+%TODO capaz que hay que cambiar esto... depende que información usemos para realimentar el quad
+Resulta fundamental dotar al uQuad de un acelerómetro, el mismo será utilizado para obtener la aceleración lineal en cada instante. Integrando esta información se puede obtener la velocidad con la que se desplaza el sistema y por ende se puede obtener la posición del mismo conociendo la posición de partida.
+Este instrumento, no provee toda la información necesaria, para realizar el control del sistema. El sistema, presenta 6 grados de libertad; las tres coordenadas de su centro de masa, y los tres ángulos que determinan su orientación.
+En particular, el acelerómetro no detecta giros. Por lo tanto es incapaz de aportarnos toda la información necesaria. Es imprescindible entonces dotar al uQuad de un giróscopo. 
+ 
+
+
+
+
+
+\newpage
+\subsection{Giróscopo}
+\label{giro}
+\vspace*{15pt}
+
+Un giróscopo es un instrumento que mide la velocidad angular del sistema en un marco de referencia inercial como el definido en la sección anterior. Las mismas restricciones sobre tamaño, peso y costos que se aplicaban para el acelerómetro se aplican aquí. Por dicho motivo vuelve a optar por un instrumento de tecnología MEMS. Los giróscopos construidos con esta tecnología basan su funcionamiento 
+%TODO funcionamiento del giróscopo
+
+%TODO exiplicar errores integration drift
+Desde el punto de vista teórico, procesando la información obtenida a partir del acelerómetro y del giróscopo se puede conocer en todo momento la posición del sistema y su orientación a partir de las condiciones iniciales.
+Sin embargo, en la práctica esto no sucede así. Todas las medidas realizadas tienen un cierto error. Para obtener la orientación y la posición a cada instante se deben integrar las medidas obtenidas. Por lo tanto, se integra también el error. Esto produce una acumulación de errores que afecta de forma considerable el resultado final luego de cierta cantidad de muestras. Por lo tanto parece razonable, poder cotejar los datos que se obtienen mediante este método con datos obtenidos mediante otras fuentes. Es a partir de esta problemática que surge la necesidad de contar con un GPS. Se puede, cada cierto intervalo de tiempo, observar en cuanto difieren los resultados obtenidos integrando las medidas de los sensores con los datos que aporta el GPS, de esta forma se pueden corregir los errores debido al \emph{integration drift}.
+
+\newpage
+\subsection{GPS}
+\vspace*{15pt}
+
+Taría bueno repartirnos secciones y q cada uno encare un bicho de estos y se escriba algo, les parece?
+
+\newpage
+\subsection{Definición de instrumentación}
+\vspace*{15pt}
+
+
+%TODO Acelerómetro + giróscopo Pater
+En la secciones \ref{acelerometro} y \ref{giro} se detalló el porqué de la elección de la tecnología MEMS para el acelerómetro y el giróscopo. Las razones fundamentales son el costo, tamaño y peso de los instrumentos, siendo los últimos dos críticos en la aplicación.
+A partir de esta definición surgen dos posibilidades, integrar los instrumentos diseñando un PCB o adquirir uno en el cual se encuentren los dos sensores. Al diseñar un PCB se reduce el costo de la instrumentación. El precio de cada chip ronda los 5 U\$S, sumado al precio de algunas resistencias, capacitores y otros materiales necesarios para la construcción del PCB (Placa de cobre, percloruro, estaño, etc) hacen un total muy inferior al costo de comprar una placa ya armada (más de 60 U\$S). Sin embargo, el proceso de diseño del PCB extiende los plazos en gran medida, se debe diseñar el circuito, construir y verificar su funcionamiento. El proceso mencionado tendrá probablemente una duración superior a las dos semanas, lo cual implica un retraso en varios aspectos del proyecto ya que diversas tareas previamente definidas dependen fuertemente del funcionamiento de la instrumentación. Por otra parte el peso que representa el costo de adquirir una placa en la que se incluyan ambos sensores (acelerómetro y giróscopo) en el presupuesto total es muy bajo (4\%).
+
+A partir de el análisis realizado se decide por adquirir una placa ya diseñada que contenga los sensores necesarios. Existe una gran diversidad de soluciones de instrumentación en el mercado. Debido a los requerimientos del proyecto se descartaron muchas de ellas. Las opciones consideradas finalmente se resumen en una tabla en el anexo. La característica común a todas ellas es que pueden medir 6 grados de libertad, la misma cantidad de variables del sistema a controlar (tres coordenadas correspondientes a la posición del centro de masa, raw, yaw, pitch) %TODO ANEXO.
+
+Los criterios que se fijaron para definir la instrumentación fueron los siguientes:
+\begin{itemize}
+\item
+Rango de medidas de los sensores
+\item
+Capacidad de cómputo
+\item
+Facilidad de programación (algunas placas incluyen microprocesadores)
+\item
+Comunicación disponible 
+\item
+Compatibilidad con el resto del sistema
+\item
+Costo
+\end{itemize}
+
+En lo que respecta al rango de medida de los acelerómetros se definió que el mismo fuera de 3g. Dicha elección está fundamentada en que se planea un vuelo en el cual no se precisen considerar aceleraciones que sean muy superiores a la de la caída libre.  Asimismo, se definió como rango de medida de los giróscopos un valor  superior a los 300°/s, de forma que el sistema pueda realizar un giro casi completo en cualquiera de los tres ejes en 1 segundo. 
+%TODO Masmenos 3g y masomenos 300
+Lo que se observa es que todos los acelerómetros y giroscopos de las placas de esta preselección cumplen con dicho requerimiento.
+
+Resulta conveniente que la instrumentación posea un microprocesador, la razón es que le ahorra tiempo a la inteligencia del sistema en el procesamiento de las medidas crudas de los sensores. Los sensores presentan sus medidas constantemente en forma analógica o digtal dependiendo del sensor en cuestión. En caso de ser una medida analógica se debe en primer lugar digitalizar. Una vez que se tiene la medida digitalizada se debe realizar un procesamiento que consiste básicamente en ponerle una marca de tiempo a cada medida y asociarle una etiqueta correspondiente al sensor que la realizó. 
+%TODO ver si finalmente lo hacemos así
+Resulta sumamente interesante que no sea el \emph{core} quien se encarga de esta identificación, sino que obtenga los datos pre-procesados. Por esta razón se favorecieron las placas que incluyeran un microprocesador. 
+
+En caso de optar por una placa con microprocesador resulta fundamental que la misma sea sencilla de programar. Las razones son evidentes, si los algoritmos que vienen programados de fábrica no resultan adecuados para la aplicación se pueden modificar fácilmente. También parece importante que el código de fábrica sea abierto; en primer lugar para comprender su funcionamiento y poder procesar adecuadamente los datos que se obtengan de los sensores. Es interesante además poder modificar secciones puntuales de código, sin necesidad de reprogramar completamente el microprocesador. 
+
+La comunicación no resultó un factor crítico ya que todos los candidatos a \emph{core} poseen diversas interfaces (UART, I2C, Converoares AD). Sin embargo, debido a la familiarización que se tenía con las comunicaciones serie se prefirió dar prioridad a aquellas placas que se comunicaran Via UART (en caso que se optara por una placa con microprocesador).
+
+En lo que respecta a compatibilidad con el sistema, se buscó que la alimentación de la placa sea la misma que la del microprocesador principal. Por dicha razón lo ideal es que la placa pueda ser alimentada a 5V.
+
+A partir de las consideraciones anteriores, se considera que la solución más adecuada para el objetivo que se plantea en esta sección es la placa Atomic IMU. Dicha placa cumple con los rangos de medida especificados anteriormente, posee un microprocesador de 8 bits con un reloj de 10MHz. Existe ya un código en c disponible para programar el dispositivo. El mismo puede ser modificado en caso de no cumplir con todos los requerimientos necesarios. La placa dispone de un puerto JTAG para la programación del mismo. La forma que tiene la placa de presentar los datos obtenidos de los sensores es a través de un puerto serie capaz de transmitir datos con una tasa de transferencia de 115.200bps. Por otra parte el costo de la misma es de los más bajos dentro de las posibilidades consideradas
+%TODO GPS 
+
+
+
+
+\end{document}
+
+Algunos layouts para poner imágnenes. Copien y peguen nomás. Hay figura común, dos figuras en 1 onda fig 3a y 3b, wrapfigures y una matriz de figuras. Ta bueno, todas quedan lindas y andan bien.
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.75\textwidth]{./Pics/		.eps}
+	\caption{		}
+	\label{fig:		}
+\end{figure}
+
+\begin{figure} [h!]
+  \centering
+  \subfloat[caption 1]{\label{fig:		}
+  		\includegraphics[width=0.45\textwidth]
+  			{./Pics/		.eps}}
+  \subfloat[caption 2]{\label{fig:		} 
+  		\includegraphics[width=0.45\textwidth]
+  			{./Pics/ 		.eps}}
+  \caption{Caption general}
+  \label{fig:	label general	}
+\end{figure}
+
+\begin{wrapfigure}{l}{0.6\textwidth}
+  \vspace{-20pt}
+  \begin{center}
+    \includegraphics[width=0.45\textwidth]
+    	{./Pics/		.eps}
+  \end{center}
+  \vspace{-20pt}
+  \caption{		}
+  \label{ 		}
+  \vspace{-10pt}
+\end{wrapfigure}
+
+\begin{figure} [h!]
+  \begin{center}
+    \begin{tabular}{cc}
+      \resizebox{50mm}{!}
+      	{\includegraphics{./Pics/ 	.eps}} &
+      \resizebox{50mm}{!}
+      	{\includegraphics{./Pics/	.eps}} \\
+      \resizebox{50mm}{!}
+      	{\includegraphics{./Pics/	.eps}} &
+      \resizebox{50mm}{!}
+      	{\includegraphics{./Pics/	.eps}} \\
+    \end{tabular}
+    \caption{ 		}
+    \label{ 		}
+  \end{center}
+\end{figure}
