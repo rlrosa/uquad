@@ -20,7 +20,7 @@ z = sym('z(t)');
 
 theta = sym('theta(t)');
 phi = sym('phi(t)');
-psis = sym('psis(t)');
+psis = sym('psis(t)'); %esto no es un typo, es xq psi es reservada
 
 %Masa del quad
 M = sym('M');
