@@ -150,5 +150,14 @@ M_q = L.*[-T1+T3; T2-T4;0];
 %t, t), diff(phi, t, t) y diff(psis, t, t)
 s = simple(dL-M_q);
 
+
+%las derivadas^2 se tratan como variables independientes y se despejan
+syms ddtheta ddphi ddpsis
+equ = s;
+equ = subs(equ,diff(diff(theta)),ddtheta);
+equ = subs(equ,diff(diff(phi)),ddphi);
+equ = subs(equ,diff(diff(psis)),ddpsis);
+ddsol = solve(equ,ddtheta,ddphi,ddpsis);
+
 %Aca despejo tita dos puntos de la expresión 1
-tita_dospuntos = simple(s(1)/((4*I_xxm + I_xxq)*sin(phi(t)))-diff(theta(t), t, t));
+%tita_dospuntos = simple(s(1)/((4*I_xxm + I_xxq)*sin(phi(t)))-diff(theta(t), t, t));
