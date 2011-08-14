@@ -39,7 +39,7 @@ A la hora de la planificación del Proyecto se plantean dos opciones que se difer
 	\item XAircraft X650
 	\item Turbo Ace X720
 \end{itemize}
-Se procede a la comparación de los equipos mencionados mediante la tabla \ref{tab:quads}
+Se procede a la comparación de los equipos mencionados mediante la tabla \ref{tab:quads}, donde se analizan algunos aspectos fundamentales y críticos, como puede ser por ejemplo el peso o la carga útil.
 
 \begin{table}
 	\begin{tabular}{|p{40pt}||p{80pt}|p{130pt}|p{130pt}|} 
@@ -58,6 +58,17 @@ Se procede a la comparación de los equipos mencionados mediante la tabla \ref{ta
 	\caption{Tabla comparativa de Cuadricópteros comerciales}
 	\label{tab:quads}
 \end{table} 
+
+La carga útil que el dispositivo pueda soportar juega un papel fundamental. Recordar que además de toda la instrumentación que incluye el Cuadricóptero, se le agregará un Microprocesador, una batería independiente para su alimentación, un giróscopo, un acelerómetro, un GPS y alguna interfaz para la comunicación. Es interesante conservar la posibilidad de integrar una cámara fotográfica convencional ya que puede ser de gran utilidad para numerosas aplicaciones.
+
+Si bien el Cuadricóptero se controlará automáticamente, resulta interesante conservar la posibilidad de controlarlo a control remoto, ya que puede ser útil ante cualquier eventualidad durante las primeras pruebas. El algoritmo de control deberá poder alternar entre estos dos modos de vuelo. Aunque puede ser útil el control remoto, es preferible que el dispositivo no incluya algoritmos de control muy sofisticados ya que no serán utilizados y aumentan el precio.
+
+En la figura \ref{fig:cuadricopteros} se pueden apreciar fotografías de los 3 equipos considerados.
+
+
+Los motores en todos los casos se controlan con pulsos PWM.
+
+
 
 \begin{figure} [h!]
   \centering
