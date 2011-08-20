@@ -1,0 +1,1140 @@
+Model {
+  Name			  "modelo_fisico"
+  Version		  6.6
+  MdlSubVersion		  0
+  GraphicalInterface {
+    NumRootInports	    0
+    NumRootOutports	    0
+    ParameterArgumentNames  ""
+    ComputedModelVersion    "1.20"
+    NumModelReferences	    0
+    NumTestPointedSignals   0
+  }
+  SavedCharacterEncoding  "UTF-8"
+  SaveDefaultBlockParams  on
+  SampleTimeColors	  off
+  LibraryLinkDisplay	  "none"
+  WideLines		  off
+  ShowLineDimensions	  off
+  ShowPortDataTypes	  off
+  ShowLoopsOnError	  on
+  IgnoreBidirectionalLines off
+  ShowStorageClass	  off
+  ShowTestPointIcons	  on
+  ShowViewerIcons	  on
+  SortedOrder		  off
+  ExecutionContextIcon	  off
+  ShowLinearizationAnnotations on
+  ScopeRefreshTime	  0.035000
+  OverrideScopeRefreshTime on
+  DisableAllScopes	  off
+  DataTypeOverride	  "UseLocalSettings"
+  MinMaxOverflowLogging	  "UseLocalSettings"
+  MinMaxOverflowArchiveMode "Overwrite"
+  BlockNameDataTip	  off
+  BlockParametersDataTip  off
+  BlockDescriptionStringDataTip	off
+  ToolBar		  on
+  StatusBar		  on
+  BrowserShowLibraryLinks off
+  BrowserLookUnderMasks	  off
+  Created		  "Wed Aug 17 18:10:04 2011"
+  Creator		  "spaterna"
+  UpdateHistory		  "UpdateHistoryNever"
+  ModifiedByFormat	  "%<Auto>"
+  LastModifiedBy	  "spaterna"
+  ModifiedDateFormat	  "%<Auto>"
+  LastModifiedDate	  "Wed Aug 17 20:08:34 2011"
+  ModelVersionFormat	  "1.%<AutoIncrement:20>"
+  ConfigurationManager	  "None"
+  SimulationMode	  "normal"
+  LinearizationMsg	  "none"
+  Profile		  off
+  ParamWorkspaceSource	  "MATLABWorkspace"
+  AccelSystemTargetFile	  "accel.tlc"
+  AccelTemplateMakefile	  "accel_default_tmf"
+  AccelMakeCommand	  "make_rtw"
+  AccelVerboseBuild	  off
+  TryForcingSFcnDF	  off
+  RecordCoverage	  off
+  CovPath		  "/"
+  CovSaveName		  "covdata"
+  CovMetricSettings	  "dw"
+  CovNameIncrementing	  off
+  CovHtmlReporting	  on
+  covSaveCumulativeToWorkspaceVar on
+  CovSaveSingleToWorkspaceVar on
+  CovCumulativeVarName	  "covCumulativeData"
+  CovCumulativeReport	  off
+  CovReportOnPause	  on
+  ExtModeBatchMode	  off
+  ExtModeEnableFloating	  on
+  ExtModeTrigType	  "manual"
+  ExtModeTrigMode	  "normal"
+  ExtModeTrigPort	  "1"
+  ExtModeTrigElement	  "any"
+  ExtModeTrigDuration	  1000
+  ExtModeTrigDurationFloating "auto"
+  ExtModeTrigHoldOff	  0
+  ExtModeTrigDelay	  0
+  ExtModeTrigDirection	  "rising"
+  ExtModeTrigLevel	  0
+  ExtModeArchiveMode	  "off"
+  ExtModeAutoIncOneShot	  off
+  ExtModeIncDirWhenArm	  off
+  ExtModeAddSuffixToVar	  off
+  ExtModeWriteAllDataToWs off
+  ExtModeArmWhenConnect	  on
+  ExtModeSkipDownloadWhenConnect off
+  ExtModeLogAll		  on
+  ExtModeAutoUpdateStatusClock off
+  BufferReuse		  on
+  ProdHWDeviceType	  "32-bit Generic"
+  ShowModelReferenceBlockVersion off
+  ShowModelReferenceBlockIO off
+  Array {
+    Type		    "Handle"
+    Dimension		    1
+    Simulink.ConfigSet {
+      $ObjectID		      1
+      Version		      "1.2.0"
+      Array {
+	Type			"Handle"
+	Dimension		8
+	Simulink.SolverCC {
+	  $ObjectID		  2
+	  Version		  "1.2.0"
+	  StartTime		  "0.0"
+	  StopTime		  "10.0"
+	  AbsTol		  "auto"
+	  FixedStep		  "auto"
+	  InitialStep		  "auto"
+	  MaxNumMinSteps	  "-1"
+	  MaxOrder		  5
+	  ConsecutiveZCsStepRelTol "10*128*eps"
+	  MaxConsecutiveZCs	  "1000"
+	  ExtrapolationOrder	  4
+	  NumberNewtonIterations  1
+	  MaxStep		  "auto"
+	  MinStep		  "auto"
+	  MaxConsecutiveMinStep	  "1"
+	  RelTol		  "1e-3"
+	  SolverMode		  "Auto"
+	  Solver		  "ode45"
+	  SolverName		  "ode45"
+	  ZeroCrossControl	  "UseLocalSettings"
+	  AlgebraicLoopSolver	  "TrustRegion"
+	  SolverResetMethod	  "Fast"
+	  PositivePriorityOrder	  off
+	  AutoInsertRateTranBlk	  off
+	  SampleTimeConstraint	  "Unconstrained"
+	  RateTranMode		  "Deterministic"
+	}
+	Simulink.DataIOCC {
+	  $ObjectID		  3
+	  Version		  "1.2.0"
+	  Decimation		  "1"
+	  ExternalInput		  "[t, u]"
+	  FinalStateName	  "xFinal"
+	  InitialState		  "xInitial"
+	  LimitDataPoints	  on
+	  MaxDataPoints		  "1000"
+	  LoadExternalInput	  off
+	  LoadInitialState	  off
+	  SaveFinalState	  off
+	  SaveFormat		  "Array"
+	  SaveOutput		  on
+	  SaveState		  off
+	  SignalLogging		  on
+	  InspectSignalLogs	  off
+	  SaveTime		  on
+	  StateSaveName		  "xout"
+	  TimeSaveName		  "tout"
+	  OutputSaveName	  "yout"
+	  SignalLoggingName	  "logsout"
+	  OutputOption		  "RefineOutputTimes"
+	  OutputTimes		  "[]"
+	  Refine		  "1"
+	}
+	Simulink.OptimizationCC {
+	  $ObjectID		  4
+	  Array {
+	    Type		    "Cell"
+	    Dimension		    5
+	    Cell		    "ZeroExternalMemoryAtStartup"
+	    Cell		    "ZeroInternalMemoryAtStartup"
+	    Cell		    "InitFltsAndDblsToZero"
+	    Cell		    "OptimizeModelRefInitCode"
+	    Cell		    "NoFixptDivByZeroProtection"
+	    PropName		    "DisabledProps"
+	  }
+	  Version		  "1.2.0"
+	  BlockReduction	  on
+	  BooleanDataType	  on
+	  ConditionallyExecuteInputs on
+	  InlineParams		  off
+	  InlineInvariantSignals  off
+	  OptimizeBlockIOStorage  on
+	  BufferReuse		  on
+	  EnforceIntegerDowncast  on
+	  ExpressionFolding	  on
+	  ExpressionDepthLimit	  2147483647
+	  FoldNonRolledExpr	  on
+	  LocalBlockOutputs	  on
+	  RollThreshold		  5
+	  SystemCodeInlineAuto	  off
+	  StateBitsets		  off
+	  DataBitsets		  off
+	  UseTempVars		  off
+	  ZeroExternalMemoryAtStartup on
+	  ZeroInternalMemoryAtStartup on
+	  InitFltsAndDblsToZero	  on
+	  NoFixptDivByZeroProtection off
+	  EfficientFloat2IntCast  off
+	  OptimizeModelRefInitCode off
+	  LifeSpan		  "inf"
+	  BufferReusableBoundary  on
+	}
+	Simulink.DebuggingCC {
+	  $ObjectID		  5
+	  Version		  "1.2.0"
+	  RTPrefix		  "error"
+	  ConsistencyChecking	  "none"
+	  ArrayBoundsChecking	  "none"
+	  SignalInfNanChecking	  "none"
+	  ReadBeforeWriteMsg	  "UseLocalSettings"
+	  WriteAfterWriteMsg	  "UseLocalSettings"
+	  WriteAfterReadMsg	  "UseLocalSettings"
+	  AlgebraicLoopMsg	  "warning"
+	  ArtificialAlgebraicLoopMsg "warning"
+	  CheckSSInitialOutputMsg on
+	  CheckExecutionContextPreStartOutputMsg off
+	  CheckExecutionContextRuntimeOutputMsg	off
+	  SignalResolutionControl "UseLocalSettings"
+	  BlockPriorityViolationMsg "warning"
+	  MinStepSizeMsg	  "warning"
+	  TimeAdjustmentMsg	  "none"
+	  MaxConsecutiveZCsMsg	  "error"
+	  SolverPrmCheckMsg	  "warning"
+	  InheritedTsInSrcMsg	  "warning"
+	  DiscreteInheritContinuousMsg "warning"
+	  MultiTaskDSMMsg	  "error"
+	  MultiTaskCondExecSysMsg "error"
+	  MultiTaskRateTransMsg	  "error"
+	  SingleTaskRateTransMsg  "none"
+	  TasksWithSamePriorityMsg "warning"
+	  SigSpecEnsureSampleTimeMsg "warning"
+	  CheckMatrixSingularityMsg "none"
+	  IntegerOverflowMsg	  "warning"
+	  Int32ToFloatConvMsg	  "warning"
+	  ParameterDowncastMsg	  "error"
+	  ParameterOverflowMsg	  "error"
+	  ParameterUnderflowMsg	  "none"
+	  ParameterPrecisionLossMsg "warning"
+	  ParameterTunabilityLossMsg "warning"
+	  UnderSpecifiedDataTypeMsg "none"
+	  UnnecessaryDatatypeConvMsg "none"
+	  VectorMatrixConversionMsg "none"
+	  InvalidFcnCallConnMsg	  "error"
+	  FcnCallInpInsideContextMsg "Use local settings"
+	  SignalLabelMismatchMsg  "none"
+	  UnconnectedInputMsg	  "warning"
+	  UnconnectedOutputMsg	  "warning"
+	  UnconnectedLineMsg	  "warning"
+	  SFcnCompatibilityMsg	  "none"
+	  UniqueDataStoreMsg	  "none"
+	  BusObjectLabelMismatch  "warning"
+	  RootOutportRequireBusObject "warning"
+	  AssertControl		  "UseLocalSettings"
+	  EnableOverflowDetection off
+	  ModelReferenceIOMsg	  "none"
+	  ModelReferenceVersionMismatchMessage "none"
+	  ModelReferenceIOMismatchMessage "none"
+	  ModelReferenceCSMismatchMessage "none"
+	  ModelReferenceSimTargetVerbose off
+	  UnknownTsInhSupMsg	  "warning"
+	  ModelReferenceDataLoggingMessage "warning"
+	  ModelReferenceSymbolNameMessage "warning"
+	  ModelReferenceExtraNoncontSigs "error"
+	  StateNameClashWarn	  "warning"
+	  StrictBusMsg		  "Warning"
+	}
+	Simulink.HardwareCC {
+	  $ObjectID		  6
+	  Version		  "1.2.0"
+	  ProdBitPerChar	  8
+	  ProdBitPerShort	  16
+	  ProdBitPerInt		  32
+	  ProdBitPerLong	  32
+	  ProdIntDivRoundTo	  "Undefined"
+	  ProdEndianess		  "Unspecified"
+	  ProdWordSize		  32
+	  ProdShiftRightIntArith  on
+	  ProdHWDeviceType	  "32-bit Generic"
+	  TargetBitPerChar	  8
+	  TargetBitPerShort	  16
+	  TargetBitPerInt	  32
+	  TargetBitPerLong	  32
+	  TargetShiftRightIntArith on
+	  TargetIntDivRoundTo	  "Undefined"
+	  TargetEndianess	  "Unspecified"
+	  TargetWordSize	  32
+	  TargetTypeEmulationWarnSuppressLevel 0
+	  TargetPreprocMaxBitsSint 32
+	  TargetPreprocMaxBitsUint 32
+	  TargetHWDeviceType	  "Specified"
+	  TargetUnknown		  off
+	  ProdEqTarget		  on
+	}
+	Simulink.ModelReferenceCC {
+	  $ObjectID		  7
+	  Version		  "1.2.0"
+	  UpdateModelReferenceTargets "IfOutOfDateOrStructuralChange"
+	  CheckModelReferenceTargetMessage "error"
+	  ModelReferenceNumInstancesAllowed "Multi"
+	  ModelReferencePassRootInputsByReference on
+	  ModelReferenceMinAlgLoopOccurrences off
+	}
+	Simulink.RTWCC {
+	  $BackupClass		  "Simulink.RTWCC"
+	  $ObjectID		  8
+	  Array {
+	    Type		    "Cell"
+	    Dimension		    1
+	    Cell		    "IncludeHyperlinkInReport"
+	    PropName		    "DisabledProps"
+	  }
+	  Version		  "1.2.0"
+	  SystemTargetFile	  "grt.tlc"
+	  GenCodeOnly		  off
+	  MakeCommand		  "make_rtw"
+	  GenerateMakefile	  on
+	  TemplateMakefile	  "grt_default_tmf"
+	  GenerateReport	  off
+	  SaveLog		  off
+	  RTWVerbose		  on
+	  RetainRTWFile		  off
+	  ProfileTLC		  off
+	  TLCDebug		  off
+	  TLCCoverage		  off
+	  TLCAssert		  off
+	  ProcessScriptMode	  "Default"
+	  ConfigurationMode	  "Optimized"
+	  ConfigAtBuild		  off
+	  IncludeHyperlinkInReport off
+	  LaunchReport		  off
+	  TargetLang		  "C"
+	  IncludeBusHierarchyInRTWFileBlockHierarchyMap	off
+	  IncludeERTFirstTime	  off
+	  Array {
+	    Type		    "Handle"
+	    Dimension		    2
+	    Simulink.CodeAppCC {
+	      $ObjectID		      9
+	      Array {
+		Type			"Cell"
+		Dimension		16
+		Cell			"IgnoreCustomStorageClasses"
+		Cell			"InsertBlockDesc"
+		Cell			"SFDataObjDesc"
+		Cell			"SimulinkDataObjDesc"
+		Cell			"DefineNamingRule"
+		Cell			"SignalNamingRule"
+		Cell			"ParamNamingRule"
+		Cell			"InlinedPrmAccess"
+		Cell			"CustomSymbolStr"
+		Cell			"CustomSymbolStrGlobalVar"
+		Cell			"CustomSymbolStrType"
+		Cell			"CustomSymbolStrField"
+		Cell			"CustomSymbolStrFcn"
+		Cell			"CustomSymbolStrBlkIO"
+		Cell			"CustomSymbolStrTmpVar"
+		Cell			"CustomSymbolStrMacro"
+		PropName		"DisabledProps"
+	      }
+	      Version		      "1.2.0"
+	      ForceParamTrailComments off
+	      GenerateComments	      on
+	      IgnoreCustomStorageClasses on
+	      IncHierarchyInIds	      off
+	      MaxIdLength	      31
+	      PreserveName	      off
+	      PreserveNameWithParent  off
+	      ShowEliminatedStatement off
+	      IncAutoGenComments      off
+	      SimulinkDataObjDesc     off
+	      SFDataObjDesc	      off
+	      IncDataTypeInIds	      off
+	      PrefixModelToSubsysFcnNames on
+	      MangleLength	      1
+	      CustomSymbolStrGlobalVar "$R$N$M"
+	      CustomSymbolStrType     "$N$R$M"
+	      CustomSymbolStrField    "$N$M"
+	      CustomSymbolStrFcn      "$R$N$M$F"
+	      CustomSymbolStrBlkIO    "rtb_$N$M"
+	      CustomSymbolStrTmpVar   "$N$M"
+	      CustomSymbolStrMacro    "$R$N$M"
+	      DefineNamingRule	      "None"
+	      ParamNamingRule	      "None"
+	      SignalNamingRule	      "None"
+	      InsertBlockDesc	      off
+	      SimulinkBlockComments   on
+	      EnableCustomComments    off
+	      InlinedPrmAccess	      "Literals"
+	      ReqsInCode	      off
+	    }
+	    Simulink.GRTTargetCC {
+	      $BackupClass	      "Simulink.TargetCC"
+	      $ObjectID		      10
+	      Array {
+		Type			"Cell"
+		Dimension		15
+		Cell			"IncludeMdlTerminateFcn"
+		Cell			"CombineOutputUpdateFcns"
+		Cell			"SuppressErrorStatus"
+		Cell			"ERTCustomFileBanners"
+		Cell			"GenerateSampleERTMain"
+		Cell			"GenerateTestInterfaces"
+		Cell			"ModelStepFunctionPrototypeControlComp"
+"liant"
+		Cell			"MultiInstanceERTCode"
+		Cell			"PurelyIntegerCode"
+		Cell			"SupportNonFinite"
+		Cell			"SupportComplex"
+		Cell			"SupportAbsoluteTime"
+		Cell			"SupportContinuousTime"
+		Cell			"SupportNonInlinedSFcns"
+		Cell			"PortableWordSizes"
+		PropName		"DisabledProps"
+	      }
+	      Version		      "1.2.0"
+	      TargetFcnLib	      "ansi_tfl_tmw.mat"
+	      TargetLibSuffix	      ""
+	      TargetPreCompLibLocation ""
+	      GenFloatMathFcnCalls    "ANSI_C"
+	      UtilityFuncGeneration   "Auto"
+	      GenerateFullHeader      on
+	      GenerateSampleERTMain   off
+	      GenerateTestInterfaces  off
+	      IsPILTarget	      off
+	      ModelReferenceCompliant on
+	      IncludeMdlTerminateFcn  on
+	      CombineOutputUpdateFcns off
+	      SuppressErrorStatus     off
+	      IncludeFileDelimiter    "Auto"
+	      ERTCustomFileBanners    off
+	      SupportAbsoluteTime     on
+	      LogVarNameModifier      "rt_"
+	      MatFileLogging	      on
+	      MultiInstanceERTCode    off
+	      SupportNonFinite	      on
+	      SupportComplex	      on
+	      PurelyIntegerCode	      off
+	      SupportContinuousTime   on
+	      SupportNonInlinedSFcns  on
+	      EnableShiftOperators    on
+	      ParenthesesLevel	      "Nominal"
+	      PortableWordSizes	      off
+	      ModelStepFunctionPrototypeControlCompliant off
+	      ExtMode		      off
+	      ExtModeStaticAlloc      off
+	      ExtModeTesting	      off
+	      ExtModeStaticAllocSize  1000000
+	      ExtModeTransport	      0
+	      ExtModeMexFile	      "ext_comm"
+	      RTWCAPISignals	      off
+	      RTWCAPIParams	      off
+	      RTWCAPIStates	      off
+	      GenerateASAP2	      off
+	    }
+	    PropName		    "Components"
+	  }
+	}
+	hdlcoderui.hdlcc {
+	  $ObjectID		  11
+	  Description		  "HDL Coder custom configuration component"
+	  Version		  "1.2.0"
+	  Name			  "HDL Coder"
+	  Array {
+	    Type		    "Cell"
+	    Dimension		    1
+	    Cell		    ""
+	    PropName		    "HDLConfigFile"
+	  }
+	  HDLCActiveTab		  "0"
+	}
+	PropName		"Components"
+      }
+      Name		      "Configuration"
+      CurrentDlgPage	      "Solver"
+    }
+    PropName		    "ConfigurationSets"
+  }
+  Simulink.ConfigSet {
+    $PropName		    "ActiveConfigurationSet"
+    $ObjectID		    1
+  }
+  BlockDefaults {
+    Orientation		    "right"
+    ForegroundColor	    "black"
+    BackgroundColor	    "white"
+    DropShadow		    off
+    NamePlacement	    "normal"
+    FontName		    "Lucida Bright"
+    FontSize		    10
+    FontWeight		    "normal"
+    FontAngle		    "normal"
+    ShowName		    on
+  }
+  BlockParameterDefaults {
+    Block {
+      BlockType		      Integrator
+      ExternalReset	      "none"
+      InitialConditionSource  "internal"
+      InitialCondition	      "0"
+      LimitOutput	      off
+      UpperSaturationLimit    "inf"
+      LowerSaturationLimit    "-inf"
+      ShowSaturationPort      off
+      ShowStatePort	      off
+      AbsoluteTolerance	      "auto"
+      IgnoreLimit	      off
+      ZeroCross		      on
+      ContinuousStateAttributes	"''"
+    }
+    Block {
+      BlockType		      Product
+      Inputs		      "2"
+      Multiplication	      "Element-wise(.*)"
+      CollapseMode	      "All dimensions"
+      CollapseDim	      "1"
+      InputSameDT	      on
+      OutDataTypeMode	      "Same as first input"
+      OutDataType	      "sfix(16)"
+      OutScaling	      "2^0"
+      LockScale		      off
+      RndMeth		      "Zero"
+      SaturateOnIntegerOverflow	on
+      SampleTime	      "-1"
+    }
+    Block {
+      BlockType		      "S-Function"
+      FunctionName	      "system"
+      SFunctionModules	      "''"
+      PortCounts	      "[]"
+    }
+    Block {
+      BlockType		      Sum
+      IconShape		      "rectangular"
+      Inputs		      "++"
+      CollapseMode	      "All dimensions"
+      CollapseDim	      "1"
+      InputSameDT	      on
+      OutDataTypeMode	      "Same as first input"
+      OutDataType	      "sfix(16)"
+      OutScaling	      "2^0"
+      LockScale		      off
+      RndMeth		      "Floor"
+      SaturateOnIntegerOverflow	on
+      SampleTime	      "-1"
+    }
+    Block {
+      BlockType		      Trigonometry
+      Operator		      "sin"
+      OutputSignalType	      "auto"
+      SampleTime	      "-1"
+    }
+  }
+  AnnotationDefaults {
+    HorizontalAlignment	    "center"
+    VerticalAlignment	    "middle"
+    ForegroundColor	    "black"
+    BackgroundColor	    "white"
+    DropShadow		    off
+    FontName		    "Lucida Bright"
+    FontSize		    10
+    FontWeight		    "normal"
+    FontAngle		    "normal"
+    UseDisplayTextAsClickCallback off
+  }
+  LineDefaults {
+    FontName		    "Lucida Bright"
+    FontSize		    9
+    FontWeight		    "normal"
+    FontAngle		    "normal"
+  }
+  System {
+    Name		    "modelo_fisico"
+    Location		    [4, 76, 1362, 740]
+    Open		    on
+    ModelBrowserVisibility  off
+    ModelBrowserWidth	    200
+    ScreenColor		    "white"
+    PaperOrientation	    "landscape"
+    PaperPositionMode	    "auto"
+    PaperType		    "usletter"
+    PaperUnits		    "inches"
+    TiledPaperMargins	    [0.500000, 0.500000, 0.500000, 0.500000]
+    TiledPageScale	    1
+    ShowPageBoundaries	    off
+    ZoomFactor		    "15"
+    ReportName		    "simulink-default.rpt"
+    Block {
+      BlockType		      Sum
+      Name		      "Add"
+      Ports		      [2, 1]
+      Position		      [3555, 1902, 3645, 1978]
+      CollapseMode	      "All dimensions"
+      InputSameDT	      off
+      OutDataTypeMode	      "Inherit via internal rule"
+      OutScaling	      "2^-10"
+      SaturateOnIntegerOverflow	off
+    }
+    Block {
+      BlockType		      Product
+      Name		      "Divide"
+      Ports		      [2, 1]
+      Position		      [3080, 1049, 3275, 1211]
+      Inputs		      "*/"
+      CollapseMode	      "All dimensions"
+      InputSameDT	      off
+      RndMeth		      "Floor"
+      SaturateOnIntegerOverflow	off
+      Port {
+	PortNumber		1
+	Name			"dtheta"
+	RTWStorageClass		"Auto"
+	DataLoggingNameMode	"SignalName"
+      }
+    }
+    Block {
+      BlockType		      Product
+      Name		      "Divide1"
+      Ports		      [2, 1]
+      Position		      [4140, 1711, 4235, 1829]
+      Inputs		      "*/"
+      CollapseMode	      "All dimensions"
+      InputSameDT	      off
+      OutDataTypeMode	      "Inherit via internal rule"
+      OutScaling	      "2^-10"
+      RndMeth		      "Floor"
+      SaturateOnIntegerOverflow	off
+    }
+    Block {
+      BlockType		      Integrator
+      Name		      "Integrator"
+      Ports		      [1, 1]
+      Position		      [3425, 1042, 3650, 1218]
+      FontName		      "*"
+      IgnoreLimit	      off
+      Port {
+	PortNumber		1
+	Name			"theta"
+	RTWStorageClass		"Auto"
+	DataLoggingNameMode	"SignalName"
+      }
+    }
+    Block {
+      BlockType		      Integrator
+      Name		      "Integrator1"
+      Ports		      [1, 1]
+      Position		      [5005, 1716, 5130, 1834]
+      IgnoreLimit	      off
+      Port {
+	PortNumber		1
+	Name			"psi"
+	RTWStorageClass		"Auto"
+	DataLoggingNameMode	"SignalName"
+      }
+    }
+    Block {
+      BlockType		      Integrator
+      Name		      "Integrator2"
+      Ports		      [1, 1]
+      Position		      [4780, 2618, 5020, 2772]
+      IgnoreLimit	      off
+    }
+    Block {
+      BlockType		      Product
+      Name		      "Product"
+      Ports		      [2, 1]
+      Position		      [2665, 1193, 2780, 1297]
+      CollapseMode	      "All dimensions"
+      InputSameDT	      off
+      OutDataTypeMode	      "Inherit via internal rule"
+      SaturateOnIntegerOverflow	off
+    }
+    Block {
+      BlockType		      Product
+      Name		      "Product1"
+      Ports		      [2, 1]
+      Position		      [2705, 1647, 2735, 1678]
+      CollapseMode	      "All dimensions"
+      InputSameDT	      off
+      OutDataTypeMode	      "Inherit via internal rule"
+      SaturateOnIntegerOverflow	off
+    }
+    Block {
+      BlockType		      Product
+      Name		      "Product2"
+      Ports		      [2, 1]
+      Position		      [3130, 1881, 3215, 1954]
+      CollapseMode	      "All dimensions"
+      InputSameDT	      off
+      OutDataTypeMode	      "Inherit via internal rule"
+      SaturateOnIntegerOverflow	off
+    }
+    Block {
+      BlockType		      Product
+      Name		      "Product3"
+      Ports		      [2, 1]
+      Position		      [3520, 2591, 3675, 2709]
+      CollapseMode	      "All dimensions"
+      InputSameDT	      off
+      OutDataTypeMode	      "Inherit via internal rule"
+      SaturateOnIntegerOverflow	off
+    }
+    Block {
+      BlockType		      Product
+      Name		      "Product4"
+      Ports		      [2, 1]
+      Position		      [3155, 2025, 3275, 2120]
+      CollapseMode	      "All dimensions"
+      InputSameDT	      off
+      OutDataTypeMode	      "Inherit via internal rule"
+      SaturateOnIntegerOverflow	off
+    }
+    Block {
+      BlockType		      Product
+      Name		      "Product5"
+      Ports		      [2, 1]
+      Position		      [3915, 2159, 4035, 2266]
+      CollapseMode	      "All dimensions"
+      InputSameDT	      off
+      OutDataTypeMode	      "Inherit via internal rule"
+      SaturateOnIntegerOverflow	off
+    }
+    Block {
+      BlockType		      Product
+      Name		      "Product6"
+      Ports		      [2, 1]
+      Position		      [3510, 2784, 3665, 2891]
+      CollapseMode	      "All dimensions"
+      InputSameDT	      off
+      OutDataTypeMode	      "Inherit via internal rule"
+      SaturateOnIntegerOverflow	off
+    }
+    Block {
+      BlockType		      Sum
+      Name		      "Subtract"
+      Ports		      [2, 1]
+      Position		      [4280, 2615, 4490, 2775]
+      Inputs		      "+-"
+      CollapseMode	      "All dimensions"
+      InputSameDT	      off
+      OutDataTypeMode	      "Inherit via internal rule"
+      OutScaling	      "2^-10"
+      SaturateOnIntegerOverflow	off
+    }
+    Block {
+      BlockType		      Sum
+      Name		      "Sum"
+      Ports		      [2, 1]
+      Position		      [2775, 1435, 2875, 1545]
+      ShowName		      off
+      IconShape		      "round"
+      Inputs		      "|++"
+      CollapseMode	      "All dimensions"
+      InputSameDT	      off
+      SaturateOnIntegerOverflow	off
+    }
+    Block {
+      BlockType		      Sum
+      Name		      "Sum1"
+      Ports		      [2, 1]
+      Position		      [4555, 1715, 4715, 1835]
+      ShowName		      off
+      IconShape		      "round"
+      Inputs		      "|++"
+      CollapseMode	      "All dimensions"
+      InputSameDT	      off
+      OutDataTypeMode	      "Inherit via internal rule"
+      SaturateOnIntegerOverflow	off
+      Port {
+	PortNumber		1
+	Name			"dpsi"
+	RTWStorageClass		"Auto"
+	DataLoggingNameMode	"SignalName"
+      }
+    }
+    Block {
+      BlockType		      Trigonometry
+      Name		      "Trigonometric\nFunction"
+      Ports		      [1, 1]
+      Position		      [1790, 1194, 1855, 1246]
+      Operator		      "cos"
+    }
+    Block {
+      BlockType		      Trigonometry
+      Name		      "Trigonometric\nFunction1"
+      Ports		      [1, 1]
+      Position		      [1735, 1473, 1880, 1627]
+      Port {
+	PortNumber		1
+	Name			"sin(psi)"
+	RTWStorageClass		"Auto"
+	DataLoggingNameMode	"SignalName"
+      }
+    }
+    Block {
+      BlockType		      Trigonometry
+      Name		      "Trigonometric\nFunction2"
+      Ports		      [1, 1]
+      Position		      [1680, 2132, 1850, 2278]
+      Operator		      "cos"
+    }
+    Block {
+      BlockType		      Trigonometry
+      Name		      "Trigonometric\nFunction3"
+      Ports		      [1, 1]
+      Position		      [1680, 2458, 1830, 2592]
+    }
+    Block {
+      BlockType		      Trigonometry
+      Name		      "Trigonometric\nFunction4"
+      Ports		      [1, 1]
+      Position		      [2330, 4024, 2530, 4196]
+    }
+    Block {
+      BlockType		      Trigonometry
+      Name		      "Trigonometric\nFunction5"
+      Ports		      [1, 1]
+      Position		      [2345, 3672, 2540, 3848]
+      Operator		      "cos"
+    }
+    Block {
+      BlockType		      Reference
+      Name		      "Unary Minus"
+      Ports		      [1, 1]
+      Position		      [3780, 1925, 3810, 1955]
+      SourceBlock	      "simulink/Math\nOperations/Unary Minus"
+      SourceType	      "Unary Minus"
+      DoSatur		      off
+    }
+    Line {
+      Labels		      [0, 0]
+      SrcBlock		      "Trigonometric\nFunction2"
+      SrcPort		      1
+      Points		      [0, -465; 860, 0]
+      Branch {
+	Points			[285, -1; 0, -568]
+	DstBlock		"Divide"
+	DstPort			2
+      }
+      Branch {
+	DstBlock		"Divide1"
+	DstPort			1
+      }
+    }
+    Line {
+      Name		      "dtheta"
+      Labels		      [0, 0]
+      SrcBlock		      "Divide"
+      SrcPort		      1
+      DstBlock		      "Integrator"
+      DstPort		      1
+    }
+    Line {
+      Name		      "sin(psi)"
+      SrcBlock		      "Trigonometric\nFunction1"
+      SrcPort		      1
+      Points		      [0, -5; 300, 0; 0, 110]
+      Branch {
+	Labels			[1, 0]
+	DstBlock		"Product1"
+	DstPort			1
+      }
+      Branch {
+	Points			[0, 395]
+	Branch {
+	  DstBlock		  "Product4"
+	  DstPort		  1
+	}
+	Branch {
+	  Points		  [0, 760]
+	  DstBlock		  "Product6"
+	  DstPort		  1
+	}
+      }
+    }
+    Line {
+      Labels		      [0, 0]
+      SrcBlock		      "Trigonometric\nFunction"
+      SrcPort		      1
+      Points		      [706, 0; -1, 275]
+      Branch {
+	Points			[1, -275]
+	DstBlock		"Product"
+	DstPort			1
+      }
+      Branch {
+	Points			[0, 435]
+	Branch {
+	  Labels		  [2, 0]
+	  Points		  [0, 5]
+	  DstBlock		  "Product2"
+	  DstPort		  2
+	}
+	Branch {
+	  Points		  [15, 0; 0, 690]
+	  DstBlock		  "Product3"
+	  DstPort		  1
+	}
+      }
+    }
+    Line {
+      SrcBlock		      "Product"
+      SrcPort		      1
+      Points		      [0, 245]
+      DstBlock		      "Sum"
+      DstPort		      1
+    }
+    Line {
+      Name		      "wq3"
+      Labels		      [0, 0]
+      Points		      [325, 1550; 0, 10; 2325, 0]
+      DstBlock		      "Product"
+      DstPort		      2
+    }
+    Line {
+      Name		      "wq2"
+      Labels		      [0, 1]
+      Points		      [305, 1705; 2085, 0; 0, 10; 300, 0]
+      DstBlock		      "Product1"
+      DstPort		      2
+    }
+    Line {
+      SrcBlock		      "Product1"
+      SrcPort		      1
+      Points		      [85, 0]
+      DstBlock		      "Sum"
+      DstPort		      2
+    }
+    Line {
+      SrcBlock		      "Product2"
+      SrcPort		      1
+      DstBlock		      "Add"
+      DstPort		      1
+    }
+    Line {
+      Points		      [2610, 1565; 0, 335]
+      Branch {
+	DstBlock		"Product2"
+	DstPort			1
+      }
+      Branch {
+	Points			[0, 965]
+	DstBlock		"Product6"
+	DstPort			2
+      }
+    }
+    Line {
+      Points		      [2660, 1720; 0, 375; 5, 0]
+      Branch {
+	DstBlock		"Product4"
+	DstPort			2
+      }
+      Branch {
+	Points			[5, 0; 0, 585]
+	DstBlock		"Product3"
+	DstPort			2
+      }
+    }
+    Line {
+      SrcBlock		      "Product4"
+      SrcPort		      1
+      Points		      [260, 0]
+      DstBlock		      "Add"
+      DstPort		      2
+    }
+    Line {
+      SrcBlock		      "Add"
+      SrcPort		      1
+      DstBlock		      "Unary Minus"
+      DstPort		      1
+    }
+    Line {
+      SrcBlock		      "Product5"
+      SrcPort		      1
+      Points		      [35, 0; 0, -415]
+      DstBlock		      "Divide1"
+      DstPort		      2
+    }
+    Line {
+      SrcBlock		      "Divide1"
+      SrcPort		      1
+      Points		      [300, 0]
+      DstBlock		      "Sum1"
+      DstPort		      1
+    }
+    Line {
+      Labels		      [0, 0]
+      Points		      [350, 3535; 0, 40; 4294, 0; 1, -1565]
+      DstBlock		      "Sum1"
+      DstPort		      2
+    }
+    Line {
+      Name		      "dpsi"
+      Labels		      [0, 0]
+      SrcBlock		      "Sum1"
+      SrcPort		      1
+      DstBlock		      "Integrator1"
+      DstPort		      1
+    }
+    Line {
+      Name		      "psi"
+      Labels		      [3, 0]
+      SrcBlock		      "Integrator1"
+      SrcPort		      1
+      Points		      [55, 0; -1, -1175; -3493, 0; -1, 895]
+      Branch {
+	Points			[0, -275]
+	DstBlock		"Trigonometric\nFunction"
+	DstPort			1
+      }
+      Branch {
+	Points			[0, 55]
+	DstBlock		"Trigonometric\nFunction1"
+	DstPort			1
+      }
+    }
+    Line {
+      Labels		      [2, 0]
+      SrcBlock		      "Product3"
+      SrcPort		      1
+      Points		      [-1, 8; 587, 0]
+      DstBlock		      "Subtract"
+      DstPort		      1
+    }
+    Line {
+      SrcBlock		      "Product6"
+      SrcPort		      1
+      Points		      [295, 0; 0, -105]
+      DstBlock		      "Subtract"
+      DstPort		      2
+    }
+    Line {
+      SrcBlock		      "Subtract"
+      SrcPort		      1
+      DstBlock		      "Integrator2"
+      DstPort		      1
+    }
+    Line {
+      SrcBlock		      "Integrator2"
+      SrcPort		      1
+      Points		      "[330, 0; -1, -2195; -3920, 0; 1, 1400; 1, 0; 0,"
+" 624]"
+      DstBlock		      "Trigonometric\nFunction3"
+      DstPort		      1
+    }
+    Line {
+      SrcBlock		      "Unary Minus"
+      SrcPort		      1
+      Points		      [85, 0]
+      DstBlock		      "Product5"
+      DstPort		      1
+    }
+    Line {
+      Labels		      [3, 0]
+      SrcBlock		      "Trigonometric\nFunction3"
+      SrcPort		      1
+      Points		      [445, 0; 1, 1; 1619, 0]
+      DstBlock		      "Product5"
+      DstPort		      2
+    }
+    Line {
+      Name		      "theta"
+      Labels		      [2, 1]
+      SrcBlock		      "Integrator"
+      SrcPort		      1
+      Points		      "[30, 0; 0, -805; -1611, -1; 0, 1486; 3, 1; -2, "
+"1954]"
+      Branch {
+	Points			[2, 345]
+	DstBlock		"Trigonometric\nFunction4"
+	DstPort			1
+      }
+      Branch {
+	Points			[-5, 0; 0, -5]
+	DstBlock		"Trigonometric\nFunction5"
+	DstPort			1
+      }
+    }
+    Line {
+      SrcBlock		      "Sum"
+      SrcPort		      1
+      Points		      [25, 0; 0, -400]
+      DstBlock		      "Divide"
+      DstPort		      1
+    }
+    Line {
+      Points		      [1445, 2205]
+      DstBlock		      "Trigonometric\nFunction2"
+      DstPort		      1
+    }
+    Annotation {
+      Name		      "cos(psi)"
+      Position		      [1973, 1196]
+    }
+    Annotation {
+      Name		      "cos(phi)"
+      Position		      [1743, 1889]
+    }
+    Annotation {
+      Name		      "sin(phi)"
+      Position		      [2393, 2489]
+    }
+    Annotation {
+      Position		      [2181, 1940]
+    }
+    Annotation {
+      Position		      [3015, 2668]
+    }
+    Annotation {
+      Position		      [3360, 2649]
+    }
+    Annotation {
+      Position		      [3824, 2674]
+    }
+    Annotation {
+      Name		      "dphi"
+      Position		      [4629, 2702]
+    }
+    Annotation {
+      Name		      "wq1"
+      Position		      [460, 3535]
+    }
+    Annotation {
+      Position		      [1675, 3240]
+    }
+    Annotation {
+      Name		      "phi"
+      Position		      [1400, 1280]
+    }
+    Annotation {
+      Position		      [4090, 2190]
+    }
+    Annotation {
+      Position		      [4750, 2205]
+    }
+    Annotation {
+      Position		      [4810, 1995]
+    }
+    Annotation {
+      Position		      [4440, 1985]
+    }
+    Annotation {
+      Position		      [4295, 1995]
+    }
+  }
+}
