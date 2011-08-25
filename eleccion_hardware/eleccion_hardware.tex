@@ -1,7 +1,8 @@
-\documentclass[spanish,12pt,a4paper,titlepage]{article}
+\documentclass[spanish,12pt,a4paper,titlepage]{report}
 \usepackage[latin1]{inputenc}
 \usepackage{graphicx}
 \usepackage{subfig}
+\usepackage{float}
 \usepackage{wrapfig}
 \usepackage{multirow}
 \usepackage{caption}
@@ -11,7 +12,13 @@
 \usepackage{listings}
 \usepackage{epsfig}
 \usepackage{amsmath}
-%\usepackage[Lenny]{fncychap}
+\usepackage{array}
+\usepackage[table]{xcolor}
+%\usepackage[Sonny]{fncychap}
+%\usepackage[Glenn]{fncychap}
+\usepackage[Conny]{fncychap}
+%\usepackage[Rejne]{fncychap}
+%\usepackage[Bjarne]{fncychap}
 
 \setlength{\topmargin}{-1.5cm}
 \setlength{\textheight}{25cm}
@@ -21,14 +28,13 @@
 
 \begin{document}
 
-\part{Elección de Hardware}
+\chapter{Elección de Hardware}
 %\thispagestyle{plain}
+%\pagestyle{fancy}
 
 
 La elección del Hardware significa una parte muy importante del Proyecto, ya que las decisiones tomadas condicionan el resto del mismo. Una mala elección de alguno de los componentes puede resultar en complicaciones no previstas a la hora de la ejecución, causando contratiempos inesperados y trabajo excesivo. Es necesario entonces para evitar dichos problemas el estudio detallado de cada uno de los componentes a utilizar, comparando características, rendimientos y utilidades. \\
 Elegir adecuadamente el Hardware necesario agiliza las etapas siguientes de todo el Proyecto. Resulta fundamental la toma de buenas decisiones, las cuales deben estar basadas en un previo estudio de cada etapa del proyecto, sus requerimientos, un estudio comparativo de las posibles soluciones y el conocimiento cabal de los componentes a utilizar.\\
-
-% estudiar funcionamiento requerimientos, toma de decisiones, elección de mecanismos para lograr ciertos objetivos.
 
 \section{Elección de plataforma Cuadricópteros}
 \vspace*{15pt}
@@ -39,27 +45,139 @@ A la hora de la planificación del Proyecto se plantean dos opciones que se difer
 	\item XAircraft X650
 	\item Turbo Ace X720
 \end{itemize}
-Se procede a la comparación de los equipos mencionados mediante la tabla \ref{tab:quads}, donde se analizan algunos aspectos fundamentales y críticos, como puede ser por ejemplo el peso o la carga útil.
+Se procede a la comparación de los equipos mencionados y se analizan algunos aspectos fundamentales y críticos, como puede ser por ejemplo el peso del dispositivo y la carga útil que puede soportar.
 
-\begin{table}
-	\begin{tabular}{|p{40pt}||p{80pt}|p{130pt}|p{130pt}|} 
-\hline  & \textbf{GAUI 330X} & \textbf{XAircraft X650} & \textbf{Turbo Ace X720} \\ \hline
-\hline \textbf{Motor} & Hélices de 8 pulgadas, 4 motores brushless con 4 Escs de 10A & Hélices de 12 pulgadas. Las hélices impulsadas por el motor tienen una eficiencia de 9g/W bajo carga nominal. Cada grupo hélice-motor proporciona un empuje de 700g & Hélices de 12 pulgadas. Tiene una eficiencia de hasta 12g/W. 4 motores de accionamiento mejorado con 4 $ESCS$ de 10A.\\ 
-\hline \textbf{Tiempo de vuelo} & Con batería de $2200 mAh$ vuela entre 7 y 20 minutos & Vuela 12 minutos con batería de $2200mAh$ y carga menor a $1.5kg$ & Con batería de $2200mAh$ vuela 15 minutos a carga nominal y puede llegar a la media hora de vuelo con una batería de $10.000mAh$ \\ 
-\hline \textbf{Peso} & 700 g & Versión de fibra de vidrio: $1100 g$. Versión de fibra de carbono: $950 g$ & $990 g$ \\ 
-\hline \textbf{Carga útil} & 500 g & Versión de fibra de vidrio: $700 g$. Versión de fibra de vidrio: $850 g$ & $1300 g$ \\ 
-\hline \textbf{Batería} & Litio. De $7.4V$ a $11.1V$ & Litio: $3S$ $2200mAh~5500mAh$ ó $4S$ $2200mAh~5500mAh$  & Litio. Para levantar vuelo necesita una batería de por lo menos $1800 mAh$ \\ 
-\hline \textbf{Instru- mentación} & Sistema de estabilización integrado \emph{GU344} & Puede usar hasta 13 sensores para chequiar actitud de vuelo, altitud, dirección, posición, temperatura, consumo energético,etc. 
- & Giróscopo y acelerómetro de 3 ejes integrados. Se vende por separado el módulo GPS que incluye barómetro como medidor de altitud y el compás electrónico.\\ 
-\hline \textbf{Control} & - & Software de configuración incluido. Dispositivo de control de 4 velocidades diseñado todo en 1. Soporta protocolos $Ultra$ $PWM$ y control de frecuencia hasta $500Hz$. Posee algoritmos de control de vuelo incorporados que hacen q sea mas fácil volarlo & Nivelación automática con control de altitud \\ 
-\hline \textbf{Dimen- siones} & 33 cm entre ejes diagonalmente opuestos & 61.5 cm entre ejes diagonalmente opuestos & 61.5 cm entre ejes diagonalmente opuestos \\ 
+
+\subsubsection*{Motor}
+Al estudiar las posibilidades nos encontramos con que en todos los casos los motores se controlan con modulación por ancho de pulsos, de ahora en más \textbf{PWM} por sus siglas en inglés, técnica en la cual se modifica el ciclo de trabajo de una señal periódica para controlar la cantidad de energía que se entrega a una carga.\\
+
+	En la tabla \ref{tab:motor} se muestran las características de los motores de los 3 Cuadricópteros considerados.\\
+
+\begin{table}[H]
+\begin{tabular}{p{40pt}|p{80pt}|p{130pt}|p{130pt}|} 
+\cline{2-4}
+& \cellcolor[gray]{0.8} \textbf{GAUI 330X} 
+& \cellcolor[gray]{0.8} \textbf{XAircraft X650} 
+& \cellcolor[gray]{0.8} \textbf{Turbo Ace X720} \\ \cline{2-4} \hline
+\multicolumn{1}{|p{40pt}|}{\cellcolor[gray]{0.8}\textbf{Motor}} 
+& Hélices de 8 pulgadas, 4 motores brushless con 4 ESCs de 10A 
+& Hélices de 12 pulgadas, 4 motores brushless con 4 ESCs de 10A. Las hélices impulsadas por el motor tienen una eficiencia de 9g/W bajo carga nominal. 
+& Hélices de 12 pulgadas, 4 motores brushless con 4 ESCs de 10A. Las hélices impulsadas por el motor tienen una eficiencia de 12g/W bajo carga nominal.\\ \hline
+\end{tabular} 
+\caption{Comparación motores}
+\label{tab:motor}
+\end{table}
+
+	Los motores \emph{Brushless} son motores eléctricos alimentados con corriente continua. Tienen un sistema de conmutación eléctrico y presentan relaciones lineales entre \emph{Corriente} y \emph{Torque} y entre \emph{Frecuencia} y \emph{velocidad}. Son comúnmente utilizados en vehículos radio-controlados por su gran eficiencia, potencia, durabilidad y su bajo peso en comparación con los tradicionales motores \emph{Brushed}. Sin embargo, los motores de CC \emph{Brushless} son mucho más complicados de controlar, ya que la fase varía con la rotación del motor. Para controlarlos se utilizan unos dispositivos llamados \emph{Controladores eléctricos de velocidad}, o \textbf{ESCs}. Comúnmente los ESCs se clasifican según su corriente máxima, por ejemplo 10 ampéres o 10A.\\
+	
+	Como se puede ver en la tabla \ref{tab:motor}, todos los dispositivos utilizan motores similares y la única diferencia radica en que la eficiencia de los motores del \emph{Turbo Ace X720} es mayor.
+
+\subsubsection*{Tiempo de vuelo}
+
+	El tiempo de vuelo puede resultar crítico según la aplicación considerada. En la tabla \ref{tab:tiempo} se muestran los datos que se obtuvieron para los 3 Cuadricópteros considerados.
+	
+\begin{table}[H]
+\begin{tabular}{p{40pt}|p{80pt}|p{130pt}|p{130pt}|} 
+\cline{2-4}
+& \cellcolor[gray]{0.8} \textbf{GAUI 330X} 
+& \cellcolor[gray]{0.8} \textbf{XAircraft X650} 
+& \cellcolor[gray]{0.8} \textbf{Turbo Ace X720} \\ \cline{2-4} \hline
+\multicolumn{1}{|p{40pt}|}{\cellcolor[gray]{0.8}\textbf{Tiempo de vuelo}} 
+& Con batería de $2200 mAh$ vuela entre 7 y 20 minutos & Vuela 12 minutos con batería de $2200mAh$ y carga menor a $1.5kg$ & Con batería de $2200mAh$ vuela 15 minutos a carga nominal y puede llegar a la media hora de vuelo con una batería de $10.000mAh$ \\ \hline
+\end{tabular}
+\caption{Comparación Tiempo de vuelo}
+\label{tab:tiempo}
+\end{table}
+
+	Como se puede apreciar los tiempos de vuelo son similares en los 3 dspositivos, por lo que no será un factor determinante a la hora de tomar la decisión.
+
+\subsubsection*{Peso}
+
+	La carga útil que el dispositivo pueda soportar juega un papel fundamental. Vale recordar que además de toda la instrumentación que incluye el Cuadricóptero, se le agregará un Microprocesador, una batería independiente para su alimentación, un giróscopo, un acelerómetro, un GPS y alguna interfaz para la comunicación. A su vez es interesante conservar la posibilidad de integrar una cámara fotográfica convencional ya que puede ser de gran utilidad para numerosas aplicaciones. La fuerza que los motores pueden realizar es acotada, por lo que el peso del dispositivo influye directamente en la carga útil del mismo.
+
+\begin{table}[H]
+\begin{tabular}{p{40pt}|p{70pt}|p{160pt}|p{110pt}|} 
+\cline{2-4}
+& \cellcolor[gray]{0.8} \textbf{GAUI 330X} 
+& \cellcolor[gray]{0.8} \textbf{XAircraft X650} 
+& \cellcolor[gray]{0.8} \textbf{Turbo Ace X720} \\ \cline{2-4} \hline
+\multicolumn{1}{|p{40pt}|}{\cellcolor[gray]{0.8}\textbf{Peso}} 
+& $700g$ & Versión de fibra de vidrio: $1100g$. Versión de fibra de carbono: $950g$. & $990g$ \\ \hline
+\multicolumn{1}{|p{40pt}|}{\cellcolor[gray]{0.8}\textbf{Carga útil}} 
+& $500g$ & Versión de fibra de vidrio: $700g$. Versión de fibra de carbono: $850g$. & $1300 g$ \\ 
 \hline 
-	\end{tabular} 
-	\caption{Tabla comparativa de Cuadricópteros comerciales}
-	\label{tab:quads}
-\end{table} 
+\end{tabular}
+\caption{Comparación peso y carga útil}
+\label{tab:peso}
+\end{table}
 
-La carga útil que el dispositivo pueda soportar juega un papel fundamental. Recordar que además de toda la instrumentación que incluye el Cuadricóptero, se le agregará un Microprocesador, una batería independiente para su alimentación, un giróscopo, un acelerómetro, un GPS y alguna interfaz para la comunicación. Es interesante conservar la posibilidad de integrar una cámara fotográfica convencional ya que puede ser de gran utilidad para numerosas aplicaciones.
+\subsubsection*{Batería}
+
+\begin{table}[H]
+\begin{tabular}{p{40pt}|p{80pt}|p{130pt}|p{130pt}|} 
+\cline{2-4}
+& \cellcolor[gray]{0.8} \textbf{GAUI 330X} 
+& \cellcolor[gray]{0.8} \textbf{XAircraft X650} 
+& \cellcolor[gray]{0.8} \textbf{Turbo Ace X720} \\ \cline{2-4} \hline
+\multicolumn{1}{|p{40pt}|}{\cellcolor[gray]{0.8}\textbf{Batería}} 
+& Litio. De $7.4V$ a $11.1V$ & Litio: $3S$ $2200mAh~5500mAh$ ó $4S$ $2200mAh~5500mAh$  & Litio. Para levantar vuelo necesita una batería de por lo menos $1800 mAh$ \\ 
+\hline 
+\end{tabular} 
+\caption{Comparación baterías}
+\label{tab:bateria}
+\end{table}
+
+\subsubsection*{Instrumentación}
+
+\begin{table}[H]
+\begin{tabular}{p{40pt}|p{80pt}|p{130pt}|p{130pt}|} 
+\cline{2-4}
+& \cellcolor[gray]{0.8} \textbf{GAUI 330X} 
+& \cellcolor[gray]{0.8} \textbf{XAircraft X650} 
+& \cellcolor[gray]{0.8} \textbf{Turbo Ace X720} \\ \cline{2-4} \hline
+\multicolumn{1}{|p{40pt}|}{\cellcolor[gray]{0.8}\textbf{Instru- mentación}} 
+& Sistema de estabilización integrado \emph{GU344} & Puede usar hasta 13 sensores para chequiar actitud de vuelo, altitud, dirección, posición, temperatura, consumo energético,etc. 
+ & Giróscopo y acelerómetro de 3 ejes integrados. Se vende por separado el módulo GPS que incluye barómetro como medidor de altitud y el compás electrónico.\\ 
+\hline 
+\end{tabular}
+\caption{Comparación instrumentación}
+\label{tab:instrumentacion}
+\end{table}
+
+\subsubsection*{Control}
+
+\begin{table}[H]
+\begin{tabular}{p{40pt}|p{70pt}|p{160pt}|p{110pt}|} 
+\cline{2-4}
+& \cellcolor[gray]{0.8} \textbf{GAUI 330X} 
+& \cellcolor[gray]{0.8} \textbf{XAircraft X650} 
+& \cellcolor[gray]{0.8} \textbf{Turbo Ace X720} \\ \cline{2-4} \hline
+\multicolumn{1}{|p{40pt}|}{\cellcolor[gray]{0.8}\textbf{Control}} 
+& - & Software de configuración incluido. Dispositivo de control de 4 velocidades diseñado todo en 1. Soporta protocolos $Ultra$ $PWM$ y control de frecuencia hasta $500Hz$. Posee algoritmos de control de vuelo incorporados que hacen q sea mas fácil volarlo & Nivelación automática con control de altitud \\ 
+\hline 
+\end{tabular}
+\caption{Comparación control}
+\label{tab:control}
+\end{table}
+
+\subsubsection*{Dimensiones}
+
+\begin{table}[H]
+\begin{tabular}{p{40pt}|p{80pt}|p{130pt}|p{130pt}|} 
+\cline{2-4}
+& \cellcolor[gray]{0.8} \textbf{GAUI 330X} 
+& \cellcolor[gray]{0.8} \textbf{XAircraft X650} 
+& \cellcolor[gray]{0.8} \textbf{Turbo Ace X720} \\ \cline{2-4} \hline
+\multicolumn{1}{|p{40pt}|}{\cellcolor[gray]{0.8}\textbf{Dimen- siones}} 
+& 33 cm entre ejes diagonalmente opuestos & 61.5 cm entre ejes diagonalmente opuestos & 61.5 cm entre ejes diagonalmente opuestos \\ 
+\hline 
+\end{tabular}
+\caption{Comparación dimensiones}
+\label{tab:dimensiones}
+\end{table}
+
+
+
 
 Si bien el Cuadricóptero se controlará automáticamente, resulta interesante conservar la posibilidad de controlarlo a control remoto, ya que puede ser útil ante cualquier eventualidad durante las primeras pruebas. El algoritmo de control deberá poder alternar entre estos dos modos de vuelo. Aunque puede ser útil el control remoto, es preferible que el dispositivo no incluya algoritmos de control muy sofisticados ya que no serán utilizados y aumentan el precio.
 
@@ -74,13 +192,13 @@ Los motores en todos los casos se controlan con pulsos PWM.
   \centering
   \subfloat[GAUI 330X]{\label{fig:gaui}
   		\includegraphics[width=0.3\textwidth]
-  			{./Pics/gaui.eps}}
+  			{./Pics/gaui.png}}
   \subfloat[XAircraft X650]{\label{fig:aircraft} 
   		\includegraphics[width=0.36\textwidth]
-  			{./Pics/aircraft.eps}}
+  			{./Pics/aircraft.png}}
   \subfloat[Turbo Ace X720]{\label{fig:turboace} 
   		\includegraphics[width=0.32\textwidth]
-  			{./Pics/turboace.eps}}
+  			{./Pics/turboace.png}}
   \caption{Fotos de las posibles plataformas a utilizar}
   \label{fig:cuadricopteros}
 \end{figure}
