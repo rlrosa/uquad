@@ -89,11 +89,13 @@ Al estudiar las posibilidades nos encontramos con que en todos los casos los mot
 \label{tab:tiempo}
 \end{table}
 
-	Como se puede apreciar los tiempos de vuelo son similares en los 3 dspositivos, por lo que no será un factor determinante a la hora de tomar la decisión.
+	Como se puede apreciar los tiempos de vuelo son similares en los 3 dspositivos, por lo que no será un factor determinante a la hora de tomar la decisión.\\
+	
+	Un factor determinante en el tiempo de vuelo es la batería a utilizar. Deben considerarse 2 aspectos importantes: la capacidad de la batería y su peso. Si bien una batería con mayor capacidad permitirá mayor autonomía de vuelo, es claro que su peso también aumentará, lo cual a su vez, causará un mayor consumo. Los 3 Cuadricópteros en consideración incluyen una batería de 3 celdas de Litio de $2200 \, mAh$.
 
 \subsubsection*{Peso}
 
-	La carga útil que el dispositivo pueda soportar juega un papel fundamental. Vale recordar que además de toda la instrumentación que incluye el Cuadricóptero, se le agregará un Microprocesador, una batería independiente para su alimentación, un giróscopo, un acelerómetro, un GPS y alguna interfaz para la comunicación. A su vez es interesante conservar la posibilidad de integrar una cámara fotográfica convencional ya que puede ser de gran utilidad para numerosas aplicaciones. La fuerza que los motores pueden realizar es acotada, por lo que el peso del dispositivo influye directamente en la carga útil del mismo.
+	La carga útil que el dispositivo pueda soportar juega un papel fundamental. Vale recordar que además de toda la instrumentación que incluye el Cuadricóptero, se incorporará un Microprocesador, una batería independiente para su alimentación, un giróscopo, un acelerómetro, un GPS y alguna interfaz para la comunicación. A su vez es interesante conservar la posibilidad de integrar una cámara fotográfica convencional ya que puede ser de gran utilidad para numerosas aplicaciones. La fuerza que los motores pueden realizar es acotada, por lo que el peso del dispositivo influye directamente en la carga útil del mismo.
 
 \begin{table}[H]
 \begin{tabular}{p{40pt}|p{70pt}|p{160pt}|p{110pt}|} 
@@ -111,40 +113,33 @@ Al estudiar las posibilidades nos encontramos con que en todos los casos los mot
 \label{tab:peso}
 \end{table}
 
-\subsubsection*{Batería}
-
-\begin{table}[H]
-\begin{tabular}{p{40pt}|p{80pt}|p{130pt}|p{130pt}|} 
-\cline{2-4}
-& \cellcolor[gray]{0.8} \textbf{GAUI 330X} 
-& \cellcolor[gray]{0.8} \textbf{XAircraft X650} 
-& \cellcolor[gray]{0.8} \textbf{Turbo Ace X720} \\ \cline{2-4} \hline
-\multicolumn{1}{|p{40pt}|}{\cellcolor[gray]{0.8}\textbf{Batería}} 
-& Litio. De $7.4V$ a $11.1V$ & Litio: $3S$ $2200mAh~5500mAh$ ó $4S$ $2200mAh~5500mAh$  & Litio. Para levantar vuelo necesita una batería de por lo menos $1800 mAh$ \\ 
-\hline 
-\end{tabular} 
-\caption{Comparación baterías}
-\label{tab:bateria}
-\end{table}
+Como se puede ver en la tabla \ref{tab:peso}, no cabe duda que el dispositivo que puede cargar con más peso es el \emph{Turbo Ace X720}, lo cual constituye una ventaja considerable de este dispositivo frente a los otros.
 
 \subsubsection*{Instrumentación}
 
+	Toda la instrumentación que los dispositivos brindan está originalmente destinada al manejo mediante el control remoto. Todos ellos incluyen un acelerómetro y un giróscopo de 3 ejes y traen algún sistema de estabilización incluido de modo de facilitar su control. \\
+	
+	Como ya se mencionó, se añadirá al Cuadricóptero la instrumentación necesaria para su control automático, por lo cual la instrumentación incluida en el dispositivo carece de gran importancia. Sin embargo, resulta interesante conservar la posibilidad de controlarlo mediante el control remoto, ya que puede ser útil tanto en determinadas aplicaciones, como para evitar eventualidades en las primeras pruebas donde se testean los algoritmos de control desarrollados. El algoritmo de control deberá poder alternar entre estos dos modos de vuelo dándole prioridad al control remoto, de modo de conservar la integridad física del dispositivo ante fallas en los algoritmos de control.
+
 \begin{table}[H]
-\begin{tabular}{p{40pt}|p{80pt}|p{130pt}|p{130pt}|} 
+\begin{tabular}{p{40pt}|p{85pt}|p{125pt}|p{130pt}|} 
 \cline{2-4}
 & \cellcolor[gray]{0.8} \textbf{GAUI 330X} 
 & \cellcolor[gray]{0.8} \textbf{XAircraft X650} 
 & \cellcolor[gray]{0.8} \textbf{Turbo Ace X720} \\ \cline{2-4} \hline
 \multicolumn{1}{|p{40pt}|}{\cellcolor[gray]{0.8}\textbf{Instru- mentación}} 
-& Sistema de estabilización integrado \emph{GU344} & Puede usar hasta 13 sensores para chequiar actitud de vuelo, altitud, dirección, posición, temperatura, consumo energético,etc. 
- & Giróscopo y acelerómetro de 3 ejes integrados. Se vende por separado el módulo GPS que incluye barómetro como medidor de altitud y el compás electrónico.\\ 
+& Sistema de estabilización integrado \emph{GU344}: incluye giróscopo de 3 ejes y acelerómetro. & Giróscopo de 3 ejes y acelerómetro. Puede usar hasta 13 sensores para chequiar actitud de vuelo, altitud, dirección, posición, temperatura, consumo energético, etc. & Giróscopo y acelerómetro de 3 ejes integrados. Se vende por separado el módulo GPS que incluye barómetro como medidor de altitud y el compás electrónico.\\ 
 \hline 
 \end{tabular}
 \caption{Comparación instrumentación}
 \label{tab:instrumentacion}
 \end{table}
 
+	En la tabla \ref{tab:instrumentacion} se muestra un resumen de la instrumentación incluida en cada Cuadricópetro. 
+
 \subsubsection*{Control}
+
+	El control mediante el mando remoto requiere de cierta práctica y habilidad para ejecutarlo de buena forma, por lo cual todos los algoritmos de control integrados que el dispositivo incluya significarán una interesante ventaja. Por otro lado se debe tener en cuenta que el control remoto se utilizará en reducidos casos, siendo el control automático el verdadero interés del proyecto. Es importante tener en cuenta que dichos algoritmos encarecen el precio del dispositivo y no serán utilizados con mucha frecuencia.
 
 \begin{table}[H]
 \begin{tabular}{p{40pt}|p{70pt}|p{160pt}|p{110pt}|} 
@@ -160,7 +155,11 @@ Al estudiar las posibilidades nos encontramos con que en todos los casos los mot
 \label{tab:control}
 \end{table}
 
+	Si bien el \emph{XAircraft X650} es el que tiene más algoritmos de control implementados que facilitan su mando, se considera que el dispositivo que se adecúa más a nuestras necesidades es el \emph{Turbo Ace X720}. Tiene un pequeño sistema de estabilización que ayuda a la hora de su control, pero no incluye demasiado software ni hardware que no será utilizado y encarecen al producto, como el \emph{XAircraft X650}.
+
 \subsubsection*{Dimensiones}
+
+	Las dimensiones de los 3 Cuadricópteros considerados se pueden apreciar en la tabla \ref{tab:dimensiones}.
 
 \begin{table}[H]
 \begin{tabular}{p{40pt}|p{80pt}|p{130pt}|p{130pt}|} 
@@ -176,17 +175,9 @@ Al estudiar las posibilidades nos encontramos con que en todos los casos los mot
 \label{tab:dimensiones}
 \end{table}
 
+	Como se puede ver el \emph{GAUI} es el más pequeño, mientras que los otros dos tienen el mismo tamaño aproximadamente
 
-
-
-Si bien el Cuadricóptero se controlará automáticamente, resulta interesante conservar la posibilidad de controlarlo a control remoto, ya que puede ser útil ante cualquier eventualidad durante las primeras pruebas. El algoritmo de control deberá poder alternar entre estos dos modos de vuelo. Aunque puede ser útil el control remoto, es preferible que el dispositivo no incluya algoritmos de control muy sofisticados ya que no serán utilizados y aumentan el precio.
-
-En la figura \ref{fig:cuadricopteros} se pueden apreciar fotografías de los 3 equipos considerados.
-
-
-Los motores en todos los casos se controlan con pulsos PWM.
-
-
+	En la figura \ref{fig:cuadricopteros} se pueden apreciar fotografías de los 3 equipos considerados.
 
 \begin{figure} [h!]
   \centering
@@ -203,6 +194,15 @@ Los motores en todos los casos se controlan con pulsos PWM.
   \label{fig:cuadricopteros}
 \end{figure}
 
+\subsection{Definición de la plataforma - Cuadricópetro}
+
+\begin{itemize}
+	\item El \emph{Turbo Ace X720} tiene hélices de 12 pulgadas y el grupo hélice motor proporciona una eficiencia de $12\,g/W$, superando a los otros dos Cuadricópteros considerados.
+	\item La carga útil que puede trasportar el \emph{Turbo Ace X720} es la mayor de todos los considerados
+	\item El \emph{Turbo Ace X720} trae un sistema de nivelación automática y estabilización que resultará útil al momento de controlarlo con el mando remoto. Además no incluye excesivas utilidades para este mando que no serán utilizadas y contribuyen a encarecer el precio.
+\end{itemize}
+	
+	Por todas las razones expuestas anteriormente y los análisis comparativos realizados se tiene que la opción que mejor se adecúa a nuestro proyecto es el \textbf{Turbo Ace X720}. 
 
 \newpage
 \section{Inteligencia}
