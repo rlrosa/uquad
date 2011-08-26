@@ -37,7 +37,24 @@ Al tratarse de una plataforma comercial no se tienen datos sobre algunos de los 
 
 \subsection{Sistema de Referencia}
 
-A lo largo del presente desarrollo se trabajará constantemente con dos sistemas de referencia; uno inercial\footnote{En esta sección se consideran sistemas inerciales en el sentido clásico} solidario a la tierra ($S_I$) y otro solidario al quadcopter ($S_q$). El sistema $S_q$ se puede obtener realizando tres rotaciones compuestas del sistema $S_I$, dichas rotaciones se muestran en la figura \ref{fig:rotaciones}. La importancia del sistema $S_q$ radica en las simplificaciones que introduce a la hora de escribir las ecuaciones, ya que por ejemplo en dicho sistema el empuje de las helices, los torques que introducen y velocidades angulares de los motores del quadcopter tienen siempre la misma dirección. 
+A lo largo del presente desarrollo se trabajará constantemente con dos sistemas de referencia; uno inercial\footnote{En esta sección se consideran sistemas inerciales en el sentido clásico} solidario a la tierra ($S_I$) y otro solidario al quadcopter ($S_q$). El sistema $S_q$ se puede obtener realizando tres rotaciones compuestas del sistema $S_I$, dichas rotaciones se muestran en la figura \ref{fig:rotaciones}. 
+
+\begin{figure} [h!]
+  \centering
+  \subfloat[Rotación según eje $\hat{k}$]{\label{fig:angulos_1}
+  		\includegraphics[width=0.3\textwidth]
+  			{./Pics/angulos_1.png}}
+  \subfloat[Rotación según eje $\hat{j}$]{\label{fig:angulos_2} 
+  		\includegraphics[width=0.3\textwidth]
+  			{./Pics/angulos_2.png}}
+  \subfloat[Rotación según eje $\hat{i}$]{\label{fig:angulos_3} 
+  		\includegraphics[width=0.3\textwidth]
+  			{./Pics/angulos_3.png}}
+  \caption{Rotaciones}
+  \label{fig:rotaciones}
+\end{figure}
+
+La importancia del sistema $S_q$ radica en las simplificaciones que introduce a la hora de escribir las ecuaciones, ya que por ejemplo en dicho sistema el empuje de las helices, los torques que introducen y velocidades angulares de los motores del quadcopter tienen siempre la misma dirección. 
 
 %TODO experto en paint tiene que hacer los propios dibujos
 Las tres transformaciones pueden reprsesentarse matricialmente de la siguiente forma: 
