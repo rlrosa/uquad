@@ -406,6 +406,16 @@ La comunicación no resultó un factor crítico ya que todos los candidatos a \emph
 En lo que respecta a compatibilidad con el sistema, se buscó que la alimentación de la placa sea la misma que la del microprocesador principal. Por dicha razón lo ideal es que la placa pueda ser alimentada a 5V.
 
 A partir de las consideraciones anteriores, se considera que la solución más adecuada para el objetivo que se plantea en esta sección es la placa Atomic IMU. Dicha placa cumple con los rangos de medida especificados anteriormente, posee un microprocesador de 8 bits con un reloj de 10MHz. Existe ya un código en c disponible para programar el dispositivo. El mismo puede ser modificado en caso de no cumplir con todos los requerimientos necesarios. La placa dispone de un puerto JTAG para la programación del mismo. La forma que tiene la placa de presentar los datos obtenidos de los sensores es a través de un puerto serie capaz de transmitir datos con una tasa de transferencia de 115.200bps. Cabe aclarar que la Atomic IMU es la única de las soluciones consideradas que puede ser alimentada con una fuente de tensión de 5V. Por otra parte el costo de la misma es de los más bajos dentro de las posibilidades consideradas.
+
+En la figura \ref{fig:IMU} se puede observar la instrumentación escogida:
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.3\textwidth]{./Pics/IMU.jpg}
+	\caption{Atomic IMU}
+	\label{fig:IMU}
+\end{figure}
+
 %TODO GPS 
 
 
