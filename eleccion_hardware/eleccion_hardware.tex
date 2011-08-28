@@ -214,19 +214,26 @@ Micro. decir pa q lo usamos, q tiene q hacer. payar
 \vspace*{15pt}
 
 
+
 \section{Comunicación}
 \vspace*{15pt}
 
-Ver las alternativas para las 3 comunicaciones q hay q resolver: PC, sensores y motores. Cualquier cambio de titulo es bienvenido. chau
-
+La inteligencia debe comunicarse con dos bloques del sistema: el de los sensores y el de los motores sobre los cuales se actúa. Además es necesario comunicar a la intelegencia con una PC con el objetivo de programar tanto los algoritmos de control como los rumbos del sistema. 
+ 
 \subsection{Comunicación con PC}
 \vspace*{15pt}
+La placa elegida posee diversos puertos USB, por dicho motivo se pueden utilizar dichos puertos para obtener una comunicación directa con la PC. Dicha comunicación sirve para programar el sistema en una primera etapa, sin embargo no parece la forma más adecua de comunicarse con el quadcopter mientras el mismo se encuentra en el aire para reprogamar una ruta, o para modificar algún detalle de un algoritmo. Por dicho motivo se opta por alguna comunicación de tipo inalámbrica. Las opciones que consideradas fueron: WiFi, Bluetooth y GSM. Al poseer en la intelegencia un kernel de linux, la comunicación vía WiFi es muy sencilla de implementar. Por dicho motivo se opta por este tipo de comunicación. Al disponer de diversos puertos USB en la inteligencia se opta por un módulo WiFi USB.    
+
 
 \subsection{Comunicación con instrumentación}
 \vspace*{15pt}
 
+En lo que respecta a la comunicación con la instrumentación se disponen de diversas opciones. Se tiene la posibilidad de comunicarse a través de un protocolo serie, I2C o incluso puertos USB. Por dicho motivo este aspecto no será analizado cabalmente en esta sección sino que se realizará al momento de analizar las opciones de comunicación.  
+
 \subsection{Comunicación con motores}
 \vspace*{15pt}
+
+Los motores como se explicó anteriormente funcionan mediante PWM. Por lo tanto, la comunicación entre la inteligencia y los motores será cableada. La señal de entrada de los ESC's se conectará directamente a los pines de salida de la inteligencia donde se programen los PWM. 
 
 \newpage
 \section{Instrumentación}
@@ -282,7 +289,7 @@ Sin embargo, en la práctica esto no sucede así. Todas las medidas realizadas tie
 \subsection{GPS}
 \vspace*{15pt}
 
-Taría bueno repartirnos secciones y q cada uno encare un bicho de estos y se escriba algo, les parece?
+
 
 \newpage
 \subsection{Definición de instrumentación}
@@ -400,7 +407,6 @@ En lo que respecta a compatibilidad con el sistema, se buscó que la alimentación
 
 A partir de las consideraciones anteriores, se considera que la solución más adecuada para el objetivo que se plantea en esta sección es la placa Atomic IMU. Dicha placa cumple con los rangos de medida especificados anteriormente, posee un microprocesador de 8 bits con un reloj de 10MHz. Existe ya un código en c disponible para programar el dispositivo. El mismo puede ser modificado en caso de no cumplir con todos los requerimientos necesarios. La placa dispone de un puerto JTAG para la programación del mismo. La forma que tiene la placa de presentar los datos obtenidos de los sensores es a través de un puerto serie capaz de transmitir datos con una tasa de transferencia de 115.200bps. Cabe aclarar que la Atomic IMU es la única de las soluciones consideradas que puede ser alimentada con una fuente de tensión de 5V. Por otra parte el costo de la misma es de los más bajos dentro de las posibilidades consideradas.
 %TODO GPS 
-
 
 
 
