@@ -348,13 +348,49 @@ Lo que se observa es que todos los acelerómetros y giroscopos de las placas de e
 
 \hline 
 \end{tabular}
-\caption{Comparación dimensiones}
-\label{tab:dimensiones}
+\caption{Sensores}
+\label{tab:sensores}
 \end{table}
 
 Resulta conveniente que la instrumentación posea un microprocesador, la razón es que le ahorra tiempo a la inteligencia del sistema en el procesamiento de las medidas crudas de los sensores. Los sensores presentan sus medidas constantemente en forma analógica o digtal dependiendo del sensor en cuestión. En caso de ser una medida analógica se debe en primer lugar digitalizar. Una vez que se tiene la medida digitalizada se debe realizar un procesamiento que consiste básicamente en ponerle una marca de tiempo a cada medida y asociarle una etiqueta correspondiente al sensor que la realizó. 
 %TODO ver si finalmente lo hacemos así
 Resulta sumamente interesante que no sea el \emph{core} quien se encarga de esta identificación, sino que obtenga los datos pre-procesados. Por esta razón se favorecieron las placas que incluyeran un microprocesador. 
+
+
+\begin{table}[H]
+\begin{tabular}{p{80pt}|p{80pt}|p{80pt}|p{80pt}|p{80pt}|} 
+
+\cline{2-5} 
+& \cellcolor[gray]{0.8} \textbf{Frecuencia del reloj} 
+& \cellcolor[gray]{0.8} \textbf{Largo de palabra}
+& \cellcolor[gray]{0.8} \textbf{RAM} 
+& \cellcolor[gray]{0.8} \textbf{Flash}\\
+\hline
+\multicolumn{1}{|p{80pt}|}{\cellcolor[gray]{0.8}\textbf{CHR-6d}}
+& \center 72MHz & \center 32 bits & \center 20Kb & \center 64Kb}\\ 
+
+\hline
+\multicolumn{1}{|p{80pt}|}{\cellcolor[gray]{0.8}\textbf{Atomic IMU}}
+& \center 10MHz  & \center 8 bits & \center 2Kb  & \center 32Kb}\\
+
+\hline
+\multicolumn{1}{|p{80pt}|}{\cellcolor[gray]{0.8}\textbf{IMU Digital Combo Board}}
+& \center - & \center - & \center -  & \center -}\\
+
+\hline
+\multicolumn{1}{|p{80pt}|}{\cellcolor[gray]{0.8}\textbf{IMU Analgo Combo Board Razor}}
+& \center - & \center -  & \center - & \center -}\\
+
+
+\hline
+\multicolumn{1}{|p{80pt}|}{\cellcolor[gray]{0.8}\textbf{IMU Fusion Board}}
+& \center - & \center -  & \center - & \center -}\\
+
+\hline 
+\end{tabular}
+\caption{Características de los microprocesadores}
+\label{tab:micro}
+\end{table}
 
 En caso de optar por una placa con microprocesador resulta fundamental que la misma sea sencilla de programar. Las razones son evidentes, si los algoritmos que vienen programados de fábrica no resultan adecuados para la aplicación se pueden modificar fácilmente. También parece importante que el código de fábrica sea abierto; en primer lugar para comprender su funcionamiento y poder procesar adecuadamente los datos que se obtengan de los sensores. Es interesante además poder modificar secciones puntuales de código, sin necesidad de reprogramar completamente el microprocesador. 
 
