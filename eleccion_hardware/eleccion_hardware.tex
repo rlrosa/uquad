@@ -231,7 +231,7 @@ Ver las alternativas para las 3 comunicaciones q hay q resolver: PC, sensores y 
 \newpage
 \section{Instrumentación}
 \vspace*{15pt}
-
+Para poder controlar el sistema es importante poder conocer los valores que toman las variables del mismo. Como se verá en el capítulo sobre el desarrollo del modelo físico del quadcopter, las variables que es necesario conocer son: La aceleración en las tres coordenadas y la velocidad angular del sistema. Por dicho motivo parece imprescindible dotar al sistema de sensores capaces de medir dichas magnitudes.
 
 \newpage
 \subsection{Acelerómetro}
@@ -241,7 +241,6 @@ Ver las alternativas para las 3 comunicaciones q hay q resolver: PC, sensores y 
 Previo a definir el acelerómetro, su principio básico de funcionamiento y su interés en la aplicación presentada se debe realizar una discusión física sobre la caída libre como sistema de referencia.
 En la física clásica, la fuerza gravitatoria que se ejerce sobre una masa es proporcional a la intensidad del campo gravitatorio en la posición en la cual se encuentra. 
 La teoría general de la relatividad es una teoría métrica de la gravitación. Los fenómenos que en la mecánica clásica se le atribuyen a la acción de la fuerza de gravedad, corresponden a movimientos inerciales en una geometría curvada del espacio-tiempo en la teoría de la relatividad general.
-En este caso la gravedad no es una fuerza, sino una geodésica\footnote{Línea de mínima longitud que une dos puntos en una superficie dada y está contenida en esta superficie.}.
 
 Por lo tanto, desde el punto de vista de la física clásica, un sistema de referencia en caída libre es un sistema acelerado por la fuerza de la gravedad, y como tal, es no inercial.
 Por el contrario, desde el punto de vista de la física relativista, el sistema está acelerado en el espacio, pero no en el espacio-tiempo, por lo tanto el sistema de referencia es inercial.
@@ -316,6 +315,43 @@ En lo que respecta al rango de medida de los acelerómetros se definió que el mis
 %TODO Masmenos 3g y masomenos 300
 Lo que se observa es que todos los acelerómetros y giroscopos de las placas de esta preselección cumplen con dicho requerimiento.
 
+
+\begin{table}[H]
+\begin{tabular}{p{80pt}|p{80pt}|p{80pt}|p{80pt}|p{80pt}|} 
+
+\hline
+\cline{2-5} 
+& \cellcolor[gray]{0.8} \textbf{Rango del acelerómetro} 
+& \cellcolor[gray]{0.8} \textbf{Sensibilidad del acelerómetro}
+& \cellcolor[gray]{0.8} \textbf{Rango del giróscopo} 
+& \cellcolor[gray]{0.8} \textbf{Sensibilidad del giróscopo} \\ 
+\hline
+\multicolumn{1}{|p{80pt}|}{\cellcolor[gray]{0.8}\textbf{CHR-6d}}
+& \center 3g & \center 300mV/g & \center 400°/s \\ 100°/s & \center 2.5mV/(°/s)\\ 2.5mV/(°/s)}\\ 
+
+\hline
+\multicolumn{1}{|p{80pt}|}{\cellcolor[gray]{0.8}\textbf{Atomic IMU}}
+& \center 1.5g \\ 6g & \center 800mV/g \\ 200mV/g & \center 300°/s  & \center 3.3mV/(°/s)}\\
+
+\hline
+\multicolumn{1}{|p{80pt}|}{\cellcolor[gray]{0.8}\textbf{IMU Digital Combo Board}}
+& \center 2g \\ 16g & \center 356LSB/g \\ 321LSB/g & \center 2000°/s  & \center 14.375 LSB/(°/s)}\\
+
+\hline
+\multicolumn{1}{|p{80pt}|}{\cellcolor[gray]{0.8}\textbf{IMU Analgo Combo Board Razor}}
+& \center 3g & \center 300mV/g  & \center 300°/s \\ 1200°/s & \center 3.3mV/(°/s)\\ 0.83mV/(°/s)}\\
+
+
+\hline
+\multicolumn{1}{|p{80pt}|}{\cellcolor[gray]{0.8}\textbf{IMU Fusion Board}}
+& \center 2g & \center 256 LSB/g  & \center 250°/s \\ 2000°/s & \center 131 LSB/(°/s)\\ 16.4 LSB/(°/s)}\\
+
+\hline 
+\end{tabular}
+\caption{Comparación dimensiones}
+\label{tab:dimensiones}
+\end{table}
+
 Resulta conveniente que la instrumentación posea un microprocesador, la razón es que le ahorra tiempo a la inteligencia del sistema en el procesamiento de las medidas crudas de los sensores. Los sensores presentan sus medidas constantemente en forma analógica o digtal dependiendo del sensor en cuestión. En caso de ser una medida analógica se debe en primer lugar digitalizar. Una vez que se tiene la medida digitalizada se debe realizar un procesamiento que consiste básicamente en ponerle una marca de tiempo a cada medida y asociarle una etiqueta correspondiente al sensor que la realizó. 
 %TODO ver si finalmente lo hacemos así
 Resulta sumamente interesante que no sea el \emph{core} quien se encarga de esta identificación, sino que obtenga los datos pre-procesados. Por esta razón se favorecieron las placas que incluyeran un microprocesador. 
@@ -326,7 +362,7 @@ La comunicación no resultó un factor crítico ya que todos los candidatos a \emph
 
 En lo que respecta a compatibilidad con el sistema, se buscó que la alimentación de la placa sea la misma que la del microprocesador principal. Por dicha razón lo ideal es que la placa pueda ser alimentada a 5V.
 
-A partir de las consideraciones anteriores, se considera que la solución más adecuada para el objetivo que se plantea en esta sección es la placa Atomic IMU. Dicha placa cumple con los rangos de medida especificados anteriormente, posee un microprocesador de 8 bits con un reloj de 10MHz. Existe ya un código en c disponible para programar el dispositivo. El mismo puede ser modificado en caso de no cumplir con todos los requerimientos necesarios. La placa dispone de un puerto JTAG para la programación del mismo. La forma que tiene la placa de presentar los datos obtenidos de los sensores es a través de un puerto serie capaz de transmitir datos con una tasa de transferencia de 115.200bps. Por otra parte el costo de la misma es de los más bajos dentro de las posibilidades consideradas
+A partir de las consideraciones anteriores, se considera que la solución más adecuada para el objetivo que se plantea en esta sección es la placa Atomic IMU. Dicha placa cumple con los rangos de medida especificados anteriormente, posee un microprocesador de 8 bits con un reloj de 10MHz. Existe ya un código en c disponible para programar el dispositivo. El mismo puede ser modificado en caso de no cumplir con todos los requerimientos necesarios. La placa dispone de un puerto JTAG para la programación del mismo. La forma que tiene la placa de presentar los datos obtenidos de los sensores es a través de un puerto serie capaz de transmitir datos con una tasa de transferencia de 115.200bps. Cabe aclarar que la Atomic IMU es la única de las soluciones consideradas que puede ser alimentada con una fuente de tensión de 5V. Por otra parte el costo de la misma es de los más bajos dentro de las posibilidades consideradas.
 %TODO GPS 
 
 
