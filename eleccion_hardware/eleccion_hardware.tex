@@ -7,13 +7,14 @@
 \usepackage{multirow}
 \usepackage{caption}
 \usepackage{babel}
-%\usepackage[dvips]{hyperref}
+\usepackage[dvips]{hyperref}
 \usepackage{amssymb}
 \usepackage{listings}
 \usepackage{epsfig}
 \usepackage{amsmath}
 \usepackage{array}
 \usepackage[table]{xcolor}
+%\usepackage{multirow}
 %\usepackage[Sonny]{fncychap}
 %\usepackage[Glenn]{fncychap}
 \usepackage[Conny]{fncychap}
@@ -39,7 +40,7 @@ Elegir adecuadamente el Hardware necesario agiliza las etapas siguientes de todo
 \section{Elección de plataforma Cuadricópteros}
 \vspace*{15pt}
 
-A la hora de la planificación del Proyecto se plantean dos opciones que se diferencian básicamente en el punto de partida. Ambas tienen como objetivo principal diseñar e integrar un sistema de control que permita al Cuadricóptero mantener un vuelo autónomo, pero una de ellas consta además del en  el diseño y el armado del mismo. \\Esta última incluye desafíos de ingeniería mecánica, conocimientos de resistencia, flexibilidad y peso de materiales, así como también diversas complicaciones a la hora de fabricar y armar las partes. \\ Teniendo en cuenta que se trata de un proyecto con tiempo acotado y su objetivo se centra en el control del vehículo, la necesidad de partir de con un hardware ya construido resulta imperiosa. Por ello se realiza un estudio sobre las opciones que el mercado ofrece en esta materia. Desafortunadamente las opciones no son muy numerosas, disponiendo de Cuadricópteros comerciales controlados a control remoto. Todos ellos incluyen un pequeño sistema de control integrado de los cuales no es posible obtener información ya que se trata de software privativo. Las opciones que el mercado ofrece son: 
+A la hora de la planificación del Proyecto se plantean dos opciones que se diferencian básicamente en el punto de partida. Ambas tienen como objetivo principal dise?ar e integrar un sistema de control que permita al Cuadricóptero mantener un vuelo autónomo, pero una de ellas consta además del en  el dise?o y el armado del mismo. \\Esta última incluye desafíos de ingeniería mecánica, conocimientos de resistencia, flexibilidad y peso de materiales, así como también diversas complicaciones a la hora de fabricar y armar las partes. \\ Teniendo en cuenta que se trata de un proyecto con tiempo acotado y su objetivo se centra en el control del vehículo, la necesidad de partir de con un hardware ya construido resulta imperiosa. Por ello se realiza un estudio sobre las opciones que el mercado ofrece en esta materia. Desafortunadamente las opciones no son muy numerosas, disponiendo de Cuadricópteros comerciales controlados a control remoto. Todos ellos incluyen un peque?o sistema de control integrado de los cuales no es posible obtener información ya que se trata de software privativo. Las opciones que el mercado ofrece son: 
 \begin{itemize}
 	\item Gaui 330X
 	\item XAircraft X650
@@ -47,8 +48,9 @@ A la hora de la planificación del Proyecto se plantean dos opciones que se difer
 \end{itemize}
 Se procede a la comparación de los equipos mencionados y se analizan algunos aspectos fundamentales y críticos, como puede ser por ejemplo el peso del dispositivo y la carga útil que puede soportar.
 
+
 \subsubsection*{Motor}
-Al estudiar las posibilidades nos encontramos con que en todos los casos los motores se controlan con modulación por ancho de pulsos, de ahora en más \textbf{PWM} por sus siglas en inglés, técnica en la cual se modifica el ciclo de trabajo de una señal periódica para controlar la cantidad de energía que se entrega a una carga.\\
+Al estudiar las posibilidades nos encontramos con que en todos los casos los motores se controlan con modulación por ancho de pulsos, de ahora en más \textbf{PWM} por sus siglas en inglés, técnica en la cual se modifica el ciclo de trabajo de una se?al periódica para controlar la cantidad de energía que se entrega a una carga.\\
 
 	En la tabla \ref{tab:motor} se muestran las características de los motores de los 3 Cuadricópteros considerados.\\
 
@@ -68,13 +70,13 @@ Al estudiar las posibilidades nos encontramos con que en todos los casos los mot
 \end{table}
 
 	Los motores \emph{Brushless} son motores eléctricos alimentados con corriente continua. Tienen un sistema de conmutación eléctrico y presentan relaciones lineales entre \emph{Corriente} y \emph{Torque} y entre \emph{Frecuencia} y \emph{velocidad}. Son comúnmente utilizados en vehículos radio-controlados por su gran eficiencia, potencia, durabilidad y su bajo peso en comparación con los tradicionales motores \emph{Brushed}. Sin embargo, los motores de CC \emph{Brushless} son mucho más complicados de controlar, ya que la fase varía con la rotación del motor. Para controlarlos se utilizan unos dispositivos llamados \emph{Controladores eléctricos de velocidad}, o \textbf{ESCs}. Comúnmente los ESCs se clasifican según su corriente máxima, por ejemplo 10 ampéres o 10A.\\
-	
+
 	Como se puede ver en la tabla \ref{tab:motor}, todos los dispositivos utilizan motores similares y la única diferencia radica en que la eficiencia de los motores del \emph{Turbo Ace X720} es mayor.
 
 \subsubsection*{Tiempo de vuelo}
 
 	El tiempo de vuelo puede resultar crítico según la aplicación considerada. En la tabla \ref{tab:tiempo} se muestran los datos que se obtuvieron para los 3 Cuadricópteros considerados.
-	
+
 \begin{table}[H]
 \begin{tabular}{p{40pt}|p{80pt}|p{130pt}|p{130pt}|} 
 \cline{2-4}
@@ -89,7 +91,7 @@ Al estudiar las posibilidades nos encontramos con que en todos los casos los mot
 \end{table}
 
 	Como se puede apreciar los tiempos de vuelo son similares en los 3 dspositivos, por lo que no será un factor determinante a la hora de tomar la decisión.\\
-	
+
 	Un factor determinante en el tiempo de vuelo es la batería a utilizar. Deben considerarse 2 aspectos importantes: la capacidad de la batería y su peso. Si bien una batería con mayor capacidad permitirá mayor autonomía de vuelo, es claro que su peso también aumentará, lo cual a su vez, causará un mayor consumo. Los 3 Cuadricópteros en consideración incluyen una batería de 3 celdas de Litio de $2200 \, mAh$.
 
 \subsubsection*{Peso}
@@ -117,8 +119,8 @@ Como se puede ver en la tabla \ref{tab:peso}, no cabe duda que el dispositivo qu
 \subsubsection*{Instrumentación}
 
 	Toda la instrumentación que los dispositivos brindan está originalmente destinada al manejo mediante el control remoto. Todos ellos incluyen un acelerómetro y un giróscopo de 3 ejes y traen algún sistema de estabilización incluido de modo de facilitar su control. \\
-	
-	Como ya se mencionó, se añadirá al Cuadricóptero la instrumentación necesaria para su control automático, por lo cual la instrumentación incluida en el dispositivo carece de gran importancia. Sin embargo, resulta interesante conservar la posibilidad de controlarlo mediante el control remoto, ya que puede ser útil tanto en determinadas aplicaciones, como para evitar eventualidades en las primeras pruebas donde se testean los algoritmos de control desarrollados. El algoritmo de control deberá poder alternar entre estos dos modos de vuelo dándole prioridad al control remoto, de modo de conservar la integridad física del dispositivo ante fallas en los algoritmos de control.
+
+	Como ya se mencionó, se a?adirá al Cuadricóptero la instrumentación necesaria para su control automático, por lo cual la instrumentación incluida en el dispositivo carece de gran importancia. Sin embargo, resulta interesante conservar la posibilidad de controlarlo mediante el control remoto, ya que puede ser útil tanto en determinadas aplicaciones, como para evitar eventualidades en las primeras pruebas donde se testean los algoritmos de control desarrollados. El algoritmo de control deberá poder alternar entre estos dos modos de vuelo dándole prioridad al control remoto, de modo de conservar la integridad física del dispositivo ante fallas en los algoritmos de control.
 
 \begin{table}[H]
 \begin{tabular}{p{40pt}|p{85pt}|p{125pt}|p{130pt}|} 
@@ -147,14 +149,14 @@ Como se puede ver en la tabla \ref{tab:peso}, no cabe duda que el dispositivo qu
 & \cellcolor[gray]{0.8} \textbf{XAircraft X650} 
 & \cellcolor[gray]{0.8} \textbf{Turbo Ace X720} \\ \cline{2-4} \hline
 \multicolumn{1}{|p{40pt}|}{\cellcolor[gray]{0.8}\textbf{Control}} 
-& - & Software de configuración incluido. Dispositivo de control de 4 velocidades diseñado todo en 1. Soporta protocolos $Ultra$ $PWM$ y control de frecuencia hasta $500Hz$. Posee algoritmos de control de vuelo incorporados que hacen q sea mas fácil volarlo & Nivelación automática con control de altitud \\ 
+& - & Software de configuración incluido. Dispositivo de control de 4 velocidades dise?ado todo en 1. Soporta protocolos $Ultra$ $PWM$ y control de frecuencia hasta $500Hz$. Posee algoritmos de control de vuelo incorporados que hacen q sea mas fácil volarlo & Nivelación automática con control de altitud \\ 
 \hline 
 \end{tabular}
 \caption{Comparación control}
 \label{tab:control}
 \end{table}
 
-	Si bien el \emph{XAircraft X650} es el que tiene más algoritmos de control implementados que facilitan su mando, se considera que el dispositivo que se adecúa más a nuestras necesidades es el \emph{Turbo Ace X720}. Tiene un pequeño sistema de estabilización que ayuda a la hora de su control, pero no incluye demasiado software ni hardware que no será utilizado y encarecen al producto, como el \emph{XAircraft X650}.
+	Si bien el \emph{XAircraft X650} es el que tiene más algoritmos de control implementados que facilitan su mando, se considera que el dispositivo que se adecúa más a nuestras necesidades es el \emph{Turbo Ace X720}. Tiene un peque?o sistema de estabilización que ayuda a la hora de su control, pero no incluye demasiado software ni hardware que no será utilizado y encarecen al producto, como el \emph{XAircraft X650}.
 
 \subsubsection*{Dimensiones}
 
@@ -174,7 +176,7 @@ Como se puede ver en la tabla \ref{tab:peso}, no cabe duda que el dispositivo qu
 \label{tab:dimensiones}
 \end{table}
 
-	Como se puede ver el \emph{GAUI} es el más pequeño, mientras que los otros dos tienen el mismo tamaño aproximadamente
+	Como se puede ver el \emph{GAUI} es el más peque?o, mientras que los otros dos tienen el mismo tama?o aproximadamente
 
 	En la figura \ref{fig:cuadricopteros} se pueden apreciar fotografías de los 3 equipos considerados.
 
@@ -200,7 +202,7 @@ Como se puede ver en la tabla \ref{tab:peso}, no cabe duda que el dispositivo qu
 	\item La carga útil que puede trasportar el \emph{Turbo Ace X720} es la mayor de todos los considerados
 	\item El \emph{Turbo Ace X720} trae un sistema de nivelación automática y estabilización que resultará útil al momento de controlarlo con el mando remoto. Además no incluye excesivas utilidades para este mando que no serán utilizadas y contribuyen a encarecer el precio.
 \end{itemize}
-	
+
 	Por todas las razones expuestas anteriormente y los análisis comparativos realizados se tiene que la opción que mejor se adecúa a nuestro proyecto es el \textbf{Turbo Ace X720}. 
 
 \newpage
@@ -483,24 +485,31 @@ En virtud del análisis anterior puede asegurarse que:
 \end{itemize}
 
 Teniendo en cuenta las observaciones anteriores, se optó por construir el sistema en base a una arquitectura basada en la placa Beagleboard.
+
 \section{Comunicación}
 \vspace*{15pt}
 
-Ver las alternativas para las 3 comunicaciones q hay q resolver: PC, sensores y motores. Cualquier cambio de titulo es bienvenido. chau
-
+La inteligencia debe comunicarse con dos bloques del sistema: el de los sensores y el de los motores sobre los cuales se actúa. Además es necesario comunicar a la intelegencia con una PC con el objetivo de programar tanto los algoritmos de control como los rumbos del sistema. 
+ 
 \subsection{Comunicación con PC}
 \vspace*{15pt}
+La placa elegida posee diversos puertos USB, por dicho motivo se pueden utilizar dichos puertos para obtener una comunicación directa con la PC. Dicha comunicación sirve para programar el sistema en una primera etapa, sin embargo no parece la forma más adecua de comunicarse con el quadcopter mientras el mismo se encuentra en el aire para reprogamar una ruta, o para modificar algún detalle de un algoritmo. Por dicho motivo se opta por alguna comunicación de tipo inalámbrica. Las opciones que consideradas fueron: WiFi, Bluetooth y GSM. Al poseer en la intelegencia un kernel de linux, la comunicación vía WiFi es muy sencilla de implementar. Por dicho motivo se opta por este tipo de comunicación. Al disponer de diversos puertos USB en la inteligencia se opta por un módulo WiFi USB.    
+
 
 \subsection{Comunicación con instrumentación}
 \vspace*{15pt}
 
+En lo que respecta a la comunicación con la instrumentación se disponen de diversas opciones. Se tiene la posibilidad de comunicarse a través de un protocolo serie, I2C o incluso puertos USB. Por dicho motivo este aspecto no será analizado cabalmente en esta sección sino que se realizará al momento de analizar las opciones de comunicación.  
+
 \subsection{Comunicación con motores}
 \vspace*{15pt}
+
+Los motores como se explicó anteriormente funcionan mediante PWM. Por lo tanto, la comunicación entre la inteligencia y los motores será cableada. La se?al de entrada de los ESC's se conectará directamente a los pines de salida de la inteligencia donde se programen los PWM. 
 
 \newpage
 \section{Instrumentación}
 \vspace*{15pt}
-
+Para poder controlar el sistema es importante poder conocer los valores que toman las variables del mismo. Como se verá en el capítulo sobre el desarrollo del modelo físico del quadcopter, las variables que es necesario conocer son: La aceleración en las tres coordenadas y la velocidad angular del sistema. Por dicho motivo parece imprescindible dotar al sistema de sensores capaces de medir dichas magnitudes.
 
 \newpage
 \subsection{Acelerómetro}
@@ -510,7 +519,6 @@ Ver las alternativas para las 3 comunicaciones q hay q resolver: PC, sensores y 
 Previo a definir el acelerómetro, su principio básico de funcionamiento y su interés en la aplicación presentada se debe realizar una discusión física sobre la caída libre como sistema de referencia.
 En la física clásica, la fuerza gravitatoria que se ejerce sobre una masa es proporcional a la intensidad del campo gravitatorio en la posición en la cual se encuentra. 
 La teoría general de la relatividad es una teoría métrica de la gravitación. Los fenómenos que en la mecánica clásica se le atribuyen a la acción de la fuerza de gravedad, corresponden a movimientos inerciales en una geometría curvada del espacio-tiempo en la teoría de la relatividad general.
-En este caso la gravedad no es una fuerza, sino una geodésica\footnote{Línea de mínima longitud que une dos puntos en una superficie dada y está contenida en esta superficie.}.
 
 Por lo tanto, desde el punto de vista de la física clásica, un sistema de referencia en caída libre es un sistema acelerado por la fuerza de la gravedad, y como tal, es no inercial.
 Por el contrario, desde el punto de vista de la física relativista, el sistema está acelerado en el espacio, pero no en el espacio-tiempo, por lo tanto el sistema de referencia es inercial.
@@ -518,10 +526,10 @@ Por el contrario, desde el punto de vista de la física relativista, el sistema e
 Saldada esta discusión se define un acelerómetro como un dispositivo capaz de medir su aceleración propia en el marco de referencia de la caída libre relativista. Esto implica que el dispositivo no mide siempre su cambio de velocidad en el espacio.
 Por ejemplo, la medida de un acelerómetro en caída libre será cero a pesar de que su velocidad crezca, de la misma forma se puede observar que un acelerómetro en reposo respecto de la Tierra, no dará una medida nula, sino que por el contrario medirá como aceleración g.
 % voy a hablar un poco de xq elejimos acelerometros en un chip (costo, peso) así no tengo que explicar el funcionamiento de todos los tipos de acelerómetros que son re distintos.
-Existen diversos tipos de acelerómetro, en este caso se eligió trabajar con un acelerómetro contenido en un circuito integrado (tecnología MEMS). Las razones de esta elección son fundamentalmente, tamaño y peso (críticos en la aplicación) y económicos. Los mismos son más pequeños, livianos y baratos que otras tecnologías.
+Existen diversos tipos de acelerómetro, en este caso se eligió trabajar con un acelerómetro contenido en un circuito integrado (tecnología MEMS). Las razones de esta elección son fundamentalmente, tama?o y peso (críticos en la aplicación) y económicos. Los mismos son más peque?os, livianos y baratos que otras tecnologías.
 Dicho acelerómetro, procesa las medidas y las convierte a una salida eléctrica, la forma de dicha salida depende si el integrado es analógico, o digital.
 Los acelerómetros basados en tecnologías MEMS miden cambios internos, de la transferencia de calor causada por la aceleración, ofreciendo ventajas significativas sobre el empleo de una estructura tradicional sólida de masas de prueba.
-Ya que la masa de prueba en el diseño de los sensores MEMS son moléculas de gas, las estructuras móviles mecánicas son eliminadas dentro del acelerómetro.
+Ya que la masa de prueba en el dise?o de los sensores MEMS son moléculas de gas, las estructuras móviles mecánicas son eliminadas dentro del acelerómetro.
 
 %TODO Referencia a MEMS
 Un acelerómetro de tres ejes, no es otra cosa que un acelerómetro capaz de medir su aceleración propia en tres ejes de coordenadas.
@@ -541,7 +549,7 @@ En particular, el acelerómetro no detecta giros. Por lo tanto es incapaz de apor
 \label{giro}
 \vspace*{15pt}
 
-Un giróscopo es un instrumento que mide la velocidad angular del sistema en un marco de referencia inercial como el definido en la sección anterior. Las mismas restricciones sobre tamaño, peso y costos que se aplicaban para el acelerómetro se aplican aquí. Por dicho motivo vuelve a optar por un instrumento de tecnología MEMS. Los giróscopos construidos con esta tecnología basan su funcionamiento 
+Un giróscopo es un instrumento que mide la velocidad angular del sistema en un marco de referencia inercial como el definido en la sección anterior. Las mismas restricciones sobre tama?o, peso y costos que se aplicaban para el acelerómetro se aplican aquí. Por dicho motivo vuelve a optar por un instrumento de tecnología MEMS. Los giróscopos construidos con esta tecnología basan su funcionamiento 
 %TODO funcionamiento del giróscopo
 
 %TODO exiplicar errores integration drift
@@ -552,7 +560,7 @@ Sin embargo, en la práctica esto no sucede así. Todas las medidas realizadas tie
 \subsection{GPS}
 \vspace*{15pt}
 
-Taría bueno repartirnos secciones y q cada uno encare un bicho de estos y se escriba algo, les parece?
+
 
 \newpage
 \subsection{Definición de instrumentación}
@@ -560,10 +568,10 @@ Taría bueno repartirnos secciones y q cada uno encare un bicho de estos y se esc
 
 
 %TODO Acelerómetro + giróscopo Pater
-En la secciones \ref{acelerometro} y \ref{giro} se detalló el porqué de la elección de la tecnología MEMS para el acelerómetro y el giróscopo. Las razones fundamentales son el costo, tamaño y peso de los instrumentos, siendo los últimos dos críticos en la aplicación.
-A partir de esta definición surgen dos posibilidades, integrar los instrumentos diseñando un PCB o adquirir uno en el cual se encuentren los dos sensores. Al diseñar un PCB se reduce el costo de la instrumentación. El precio de cada chip ronda los 5 U\$S, sumado al precio de algunas resistencias, capacitores y otros materiales necesarios para la construcción del PCB (Placa de cobre, percloruro, estaño, etc) hacen un total muy inferior al costo de comprar una placa ya armada (más de 60 U\$S). Sin embargo, el proceso de diseño del PCB extiende los plazos en gran medida, se debe diseñar el circuito, construir y verificar su funcionamiento. El proceso mencionado tendrá probablemente una duración superior a las dos semanas, lo cual implica un retraso en varios aspectos del proyecto ya que diversas tareas previamente definidas dependen fuertemente del funcionamiento de la instrumentación. Por otra parte el peso que representa el costo de adquirir una placa en la que se incluyan ambos sensores (acelerómetro y giróscopo) en el presupuesto total es muy bajo (4\%).
+En la secciones \ref{acelerometro} y \ref{giro} se detalló el porqué de la elección de la tecnología MEMS para el acelerómetro y el giróscopo. Las razones fundamentales son el costo, tama?o y peso de los instrumentos, siendo los últimos dos críticos en la aplicación.
+A partir de esta definición surgen dos posibilidades, integrar los instrumentos dise?ando un PCB o adquirir uno en el cual se encuentren los dos sensores. Al dise?ar un PCB se reduce el costo de la instrumentación. El precio de cada chip ronda los 5 U\$S, sumado al precio de algunas resistencias, capacitores y otros materiales necesarios para la construcción del PCB (Placa de cobre, percloruro, esta?o, etc) hacen un total muy inferior al costo de comprar una placa ya armada (más de 60 U\$S). Sin embargo, el proceso de dise?o del PCB extiende los plazos en gran medida, se debe dise?ar el circuito, construir y verificar su funcionamiento. El proceso mencionado tendrá probablemente una duración superior a las dos semanas, lo cual implica un retraso en varios aspectos del proyecto ya que diversas tareas previamente definidas dependen fuertemente del funcionamiento de la instrumentación. Por otra parte el peso que representa el costo de adquirir una placa en la que se incluyan ambos sensores (acelerómetro y giróscopo) en el presupuesto total es muy bajo (4\%).
 
-A partir de el análisis realizado se decide por adquirir una placa ya diseñada que contenga los sensores necesarios. Existe una gran diversidad de soluciones de instrumentación en el mercado. Debido a los requerimientos del proyecto se descartaron muchas de ellas. Las opciones consideradas finalmente se resumen en una tabla en el anexo. La característica común a todas ellas es que pueden medir 6 grados de libertad, la misma cantidad de variables del sistema a controlar (tres coordenadas correspondientes a la posición del centro de masa, raw, yaw, pitch) %TODO ANEXO.
+A partir de el análisis realizado se decide por adquirir una placa ya dise?ada que contenga los sensores necesarios. Existe una gran diversidad de soluciones de instrumentación en el mercado. Debido a los requerimientos del proyecto se descartaron muchas de ellas. Las opciones consideradas finalmente se resumen en una tabla en el anexo. La característica común a todas ellas es que pueden medir 6 grados de libertad, la misma cantidad de variables del sistema a controlar (tres coordenadas correspondientes a la posición del centro de masa, raw, yaw, pitch) %TODO ANEXO.
 
 Los criterios que se fijaron para definir la instrumentación fueron los siguientes:
 \begin{itemize}
@@ -585,9 +593,60 @@ En lo que respecta al rango de medida de los acelerómetros se definió que el mis
 %TODO Masmenos 3g y masomenos 300
 Lo que se observa es que todos los acelerómetros y giroscopos de las placas de esta preselección cumplen con dicho requerimiento.
 
+
+\begin{table}[H]
+\begin{tabular}{p{115pt}|p{55pt}|p{65pt}|p{55pt}|p{90pt}|} 
+\cline{2-5} 
+& \multicolumn{2}{|c|}{\cellcolor[gray]{0.7}\textbf{Acelerómetro}} 
+& \multicolumn{2}{|c|}{\cellcolor[gray]{0.7}\textbf{Giróscopo}}  \\ \cline{2-5}
+& \cellcolor[gray]{0.8} \textbf{Rango} 
+& \cellcolor[gray]{0.8} \textbf{Sensibilidad}
+& \cellcolor[gray]{0.8} \textbf{Rango} 
+& \cellcolor[gray]{0.8} \textbf{Sensibilidad} \\ \cline{2-5} \hline
+\multicolumn{1}{|c|}{\cellcolor[gray]{0.8}\textbf{CHR-6d}}
+& 3g & 300mV/g &  400°/s ó 100°/s &  2.5mV/(°/s) ó 2.5mV/(°/s) \\ \hline
+\multicolumn{1}{|p{115pt}|}{\cellcolor[gray]{0.8}\textbf{Atomic IMU}}
+&  1.5g  ;  6g &  800mV/g   200mV/g &  300°/s  &  3.3mV/(°/s)\\ \hline
+\multicolumn{1}{|p{115pt}|}{\cellcolor[gray]{0.8}\textbf{IMU Digital Combo Board}}
+&  2g  ;  16g &  356LSB/g   321LSB/g &  2000°/s  &  14.375 LSB/(°/s)\\ \hline
+\multicolumn{1}{|p{115pt}|}{\cellcolor[gray]{0.8}\textbf{IMU Analgo Combo Board Razor}}
+&  3g &  300mV/g  &  300°/s  1200°/s &  3.3mV/(°/s)  0.83mV/(°/s)\\ \hline
+\multicolumn{1}{|p{115pt}|}{\cellcolor[gray]{0.8}\textbf{IMU Fusion Board}}
+&  2g &  256 LSB/g  &  250°/s  2000°/s &  131 LSB/(°/s)     16.4 LSB/(°/s)\\
+\hline 
+\end{tabular}
+\caption{Sensores}
+\label{tab:sensores}
+\end{table}
+
 Resulta conveniente que la instrumentación posea un microprocesador, la razón es que le ahorra tiempo a la inteligencia del sistema en el procesamiento de las medidas crudas de los sensores. Los sensores presentan sus medidas constantemente en forma analógica o digtal dependiendo del sensor en cuestión. En caso de ser una medida analógica se debe en primer lugar digitalizar. Una vez que se tiene la medida digitalizada se debe realizar un procesamiento que consiste básicamente en ponerle una marca de tiempo a cada medida y asociarle una etiqueta correspondiente al sensor que la realizó. 
 %TODO ver si finalmente lo hacemos así
 Resulta sumamente interesante que no sea el \emph{core} quien se encarga de esta identificación, sino que obtenga los datos pre-procesados. Por esta razón se favorecieron las placas que incluyeran un microprocesador. 
+
+
+\begin{table}[H]
+\begin{tabular}{p{110pt}|p{65pt}|p{65pt}|p{60pt}|p{60pt}|} 
+
+\cline{2-5} 
+& \cellcolor[gray]{0.8} \textbf{Frecuencia reloj} 
+& \cellcolor[gray]{0.8} \textbf{Largo de palabra}
+& \cellcolor[gray]{0.8} \textbf{RAM} 
+& \cellcolor[gray]{0.8} \textbf{Flash}\\ \cline{2-5} \hline
+\multicolumn{1}{|p{110pt}|}{\cellcolor[gray]{0.8}\textbf{CHR-6d}}
+&  72MHz &  32 bits &  20Kb &  64Kb \\ \hline
+\multicolumn{1}{|p{110pt}|}{\cellcolor[gray]{0.8}\textbf{Atomic IMU}}
+&  10MHz  &  8 bits &  2Kb  &  32Kb \\ \hline
+\multicolumn{1}{|p{110pt}|}{\cellcolor[gray]{0.8}\textbf{IMU Digital Combo Board}}
+&  - &  - &  -  &  -\\ \hline
+\multicolumn{1}{|p{110pt}|}{\cellcolor[gray]{0.8}\textbf{IMU Analgo Combo Board Razor}}
+&  - &  -  &  - &  -\\ \hline
+\multicolumn{1}{|p{110pt}|}{\cellcolor[gray]{0.8}\textbf{IMU Fusion Board}}
+&  - &  -  &  - &  -\\
+\hline 
+\end{tabular}
+\caption{Características de los microprocesadores}
+\label{tab:micro}
+\end{table}
 
 En caso de optar por una placa con microprocesador resulta fundamental que la misma sea sencilla de programar. Las razones son evidentes, si los algoritmos que vienen programados de fábrica no resultan adecuados para la aplicación se pueden modificar fácilmente. También parece importante que el código de fábrica sea abierto; en primer lugar para comprender su funcionamiento y poder procesar adecuadamente los datos que se obtengan de los sensores. Es interesante además poder modificar secciones puntuales de código, sin necesidad de reprogramar completamente el microprocesador. 
 
@@ -595,9 +654,18 @@ La comunicación no resultó un factor crítico ya que todos los candidatos a \emph
 
 En lo que respecta a compatibilidad con el sistema, se buscó que la alimentación de la placa sea la misma que la del microprocesador principal. Por dicha razón lo ideal es que la placa pueda ser alimentada a 5V.
 
-A partir de las consideraciones anteriores, se considera que la solución más adecuada para el objetivo que se plantea en esta sección es la placa Atomic IMU. Dicha placa cumple con los rangos de medida especificados anteriormente, posee un microprocesador de 8 bits con un reloj de 10MHz. Existe ya un código en c disponible para programar el dispositivo. El mismo puede ser modificado en caso de no cumplir con todos los requerimientos necesarios. La placa dispone de un puerto JTAG para la programación del mismo. La forma que tiene la placa de presentar los datos obtenidos de los sensores es a través de un puerto serie capaz de transmitir datos con una tasa de transferencia de 115.200bps. Por otra parte el costo de la misma es de los más bajos dentro de las posibilidades consideradas
-%TODO GPS 
+A partir de las consideraciones anteriores, se considera que la solución más adecuada para el objetivo que se plantea en esta sección es la placa Atomic IMU. Dicha placa cumple con los rangos de medida especificados anteriormente, posee un microprocesador de 8 bits con un reloj de 10MHz. Existe ya un código en c disponible para programar el dispositivo. El mismo puede ser modificado en caso de no cumplir con todos los requerimientos necesarios. La placa dispone de un puerto JTAG para la programación del mismo. La forma que tiene la placa de presentar los datos obtenidos de los sensores es a través de un puerto serie capaz de transmitir datos con una tasa de transferencia de 115.200bps. Cabe aclarar que la Atomic IMU es la única de las soluciones consideradas que puede ser alimentada con una fuente de tensión de 5V. Por otra parte el costo de la misma es de los más bajos dentro de las posibilidades consideradas.
 
+En la figura \ref{fig:IMU} se puede observar la instrumentación escogida:
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.3\textwidth]{./Pics/IMU.jpg}
+	\caption{Atomic IMU}
+	\label{fig:IMU}
+\end{figure}
+
+%TODO GPS 
 
 
 
