@@ -7,14 +7,13 @@
 \usepackage{multirow}
 \usepackage{caption}
 \usepackage{babel}
-\usepackage[dvips]{hyperref}
+%\usepackage[dvips]{hyperref}
 \usepackage{amssymb}
 \usepackage{listings}
 \usepackage{epsfig}
 \usepackage{amsmath}
 \usepackage{array}
 \usepackage[table]{xcolor}
-%\usepackage{multirow}
 %\usepackage[Sonny]{fncychap}
 %\usepackage[Glenn]{fncychap}
 \usepackage[Conny]{fncychap}
@@ -47,7 +46,6 @@ A la hora de la planificación del Proyecto se plantean dos opciones que se difer
 	\item Turbo Ace X720
 \end{itemize}
 Se procede a la comparación de los equipos mencionados y se analizan algunos aspectos fundamentales y críticos, como puede ser por ejemplo el peso del dispositivo y la carga útil que puede soportar.
-
 
 \subsubsection*{Motor}
 Al estudiar las posibilidades nos encontramos con que en todos los casos los motores se controlan con modulación por ancho de pulsos, de ahora en más \textbf{PWM} por sus siglas en inglés, técnica en la cual se modifica el ciclo de trabajo de una señal periódica para controlar la cantidad de energía que se entrega a una carga.\\
@@ -209,37 +207,300 @@ Como se puede ver en la tabla \ref{tab:peso}, no cabe duda que el dispositivo qu
 \section{Inteligencia}
 \vspace*{15pt}
 
-Micro. decir pa q lo usamos, q tiene q hacer. payar
+Además de la plataforma física, deben seleccionarse componentes electrónicos capaces de procesar la información proveniente de los sensores, computar y ejecutar los algoritmos de control y generar las señales necesarias para transmitir las instrucciones a los motores.\\
+\\
+Será necesario, entonces, seleccionar uno (o varios) componentes capaces de desarrollar las tareas mencionadas. Para ello, el sistema elegido deberá contar con:
+
+\begin{itemize}
+\item Un microprocesador con suficiente poder de computo
+\item Un sistema de entradas y salidas que permita interactuar con la instrumentación y con el sistema de control de motores
+\item Un sistema de memoria no voláil que permita mantener cargado el programa de control
+\item Elementos de comunicación para establecer conexión con un PC
+\item Un sistema de potencia que brinde energía al sistema con una autonomía suficiente
+\end{itemize}
+
+Dado que el sistema utilizará motores brushless, es necesario contar con un sistema capaz de generar señales PWM, ya sea mediante software, hardware o ambas, para controlar los motores.\\
+\\
+También será necesario que el sistema seleccionado tenga una interfaz UART que permita la comunicación con los sensores involucrados.\\
+\\
+Es evidente que la elección de la inteligencia no puede realizarse en forma independiente, sino que estará fuertemente condicionada por la elección del resto de la arquitectura del sistema final. Por ello, las decisiones tomadas serán afectadas considerablemente por las características del resto de los componentes del sistema.\\
+\\
+%Micro. decir pa q lo usamos, q tiene q hacer. payar
+Teniendo en cuenta las restricciones anteriores, se seleccionaron varias arquitecturas posibles en una primera etapa. Se realizo un primer estudio de las diversas posibilidades ofrecidas, manejándose varias opciones.\\
+\\
+Varias de ellas fueron descartadas por no cumplir todos los requisitos arriba mencionados. De la opciones que sí verificaban dichos requisitos fueron descartadas aquellas que implicaban más de un componente, optándose por considerar las opciones que fueran capaces de proveer todas las opciones arriba mencionadas integradas en una única placa.\\
+\\
+Una vez realizado un primer análisis de las vastas posibilidades disponibles en el mercado se pre-seleccionaron las siguientes opciones:
+
+\begin{enumerate}
+\item Beagleboard XM
+
+\item Gumstix Overo Fire
+\end{enumerate}
+A continuación se desarrollaran y compararán las características fundamentales de ambas opciones, permitiendo así la selección de alguno de ellos en virtud de los requisitos del sistema que se desea implementar. 
+
+\subsection*{Procesadores: CPU y DSP}
+Es claro que el procesador es un componente determinante, pues será el encargado de computar completamente los algoritmos de control. También se encargará de manejar parte de la comunicación con la instrumentación y elementos de control. Finalmente, deberá ser capaz de manejar información proveniente de los canales de comunicación establecidos con un PC.
+
+\begin{table}[H]
+\begin{tabular}{p{130pt}|p{130pt}|p{130pt}|} 
+\cline{2-3}
+& \cellcolor[gray]{0.8} \textbf{Beagleboard XM} 
+& \cellcolor[gray]{0.8} \textbf{Gumstix Overo Fire} \\ \cline{1-3} \hline
+\multicolumn{1}{|p{130pt}|}{\cellcolor[gray]{0.8}\textbf{CPU}} 
+&ARM Cortex A8 1Ghz,  256KB L2 cache, 1200 MIPS &ARM Cortex A8 720Mhz, 256KB L2 cache, 1200 MIPS \\ 
+\hline 
+\multicolumn{1}{|p{130pt}|}{\cellcolor[gray]{0.8}\textbf{DSP}} 
+&TMS320C64x+, 800Mhz &TMS320C64x+, 520Mhz\\
+\hline
+\end{tabular}
+\caption{Procesadores}
+\label{tab:procesadores}
+\end{table}
+
+Resulta evidente que ambas opciones presentan el mismo procesador, con la salvedad que ambos procesadores de la Beagleboard presentan una mayor frecuencia de reloj. 
+
+\subsection*{Memoria}
+
+La memoria disponible en el sistema (tanto estática como volátil) resulta de vital importancia, pues será allí que se guardará la información del programa de control, configuraciones, etc. Adicionalmente, es necesario contar con suficiente memoria volátil a la hora de procesar datos y ejecutar los algoritmos de control.\\
+
+\begin{table}[H]
+\begin{tabular}{p{130pt}|p{130pt}|p{130pt}|} 
+\cline{2-3}
+& \cellcolor[gray]{0.8} \textbf{Beagleboard XM} 
+& \cellcolor[gray]{0.8} \textbf{Gumstix Overo Fire} \\ \cline{1-3} \hline
+\multicolumn{1}{|p{130pt}|}{\cellcolor[gray]{0.8}\textbf{Volátil(RAM)}} 
+&512Mb & 256Mb\\ 
+\hline 
+\multicolumn{1}{|p{130pt}|}{\cellcolor[gray]{0.8}\textbf{Estática}} 
+&Sin memoria interna.  Soporta microSD de hasta 4Gb  &256Mb de memoria interna\\
+\hline
+\end{tabular}
+\caption{Memoria}
+\label{tab:memoria}
+\end{table}
+
+La superioridad de la Beagleboard en cuanto a memoria resulta evidente a partir del análisis anterior.
+
+\subsection*{Dimensiones y peso}
+
+Si bien no resulta una caracetrística determinante, es conveniente que las dimensiones y peso de la placa elegida sean lo menores posibles, de forma de no ocupar gran parte de la carga útil del cuadricóptero con electrónica asociada a la inteligencia implementada.\\
+
+\begin{table}[H]
+\begin{tabular}{p{130pt}|p{130pt}|p{130pt}|} 
+\cline{2-3}
+& \cellcolor[gray]{0.8} \textbf{Beagleboard XM} 
+& \cellcolor[gray]{0.8} \textbf{Gumstix Overo Fire} \\ \cline{1-3} \hline
+\multicolumn{1}{|p{130pt}|}{\cellcolor[gray]{0.8}\textbf{Dimensiones}} 
+&85.09x87.63mm &17x58mm\\ 
+\hline 
+\multicolumn{1}{|p{130pt}|}{\cellcolor[gray]{0.8}\textbf{Peso}} 
+&36g &5.6g\\
+\hline
+\end{tabular}
+\caption{Memoria}
+\label{tab:memoria}
+\end{table}
+En cuanto a dimiensiones y peso, la placa Gumstix Overo Fire parece ser más adecuada.
+
+\subsection*{Programación y Sistema Operativo}
+
+Es importante tener en cuenta como será realizada la programación de los sistemas considerados (dónde se almacena el programa, hardware necesario para la programación, etc.) En particular, es conveniente poder contar con algún sistema operativo que facilite la tareas de programación, testeo y debugging.
+
+\begin{table}[H]
+\begin{tabular}{p{130pt}|p{130pt}|p{130pt}|} 
+\cline{2-3}
+& \cellcolor[gray]{0.8} \textbf{Beagleboard XM} 
+& \cellcolor[gray]{0.8} \textbf{Gumstix Overo Fire} \\ \cline{1-3} \hline
+\multicolumn{1}{|p{130pt}|}{\cellcolor[gray]{0.8}\textbf{Sistema Operativo}} 
+&Booteable desde microSD &Booteable desde microSD\\ 
+\hline 
+\multicolumn{1}{|p{130pt}|}{\cellcolor[gray]{0.8}\textbf{Programación}} 
+&A través de SO. Puerto JTAG de 14 pines &A través de SO\\
+\hline
+\end{tabular}
+\caption{Memoria}
+\label{tab:memoria}
+\end{table}
+
+Es claro que la placa Beagleboard parece ser mejor en cuanto a sus prestaciones de programación.
+
+\subsection*{Alimentación y Energía}
+
+La forma en que la placa elegida es alimentada, así como el grado de autonomía que pueda lograrse con la misma deben ser tenidos en cuenta.\\
+Lograr un nivel de autonomía lo suficientemente grande permitirá que el sistema se mantenga en vuelo durante un tiempo mayor. Idealmente, la autonomía de la alimentación de la inteligencia no debería ser el factor determinante del tiempo de vuelo del dispositivo.
+
+\begin{table}[H]
+\begin{tabular}{p{130pt}|p{130pt}|p{130pt}|} 
+\cline{2-3}
+& \cellcolor[gray]{0.8} \textbf{Beagleboard XM} 
+& \cellcolor[gray]{0.8} \textbf{Gumstix Overo Fire} \\ \cline{1-3} \hline
+\multicolumn{1}{|p{130pt}|}{\cellcolor[gray]{0.8}\textbf{Alimentación}} 
+& BeagleJuice. Sistema de alimentación diseñado especificamente para la Beagleboard. (Dimensiones idénticas a la misma. Conector estándar para BeagleBoard).
+& Alimentado desde una Daughter board: Zippy Flightmax 2200mAh 3S1P\\ 
+\hline 
+\multicolumn{1}{|p{130pt}|}{\cellcolor[gray]{0.8}\textbf{Voltaje. Intensidad de Corriente. Capacidad}} 
+&5V. 1.5A. 4500mAh & 11.1V.44A (= 2200mA x 1P x 20C).2200mAh 20C.\\
+\hline
+\multicolumn{1}{|p{130pt}|}{\cellcolor[gray]{0.8}\textbf{Autonomía}} 
+&6.5 horas &No especificado\\
+\hline
+\multicolumn{1}{|p{130pt}|}{\cellcolor[gray]{0.8}\textbf{Dimensiones}} 
+&85.09x87.63x10mm &102x37x24mm\\
+\hline
+\multicolumn{1}{|p{130pt}|}{\cellcolor[gray]{0.8}\textbf{Peso}} 
+&40g &180g\\
+\hline
+\end{tabular}
+\caption{Alimentación}
+\label{tab:alimentacion}
+\end{table}
+
+Resulta evidente que la Beagleboard resulta superior en cuanto a alimentación disponible, dado que el pack de baterías BeagleJuice fue diseñado específicamente para brindar alimentación a la misma.
+
+\subsection*{Puertos e I/Os}
+
+Los puertos disponibles para entradas, salidas y/o comunicación serán también un factor determinante a la hora de definir la arquitectura del sistema, pues es imperativo que el sistema de control pueda comunicarse con los sensores, el sistema de control de motores, etc.
+
+\begin{table}[H]
+\begin{tabular}{p{130pt}|p{130pt}|p{130pt}|} 
+\cline{2-3}
+& \cellcolor[gray]{0.8} \textbf{Beagleboard XM} 
+& \cellcolor[gray]{0.8} \textbf{Gumstix Overo Fire} \\ \cline{1-3} \hline
+\multicolumn{1}{|p{130pt}|}{\cellcolor[gray]{0.8}\textbf{Puertos}} 
+&\begin{itemize}
+\item 14 pin JTAG
+\item UART
+\item 28 pin exp
+\item LCD
+\item DVI-D
+\item S-VIDEO
+\item Stereo in/out
+\item USB-OTG
+\item RS232
+\item EHCI
+\item 4 USBs
+\item 10/100Mbps Ethernet
+\end{itemize}
+&\begin{itemize}
+\item wifi
+\item bluetooth
+\item 2x70 pin expansion board port
+\item 27 pin camara port
+\end{itemize}\\
+\hline
+\end{tabular}
+\caption{Puertos}
+\label{tab:puertos}
+\end{table}
+
+Cada opción presenta ventajas y desventajas con respecto a los puertos disponibles. Si bien la Beagleboard parece tener una mayor variedad de puertos, la Gumstix Overo Fire cuenta con puertos WiFi y Bluetooth integrados, lo cual resulta ser una ventaja considerable en términos de comunicación.
+
+\subsection*{Comunicación}
+
+Es deseable que el sistema posea algún tipo de comunicación inalámbrica integrada.
+
+\begin{table}[H]
+\begin{tabular}{p{130pt}|p{130pt}|p{130pt}|} 
+\cline{2-3}
+& \cellcolor[gray]{0.8} \textbf{Beagleboard XM} 
+& \cellcolor[gray]{0.8} \textbf{Gumstix Overo Fire} \\ \cline{1-3} \hline
+\multicolumn{1}{|p{130pt}|}{\cellcolor[gray]{0.8}\textbf{WiFi}} 
+&No &Sí\\ 
+\hline 
+\multicolumn{1}{|p{130pt}|}{\cellcolor[gray]{0.8}\textbf{Bluetooth}} 
+&No &Sí\\
+\hline
+\end{tabular}
+\caption{Comunicación}
+\label{tab:comunicacion}
+\end{table}
+
+La Gumstix Overo Fire resulta claramente superior en este aspecto.
+
+\subsection*{Precio}
+
+El precio resulta ser, evidentemente, un factor importante a tener en cuenta.
+
+\begin{table}[H]
+\begin{tabular}{p{130pt}|p{130pt}|p{130pt}|} 
+\cline{2-3}
+& \cellcolor[gray]{0.8} \textbf{Beagleboard XM} 
+& \cellcolor[gray]{0.8} \textbf{Gumstix Overo Fire} \\ \cline{1-3} \hline
+\multicolumn{1}{|p{130pt}|}{\cellcolor[gray]{0.8}\textbf{Precio}} 
+&149USD &220USD\\ 
+\hline 
+\end{tabular}
+\caption{Precio}
+\label{tab:precio}
+\end{table}
+
+Dada la diferencia de precios, sería deseable utilizar la Beagleboard, siempre y cuando esto vaya en detrimento del desempeño final del sistema.
+
+\subsection*{Otras características}
+
+Se presentan, a continuación, algunas características propias relevantes de cada uno de los sistemas propuestos.
+
+\begin{table}[H]
+\begin{tabular}{p{130pt}|p{130pt}|p{130pt}|} 
+\cline{2-3}
+& \cellcolor[gray]{0.8} \textbf{Beagleboard XM} 
+& \cellcolor[gray]{0.8} \textbf{Gumstix Overo Fire} \\ \cline{1-3} \hline
+\multicolumn{1}{|p{130pt}|}{\cellcolor[gray]{0.8}\textbf{Otras características}} 
+&\begin{itemize}
+\item Existencia de Camera Boards integrables directamente en un puerto dedicado
+\item Existencia de la biblioteca OpenCV de visión computacional, optimizada para ser utilizada por Beagleboard.
+\end{itemize}
+
+&\begin{itemize}
+\item Existencia de gran variedad de daughter boards con diversas funcionalidades.
+\end{itemize}\\ 
+\hline 
+\end{tabular}
+\caption{Otras caraterísitcas}
+\label{tab:otras}
+\end{table}
+
+Si se tiene en cuenta el objetivo secundario  planteado (desarrollar un algoritmo de tracking visual), la Beagleboard parece ser más adecuada.
 
 \subsection{Definición de la inteligencia}
 \vspace*{15pt}
 
+En virtud del análisis anterior puede asegurarse que:
 
+\begin{itemize}
+\item La placa Beagleboard parece ser superior en los siguientes aspectos:
+	\subitem Procesadores
+	\subitem Memoria
+	\subitem Programación y Sistema Operativo
+	\subitem Alimentación
+	\subitem Puertos e I/Os
+	\subitem Precio
+\item La placa Gumstix Overo Fire parece ser superior en los siguientes aspectos:
+	\subitem Dimensiones y Peso
+	\subitem Comunicación
+\item Cada placa presenta sus características únicas, lo cual provee ventajas y desventajas para ambas arquitecturas posibles. Si se tiene en cuenta el objetivo secundario del proyecto, it est, la implementación de un sistema capaz de realizar tracking visual mediante una cámara, un sistema basado en la placa Beagleboard parecería ser más adecuado.
+\end{itemize}
 
+Teniendo en cuenta las observaciones anteriores, se optó por construir el sistema en base a una arquitectura basada en la placa Beagleboard.
 \section{Comunicación}
 \vspace*{15pt}
 
-La inteligencia debe comunicarse con dos bloques del sistema: el de los sensores y el de los motores sobre los cuales se actúa. Además es necesario comunicar a la intelegencia con una PC con el objetivo de programar tanto los algoritmos de control como los rumbos del sistema. 
- 
+Ver las alternativas para las 3 comunicaciones q hay q resolver: PC, sensores y motores. Cualquier cambio de titulo es bienvenido. chau
+
 \subsection{Comunicación con PC}
 \vspace*{15pt}
-La placa elegida posee diversos puertos USB, por dicho motivo se pueden utilizar dichos puertos para obtener una comunicación directa con la PC. Dicha comunicación sirve para programar el sistema en una primera etapa, sin embargo no parece la forma más adecua de comunicarse con el quadcopter mientras el mismo se encuentra en el aire para reprogamar una ruta, o para modificar algún detalle de un algoritmo. Por dicho motivo se opta por alguna comunicación de tipo inalámbrica. Las opciones que consideradas fueron: WiFi, Bluetooth y GSM. Al poseer en la intelegencia un kernel de linux, la comunicación vía WiFi es muy sencilla de implementar. Por dicho motivo se opta por este tipo de comunicación. Al disponer de diversos puertos USB en la inteligencia se opta por un módulo WiFi USB.    
-
 
 \subsection{Comunicación con instrumentación}
 \vspace*{15pt}
 
-En lo que respecta a la comunicación con la instrumentación se disponen de diversas opciones. Se tiene la posibilidad de comunicarse a través de un protocolo serie, I2C o incluso puertos USB. Por dicho motivo este aspecto no será analizado cabalmente en esta sección sino que se realizará al momento de analizar las opciones de comunicación.  
-
 \subsection{Comunicación con motores}
 \vspace*{15pt}
-
-Los motores como se explicó anteriormente funcionan mediante PWM. Por lo tanto, la comunicación entre la inteligencia y los motores será cableada. La señal de entrada de los ESC's se conectará directamente a los pines de salida de la inteligencia donde se programen los PWM. 
 
 \newpage
 \section{Instrumentación}
 \vspace*{15pt}
-Para poder controlar el sistema es importante poder conocer los valores que toman las variables del mismo. Como se verá en el capítulo sobre el desarrollo del modelo físico del quadcopter, las variables que es necesario conocer son: La aceleración en las tres coordenadas y la velocidad angular del sistema. Por dicho motivo parece imprescindible dotar al sistema de sensores capaces de medir dichas magnitudes.
+
 
 \newpage
 \subsection{Acelerómetro}
@@ -249,6 +510,7 @@ Para poder controlar el sistema es importante poder conocer los valores que toma
 Previo a definir el acelerómetro, su principio básico de funcionamiento y su interés en la aplicación presentada se debe realizar una discusión física sobre la caída libre como sistema de referencia.
 En la física clásica, la fuerza gravitatoria que se ejerce sobre una masa es proporcional a la intensidad del campo gravitatorio en la posición en la cual se encuentra. 
 La teoría general de la relatividad es una teoría métrica de la gravitación. Los fenómenos que en la mecánica clásica se le atribuyen a la acción de la fuerza de gravedad, corresponden a movimientos inerciales en una geometría curvada del espacio-tiempo en la teoría de la relatividad general.
+En este caso la gravedad no es una fuerza, sino una geodésica\footnote{Línea de mínima longitud que une dos puntos en una superficie dada y está contenida en esta superficie.}.
 
 Por lo tanto, desde el punto de vista de la física clásica, un sistema de referencia en caída libre es un sistema acelerado por la fuerza de la gravedad, y como tal, es no inercial.
 Por el contrario, desde el punto de vista de la física relativista, el sistema está acelerado en el espacio, pero no en el espacio-tiempo, por lo tanto el sistema de referencia es inercial.
@@ -290,7 +552,7 @@ Sin embargo, en la práctica esto no sucede así. Todas las medidas realizadas tie
 \subsection{GPS}
 \vspace*{15pt}
 
-
+Taría bueno repartirnos secciones y q cada uno encare un bicho de estos y se escriba algo, les parece?
 
 \newpage
 \subsection{Definición de instrumentación}
@@ -323,60 +585,9 @@ En lo que respecta al rango de medida de los acelerómetros se definió que el mis
 %TODO Masmenos 3g y masomenos 300
 Lo que se observa es que todos los acelerómetros y giroscopos de las placas de esta preselección cumplen con dicho requerimiento.
 
-
-\begin{table}[H]
-\begin{tabular}{p{115pt}|p{55pt}|p{65pt}|p{55pt}|p{90pt}|} 
-\cline{2-5} 
-& \multicolumn{2}{|c|}{\cellcolor[gray]{0.7}\textbf{Acelerómetro}} 
-& \multicolumn{2}{|c|}{\cellcolor[gray]{0.7}\textbf{Giróscopo}}  \\ \cline{2-5}
-& \cellcolor[gray]{0.8} \textbf{Rango} 
-& \cellcolor[gray]{0.8} \textbf{Sensibilidad}
-& \cellcolor[gray]{0.8} \textbf{Rango} 
-& \cellcolor[gray]{0.8} \textbf{Sensibilidad} \\ \cline{2-5} \hline
-\multicolumn{1}{|c|}{\cellcolor[gray]{0.8}\textbf{CHR-6d}}
-& 3g & 300mV/g &  400°/s ó 100°/s &  2.5mV/(°/s) ó 2.5mV/(°/s) \\ \hline
-\multicolumn{1}{|p{115pt}|}{\cellcolor[gray]{0.8}\textbf{Atomic IMU}}
-&  1.5g  ;  6g &  800mV/g   200mV/g &  300°/s  &  3.3mV/(°/s)\\ \hline
-\multicolumn{1}{|p{115pt}|}{\cellcolor[gray]{0.8}\textbf{IMU Digital Combo Board}}
-&  2g  ;  16g &  356LSB/g   321LSB/g &  2000°/s  &  14.375 LSB/(°/s)\\ \hline
-\multicolumn{1}{|p{115pt}|}{\cellcolor[gray]{0.8}\textbf{IMU Analgo Combo Board Razor}}
-&  3g &  300mV/g  &  300°/s  1200°/s &  3.3mV/(°/s)  0.83mV/(°/s)\\ \hline
-\multicolumn{1}{|p{115pt}|}{\cellcolor[gray]{0.8}\textbf{IMU Fusion Board}}
-&  2g &  256 LSB/g  &  250°/s  2000°/s &  131 LSB/(°/s)     16.4 LSB/(°/s)\\
-\hline 
-\end{tabular}
-\caption{Sensores}
-\label{tab:sensores}
-\end{table}
-
 Resulta conveniente que la instrumentación posea un microprocesador, la razón es que le ahorra tiempo a la inteligencia del sistema en el procesamiento de las medidas crudas de los sensores. Los sensores presentan sus medidas constantemente en forma analógica o digtal dependiendo del sensor en cuestión. En caso de ser una medida analógica se debe en primer lugar digitalizar. Una vez que se tiene la medida digitalizada se debe realizar un procesamiento que consiste básicamente en ponerle una marca de tiempo a cada medida y asociarle una etiqueta correspondiente al sensor que la realizó. 
 %TODO ver si finalmente lo hacemos así
 Resulta sumamente interesante que no sea el \emph{core} quien se encarga de esta identificación, sino que obtenga los datos pre-procesados. Por esta razón se favorecieron las placas que incluyeran un microprocesador. 
-
-
-\begin{table}[H]
-\begin{tabular}{p{110pt}|p{65pt}|p{65pt}|p{60pt}|p{60pt}|} 
-
-\cline{2-5} 
-& \cellcolor[gray]{0.8} \textbf{Frecuencia reloj} 
-& \cellcolor[gray]{0.8} \textbf{Largo de palabra}
-& \cellcolor[gray]{0.8} \textbf{RAM} 
-& \cellcolor[gray]{0.8} \textbf{Flash}\\ \cline{2-5} \hline
-\multicolumn{1}{|p{110pt}|}{\cellcolor[gray]{0.8}\textbf{CHR-6d}}
-&  72MHz &  32 bits &  20Kb &  64Kb \\ \hline
-\multicolumn{1}{|p{110pt}|}{\cellcolor[gray]{0.8}\textbf{Atomic IMU}}
-&  10MHz  &  8 bits &  2Kb  &  32Kb \\ \hline
-\multicolumn{1}{|p{110pt}|}{\cellcolor[gray]{0.8}\textbf{IMU Digital Combo Board}}
-&  - &  - &  -  &  -\\ \hline
-\multicolumn{1}{|p{110pt}|}{\cellcolor[gray]{0.8}\textbf{IMU Analgo Combo Board Razor}}
-&  - &  -  &  - &  -\\ \hline
-\multicolumn{1}{|p{110pt}|}{\cellcolor[gray]{0.8}\textbf{IMU Fusion Board}}
-&  - &  -  &  - &  -\\
-\hline 
-\end{tabular}
-\caption{Características de los microprocesadores}
-\label{tab:micro}
-\end{table}
 
 En caso de optar por una placa con microprocesador resulta fundamental que la misma sea sencilla de programar. Las razones son evidentes, si los algoritmos que vienen programados de fábrica no resultan adecuados para la aplicación se pueden modificar fácilmente. También parece importante que el código de fábrica sea abierto; en primer lugar para comprender su funcionamiento y poder procesar adecuadamente los datos que se obtengan de los sensores. Es interesante además poder modificar secciones puntuales de código, sin necesidad de reprogramar completamente el microprocesador. 
 
@@ -384,18 +595,9 @@ La comunicación no resultó un factor crítico ya que todos los candidatos a \emph
 
 En lo que respecta a compatibilidad con el sistema, se buscó que la alimentación de la placa sea la misma que la del microprocesador principal. Por dicha razón lo ideal es que la placa pueda ser alimentada a 5V.
 
-A partir de las consideraciones anteriores, se considera que la solución más adecuada para el objetivo que se plantea en esta sección es la placa Atomic IMU. Dicha placa cumple con los rangos de medida especificados anteriormente, posee un microprocesador de 8 bits con un reloj de 10MHz. Existe ya un código en c disponible para programar el dispositivo. El mismo puede ser modificado en caso de no cumplir con todos los requerimientos necesarios. La placa dispone de un puerto JTAG para la programación del mismo. La forma que tiene la placa de presentar los datos obtenidos de los sensores es a través de un puerto serie capaz de transmitir datos con una tasa de transferencia de 115.200bps. Cabe aclarar que la Atomic IMU es la única de las soluciones consideradas que puede ser alimentada con una fuente de tensión de 5V. Por otra parte el costo de la misma es de los más bajos dentro de las posibilidades consideradas.
-
-En la figura \ref{fig:IMU} se puede observar la instrumentación escogida:
-
-\begin{figure}[h!]
-	\centering
-	\includegraphics[width=0.3\textwidth]{./Pics/IMU.jpg}
-	\caption{Atomic IMU}
-	\label{fig:IMU}
-\end{figure}
-
+A partir de las consideraciones anteriores, se considera que la solución más adecuada para el objetivo que se plantea en esta sección es la placa Atomic IMU. Dicha placa cumple con los rangos de medida especificados anteriormente, posee un microprocesador de 8 bits con un reloj de 10MHz. Existe ya un código en c disponible para programar el dispositivo. El mismo puede ser modificado en caso de no cumplir con todos los requerimientos necesarios. La placa dispone de un puerto JTAG para la programación del mismo. La forma que tiene la placa de presentar los datos obtenidos de los sensores es a través de un puerto serie capaz de transmitir datos con una tasa de transferencia de 115.200bps. Por otra parte el costo de la misma es de los más bajos dentro de las posibilidades consideradas
 %TODO GPS 
+
 
 
 
