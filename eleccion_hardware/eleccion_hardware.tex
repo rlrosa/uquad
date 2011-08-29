@@ -511,7 +511,6 @@ Los motores como se explicó anteriormente funcionan mediante PWM. Por lo tanto, 
 \vspace*{15pt}
 Para poder controlar el sistema es importante poder conocer los valores que toman las variables del mismo. Como se verá en el capítulo sobre el desarrollo del modelo físico del quadcopter, las variables que es necesario conocer son: La aceleración en las tres coordenadas y la velocidad angular del sistema. Por dicho motivo parece imprescindible dotar al sistema de sensores capaces de medir dichas magnitudes.
 
-\newpage
 \subsection{Acelerómetro}
 \label{acelerometro}
 \vspace*{15pt}
@@ -539,12 +538,6 @@ Resulta fundamental dotar al uQuad de un acelerómetro, el mismo será utilizado p
 Este instrumento, no provee toda la información necesaria, para realizar el control del sistema. El sistema, presenta 6 grados de libertad; las tres coordenadas de su centro de masa, y los tres ángulos que determinan su orientación.
 En particular, el acelerómetro no detecta giros. Por lo tanto es incapaz de aportarnos toda la información necesaria. Es imprescindible entonces dotar al uQuad de un giróscopo. 
  
-
-
-
-
-
-\newpage
 \subsection{Giróscopo}
 \label{giro}
 \vspace*{15pt}
@@ -556,11 +549,21 @@ Un giróscopo es un instrumento que mide la velocidad angular del sistema en un m
 Desde el punto de vista teórico, procesando la información obtenida a partir del acelerómetro y del giróscopo se puede conocer en todo momento la posición del sistema y su orientación a partir de las condiciones iniciales.
 Sin embargo, en la práctica esto no sucede así. Todas las medidas realizadas tienen un cierto error. Para obtener la orientación y la posición a cada instante se deben integrar las medidas obtenidas. Por lo tanto, se integra también el error. Esto produce una acumulación de errores que afecta de forma considerable el resultado final luego de cierta cantidad de muestras. Por lo tanto parece razonable, poder cotejar los datos que se obtienen mediante este método con datos obtenidos mediante otras fuentes. Es a partir de esta problemática que surge la necesidad de contar con un GPS. Se puede, cada cierto intervalo de tiempo, observar en cuanto difieren los resultados obtenidos integrando las medidas de los sensores con los datos que aporta el GPS, de esta forma se pueden corregir los errores debido al \emph{integration drift}.
 
-\newpage
 \subsection{GPS}
 \vspace*{15pt}
 
+La elección del GPS se hizo en busca de simplicidad. Había muchas opciones, placas de diversos tamaños, con diversos tamaños de antenas, pero todas con similares especificaciones.
 
+Las placas candidatas a estar a cargo de la inteligencia contaban con interfaces USB, por lo que se optó por comprar un dongle GPS, cuyas especificaciones son similares a las del resto de las opciones, y se puede comunicar via USB. Existen drivers para este GPS en linux, por lo que la comunicación no debería ser un problema.
+
+Se eligió un \textit{Canmore GT-730F}.
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.2\textwidth]{./Pics/gps.jpg}
+	\caption{Canmore GT-730F}
+	\label{fig:gps}
+\end{figure}
 
 \newpage
 \subsection{Definición de instrumentación}
@@ -664,10 +667,6 @@ En la figura \ref{fig:IMU} se puede observar la instrumentación escogida:
 	\caption{Atomic IMU}
 	\label{fig:IMU}
 \end{figure}
-
-%TODO GPS 
-
-
 
 \end{document}
 
