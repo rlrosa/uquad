@@ -14,6 +14,7 @@
 \usepackage{amsmath}
 \usepackage{array}
 \usepackage[table]{xcolor}
+%\usepackage{multirow}
 %\usepackage[Sonny]{fncychap}
 %\usepackage[Glenn]{fncychap}
 \usepackage[Conny]{fncychap}
@@ -324,35 +325,24 @@ Lo que se observa es que todos los acelerómetros y giroscopos de las placas de e
 
 
 \begin{table}[H]
-\begin{tabular}{p{80pt}|p{80pt}|p{80pt}|p{80pt}|p{80pt}|} 
-
-\hline
+\begin{tabular}{p{115pt}|p{55pt}|p{65pt}|p{55pt}|p{90pt}|} 
 \cline{2-5} 
-& \cellcolor[gray]{0.8} \textbf{Rango del acelerómetro} 
-& \cellcolor[gray]{0.8} \textbf{Sensibilidad del acelerómetro}
-& \cellcolor[gray]{0.8} \textbf{Rango del giróscopo} 
-& \cellcolor[gray]{0.8} \textbf{Sensibilidad del giróscopo} \\ 
-\hline
-\multicolumn{1}{|p{80pt}|}{\cellcolor[gray]{0.8}\textbf{CHR-6d}}
-& \center 3g & \center 300mV/g & \center 400°/s \\ 100°/s & \center 2.5mV/(°/s)\\ 2.5mV/(°/s)}\\ 
-
-\hline
-\multicolumn{1}{|p{80pt}|}{\cellcolor[gray]{0.8}\textbf{Atomic IMU}}
-& \center 1.5g \\ 6g & \center 800mV/g \\ 200mV/g & \center 300°/s  & \center 3.3mV/(°/s)}\\
-
-\hline
-\multicolumn{1}{|p{80pt}|}{\cellcolor[gray]{0.8}\textbf{IMU Digital Combo Board}}
-& \center 2g \\ 16g & \center 356LSB/g \\ 321LSB/g & \center 2000°/s  & \center 14.375 LSB/(°/s)}\\
-
-\hline
-\multicolumn{1}{|p{80pt}|}{\cellcolor[gray]{0.8}\textbf{IMU Analgo Combo Board Razor}}
-& \center 3g & \center 300mV/g  & \center 300°/s \\ 1200°/s & \center 3.3mV/(°/s)\\ 0.83mV/(°/s)}\\
-
-
-\hline
-\multicolumn{1}{|p{80pt}|}{\cellcolor[gray]{0.8}\textbf{IMU Fusion Board}}
-& \center 2g & \center 256 LSB/g  & \center 250°/s \\ 2000°/s & \center 131 LSB/(°/s)\\ 16.4 LSB/(°/s)}\\
-
+& \multicolumn{2}{|c|}{\cellcolor[gray]{0.7}\textbf{Acelerómetro}} 
+& \multicolumn{2}{|c|}{\cellcolor[gray]{0.7}\textbf{Giróscopo}}  \\ \cline{2-5}
+& \cellcolor[gray]{0.8} \textbf{Rango} 
+& \cellcolor[gray]{0.8} \textbf{Sensibilidad}
+& \cellcolor[gray]{0.8} \textbf{Rango} 
+& \cellcolor[gray]{0.8} \textbf{Sensibilidad} \\ \cline{2-5} \hline
+\multicolumn{1}{|c|}{\cellcolor[gray]{0.8}\textbf{CHR-6d}}
+& 3g & 300mV/g &  400°/s ó 100°/s &  2.5mV/(°/s) ó 2.5mV/(°/s) \\ \hline
+\multicolumn{1}{|p{115pt}|}{\cellcolor[gray]{0.8}\textbf{Atomic IMU}}
+&  1.5g  ;  6g &  800mV/g   200mV/g &  300°/s  &  3.3mV/(°/s)\\ \hline
+\multicolumn{1}{|p{115pt}|}{\cellcolor[gray]{0.8}\textbf{IMU Digital Combo Board}}
+&  2g  ;  16g &  356LSB/g   321LSB/g &  2000°/s  &  14.375 LSB/(°/s)\\ \hline
+\multicolumn{1}{|p{115pt}|}{\cellcolor[gray]{0.8}\textbf{IMU Analgo Combo Board Razor}}
+&  3g &  300mV/g  &  300°/s  1200°/s &  3.3mV/(°/s)  0.83mV/(°/s)\\ \hline
+\multicolumn{1}{|p{115pt}|}{\cellcolor[gray]{0.8}\textbf{IMU Fusion Board}}
+&  2g &  256 LSB/g  &  250°/s  2000°/s &  131 LSB/(°/s)     16.4 LSB/(°/s)\\
 \hline 
 \end{tabular}
 \caption{Sensores}
@@ -365,34 +355,23 @@ Resulta sumamente interesante que no sea el \emph{core} quien se encarga de esta
 
 
 \begin{table}[H]
-\begin{tabular}{p{80pt}|p{80pt}|p{80pt}|p{80pt}|p{80pt}|} 
+\begin{tabular}{p{110pt}|p{65pt}|p{65pt}|p{60pt}|p{60pt}|} 
 
 \cline{2-5} 
-& \cellcolor[gray]{0.8} \textbf{Frecuencia del reloj} 
+& \cellcolor[gray]{0.8} \textbf{Frecuencia reloj} 
 & \cellcolor[gray]{0.8} \textbf{Largo de palabra}
 & \cellcolor[gray]{0.8} \textbf{RAM} 
-& \cellcolor[gray]{0.8} \textbf{Flash}\\
-\hline
-\multicolumn{1}{|p{80pt}|}{\cellcolor[gray]{0.8}\textbf{CHR-6d}}
-& \center 72MHz & \center 32 bits & \center 20Kb & \center 64Kb}\\ 
-
-\hline
-\multicolumn{1}{|p{80pt}|}{\cellcolor[gray]{0.8}\textbf{Atomic IMU}}
-& \center 10MHz  & \center 8 bits & \center 2Kb  & \center 32Kb}\\
-
-\hline
-\multicolumn{1}{|p{80pt}|}{\cellcolor[gray]{0.8}\textbf{IMU Digital Combo Board}}
-& \center - & \center - & \center -  & \center -}\\
-
-\hline
-\multicolumn{1}{|p{80pt}|}{\cellcolor[gray]{0.8}\textbf{IMU Analgo Combo Board Razor}}
-& \center - & \center -  & \center - & \center -}\\
-
-
-\hline
-\multicolumn{1}{|p{80pt}|}{\cellcolor[gray]{0.8}\textbf{IMU Fusion Board}}
-& \center - & \center -  & \center - & \center -}\\
-
+& \cellcolor[gray]{0.8} \textbf{Flash}\\ \cline{2-5} \hline
+\multicolumn{1}{|p{110pt}|}{\cellcolor[gray]{0.8}\textbf{CHR-6d}}
+&  72MHz &  32 bits &  20Kb &  64Kb \\ \hline
+\multicolumn{1}{|p{110pt}|}{\cellcolor[gray]{0.8}\textbf{Atomic IMU}}
+&  10MHz  &  8 bits &  2Kb  &  32Kb \\ \hline
+\multicolumn{1}{|p{110pt}|}{\cellcolor[gray]{0.8}\textbf{IMU Digital Combo Board}}
+&  - &  - &  -  &  -\\ \hline
+\multicolumn{1}{|p{110pt}|}{\cellcolor[gray]{0.8}\textbf{IMU Analgo Combo Board Razor}}
+&  - &  -  &  - &  -\\ \hline
+\multicolumn{1}{|p{110pt}|}{\cellcolor[gray]{0.8}\textbf{IMU Fusion Board}}
+&  - &  -  &  - &  -\\
 \hline 
 \end{tabular}
 \caption{Características de los microprocesadores}
