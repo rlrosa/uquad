@@ -3,39 +3,7 @@ Model {
   Version		  7.6
   MdlSubVersion		  0
   GraphicalInterface {
-    NumRootInports	    8
-    Inport {
-      BusObject		      ""
-      Name		      "T1"
-    }
-    Inport {
-      BusObject		      ""
-      Name		      "T2"
-    }
-    Inport {
-      BusObject		      ""
-      Name		      "T3"
-    }
-    Inport {
-      BusObject		      ""
-      Name		      "T4"
-    }
-    Inport {
-      BusObject		      ""
-      Name		      "w1"
-    }
-    Inport {
-      BusObject		      ""
-      Name		      "w2"
-    }
-    Inport {
-      BusObject		      ""
-      Name		      "w3"
-    }
-    Inport {
-      BusObject		      ""
-      Name		      "w4"
-    }
+    NumRootInports	    0
     NumRootOutports	    6
     Outport {
       BusObject		      ""
@@ -68,11 +36,22 @@ Model {
       Name		      "z"
     }
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.26"
+    ComputedModelVersion    "1.32"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
   SavedCharacterEncoding  "UTF-8"
+  slprops.hdlmdlprops {
+    $PropName		    "HDLParams"
+    $ObjectID		    1
+    Array {
+      Type		      "Cell"
+      Dimension		      2
+      Cell		      "HDLSubsystem"
+      Cell		      "conbloques"
+      PropName		      "mdlProps"
+    }
+  }
   SaveDefaultBlockParams  on
   ScopeRefreshTime	  0.035000
   OverrideScopeRefreshTime on
@@ -88,9 +67,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "pater"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Tue Aug 30 17:25:31 2011"
-  RTWModifiedTimeStamp	  236625175
-  ModelVersionFormat	  "1.%<AutoIncrement:26>"
+  LastModifiedDate	  "Tue Aug 30 17:47:44 2011"
+  RTWModifiedTimeStamp	  236626397
+  ModelVersionFormat	  "1.%<AutoIncrement:32>"
   ConfigurationManager	  "None"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -164,16 +143,16 @@ Model {
     Type		    "Handle"
     Dimension		    1
     Simulink.ConfigSet {
-      $ObjectID		      1
+      $ObjectID		      2
       Version		      "1.10.0"
       Array {
 	Type			"Handle"
 	Dimension		9
 	Simulink.SolverCC {
-	  $ObjectID		  2
+	  $ObjectID		  3
 	  Version		  "1.10.0"
 	  StartTime		  "0.0"
-	  StopTime		  "10.0"
+	  StopTime		  "20.0"
 	  AbsTol		  "auto"
 	  FixedStep		  "auto"
 	  InitialStep		  "auto"
@@ -186,8 +165,8 @@ Model {
 	  NumberNewtonIterations  1
 	  MaxStep		  "auto"
 	  MinStep		  "auto"
-	  MaxConsecutiveMinStep	  "1"
-	  RelTol		  "1e-3"
+	  MaxConsecutiveMinStep	  "10"
+	  RelTol		  "0.01"
 	  SolverMode		  "Auto"
 	  ConcurrentTasks	  off
 	  Solver		  "ode45"
@@ -204,7 +183,7 @@ Model {
 	  InsertRTBMode		  "Whenever possible"
 	}
 	Simulink.DataIOCC {
-	  $ObjectID		  3
+	  $ObjectID		  4
 	  Version		  "1.10.0"
 	  Decimation		  "1"
 	  ExternalInput		  "[t, u]"
@@ -235,7 +214,7 @@ Model {
 	  Refine		  "1"
 	}
 	Simulink.OptimizationCC {
-	  $ObjectID		  4
+	  $ObjectID		  5
 	  Version		  "1.10.0"
 	  Array {
 	    Type		    "Cell"
@@ -285,7 +264,7 @@ Model {
 	  AccelVerboseBuild	  off
 	}
 	Simulink.DebuggingCC {
-	  $ObjectID		  5
+	  $ObjectID		  6
 	  Version		  "1.10.0"
 	  RTPrefix		  "error"
 	  ConsistencyChecking	  "none"
@@ -370,7 +349,7 @@ Model {
 	  SFTransitionOutsideNaturalParentDiag "warning"
 	}
 	Simulink.HardwareCC {
-	  $ObjectID		  6
+	  $ObjectID		  7
 	  Version		  "1.10.0"
 	  ProdBitPerChar	  8
 	  ProdBitPerShort	  16
@@ -407,7 +386,7 @@ Model {
 	  ProdEqTarget		  on
 	}
 	Simulink.ModelReferenceCC {
-	  $ObjectID		  7
+	  $ObjectID		  8
 	  Version		  "1.10.0"
 	  UpdateModelReferenceTargets "IfOutOfDateOrStructuralChange"
 	  CheckModelReferenceTargetMessage "error"
@@ -422,7 +401,7 @@ Model {
 	  SupportModelReferenceSimTargetCustomCode off
 	}
 	Simulink.SFSimCC {
-	  $ObjectID		  8
+	  $ObjectID		  9
 	  Version		  "1.10.0"
 	  SFSimEnableDebug	  on
 	  SFSimOverflowDetection  on
@@ -437,7 +416,7 @@ Model {
 	}
 	Simulink.RTWCC {
 	  $BackupClass		  "Simulink.RTWCC"
-	  $ObjectID		  9
+	  $ObjectID		  10
 	  Version		  "1.10.0"
 	  Array {
 	    Type		    "Cell"
@@ -482,7 +461,7 @@ Model {
 	    Type		    "Handle"
 	    Dimension		    2
 	    Simulink.CodeAppCC {
-	      $ObjectID		      10
+	      $ObjectID		      11
 	      Version		      "1.10.0"
 	      Array {
 		Type			"Cell"
@@ -542,7 +521,7 @@ Model {
 	    }
 	    Simulink.GRTTargetCC {
 	      $BackupClass	      "Simulink.TargetCC"
-	      $ObjectID		      11
+	      $ObjectID		      12
 	      Version		      "1.10.0"
 	      Array {
 		Type			"Cell"
@@ -620,7 +599,7 @@ Model {
 	  }
 	}
 	hdlcoderui.hdlcc {
-	  $ObjectID		  12
+	  $ObjectID		  13
 	  Version		  "1.10.0"
 	  Description		  "HDL Coder custom configuration component"
 	  Name			  "HDL Coder"
@@ -636,13 +615,13 @@ Model {
       }
       Name		      "Configuration"
       CurrentDlgPage	      "Solver"
-      ConfigPrmDlgPosition    " [ 243, 69, 1123, 699 ] "
+      ConfigPrmDlgPosition    " [ 222, 99, 1144, 646 ] "
     }
     PropName		    "ConfigurationSets"
   }
   Simulink.ConfigSet {
     $PropName		    "ActiveConfigurationSet"
-    $ObjectID		    1
+    $ObjectID		    2
   }
   BlockDefaults {
     ForegroundColor	    "black"
@@ -773,6 +752,15 @@ Model {
       SampleTime	      "-1"
     }
     Block {
+      BlockType		      Step
+      Time		      "1"
+      Before		      "0"
+      After		      "1"
+      SampleTime	      "-1"
+      VectorParams1D	      on
+      ZeroCross		      on
+    }
+    Block {
       BlockType		      SubSystem
       ShowPortLabels	      "FromPortIcon"
       Permissions	      "ReadWrite"
@@ -840,70 +828,7 @@ Model {
     ShowPageBoundaries	    off
     ZoomFactor		    "100"
     ReportName		    "simulink-default.rpt"
-    SIDHighWatermark	    "282"
-    Block {
-      BlockType		      Inport
-      Name		      "T1"
-      SID		      "233"
-      Position		      [65, 408, 95, 422]
-      IconDisplay	      "Port number"
-    }
-    Block {
-      BlockType		      Inport
-      Name		      "T2"
-      SID		      "234"
-      Position		      [80, 423, 110, 437]
-      Port		      "2"
-      IconDisplay	      "Port number"
-    }
-    Block {
-      BlockType		      Inport
-      Name		      "T3"
-      SID		      "235"
-      Position		      [95, 438, 125, 452]
-      Port		      "3"
-      IconDisplay	      "Port number"
-    }
-    Block {
-      BlockType		      Inport
-      Name		      "T4"
-      SID		      "236"
-      Position		      [110, 453, 140, 467]
-      Port		      "4"
-      IconDisplay	      "Port number"
-    }
-    Block {
-      BlockType		      Inport
-      Name		      "w1"
-      SID		      "237"
-      Position		      [40, 468, 70, 482]
-      Port		      "5"
-      IconDisplay	      "Port number"
-    }
-    Block {
-      BlockType		      Inport
-      Name		      "w2"
-      SID		      "238"
-      Position		      [55, 483, 85, 497]
-      Port		      "6"
-      IconDisplay	      "Port number"
-    }
-    Block {
-      BlockType		      Inport
-      Name		      "w3"
-      SID		      "239"
-      Position		      [70, 498, 100, 512]
-      Port		      "7"
-      IconDisplay	      "Port number"
-    }
-    Block {
-      BlockType		      Inport
-      Name		      "w4"
-      SID		      "240"
-      Position		      [85, 513, 115, 527]
-      Port		      "8"
-      IconDisplay	      "Port number"
-    }
+    SIDHighWatermark	    "285"
     Block {
       BlockType		      SubSystem
       Name		      "Lazo abierto"
@@ -919,7 +844,7 @@ Model {
       MaskHideContents	      off
       System {
 	Name			"Lazo abierto"
-	Location		[149, 80, 1219, 821]
+	Location		[0, 51, 1366, 768]
 	Open			off
 	ModelBrowserVisibility	off
 	ModelBrowserWidth	200
@@ -1240,7 +1165,7 @@ Model {
 	  MaskHideContents	  off
 	  System {
 	    Name		    "Subsystem1"
-	    Location		    [4, 76, 1362, 740]
+	    Location		    [0, 51, 1366, 768]
 	    Open		    off
 	    ModelBrowserVisibility  off
 	    ModelBrowserWidth	    200
@@ -1388,14 +1313,10 @@ Model {
 	      Operator		      "cos"
 	    }
 	    Block {
-	      BlockType		      Reference
+	      BlockType		      UnaryMinus
 	      Name		      "Unary Minus"
 	      SID		      "31"
-	      Ports		      [1, 1]
 	      Position		      [610, 230, 640, 260]
-	      SourceBlock	      "simulink/Math\nOperations/Unary Minus"
-	      SourceType	      "Unary Minus"
-	      DoSatur		      off
 	    }
 	    Block {
 	      BlockType		      Outport
@@ -1514,11 +1435,6 @@ Model {
 	      DstPort		      2
 	    }
 	    Line {
-	      SrcBlock		      "Sum"
-	      SrcPort		      1
-	      Points		      [35, 0]
-	    }
-	    Line {
 	      SrcBlock		      "Divide"
 	      SrcPort		      1
 	      DstBlock		      "Sum"
@@ -1530,6 +1446,12 @@ Model {
 	      Points		      [680, 0]
 	      DstBlock		      "Sum"
 	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "Sum"
+	      SrcPort		      1
+	      DstBlock		      "Integrator"
+	      DstPort		      1
 	    }
 	  }
 	}
@@ -2534,7 +2456,7 @@ Model {
 	      Name		      "Constant"
 	      SID		      "97"
 	      Position		      [135, 160, 165, 190]
-	      Value		      "9.8"
+	      Value		      "-9.8"
 	    }
 	    Block {
 	      BlockType		      Integrator
@@ -2726,7 +2648,7 @@ Model {
 	  System {
 	    Name		    "Subsystem6"
 	    Location		    [0, 51, 1366, 768]
-	    Open		    on
+	    Open		    off
 	    ModelBrowserVisibility  off
 	    ModelBrowserWidth	    200
 	    ScreenColor		    "white"
@@ -5059,6 +4981,34 @@ Model {
       }
     }
     Block {
+      BlockType		      Step
+      Name		      "Step"
+      SID		      "283"
+      Position		      [55, 290, 85, 320]
+      Before		      "2.45"
+      After		      "2.45"
+      SampleTime	      "0"
+    }
+    Block {
+      BlockType		      Step
+      Name		      "Step1"
+      SID		      "284"
+      Position		      [15, 400, 45, 430]
+      Before		      "5"
+      After		      "5"
+      SampleTime	      "0"
+    }
+    Block {
+      BlockType		      Step
+      Name		      "Step2"
+      SID		      "285"
+      Position		      [20, 550, 50, 580]
+      Time		      "5"
+      Before		      "-5"
+      After		      "-2.5"
+      SampleTime	      "0"
+    }
+    Block {
       BlockType		      Outport
       Name		      "theta"
       SID		      "241"
@@ -5118,28 +5068,32 @@ Model {
       DstPort		      1
     }
     Line {
-      SrcBlock		      "T1"
+      SrcBlock		      "Step"
       SrcPort		      1
-      DstBlock		      "Lazo abierto"
-      DstPort		      1
-    }
-    Line {
-      SrcBlock		      "T2"
-      SrcPort		      1
-      DstBlock		      "Lazo abierto"
-      DstPort		      2
-    }
-    Line {
-      SrcBlock		      "T3"
-      SrcPort		      1
-      DstBlock		      "Lazo abierto"
-      DstPort		      3
-    }
-    Line {
-      SrcBlock		      "T4"
-      SrcPort		      1
-      DstBlock		      "Lazo abierto"
-      DstPort		      4
+      Points		      [0, 110; 235, 0]
+      Branch {
+	DstBlock		"Lazo abierto"
+	DstPort			1
+      }
+      Branch {
+	Points			[0, 15; 50, 0]
+	Branch {
+	  DstBlock		  "Lazo abierto"
+	  DstPort		  2
+	}
+	Branch {
+	  Points		  [0, 15; 20, 0]
+	  Branch {
+	    DstBlock		    "Lazo abierto"
+	    DstPort		    3
+	  }
+	  Branch {
+	    Points		    [0, 15]
+	    DstBlock		    "Lazo abierto"
+	    DstPort		    4
+	  }
+	}
+      }
     }
     Line {
       SrcBlock		      "Lazo abierto"
@@ -5163,34 +5117,39 @@ Model {
       DstPort		      1
     }
     Line {
-      SrcBlock		      "w1"
+      SrcBlock		      "Step1"
       SrcPort		      1
-      DstBlock		      "Lazo abierto"
-      DstPort		      5
-    }
-    Line {
-      SrcBlock		      "w2"
-      SrcPort		      1
-      DstBlock		      "Lazo abierto"
-      DstPort		      6
-    }
-    Line {
-      SrcBlock		      "w3"
-      SrcPort		      1
-      DstBlock		      "Lazo abierto"
-      DstPort		      7
-    }
-    Line {
-      SrcBlock		      "w4"
-      SrcPort		      1
-      DstBlock		      "Lazo abierto"
-      DstPort		      8
+      Points		      [0, 60; 40, 0]
+      Branch {
+	DstBlock		"Lazo abierto"
+	DstPort			5
+      }
+      Branch {
+	Points			[0, 15; 10, 0; 0, 15]
+	DstBlock		"Lazo abierto"
+	DstPort			7
+      }
     }
     Line {
       SrcBlock		      "Lazo abierto"
       SrcPort		      3
       DstBlock		      "phi"
       DstPort		      1
+    }
+    Line {
+      SrcBlock		      "Step2"
+      SrcPort		      1
+      Points		      [400, 0; 0, -50]
+      Branch {
+	Points			[0, -25]
+	DstBlock		"Lazo abierto"
+	DstPort			6
+      }
+      Branch {
+	Points			[0, 5]
+	DstBlock		"Lazo abierto"
+	DstPort			8
+      }
     }
   }
 }
