@@ -3,10 +3,72 @@ Model {
   Version		  7.6
   MdlSubVersion		  0
   GraphicalInterface {
-    NumRootInports	    0
-    NumRootOutports	    0
+    NumRootInports	    8
+    Inport {
+      BusObject		      ""
+      Name		      "T1"
+    }
+    Inport {
+      BusObject		      ""
+      Name		      "T2"
+    }
+    Inport {
+      BusObject		      ""
+      Name		      "T3"
+    }
+    Inport {
+      BusObject		      ""
+      Name		      "T4"
+    }
+    Inport {
+      BusObject		      ""
+      Name		      "w1"
+    }
+    Inport {
+      BusObject		      ""
+      Name		      "w2"
+    }
+    Inport {
+      BusObject		      ""
+      Name		      "w3"
+    }
+    Inport {
+      BusObject		      ""
+      Name		      "w4"
+    }
+    NumRootOutports	    6
+    Outport {
+      BusObject		      ""
+      BusOutputAsStruct	      "off"
+      Name		      "theta"
+    }
+    Outport {
+      BusObject		      ""
+      BusOutputAsStruct	      "off"
+      Name		      "psi"
+    }
+    Outport {
+      BusObject		      ""
+      BusOutputAsStruct	      "off"
+      Name		      "phi"
+    }
+    Outport {
+      BusObject		      ""
+      BusOutputAsStruct	      "off"
+      Name		      "x"
+    }
+    Outport {
+      BusObject		      ""
+      BusOutputAsStruct	      "off"
+      Name		      "y"
+    }
+    Outport {
+      BusObject		      ""
+      BusOutputAsStruct	      "off"
+      Name		      "z"
+    }
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.21"
+    ComputedModelVersion    "1.26"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -26,9 +88,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "pater"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Mon Aug 29 22:06:44 2011"
-  RTWModifiedTimeStamp	  236553438
-  ModelVersionFormat	  "1.%<AutoIncrement:21>"
+  LastModifiedDate	  "Tue Aug 30 17:25:31 2011"
+  RTWModifiedTimeStamp	  236625175
+  ModelVersionFormat	  "1.%<AutoIncrement:26>"
   ConfigurationManager	  "None"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -756,6 +818,11 @@ Model {
       OutputSignalType	      "auto"
       SampleTime	      "-1"
     }
+    Block {
+      BlockType		      UnaryMinus
+      SampleTime	      "-1"
+      SaturateOnIntegerOverflow	off
+    }
   }
   System {
     Name		    "conbloques"
@@ -773,243 +840,76 @@ Model {
     ShowPageBoundaries	    off
     ZoomFactor		    "100"
     ReportName		    "simulink-default.rpt"
-    SIDHighWatermark	    "225"
+    SIDHighWatermark	    "282"
     Block {
-      BlockType		      SubSystem
-      Name		      "Subsystem"
-      SID		      "1"
-      Ports		      [4, 1]
-      Position		      [465, 78, 620, 147]
-      MinAlgLoopOccurrences   off
-      PropExecContextOutsideSubsystem off
-      RTWSystemCode	      "Auto"
-      FunctionWithSeparateData off
-      Opaque		      off
-      RequestExecContextInheritance off
-      MaskHideContents	      off
-      System {
-	Name			"Subsystem"
-	Location		[0, 51, 1366, 768]
-	Open			off
-	ModelBrowserVisibility	off
-	ModelBrowserWidth	200
-	ScreenColor		"white"
-	PaperOrientation	"landscape"
-	PaperPositionMode	"auto"
-	PaperType		"usletter"
-	PaperUnits		"inches"
-	TiledPaperMargins	[0.500000, 0.500000, 0.500000, 0.500000]
-	TiledPageScale		1
-	ShowPageBoundaries	off
-	ZoomFactor		"100"
-	Block {
-	  BlockType		  Inport
-	  Name			  "psi"
-	  SID			  "2"
-	  Position		  [45, 18, 75, 32]
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "phi"
-	  SID			  "3"
-	  Position		  [45, 103, 75, 117]
-	  Port			  "2"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "wqu2"
-	  SID			  "4"
-	  Position		  [45, 173, 75, 187]
-	  Port			  "3"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "wq3"
-	  SID			  "5"
-	  Position		  [40, 283, 70, 297]
-	  Port			  "4"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Product
-	  Name			  "Divide"
-	  SID			  "6"
-	  Ports			  [2, 1]
-	  Position		  [645, 97, 675, 128]
-	  Inputs		  "*/"
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  RndMeth		  "Floor"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Integrator
-	  Name			  "Integrator"
-	  SID			  "7"
-	  Ports			  [1, 1]
-	  Position		  [715, 100, 745, 130]
-	}
-	Block {
-	  BlockType		  Product
-	  Name			  "Product"
-	  SID			  "8"
-	  Ports			  [2, 1]
-	  Position		  [435, 87, 465, 118]
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Product
-	  Name			  "Product1"
-	  SID			  "9"
-	  Ports			  [2, 1]
-	  Position		  [435, 172, 465, 203]
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Sum
-	  Name			  "Sum"
-	  SID			  "10"
-	  Ports			  [2, 1]
-	  Position		  [540, 95, 560, 115]
-	  ShowName		  off
-	  IconShape		  "round"
-	  Inputs		  "|++"
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Trigonometry
-	  Name			  "Trigonometric\nFunction"
-	  SID			  "11"
-	  Ports			  [1, 1]
-	  Position		  [245, 105, 275, 135]
-	  Operator		  "cos"
-	}
-	Block {
-	  BlockType		  Trigonometry
-	  Name			  "Trigonometric\nFunction1"
-	  SID			  "12"
-	  Ports			  [1, 1]
-	  Position		  [250, 195, 280, 225]
-	}
-	Block {
-	  BlockType		  Trigonometry
-	  Name			  "Trigonometric\nFunction2"
-	  SID			  "13"
-	  Ports			  [1, 1]
-	  Position		  [250, 265, 280, 295]
-	  Operator		  "cos"
-	}
-	Block {
-	  BlockType		  Outport
-	  Name			  "theta"
-	  SID			  "14"
-	  Position		  [780, 108, 810, 122]
-	  IconDisplay		  "Port number"
-	}
-	Line {
-	  Labels		  [0, 0]
-	  SrcBlock		  "wq3"
-	  SrcPort		  1
-	  Points		  [75, 0; 0, -195]
-	  DstBlock		  "Product"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "wqu2"
-	  SrcPort		  1
-	  DstBlock		  "Product1"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Product"
-	  SrcPort		  1
-	  DstBlock		  "Sum"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Product1"
-	  SrcPort		  1
-	  Points		  [80, 0]
-	  DstBlock		  "Sum"
-	  DstPort		  2
-	}
-	Line {
-	  SrcBlock		  "Sum"
-	  SrcPort		  1
-	  DstBlock		  "Divide"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Trigonometric\nFunction2"
-	  SrcPort		  1
-	  Points		  [310, 0; 0, -160]
-	  DstBlock		  "Divide"
-	  DstPort		  2
-	}
-	Line {
-	  SrcBlock		  "Divide"
-	  SrcPort		  1
-	  DstBlock		  "Integrator"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Trigonometric\nFunction"
-	  SrcPort		  1
-	  Points		  [70, 0; 0, -10]
-	  DstBlock		  "Product"
-	  DstPort		  2
-	}
-	Line {
-	  SrcBlock		  "Trigonometric\nFunction1"
-	  SrcPort		  1
-	  Points		  [65, 0; 0, -15]
-	  DstBlock		  "Product1"
-	  DstPort		  2
-	}
-	Line {
-	  SrcBlock		  "phi"
-	  SrcPort		  1
-	  Points		  [20, 0; 0, 170]
-	  DstBlock		  "Trigonometric\nFunction2"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Integrator"
-	  SrcPort		  1
-	  DstBlock		  "theta"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "psi"
-	  SrcPort		  1
-	  Points		  [40, 0; 0, 95]
-	  Branch {
-	    DstBlock		    "Trigonometric\nFunction"
-	    DstPort		    1
-	  }
-	  Branch {
-	    Points		    [0, 90]
-	    DstBlock		    "Trigonometric\nFunction1"
-	    DstPort		    1
-	  }
-	}
-      }
+      BlockType		      Inport
+      Name		      "T1"
+      SID		      "233"
+      Position		      [65, 408, 95, 422]
+      IconDisplay	      "Port number"
+    }
+    Block {
+      BlockType		      Inport
+      Name		      "T2"
+      SID		      "234"
+      Position		      [80, 423, 110, 437]
+      Port		      "2"
+      IconDisplay	      "Port number"
+    }
+    Block {
+      BlockType		      Inport
+      Name		      "T3"
+      SID		      "235"
+      Position		      [95, 438, 125, 452]
+      Port		      "3"
+      IconDisplay	      "Port number"
+    }
+    Block {
+      BlockType		      Inport
+      Name		      "T4"
+      SID		      "236"
+      Position		      [110, 453, 140, 467]
+      Port		      "4"
+      IconDisplay	      "Port number"
+    }
+    Block {
+      BlockType		      Inport
+      Name		      "w1"
+      SID		      "237"
+      Position		      [40, 468, 70, 482]
+      Port		      "5"
+      IconDisplay	      "Port number"
+    }
+    Block {
+      BlockType		      Inport
+      Name		      "w2"
+      SID		      "238"
+      Position		      [55, 483, 85, 497]
+      Port		      "6"
+      IconDisplay	      "Port number"
+    }
+    Block {
+      BlockType		      Inport
+      Name		      "w3"
+      SID		      "239"
+      Position		      [70, 498, 100, 512]
+      Port		      "7"
+      IconDisplay	      "Port number"
+    }
+    Block {
+      BlockType		      Inport
+      Name		      "w4"
+      SID		      "240"
+      Position		      [85, 513, 115, 527]
+      Port		      "8"
+      IconDisplay	      "Port number"
     }
     Block {
       BlockType		      SubSystem
-      Name		      "Subsystem1"
-      SID		      "15"
-      Ports		      [4, 1]
-      Position		      [465, 160, 620, 240]
+      Name		      "Lazo abierto"
+      SID		      "268"
+      Ports		      [8, 6]
+      Position		      [475, 400, 610, 535]
       MinAlgLoopOccurrences   off
       PropExecContextOutsideSubsystem off
       RTWSystemCode	      "Auto"
@@ -1018,3250 +918,4279 @@ Model {
       RequestExecContextInheritance off
       MaskHideContents	      off
       System {
-	Name			"Subsystem1"
-	Location		[4, 76, 1362, 740]
+	Name			"Lazo abierto"
+	Location		[149, 80, 1219, 821]
 	Open			off
 	ModelBrowserVisibility	off
 	ModelBrowserWidth	200
 	ScreenColor		"white"
 	PaperOrientation	"landscape"
 	PaperPositionMode	"auto"
-	PaperType		"usletter"
-	PaperUnits		"inches"
-	TiledPaperMargins	[0.500000, 0.500000, 0.500000, 0.500000]
+	PaperType		"A4"
+	PaperUnits		"centimeters"
+	TiledPaperMargins	[1.270000, 1.270000, 1.270000, 1.270000]
 	TiledPageScale		1
 	ShowPageBoundaries	off
 	ZoomFactor		"100"
-	Block {
-	  BlockType		  Inport
-	  Name			  "phi"
-	  SID			  "16"
-	  Position		  [115, 203, 145, 217]
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "wq3"
-	  SID			  "17"
-	  Position		  [115, 273, 145, 287]
-	  Port			  "2"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "wq2"
-	  SID			  "18"
-	  Position		  [115, 333, 145, 347]
-	  NamePlacement		  "alternate"
-	  Port			  "3"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "wq1"
-	  SID			  "19"
-	  Position		  [110, 398, 140, 412]
-	  Port			  "4"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Sum
-	  Name			  "Add"
-	  SID			  "20"
-	  Ports			  [2, 1]
-	  Position		  [540, 97, 570, 128]
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Product
-	  Name			  "Divide"
-	  SID			  "21"
-	  Ports			  [2, 1]
-	  Position		  [745, 227, 775, 258]
-	  Inputs		  "*/"
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  RndMeth		  "Floor"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Integrator
-	  Name			  "Integrator"
-	  SID			  "22"
-	  Ports			  [1, 1]
-	  Position		  [875, 230, 905, 260]
-	}
-	Block {
-	  BlockType		  Product
-	  Name			  "Product"
-	  SID			  "23"
-	  Ports			  [2, 1]
-	  Position		  [675, 217, 705, 248]
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Product
-	  Name			  "Product1"
-	  SID			  "24"
-	  Ports			  [2, 1]
-	  Position		  [435, 87, 465, 118]
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Product
-	  Name			  "Product2"
-	  SID			  "25"
-	  Ports			  [2, 1]
-	  Position		  [435, 37, 465, 68]
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Sum
-	  Name			  "Sum"
-	  SID			  "26"
-	  Ports			  [2, 1]
-	  Position		  [815, 235, 835, 255]
-	  ShowName		  off
-	  IconShape		  "round"
-	  Inputs		  "|++"
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Trigonometry
-	  Name			  "Trigonometric\nFunction"
-	  SID			  "27"
-	  Ports			  [1, 1]
-	  Position		  [305, 50, 335, 80]
-	}
-	Block {
-	  BlockType		  Trigonometry
-	  Name			  "Trigonometric\nFunction1"
-	  SID			  "28"
-	  Ports			  [1, 1]
-	  Position		  [495, 295, 525, 325]
-	  Operator		  "cos"
-	}
-	Block {
-	  BlockType		  Trigonometry
-	  Name			  "Trigonometric\nFunction2"
-	  SID			  "29"
-	  Ports			  [1, 1]
-	  Position		  [490, 230, 520, 260]
-	}
-	Block {
-	  BlockType		  Trigonometry
-	  Name			  "Trigonometric\nFunction3"
-	  SID			  "30"
-	  Ports			  [1, 1]
-	  Position		  [300, 150, 330, 180]
-	  Operator		  "cos"
-	}
-	Block {
-	  BlockType		  Reference
-	  Name			  "Unary Minus"
-	  SID			  "31"
-	  Ports			  [1, 1]
-	  Position		  [610, 230, 640, 260]
-	  SourceBlock		  "simulink/Math\nOperations/Unary Minus"
-	  SourceType		  "Unary Minus"
-	  DoSatur		  off
-	}
-	Block {
-	  BlockType		  Outport
-	  Name			  "psi"
-	  SID			  "32"
-	  Position		  [1040, 238, 1070, 252]
-	  IconDisplay		  "Port number"
-	}
-	Line {
-	  SrcBlock		  "Integrator"
-	  SrcPort		  1
-	  Points		  [10, 0]
-	  Branch {
-	    DstBlock		    "psi"
-	    DstPort		    1
-	  }
-	  Branch {
-	    Points		    [0, -225; -660, 0; 0, 45]
-	    Branch {
-	      Points		      [0, 100]
-	      DstBlock		      "Trigonometric\nFunction3"
-	      DstPort		      1
-	    }
-	    Branch {
-	      DstBlock		      "Trigonometric\nFunction"
-	      DstPort		      1
-	    }
-	  }
-	}
-	Line {
-	  SrcBlock		  "Product"
-	  SrcPort		  1
-	  DstBlock		  "Divide"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Trigonometric\nFunction1"
-	  SrcPort		  1
-	  Points		  [200, 0]
-	  DstBlock		  "Divide"
-	  DstPort		  2
-	}
-	Line {
-	  SrcBlock		  "phi"
-	  SrcPort		  1
-	  Points		  [40, 0; 0, 35]
-	  Branch {
-	    Points		    [0, 65]
-	    DstBlock		    "Trigonometric\nFunction1"
-	    DstPort		    1
-	  }
-	  Branch {
-	    DstBlock		    "Trigonometric\nFunction2"
-	    DstPort		    1
-	  }
-	}
-	Line {
-	  SrcBlock		  "Trigonometric\nFunction2"
-	  SrcPort		  1
-	  DstBlock		  "Unary Minus"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Unary Minus"
-	  SrcPort		  1
-	  Points		  [5, 0; 0, -5]
-	  DstBlock		  "Product"
-	  DstPort		  2
-	}
-	Line {
-	  SrcBlock		  "wq3"
-	  SrcPort		  1
-	  Points		  [0, -45; -40, 0; 0, -35; 160, 0; 0, 15; 150, 0]
-	  DstBlock		  "Product1"
-	  DstPort		  2
-	}
-	Line {
-	  SrcBlock		  "Trigonometric\nFunction3"
-	  SrcPort		  1
-	  Points		  [40, 0; 0, -70]
-	  DstBlock		  "Product1"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Product1"
-	  SrcPort		  1
-	  DstBlock		  "Add"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Add"
-	  SrcPort		  1
-	  Points		  [40, 0; 0, 110]
-	  DstBlock		  "Product"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Trigonometric\nFunction"
-	  SrcPort		  1
-	  Points		  [40, 0; 0, -20]
-	  DstBlock		  "Product2"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "wq2"
-	  SrcPort		  1
-	  Points		  [270, 0]
-	  DstBlock		  "Product2"
-	  DstPort		  2
-	}
-	Line {
-	  SrcBlock		  "Product2"
-	  SrcPort		  1
-	  Points		  [50, 0; 0, 65]
-	  DstBlock		  "Add"
-	  DstPort		  2
-	}
-	Line {
-	  SrcBlock		  "Sum"
-	  SrcPort		  1
-	  Points		  [35, 0]
-	}
-	Line {
-	  SrcBlock		  "Divide"
-	  SrcPort		  1
-	  DstBlock		  "Sum"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "wq1"
-	  SrcPort		  1
-	  Points		  [680, 0]
-	  DstBlock		  "Sum"
-	  DstPort		  2
-	}
-      }
-    }
-    Block {
-      BlockType		      SubSystem
-      Name		      "Subsystem2"
-      SID		      "33"
-      Ports		      [3, 1]
-      Position		      [470, 262, 620, 348]
-      MinAlgLoopOccurrences   off
-      PropExecContextOutsideSubsystem off
-      RTWSystemCode	      "Auto"
-      FunctionWithSeparateData off
-      Opaque		      off
-      RequestExecContextInheritance off
-      MaskHideContents	      off
-      System {
-	Name			"Subsystem2"
-	Location		[304, 163, 802, 463]
-	Open			off
-	ModelBrowserVisibility	off
-	ModelBrowserWidth	200
-	ScreenColor		"white"
-	PaperOrientation	"landscape"
-	PaperPositionMode	"auto"
-	PaperType		"usletter"
-	PaperUnits		"inches"
-	TiledPaperMargins	[0.500000, 0.500000, 0.500000, 0.500000]
-	TiledPageScale		1
-	ShowPageBoundaries	off
-	ZoomFactor		"100"
-	Block {
-	  BlockType		  Inport
-	  Name			  "psis"
-	  SID			  "34"
-	  Position		  [40, 23, 70, 37]
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "wq2"
-	  SID			  "35"
-	  Position		  [25, 188, 55, 202]
-	  Port			  "2"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "wq3"
-	  SID			  "36"
-	  Position		  [25, 248, 55, 262]
-	  Port			  "3"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Integrator
-	  Name			  "Integrator"
-	  SID			  "37"
-	  Ports			  [1, 1]
-	  Position		  [400, 125, 430, 155]
-	}
-	Block {
-	  BlockType		  Product
-	  Name			  "Product"
-	  SID			  "38"
-	  Ports			  [2, 1]
-	  Position		  [240, 82, 270, 113]
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Product
-	  Name			  "Product1"
-	  SID			  "39"
-	  Ports			  [2, 1]
-	  Position		  [240, 152, 270, 183]
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Sum
-	  Name			  "Subtract"
-	  SID			  "40"
-	  Ports			  [2, 1]
-	  Position		  [320, 122, 350, 153]
-	  Inputs		  "+-"
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Trigonometry
-	  Name			  "Trigonometric\nFunction"
-	  SID			  "41"
-	  Ports			  [1, 1]
-	  Position		  [130, 20, 160, 50]
-	  Operator		  "cos"
-	}
-	Block {
-	  BlockType		  Trigonometry
-	  Name			  "Trigonometric\nFunction1"
-	  SID			  "42"
-	  Ports			  [1, 1]
-	  Position		  [125, 115, 155, 145]
-	}
-	Block {
-	  BlockType		  Outport
-	  Name			  "phi"
-	  SID			  "43"
-	  Position		  [455, 133, 485, 147]
-	  IconDisplay		  "Port number"
-	}
-	Line {
-	  SrcBlock		  "Integrator"
-	  SrcPort		  1
-	  DstBlock		  "phi"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Subtract"
-	  SrcPort		  1
-	  DstBlock		  "Integrator"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Product"
-	  SrcPort		  1
-	  Points		  [15, 0; 0, 30]
-	  DstBlock		  "Subtract"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Product1"
-	  SrcPort		  1
-	  Points		  [15, 0; 0, -25]
-	  DstBlock		  "Subtract"
-	  DstPort		  2
-	}
-	Line {
-	  SrcBlock		  "Trigonometric\nFunction"
-	  SrcPort		  1
-	  Points		  [30, 0; 0, 55]
-	  DstBlock		  "Product"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "psis"
-	  SrcPort		  1
-	  Points		  [10, 0]
-	  Branch {
-	    Points		    [10, 0; 0, 5]
-	    DstBlock		    "Trigonometric\nFunction"
-	    DstPort		    1
-	  }
-	  Branch {
-	    Points		    [0, 100]
-	    DstBlock		    "Trigonometric\nFunction1"
-	    DstPort		    1
-	  }
-	}
-	Line {
-	  SrcBlock		  "Trigonometric\nFunction1"
-	  SrcPort		  1
-	  Points		  [30, 0; 0, 30]
-	  DstBlock		  "Product1"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "wq2"
-	  SrcPort		  1
-	  Points		  [160, 0; 0, -90]
-	  DstBlock		  "Product"
-	  DstPort		  2
-	}
-	Line {
-	  SrcBlock		  "wq3"
-	  SrcPort		  1
-	  Points		  [165, 0]
-	  DstBlock		  "Product1"
-	  DstPort		  2
-	}
-      }
-    }
-    Block {
-      BlockType		      SubSystem
-      Name		      "Subsystem3"
-      SID		      "44"
-      Ports		      [7, 1]
-      Position		      [470, 373, 630, 457]
-      MinAlgLoopOccurrences   off
-      PropExecContextOutsideSubsystem off
-      RTWSystemCode	      "Auto"
-      FunctionWithSeparateData off
-      Opaque		      off
-      RequestExecContextInheritance off
-      MaskHideContents	      off
-      System {
-	Name			"Subsystem3"
-	Location		[4, 76, 1362, 740]
-	Open			off
-	ModelBrowserVisibility	off
-	ModelBrowserWidth	200
-	ScreenColor		"white"
-	PaperOrientation	"landscape"
-	PaperPositionMode	"auto"
-	PaperType		"usletter"
-	PaperUnits		"inches"
-	TiledPaperMargins	[0.500000, 0.500000, 0.500000, 0.500000]
-	TiledPageScale		1
-	ShowPageBoundaries	off
-	ZoomFactor		"100"
-	Block {
-	  BlockType		  Inport
-	  Name			  "theta"
-	  SID			  "45"
-	  Position		  [30, 23, 60, 37]
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "psis"
-	  SID			  "46"
-	  Position		  [20, 173, 50, 187]
-	  Port			  "2"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "phi"
-	  SID			  "47"
-	  Position		  [25, 343, 55, 357]
-	  Port			  "3"
-	  IconDisplay		  "Port number"
-	}
 	Block {
 	  BlockType		  Inport
 	  Name			  "T1"
-	  SID			  "48"
-	  Position		  [30, 428, 60, 442]
-	  Port			  "4"
+	  SID			  "271"
+	  Position		  [40, 238, 70, 252]
 	  IconDisplay		  "Port number"
 	}
 	Block {
 	  BlockType		  Inport
 	  Name			  "T2"
-	  SID			  "49"
-	  Position		  [25, 468, 55, 482]
-	  Port			  "5"
+	  SID			  "272"
+	  Position		  [55, 253, 85, 267]
+	  Port			  "2"
 	  IconDisplay		  "Port number"
 	}
 	Block {
 	  BlockType		  Inport
 	  Name			  "T3"
-	  SID			  "50"
-	  Position		  [25, 498, 55, 512]
-	  Port			  "6"
+	  SID			  "273"
+	  Position		  [70, 268, 100, 282]
+	  Port			  "3"
 	  IconDisplay		  "Port number"
 	}
 	Block {
 	  BlockType		  Inport
 	  Name			  "T4"
-	  SID			  "51"
-	  Position		  [25, 538, 55, 552]
+	  SID			  "274"
+	  Position		  [85, 283, 115, 297]
+	  Port			  "4"
+	  IconDisplay		  "Port number"
+	}
+	Block {
+	  BlockType		  Inport
+	  Name			  "w1"
+	  SID			  "279"
+	  Position		  [25, 923, 55, 937]
+	  Port			  "5"
+	  IconDisplay		  "Port number"
+	}
+	Block {
+	  BlockType		  Inport
+	  Name			  "w2"
+	  SID			  "280"
+	  Position		  [40, 938, 70, 952]
+	  Port			  "6"
+	  IconDisplay		  "Port number"
+	}
+	Block {
+	  BlockType		  Inport
+	  Name			  "w3"
+	  SID			  "281"
+	  Position		  [55, 953, 85, 967]
 	  Port			  "7"
 	  IconDisplay		  "Port number"
 	}
 	Block {
-	  BlockType		  Gain
-	  Name			  "Aca hay que ponder uno sobre la masa"
-	  SID			  "52"
-	  Position		  [350, 455, 380, 485]
-	  Gain			  "1/2"
-	  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
+	  BlockType		  Inport
+	  Name			  "w4"
+	  SID			  "282"
+	  Position		  [70, 968, 100, 982]
+	  Port			  "8"
+	  IconDisplay		  "Port number"
 	}
 	Block {
-	  BlockType		  Integrator
-	  Name			  "Integrator"
-	  SID			  "53"
-	  Ports			  [1, 1]
-	  Position		  [845, 200, 875, 230]
-	}
-	Block {
-	  BlockType		  Integrator
-	  Name			  "Integrator1"
-	  SID			  "54"
-	  Ports			  [1, 1]
-	  Position		  [925, 200, 955, 230]
-	}
-	Block {
-	  BlockType		  Product
-	  Name			  "Product"
-	  SID			  "55"
-	  Ports			  [2, 1]
-	  Position		  [420, 22, 450, 53]
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Product
-	  Name			  "Product of\nElements"
-	  SID			  "56"
-	  Ports			  [3, 1]
-	  Position		  [415, 130, 445, 160]
-	  Inputs		  "3"
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  RndMeth		  "Floor"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Product
-	  Name			  "Product1"
-	  SID			  "57"
-	  Ports			  [2, 1]
-	  Position		  [685, 197, 715, 228]
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Sum
-	  Name			  "Subtract"
-	  SID			  "58"
-	  Ports			  [2, 1]
-	  Position		  [585, 72, 615, 103]
-	  Inputs		  "+-"
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Sum
-	  Name			  "Sum of\nElements"
-	  SID			  "59"
+	  BlockType		  SubSystem
+	  Name			  "Subsystem"
+	  SID			  "1"
 	  Ports			  [4, 1]
-	  Position		  [160, 457, 190, 488]
-	  Inputs		  "4"
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
+	  Position		  [445, 98, 600, 167]
+	  MinAlgLoopOccurrences	  off
+	  PropExecContextOutsideSubsystem off
+	  RTWSystemCode		  "Auto"
+	  FunctionWithSeparateData off
+	  Opaque		  off
+	  RequestExecContextInheritance	off
+	  MaskHideContents	  off
+	  System {
+	    Name		    "Subsystem"
+	    Location		    [0, 51, 1366, 768]
+	    Open		    off
+	    ModelBrowserVisibility  off
+	    ModelBrowserWidth	    200
+	    ScreenColor		    "white"
+	    PaperOrientation	    "landscape"
+	    PaperPositionMode	    "auto"
+	    PaperType		    "usletter"
+	    PaperUnits		    "inches"
+	    TiledPaperMargins	    [0.500000, 0.500000, 0.500000, 0.500000]
+	    TiledPageScale	    1
+	    ShowPageBoundaries	    off
+	    ZoomFactor		    "100"
+	    Block {
+	      BlockType		      Inport
+	      Name		      "psi"
+	      SID		      "2"
+	      Position		      [45, 18, 75, 32]
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "phi"
+	      SID		      "3"
+	      Position		      [45, 103, 75, 117]
+	      Port		      "2"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "wq2"
+	      SID		      "4"
+	      Position		      [45, 173, 75, 187]
+	      Port		      "3"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "wq3"
+	      SID		      "5"
+	      Position		      [40, 283, 70, 297]
+	      Port		      "4"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Product
+	      Name		      "Divide"
+	      SID		      "6"
+	      Ports		      [2, 1]
+	      Position		      [645, 97, 675, 128]
+	      Inputs		      "*/"
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      RndMeth		      "Floor"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Integrator
+	      Name		      "Integrator"
+	      SID		      "7"
+	      Ports		      [1, 1]
+	      Position		      [715, 100, 745, 130]
+	    }
+	    Block {
+	      BlockType		      Product
+	      Name		      "Product"
+	      SID		      "8"
+	      Ports		      [2, 1]
+	      Position		      [435, 87, 465, 118]
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Product
+	      Name		      "Product1"
+	      SID		      "9"
+	      Ports		      [2, 1]
+	      Position		      [435, 172, 465, 203]
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Sum
+	      Name		      "Sum"
+	      SID		      "10"
+	      Ports		      [2, 1]
+	      Position		      [540, 95, 560, 115]
+	      ShowName		      off
+	      IconShape		      "round"
+	      Inputs		      "|++"
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Trigonometry
+	      Name		      "Trigonometric\nFunction"
+	      SID		      "11"
+	      Ports		      [1, 1]
+	      Position		      [245, 105, 275, 135]
+	      Operator		      "cos"
+	    }
+	    Block {
+	      BlockType		      Trigonometry
+	      Name		      "Trigonometric\nFunction1"
+	      SID		      "12"
+	      Ports		      [1, 1]
+	      Position		      [250, 195, 280, 225]
+	    }
+	    Block {
+	      BlockType		      Trigonometry
+	      Name		      "Trigonometric\nFunction2"
+	      SID		      "13"
+	      Ports		      [1, 1]
+	      Position		      [250, 265, 280, 295]
+	      Operator		      "cos"
+	    }
+	    Block {
+	      BlockType		      Outport
+	      Name		      "theta"
+	      SID		      "14"
+	      Position		      [780, 108, 810, 122]
+	      IconDisplay	      "Port number"
+	    }
+	    Line {
+	      Labels		      [0, 0]
+	      SrcBlock		      "wq3"
+	      SrcPort		      1
+	      Points		      [75, 0; 0, -195]
+	      DstBlock		      "Product"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "wq2"
+	      SrcPort		      1
+	      DstBlock		      "Product1"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Product"
+	      SrcPort		      1
+	      DstBlock		      "Sum"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Product1"
+	      SrcPort		      1
+	      Points		      [80, 0]
+	      DstBlock		      "Sum"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "Sum"
+	      SrcPort		      1
+	      DstBlock		      "Divide"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Trigonometric\nFunction2"
+	      SrcPort		      1
+	      Points		      [310, 0; 0, -160]
+	      DstBlock		      "Divide"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "Divide"
+	      SrcPort		      1
+	      DstBlock		      "Integrator"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Trigonometric\nFunction"
+	      SrcPort		      1
+	      Points		      [70, 0; 0, -10]
+	      DstBlock		      "Product"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "Trigonometric\nFunction1"
+	      SrcPort		      1
+	      Points		      [65, 0; 0, -15]
+	      DstBlock		      "Product1"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "phi"
+	      SrcPort		      1
+	      Points		      [20, 0; 0, 170]
+	      DstBlock		      "Trigonometric\nFunction2"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Integrator"
+	      SrcPort		      1
+	      DstBlock		      "theta"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "psi"
+	      SrcPort		      1
+	      Points		      [40, 0; 0, 95]
+	      Branch {
+		DstBlock		"Trigonometric\nFunction"
+		DstPort			1
+	      }
+	      Branch {
+		Points			[0, 90]
+		DstBlock		"Trigonometric\nFunction1"
+		DstPort			1
+	      }
+	    }
+	  }
 	}
 	Block {
-	  BlockType		  Trigonometry
-	  Name			  "Trigonometric\nFunction"
-	  SID			  "60"
-	  Ports			  [1, 1]
-	  Position		  [175, 15, 205, 45]
+	  BlockType		  SubSystem
+	  Name			  "Subsystem1"
+	  SID			  "15"
+	  Ports			  [4, 1]
+	  Position		  [445, 185, 600, 265]
+	  MinAlgLoopOccurrences	  off
+	  PropExecContextOutsideSubsystem off
+	  RTWSystemCode		  "Auto"
+	  FunctionWithSeparateData off
+	  Opaque		  off
+	  RequestExecContextInheritance	off
+	  MaskHideContents	  off
+	  System {
+	    Name		    "Subsystem1"
+	    Location		    [4, 76, 1362, 740]
+	    Open		    off
+	    ModelBrowserVisibility  off
+	    ModelBrowserWidth	    200
+	    ScreenColor		    "white"
+	    PaperOrientation	    "landscape"
+	    PaperPositionMode	    "auto"
+	    PaperType		    "usletter"
+	    PaperUnits		    "inches"
+	    TiledPaperMargins	    [0.500000, 0.500000, 0.500000, 0.500000]
+	    TiledPageScale	    1
+	    ShowPageBoundaries	    off
+	    ZoomFactor		    "100"
+	    Block {
+	      BlockType		      Inport
+	      Name		      "phi"
+	      SID		      "16"
+	      Position		      [115, 203, 145, 217]
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "wq3"
+	      SID		      "17"
+	      Position		      [115, 273, 145, 287]
+	      Port		      "2"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "wq2"
+	      SID		      "18"
+	      Position		      [115, 333, 145, 347]
+	      NamePlacement	      "alternate"
+	      Port		      "3"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "wq1"
+	      SID		      "19"
+	      Position		      [110, 398, 140, 412]
+	      Port		      "4"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Sum
+	      Name		      "Add"
+	      SID		      "20"
+	      Ports		      [2, 1]
+	      Position		      [540, 97, 570, 128]
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Product
+	      Name		      "Divide"
+	      SID		      "21"
+	      Ports		      [2, 1]
+	      Position		      [745, 227, 775, 258]
+	      Inputs		      "*/"
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      RndMeth		      "Floor"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Integrator
+	      Name		      "Integrator"
+	      SID		      "22"
+	      Ports		      [1, 1]
+	      Position		      [875, 230, 905, 260]
+	    }
+	    Block {
+	      BlockType		      Product
+	      Name		      "Product"
+	      SID		      "23"
+	      Ports		      [2, 1]
+	      Position		      [675, 217, 705, 248]
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Product
+	      Name		      "Product1"
+	      SID		      "24"
+	      Ports		      [2, 1]
+	      Position		      [435, 87, 465, 118]
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Product
+	      Name		      "Product2"
+	      SID		      "25"
+	      Ports		      [2, 1]
+	      Position		      [435, 37, 465, 68]
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Sum
+	      Name		      "Sum"
+	      SID		      "26"
+	      Ports		      [2, 1]
+	      Position		      [815, 235, 835, 255]
+	      ShowName		      off
+	      IconShape		      "round"
+	      Inputs		      "|++"
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Trigonometry
+	      Name		      "Trigonometric\nFunction"
+	      SID		      "27"
+	      Ports		      [1, 1]
+	      Position		      [305, 50, 335, 80]
+	    }
+	    Block {
+	      BlockType		      Trigonometry
+	      Name		      "Trigonometric\nFunction1"
+	      SID		      "28"
+	      Ports		      [1, 1]
+	      Position		      [495, 295, 525, 325]
+	      Operator		      "cos"
+	    }
+	    Block {
+	      BlockType		      Trigonometry
+	      Name		      "Trigonometric\nFunction2"
+	      SID		      "29"
+	      Ports		      [1, 1]
+	      Position		      [490, 230, 520, 260]
+	    }
+	    Block {
+	      BlockType		      Trigonometry
+	      Name		      "Trigonometric\nFunction3"
+	      SID		      "30"
+	      Ports		      [1, 1]
+	      Position		      [300, 150, 330, 180]
+	      Operator		      "cos"
+	    }
+	    Block {
+	      BlockType		      Reference
+	      Name		      "Unary Minus"
+	      SID		      "31"
+	      Ports		      [1, 1]
+	      Position		      [610, 230, 640, 260]
+	      SourceBlock	      "simulink/Math\nOperations/Unary Minus"
+	      SourceType	      "Unary Minus"
+	      DoSatur		      off
+	    }
+	    Block {
+	      BlockType		      Outport
+	      Name		      "psi"
+	      SID		      "32"
+	      Position		      [1040, 238, 1070, 252]
+	      IconDisplay	      "Port number"
+	    }
+	    Line {
+	      SrcBlock		      "Integrator"
+	      SrcPort		      1
+	      Points		      [10, 0]
+	      Branch {
+		DstBlock		"psi"
+		DstPort			1
+	      }
+	      Branch {
+		Points			[0, -225; -660, 0; 0, 45]
+		Branch {
+		  Points		  [0, 100]
+		  DstBlock		  "Trigonometric\nFunction3"
+		  DstPort		  1
+		}
+		Branch {
+		  DstBlock		  "Trigonometric\nFunction"
+		  DstPort		  1
+		}
+	      }
+	    }
+	    Line {
+	      SrcBlock		      "Product"
+	      SrcPort		      1
+	      DstBlock		      "Divide"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Trigonometric\nFunction1"
+	      SrcPort		      1
+	      Points		      [200, 0]
+	      DstBlock		      "Divide"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "phi"
+	      SrcPort		      1
+	      Points		      [40, 0; 0, 35]
+	      Branch {
+		Points			[0, 65]
+		DstBlock		"Trigonometric\nFunction1"
+		DstPort			1
+	      }
+	      Branch {
+		DstBlock		"Trigonometric\nFunction2"
+		DstPort			1
+	      }
+	    }
+	    Line {
+	      SrcBlock		      "Trigonometric\nFunction2"
+	      SrcPort		      1
+	      DstBlock		      "Unary Minus"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Unary Minus"
+	      SrcPort		      1
+	      Points		      [5, 0; 0, -5]
+	      DstBlock		      "Product"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "wq3"
+	      SrcPort		      1
+	      Points		      [0, -45; -40, 0; 0, -35; 160, 0; 0, 15; 150, 0]
+	      DstBlock		      "Product1"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "Trigonometric\nFunction3"
+	      SrcPort		      1
+	      Points		      [40, 0; 0, -70]
+	      DstBlock		      "Product1"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Product1"
+	      SrcPort		      1
+	      DstBlock		      "Add"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Add"
+	      SrcPort		      1
+	      Points		      [40, 0; 0, 110]
+	      DstBlock		      "Product"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Trigonometric\nFunction"
+	      SrcPort		      1
+	      Points		      [40, 0; 0, -20]
+	      DstBlock		      "Product2"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "wq2"
+	      SrcPort		      1
+	      Points		      [270, 0]
+	      DstBlock		      "Product2"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "Product2"
+	      SrcPort		      1
+	      Points		      [50, 0; 0, 65]
+	      DstBlock		      "Add"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "Sum"
+	      SrcPort		      1
+	      Points		      [35, 0]
+	    }
+	    Line {
+	      SrcBlock		      "Divide"
+	      SrcPort		      1
+	      DstBlock		      "Sum"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "wq1"
+	      SrcPort		      1
+	      Points		      [680, 0]
+	      DstBlock		      "Sum"
+	      DstPort		      2
+	    }
+	  }
 	}
 	Block {
-	  BlockType		  Trigonometry
-	  Name			  "Trigonometric\nFunction1"
-	  SID			  "61"
-	  Ports			  [1, 1]
-	  Position		  [175, 75, 205, 105]
-	  Operator		  "cos"
+	  BlockType		  SubSystem
+	  Name			  "Subsystem2"
+	  SID			  "33"
+	  Ports			  [3, 1]
+	  Position		  [450, 282, 600, 368]
+	  MinAlgLoopOccurrences	  off
+	  PropExecContextOutsideSubsystem off
+	  RTWSystemCode		  "Auto"
+	  FunctionWithSeparateData off
+	  Opaque		  off
+	  RequestExecContextInheritance	off
+	  MaskHideContents	  off
+	  System {
+	    Name		    "Subsystem2"
+	    Location		    [304, 163, 802, 463]
+	    Open		    off
+	    ModelBrowserVisibility  off
+	    ModelBrowserWidth	    200
+	    ScreenColor		    "white"
+	    PaperOrientation	    "landscape"
+	    PaperPositionMode	    "auto"
+	    PaperType		    "usletter"
+	    PaperUnits		    "inches"
+	    TiledPaperMargins	    [0.500000, 0.500000, 0.500000, 0.500000]
+	    TiledPageScale	    1
+	    ShowPageBoundaries	    off
+	    ZoomFactor		    "100"
+	    Block {
+	      BlockType		      Inport
+	      Name		      "psi"
+	      SID		      "34"
+	      Position		      [40, 23, 70, 37]
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "wq2"
+	      SID		      "35"
+	      Position		      [25, 188, 55, 202]
+	      Port		      "2"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "wq3"
+	      SID		      "36"
+	      Position		      [25, 248, 55, 262]
+	      Port		      "3"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Integrator
+	      Name		      "Integrator"
+	      SID		      "37"
+	      Ports		      [1, 1]
+	      Position		      [400, 125, 430, 155]
+	    }
+	    Block {
+	      BlockType		      Product
+	      Name		      "Product"
+	      SID		      "38"
+	      Ports		      [2, 1]
+	      Position		      [240, 82, 270, 113]
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Product
+	      Name		      "Product1"
+	      SID		      "39"
+	      Ports		      [2, 1]
+	      Position		      [240, 152, 270, 183]
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Sum
+	      Name		      "Subtract"
+	      SID		      "40"
+	      Ports		      [2, 1]
+	      Position		      [320, 122, 350, 153]
+	      Inputs		      "+-"
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Trigonometry
+	      Name		      "Trigonometric\nFunction"
+	      SID		      "41"
+	      Ports		      [1, 1]
+	      Position		      [130, 20, 160, 50]
+	      Operator		      "cos"
+	    }
+	    Block {
+	      BlockType		      Trigonometry
+	      Name		      "Trigonometric\nFunction1"
+	      SID		      "42"
+	      Ports		      [1, 1]
+	      Position		      [125, 115, 155, 145]
+	    }
+	    Block {
+	      BlockType		      Outport
+	      Name		      "phi"
+	      SID		      "43"
+	      Position		      [455, 133, 485, 147]
+	      IconDisplay	      "Port number"
+	    }
+	    Line {
+	      SrcBlock		      "Integrator"
+	      SrcPort		      1
+	      DstBlock		      "phi"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Subtract"
+	      SrcPort		      1
+	      DstBlock		      "Integrator"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Product"
+	      SrcPort		      1
+	      Points		      [15, 0; 0, 30]
+	      DstBlock		      "Subtract"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Product1"
+	      SrcPort		      1
+	      Points		      [15, 0; 0, -25]
+	      DstBlock		      "Subtract"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "Trigonometric\nFunction"
+	      SrcPort		      1
+	      Points		      [30, 0; 0, 55]
+	      DstBlock		      "Product"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "psi"
+	      SrcPort		      1
+	      Points		      [10, 0]
+	      Branch {
+		Points			[10, 0; 0, 5]
+		DstBlock		"Trigonometric\nFunction"
+		DstPort			1
+	      }
+	      Branch {
+		Points			[0, 100]
+		DstBlock		"Trigonometric\nFunction1"
+		DstPort			1
+	      }
+	    }
+	    Line {
+	      SrcBlock		      "Trigonometric\nFunction1"
+	      SrcPort		      1
+	      Points		      [30, 0; 0, 30]
+	      DstBlock		      "Product1"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "wq2"
+	      SrcPort		      1
+	      Points		      [160, 0; 0, -90]
+	      DstBlock		      "Product"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "wq3"
+	      SrcPort		      1
+	      Points		      [165, 0]
+	      DstBlock		      "Product1"
+	      DstPort		      2
+	    }
+	  }
 	}
 	Block {
-	  BlockType		  Trigonometry
-	  Name			  "Trigonometric\nFunction2"
-	  SID			  "62"
-	  Ports			  [1, 1]
-	  Position		  [170, 165, 200, 195]
+	  BlockType		  SubSystem
+	  Name			  "Subsystem3"
+	  SID			  "44"
+	  Ports			  [7, 1]
+	  Position		  [450, 393, 610, 477]
+	  MinAlgLoopOccurrences	  off
+	  PropExecContextOutsideSubsystem off
+	  RTWSystemCode		  "Auto"
+	  FunctionWithSeparateData off
+	  Opaque		  off
+	  RequestExecContextInheritance	off
+	  MaskHideContents	  off
+	  System {
+	    Name		    "Subsystem3"
+	    Location		    [0, 51, 1366, 768]
+	    Open		    off
+	    ModelBrowserVisibility  off
+	    ModelBrowserWidth	    200
+	    ScreenColor		    "white"
+	    PaperOrientation	    "landscape"
+	    PaperPositionMode	    "auto"
+	    PaperType		    "usletter"
+	    PaperUnits		    "inches"
+	    TiledPaperMargins	    [0.500000, 0.500000, 0.500000, 0.500000]
+	    TiledPageScale	    1
+	    ShowPageBoundaries	    off
+	    ZoomFactor		    "100"
+	    Block {
+	      BlockType		      Inport
+	      Name		      "theta"
+	      SID		      "45"
+	      Position		      [30, 23, 60, 37]
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "psi"
+	      SID		      "46"
+	      Position		      [20, 173, 50, 187]
+	      Port		      "2"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "phi"
+	      SID		      "47"
+	      Position		      [25, 343, 55, 357]
+	      Port		      "3"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "T1"
+	      SID		      "48"
+	      Position		      [30, 428, 60, 442]
+	      Port		      "4"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "T2"
+	      SID		      "49"
+	      Position		      [25, 468, 55, 482]
+	      Port		      "5"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "T3"
+	      SID		      "50"
+	      Position		      [25, 498, 55, 512]
+	      Port		      "6"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "T4"
+	      SID		      "51"
+	      Position		      [25, 538, 55, 552]
+	      Port		      "7"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Gain
+	      Name		      "Aca hay que ponder uno sobre la masa"
+	      SID		      "52"
+	      Position		      [350, 455, 380, 485]
+	      Gain		      "1/2"
+	      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Integrator
+	      Name		      "Integrator"
+	      SID		      "53"
+	      Ports		      [1, 1]
+	      Position		      [845, 200, 875, 230]
+	    }
+	    Block {
+	      BlockType		      Integrator
+	      Name		      "Integrator1"
+	      SID		      "54"
+	      Ports		      [1, 1]
+	      Position		      [925, 200, 955, 230]
+	    }
+	    Block {
+	      BlockType		      Product
+	      Name		      "Product"
+	      SID		      "55"
+	      Ports		      [2, 1]
+	      Position		      [420, 22, 450, 53]
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Product
+	      Name		      "Product of\nElements"
+	      SID		      "56"
+	      Ports		      [3, 1]
+	      Position		      [415, 130, 445, 160]
+	      Inputs		      "3"
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      RndMeth		      "Floor"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Product
+	      Name		      "Product1"
+	      SID		      "57"
+	      Ports		      [2, 1]
+	      Position		      [685, 197, 715, 228]
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Sum
+	      Name		      "Subtract"
+	      SID		      "58"
+	      Ports		      [2, 1]
+	      Position		      [585, 72, 615, 103]
+	      Inputs		      "+-"
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Sum
+	      Name		      "Sum of\nElements"
+	      SID		      "59"
+	      Ports		      [4, 1]
+	      Position		      [160, 457, 190, 488]
+	      Inputs		      "4"
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Trigonometry
+	      Name		      "Trigonometric\nFunction"
+	      SID		      "60"
+	      Ports		      [1, 1]
+	      Position		      [175, 15, 205, 45]
+	    }
+	    Block {
+	      BlockType		      Trigonometry
+	      Name		      "Trigonometric\nFunction1"
+	      SID		      "61"
+	      Ports		      [1, 1]
+	      Position		      [175, 75, 205, 105]
+	      Operator		      "cos"
+	    }
+	    Block {
+	      BlockType		      Trigonometry
+	      Name		      "Trigonometric\nFunction2"
+	      SID		      "62"
+	      Ports		      [1, 1]
+	      Position		      [170, 165, 200, 195]
+	    }
+	    Block {
+	      BlockType		      Trigonometry
+	      Name		      "Trigonometric\nFunction3"
+	      SID		      "63"
+	      Ports		      [1, 1]
+	      Position		      [170, 230, 200, 260]
+	      Operator		      "cos"
+	    }
+	    Block {
+	      BlockType		      Trigonometry
+	      Name		      "Trigonometric\nFunction4"
+	      SID		      "64"
+	      Ports		      [1, 1]
+	      Position		      [165, 335, 195, 365]
+	    }
+	    Block {
+	      BlockType		      Outport
+	      Name		      "x"
+	      SID		      "65"
+	      Position		      [1075, 203, 1105, 217]
+	      IconDisplay	      "Port number"
+	    }
+	    Line {
+	      SrcBlock		      "theta"
+	      SrcPort		      1
+	      Points		      [10, 0]
+	      Branch {
+		DstBlock		"Trigonometric\nFunction"
+		DstPort			1
+	      }
+	      Branch {
+		Points			[0, 60]
+		DstBlock		"Trigonometric\nFunction1"
+		DstPort			1
+	      }
+	    }
+	    Line {
+	      SrcBlock		      "psi"
+	      SrcPort		      1
+	      Points		      [45, 0]
+	      Branch {
+		DstBlock		"Trigonometric\nFunction2"
+		DstPort			1
+	      }
+	      Branch {
+		Points			[0, 65]
+		DstBlock		"Trigonometric\nFunction3"
+		DstPort			1
+	      }
+	    }
+	    Line {
+	      SrcBlock		      "phi"
+	      SrcPort		      1
+	      DstBlock		      "Trigonometric\nFunction4"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Trigonometric\nFunction"
+	      SrcPort		      1
+	      DstBlock		      "Product"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Trigonometric\nFunction2"
+	      SrcPort		      1
+	      Points		      [100, 0; 0, -135]
+	      DstBlock		      "Product"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "Trigonometric\nFunction1"
+	      SrcPort		      1
+	      Points		      [190, 0]
+	      DstBlock		      "Product of\nElements"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Trigonometric\nFunction3"
+	      SrcPort		      1
+	      Points		      [115, 0; 0, -100]
+	      DstBlock		      "Product of\nElements"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "Trigonometric\nFunction4"
+	      SrcPort		      1
+	      Points		      [235, 0; 0, -195]
+	      DstBlock		      "Product of\nElements"
+	      DstPort		      3
+	    }
+	    Line {
+	      SrcBlock		      "Product"
+	      SrcPort		      1
+	      Points		      [55, 0; 0, 40]
+	      DstBlock		      "Subtract"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Product of\nElements"
+	      SrcPort		      1
+	      Points		      [60, 0; 0, -50]
+	      DstBlock		      "Subtract"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "Product1"
+	      SrcPort		      1
+	      DstBlock		      "Integrator"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "T1"
+	      SrcPort		      1
+	      Points		      [40, 0; 0, 30]
+	      DstBlock		      "Sum of\nElements"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "T2"
+	      SrcPort		      1
+	      Points		      [85, 0]
+	      DstBlock		      "Sum of\nElements"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "T4"
+	      SrcPort		      1
+	      Points		      [65, 0; 0, -65]
+	      DstBlock		      "Sum of\nElements"
+	      DstPort		      4
+	    }
+	    Line {
+	      SrcBlock		      "T3"
+	      SrcPort		      1
+	      Points		      [80, 0; 0, -30]
+	      DstBlock		      "Sum of\nElements"
+	      DstPort		      3
+	    }
+	    Line {
+	      SrcBlock		      "Sum of\nElements"
+	      SrcPort		      1
+	      Points		      [140, 0]
+	      DstBlock		      "Aca hay que ponder uno sobre la masa"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Aca hay que ponder uno sobre la masa"
+	      SrcPort		      1
+	      Points		      [140, 0; 0, -250]
+	      DstBlock		      "Product1"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "Subtract"
+	      SrcPort		      1
+	      Points		      [25, 0; 0, 115]
+	      DstBlock		      "Product1"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Integrator"
+	      SrcPort		      1
+	      DstBlock		      "Integrator1"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Integrator1"
+	      SrcPort		      1
+	      Points		      [100, 0]
+	      DstBlock		      "x"
+	      DstPort		      1
+	    }
+	  }
 	}
 	Block {
-	  BlockType		  Trigonometry
-	  Name			  "Trigonometric\nFunction3"
-	  SID			  "63"
-	  Ports			  [1, 1]
-	  Position		  [170, 230, 200, 260]
-	  Operator		  "cos"
+	  BlockType		  SubSystem
+	  Name			  "Subsystem4"
+	  SID			  "66"
+	  Ports			  [7, 1]
+	  Position		  [455, 510, 615, 600]
+	  MinAlgLoopOccurrences	  off
+	  PropExecContextOutsideSubsystem off
+	  RTWSystemCode		  "Auto"
+	  FunctionWithSeparateData off
+	  Opaque		  off
+	  RequestExecContextInheritance	off
+	  MaskHideContents	  off
+	  System {
+	    Name		    "Subsystem4"
+	    Location		    [0, 51, 1366, 768]
+	    Open		    off
+	    ModelBrowserVisibility  off
+	    ModelBrowserWidth	    200
+	    ScreenColor		    "white"
+	    PaperOrientation	    "landscape"
+	    PaperPositionMode	    "auto"
+	    PaperType		    "usletter"
+	    PaperUnits		    "inches"
+	    TiledPaperMargins	    [0.500000, 0.500000, 0.500000, 0.500000]
+	    TiledPageScale	    1
+	    ShowPageBoundaries	    off
+	    ZoomFactor		    "100"
+	    Block {
+	      BlockType		      Inport
+	      Name		      "theta"
+	      SID		      "67"
+	      Position		      [70, 33, 100, 47]
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "psi"
+	      SID		      "68"
+	      Position		      [60, 183, 90, 197]
+	      Port		      "2"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "phi"
+	      SID		      "69"
+	      Position		      [65, 353, 95, 367]
+	      Port		      "3"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "T1"
+	      SID		      "70"
+	      Position		      [70, 438, 100, 452]
+	      Port		      "4"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "T2"
+	      SID		      "71"
+	      Position		      [65, 478, 95, 492]
+	      Port		      "5"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "T3"
+	      SID		      "72"
+	      Position		      [65, 508, 95, 522]
+	      Port		      "6"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "T4"
+	      SID		      "73"
+	      Position		      [65, 548, 95, 562]
+	      Port		      "7"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Gain
+	      Name		      "Aca hay que ponder uno sobre la masa"
+	      SID		      "74"
+	      Position		      [390, 465, 420, 495]
+	      Gain		      "1/2"
+	      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Sum
+	      Name		      "Add"
+	      SID		      "75"
+	      Ports		      [2, 1]
+	      Position		      [620, 82, 650, 113]
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Integrator
+	      Name		      "Integrator"
+	      SID		      "76"
+	      Ports		      [1, 1]
+	      Position		      [885, 210, 915, 240]
+	    }
+	    Block {
+	      BlockType		      Integrator
+	      Name		      "Integrator1"
+	      SID		      "77"
+	      Ports		      [1, 1]
+	      Position		      [965, 210, 995, 240]
+	    }
+	    Block {
+	      BlockType		      Product
+	      Name		      "Product"
+	      SID		      "78"
+	      Ports		      [2, 1]
+	      Position		      [460, 32, 490, 63]
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Product
+	      Name		      "Product of\nElements"
+	      SID		      "79"
+	      Ports		      [3, 1]
+	      Position		      [455, 140, 485, 170]
+	      Inputs		      "3"
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      RndMeth		      "Floor"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Product
+	      Name		      "Product1"
+	      SID		      "80"
+	      Ports		      [2, 1]
+	      Position		      [725, 207, 755, 238]
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Sum
+	      Name		      "Sum of\nElements"
+	      SID		      "81"
+	      Ports		      [4, 1]
+	      Position		      [200, 467, 230, 498]
+	      Inputs		      "4"
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Trigonometry
+	      Name		      "Trigonometric\nFunction"
+	      SID		      "82"
+	      Ports		      [1, 1]
+	      Position		      [215, 25, 245, 55]
+	    }
+	    Block {
+	      BlockType		      Trigonometry
+	      Name		      "Trigonometric\nFunction1"
+	      SID		      "83"
+	      Ports		      [1, 1]
+	      Position		      [215, 85, 245, 115]
+	      Operator		      "cos"
+	    }
+	    Block {
+	      BlockType		      Trigonometry
+	      Name		      "Trigonometric\nFunction2"
+	      SID		      "84"
+	      Ports		      [1, 1]
+	      Position		      [210, 175, 240, 205]
+	    }
+	    Block {
+	      BlockType		      Trigonometry
+	      Name		      "Trigonometric\nFunction3"
+	      SID		      "85"
+	      Ports		      [1, 1]
+	      Position		      [210, 240, 240, 270]
+	      Operator		      "cos"
+	    }
+	    Block {
+	      BlockType		      Trigonometry
+	      Name		      "Trigonometric\nFunction4"
+	      SID		      "86"
+	      Ports		      [1, 1]
+	      Position		      [205, 345, 235, 375]
+	    }
+	    Block {
+	      BlockType		      UnaryMinus
+	      Name		      "Unary Minus"
+	      SID		      "87"
+	      Position		      [670, 140, 700, 170]
+	      BlockRotation	      270
+	      BlockMirror	      on
+	    }
+	    Block {
+	      BlockType		      Outport
+	      Name		      "y"
+	      SID		      "88"
+	      Position		      [1115, 213, 1145, 227]
+	      IconDisplay	      "Port number"
+	    }
+	    Line {
+	      SrcBlock		      "theta"
+	      SrcPort		      1
+	      Points		      [10, 0]
+	      Branch {
+		DstBlock		"Trigonometric\nFunction"
+		DstPort			1
+	      }
+	      Branch {
+		Points			[0, 60]
+		DstBlock		"Trigonometric\nFunction1"
+		DstPort			1
+	      }
+	    }
+	    Line {
+	      SrcBlock		      "psi"
+	      SrcPort		      1
+	      Points		      [45, 0]
+	      Branch {
+		DstBlock		"Trigonometric\nFunction2"
+		DstPort			1
+	      }
+	      Branch {
+		Points			[0, 65]
+		DstBlock		"Trigonometric\nFunction3"
+		DstPort			1
+	      }
+	    }
+	    Line {
+	      SrcBlock		      "phi"
+	      SrcPort		      1
+	      DstBlock		      "Trigonometric\nFunction4"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Product"
+	      SrcPort		      1
+	      Points		      [55, 0; 0, 40]
+	      DstBlock		      "Add"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Product of\nElements"
+	      SrcPort		      1
+	      Points		      [60, 0; 0, -50]
+	      DstBlock		      "Add"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "Product1"
+	      SrcPort		      1
+	      DstBlock		      "Integrator"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "T1"
+	      SrcPort		      1
+	      Points		      [40, 0; 0, 30]
+	      DstBlock		      "Sum of\nElements"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "T2"
+	      SrcPort		      1
+	      Points		      [85, 0]
+	      DstBlock		      "Sum of\nElements"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "T4"
+	      SrcPort		      1
+	      Points		      [65, 0; 0, -65]
+	      DstBlock		      "Sum of\nElements"
+	      DstPort		      4
+	    }
+	    Line {
+	      SrcBlock		      "T3"
+	      SrcPort		      1
+	      Points		      [80, 0; 0, -30]
+	      DstBlock		      "Sum of\nElements"
+	      DstPort		      3
+	    }
+	    Line {
+	      SrcBlock		      "Sum of\nElements"
+	      SrcPort		      1
+	      Points		      [140, 0]
+	      DstBlock		      "Aca hay que ponder uno sobre la masa"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Aca hay que ponder uno sobre la masa"
+	      SrcPort		      1
+	      Points		      [140, 0; 0, -250]
+	      DstBlock		      "Product1"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "Add"
+	      SrcPort		      1
+	      Points		      [30, 0]
+	      DstBlock		      "Unary Minus"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Integrator"
+	      SrcPort		      1
+	      DstBlock		      "Integrator1"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Integrator1"
+	      SrcPort		      1
+	      Points		      [100, 0]
+	      DstBlock		      "y"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Trigonometric\nFunction2"
+	      SrcPort		      1
+	      Points		      [190, 0; 0, -135]
+	      DstBlock		      "Product"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "Trigonometric\nFunction1"
+	      SrcPort		      1
+	      Points		      [95, 0; 0, -60]
+	      DstBlock		      "Product"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Trigonometric\nFunction"
+	      SrcPort		      1
+	      Points		      [45, 0; 0, 105]
+	      DstBlock		      "Product of\nElements"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Trigonometric\nFunction3"
+	      SrcPort		      1
+	      Points		      [190, 0; 0, -100]
+	      DstBlock		      "Product of\nElements"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "Trigonometric\nFunction4"
+	      SrcPort		      1
+	      Points		      [80, 0; 0, -195]
+	      DstBlock		      "Product of\nElements"
+	      DstPort		      3
+	    }
+	    Line {
+	      SrcBlock		      "Unary Minus"
+	      SrcPort		      1
+	      Points		      [0, 40]
+	      DstBlock		      "Product1"
+	      DstPort		      1
+	    }
+	  }
 	}
 	Block {
-	  BlockType		  Trigonometry
-	  Name			  "Trigonometric\nFunction4"
-	  SID			  "64"
-	  Ports			  [1, 1]
-	  Position		  [165, 335, 195, 365]
+	  BlockType		  SubSystem
+	  Name			  "Subsystem5"
+	  SID			  "89"
+	  Ports			  [6, 1]
+	  Position		  [455, 640, 620, 725]
+	  MinAlgLoopOccurrences	  off
+	  PropExecContextOutsideSubsystem off
+	  RTWSystemCode		  "Auto"
+	  FunctionWithSeparateData off
+	  Opaque		  off
+	  RequestExecContextInheritance	off
+	  MaskHideContents	  off
+	  System {
+	    Name		    "Subsystem5"
+	    Location		    [263, 186, 761, 486]
+	    Open		    off
+	    ModelBrowserVisibility  off
+	    ModelBrowserWidth	    200
+	    ScreenColor		    "white"
+	    PaperOrientation	    "landscape"
+	    PaperPositionMode	    "auto"
+	    PaperType		    "usletter"
+	    PaperUnits		    "inches"
+	    TiledPaperMargins	    [0.500000, 0.500000, 0.500000, 0.500000]
+	    TiledPageScale	    1
+	    ShowPageBoundaries	    off
+	    ZoomFactor		    "100"
+	    Block {
+	      BlockType		      Inport
+	      Name		      "phi"
+	      SID		      "90"
+	      Position		      [20, 13, 50, 27]
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "psi"
+	      SID		      "91"
+	      Position		      [25, 63, 55, 77]
+	      Port		      "2"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "T1"
+	      SID		      "92"
+	      Position		      [25, 238, 55, 252]
+	      Port		      "3"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "T2"
+	      SID		      "93"
+	      Position		      [25, 283, 55, 297]
+	      Port		      "4"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "T3"
+	      SID		      "94"
+	      Position		      [25, 333, 55, 347]
+	      Port		      "5"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "T4"
+	      SID		      "95"
+	      Position		      [20, 383, 50, 397]
+	      Port		      "6"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Sum
+	      Name		      "Add"
+	      SID		      "96"
+	      Ports		      [2, 1]
+	      Position		      [325, 87, 355, 118]
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Constant
+	      Name		      "Constant"
+	      SID		      "97"
+	      Position		      [135, 160, 165, 190]
+	      Value		      "9.8"
+	    }
+	    Block {
+	      BlockType		      Integrator
+	      Name		      "Integrator"
+	      SID		      "98"
+	      Ports		      [1, 1]
+	      Position		      [400, 175, 430, 205]
+	    }
+	    Block {
+	      BlockType		      Integrator
+	      Name		      "Integrator1"
+	      SID		      "99"
+	      Ports		      [1, 1]
+	      Position		      [350, 175, 380, 205]
+	    }
+	    Block {
+	      BlockType		      Product
+	      Name		      "Product of\nElements"
+	      SID		      "100"
+	      Ports		      [3, 1]
+	      Position		      [270, 60, 300, 90]
+	      Inputs		      "3"
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      RndMeth		      "Floor"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Sum
+	      Name		      "Sum of\nElements"
+	      SID		      "101"
+	      Ports		      [4, 1]
+	      Position		      [145, 262, 175, 293]
+	      Inputs		      "4"
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Trigonometry
+	      Name		      "Trigonometric\nFunction"
+	      SID		      "102"
+	      Ports		      [1, 1]
+	      Position		      [155, 15, 185, 45]
+	      Operator		      "cos"
+	    }
+	    Block {
+	      BlockType		      Trigonometry
+	      Name		      "Trigonometric\nFunction1"
+	      SID		      "103"
+	      Ports		      [1, 1]
+	      Position		      [150, 75, 180, 105]
+	      Operator		      "cos"
+	    }
+	    Block {
+	      BlockType		      Gain
+	      Name		      "Uno sobre\nla mas"
+	      SID		      "104"
+	      Position		      [280, 175, 310, 205]
+	      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Outport
+	      Name		      "z"
+	      SID		      "105"
+	      Position		      [430, 98, 460, 112]
+	      IconDisplay	      "Port number"
+	    }
+	    Line {
+	      SrcBlock		      "T1"
+	      SrcPort		      1
+	      Points		      [20, 0; 0, 25]
+	      DstBlock		      "Sum of\nElements"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "T2"
+	      SrcPort		      1
+	      Points		      [70, 0]
+	      DstBlock		      "Sum of\nElements"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "T3"
+	      SrcPort		      1
+	      Points		      [70, 0]
+	      DstBlock		      "Sum of\nElements"
+	      DstPort		      3
+	    }
+	    Line {
+	      SrcBlock		      "T4"
+	      SrcPort		      1
+	      Points		      [75, 0]
+	      DstBlock		      "Sum of\nElements"
+	      DstPort		      4
+	    }
+	    Line {
+	      SrcBlock		      "phi"
+	      SrcPort		      1
+	      Points		      [40, 0; 0, 10]
+	      DstBlock		      "Trigonometric\nFunction"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "psi"
+	      SrcPort		      1
+	      Points		      [35, 0; 0, 20]
+	      DstBlock		      "Trigonometric\nFunction1"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Trigonometric\nFunction"
+	      SrcPort		      1
+	      Points		      [30, 0; 0, 35]
+	      DstBlock		      "Product of\nElements"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Trigonometric\nFunction1"
+	      SrcPort		      1
+	      Points		      [35, 0; 0, -15]
+	      DstBlock		      "Product of\nElements"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "Sum of\nElements"
+	      SrcPort		      1
+	      Points		      [70, 0; 0, -195]
+	      DstBlock		      "Product of\nElements"
+	      DstPort		      3
+	    }
+	    Line {
+	      SrcBlock		      "Uno sobre\nla mas"
+	      SrcPort		      1
+	      DstBlock		      "Integrator1"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Integrator1"
+	      SrcPort		      1
+	      DstBlock		      "Integrator"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Integrator"
+	      SrcPort		      1
+	      Points		      [0, -60; -20, 0]
+	      DstBlock		      "z"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Product of\nElements"
+	      SrcPort		      1
+	      Points		      [0, 20]
+	      DstBlock		      "Add"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Constant"
+	      SrcPort		      1
+	      Points		      [70, 0; 0, -65]
+	      DstBlock		      "Add"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "Add"
+	      SrcPort		      1
+	      Points		      [0, 60; -95, 0]
+	      DstBlock		      "Uno sobre\nla mas"
+	      DstPort		      1
+	    }
+	  }
+	}
+	Block {
+	  BlockType		  SubSystem
+	  Name			  "Subsystem6"
+	  SID			  "106"
+	  Ports			  [13, 1]
+	  Position		  [455, 778, 655, 912]
+	  MinAlgLoopOccurrences	  off
+	  PropExecContextOutsideSubsystem off
+	  RTWSystemCode		  "Auto"
+	  FunctionWithSeparateData off
+	  Opaque		  off
+	  RequestExecContextInheritance	off
+	  MaskHideContents	  off
+	  System {
+	    Name		    "Subsystem6"
+	    Location		    [0, 51, 1366, 768]
+	    Open		    on
+	    ModelBrowserVisibility  off
+	    ModelBrowserWidth	    200
+	    ScreenColor		    "white"
+	    PaperOrientation	    "landscape"
+	    PaperPositionMode	    "auto"
+	    PaperType		    "usletter"
+	    PaperUnits		    "inches"
+	    TiledPaperMargins	    [0.500000, 0.500000, 0.500000, 0.500000]
+	    TiledPageScale	    1
+	    ShowPageBoundaries	    off
+	    ZoomFactor		    "100"
+	    Block {
+	      BlockType		      Inport
+	      Name		      "theta"
+	      SID		      "107"
+	      Position		      [20, 48, 50, 62]
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "phi"
+	      SID		      "108"
+	      Position		      [15, 223, 45, 237]
+	      Port		      "2"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "psi"
+	      SID		      "109"
+	      Position		      [15, 398, 45, 412]
+	      Port		      "3"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "wq2"
+	      SID		      "111"
+	      Position		      [15, 538, 45, 552]
+	      Port		      "4"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "wq3"
+	      SID		      "112"
+	      Position		      [15, 598, 45, 612]
+	      Port		      "5"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "T1"
+	      SID		      "113"
+	      Position		      [15, 653, 45, 667]
+	      Port		      "6"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "T2"
+	      SID		      "114"
+	      Position		      [15, 703, 45, 717]
+	      Port		      "7"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "T3"
+	      SID		      "115"
+	      Position		      [15, 748, 45, 762]
+	      Port		      "8"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "T4"
+	      SID		      "124"
+	      Position		      [15, 793, 45, 807]
+	      Port		      "9"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "w1"
+	      SID		      "125"
+	      Position		      [15, 833, 45, 847]
+	      Port		      "10"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "w2"
+	      SID		      "126"
+	      Position		      [15, 868, 45, 882]
+	      Port		      "11"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "w3"
+	      SID		      "127"
+	      Position		      [15, 898, 45, 912]
+	      Port		      "12"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "w4"
+	      SID		      "128"
+	      Position		      [15, 933, 45, 947]
+	      Port		      "13"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Gain
+	      Name		      "1/Ixx"
+	      SID		      "148"
+	      Position		      [940, 550, 970, 580]
+	      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Sum
+	      Name		      "Add"
+	      SID		      "143"
+	      Ports		      [2, 1]
+	      Position		      [625, 222, 655, 253]
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Sum
+	      Name		      "Add1"
+	      SID		      "187"
+	      Ports		      [2, 1]
+	      Position		      [520, 287, 550, 318]
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Integrator
+	      Name		      "Integrator"
+	      SID		      "149"
+	      Ports		      [1, 1]
+	      Position		      [1005, 550, 1035, 580]
+	    }
+	    Block {
+	      BlockType		      Gain
+	      Name		      "Iyy-Izz"
+	      SID		      "131"
+	      Position		      [690, 555, 720, 585]
+	      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Gain
+	      Name		      "Izzm"
+	      SID		      "146"
+	      Position		      [675, 820, 705, 850]
+	      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Gain
+	      Name		      "L"
+	      SID		      "139"
+	      Position		      [690, 225, 720, 255]
+	      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Product
+	      Name		      "Product"
+	      SID		      "132"
+	      Ports		      [2, 1]
+	      Position		      [145, 552, 175, 583]
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Product
+	      Name		      "Product of\nElements"
+	      SID		      "133"
+	      Ports		      [3, 1]
+	      Position		      [330, 215, 360, 245]
+	      Inputs		      "3"
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      RndMeth		      "Floor"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Product
+	      Name		      "Product of\nElements1"
+	      SID		      "137"
+	      Ports		      [3, 1]
+	      Position		      [430, 295, 460, 325]
+	      Inputs		      "3"
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      RndMeth		      "Floor"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Product
+	      Name		      "Product1"
+	      SID		      "136"
+	      Ports		      [2, 1]
+	      Position		      [425, 107, 455, 138]
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Product
+	      Name		      "Product2"
+	      SID		      "145"
+	      Ports		      [2, 1]
+	      Position		      [540, 817, 570, 848]
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Product
+	      Name		      "Product3"
+	      SID		      "188"
+	      Ports		      [2, 1]
+	      Position		      [590, 307, 620, 338]
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Sum
+	      Name		      "Subtract"
+	      SID		      "134"
+	      Ports		      [2, 1]
+	      Position		      [215, 672, 245, 703]
+	      Inputs		      "+-"
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Sum
+	      Name		      "Subtract1"
+	      SID		      "141"
+	      Ports		      [2, 1]
+	      Position		      [215, 767, 245, 798]
+	      Inputs		      "+-"
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Sum
+	      Name		      "Sum of\nElements"
+	      SID		      "144"
+	      Ports		      [4, 1]
+	      Position		      [255, 867, 285, 898]
+	      Inputs		      "4"
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Sum
+	      Name		      "Sum of\nElements1"
+	      SID		      "147"
+	      Ports		      [3, 1]
+	      Position		      [855, 550, 885, 580]
+	      Inputs		      "3"
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Trigonometry
+	      Name		      "Trigonometric\nFunction"
+	      SID		      "117"
+	      Ports		      [1, 1]
+	      Position		      [165, 40, 195, 70]
+	      Operator		      "cos"
+	    }
+	    Block {
+	      BlockType		      Trigonometry
+	      Name		      "Trigonometric\nFunction1"
+	      SID		      "118"
+	      Ports		      [1, 1]
+	      Position		      [165, 115, 195, 145]
+	    }
+	    Block {
+	      BlockType		      Trigonometry
+	      Name		      "Trigonometric\nFunction2"
+	      SID		      "119"
+	      Ports		      [1, 1]
+	      Position		      [170, 215, 200, 245]
+	      Operator		      "cos"
+	    }
+	    Block {
+	      BlockType		      Trigonometry
+	      Name		      "Trigonometric\nFunction3"
+	      SID		      "120"
+	      Ports		      [1, 1]
+	      Position		      [175, 390, 205, 420]
+	      Operator		      "cos"
+	    }
+	    Block {
+	      BlockType		      Trigonometry
+	      Name		      "Trigonometric\nFunction4"
+	      SID		      "121"
+	      Ports		      [1, 1]
+	      Position		      [170, 285, 200, 315]
+	    }
+	    Block {
+	      BlockType		      Trigonometry
+	      Name		      "Trigonometric\nFunction5"
+	      SID		      "122"
+	      Ports		      [1, 1]
+	      Position		      [175, 465, 205, 495]
+	    }
+	    Block {
+	      BlockType		      Outport
+	      Name		      "wq1"
+	      SID		      "123"
+	      Position		      [1090, 558, 1120, 572]
+	      IconDisplay	      "Port number"
+	    }
+	    Line {
+	      SrcBlock		      "theta"
+	      SrcPort		      1
+	      Points		      [30, 0]
+	      Branch {
+		DstBlock		"Trigonometric\nFunction"
+		DstPort			1
+	      }
+	      Branch {
+		Points			[0, 75]
+		DstBlock		"Trigonometric\nFunction1"
+		DstPort			1
+	      }
+	    }
+	    Line {
+	      SrcBlock		      "phi"
+	      SrcPort		      1
+	      Points		      [35, 0]
+	      Branch {
+		DstBlock		"Trigonometric\nFunction2"
+		DstPort			1
+	      }
+	      Branch {
+		Points			[0, 70]
+		DstBlock		"Trigonometric\nFunction4"
+		DstPort			1
+	      }
+	    }
+	    Line {
+	      SrcBlock		      "psi"
+	      SrcPort		      1
+	      Points		      [50, 0]
+	      Branch {
+		DstBlock		"Trigonometric\nFunction3"
+		DstPort			1
+	      }
+	      Branch {
+		Points			[0, 75]
+		DstBlock		"Trigonometric\nFunction5"
+		DstPort			1
+	      }
+	    }
+	    Line {
+	      SrcBlock		      "wq2"
+	      SrcPort		      1
+	      Points		      [25, 0]
+	      Branch {
+		Points			[15, 0; 0, 15]
+		DstBlock		"Product"
+		DstPort			1
+	      }
+	      Branch {
+		Points			[0, 280]
+		DstBlock		"Product2"
+		DstPort			1
+	      }
+	    }
+	    Line {
+	      SrcBlock		      "wq3"
+	      SrcPort		      1
+	      Points		      [40, 0; 0, -30]
+	      DstBlock		      "Product"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "Product"
+	      SrcPort		      1
+	      DstBlock		      "Iyy-Izz"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Trigonometric\nFunction"
+	      SrcPort		      1
+	      Points		      [35, 0]
+	      Branch {
+		Points			[45, 0; 0, 165]
+		DstBlock		"Product of\nElements"
+		DstPort			1
+	      }
+	      Branch {
+		Points			[0, 245]
+		DstBlock		"Product of\nElements1"
+		DstPort			1
+	      }
+	    }
+	    Line {
+	      SrcBlock		      "Trigonometric\nFunction2"
+	      SrcPort		      1
+	      Points		      [10, 0]
+	      Branch {
+		DstBlock		"Product of\nElements"
+		DstPort			2
+	      }
+	      Branch {
+		Points			[0, 80]
+		DstBlock		"Product of\nElements1"
+		DstPort			2
+	      }
+	    }
+	    Line {
+	      SrcBlock		      "T3"
+	      SrcPort		      1
+	      Points		      [75, 0; 0, -75]
+	      DstBlock		      "Subtract"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "T1"
+	      SrcPort		      1
+	      Points		      [145, 0; 0, 35]
+	      DstBlock		      "Subtract"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "Subtract"
+	      SrcPort		      1
+	      Points		      [60, 0; 0, -450]
+	      DstBlock		      "Product of\nElements"
+	      DstPort		      3
+	    }
+	    Line {
+	      SrcBlock		      "Trigonometric\nFunction1"
+	      SrcPort		      1
+	      Points		      [210, 0]
+	      DstBlock		      "Product1"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Trigonometric\nFunction3"
+	      SrcPort		      1
+	      Points		      [170, 0; 0, -275]
+	      DstBlock		      "Product1"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "Trigonometric\nFunction5"
+	      SrcPort		      1
+	      Points		      [200, 0; 0, -160]
+	      DstBlock		      "Product of\nElements1"
+	      DstPort		      3
+	    }
+	    Line {
+	      SrcBlock		      "T4"
+	      SrcPort		      1
+	      Points		      [75, 0; 0, -25]
+	      DstBlock		      "Subtract1"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "T2"
+	      SrcPort		      1
+	      Points		      [145, 0; 0, 80]
+	      DstBlock		      "Subtract1"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "Subtract1"
+	      SrcPort		      1
+	      Points		      [280, 0; 0, -390; 45, 0]
+	      DstBlock		      "Product3"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "Product1"
+	      SrcPort		      1
+	      Points		      [10, 0; 0, 170]
+	      DstBlock		      "Add1"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Product of\nElements"
+	      SrcPort		      1
+	      DstBlock		      "Add"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Add"
+	      SrcPort		      1
+	      DstBlock		      "L"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "w1"
+	      SrcPort		      1
+	      Points		      [95, 0; 0, 35]
+	      DstBlock		      "Sum of\nElements"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "w2"
+	      SrcPort		      1
+	      Points		      [85, 0; 0, 10; 105, 0]
+	      DstBlock		      "Sum of\nElements"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "w3"
+	      SrcPort		      1
+	      Points		      [190, 0]
+	      DstBlock		      "Sum of\nElements"
+	      DstPort		      3
+	    }
+	    Line {
+	      SrcBlock		      "w4"
+	      SrcPort		      1
+	      Points		      [190, 0]
+	      DstBlock		      "Sum of\nElements"
+	      DstPort		      4
+	    }
+	    Line {
+	      SrcBlock		      "Sum of\nElements"
+	      SrcPort		      1
+	      Points		      [115, 0; 0, -45]
+	      DstBlock		      "Product2"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "Product2"
+	      SrcPort		      1
+	      DstBlock		      "Izzm"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "L"
+	      SrcPort		      1
+	      Points		      [60, 0; 0, 315]
+	      DstBlock		      "Sum of\nElements1"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Iyy-Izz"
+	      SrcPort		      1
+	      Points		      [55, 0; 0, -5]
+	      DstBlock		      "Sum of\nElements1"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "Izzm"
+	      SrcPort		      1
+	      Points		      [65, 0; 0, -260]
+	      DstBlock		      "Sum of\nElements1"
+	      DstPort		      3
+	    }
+	    Line {
+	      SrcBlock		      "Sum of\nElements1"
+	      SrcPort		      1
+	      DstBlock		      "1/Ixx"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "1/Ixx"
+	      SrcPort		      1
+	      DstBlock		      "Integrator"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Integrator"
+	      SrcPort		      1
+	      DstBlock		      "wq1"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Product of\nElements1"
+	      SrcPort		      1
+	      DstBlock		      "Add1"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "Add1"
+	      SrcPort		      1
+	      Points		      [0, 10]
+	      DstBlock		      "Product3"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Product3"
+	      SrcPort		      1
+	      Points		      [0, -60; -15, 0]
+	      DstBlock		      "Add"
+	      DstPort		      2
+	    }
+	  }
+	}
+	Block {
+	  BlockType		  SubSystem
+	  Name			  "Subsystem7"
+	  SID			  "150"
+	  Ports			  [13, 1]
+	  Position		  [455, 935, 640, 1055]
+	  MinAlgLoopOccurrences	  off
+	  PropExecContextOutsideSubsystem off
+	  RTWSystemCode		  "Auto"
+	  FunctionWithSeparateData off
+	  Opaque		  off
+	  RequestExecContextInheritance	off
+	  MaskHideContents	  off
+	  System {
+	    Name		    "Subsystem7"
+	    Location		    [0, 51, 1366, 768]
+	    Open		    off
+	    ModelBrowserVisibility  off
+	    ModelBrowserWidth	    200
+	    ScreenColor		    "white"
+	    PaperOrientation	    "landscape"
+	    PaperPositionMode	    "auto"
+	    PaperType		    "A4"
+	    PaperUnits		    "centimeters"
+	    TiledPaperMargins	    [1.270000, 1.270000, 1.270000, 1.270000]
+	    TiledPageScale	    1
+	    ShowPageBoundaries	    off
+	    ZoomFactor		    "100"
+	    Block {
+	      BlockType		      Inport
+	      Name		      "theta"
+	      SID		      "151"
+	      Position		      [20, 48, 50, 62]
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "phi"
+	      SID		      "152"
+	      Position		      [15, 223, 45, 237]
+	      Port		      "2"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "psi"
+	      SID		      "153"
+	      Position		      [15, 398, 45, 412]
+	      Port		      "3"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "wq1"
+	      SID		      "154"
+	      Position		      [15, 538, 45, 552]
+	      Port		      "4"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "wq3"
+	      SID		      "155"
+	      Position		      [15, 598, 45, 612]
+	      Port		      "5"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "T1"
+	      SID		      "156"
+	      Position		      [15, 653, 45, 667]
+	      Port		      "6"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "T2"
+	      SID		      "157"
+	      Position		      [15, 703, 45, 717]
+	      Port		      "7"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "T3"
+	      SID		      "158"
+	      Position		      [15, 748, 45, 762]
+	      Port		      "8"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "T4"
+	      SID		      "159"
+	      Position		      [15, 793, 45, 807]
+	      Port		      "9"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "w1"
+	      SID		      "160"
+	      Position		      [15, 833, 45, 847]
+	      Port		      "10"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "w2"
+	      SID		      "161"
+	      Position		      [15, 868, 45, 882]
+	      Port		      "11"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "w3"
+	      SID		      "162"
+	      Position		      [15, 898, 45, 912]
+	      Port		      "12"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "w4"
+	      SID		      "163"
+	      Position		      [15, 933, 45, 947]
+	      Port		      "13"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Gain
+	      Name		      "1/Izz"
+	      SID		      "164"
+	      Position		      [940, 550, 970, 580]
+	      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Sum
+	      Name		      "Add"
+	      SID		      "165"
+	      Ports		      [2, 1]
+	      Position		      [625, 222, 655, 253]
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Integrator
+	      Name		      "Integrator"
+	      SID		      "166"
+	      Ports		      [1, 1]
+	      Position		      [1005, 550, 1035, 580]
+	    }
+	    Block {
+	      BlockType		      Gain
+	      Name		      "Izz-Ixx"
+	      SID		      "167"
+	      Position		      [690, 555, 720, 585]
+	      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Gain
+	      Name		      "Izzm"
+	      SID		      "168"
+	      Position		      [675, 820, 705, 850]
+	      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Gain
+	      Name		      "L"
+	      SID		      "169"
+	      Position		      [690, 225, 720, 255]
+	      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Product
+	      Name		      "Product"
+	      SID		      "170"
+	      Ports		      [2, 1]
+	      Position		      [145, 552, 175, 583]
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Product
+	      Name		      "Product of\nElements"
+	      SID		      "171"
+	      Ports		      [3, 1]
+	      Position		      [330, 215, 360, 245]
+	      Inputs		      "3"
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      RndMeth		      "Floor"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Product
+	      Name		      "Product of\nElements1"
+	      SID		      "172"
+	      Ports		      [3, 1]
+	      Position		      [430, 295, 460, 325]
+	      Inputs		      "3"
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      RndMeth		      "Floor"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Product
+	      Name		      "Product1"
+	      SID		      "174"
+	      Ports		      [2, 1]
+	      Position		      [425, 107, 455, 138]
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Product
+	      Name		      "Product2"
+	      SID		      "175"
+	      Ports		      [2, 1]
+	      Position		      [540, 817, 570, 848]
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Product
+	      Name		      "Product3"
+	      SID		      "190"
+	      Ports		      [2, 1]
+	      Position		      [550, 342, 580, 373]
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Sum
+	      Name		      "Subtract"
+	      SID		      "176"
+	      Ports		      [2, 1]
+	      Position		      [215, 672, 245, 703]
+	      Inputs		      "+-"
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Sum
+	      Name		      "Subtract1"
+	      SID		      "177"
+	      Ports		      [2, 1]
+	      Position		      [215, 767, 245, 798]
+	      Inputs		      "+-"
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Sum
+	      Name		      "Subtract2"
+	      SID		      "189"
+	      Ports		      [2, 1]
+	      Position		      [510, 242, 540, 273]
+	      Inputs		      "+-"
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Sum
+	      Name		      "Sum of\nElements"
+	      SID		      "178"
+	      Ports		      [4, 1]
+	      Position		      [255, 867, 285, 898]
+	      Inputs		      "4"
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Sum
+	      Name		      "Sum of\nElements1"
+	      SID		      "179"
+	      Ports		      [3, 1]
+	      Position		      [855, 550, 885, 580]
+	      Inputs		      "3"
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Trigonometry
+	      Name		      "Trigonometric\nFunction"
+	      SID		      "180"
+	      Ports		      [1, 1]
+	      Position		      [165, 40, 195, 70]
+	      Operator		      "cos"
+	    }
+	    Block {
+	      BlockType		      Trigonometry
+	      Name		      "Trigonometric\nFunction1"
+	      SID		      "181"
+	      Ports		      [1, 1]
+	      Position		      [165, 115, 195, 145]
+	    }
+	    Block {
+	      BlockType		      Trigonometry
+	      Name		      "Trigonometric\nFunction2"
+	      SID		      "182"
+	      Ports		      [1, 1]
+	      Position		      [170, 215, 200, 245]
+	      Operator		      "cos"
+	    }
+	    Block {
+	      BlockType		      Trigonometry
+	      Name		      "Trigonometric\nFunction3"
+	      SID		      "183"
+	      Ports		      [1, 1]
+	      Position		      [175, 390, 205, 420]
+	      Operator		      "cos"
+	    }
+	    Block {
+	      BlockType		      Trigonometry
+	      Name		      "Trigonometric\nFunction4"
+	      SID		      "184"
+	      Ports		      [1, 1]
+	      Position		      [170, 285, 200, 315]
+	    }
+	    Block {
+	      BlockType		      Trigonometry
+	      Name		      "Trigonometric\nFunction5"
+	      SID		      "185"
+	      Ports		      [1, 1]
+	      Position		      [175, 465, 205, 495]
+	    }
+	    Block {
+	      BlockType		      Outport
+	      Name		      "wq2"
+	      SID		      "186"
+	      Position		      [1090, 558, 1120, 572]
+	      IconDisplay	      "Port number"
+	    }
+	    Line {
+	      SrcBlock		      "theta"
+	      SrcPort		      1
+	      Points		      [30, 0]
+	      Branch {
+		DstBlock		"Trigonometric\nFunction"
+		DstPort			1
+	      }
+	      Branch {
+		Points			[0, 75]
+		DstBlock		"Trigonometric\nFunction1"
+		DstPort			1
+	      }
+	    }
+	    Line {
+	      SrcBlock		      "phi"
+	      SrcPort		      1
+	      Points		      [35, 0]
+	      Branch {
+		DstBlock		"Trigonometric\nFunction2"
+		DstPort			1
+	      }
+	      Branch {
+		Points			[0, 70]
+		DstBlock		"Trigonometric\nFunction4"
+		DstPort			1
+	      }
+	    }
+	    Line {
+	      SrcBlock		      "psi"
+	      SrcPort		      1
+	      Points		      [50, 0]
+	      Branch {
+		DstBlock		"Trigonometric\nFunction3"
+		DstPort			1
+	      }
+	      Branch {
+		Points			[0, 75]
+		DstBlock		"Trigonometric\nFunction5"
+		DstPort			1
+	      }
+	    }
+	    Line {
+	      SrcBlock		      "wq1"
+	      SrcPort		      1
+	      Points		      [25, 0]
+	      Branch {
+		Points			[15, 0; 0, 15]
+		DstBlock		"Product"
+		DstPort			1
+	      }
+	      Branch {
+		Points			[0, 280]
+		DstBlock		"Product2"
+		DstPort			1
+	      }
+	    }
+	    Line {
+	      SrcBlock		      "wq3"
+	      SrcPort		      1
+	      Points		      [40, 0; 0, -30]
+	      DstBlock		      "Product"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "Product"
+	      SrcPort		      1
+	      DstBlock		      "Izz-Ixx"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Trigonometric\nFunction"
+	      SrcPort		      1
+	      Points		      [35, 0; 0, 60]
+	      DstBlock		      "Product1"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Trigonometric\nFunction2"
+	      SrcPort		      1
+	      DstBlock		      "Product of\nElements"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "T3"
+	      SrcPort		      1
+	      Points		      [75, 0; 0, -75]
+	      DstBlock		      "Subtract"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "T1"
+	      SrcPort		      1
+	      Points		      [145, 0; 0, 35]
+	      DstBlock		      "Subtract"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "Subtract"
+	      SrcPort		      1
+	      Points		      [60, 0; 0, -450]
+	      DstBlock		      "Product of\nElements"
+	      DstPort		      3
+	    }
+	    Line {
+	      SrcBlock		      "Trigonometric\nFunction1"
+	      SrcPort		      1
+	      Points		      [5, 0]
+	      Branch {
+		Points			[0, 90]
+		DstBlock		"Product of\nElements"
+		DstPort			1
+	      }
+	      Branch {
+		Points			[0, 170]
+		DstBlock		"Product of\nElements1"
+		DstPort			1
+	      }
+	    }
+	    Line {
+	      SrcBlock		      "Trigonometric\nFunction3"
+	      SrcPort		      1
+	      Points		      [170, 0; 0, -275]
+	      DstBlock		      "Product1"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "Trigonometric\nFunction5"
+	      SrcPort		      1
+	      Points		      [200, 0; 0, -160]
+	      DstBlock		      "Product of\nElements1"
+	      DstPort		      3
+	    }
+	    Line {
+	      SrcBlock		      "Subtract1"
+	      SrcPort		      1
+	      Points		      [280, 0; 0, -420]
+	      DstBlock		      "Product3"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "Product3"
+	      SrcPort		      1
+	      Points		      [10, 0; 0, -115]
+	      DstBlock		      "Add"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "Product of\nElements"
+	      SrcPort		      1
+	      DstBlock		      "Add"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Add"
+	      SrcPort		      1
+	      DstBlock		      "L"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "w1"
+	      SrcPort		      1
+	      Points		      [95, 0; 0, 35]
+	      DstBlock		      "Sum of\nElements"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "w2"
+	      SrcPort		      1
+	      Points		      [85, 0; 0, 10; 105, 0]
+	      DstBlock		      "Sum of\nElements"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "w3"
+	      SrcPort		      1
+	      Points		      [190, 0]
+	      DstBlock		      "Sum of\nElements"
+	      DstPort		      3
+	    }
+	    Line {
+	      SrcBlock		      "w4"
+	      SrcPort		      1
+	      Points		      [190, 0]
+	      DstBlock		      "Sum of\nElements"
+	      DstPort		      4
+	    }
+	    Line {
+	      SrcBlock		      "Sum of\nElements"
+	      SrcPort		      1
+	      Points		      [115, 0; 0, -45]
+	      DstBlock		      "Product2"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "Product2"
+	      SrcPort		      1
+	      DstBlock		      "Izzm"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "L"
+	      SrcPort		      1
+	      Points		      [60, 0; 0, 315]
+	      DstBlock		      "Sum of\nElements1"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Izz-Ixx"
+	      SrcPort		      1
+	      Points		      [55, 0; 0, -5]
+	      DstBlock		      "Sum of\nElements1"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "Izzm"
+	      SrcPort		      1
+	      Points		      [65, 0; 0, -260]
+	      DstBlock		      "Sum of\nElements1"
+	      DstPort		      3
+	    }
+	    Line {
+	      SrcBlock		      "Sum of\nElements1"
+	      SrcPort		      1
+	      DstBlock		      "1/Izz"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "1/Izz"
+	      SrcPort		      1
+	      DstBlock		      "Integrator"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Integrator"
+	      SrcPort		      1
+	      DstBlock		      "wq2"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Trigonometric\nFunction4"
+	      SrcPort		      1
+	      Points		      [210, 0]
+	      DstBlock		      "Product of\nElements1"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "Product1"
+	      SrcPort		      1
+	      Points		      [35, 0]
+	      DstBlock		      "Subtract2"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Product of\nElements1"
+	      SrcPort		      1
+	      Points		      [15, 0; 0, -45]
+	      DstBlock		      "Subtract2"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "Subtract2"
+	      SrcPort		      1
+	      Points		      [10, 0; 0, 70; -20, 0]
+	      DstBlock		      "Product3"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "T2"
+	      SrcPort		      1
+	      Points		      [150, 0]
+	      DstBlock		      "Subtract1"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "T4"
+	      SrcPort		      1
+	      Points		      [150, 0]
+	      DstBlock		      "Subtract1"
+	      DstPort		      2
+	    }
+	  }
+	}
+	Block {
+	  BlockType		  SubSystem
+	  Name			  "Subsystem8"
+	  SID			  "191"
+	  Ports			  [12, 1]
+	  Position		  [455, 1087, 660, 1203]
+	  LibraryVersion	  "1.225"
+	  MinAlgLoopOccurrences	  off
+	  PropExecContextOutsideSubsystem off
+	  RTWSystemCode		  "Auto"
+	  FunctionWithSeparateData off
+	  Opaque		  off
+	  RequestExecContextInheritance	off
+	  MaskHideContents	  off
+	  System {
+	    Name		    "Subsystem8"
+	    Location		    [0, 51, 1366, 768]
+	    Open		    off
+	    ModelBrowserVisibility  off
+	    ModelBrowserWidth	    200
+	    ScreenColor		    "white"
+	    PaperOrientation	    "landscape"
+	    PaperPositionMode	    "auto"
+	    PaperType		    "A4"
+	    PaperUnits		    "centimeters"
+	    TiledPaperMargins	    [1.270000, 1.270000, 1.270000, 1.270000]
+	    TiledPageScale	    1
+	    ShowPageBoundaries	    off
+	    ZoomFactor		    "100"
+	    Block {
+	      BlockType		      Inport
+	      Name		      "phi"
+	      SID		      "194"
+	      Position		      [110, 168, 140, 182]
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "psi"
+	      SID		      "195"
+	      Position		      [110, 243, 140, 257]
+	      Port		      "2"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "T1"
+	      SID		      "199"
+	      Position		      [110, 338, 140, 352]
+	      Port		      "3"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "T2"
+	      SID		      "200"
+	      Position		      [110, 378, 140, 392]
+	      Port		      "4"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "T3"
+	      SID		      "201"
+	      Position		      [110, 428, 140, 442]
+	      Port		      "5"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "T4"
+	      SID		      "202"
+	      Position		      [110, 478, 140, 492]
+	      Port		      "6"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "wq1"
+	      SID		      "208"
+	      Position		      [115, 533, 145, 547]
+	      Port		      "7"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "wq2"
+	      SID		      "209"
+	      Position		      [115, 573, 145, 587]
+	      Port		      "8"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "w1"
+	      SID		      "212"
+	      Position		      [115, 628, 145, 642]
+	      Port		      "9"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "w2"
+	      SID		      "213"
+	      Position		      [115, 678, 145, 692]
+	      Port		      "10"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "w3"
+	      SID		      "214"
+	      Position		      [115, 723, 145, 737]
+	      Port		      "11"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "w4"
+	      SID		      "215"
+	      Position		      [115, 768, 145, 782]
+	      Port		      "12"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Gain
+	      Name		      "1/Izz"
+	      SID		      "224"
+	      Position		      [790, 450, 820, 480]
+	      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Derivative
+	      Name		      "Derivative"
+	      SID		      "217"
+	      Position		      [225, 620, 255, 650]
+	    }
+	    Block {
+	      BlockType		      Derivative
+	      Name		      "Derivative1"
+	      SID		      "218"
+	      Position		      [225, 670, 255, 700]
+	    }
+	    Block {
+	      BlockType		      Derivative
+	      Name		      "Derivative2"
+	      SID		      "219"
+	      Position		      [225, 715, 255, 745]
+	    }
+	    Block {
+	      BlockType		      Derivative
+	      Name		      "Derivative3"
+	      SID		      "220"
+	      Position		      [220, 760, 250, 790]
+	    }
+	    Block {
+	      BlockType		      Integrator
+	      Name		      "Integrator"
+	      SID		      "225"
+	      Ports		      [1, 1]
+	      Position		      [855, 450, 885, 480]
+	    }
+	    Block {
+	      BlockType		      Gain
+	      Name		      "Iyy-Izz"
+	      SID		      "211"
+	      Position		      [505, 550, 535, 580]
+	      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Gain
+	      Name		      "Izzm"
+	      SID		      "222"
+	      Position		      [525, 665, 555, 695]
+	      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Product
+	      Name		      "Product"
+	      SID		      "206"
+	      Ports		      [2, 1]
+	      Position		      [470, 307, 500, 338]
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Product
+	      Name		      "Product of\nElements"
+	      SID		      "207"
+	      Ports		      [3, 1]
+	      Position		      [470, 160, 500, 190]
+	      Inputs		      "3"
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      RndMeth		      "Floor"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Product
+	      Name		      "Product1"
+	      SID		      "210"
+	      Ports		      [2, 1]
+	      Position		      [190, 547, 220, 578]
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Sum
+	      Name		      "Subtract"
+	      SID		      "203"
+	      Ports		      [2, 1]
+	      Position		      [240, 337, 270, 368]
+	      Inputs		      "+-"
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Sum
+	      Name		      "Subtract1"
+	      SID		      "205"
+	      Ports		      [2, 1]
+	      Position		      [240, 452, 270, 483]
+	      Inputs		      "+-"
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Sum
+	      Name		      "Sum of\nElements"
+	      SID		      "221"
+	      Ports		      [4, 1]
+	      Position		      [425, 662, 455, 693]
+	      Inputs		      "4"
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Sum
+	      Name		      "Sum of\nElements1"
+	      SID		      "223"
+	      Ports		      [4, 1]
+	      Position		      [700, 447, 730, 478]
+	      Inputs		      "4"
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Trigonometry
+	      Name		      "Trigonometric\nFunction"
+	      SID		      "196"
+	      Ports		      [1, 1]
+	      Position		      [250, 95, 280, 125]
+	      Operator		      "cos"
+	    }
+	    Block {
+	      BlockType		      Trigonometry
+	      Name		      "Trigonometric\nFunction1"
+	      SID		      "197"
+	      Ports		      [1, 1]
+	      Position		      [250, 160, 280, 190]
+	    }
+	    Block {
+	      BlockType		      Trigonometry
+	      Name		      "Trigonometric\nFunction2"
+	      SID		      "198"
+	      Ports		      [1, 1]
+	      Position		      [245, 235, 275, 265]
+	    }
+	    Block {
+	      BlockType		      Outport
+	      Name		      "wq3"
+	      SID		      "193"
+	      Position		      [945, 458, 975, 472]
+	      IconDisplay	      "Port number"
+	    }
+	    Line {
+	      SrcBlock		      "phi"
+	      SrcPort		      1
+	      Points		      [40, 0]
+	      Branch {
+		DstBlock		"Trigonometric\nFunction1"
+		DstPort			1
+	      }
+	      Branch {
+		Points			[0, -65]
+		DstBlock		"Trigonometric\nFunction"
+		DstPort			1
+	      }
+	    }
+	    Line {
+	      SrcBlock		      "psi"
+	      SrcPort		      1
+	      DstBlock		      "Trigonometric\nFunction2"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "T1"
+	      SrcPort		      1
+	      DstBlock		      "Subtract"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "T3"
+	      SrcPort		      1
+	      Points		      [40, 0; 0, -75]
+	      DstBlock		      "Subtract"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "T4"
+	      SrcPort		      1
+	      Points		      [40, 0; 0, -25]
+	      DstBlock		      "Subtract1"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "T2"
+	      SrcPort		      1
+	      Points		      [75, 0; 0, 90]
+	      DstBlock		      "Subtract1"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "Trigonometric\nFunction1"
+	      SrcPort		      1
+	      Points		      [85, 0; 0, 140]
+	      DstBlock		      "Product"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Subtract"
+	      SrcPort		      1
+	      Points		      [90, 0; 0, -25]
+	      DstBlock		      "Product"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "Trigonometric\nFunction"
+	      SrcPort		      1
+	      Points		      [85, 0; 0, 55]
+	      DstBlock		      "Product of\nElements"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Trigonometric\nFunction2"
+	      SrcPort		      1
+	      Points		      [170, 0; 0, -75]
+	      DstBlock		      "Product of\nElements"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "Subtract1"
+	      SrcPort		      1
+	      Points		      [175, 0; 0, -285]
+	      DstBlock		      "Product of\nElements"
+	      DstPort		      3
+	    }
+	    Line {
+	      SrcBlock		      "wq1"
+	      SrcPort		      1
+	      Points		      [10, 0; 0, 15]
+	      DstBlock		      "Product1"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "wq2"
+	      SrcPort		      1
+	      Points		      [10, 0; 0, -10]
+	      DstBlock		      "Product1"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "Product1"
+	      SrcPort		      1
+	      DstBlock		      "Iyy-Izz"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "w4"
+	      SrcPort		      1
+	      DstBlock		      "Derivative3"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "w3"
+	      SrcPort		      1
+	      DstBlock		      "Derivative2"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "w2"
+	      SrcPort		      1
+	      DstBlock		      "Derivative1"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "w1"
+	      SrcPort		      1
+	      DstBlock		      "Derivative"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Derivative"
+	      SrcPort		      1
+	      Points		      [75, 0; 0, 35]
+	      DstBlock		      "Sum of\nElements"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Derivative1"
+	      SrcPort		      1
+	      Points		      [150, 0]
+	      DstBlock		      "Sum of\nElements"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "Derivative2"
+	      SrcPort		      1
+	      Points		      [150, 0]
+	      DstBlock		      "Sum of\nElements"
+	      DstPort		      3
+	    }
+	    Line {
+	      SrcBlock		      "Derivative3"
+	      SrcPort		      1
+	      Points		      [155, 0]
+	      DstBlock		      "Sum of\nElements"
+	      DstPort		      4
+	    }
+	    Line {
+	      SrcBlock		      "Sum of\nElements"
+	      SrcPort		      1
+	      DstBlock		      "Izzm"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Product of\nElements"
+	      SrcPort		      1
+	      Points		      [90, 0; 0, 280]
+	      DstBlock		      "Sum of\nElements1"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Product"
+	      SrcPort		      1
+	      Points		      [80, 0; 0, 140; 100, 0]
+	      DstBlock		      "Sum of\nElements1"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "Iyy-Izz"
+	      SrcPort		      1
+	      Points		      [145, 0]
+	      DstBlock		      "Sum of\nElements1"
+	      DstPort		      3
+	    }
+	    Line {
+	      SrcBlock		      "Izzm"
+	      SrcPort		      1
+	      Points		      [125, 0]
+	      DstBlock		      "Sum of\nElements1"
+	      DstPort		      4
+	    }
+	    Line {
+	      SrcBlock		      "Sum of\nElements1"
+	      SrcPort		      1
+	      DstBlock		      "1/Izz"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "1/Izz"
+	      SrcPort		      1
+	      DstBlock		      "Integrator"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Integrator"
+	      SrcPort		      1
+	      DstBlock		      "wq3"
+	      DstPort		      1
+	    }
+	  }
+	}
+	Block {
+	  BlockType		  Outport
+	  Name			  "theta"
+	  SID			  "269"
+	  Position		  [1005, 128, 1035, 142]
+	  IconDisplay		  "Port number"
+	}
+	Block {
+	  BlockType		  Outport
+	  Name			  "psi"
+	  SID			  "270"
+	  Position		  [1010, 218, 1040, 232]
+	  Port			  "2"
+	  IconDisplay		  "Port number"
+	}
+	Block {
+	  BlockType		  Outport
+	  Name			  "phi"
+	  SID			  "275"
+	  Position		  [1010, 318, 1040, 332]
+	  Port			  "3"
+	  IconDisplay		  "Port number"
 	}
 	Block {
 	  BlockType		  Outport
 	  Name			  "x"
-	  SID			  "65"
-	  Position		  [1075, 203, 1105, 217]
-	  IconDisplay		  "Port number"
-	}
-	Line {
-	  SrcBlock		  "theta"
-	  SrcPort		  1
-	  Points		  [10, 0]
-	  Branch {
-	    DstBlock		    "Trigonometric\nFunction"
-	    DstPort		    1
-	  }
-	  Branch {
-	    Points		    [0, 60]
-	    DstBlock		    "Trigonometric\nFunction1"
-	    DstPort		    1
-	  }
-	}
-	Line {
-	  SrcBlock		  "psis"
-	  SrcPort		  1
-	  Points		  [45, 0]
-	  Branch {
-	    DstBlock		    "Trigonometric\nFunction2"
-	    DstPort		    1
-	  }
-	  Branch {
-	    Points		    [0, 65]
-	    DstBlock		    "Trigonometric\nFunction3"
-	    DstPort		    1
-	  }
-	}
-	Line {
-	  SrcBlock		  "phi"
-	  SrcPort		  1
-	  DstBlock		  "Trigonometric\nFunction4"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Trigonometric\nFunction"
-	  SrcPort		  1
-	  DstBlock		  "Product"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Trigonometric\nFunction2"
-	  SrcPort		  1
-	  Points		  [100, 0; 0, -135]
-	  DstBlock		  "Product"
-	  DstPort		  2
-	}
-	Line {
-	  SrcBlock		  "Trigonometric\nFunction1"
-	  SrcPort		  1
-	  Points		  [190, 0]
-	  DstBlock		  "Product of\nElements"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Trigonometric\nFunction3"
-	  SrcPort		  1
-	  Points		  [115, 0; 0, -100]
-	  DstBlock		  "Product of\nElements"
-	  DstPort		  2
-	}
-	Line {
-	  SrcBlock		  "Trigonometric\nFunction4"
-	  SrcPort		  1
-	  Points		  [235, 0; 0, -195]
-	  DstBlock		  "Product of\nElements"
-	  DstPort		  3
-	}
-	Line {
-	  SrcBlock		  "Product"
-	  SrcPort		  1
-	  Points		  [55, 0; 0, 40]
-	  DstBlock		  "Subtract"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Product of\nElements"
-	  SrcPort		  1
-	  Points		  [60, 0; 0, -50]
-	  DstBlock		  "Subtract"
-	  DstPort		  2
-	}
-	Line {
-	  SrcBlock		  "Product1"
-	  SrcPort		  1
-	  DstBlock		  "Integrator"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "T1"
-	  SrcPort		  1
-	  Points		  [40, 0; 0, 30]
-	  DstBlock		  "Sum of\nElements"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "T2"
-	  SrcPort		  1
-	  Points		  [85, 0]
-	  DstBlock		  "Sum of\nElements"
-	  DstPort		  2
-	}
-	Line {
-	  SrcBlock		  "T4"
-	  SrcPort		  1
-	  Points		  [65, 0; 0, -65]
-	  DstBlock		  "Sum of\nElements"
-	  DstPort		  4
-	}
-	Line {
-	  SrcBlock		  "T3"
-	  SrcPort		  1
-	  Points		  [80, 0; 0, -30]
-	  DstBlock		  "Sum of\nElements"
-	  DstPort		  3
-	}
-	Line {
-	  SrcBlock		  "Sum of\nElements"
-	  SrcPort		  1
-	  Points		  [140, 0]
-	  DstBlock		  "Aca hay que ponder uno sobre la masa"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Aca hay que ponder uno sobre la masa"
-	  SrcPort		  1
-	  Points		  [140, 0; 0, -250]
-	  DstBlock		  "Product1"
-	  DstPort		  2
-	}
-	Line {
-	  SrcBlock		  "Subtract"
-	  SrcPort		  1
-	  Points		  [25, 0; 0, 115]
-	  DstBlock		  "Product1"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Integrator"
-	  SrcPort		  1
-	  DstBlock		  "Integrator1"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Integrator1"
-	  SrcPort		  1
-	  Points		  [100, 0]
-	  DstBlock		  "x"
-	  DstPort		  1
-	}
-      }
-    }
-    Block {
-      BlockType		      SubSystem
-      Name		      "Subsystem4"
-      SID		      "66"
-      Ports		      [7, 1]
-      Position		      [475, 490, 635, 580]
-      MinAlgLoopOccurrences   off
-      PropExecContextOutsideSubsystem off
-      RTWSystemCode	      "Auto"
-      FunctionWithSeparateData off
-      Opaque		      off
-      RequestExecContextInheritance off
-      MaskHideContents	      off
-      System {
-	Name			"Subsystem4"
-	Location		[0, 76, 1366, 743]
-	Open			off
-	ModelBrowserVisibility	off
-	ModelBrowserWidth	200
-	ScreenColor		"white"
-	PaperOrientation	"landscape"
-	PaperPositionMode	"auto"
-	PaperType		"usletter"
-	PaperUnits		"inches"
-	TiledPaperMargins	[0.500000, 0.500000, 0.500000, 0.500000]
-	TiledPageScale		1
-	ShowPageBoundaries	off
-	ZoomFactor		"100"
-	Block {
-	  BlockType		  Inport
-	  Name			  "theta"
-	  SID			  "67"
-	  Position		  [70, 33, 100, 47]
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "psis"
-	  SID			  "68"
-	  Position		  [60, 183, 90, 197]
-	  Port			  "2"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "phi"
-	  SID			  "69"
-	  Position		  [65, 353, 95, 367]
-	  Port			  "3"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "T1"
-	  SID			  "70"
-	  Position		  [70, 438, 100, 452]
+	  SID			  "276"
+	  Position		  [1010, 428, 1040, 442]
 	  Port			  "4"
 	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "T2"
-	  SID			  "71"
-	  Position		  [65, 478, 95, 492]
-	  Port			  "5"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "T3"
-	  SID			  "72"
-	  Position		  [65, 508, 95, 522]
-	  Port			  "6"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "T4"
-	  SID			  "73"
-	  Position		  [65, 548, 95, 562]
-	  Port			  "7"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Gain
-	  Name			  "Aca hay que ponder uno sobre la masa"
-	  SID			  "74"
-	  Position		  [390, 465, 420, 495]
-	  Gain			  "1/2"
-	  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Sum
-	  Name			  "Add"
-	  SID			  "75"
-	  Ports			  [2, 1]
-	  Position		  [620, 82, 650, 113]
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Integrator
-	  Name			  "Integrator"
-	  SID			  "76"
-	  Ports			  [1, 1]
-	  Position		  [885, 210, 915, 240]
-	}
-	Block {
-	  BlockType		  Integrator
-	  Name			  "Integrator1"
-	  SID			  "77"
-	  Ports			  [1, 1]
-	  Position		  [965, 210, 995, 240]
-	}
-	Block {
-	  BlockType		  Product
-	  Name			  "Product"
-	  SID			  "78"
-	  Ports			  [2, 1]
-	  Position		  [460, 32, 490, 63]
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Product
-	  Name			  "Product of\nElements"
-	  SID			  "79"
-	  Ports			  [3, 1]
-	  Position		  [455, 140, 485, 170]
-	  Inputs		  "3"
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  RndMeth		  "Floor"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Product
-	  Name			  "Product1"
-	  SID			  "80"
-	  Ports			  [2, 1]
-	  Position		  [725, 207, 755, 238]
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Sum
-	  Name			  "Sum of\nElements"
-	  SID			  "81"
-	  Ports			  [4, 1]
-	  Position		  [200, 467, 230, 498]
-	  Inputs		  "4"
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Trigonometry
-	  Name			  "Trigonometric\nFunction"
-	  SID			  "82"
-	  Ports			  [1, 1]
-	  Position		  [215, 25, 245, 55]
-	}
-	Block {
-	  BlockType		  Trigonometry
-	  Name			  "Trigonometric\nFunction1"
-	  SID			  "83"
-	  Ports			  [1, 1]
-	  Position		  [215, 85, 245, 115]
-	  Operator		  "cos"
-	}
-	Block {
-	  BlockType		  Trigonometry
-	  Name			  "Trigonometric\nFunction2"
-	  SID			  "84"
-	  Ports			  [1, 1]
-	  Position		  [210, 175, 240, 205]
-	}
-	Block {
-	  BlockType		  Trigonometry
-	  Name			  "Trigonometric\nFunction3"
-	  SID			  "85"
-	  Ports			  [1, 1]
-	  Position		  [210, 240, 240, 270]
-	  Operator		  "cos"
-	}
-	Block {
-	  BlockType		  Trigonometry
-	  Name			  "Trigonometric\nFunction4"
-	  SID			  "86"
-	  Ports			  [1, 1]
-	  Position		  [205, 345, 235, 375]
-	}
-	Block {
-	  BlockType		  Reference
-	  Name			  "Unary Minus"
-	  SID			  "87"
-	  Ports			  [1, 1]
-	  Position		  [670, 140, 700, 170]
-	  BlockRotation		  270
-	  BlockMirror		  on
-	  SourceBlock		  "simulink/Math\nOperations/Unary Minus"
-	  SourceType		  "Unary Minus"
-	  DoSatur		  off
 	}
 	Block {
 	  BlockType		  Outport
 	  Name			  "y"
-	  SID			  "88"
-	  Position		  [1115, 213, 1145, 227]
-	  IconDisplay		  "Port number"
-	}
-	Line {
-	  SrcBlock		  "theta"
-	  SrcPort		  1
-	  Points		  [10, 0]
-	  Branch {
-	    DstBlock		    "Trigonometric\nFunction"
-	    DstPort		    1
-	  }
-	  Branch {
-	    Points		    [0, 60]
-	    DstBlock		    "Trigonometric\nFunction1"
-	    DstPort		    1
-	  }
-	}
-	Line {
-	  SrcBlock		  "psis"
-	  SrcPort		  1
-	  Points		  [45, 0]
-	  Branch {
-	    DstBlock		    "Trigonometric\nFunction2"
-	    DstPort		    1
-	  }
-	  Branch {
-	    Points		    [0, 65]
-	    DstBlock		    "Trigonometric\nFunction3"
-	    DstPort		    1
-	  }
-	}
-	Line {
-	  SrcBlock		  "phi"
-	  SrcPort		  1
-	  DstBlock		  "Trigonometric\nFunction4"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Product"
-	  SrcPort		  1
-	  Points		  [55, 0; 0, 40]
-	  DstBlock		  "Add"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Product of\nElements"
-	  SrcPort		  1
-	  Points		  [60, 0; 0, -50]
-	  DstBlock		  "Add"
-	  DstPort		  2
-	}
-	Line {
-	  SrcBlock		  "Product1"
-	  SrcPort		  1
-	  DstBlock		  "Integrator"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "T1"
-	  SrcPort		  1
-	  Points		  [40, 0; 0, 30]
-	  DstBlock		  "Sum of\nElements"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "T2"
-	  SrcPort		  1
-	  Points		  [85, 0]
-	  DstBlock		  "Sum of\nElements"
-	  DstPort		  2
-	}
-	Line {
-	  SrcBlock		  "T4"
-	  SrcPort		  1
-	  Points		  [65, 0; 0, -65]
-	  DstBlock		  "Sum of\nElements"
-	  DstPort		  4
-	}
-	Line {
-	  SrcBlock		  "T3"
-	  SrcPort		  1
-	  Points		  [80, 0; 0, -30]
-	  DstBlock		  "Sum of\nElements"
-	  DstPort		  3
-	}
-	Line {
-	  SrcBlock		  "Sum of\nElements"
-	  SrcPort		  1
-	  Points		  [140, 0]
-	  DstBlock		  "Aca hay que ponder uno sobre la masa"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Aca hay que ponder uno sobre la masa"
-	  SrcPort		  1
-	  Points		  [140, 0; 0, -250]
-	  DstBlock		  "Product1"
-	  DstPort		  2
-	}
-	Line {
-	  SrcBlock		  "Add"
-	  SrcPort		  1
-	  Points		  [30, 0]
-	  DstBlock		  "Unary Minus"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Integrator"
-	  SrcPort		  1
-	  DstBlock		  "Integrator1"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Integrator1"
-	  SrcPort		  1
-	  Points		  [100, 0]
-	  DstBlock		  "y"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Trigonometric\nFunction2"
-	  SrcPort		  1
-	  Points		  [190, 0; 0, -135]
-	  DstBlock		  "Product"
-	  DstPort		  2
-	}
-	Line {
-	  SrcBlock		  "Trigonometric\nFunction1"
-	  SrcPort		  1
-	  Points		  [95, 0; 0, -60]
-	  DstBlock		  "Product"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Trigonometric\nFunction"
-	  SrcPort		  1
-	  Points		  [45, 0; 0, 105]
-	  DstBlock		  "Product of\nElements"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Trigonometric\nFunction3"
-	  SrcPort		  1
-	  Points		  [190, 0; 0, -100]
-	  DstBlock		  "Product of\nElements"
-	  DstPort		  2
-	}
-	Line {
-	  SrcBlock		  "Trigonometric\nFunction4"
-	  SrcPort		  1
-	  Points		  [80, 0; 0, -195]
-	  DstBlock		  "Product of\nElements"
-	  DstPort		  3
-	}
-	Line {
-	  SrcBlock		  "Unary Minus"
-	  SrcPort		  1
-	  Points		  [0, 40]
-	  DstBlock		  "Product1"
-	  DstPort		  1
-	}
-      }
-    }
-    Block {
-      BlockType		      SubSystem
-      Name		      "Subsystem5"
-      SID		      "89"
-      Ports		      [6, 1]
-      Position		      [475, 620, 640, 705]
-      MinAlgLoopOccurrences   off
-      PropExecContextOutsideSubsystem off
-      RTWSystemCode	      "Auto"
-      FunctionWithSeparateData off
-      Opaque		      off
-      RequestExecContextInheritance off
-      MaskHideContents	      off
-      System {
-	Name			"Subsystem5"
-	Location		[263, 186, 761, 486]
-	Open			off
-	ModelBrowserVisibility	off
-	ModelBrowserWidth	200
-	ScreenColor		"white"
-	PaperOrientation	"landscape"
-	PaperPositionMode	"auto"
-	PaperType		"usletter"
-	PaperUnits		"inches"
-	TiledPaperMargins	[0.500000, 0.500000, 0.500000, 0.500000]
-	TiledPageScale		1
-	ShowPageBoundaries	off
-	ZoomFactor		"100"
-	Block {
-	  BlockType		  Inport
-	  Name			  "phi"
-	  SID			  "90"
-	  Position		  [20, 13, 50, 27]
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "psi"
-	  SID			  "91"
-	  Position		  [25, 63, 55, 77]
-	  Port			  "2"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "T1"
-	  SID			  "92"
-	  Position		  [25, 238, 55, 252]
-	  Port			  "3"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "T2"
-	  SID			  "93"
-	  Position		  [25, 283, 55, 297]
-	  Port			  "4"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "T3"
-	  SID			  "94"
-	  Position		  [25, 333, 55, 347]
+	  SID			  "277"
+	  Position		  [1010, 548, 1040, 562]
 	  Port			  "5"
 	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "T4"
-	  SID			  "95"
-	  Position		  [20, 383, 50, 397]
-	  Port			  "6"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Sum
-	  Name			  "Add"
-	  SID			  "96"
-	  Ports			  [2, 1]
-	  Position		  [325, 87, 355, 118]
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Constant
-	  Name			  "Constant"
-	  SID			  "97"
-	  Position		  [135, 160, 165, 190]
-	  Value			  "9.8"
-	}
-	Block {
-	  BlockType		  Integrator
-	  Name			  "Integrator"
-	  SID			  "98"
-	  Ports			  [1, 1]
-	  Position		  [400, 175, 430, 205]
-	}
-	Block {
-	  BlockType		  Integrator
-	  Name			  "Integrator1"
-	  SID			  "99"
-	  Ports			  [1, 1]
-	  Position		  [350, 175, 380, 205]
-	}
-	Block {
-	  BlockType		  Product
-	  Name			  "Product of\nElements"
-	  SID			  "100"
-	  Ports			  [3, 1]
-	  Position		  [270, 60, 300, 90]
-	  Inputs		  "3"
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  RndMeth		  "Floor"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Sum
-	  Name			  "Sum of\nElements"
-	  SID			  "101"
-	  Ports			  [4, 1]
-	  Position		  [145, 262, 175, 293]
-	  Inputs		  "4"
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Trigonometry
-	  Name			  "Trigonometric\nFunction"
-	  SID			  "102"
-	  Ports			  [1, 1]
-	  Position		  [155, 15, 185, 45]
-	  Operator		  "cos"
-	}
-	Block {
-	  BlockType		  Trigonometry
-	  Name			  "Trigonometric\nFunction1"
-	  SID			  "103"
-	  Ports			  [1, 1]
-	  Position		  [150, 75, 180, 105]
-	  Operator		  "cos"
-	}
-	Block {
-	  BlockType		  Gain
-	  Name			  "Uno sobre\nla mas"
-	  SID			  "104"
-	  Position		  [280, 175, 310, 205]
-	  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
 	}
 	Block {
 	  BlockType		  Outport
 	  Name			  "z"
-	  SID			  "105"
-	  Position		  [430, 98, 460, 112]
+	  SID			  "278"
+	  Position		  [1015, 678, 1045, 692]
+	  Port			  "6"
 	  IconDisplay		  "Port number"
 	}
 	Line {
-	  SrcBlock		  "T1"
+	  SrcBlock		  "Subsystem7"
 	  SrcPort		  1
-	  Points		  [20, 0; 0, 25]
-	  DstBlock		  "Sum of\nElements"
-	  DstPort		  1
+	  Points		  [30, 0]
+	  Branch {
+	    Points		    [5, 0]
+	    Branch {
+	      Points		      [0, -225; -240, 0]
+	      DstBlock		      "Subsystem6"
+	      DstPort		      4
+	    }
+	    Branch {
+	      Points		      [80, 0; 0, -955; -385, 0; 0, 100; 30, 0]
+	      Branch {
+		DstBlock		"Subsystem"
+		DstPort			3
+	      }
+	      Branch {
+		Points			[0, 95]
+		Branch {
+		  DstBlock		  "Subsystem1"
+		  DstPort		  3
+		}
+		Branch {
+		  Points		  [0, 90]
+		  DstBlock		  "Subsystem2"
+		  DstPort		  2
+		}
+	      }
+	    }
+	  }
+	  Branch {
+	    Points		    [0, 85; -245, 0; 0, 80]
+	    DstBlock		    "Subsystem8"
+	    DstPort		    8
+	  }
 	}
 	Line {
-	  SrcBlock		  "T2"
+	  SrcBlock		  "Subsystem8"
 	  SrcPort		  1
-	  Points		  [70, 0]
-	  DstBlock		  "Sum of\nElements"
-	  DstPort		  2
+	  Points		  [35, 0]
+	  Branch {
+	    Points		    [30, 0]
+	    Branch {
+	      Points		      [0, -400; -290, 0]
+	      DstBlock		      "Subsystem6"
+	      DstPort		      5
+	    }
+	    Branch {
+	      Points		      [60, 0; 0, -1115; -445, 0; 0, 125; 75, 0]
+	      Branch {
+		DstBlock		"Subsystem"
+		DstPort			4
+	      }
+	      Branch {
+		Points			[0, 55]
+		Branch {
+		  Points		  [0, 5]
+		  DstBlock		  "Subsystem1"
+		  DstPort		  2
+		}
+		Branch {
+		  Points		  [0, 145]
+		  DstBlock		  "Subsystem2"
+		  DstPort		  3
+		}
+	      }
+	    }
+	  }
+	  Branch {
+	    Points		    [0, -215; -260, 0]
+	    DstBlock		    "Subsystem7"
+	    DstPort		    5
+	  }
 	}
 	Line {
-	  SrcBlock		  "T3"
+	  SrcBlock		  "Subsystem6"
 	  SrcPort		  1
-	  Points		  [70, 0]
-	  DstBlock		  "Sum of\nElements"
-	  DstPort		  3
+	  Points		  [5, 0]
+	  Branch {
+	    Points		    [0, 75; -225, 0]
+	    DstBlock		    "Subsystem7"
+	    DstPort		    4
+	  }
+	  Branch {
+	    Points		    [15, 0; 0, 220; -255, 0; 0, 85]
+	    DstBlock		    "Subsystem8"
+	    DstPort		    7
+	  }
+	  Branch {
+	    Points		    [165, 0; 0, -820; -505, 0; 0, 230]
+	    DstBlock		    "Subsystem1"
+	    DstPort		    4
+	  }
 	}
 	Line {
-	  SrcBlock		  "T4"
+	  SrcBlock		  "w1"
 	  SrcPort		  1
-	  Points		  [75, 0]
-	  DstBlock		  "Sum of\nElements"
-	  DstPort		  4
+	  Points		  [175, 0]
+	  Branch {
+	    Points		    [15, 0; 0, -55; 70, 0]
+	    Branch {
+	      DstBlock		      "Subsystem6"
+	      DstPort		      10
+	    }
+	    Branch {
+	      Points		      [0, 150]
+	      DstBlock		      "Subsystem7"
+	      DstPort		      10
+	    }
+	  }
+	  Branch {
+	    Points		    [0, 240]
+	    DstBlock		    "Subsystem8"
+	    DstPort		    9
+	  }
 	}
 	Line {
-	  SrcBlock		  "phi"
+	  SrcBlock		  "w2"
 	  SrcPort		  1
-	  Points		  [40, 0; 0, 10]
-	  DstBlock		  "Trigonometric\nFunction"
-	  DstPort		  1
+	  Points		  [135, 0]
+	  Branch {
+	    Points		    [45, 0; 0, -60; 50, 0]
+	    Branch {
+	      DstBlock		      "Subsystem6"
+	      DstPort		      11
+	    }
+	    Branch {
+	      Points		      [0, 150]
+	      DstBlock		      "Subsystem7"
+	      DstPort		      11
+	    }
+	  }
+	  Branch {
+	    Points		    [0, 235]
+	    DstBlock		    "Subsystem8"
+	    DstPort		    10
+	  }
 	}
 	Line {
-	  SrcBlock		  "psi"
+	  SrcBlock		  "w3"
 	  SrcPort		  1
-	  Points		  [35, 0; 0, 20]
-	  DstBlock		  "Trigonometric\nFunction1"
-	  DstPort		  1
+	  Points		  [100, 0]
+	  Branch {
+	    Points		    [75, 0; 0, -65; 25, 0]
+	    Branch {
+	      DstBlock		      "Subsystem6"
+	      DstPort		      12
+	    }
+	    Branch {
+	      Points		      [0, 150]
+	      DstBlock		      "Subsystem7"
+	      DstPort		      12
+	    }
+	  }
+	  Branch {
+	    Points		    [0, 230]
+	    DstBlock		    "Subsystem8"
+	    DstPort		    11
+	  }
 	}
 	Line {
-	  SrcBlock		  "Trigonometric\nFunction"
+	  SrcBlock		  "w4"
 	  SrcPort		  1
-	  Points		  [30, 0; 0, 35]
-	  DstBlock		  "Product of\nElements"
-	  DstPort		  1
+	  Points		  [65, 0]
+	  Branch {
+	    Points		    [100, 0; 0, -70; 5, 0]
+	    Branch {
+	      DstBlock		      "Subsystem6"
+	      DstPort		      13
+	    }
+	    Branch {
+	      Points		      [0, 150]
+	      DstBlock		      "Subsystem7"
+	      DstPort		      13
+	    }
+	  }
+	  Branch {
+	    Points		    [0, 225]
+	    DstBlock		    "Subsystem8"
+	    DstPort		    12
+	  }
 	}
 	Line {
-	  SrcBlock		  "Trigonometric\nFunction1"
+	  SrcBlock		  "Subsystem5"
 	  SrcPort		  1
-	  Points		  [35, 0; 0, -15]
-	  DstBlock		  "Product of\nElements"
-	  DstPort		  2
-	}
-	Line {
-	  SrcBlock		  "Sum of\nElements"
-	  SrcPort		  1
-	  Points		  [70, 0; 0, -195]
-	  DstBlock		  "Product of\nElements"
-	  DstPort		  3
-	}
-	Line {
-	  SrcBlock		  "Uno sobre\nla mas"
-	  SrcPort		  1
-	  DstBlock		  "Integrator1"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Integrator1"
-	  SrcPort		  1
-	  DstBlock		  "Integrator"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Integrator"
-	  SrcPort		  1
-	  Points		  [0, -60; -20, 0]
 	  DstBlock		  "z"
 	  DstPort		  1
 	}
 	Line {
-	  SrcBlock		  "Product of\nElements"
+	  SrcBlock		  "Subsystem4"
 	  SrcPort		  1
-	  Points		  [0, 20]
-	  DstBlock		  "Add"
+	  DstBlock		  "y"
 	  DstPort		  1
 	}
 	Line {
-	  SrcBlock		  "Constant"
+	  SrcBlock		  "Subsystem3"
 	  SrcPort		  1
-	  Points		  [70, 0; 0, -65]
-	  DstBlock		  "Add"
-	  DstPort		  2
-	}
-	Line {
-	  SrcBlock		  "Add"
-	  SrcPort		  1
-	  Points		  [0, 60; -95, 0]
-	  DstBlock		  "Uno sobre\nla mas"
-	  DstPort		  1
-	}
-      }
-    }
-    Block {
-      BlockType		      SubSystem
-      Name		      "Subsystem6"
-      SID		      "106"
-      Ports		      [13, 1]
-      Position		      [475, 760, 660, 880]
-      MinAlgLoopOccurrences   off
-      PropExecContextOutsideSubsystem off
-      RTWSystemCode	      "Auto"
-      FunctionWithSeparateData off
-      Opaque		      off
-      RequestExecContextInheritance off
-      MaskHideContents	      off
-      System {
-	Name			"Subsystem6"
-	Location		[0, 80, 1366, 768]
-	Open			on
-	ModelBrowserVisibility	off
-	ModelBrowserWidth	200
-	ScreenColor		"white"
-	PaperOrientation	"landscape"
-	PaperPositionMode	"auto"
-	PaperType		"usletter"
-	PaperUnits		"inches"
-	TiledPaperMargins	[0.500000, 0.500000, 0.500000, 0.500000]
-	TiledPageScale		1
-	ShowPageBoundaries	off
-	ZoomFactor		"100"
-	Block {
-	  BlockType		  Inport
-	  Name			  "theta"
-	  SID			  "107"
-	  Position		  [20, 48, 50, 62]
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "phi"
-	  SID			  "108"
-	  Position		  [15, 223, 45, 237]
-	  Port			  "2"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "psi"
-	  SID			  "109"
-	  Position		  [15, 398, 45, 412]
-	  Port			  "3"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "wq2"
-	  SID			  "111"
-	  Position		  [15, 538, 45, 552]
-	  Port			  "4"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "wq3"
-	  SID			  "112"
-	  Position		  [15, 598, 45, 612]
-	  Port			  "5"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "T1"
-	  SID			  "113"
-	  Position		  [15, 653, 45, 667]
-	  Port			  "6"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "T2"
-	  SID			  "114"
-	  Position		  [15, 703, 45, 717]
-	  Port			  "7"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "T3"
-	  SID			  "115"
-	  Position		  [15, 748, 45, 762]
-	  Port			  "8"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "T4"
-	  SID			  "124"
-	  Position		  [15, 793, 45, 807]
-	  Port			  "9"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "w1"
-	  SID			  "125"
-	  Position		  [15, 833, 45, 847]
-	  Port			  "10"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "w2"
-	  SID			  "126"
-	  Position		  [15, 868, 45, 882]
-	  Port			  "11"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "w3"
-	  SID			  "127"
-	  Position		  [15, 898, 45, 912]
-	  Port			  "12"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "w4"
-	  SID			  "128"
-	  Position		  [15, 933, 45, 947]
-	  Port			  "13"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Gain
-	  Name			  "1/Ixx"
-	  SID			  "148"
-	  Position		  [940, 550, 970, 580]
-	  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Sum
-	  Name			  "Add"
-	  SID			  "143"
-	  Ports			  [2, 1]
-	  Position		  [625, 222, 655, 253]
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Sum
-	  Name			  "Add1"
-	  SID			  "187"
-	  Ports			  [2, 1]
-	  Position		  [520, 287, 550, 318]
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Integrator
-	  Name			  "Integrator"
-	  SID			  "149"
-	  Ports			  [1, 1]
-	  Position		  [1005, 550, 1035, 580]
-	}
-	Block {
-	  BlockType		  Gain
-	  Name			  "Iyy-Izz"
-	  SID			  "131"
-	  Position		  [690, 555, 720, 585]
-	  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Gain
-	  Name			  "Izzm"
-	  SID			  "146"
-	  Position		  [675, 820, 705, 850]
-	  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Gain
-	  Name			  "L"
-	  SID			  "139"
-	  Position		  [690, 225, 720, 255]
-	  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Product
-	  Name			  "Product"
-	  SID			  "132"
-	  Ports			  [2, 1]
-	  Position		  [145, 552, 175, 583]
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Product
-	  Name			  "Product of\nElements"
-	  SID			  "133"
-	  Ports			  [3, 1]
-	  Position		  [330, 215, 360, 245]
-	  Inputs		  "3"
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  RndMeth		  "Floor"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Product
-	  Name			  "Product of\nElements1"
-	  SID			  "137"
-	  Ports			  [3, 1]
-	  Position		  [430, 295, 460, 325]
-	  Inputs		  "3"
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  RndMeth		  "Floor"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Product
-	  Name			  "Product1"
-	  SID			  "136"
-	  Ports			  [2, 1]
-	  Position		  [425, 107, 455, 138]
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Product
-	  Name			  "Product2"
-	  SID			  "145"
-	  Ports			  [2, 1]
-	  Position		  [540, 817, 570, 848]
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Product
-	  Name			  "Product3"
-	  SID			  "188"
-	  Ports			  [2, 1]
-	  Position		  [590, 307, 620, 338]
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Sum
-	  Name			  "Subtract"
-	  SID			  "134"
-	  Ports			  [2, 1]
-	  Position		  [215, 672, 245, 703]
-	  Inputs		  "+-"
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Sum
-	  Name			  "Subtract1"
-	  SID			  "141"
-	  Ports			  [2, 1]
-	  Position		  [215, 767, 245, 798]
-	  Inputs		  "+-"
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Sum
-	  Name			  "Sum of\nElements"
-	  SID			  "144"
-	  Ports			  [4, 1]
-	  Position		  [255, 867, 285, 898]
-	  Inputs		  "4"
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Sum
-	  Name			  "Sum of\nElements1"
-	  SID			  "147"
-	  Ports			  [3, 1]
-	  Position		  [855, 550, 885, 580]
-	  Inputs		  "3"
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Trigonometry
-	  Name			  "Trigonometric\nFunction"
-	  SID			  "117"
-	  Ports			  [1, 1]
-	  Position		  [165, 40, 195, 70]
-	  Operator		  "cos"
-	}
-	Block {
-	  BlockType		  Trigonometry
-	  Name			  "Trigonometric\nFunction1"
-	  SID			  "118"
-	  Ports			  [1, 1]
-	  Position		  [165, 115, 195, 145]
-	}
-	Block {
-	  BlockType		  Trigonometry
-	  Name			  "Trigonometric\nFunction2"
-	  SID			  "119"
-	  Ports			  [1, 1]
-	  Position		  [170, 215, 200, 245]
-	  Operator		  "cos"
-	}
-	Block {
-	  BlockType		  Trigonometry
-	  Name			  "Trigonometric\nFunction3"
-	  SID			  "120"
-	  Ports			  [1, 1]
-	  Position		  [175, 390, 205, 420]
-	  Operator		  "cos"
-	}
-	Block {
-	  BlockType		  Trigonometry
-	  Name			  "Trigonometric\nFunction4"
-	  SID			  "121"
-	  Ports			  [1, 1]
-	  Position		  [170, 285, 200, 315]
-	}
-	Block {
-	  BlockType		  Trigonometry
-	  Name			  "Trigonometric\nFunction5"
-	  SID			  "122"
-	  Ports			  [1, 1]
-	  Position		  [175, 465, 205, 495]
-	}
-	Block {
-	  BlockType		  Outport
-	  Name			  "wq1"
-	  SID			  "123"
-	  Position		  [1090, 558, 1120, 572]
-	  IconDisplay		  "Port number"
-	}
-	Line {
-	  SrcBlock		  "theta"
-	  SrcPort		  1
-	  Points		  [30, 0]
-	  Branch {
-	    DstBlock		    "Trigonometric\nFunction"
-	    DstPort		    1
-	  }
-	  Branch {
-	    Points		    [0, 75]
-	    DstBlock		    "Trigonometric\nFunction1"
-	    DstPort		    1
-	  }
-	}
-	Line {
-	  SrcBlock		  "phi"
-	  SrcPort		  1
-	  Points		  [35, 0]
-	  Branch {
-	    DstBlock		    "Trigonometric\nFunction2"
-	    DstPort		    1
-	  }
-	  Branch {
-	    Points		    [0, 70]
-	    DstBlock		    "Trigonometric\nFunction4"
-	    DstPort		    1
-	  }
-	}
-	Line {
-	  SrcBlock		  "psi"
-	  SrcPort		  1
-	  Points		  [50, 0]
-	  Branch {
-	    DstBlock		    "Trigonometric\nFunction3"
-	    DstPort		    1
-	  }
-	  Branch {
-	    Points		    [0, 75]
-	    DstBlock		    "Trigonometric\nFunction5"
-	    DstPort		    1
-	  }
-	}
-	Line {
-	  SrcBlock		  "wq2"
-	  SrcPort		  1
-	  Points		  [25, 0]
-	  Branch {
-	    Points		    [15, 0; 0, 15]
-	    DstBlock		    "Product"
-	    DstPort		    1
-	  }
-	  Branch {
-	    Points		    [0, 280]
-	    DstBlock		    "Product2"
-	    DstPort		    1
-	  }
-	}
-	Line {
-	  SrcBlock		  "wq3"
-	  SrcPort		  1
-	  Points		  [40, 0; 0, -30]
-	  DstBlock		  "Product"
-	  DstPort		  2
-	}
-	Line {
-	  SrcBlock		  "Product"
-	  SrcPort		  1
-	  DstBlock		  "Iyy-Izz"
+	  DstBlock		  "x"
 	  DstPort		  1
 	}
 	Line {
-	  SrcBlock		  "Trigonometric\nFunction"
-	  SrcPort		  1
-	  Points		  [35, 0]
-	  Branch {
-	    Points		    [45, 0; 0, 165]
-	    DstBlock		    "Product of\nElements"
-	    DstPort		    1
-	  }
-	  Branch {
-	    Points		    [0, 245]
-	    DstBlock		    "Product of\nElements1"
-	    DstPort		    1
-	  }
-	}
-	Line {
-	  SrcBlock		  "Trigonometric\nFunction2"
-	  SrcPort		  1
-	  Points		  [10, 0]
-	  Branch {
-	    DstBlock		    "Product of\nElements"
-	    DstPort		    2
-	  }
-	  Branch {
-	    Points		    [0, 80]
-	    DstBlock		    "Product of\nElements1"
-	    DstPort		    2
-	  }
-	}
-	Line {
-	  SrcBlock		  "T3"
-	  SrcPort		  1
-	  Points		  [75, 0; 0, -75]
-	  DstBlock		  "Subtract"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "T1"
-	  SrcPort		  1
-	  Points		  [145, 0; 0, 35]
-	  DstBlock		  "Subtract"
-	  DstPort		  2
-	}
-	Line {
-	  SrcBlock		  "Subtract"
-	  SrcPort		  1
-	  Points		  [60, 0; 0, -450]
-	  DstBlock		  "Product of\nElements"
-	  DstPort		  3
-	}
-	Line {
-	  SrcBlock		  "Trigonometric\nFunction1"
-	  SrcPort		  1
-	  Points		  [210, 0]
-	  DstBlock		  "Product1"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Trigonometric\nFunction3"
-	  SrcPort		  1
-	  Points		  [170, 0; 0, -275]
-	  DstBlock		  "Product1"
-	  DstPort		  2
-	}
-	Line {
-	  SrcBlock		  "Trigonometric\nFunction5"
-	  SrcPort		  1
-	  Points		  [200, 0; 0, -160]
-	  DstBlock		  "Product of\nElements1"
-	  DstPort		  3
-	}
-	Line {
-	  SrcBlock		  "T4"
-	  SrcPort		  1
-	  Points		  [75, 0; 0, -25]
-	  DstBlock		  "Subtract1"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "T2"
-	  SrcPort		  1
-	  Points		  [145, 0; 0, 80]
-	  DstBlock		  "Subtract1"
-	  DstPort		  2
-	}
-	Line {
-	  SrcBlock		  "Subtract1"
-	  SrcPort		  1
-	  Points		  [280, 0; 0, -390; 45, 0]
-	  DstBlock		  "Product3"
-	  DstPort		  2
-	}
-	Line {
-	  SrcBlock		  "Product1"
-	  SrcPort		  1
-	  Points		  [10, 0; 0, 170]
-	  DstBlock		  "Add1"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Product of\nElements"
-	  SrcPort		  1
-	  DstBlock		  "Add"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Add"
-	  SrcPort		  1
-	  DstBlock		  "L"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "w1"
-	  SrcPort		  1
-	  Points		  [95, 0; 0, 35]
-	  DstBlock		  "Sum of\nElements"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "w2"
-	  SrcPort		  1
-	  Points		  [85, 0; 0, 10; 105, 0]
-	  DstBlock		  "Sum of\nElements"
-	  DstPort		  2
-	}
-	Line {
-	  SrcBlock		  "w3"
-	  SrcPort		  1
-	  Points		  [190, 0]
-	  DstBlock		  "Sum of\nElements"
-	  DstPort		  3
-	}
-	Line {
-	  SrcBlock		  "w4"
-	  SrcPort		  1
-	  Points		  [190, 0]
-	  DstBlock		  "Sum of\nElements"
-	  DstPort		  4
-	}
-	Line {
-	  SrcBlock		  "Sum of\nElements"
-	  SrcPort		  1
-	  Points		  [115, 0; 0, -45]
-	  DstBlock		  "Product2"
-	  DstPort		  2
-	}
-	Line {
-	  SrcBlock		  "Product2"
-	  SrcPort		  1
-	  DstBlock		  "Izzm"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "L"
-	  SrcPort		  1
-	  Points		  [60, 0; 0, 315]
-	  DstBlock		  "Sum of\nElements1"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Iyy-Izz"
-	  SrcPort		  1
-	  Points		  [55, 0; 0, -5]
-	  DstBlock		  "Sum of\nElements1"
-	  DstPort		  2
-	}
-	Line {
-	  SrcBlock		  "Izzm"
-	  SrcPort		  1
-	  Points		  [65, 0; 0, -260]
-	  DstBlock		  "Sum of\nElements1"
-	  DstPort		  3
-	}
-	Line {
-	  SrcBlock		  "Sum of\nElements1"
-	  SrcPort		  1
-	  DstBlock		  "1/Ixx"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "1/Ixx"
-	  SrcPort		  1
-	  DstBlock		  "Integrator"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Integrator"
-	  SrcPort		  1
-	  DstBlock		  "wq1"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Product of\nElements1"
-	  SrcPort		  1
-	  DstBlock		  "Add1"
-	  DstPort		  2
-	}
-	Line {
-	  SrcBlock		  "Add1"
-	  SrcPort		  1
-	  Points		  [0, 10]
-	  DstBlock		  "Product3"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Product3"
-	  SrcPort		  1
-	  Points		  [0, -60; -15, 0]
-	  DstBlock		  "Add"
-	  DstPort		  2
-	}
-      }
-    }
-    Block {
-      BlockType		      SubSystem
-      Name		      "Subsystem7"
-      SID		      "150"
-      Ports		      [13, 1]
-      Position		      [475, 915, 660, 1035]
-      MinAlgLoopOccurrences   off
-      PropExecContextOutsideSubsystem off
-      RTWSystemCode	      "Auto"
-      FunctionWithSeparateData off
-      Opaque		      off
-      RequestExecContextInheritance off
-      MaskHideContents	      off
-      System {
-	Name			"Subsystem7"
-	Location		[0, 51, 1366, 768]
-	Open			off
-	ModelBrowserVisibility	off
-	ModelBrowserWidth	200
-	ScreenColor		"white"
-	PaperOrientation	"landscape"
-	PaperPositionMode	"auto"
-	PaperType		"A4"
-	PaperUnits		"centimeters"
-	TiledPaperMargins	[1.270000, 1.270000, 1.270000, 1.270000]
-	TiledPageScale		1
-	ShowPageBoundaries	off
-	ZoomFactor		"100"
-	Block {
-	  BlockType		  Inport
-	  Name			  "theta"
-	  SID			  "151"
-	  Position		  [20, 48, 50, 62]
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "phi"
-	  SID			  "152"
-	  Position		  [15, 223, 45, 237]
-	  Port			  "2"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "psi"
-	  SID			  "153"
-	  Position		  [15, 398, 45, 412]
-	  Port			  "3"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "wq1"
-	  SID			  "154"
-	  Position		  [15, 538, 45, 552]
-	  Port			  "4"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "wq3"
-	  SID			  "155"
-	  Position		  [15, 598, 45, 612]
-	  Port			  "5"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "T1"
-	  SID			  "156"
-	  Position		  [15, 653, 45, 667]
-	  Port			  "6"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "T2"
-	  SID			  "157"
-	  Position		  [15, 703, 45, 717]
-	  Port			  "7"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "T3"
-	  SID			  "158"
-	  Position		  [15, 748, 45, 762]
-	  Port			  "8"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "T4"
-	  SID			  "159"
-	  Position		  [15, 793, 45, 807]
-	  Port			  "9"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "w1"
-	  SID			  "160"
-	  Position		  [15, 833, 45, 847]
-	  Port			  "10"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "w2"
-	  SID			  "161"
-	  Position		  [15, 868, 45, 882]
-	  Port			  "11"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "w3"
-	  SID			  "162"
-	  Position		  [15, 898, 45, 912]
-	  Port			  "12"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "w4"
-	  SID			  "163"
-	  Position		  [15, 933, 45, 947]
-	  Port			  "13"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Gain
-	  Name			  "1/Izz"
-	  SID			  "164"
-	  Position		  [940, 550, 970, 580]
-	  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Sum
-	  Name			  "Add"
-	  SID			  "165"
-	  Ports			  [2, 1]
-	  Position		  [625, 222, 655, 253]
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Integrator
-	  Name			  "Integrator"
-	  SID			  "166"
-	  Ports			  [1, 1]
-	  Position		  [1005, 550, 1035, 580]
-	}
-	Block {
-	  BlockType		  Gain
-	  Name			  "Izz-Ixx"
-	  SID			  "167"
-	  Position		  [690, 555, 720, 585]
-	  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Gain
-	  Name			  "Izzm"
-	  SID			  "168"
-	  Position		  [675, 820, 705, 850]
-	  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Gain
-	  Name			  "L"
-	  SID			  "169"
-	  Position		  [690, 225, 720, 255]
-	  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Product
-	  Name			  "Product"
-	  SID			  "170"
-	  Ports			  [2, 1]
-	  Position		  [145, 552, 175, 583]
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Product
-	  Name			  "Product of\nElements"
-	  SID			  "171"
-	  Ports			  [3, 1]
-	  Position		  [330, 215, 360, 245]
-	  Inputs		  "3"
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  RndMeth		  "Floor"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Product
-	  Name			  "Product of\nElements1"
-	  SID			  "172"
-	  Ports			  [3, 1]
-	  Position		  [430, 295, 460, 325]
-	  Inputs		  "3"
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  RndMeth		  "Floor"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Product
-	  Name			  "Product1"
-	  SID			  "174"
-	  Ports			  [2, 1]
-	  Position		  [425, 107, 455, 138]
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Product
-	  Name			  "Product2"
-	  SID			  "175"
-	  Ports			  [2, 1]
-	  Position		  [540, 817, 570, 848]
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Product
-	  Name			  "Product3"
-	  SID			  "190"
-	  Ports			  [2, 1]
-	  Position		  [550, 342, 580, 373]
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Sum
-	  Name			  "Subtract"
-	  SID			  "176"
-	  Ports			  [2, 1]
-	  Position		  [215, 672, 245, 703]
-	  Inputs		  "+-"
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Sum
-	  Name			  "Subtract1"
-	  SID			  "177"
-	  Ports			  [2, 1]
-	  Position		  [215, 767, 245, 798]
-	  Inputs		  "+-"
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Sum
-	  Name			  "Subtract2"
-	  SID			  "189"
-	  Ports			  [2, 1]
-	  Position		  [510, 242, 540, 273]
-	  Inputs		  "+-"
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Sum
-	  Name			  "Sum of\nElements"
-	  SID			  "178"
-	  Ports			  [4, 1]
-	  Position		  [255, 867, 285, 898]
-	  Inputs		  "4"
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Sum
-	  Name			  "Sum of\nElements1"
-	  SID			  "179"
-	  Ports			  [3, 1]
-	  Position		  [855, 550, 885, 580]
-	  Inputs		  "3"
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Trigonometry
-	  Name			  "Trigonometric\nFunction"
-	  SID			  "180"
-	  Ports			  [1, 1]
-	  Position		  [165, 40, 195, 70]
-	  Operator		  "cos"
-	}
-	Block {
-	  BlockType		  Trigonometry
-	  Name			  "Trigonometric\nFunction1"
-	  SID			  "181"
-	  Ports			  [1, 1]
-	  Position		  [165, 115, 195, 145]
-	}
-	Block {
-	  BlockType		  Trigonometry
-	  Name			  "Trigonometric\nFunction2"
-	  SID			  "182"
-	  Ports			  [1, 1]
-	  Position		  [170, 215, 200, 245]
-	  Operator		  "cos"
-	}
-	Block {
-	  BlockType		  Trigonometry
-	  Name			  "Trigonometric\nFunction3"
-	  SID			  "183"
-	  Ports			  [1, 1]
-	  Position		  [175, 390, 205, 420]
-	  Operator		  "cos"
-	}
-	Block {
-	  BlockType		  Trigonometry
-	  Name			  "Trigonometric\nFunction4"
-	  SID			  "184"
-	  Ports			  [1, 1]
-	  Position		  [170, 285, 200, 315]
-	}
-	Block {
-	  BlockType		  Trigonometry
-	  Name			  "Trigonometric\nFunction5"
-	  SID			  "185"
-	  Ports			  [1, 1]
-	  Position		  [175, 465, 205, 495]
-	}
-	Block {
-	  BlockType		  Outport
-	  Name			  "wq2"
-	  SID			  "186"
-	  Position		  [1090, 558, 1120, 572]
-	  IconDisplay		  "Port number"
-	}
-	Line {
-	  SrcBlock		  "theta"
-	  SrcPort		  1
-	  Points		  [30, 0]
-	  Branch {
-	    DstBlock		    "Trigonometric\nFunction"
-	    DstPort		    1
-	  }
-	  Branch {
-	    Points		    [0, 75]
-	    DstBlock		    "Trigonometric\nFunction1"
-	    DstPort		    1
-	  }
-	}
-	Line {
-	  SrcBlock		  "phi"
-	  SrcPort		  1
-	  Points		  [35, 0]
-	  Branch {
-	    DstBlock		    "Trigonometric\nFunction2"
-	    DstPort		    1
-	  }
-	  Branch {
-	    Points		    [0, 70]
-	    DstBlock		    "Trigonometric\nFunction4"
-	    DstPort		    1
-	  }
-	}
-	Line {
-	  SrcBlock		  "psi"
-	  SrcPort		  1
-	  Points		  [50, 0]
-	  Branch {
-	    DstBlock		    "Trigonometric\nFunction3"
-	    DstPort		    1
-	  }
-	  Branch {
-	    Points		    [0, 75]
-	    DstBlock		    "Trigonometric\nFunction5"
-	    DstPort		    1
-	  }
-	}
-	Line {
-	  SrcBlock		  "wq1"
-	  SrcPort		  1
-	  Points		  [25, 0]
-	  Branch {
-	    Points		    [15, 0; 0, 15]
-	    DstBlock		    "Product"
-	    DstPort		    1
-	  }
-	  Branch {
-	    Points		    [0, 280]
-	    DstBlock		    "Product2"
-	    DstPort		    1
-	  }
-	}
-	Line {
-	  SrcBlock		  "wq3"
-	  SrcPort		  1
-	  Points		  [40, 0; 0, -30]
-	  DstBlock		  "Product"
-	  DstPort		  2
-	}
-	Line {
-	  SrcBlock		  "Product"
-	  SrcPort		  1
-	  DstBlock		  "Izz-Ixx"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Trigonometric\nFunction"
-	  SrcPort		  1
-	  Points		  [35, 0; 0, 60]
-	  DstBlock		  "Product1"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Trigonometric\nFunction2"
-	  SrcPort		  1
-	  DstBlock		  "Product of\nElements"
-	  DstPort		  2
-	}
-	Line {
-	  SrcBlock		  "T3"
-	  SrcPort		  1
-	  Points		  [75, 0; 0, -75]
-	  DstBlock		  "Subtract"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "T1"
-	  SrcPort		  1
-	  Points		  [145, 0; 0, 35]
-	  DstBlock		  "Subtract"
-	  DstPort		  2
-	}
-	Line {
-	  SrcBlock		  "Subtract"
-	  SrcPort		  1
-	  Points		  [60, 0; 0, -450]
-	  DstBlock		  "Product of\nElements"
-	  DstPort		  3
-	}
-	Line {
-	  SrcBlock		  "Trigonometric\nFunction1"
-	  SrcPort		  1
-	  Points		  [5, 0]
-	  Branch {
-	    Points		    [0, 90]
-	    DstBlock		    "Product of\nElements"
-	    DstPort		    1
-	  }
-	  Branch {
-	    Points		    [0, 170]
-	    DstBlock		    "Product of\nElements1"
-	    DstPort		    1
-	  }
-	}
-	Line {
-	  SrcBlock		  "Trigonometric\nFunction3"
-	  SrcPort		  1
-	  Points		  [170, 0; 0, -275]
-	  DstBlock		  "Product1"
-	  DstPort		  2
-	}
-	Line {
-	  SrcBlock		  "Trigonometric\nFunction5"
-	  SrcPort		  1
-	  Points		  [200, 0; 0, -160]
-	  DstBlock		  "Product of\nElements1"
-	  DstPort		  3
-	}
-	Line {
-	  SrcBlock		  "Subtract1"
-	  SrcPort		  1
-	  Points		  [280, 0; 0, -420]
-	  DstBlock		  "Product3"
-	  DstPort		  2
-	}
-	Line {
-	  SrcBlock		  "Product3"
-	  SrcPort		  1
-	  Points		  [10, 0; 0, -115]
-	  DstBlock		  "Add"
-	  DstPort		  2
-	}
-	Line {
-	  SrcBlock		  "Product of\nElements"
-	  SrcPort		  1
-	  DstBlock		  "Add"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Add"
-	  SrcPort		  1
-	  DstBlock		  "L"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "w1"
-	  SrcPort		  1
-	  Points		  [95, 0; 0, 35]
-	  DstBlock		  "Sum of\nElements"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "w2"
-	  SrcPort		  1
-	  Points		  [85, 0; 0, 10; 105, 0]
-	  DstBlock		  "Sum of\nElements"
-	  DstPort		  2
-	}
-	Line {
-	  SrcBlock		  "w3"
-	  SrcPort		  1
-	  Points		  [190, 0]
-	  DstBlock		  "Sum of\nElements"
-	  DstPort		  3
-	}
-	Line {
-	  SrcBlock		  "w4"
-	  SrcPort		  1
-	  Points		  [190, 0]
-	  DstBlock		  "Sum of\nElements"
-	  DstPort		  4
-	}
-	Line {
-	  SrcBlock		  "Sum of\nElements"
-	  SrcPort		  1
-	  Points		  [115, 0; 0, -45]
-	  DstBlock		  "Product2"
-	  DstPort		  2
-	}
-	Line {
-	  SrcBlock		  "Product2"
-	  SrcPort		  1
-	  DstBlock		  "Izzm"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "L"
-	  SrcPort		  1
-	  Points		  [60, 0; 0, 315]
-	  DstBlock		  "Sum of\nElements1"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Izz-Ixx"
-	  SrcPort		  1
-	  Points		  [55, 0; 0, -5]
-	  DstBlock		  "Sum of\nElements1"
-	  DstPort		  2
-	}
-	Line {
-	  SrcBlock		  "Izzm"
-	  SrcPort		  1
-	  Points		  [65, 0; 0, -260]
-	  DstBlock		  "Sum of\nElements1"
-	  DstPort		  3
-	}
-	Line {
-	  SrcBlock		  "Sum of\nElements1"
-	  SrcPort		  1
-	  DstBlock		  "1/Izz"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "1/Izz"
-	  SrcPort		  1
-	  DstBlock		  "Integrator"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Integrator"
-	  SrcPort		  1
-	  DstBlock		  "wq2"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Trigonometric\nFunction4"
-	  SrcPort		  1
-	  Points		  [210, 0]
-	  DstBlock		  "Product of\nElements1"
-	  DstPort		  2
-	}
-	Line {
-	  SrcBlock		  "Product1"
-	  SrcPort		  1
-	  Points		  [35, 0]
-	  DstBlock		  "Subtract2"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Product of\nElements1"
-	  SrcPort		  1
-	  Points		  [15, 0; 0, -45]
-	  DstBlock		  "Subtract2"
-	  DstPort		  2
-	}
-	Line {
-	  SrcBlock		  "Subtract2"
-	  SrcPort		  1
-	  Points		  [10, 0; 0, 70; -20, 0]
-	  DstBlock		  "Product3"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "T2"
-	  SrcPort		  1
-	  Points		  [150, 0]
-	  DstBlock		  "Subtract1"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "T4"
-	  SrcPort		  1
-	  Points		  [150, 0]
-	  DstBlock		  "Subtract1"
-	  DstPort		  2
-	}
-      }
-    }
-    Block {
-      BlockType		      SubSystem
-      Name		      "Subsystem8"
-      SID		      "191"
-      Ports		      [12, 1]
-      Position		      [475, 1069, 660, 1156]
-      LibraryVersion	      "1.225"
-      MinAlgLoopOccurrences   off
-      PropExecContextOutsideSubsystem off
-      RTWSystemCode	      "Auto"
-      FunctionWithSeparateData off
-      Opaque		      off
-      RequestExecContextInheritance off
-      MaskHideContents	      off
-      System {
-	Name			"Subsystem8"
-	Location		[0, 51, 1366, 768]
-	Open			off
-	ModelBrowserVisibility	off
-	ModelBrowserWidth	200
-	ScreenColor		"white"
-	PaperOrientation	"landscape"
-	PaperPositionMode	"auto"
-	PaperType		"A4"
-	PaperUnits		"centimeters"
-	TiledPaperMargins	[1.270000, 1.270000, 1.270000, 1.270000]
-	TiledPageScale		1
-	ShowPageBoundaries	off
-	ZoomFactor		"100"
-	Block {
-	  BlockType		  Inport
-	  Name			  "phi"
-	  SID			  "194"
-	  Position		  [110, 168, 140, 182]
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "psi"
-	  SID			  "195"
-	  Position		  [110, 243, 140, 257]
-	  Port			  "2"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "T1"
-	  SID			  "199"
-	  Position		  [110, 338, 140, 352]
-	  Port			  "3"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "T2"
-	  SID			  "200"
-	  Position		  [110, 378, 140, 392]
-	  Port			  "4"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "T3"
-	  SID			  "201"
-	  Position		  [110, 428, 140, 442]
-	  Port			  "5"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "T4"
-	  SID			  "202"
-	  Position		  [110, 478, 140, 492]
-	  Port			  "6"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "wq1"
-	  SID			  "208"
-	  Position		  [115, 533, 145, 547]
-	  Port			  "7"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "wq2"
-	  SID			  "209"
-	  Position		  [115, 573, 145, 587]
-	  Port			  "8"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "w1"
-	  SID			  "212"
-	  Position		  [115, 628, 145, 642]
-	  Port			  "9"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "w2"
-	  SID			  "213"
-	  Position		  [115, 678, 145, 692]
-	  Port			  "10"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "w3"
-	  SID			  "214"
-	  Position		  [115, 723, 145, 737]
-	  Port			  "11"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "w4"
-	  SID			  "215"
-	  Position		  [115, 768, 145, 782]
-	  Port			  "12"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Gain
-	  Name			  "1/Izz"
-	  SID			  "224"
-	  Position		  [790, 450, 820, 480]
-	  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Derivative
-	  Name			  "Derivative"
-	  SID			  "217"
-	  Position		  [225, 620, 255, 650]
-	}
-	Block {
-	  BlockType		  Derivative
-	  Name			  "Derivative1"
-	  SID			  "218"
-	  Position		  [225, 670, 255, 700]
-	}
-	Block {
-	  BlockType		  Derivative
-	  Name			  "Derivative2"
-	  SID			  "219"
-	  Position		  [225, 715, 255, 745]
-	}
-	Block {
-	  BlockType		  Derivative
-	  Name			  "Derivative3"
-	  SID			  "220"
-	  Position		  [220, 760, 250, 790]
-	}
-	Block {
-	  BlockType		  Integrator
-	  Name			  "Integrator"
-	  SID			  "225"
-	  Ports			  [1, 1]
-	  Position		  [855, 450, 885, 480]
-	}
-	Block {
-	  BlockType		  Gain
-	  Name			  "Iyy-Izz"
-	  SID			  "211"
-	  Position		  [505, 550, 535, 580]
-	  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Gain
-	  Name			  "Izzm"
-	  SID			  "222"
-	  Position		  [525, 665, 555, 695]
-	  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Product
-	  Name			  "Product"
-	  SID			  "206"
-	  Ports			  [2, 1]
-	  Position		  [470, 307, 500, 338]
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Product
-	  Name			  "Product of\nElements"
-	  SID			  "207"
-	  Ports			  [3, 1]
-	  Position		  [470, 160, 500, 190]
-	  Inputs		  "3"
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  RndMeth		  "Floor"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Product
-	  Name			  "Product1"
-	  SID			  "210"
-	  Ports			  [2, 1]
-	  Position		  [190, 547, 220, 578]
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Sum
-	  Name			  "Subtract"
-	  SID			  "203"
-	  Ports			  [2, 1]
-	  Position		  [240, 337, 270, 368]
-	  Inputs		  "+-"
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Sum
-	  Name			  "Subtract1"
-	  SID			  "205"
-	  Ports			  [2, 1]
-	  Position		  [240, 452, 270, 483]
-	  Inputs		  "+-"
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Sum
-	  Name			  "Sum of\nElements"
-	  SID			  "221"
-	  Ports			  [4, 1]
-	  Position		  [425, 662, 455, 693]
-	  Inputs		  "4"
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Sum
-	  Name			  "Sum of\nElements1"
-	  SID			  "223"
-	  Ports			  [4, 1]
-	  Position		  [700, 447, 730, 478]
-	  Inputs		  "4"
-	  InputSameDT		  off
-	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-	  SaturateOnIntegerOverflow off
-	}
-	Block {
-	  BlockType		  Trigonometry
-	  Name			  "Trigonometric\nFunction"
-	  SID			  "196"
-	  Ports			  [1, 1]
-	  Position		  [250, 95, 280, 125]
-	  Operator		  "cos"
-	}
-	Block {
-	  BlockType		  Trigonometry
-	  Name			  "Trigonometric\nFunction1"
-	  SID			  "197"
-	  Ports			  [1, 1]
-	  Position		  [250, 160, 280, 190]
-	}
-	Block {
-	  BlockType		  Trigonometry
-	  Name			  "Trigonometric\nFunction2"
-	  SID			  "198"
-	  Ports			  [1, 1]
-	  Position		  [245, 235, 275, 265]
-	}
-	Block {
-	  BlockType		  Outport
-	  Name			  "wq3"
-	  SID			  "193"
-	  Position		  [945, 458, 975, 472]
-	  IconDisplay		  "Port number"
-	}
-	Line {
-	  SrcBlock		  "phi"
+	  SrcBlock		  "Subsystem"
 	  SrcPort		  1
 	  Points		  [40, 0]
 	  Branch {
-	    DstBlock		    "Trigonometric\nFunction1"
+	    Points		    [0, 240; -240, 0; 0, 30; 20, 0]
+	    Branch {
+	      DstBlock		      "Subsystem3"
+	      DstPort		      1
+	    }
+	    Branch {
+	      Points		      [0, 120]
+	      DstBlock		      "Subsystem4"
+	      DstPort		      1
+	    }
+	  }
+	  Branch {
+	    DstBlock		    "theta"
 	    DstPort		    1
 	  }
 	  Branch {
-	    Points		    [0, -65]
-	    DstBlock		    "Trigonometric\nFunction"
-	    DstPort		    1
+	    Points		    [65, 0; 0, 630; -300, 0; 0, 20; 15, 0]
+	    Branch {
+	      DstBlock		      "Subsystem6"
+	      DstPort		      1
+	    }
+	    Branch {
+	      Points		      [0, 150]
+	      DstBlock		      "Subsystem7"
+	      DstPort		      1
+	    }
 	  }
-	}
-	Line {
-	  SrcBlock		  "psi"
-	  SrcPort		  1
-	  DstBlock		  "Trigonometric\nFunction2"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "T1"
-	  SrcPort		  1
-	  DstBlock		  "Subtract"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "T3"
-	  SrcPort		  1
-	  Points		  [40, 0; 0, -75]
-	  DstBlock		  "Subtract"
-	  DstPort		  2
 	}
 	Line {
 	  SrcBlock		  "T4"
 	  SrcPort		  1
-	  Points		  [40, 0; 0, -25]
-	  DstBlock		  "Subtract1"
-	  DstPort		  1
+	  Points		  [105, 0; 0, 175; 50, 0]
+	  Branch {
+	    Points		    [60, 0]
+	    Branch {
+	      DstBlock		      "Subsystem3"
+	      DstPort		      7
+	    }
+	    Branch {
+	      Points		      [0, 120]
+	      DstBlock		      "Subsystem4"
+	      DstPort		      7
+	    }
+	  }
+	  Branch {
+	    Points		    [0, 255; 45, 0]
+	    Branch {
+	      DstBlock		      "Subsystem5"
+	      DstPort		      6
+	    }
+	    Branch {
+	      Points		      [0, 145; 30, 0]
+	      Branch {
+		DstBlock		"Subsystem6"
+		DstPort			9
+	      }
+	      Branch {
+		Points			[0, 150; 5, 0]
+		Branch {
+		  DstBlock		  "Subsystem7"
+		  DstPort		  9
+		}
+		Branch {
+		  Points		  [0, 125]
+		  DstBlock		  "Subsystem8"
+		  DstPort		  6
+		}
+	      }
+	    }
+	  }
+	}
+	Line {
+	  SrcBlock		  "T3"
+	  SrcPort		  1
+	  Points		  [130, 0; 0, 180; 55, 0]
+	  Branch {
+	    Points		    [55, 0]
+	    Branch {
+	      DstBlock		      "Subsystem3"
+	      DstPort		      6
+	    }
+	    Branch {
+	      Points		      [0, 120]
+	      DstBlock		      "Subsystem4"
+	      DstPort		      6
+	    }
+	  }
+	  Branch {
+	    Points		    [0, 250; 50, 0]
+	    Branch {
+	      DstBlock		      "Subsystem5"
+	      DstPort		      5
+	    }
+	    Branch {
+	      Points		      [0, 150; 30, 0]
+	      Branch {
+		DstBlock		"Subsystem6"
+		DstPort			8
+	      }
+	      Branch {
+		Points			[0, 150; 5, 0]
+		Branch {
+		  DstBlock		  "Subsystem7"
+		  DstPort		  8
+		}
+		Branch {
+		  Points		  [0, 125]
+		  DstBlock		  "Subsystem8"
+		  DstPort		  5
+		}
+	      }
+	    }
+	  }
 	}
 	Line {
 	  SrcBlock		  "T2"
 	  SrcPort		  1
-	  Points		  [75, 0; 0, 90]
-	  DstBlock		  "Subtract1"
-	  DstPort		  2
+	  Points		  [155, 0; 0, 185; 60, 0]
+	  Branch {
+	    Points		    [50, 0]
+	    Branch {
+	      DstBlock		      "Subsystem3"
+	      DstPort		      5
+	    }
+	    Branch {
+	      Points		      [0, 120]
+	      DstBlock		      "Subsystem4"
+	      DstPort		      5
+	    }
+	  }
+	  Branch {
+	    Points		    [0, 245; 45, 0]
+	    Branch {
+	      DstBlock		      "Subsystem5"
+	      DstPort		      4
+	    }
+	    Branch {
+	      Points		      [0, 155; 30, 0]
+	      Branch {
+		DstBlock		"Subsystem6"
+		DstPort			7
+	      }
+	      Branch {
+		Points			[0, 150; 5, 0]
+		Branch {
+		  DstBlock		  "Subsystem7"
+		  DstPort		  7
+		}
+		Branch {
+		  Points		  [0, 125]
+		  DstBlock		  "Subsystem8"
+		  DstPort		  4
+		}
+	      }
+	    }
+	  }
 	}
 	Line {
-	  SrcBlock		  "Trigonometric\nFunction1"
+	  SrcBlock		  "T1"
 	  SrcPort		  1
-	  Points		  [85, 0; 0, 140]
-	  DstBlock		  "Product"
-	  DstPort		  1
+	  Points		  [180, 0; 0, 190; 65, 0]
+	  Branch {
+	    Points		    [45, 0]
+	    Branch {
+	      DstBlock		      "Subsystem3"
+	      DstPort		      4
+	    }
+	    Branch {
+	      Points		      [0, 120]
+	      DstBlock		      "Subsystem4"
+	      DstPort		      4
+	    }
+	  }
+	  Branch {
+	    Points		    [0, 240; 55, 0]
+	    Branch {
+	      DstBlock		      "Subsystem5"
+	      DstPort		      3
+	    }
+	    Branch {
+	      Points		      [0, 160; 10, 0]
+	      Branch {
+		DstBlock		"Subsystem6"
+		DstPort			6
+	      }
+	      Branch {
+		Points			[0, 150; 5, 0]
+		Branch {
+		  DstBlock		  "Subsystem7"
+		  DstPort		  6
+		}
+		Branch {
+		  Points		  [0, 125]
+		  DstBlock		  "Subsystem8"
+		  DstPort		  3
+		}
+	      }
+	    }
+	  }
 	}
 	Line {
-	  SrcBlock		  "Subtract"
+	  SrcBlock		  "Subsystem2"
 	  SrcPort		  1
-	  Points		  [90, 0; 0, -25]
-	  DstBlock		  "Product"
-	  DstPort		  2
+	  Points		  [70, 0]
+	  Branch {
+	    Points		    [0, -155; -245, 0]
+	    DstBlock		    "Subsystem1"
+	    DstPort		    1
+	  }
+	  Branch {
+	    Points		    [0, 65; -300, 0; 0, 35; 5, 0]
+	    Branch {
+	      Points		      [30, 0]
+	      Branch {
+		DstBlock		"Subsystem3"
+		DstPort			3
+	      }
+	      Branch {
+		Points			[0, 120]
+		DstBlock		"Subsystem4"
+		DstPort			3
+	      }
+	    }
+	    Branch {
+	      Points		      [0, 220]
+	      DstBlock		      "Subsystem5"
+	      DstPort		      1
+	    }
+	  }
+	  Branch {
+	    Points		    [5, 0]
+	    Branch {
+	      Points		      [30, 0; 0, -245; -305, 0; 0, 45]
+	      DstBlock		      "Subsystem"
+	      DstPort		      2
+	    }
+	    Branch {
+	      DstBlock		      "phi"
+	      DstPort		      1
+	    }
+	    Branch {
+	      Points		      [15, 0; 0, 435; -305, 0; 0, 35; 25, 0]
+	      Branch {
+		DstBlock		"Subsystem6"
+		DstPort			2
+	      }
+	      Branch {
+		Points			[0, 145]
+		Branch {
+		  Points		  [0, 5]
+		  DstBlock		  "Subsystem7"
+		  DstPort		  2
+		}
+		Branch {
+		  Points		  [0, 150]
+		  DstBlock		  "Subsystem8"
+		  DstPort		  1
+		}
+	      }
+	    }
+	  }
 	}
 	Line {
-	  SrcBlock		  "Trigonometric\nFunction"
+	  SrcBlock		  "Subsystem1"
 	  SrcPort		  1
-	  Points		  [85, 0; 0, 55]
-	  DstBlock		  "Product of\nElements"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Trigonometric\nFunction2"
-	  SrcPort		  1
-	  Points		  [170, 0; 0, -75]
-	  DstBlock		  "Product of\nElements"
-	  DstPort		  2
-	}
-	Line {
-	  SrcBlock		  "Subtract1"
-	  SrcPort		  1
-	  Points		  [175, 0; 0, -285]
-	  DstBlock		  "Product of\nElements"
-	  DstPort		  3
-	}
-	Line {
-	  SrcBlock		  "wq1"
-	  SrcPort		  1
-	  Points		  [10, 0; 0, 15]
-	  DstBlock		  "Product1"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "wq2"
-	  SrcPort		  1
-	  Points		  [10, 0; 0, -10]
-	  DstBlock		  "Product1"
-	  DstPort		  2
-	}
-	Line {
-	  SrcBlock		  "Product1"
-	  SrcPort		  1
-	  DstBlock		  "Iyy-Izz"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "w4"
-	  SrcPort		  1
-	  DstBlock		  "Derivative3"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "w3"
-	  SrcPort		  1
-	  DstBlock		  "Derivative2"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "w2"
-	  SrcPort		  1
-	  DstBlock		  "Derivative1"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "w1"
-	  SrcPort		  1
-	  DstBlock		  "Derivative"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Derivative"
-	  SrcPort		  1
-	  Points		  [75, 0; 0, 35]
-	  DstBlock		  "Sum of\nElements"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Derivative1"
-	  SrcPort		  1
-	  Points		  [150, 0]
-	  DstBlock		  "Sum of\nElements"
-	  DstPort		  2
-	}
-	Line {
-	  SrcBlock		  "Derivative2"
-	  SrcPort		  1
-	  Points		  [150, 0]
-	  DstBlock		  "Sum of\nElements"
-	  DstPort		  3
-	}
-	Line {
-	  SrcBlock		  "Derivative3"
-	  SrcPort		  1
-	  Points		  [155, 0]
-	  DstBlock		  "Sum of\nElements"
-	  DstPort		  4
-	}
-	Line {
-	  SrcBlock		  "Sum of\nElements"
-	  SrcPort		  1
-	  DstBlock		  "Izzm"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Product of\nElements"
-	  SrcPort		  1
-	  Points		  [90, 0; 0, 280]
-	  DstBlock		  "Sum of\nElements1"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Product"
-	  SrcPort		  1
-	  Points		  [80, 0; 0, 140; 100, 0]
-	  DstBlock		  "Sum of\nElements1"
-	  DstPort		  2
-	}
-	Line {
-	  SrcBlock		  "Iyy-Izz"
-	  SrcPort		  1
-	  Points		  [145, 0]
-	  DstBlock		  "Sum of\nElements1"
-	  DstPort		  3
-	}
-	Line {
-	  SrcBlock		  "Izzm"
-	  SrcPort		  1
-	  Points		  [125, 0]
-	  DstBlock		  "Sum of\nElements1"
-	  DstPort		  4
-	}
-	Line {
-	  SrcBlock		  "Sum of\nElements1"
-	  SrcPort		  1
-	  DstBlock		  "1/Izz"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "1/Izz"
-	  SrcPort		  1
-	  DstBlock		  "Integrator"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Integrator"
-	  SrcPort		  1
-	  DstBlock		  "wq3"
-	  DstPort		  1
+	  Points		  [5, 0]
+	  Branch {
+	    Points		    [135, 0; 0, -170; -315, 0]
+	    DstBlock		    "Subsystem"
+	    DstPort		    1
+	  }
+	  Branch {
+	    Points		    [5, 0]
+	    Branch {
+	      Points		      [0, 50; -180, 0]
+	      DstBlock		      "Subsystem2"
+	      DstPort		      1
+	    }
+	    Branch {
+	      Points		      [0, 160; -225, 0; 0, 30; 10, 0]
+	      Branch {
+		Points			[15, 0]
+		Branch {
+		  DstBlock		  "Subsystem3"
+		  DstPort		  2
+		}
+		Branch {
+		  Points		  [0, 120]
+		  DstBlock		  "Subsystem4"
+		  DstPort		  2
+		}
+	      }
+	      Branch {
+		Points			[0, 245]
+		DstBlock		"Subsystem5"
+		DstPort			2
+	      }
+	    }
+	    Branch {
+	      DstBlock		      "psi"
+	      DstPort		      1
+	    }
+	    Branch {
+	      Points		      [235, 0; 0, 530; -470, 0; 0, 50; 20, 0]
+	      Branch {
+		DstBlock		"Subsystem6"
+		DstPort			3
+	      }
+	      Branch {
+		Points			[0, 150]
+		Branch {
+		  DstBlock		  "Subsystem7"
+		  DstPort		  3
+		}
+		Branch {
+		  Points		  [0, 145]
+		  DstBlock		  "Subsystem8"
+		  DstPort		  2
+		}
+	      }
+	    }
+	  }
 	}
       }
+    }
+    Block {
+      BlockType		      Outport
+      Name		      "theta"
+      SID		      "241"
+      Position		      [810, 413, 840, 427]
+      IconDisplay	      "Port number"
+    }
+    Block {
+      BlockType		      Outport
+      Name		      "psi"
+      SID		      "242"
+      Position		      [810, 433, 840, 447]
+      Port		      "2"
+      IconDisplay	      "Port number"
+    }
+    Block {
+      BlockType		      Outport
+      Name		      "phi"
+      SID		      "243"
+      Position		      [810, 453, 840, 467]
+      Port		      "3"
+      IconDisplay	      "Port number"
+    }
+    Block {
+      BlockType		      Outport
+      Name		      "x"
+      SID		      "244"
+      Position		      [875, 478, 905, 492]
+      Port		      "4"
+      IconDisplay	      "Port number"
+    }
+    Block {
+      BlockType		      Outport
+      Name		      "y"
+      SID		      "245"
+      Position		      [1030, 528, 1060, 542]
+      Port		      "5"
+      IconDisplay	      "Port number"
+    }
+    Block {
+      BlockType		      Outport
+      Name		      "z"
+      SID		      "246"
+      Position		      [1035, 658, 1065, 672]
+      Port		      "6"
+      IconDisplay	      "Port number"
+    }
+    Line {
+      SrcBlock		      "Lazo abierto"
+      SrcPort		      1
+      DstBlock		      "theta"
+      DstPort		      1
+    }
+    Line {
+      SrcBlock		      "Lazo abierto"
+      SrcPort		      2
+      DstBlock		      "psi"
+      DstPort		      1
+    }
+    Line {
+      SrcBlock		      "T1"
+      SrcPort		      1
+      DstBlock		      "Lazo abierto"
+      DstPort		      1
+    }
+    Line {
+      SrcBlock		      "T2"
+      SrcPort		      1
+      DstBlock		      "Lazo abierto"
+      DstPort		      2
+    }
+    Line {
+      SrcBlock		      "T3"
+      SrcPort		      1
+      DstBlock		      "Lazo abierto"
+      DstPort		      3
+    }
+    Line {
+      SrcBlock		      "T4"
+      SrcPort		      1
+      DstBlock		      "Lazo abierto"
+      DstPort		      4
+    }
+    Line {
+      SrcBlock		      "Lazo abierto"
+      SrcPort		      4
+      Points		      [245, 0]
+      DstBlock		      "x"
+      DstPort		      1
+    }
+    Line {
+      SrcBlock		      "Lazo abierto"
+      SrcPort		      5
+      Points		      [150, 0; 0, 35]
+      DstBlock		      "y"
+      DstPort		      1
+    }
+    Line {
+      SrcBlock		      "Lazo abierto"
+      SrcPort		      6
+      Points		      [140, 0; 0, 145]
+      DstBlock		      "z"
+      DstPort		      1
+    }
+    Line {
+      SrcBlock		      "w1"
+      SrcPort		      1
+      DstBlock		      "Lazo abierto"
+      DstPort		      5
+    }
+    Line {
+      SrcBlock		      "w2"
+      SrcPort		      1
+      DstBlock		      "Lazo abierto"
+      DstPort		      6
+    }
+    Line {
+      SrcBlock		      "w3"
+      SrcPort		      1
+      DstBlock		      "Lazo abierto"
+      DstPort		      7
+    }
+    Line {
+      SrcBlock		      "w4"
+      SrcPort		      1
+      DstBlock		      "Lazo abierto"
+      DstPort		      8
+    }
+    Line {
+      SrcBlock		      "Lazo abierto"
+      SrcPort		      3
+      DstBlock		      "phi"
+      DstPort		      1
     }
   }
 }
