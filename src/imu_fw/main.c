@@ -626,7 +626,7 @@ void config_menu(void)
 		else if ((temp_sense & 0x0C) == 0x0C) rprintf("6g\r\n",0);		
 		rprintf("5) Set output frequency, currently %d\r\n",temp_freq);
        
-		rprintf("9) Save settings and run unit\r\n",0);
+		rprintf("6) Save settings and run unit\r\n",0);
 		
 		a = get_char();
 		
