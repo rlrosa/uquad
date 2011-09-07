@@ -1,21 +1,36 @@
 #include "imu_comm.h"
 
 static double grad2rad(double degrees){
-  // PI/180 == 0.017453292519943295
-  return degrees*0.017453292519943295;
+    // PI/180 == 0.017453292519943295
+    return degrees*0.017453292519943295;
 }
 
 static double rad2grad(double radians){
-  // 180/PI == 57.29577951308232
-  return radians*57.29577951308232;
+    // 180/PI == 57.29577951308232
+    return radians*57.29577951308232;
 }
 
-#define IMU_SENS_OPT_COUNT 4
+static int gyro_scale_adjust(struct imu * imu, double * gyro_reading){
+    //TODO Implement scale calibration,
+    // Note: Should be /300, but /450 seems to work better.
+    // Will be sensor specific
+    // Should get a true calibration instead of this.
+    *gyro_reading *= 0.92955;
+    return ERROR_OK;
+}
+
+static int acc_scale_adjust(struct imu * imu, double * acc_reading){
+    //TODO Implement scale calibration,
+    // Will be sensor specific
+    // Should get a true calibration instead of this.
+    return ERROR_OK;
+}
+
 static double imu_sens_g = {1.5,2,4,6};
 static int imu_sens_mv_per_g = {800,600,400,300};
 int imu_get_sens(int sens){
-  assert(sens<IMU_SENS_OPT_COUNT);
-  return imu_sens_mv_per_g[sens];
+    assert(sens<IMU_SENS_OPT_COUNT);
+    return imu_sens_mv_per_g[sens];
 }   
 
 /** 
@@ -27,44 +42,118 @@ int imu_get_sens(int sens){
  * 
  * @return error code
  */
-static int imu_read_frame(struct imu * imu, struct imu_frame * frame){
-  int retval;
-  unsigned char tmp = '@';// Anything diff from IMU_FRAME_INIT_CHAR
-  int watchdog = 0;
-  while(watchdog < IMU_FRAME_SIZE_BYTES_DEFAULT){
-    retval = fread(&tmp,2,1,imu->device);
-    if(retval == 0){
-      perror("Read error...");
-      return ERROR_READ_TIMEOUT;
-    }else{
-      if(tmp == IMU_FRAME_INIT_CHAR)
-	break;
+static int imu_read_frame(struct imu * imu){
+    int retval = ERROR_OK,watchdog,read;
+    unsigned char tmp = '@';// Anything diff from IMU_FRAME_INIT_CHAR
+    struct imu_frame * new_frame;
+    new_frame = imu->frame_buffer[imu->frames_sampled];
+    watchdog = 0;
+    while(watchdog < IMU_FRAME_SIZE_BYTES_DEFAULT){
+	retval = fread(&tmp,IMU_INIT_END_SIZE,1,imu->device);
+	if(retval == 0){
+	    perror("Read error...");
+	    return ERROR_READ_TIMEOUT;
+	}else{
+	    if(tmp == IMU_FRAME_INIT_CHAR)
+		break;
+	}
+	++watchdog;
     }
-    watchdog++;
-  }
-  if(watchdog>=IMU_FRAME_SIZE_BYTES_DEFAULT)
-    return ERROR_READ_SYNC;
+    if(watchdog>=IMU_FRAME_SIZE_BYTES_DEFAULT)
+	return ERROR_READ_SYNC;
 
-  // At this point we shpoul
+    // At this point we should be ready to read the frame
+    // init char already read
+
+    // Get count
+
+    watchdog = 0;
+    while(watchdog < READ_RETRIES){
+	retval = fread(&tmp,IMU_INIT_END_SIZE,1,imu->device);
+	if(retval == 0){
+	    perror("Read error...");
+	    return ERROR_READ_TIMEOUT;
+	}else{
+	    new_frame->count = (unsigned int) tmp;
+	    break;
+	}
+	++watchdog;
+    }
+    if(watchdog>=READ_RETRIES)
+	return ERROR_READ_TIMEOUT;
   
-  int * var; FILE * file;
-  int retval;
-  
-  byte_buff_filled = 7;
-  *var = (((*var)<<1) | ((byte_buff&0x80)==0x80));
+    // Generate timestamp
+
+    gettimeofday(new_frame->timestamp,NULL);
+
+    // Read sensors RAW data
+
+    watchdog = 0;
+    read = 0;
+    while(watchdog < READ_RETRIES){
+	retval = fread(new_frame->raw + read,IMU_BYTES_PER_SENSOR,IMU_SENSOR_COUNT,imu->device);
+	if(retval == 0){
+	    perror("Read error...");
+	    return ERROR_READ_TIMEOUT;
+	}else{
+	    read += retval;
+	    if(read == IMU_SENSOR_COUNT)
+		// done reading
+		break;
+	}
+	++watchdog;
+    }
+    if(watchdog>=READ_RETRIES)
+	return ERROR_READ_TIMEOUT;
+
+    // Now get the end char
+
+    watchdog = 0;
+    while(watchdog < READ_RETRIES){
+	retval = fread(&tmp,IMU_INIT_END_SIZE,1,imu->device);
+	if(retval == 0){
+	    perror("Read error...");
+	    return ERROR_READ_TIMEOUT;
+	}else{
+	    if(tmp == IMU_FRAME_END_CHAR)
+		break;
+	    else
+		return ERROR_READ_SYNC;
+	}
+	++watchdog;
+    }
+    if(watchdog>=READ_RETRIES)
+	return ERROR_READ_TIMEOUT;
+
+
+    // Everything went ok
+
+    imu->frames_sampled += 1;
+    return ERROR_OK;
 }
 
-/** 
+/**
+ * Convert data read from gyro to rad/s
  * 
+ * Gyro outputs ~1.65v for 0deg/sec, then this goes through a
+ * 10bit ADC on the Atmega which compares 0-3.3v.
+ * The data received is the result of the ADC.
  * 
  * @param imu 
- * @param gyro_data Raw data from IMU
+ * @param frame Contains RAW data from IMU
  * @param gyro_reading Rate in rad/sec
  * 
  * @return error code
  */
-static int imu_gyro_read(struct imu * imu, unsigned char * gyro_data, double * gyro_reading){
-  //TODO
+static int imu_gyro_read(struct imu * imu, struct frame * frame, double * gyro_reading){
+    int retval = ERROR_OK, i;
+    for(i = 0; i<IMU_GYROS; ++i){
+	gyro_reading[i] = ((double) frame->raw[IMU_ACCS + i]) - imu->null_estimates->xyzrpy[IMU_ACCS + i];
+	gyro_reading[i] = grad2rad(gyro_reading[i]);
+	retval = gyro_scale_adjust(imu,gyro_reading+i);
+	err_propagate(retval);
+    }
+    return retval;
 }
 
 /** 
@@ -76,23 +165,40 @@ static int imu_gyro_read(struct imu * imu, unsigned char * gyro_data, double * g
  * 
  * @return error code
  */
-static int imu_acc_read(struct imu * imu, unsigned char * acc_data, double * acc_reading){
-  //TODO
+static int imu_acc_read(struct imu * imu, struct frame * frame, double * acc_reading){
+    int retval = ERROR_OK, i;
+    for(i = 0; i<IMU_ACCS; ++i){
+	acc_reading[i] = ((double) frame->raw[i]) - imu->null_estimates->xyzrpy[i];
+	acc_reading[i] = grad2rad(acc_reading[i]);
+	retval = acc_scale_adjust(imu,acc_reading+i);
+	err_propagate(retval);
+    }
+    return retval;
 }
 
-static int imu_parse_frame(struct imu_frame * frame, double * xyzrpy){
-  // Parse a frame, pull out acc and gyro readings.
-  //TODO
-//            acc_x_str = words[2]
-//            acc_y_str = words[3]
-//            acc_z_str = words[4]
-//            pitch_str = words[5]
-//            roll_str = words[6]
-//            yaw_str = words[7]            
-//            pitch_sensor = gyro_read(pitch_str,pitch_zero)
-//            roll_sensor = gyro_read(roll_str,roll_zero)
-//            yaw_sensor = gyro_read(yaw_str,yaw_zero)
-//            acc_x_sensor = acc_read(float(acc_x_str),acc_x_zero,sens)
-//            acc_y_sensor = acc_read(float(acc_y_str),acc_y_zero,sens)
-//            acc_z_sensor = acc_read(float(acc_z_str),acc_z_zero,sens)
+/** 
+ * Calculates value of the sensor reading from the RAW data, using current imu calibration.
+ * 
+ * @param imu Current imu status
+ * @param xyzrpy Answer is returned here
+ * 
+ * @return error code
+ */
+static int imu_calc_sensors(struct imu * imu, double * xyzrpy){
+    int retval = ERROR_OK, iter;
+
+    // Get ACC readings
+
+    for(iter = 0; iter < IMU_ACCS; ++iter){
+	retval = imu_acc_read(xyzrpy[iter], frame->raw[iter]);
+	err_propagate(retval);
+    }
+	
+    // Get gyro reading
+
+    for(;iter<IMU_SENSOR_COUNT;+iter){
+	retval = imu_gyro_read(xyzrpy[iter], frame->raw[iter]);
+	err_propagate(retval);
+    }
+    return retval;
 }

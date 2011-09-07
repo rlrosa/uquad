@@ -13,44 +13,58 @@
 
 #define IMU_FRAME_INIT_CHAR 'A'
 #define IMU_FRAME_END_CHAR 'Z'
+#define IMU_INIT_END_SIZE 2
 #define IMU_FRAME_SIZE_BYTES_DEFAULT 16 // 4 bytes init/end chars, 2 bytes per sensor reading
 #define IMU_FRAME_SAMPLE_AVG_COUNT 16
+#define IMU_SAMPLE_COUNT_SIZE 2
+#define IMU_BYTES_PER_SENSOR 2
 #define IMU_SENSOR_COUNT 6
+#define IMU_ACCS 3
+#define IMU_GYROS 3
+#define IMU_SENS_OPT_COUNT 4
 #define IMU_GRAVITY 9.81
 
-struct timeval detail_time;
-gettimeofday(&detail_time,NULL);
-printf("%d %d",
-detail_time.tv_usec /1000,  /* milliseconds */
-detail_time.tv_usec); /* microseconds */
+#define READ_RETRIES 16
+
+#define err_propagate(retval) if(retval!=ERROR_OK)return retval;
+
+// Example timestamp usage
+//struct timeval detail_time;
+//gettimeofday(&detail_time,NULL);
+//printf("%d %d",
+//detail_time.tv_usec /1000,  /* milliseconds */
+//detail_time.tv_usec); /* microseconds */
 
 struct imu_frame{
-  unsigned char frame[IMU_FRAME_SIZE_BYTES_DEFAULT];
+    unsigned char raw[IMU_FRAME_SIZE_BYTES_DEFAULT];
+    unsigned int count;
+    struct timeval timestamp;
 };
 
+/// Based on ADC counts, no units
 struct imu_null_estimates{
-  unsigned int xyzrpy[IMU_SENSOR_COUNT];
-  struct timeval timestamp;
+    double xyzrpy[IMU_SENSOR_COUNT];
+    struct timeval timestamp;
 }
 
 struct imu_settings{
-  // sampling frequency
-  unsigned int fs;
-  // sampling period
-  double T;
-  // sens index
-  unsigned int gyro_sens;
-  // 
-  unsigned int frame_width_bytes;
+    // sampling frequency
+    unsigned int fs;
+    // sampling period
+    double T;
+    // sens index
+    unsigned int gyro_sens;
+    // 
+    unsigned int frame_width_bytes;
 };
     
 struct imu{
-  struct imu_settings settings;
-  struct imu_null_estimates null_estimates;
-  struct imu_frame frame_buffer[IMU_FRAME_SAMPLE_AVG_COUNT];
-  struct timeval frame_avg_init,frame_avg_end;
-  int frames_sampled = 0;
-  FILE * device;
+    struct imu_settings settings;
+    struct imu_null_estimates null_estimates;
+    struct imu_frame frame_buffer[IMU_FRAME_SAMPLE_AVG_COUNT];
+    struct timeval frame_avg_init,frame_avg_end;
+    int frames_sampled = 0;
+    FILE * device;
 } imu;
 
 int imu_comm_connect(struct imu * imu, const char * device);
