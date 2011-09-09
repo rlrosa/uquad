@@ -195,14 +195,13 @@ dL = subs(dL,diff(wq3),dwq3);
 % dL = subs(dL,diff(w2),dw2);
 % dL = subs(dL,diff(w3),dw3);
 % dL = subs(dL,diff(w4),dw4);
+
 %Momentos externos valen
 M_q = l*[-T1+T3; T2-T4;0];
 
-%Momentos externos en el sistema absoludo
-M_m=m_T_q*M_q;
 %esto arma un sistema de ecuaciones de 3*3. La joda es despejar diff(theta,
 %t, t), diff(phi, t, t) y diff(psis, t, t)
-caard2 = simple(dL-M_m);
+caard2 = simple(dL-M_q);
 
 
 

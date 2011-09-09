@@ -22,6 +22,9 @@ theta = sym('theta(t)');
 phi = sym('phi(t)');
 psis = sym('psis(t)'); %esto no es un typo, es xq psi es reservada
 
+wq1 = sym('wq1(t)');
+wq2 = sym('wq2(t)');
+wq3 = sym('wq3(t)');
 %Masa del quad
 M = sym('M');
 
@@ -135,7 +138,9 @@ F=simple([0 ; 0; -g] + m_T_q*f);
 %Los momentos de inercia están en el sistema relativo
 
 %paso w al sistema relativo
-w_sist_quad=q_T_m*w;
+%w_sist_quad=q_T_m*w;
+
+w_sist_quad=[wq1; wq2;wq3];
 
 %L escrito en el sistema relativo
 L = simple(Iq+4*Im)*w_sist_quad + Im*(w1+w2+w3+w4)*[0; 0; 1]; 
