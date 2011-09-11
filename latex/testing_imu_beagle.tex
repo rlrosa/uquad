@@ -24,7 +24,7 @@ Se utilizó un driver hecho por \href{https://github.com/scottellis/omap3-pwm}{Sc
 
 Solamente 3 de los 4 \textit{PWM} están mapeados a pines accesibles en el \textit{BB}. Para tener acceso al cuarto \textit{PWM} es necesario modificar la configuración de muxing en el \textit{omap}. Habilitar el cuarto \textit{PWM} trae al menos dos problemas:
 \begin{enumerate}
-\item Queda inutilizable el integrado \textit{U14}, que es un \textit{Hi-Speed USB 2.0 Transceiver}.
+\item Queda inutilizable el integrado \verb+U14+, que es un \textit{Hi-Speed USB 2.0 Transceiver}.
 \item Hace falta conectar un cable a un punto en la mitad del \textit{BB} para ver la señal de \textit{PWM}.
 \end{enumerate}
 
@@ -37,7 +37,7 @@ Alternativas bajo estudio:
 \begin{itemize}
 \item Mapear el cuarto \textit{PWM} a otro pin del \textit{omap}:
   \begin{itemize}
-  \item Esto permitiría utilizar el \textit{U14}.
+  \item Esto permitiría utilizar el \verb+U14+.
   \item Seguramente se perdería alguna otra cosa.
   \end{itemize}
 \item Utilizar alguno de los 6 \textit{PWM} disponibles en el microcontrolador a bordo del \textit{IMU}:
@@ -49,7 +49,7 @@ Alternativas bajo estudio:
     \item Sale del \textit{BB} y va al \textit{IMU}.
     \item El \textit{IMU} configura el \textit{PWM} adecuadamente.
     \item La señal de \textit{PWM} va al \textit{ESC} correspondiente.
-    \item El \textit{ESC} actua sobre el motor correspondiente.
+    \item El \textit{ESC} actúa sobre el motor correspondiente.
     \end{enumerate}
   \end{itemize}
 \item Utilizar una tercer placa para generar los \textit{PWM}.
@@ -60,6 +60,65 @@ Alternativas bajo estudio:
 \section{Testeo del \textit{IMU}}
 \label{sec:testeo_imu}
 
-%TODO 
+%TODO replace IMU with textit
+
+El microcontrolador a bordo del \textit{IMU} tiene un \textit{ADC} de 10 bits, a cuya entrada están conectadas, mediante muxing, las salidas de los sensores: 3 giróscopos y 3 acelerómetros\footnote{En realidad es 1 acelerómetro de 3 ejes.}.
+
+El software que corre en el el \textit{IMU} permite configurar qué sensores se desean leer, y la frecuencia con la que se debe realizar el muestreo. Las lecturas se transmiten mediante una \textit{UART}. Esta información se puede ver en una PC utilizando un adaptador \textit{USB-serie}.
+
+Para verificar el correcto funcionamiento del \textit{IMU} se partió de \cite{bib:jj_9dof}, un software escrito para el \href{http://www.sparkfun.com/products/9623}{Razor 9DOF}, y se lo modificó para adecuarlo al \textit{IMU}.
+
+\subsection{Software de prueba}
+\label{sec:testeo_imu_software_de_prueba}
+Pseudocódigo:
+\begin{framed}
+\begin{enumerate}
+\item Conectar a al puerto serie.
+\item Inicializar un display que representa la estimación de la posición en la cual se encuentra el \textit{IMU}.
+\item Correr dos threads:
+  \begin{enumerate}
+  \item Thread 1: Espera input del usuario. Se usa para cambiar la frecuencia de muestreo o la sensibilidad de los sensores.
+  \item Thread 2: Lee datos del puerto serie y luego:
+    \begin{itemize}
+    \item Imprime a la consola.
+    \item Escribe a un log.
+    \item Actualiza el display.
+    \end{itemize}
+  \end{enumerate}
+\end{enumerate}
+\end{framed}
+
+\begin{figure}[!ht]
+\centering
+	\includegraphics[width=0.7\textwidth]{./pics_testing_imu_beagle/imu_display.png}
+	\caption{Programa para ver datos del \textit{IMU}.}
+	\label{fig:imu_display}
+\end{figure}
+
+El programa permite elegir tres formas de manipular los datos de los sensores:
+\begin{itemize}
+\item Solamente giróscopos $\rightarrow$ \textit{Drift}
+\item Solamente acelerómetros $\rightarrow$ Información ruidosa
+\item Combinar giróscopos y acelerómetros $\rightarrow$ \textit{Kalman}
+\end{itemize}
+
+Se hace una calibración sencilla para tomar en cuenta el que el cero (``\textit{null}'') de los sensores no se corresponde exactamente con lectura cero.
+
+El programa está hecho en python, su única función es mostrar que el \textit{IMU} funciona correctamente. Un software similar correrá en el BB, pero será escrito en \textit{C}.
+
+\subsection{Tareas pendientes}
+\label{sec:testeo_imu_tareas_pendientes}
+
+Si se desea obtener información más ``limpia'' de los sensores es necesario mejorar la calibración.
+
+Otro punto donde se podría mejorar es en el \textit{ADC}. La respuesta del \textit{ADC} se asume lineal, pero no lo es.
+
+Si la performance de los sensores no resulta adecuada, se podría:
+\begin{itemize}
+\item Hacer una calibración que tome en cuenta no solamente la estimación del \textit{null}, sino también la ganancia y las no linealidades del sensor.
+\item Caracterizar la no linealidad del \textit{ADC} y compensarla.
+\end{itemize}
+
+\newpage
 
 \end{document}
