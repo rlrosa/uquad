@@ -1,0 +1,65 @@
+\documentclass[main]{subfiles}
+\begin{document}
+
+\chapter{Testeo del Beagleboard y el \textit{IMU}}
+
+Durante la elección del hardware se buscó información sobre el \textit{Beagleboard} (de ahora en más ``\textit{\textit{BB}}'') y sobre el \textit{Atomic IMU} (de ahora en más ``\textit{IMU}''), y se concluyó que serían suficientes para los requerimientos del proyecto. En este capítulo se explican las pruebas realizadas sobre ambas placas. Los objetivos de dichas pruebas fueron:
+
+\begin{itemize}
+\item Verificar el correcto funcionamiento de las placas.
+\item Confirmar que cumplen con los requerimientos del proyecto.
+\end{itemize}
+
+\section{Testeo del Beagleboard}
+\label{sec:testeo_del_beagleboard}
+
+El microcontrolador a bordo del \textit{BB} (de ahora en más ``\textit{omap}'') es suficiente para manejar el loop de control, y tiene un \textit{DSP}, por lo que la capacidad de procesamiento no debería ser un problema. La evaluación de dicha capacidad se hará más adelante, cuando se cuente con software adecuado. Por ahora solamente se analizó la disponibilidad de señales \textit{PWM}.
+
+\subsection{\textit{PWM}}
+\label{sec:beagleboard_pwm}
+
+El \textit{omap} cuenta con 4 módulo para \textit{PWM} implementados en hardware. Para poder utilizarlos es necesario deshabilitar una función de ahorro de energía en el kernel. Se utilizó \href{http://www.openembedded.org}{OpenEmbedded} para compilar un kernel adecuado.
+
+Se utilizó un driver hecho por \href{https://github.com/scottellis/omap3-pwm}{Scottellis} para manejar el acceso a registros en el \textit{omap}. Puede que no sea necesario manejar los \textit{PWM} desde el kernel, ya que la implementación está en hardware, por lo que se está considerando pasa a usar un programa en \textit{user space}, evitando los riesgos de trabajar a bajo nivel. Un error a nivel de kernel podría dejar deshabilitar el \textit{BB}, lo cual llevaría inevitablemente a perder el control del cuadricóptero.
+
+Solamente 3 de los 4 \textit{PWM} están mapeados a pines accesibles en el \textit{BB}. Para tener acceso al cuarto \textit{PWM} es necesario modificar la configuración de muxing en el \textit{omap}. Habilitar el cuarto \textit{PWM} trae al menos dos problemas:
+\begin{enumerate}
+\item Queda inutilizable el integrado \textit{U14}, que es un \textit{Hi-Speed USB 2.0 Transceiver}.
+\item Hace falta conectar un cable a un punto en la mitad del \textit{BB} para ver la señal de \textit{PWM}.
+\end{enumerate}
+
+Se encontraron comentarios en foros sobre posibles problemas al utilizar los \textit{PWM} en conjunto con el \textit{DSP}, pero no se encontró información que confirmara esto en las hojas de datos, y todavía no se cuenta con software adecuado para hacer pruebas.
+
+Se determinó que es posible utilizar el \textit{BB} para generar 4 señales \textit{PWM}, pero con un costo que puede ser importante. Todavía se está analizando si es posible mapear el cuarto \textit{PWM} a otro pin del \textit{omap}. Esto
+
+Alternativas bajo estudio:
+
+\begin{itemize}
+\item Mapear el cuarto \textit{PWM} a otro pin del \textit{omap}:
+  \begin{itemize}
+  \item Esto permitiría utilizar el \textit{U14}.
+  \item Seguramente se perdería alguna otra cosa.
+  \end{itemize}
+\item Utilizar alguno de los 6 \textit{PWM} disponibles en el microcontrolador a bordo del \textit{IMU}:
+  \begin{itemize}
+  \item Permitiría utilizar todas las funcionalidades del \textit{BB}.
+  \item El \textit{IMU} puede quedar sobrecargado, resultando en pérdidas de datos de los sensores.
+  \item El tiempo que tarda en llegar una orden emitida por el loop de control a su destino puede ser un problema Dicha orden tiene que seguir el siguiente camino:
+    \begin{enumerate}
+    \item Sale del \textit{BB} y va al \textit{IMU}.
+    \item El \textit{IMU} configura el \textit{PWM} adecuadamente.
+    \item La señal de \textit{PWM} va al \textit{ESC} correspondiente.
+    \item El \textit{ESC} actua sobre el motor correspondiente.
+    \end{enumerate}
+  \end{itemize}
+\item Utilizar una tercer placa para generar los \textit{PWM}.
+\end{itemize}
+
+\newpage
+
+\section{Testeo del \textit{IMU}}
+\label{sec:testeo_imu}
+
+%TODO 
+
+\end{document}
