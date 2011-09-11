@@ -52,6 +52,8 @@ T4= sym('T4');
 
 
 %Momento de inercia del quad
+syms I_xxq I_yyq I_zzq I_xxm I_yym I_zzm
+
 Iq = [I_xxq 0 0; 0 I_yyq 0; 0 0 I_zzq];
 Im = [I_xxm 0 0; 0 I_yym 0; 0 0 I_zzm];
 
@@ -109,7 +111,10 @@ vq = [vq1;vq2;vq3];
 
 equ4 = [vq1;vq2;vq3]- R_psis*R_phi*R_theta*[dx; dy; dz];
 
-S4 =solve(equ4(1),equ4(2),equ4(3),vq1,vq2,vq3);
+S4 =solve(equ4(1),equ4(2),equ4(3),dx,dy,dz);
+S4.dx=simple(S4.dx);
+S4.dy=simple(S4.dy);
+S4.dz=simple(S4.dz);
 
 
 %%%%%%%%%%%%%%%% Primera cardinal %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
