@@ -3,7 +3,7 @@
 \begin{document}
 
 
-\part{Modelo Físico}
+\chapter{Modelo Físico}
 
 Resulta imprescindible para controlar el quadcopter comprender cabalmente su comportamiento. Con esta óptica, lo que se busca es obtener el modelo más sencillo que sea capaz de representar adecuadamente al sistema. El objetivo de esta sección es el de realizar el desarrollo de dicho modelo. La forma de modelar el sistema elegida es un Modelo de Variables de Estado, de ahora en más MVE.
 
@@ -62,7 +62,7 @@ $H_I^1=\left(\begin{array}{ccc}
 
 
 \end{small}  
-La transformacion de las coordenadas del sistema inercial al sistema solidario al quadcopter se obtiene realizando el producto de las tres matrices de rotacion definidas.\\
+La transformación de las coordenadas del sistema inercial al sistema solidario al quadcopter se obtiene realizando el producto de las tres matrices de rotación definidas.\\
 
 \begin{scriptsize}
 $H_I^q=H_I^1.H_1^2.H_2^q=\left(\begin{array}{ccc}
@@ -72,7 +72,7 @@ $H_I^q=H_I^1.H_1^2.H_2^q=\left(\begin{array}{ccc}
 \end{array} \right)$
 \end{scriptsize}
  
-Adem?as de la relacion entre las coordenadas de un sistema y del otro, es útil conocer la relacion que existe entre la velocidad angular del sistema y las derivadas de los angulos de euler. 
+Adem?as de la relación entre las coordenadas de un sistema y del otro, es útil conocer la relación que existe entre la velocidad angular del sistema y las derivadas de los angulos de euler. 
 Por como fue construido el sistema de referencia solidario al quadcopter, se deduce trivialmente que la velocidad angular del mismo se puede escribir como:\\
 
 $\vec{\omega}=w_{q1}\vec{i_q}+w_{q2}\vec{j_q}+w_{q3}\vec{k_q}=\dot{\theta}\vec{k}+\dot{\phi}\vec{j_1}+\dot{\psi}\vec{i_2}$\\
@@ -86,7 +86,7 @@ $\vec{\omega}=w_{q1}\vec{i_q}+w_{q2}\vec{j_q}+w_{q3}\vec{k_q}= (\dot{\psi}  +   
 
 \end{footnotesize}
 
-De esta ecuaci?on se obtienen tres relaciones entre las velocidades angulares respecto de cada eje principal del sistema de coordenadas solidario al quadcopter con las derivadas de los angulos de euler. Podemos re escribir dicha ecuación de la siguiente forma: \\
+De esta ecuación se obtienen tres relaciones entre las velocidades angulares respecto de cada eje principal del sistema de coordenadas solidario al quadcopter con las derivadas de los ángulos de euler. Podemos re escribir dicha ecuación de la siguiente forma: \\
 
 $\left(\begin{array}{c}
 \dot{\psi}\\
@@ -98,22 +98,45 @@ $\left(\begin{array}{c}
 \omega_{q3} \frac{\cos\psi}{\cos\phi}  + \omega_{q2}\frac{\sin\psi}{\cos\phi} \\
 \end{array}\right)$\\
 
-Detendremos en este punto el analisis cinematico para considerar la dinamica del mismo. Para resolver el problema de la dinamica del sistema se consideran las ecuaciones cardinales.
+De la misma forma deduciremos la relación que existe entre la velocidad del sistema expresada en el marco de referencia inercial con la velocidad expresada en el sistema de referencia solidario al quadcopter. Lo que tenemos es que: 
+
+$\dot{x}\vec{i}+\dot{y}\vec{j}+\dot{z}\vec{k} = v1\vec{i_q}+v2\vec{j_q}+v3\vec{k_q}$\\
+Para pasar del un sistema de referencia al otro alcanza con multiplicar por la matriz de cambio de base definida previamente. Operando se obtiene la siguiente relación entre las magnitudes de interés.
+
+$\left( \begin{array}{c}
+
+v_{q1}\\
+v_{q2}\\
+v_{q3}\\
+\end{array}\right) = \left( \begin{array}{c}
+\dot{z} \sin \phi + \dot{x} \cos \phi \cos \theta + \dot{y} \cos \phi \sin \theta \\
+\dot{y}(\cos \phi \cos \theta - \sin \phi \sin \theta \sin \psi) - \dot{x}) \cos \psi \sin \theta + \cos \theta \sin \phi \sin \psi) + \dot{z} \cos \phi \sin \psi \\
+\dot{x}(\sin \phi \sin \theta - \cos \psi \cos \theta \sin \phi) - \dot{y}(\cos \theta \sin \psi + \cos \psi \sin \phi \sin \theta) + \dot{z} \cos \phi \cos \psi \\
+\end{array} \right)  $   
+ 
+
+Detendremos en este punto el análisis cinemático para considerar la dinámica del mismo. Para resolver el problema de la dinámica del sistema se consideran las ecuaciones cardinales.
 
 \subsection{Primera Cardinal}
  
-La primer cardinal indica que en un sistema inercial la suma de las fuerzas externas a un objeto es igual a su masa total por su aceleracion. Esto se puede escribir:
+La primer cardinal indica que en un sistema inercial la suma de las fuerzas externas a un objeto es igual a su masa total por su aceleración. Esto se puede escribir:
 \begin{large}
 \\$\sum \vec{F_{ext}} = M\vec{a}$\\
 \end{large}
 
 
-El vector aceleracion no es otra cosa que la derivada segunda del vector posici?on del centro de masa. Por lo tanto se tiene que $\vec{a} = \ddot{x}\vec{i}+\ddot{y}\vec{j}+\ddot{z}\vec{k}$. Las fuerzas que actuan sobre el sistema son los empujes de cada turbina y el peso. Los empujes ($T_i$ con $i=1..4$) son en el sentido de $\vec{k_q}$ mientras que el peso es en el sentido de $\vec{k}$. Para obtener el empuje de los motores en el sistema $S_I$ alcanza con realizar el cambio de base del sistema $S_q$ al sistema inercial. El empuje de los motores puede escribirse como:
+El vector aceleración se puede obtener derivando la velocidad. Para realizar la derivada de un vector expresado en un sistema móvil puede utilizarse la siguiente formula: 
+
+$\frac{d\vec{A}}{dt} =\frac{d\prime\vec{A}}{dt}+\vec{\Omega}\times\vec{A} $ 
+
+Operando se obtiene que: 
+
+$\vec{a} = (\dot{v_{q1}}+v_{q3} \omega_{q2} - v_{q2} \omega_{q3} )\vec{i_q} + (\dot{v_{q2}}+v_{q1} \omega_{q3} - v_{q3} \omega_{q1} )\vec{j_q}+(\dot{v_{q3}}+v_{q2} \omega_{q1} - v_{q1} \omega_{q2} )\vec{k_q} $. Las fuerzas que actúan sobre el sistema son los empujes de cada turbina y el peso. Los empujes ($T_i$ con $i=1..4$) son en el sentido de $\vec{k_q}$ mientras que el peso es en el sentido de $\vec{k}$. Para obtener el peso en el sistema $S_q$ alcanza con realizar el cambio de base del sistema $S_I$ al sistema solidario al quadcopter. El empuje de los motores puede escribirse como:
 
 \begin{large}
 
 
-$\sum_{i=1}^{i=4}T_i=\sum_{i=1}^{i=4}T_iH_I^q\left(\begin{array}{c}
+$\sum_{i=1}^{i=4} \vec{T_i} =\sum_{i=1}^{i=4}T_i\left(\begin{array}{c}
 0\\
 0\\
 1\\
@@ -124,19 +147,24 @@ Operando, se puede reescribir la primer cardinal de la siguiente forma:\\
 
 \begin{large}
 
-$\left(\begin{array}{c}\ddot{x}\\
-\ddot{y}\\
-\ddot{z}\\
-\end{array} \right) = \frac{1}{M}\left[\left(\begin{array}{c}
-\sin\psi \sin\theta - \cos\psi \cos\theta \sin\phi	\\
--\cos\theta \sin\psi - \cos\psi \sin\phi \sin\theta\\
-\cos\phi \cos\psi\\
+$\left(\begin{array}{c}\dot{v_{q1}}\\
+\dot{v_{q2}}\\
+\dot{v_{q3}}\\
+\end{array} \right) = \left(\begin{array}{c}
+v_{q2} \omega_{q3} - v_{q3} \omega_{q2}	\\
+v_{q3} \omega_{q1} - v_{q1} \omega_{q3}\\
+v_{q1} \omega_{q2} - v_{q2} \omega_{q1}\\
 \end{array}\right) - g\left(\begin{array}{c}
-0\\
-0\\
-1\\
+\sin \phi\\
+\cos \phi \sin \psi\\
+\cos \phi \ cos \psi\\
 
-\end{array}\right)\right]$
+\end{array}\right)+ \left(\begin{array}{c}
+0\\
+0\\
+1  
+
+\end{array} \right)\frac{1}{M}\sum_{i=1}^4 T_i $
 
 
 \end{large}
