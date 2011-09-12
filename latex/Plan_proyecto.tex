@@ -1,0 +1,697 @@
+\documentclass[spanish,12pt,a4paper,titlepage]{article}
+\usepackage[latin1]{inputenc}
+\usepackage{graphicx}
+\usepackage{subfig}
+\usepackage{wrapfig}
+\usepackage{multirow}
+\usepackage{caption}
+\usepackage{babel}
+\usepackage[dvips]{hyperref}
+\usepackage{amssymb}
+\usepackage{listings}
+\usepackage{epsfig}
+
+\setlength{\topmargin}{-1.5cm}
+\setlength{\textheight}{25cm}
+\setlength{\oddsidemargin}{0.3cm} 
+\setlength{\textwidth}{15cm}
+\setlength{\columnsep}{0cm}
+
+\begin{document}
+
+\begin{center}
+
+\vspace*{100pt}
+
+\begin{huge}Proyecto de Fin de Estudios en la Carrera de Ingenierí­a Eléctrica\\
+\emph{}
+\\
+\end{huge}
+\vspace*{50pt}
+\begin{Large}Implementación de un UAV con arquitectura de quadcopter\end{Large}
+\end{center}
+
+\begin{flushright}
+\vspace*{250pt}
+\begin{tabular}{ll}
+
+Autores:&Manuel López\\
+		&Santiago Paternain\\
+		&Rodrigo Rosa\\
+		&Matí­as Talianián\\
+\\
+Tutor:		&Rafael Canetti\\
+\\
+Fecha:		&15/05/11\\
+\end{tabular}
+\end{flushright}
+
+\newpage
+
+\section{Resumen}
+\begin{itemize}
+ \item Estudiante: Manuel López
+    \subitem CI: 4.086.135-1
+    \subitem e-mail: manololopezrad@gmail.com
+\item Estudiante: Santiago Paternain
+    \subitem CI: 4.131.180-2
+    \subitem e-mail: spaternain@gmail.com
+\item Estudiante: Rodrigo Rosa
+    \subitem CI: 3.942.087-5
+    \subitem e-mail: rodrigorosa.lg@gmail.com
+\item Estudiante: Matías Tailanián
+    \subitem CI: 4.555.937-1
+    \subitem e-mail: matias@tailanian.com
+\item Cliente: Rafael Canetti
+\item Tutor: Rafael Canetti
+\item Fecha prevista de finalización: 30 de mayo de 2012 % TODO
+\item Total de horas a realizar previstas por el grupo de Proyecto: 4000		
+\item Primer hito:
+    \subitem Fecha:15/09/11
+    \subitem Descripción: Instrumentación y comunicación completa. Adelanto del modelo físico del quadcopter.
+\item Segundo hito:
+    \subitem Fecha:15/02/12
+    \subitem Descripción: Modelado físico completo y estudio de vuelo. Algoritmos de control y generador de ruta. Software de simulación y resultado de las simulaciones.
+\end{itemize}
+
+\newpage
+\section{Descripción}
+Diseñar e integrar un sistema de control que permita el vuelo autónomo de un dispositivo comercial con arquitectura de quadcopter. 
+Se entiende por vuelo autónomo la capacidad de mantener una posición y altitud determinada o la de seguir una ruta programable. 
+Se deberá integrar la instrumentación adecuada para obtener medidas de variables físicas fundamentales para realizar el control.\\
+\\
+Se plantean varias aplicaciones en diversas áreas, entre ellas la agropecuaria (seguimiento de ganado, monitoreo de cultivos), cinematográfica (tomas aéreas), etc.\\
+\\
+Existen antecedentes de proyectos basados en el control de dispositivos voladores pero de características distintas. 
+En este caso se trata de un equipo de dimensiones y requerimientos espaciales de escala de laboratorio. 
+El control de vuelo resulta más sencillo ya que no se deberán realizar modificaciones sobre la superficie de vuelo, sino que se actuará directamente 
+sobre los motores.
+
+\section{Objetivo}
+Lograr que el quadcopter sea capaz de realizar el seguimiento de una ruta en forma autónoma en base a información obtenida mediante la instrumentación, obteniendo así un dispositivo apto para una amplia gama de aplicaciones en diversas áreas.\\
+\\
+El dispositivo será capaz de realizar maniobras simples y seguir una ruta de vuelo preestablecida sin desviarse de la misma en un rango de un metro.\\	
+El peso total de la electrónica adicional debe ser tal que el dispositivo no solamente sea capaz de volar con autonomía cargando la misma, sino que además cuente con una capacidad de carga útil disponible de al menos doscientos gramos.\\
+EL dispositivo tendrá una autonomí­a de vuelo de al menos diez minutos.\\
+El costo total del dispositivo no superará los 1.800 dolares.\\
+
+\section{Actores, Supuestos, Restricciones}
+\subsection*{Actores}
+\begin{itemize}
+  \item Tutor
+  \item Equipo de proyecto.
+  \item Casas de venta de vehí­culos radio-controlados.
+  \item Casas de venta de electrónica.
+  \item Aduana.
+\end{itemize}
+
+\subsection*{Supuestos}
+\begin{itemize}
+  \item Todo elemento fabricado por terceros será entregado en tiempo y forma. 
+  \item Los mismos también cumplirán con las especificaciones declaradas en sus manuales. 	
+  \item A efectos de construir el cronograma, se asume que toda importación a realizar no tendrá retrasos ni contratiempos significativos en el traslado o despacho de aduana. Por ende no superara los 3 meses. 
+  \item Se podrán reponer en tiempo y forma aquellos componentes que por fallas así lo requieran. 
+\end{itemize}
+
+\subsection*{Restricciones}
+\begin{itemize}
+  \item Se dispone de un monto determinado de dinero para llevar a cabo el proyecto.
+  \item La instrumentación debe ser tal que cumpla los requerimientos necesarios sin exceder la máxima carga que puede soportar el Quadcopter.
+  \item Carencia de información acerca de la estructura interna del dispositivo comercial con arquitectura de quadcopter. 
+\end{itemize}
+
+\section{Especificación Funcional del Producto}
+Partiendo de un quadcopter radiocontrolado de uso comercial se diseñará un dispositivo autónomo.\\
+Para ello se deberán incorporar elementos de instrumentación:
+
+\begin{itemize}
+\item Acelerómetro de tres ejes
+\item Giróscopo de tres ejes
+\item GPS
+\end{itemize}
+
+La instrumentación se comunicará directamente a un PCB que implemente el control, montado en el quadcopter.\\
+Dicho PCB cuenta con diversos elementos para implementar el control, entre ellos:
+
+\begin{itemize}
+  \item Microprocesador
+  \item DSP
+  \item Sistema de almacenamiento
+  \item Puertos de entrada y salida (tanto analógicos como digitales)
+\end{itemize}
+\emph{}
+\\
+El control actuará mediante PWM sobre los motores.\\
+\\
+La comunicación entre la instrumentación y el controlador será a través de un puerto serie.\\
+\\
+Se implementará un enlace inalámbrico entre el dispositivo y un PC con el fin de que éste último posea cierta influencia sobre el control y permita, además, programar el microprocesador sin necesidad de desmontar el dispositivo.\\
+\\
+
+Un diagrama de bloques del sistema completo puede apreciarse en la figura \ref{fig:diagrama}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.8\textwidth]{./pics_plan/Diagrama}
+	\caption{Diagrama de bloques del sistema}
+	\label{fig:diagrama}
+\end{figure}
+
+\section{Alcance del Proyecto}
+
+En el presente proyecto no se contempla el diseño o construcción del quadcopter. Se partirá de un dispositivo radio controlado ya funcional.
+
+\begin{itemize}
+\item Entregables intermedios: Documentación del proceso de investigación para la selección del dispositivo (lista de prestaciones, cuadros comparativos, manuales, etc). Presentación del dispositivo adquirido.
+\end{itemize}
+
+Se prevee la adquisición de un PCB conteniendo la instrumentación necesaria, así como un PCB que se encargará de computar los algoritmos de control, es decir, tampoco se contempla la construcción de dicha electrónica, solamente su análisis funcional y su interconexión.
+
+\begin{itemize}
+\item Entregables intermedios: Documentación del proceso de investigación para la selección de componentes (lista de prestaciones, cuadros comparativos, manuales, etc). Presentación de los componentes adquiridos.
+\end{itemize}
+
+Se programará el hardware para su correcta interacción y funcionamiento.
+
+\begin{itemize}
+\item Entregables intermedios: Documentación del proceso de diseño e implementación del software. Código fuente.
+\end{itemize}
+
+Se diseñarán algoritmos de control para el sistema.
+
+\begin{itemize}
+\item Entregables intermedios: Documentación del proceso de diseño.
+\end{itemize}
+
+Se diseñará un software de simulación y testeo de algoritmos para probar los mismos.
+
+\begin{itemize}
+\item Entregables intermedios: Documentación del proceso de diseño e implementación del software. Código fuente. Resultados de las simulaciones y análisis de los mismos.
+\end{itemize}
+
+Los algoritmos de control se implementarán en un lenguaje apropiado y se programará el hardware del sistema para ejecutar dichos algoritmos.
+
+\begin{itemize}
+\item Entregables intermedios: Documentación del proceso de implementación del algoritmo. Código fuente. Resultados de las pruebas de vuelo.
+\end{itemize}
+
+\subsection*{Primer Hito}
+
+Para el primer Hito se presentará la documentación correspondiente a los siguientes puntos:
+
+\begin{itemize}
+
+\item
+Elección del \emph{Hardware} necesario para el desarrollo del proyecto: elección del \emph{Quadcopter}, Microprocesador, etc.
+\item
+Programación del microprocesador para comunicarse con la instrumentación y un PC.
+\item
+Caracterización de los motores.
+\item
+Adelanto del modelado físico.
+\end{itemize}
+Dicha documentación deberá ser correcta y reflejar fielmente la realidad.\\
+\\
+En este punto de control de avance se pretende haber adquirido y estudiado el \emph{Quadcopter}, así como el resto de los componentes necesarios para el desarrollo del proyecto. Se presentarán los elementos adquiridos y, en caso de considerarse conveniente, se presentará el \emph{Quadcopter} armado. Se hará una breve reseña del proceso de selección y se fundamentará la misma.\\
+\\
+También se habrá diseñado e  implementado completamente la comunicación del sistema. Para verificar este punto se testeará el correcto funcionamiento del sistema de comunicación implementado.\\
+\\
+Adicionalmente, se habrán caracterizado correctamente los motores. Se presentarán entonces resultados que avalen la caracterización realizada, comprobándose que ésta es un fiel reflejo del comportamiento real de los motores.\\
+\\
+Finalmente, es deseable haber comenzado el modelado físico del sistema, por lo cual se presentará una primera aproximación al modelo físico que representa fielmente al dispositivo completo.
+
+
+\subsection*{Segundo Hito}
+Para el segundo Hito se presentará la documentación correspondiente a los siguientes puntos:
+\begin{itemize}
+
+\item
+Modelado físico del \emph{Quadcopter} 
+\item
+Resultados del estudio del vuelo.
+\item
+Simulador.
+\item
+Generador de Rutas.
+\item
+Algoritmos de control desarrollados.
+\end{itemize}
+Dicha documentación deberá ser correcta y reflejar fielmente la realidad.\\
+\\
+En este punto de control se pretende haber modelado completamente el sistema. Se presentará una reseña del modelo obtenido, los resultados obtenidos en el estudio de vuelo y pruebas que permitan verificar que el modelo obtenido es apropiado y acorde a la realidad.\\
+\\
+Se habrá diseñado un simulador para realizar el teste de los algoritmos a implementar. Se presentarán, entonces, ejemplos de situaciones conocidas (por ejemplo caída libre) que permitan constatar la fidelidad del simulador con la realidad.\\
+\\
+Es deseable, además, haber completado el desarrollo del generador de rutas. Para verificar este punto se presentarán ejemplos de rutas generadas en el simulador.\\
+\\
+Finalmente, se habrán diseñado completamente los algoritmos de control que gobernarán el dispositivo. Se realizará, entonces, una reseña del proceso de diseño, haciéndose incapié en las hipótesis, modelos y marco teórico utilizados. Se fundamentarán dichas hipótesis y se mostrará la teoría de los algoritmos.
+
+\subsection*{Entrega Final}
+Para la Entrega Final se presentará toda la documentación presentada en los Hitos.\\
+\\
+También se presentarán los resultados de algunas pruebas de vuelo. Los mismos deberán verificar el correcto funcionamiento de los algoritmos de control.\\
+
+Se deberá poder verificar, adicionalmente, el correcto funcionamiento del dispositivo implementado (y de cada uno de sus subsistemas y componentes) al realizar maniobras simples en forma autónoma, interactuar con el medio mediante la instrumentación y/o comunicarse remotamente.\\
+\\
+Dado que se plantea la posibilidad de desarrollar algoritmos para llevar a cabo alguna funcionalidad específica (como puede ser el \emph{tracking}) como objetivo secundario, en caso de ser dicho objetivo alcanzado se presentará la documentación correspondiente en esta instancia. Las pruebas del correcto funcionamiento del mismo serán presentadas a través de resultados tanto de simulación como de pruebas de vuelo. Los mismos deberán avalar el correcto funcionamiento de la algoritmia implementada.
+
+\section{Análisis de Riesgos}
+Del análisis de las dificultades técnicas que puedan presentarse, los tiempos claves para el cumplimiento de todas las actividades y los costos del proyectos se identifican los siguientes riesgos.
+\\
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.8\textwidth]{./pics_plan/identificacion_riesgos}
+	\caption{Identificación de Riesgos}
+	\label{fig:gantt3}
+\end{figure}
+
+Se evalúa para cada riesgo la probabilidad de ocurrencia del mismo y el impacto que tendría sobre el normal desarrollo del proyecto. A partir de estas evaluaciones se conforman las siguientes tablas.
+\\
+\begin{figure} [h!]
+  \centering
+  \subfloat[Asignación de Riesgos]{\label{fig:asignacion_1}\includegraphics[width=0.4\textwidth]{./pics_plan/asignacion_riesgos.jpg}}                
+  \hspace*{20pt}  
+  \subfloat[Matriz de Riesgos]{\label{fig:matriz_1}\includegraphics[width=0.6\textwidth]{./pics_plan/matriz_riesgos.jpg}}
+%  \caption{Asignación de Riesgos y Matriz de Riesgos}
+  \label{fig:riesgos_1}
+  \caption{Evaluación de riesgos}
+\end{figure}
+
+Se intentará reducir el impacto de cada uno de los riesgos identificados y la probilidad de ocurrencia de los mismos realizando planes de respuesta para cada uno de ellos. El objetivo es el de re-ubicar los riesgos lo más lejos posible de la zona marcada en rojo. Dichas respuestas se presentan en la figura \ref{fig:respuestas}.
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.8\textwidth]{./pics_plan/plan_respuestas}
+	\caption{Plan de Respuestas}
+	\label{fig:respuestas}
+\end{figure}
+
+
+Luego de planteadas las posibles respuestas para cada riesgo considerado se vuelve a generar una tabla(Figura \ref{fig:riesgos_2}) a la realizada anteriormente. En la misma se observa que algunos de los riesgos pudieron ser desplazados. Comparando la tabla antes y después de realizar lo planes de respuestas se observa que, si bien no se ha logrado elminiar completamente los riesgos, se han reducido considerablemente.
+\begin{figure} [h!]
+  \centering
+  \subfloat[Asignación de Riesgos luego de implementado el Plan de respuestas]{\label{fig:asignacion_2}\includegraphics[width=0.4\textwidth]{./pics_plan/asignacion_riesgos_2.jpg}}                
+  \hspace*{20pt}  
+  \subfloat[Matriz de Riesgos luego de implementado el Plan de respuestas]{\label{fig:matriz_2}\includegraphics[width=0.6\textwidth]{./pics_plan/matriz_riesgos_2.jpg}}
+%  \caption{Asignación de Riesgos y Matriz de Riesgos}
+  \caption{Re-evaluación de riesgos}
+  \label{fig:riesgos_2}
+  
+\end{figure}
+\newpage
+\emph{}
+
+\newpage
+\section{Análisis de Costos}
+
+\subsection*{Costo horas hombre}
+El costo de las horas hombre es el equivalente a un grado 1 20 hs: 6556 pesos uruguayos. La duración del proyecto es de 13 meses (abril 2011-mayo 2012). Se cuenta con cuatro recursos humanos.
+
+El costo total de horas hombre es de 17.045 Dolares.
+
+
+\subsection*{Costo de hardware e importación}
+La financiación disponible es de 2000 dolares. En este rubro se deben cubrir tanto los gastos de hardware como los costos de importación. Dadas las características del proyecto se realizará una inversión fuerte en los primeros meses del proyecto. Se comprarán todos los elementos necesarios. En principio no se deberían realizar más gastos que los mencionados en esta etapa. Sin embargo se destinará un capital (10\% del gasto total) para adquirir algún componente en caso de ser necesario.
+
+\begin{figure}[h!]
+       \centering
+       \includegraphics[width=0.5\textwidth]{./pics_plan/costos}
+       \caption{Análisis de costos}
+       \label{fig:costos}
+\end{figure}
+
+
+\subsection*{Costos de Fabricación}
+En principio no corresponde. Sin embargo parte del capital de reserva puede ser utilizado en este rubro en caso de tener la necesidad de fabricar alguna pieza debido a algun imprevisto.
+ 
+\newpage
+\section{Cronograma detallado del Proyecto}
+
+
+\subsection*{WBS}
+
+\begin{itemize}
+
+\item
+Elección de la plataforma: 
+\subitem 
+Descripción: Elección del Quadcopter comercial en función de alguna de sus características, tamaño, carga util, funcionalidades adicionales.
+\subitem
+Recursos: Manuel López, Santiago Paternain, Rodrigo Rosa, Matías Tailanian
+\subitem
+Tiempo estimado: 27 días
+\subitem
+Horas hombre: 108
+\subitem
+8 de Abril al 16 de Mayo
+%\subitem
+%Entregabl
+
+\item
+Elección del microprocesador: 
+\subitem 
+Descripción: Elección del microprocesador y sus periféricos encargados de ejecutar los algoritmos de control en función de su capacidad, consumo, peso, facilidad de programación, bibliotecas disponibles, etc.
+\subitem
+Recursos: Manuel López, Santiago Paternain, Rodrigo Rosa, Matías Tailanian
+\subitem
+Tiempo estimado: 27 días
+\subitem
+Horas hombre: 108
+\subitem
+8 de Abril al 16 de Mayo
+
+\item
+Elección de la instrumentación: 
+\subitem 
+Descripción: Elección de un giróscopo y acelerómetro de tres ejes, así como un GPS en función de su precisión, peso y facilidad de comunicar con el microprocesador
+\subitem
+Recursos: Manuel López, Santiago Paternain, Rodrigo Rosa, Matías Tailanian
+\subitem
+Tiempo estimado: 27 días
+\subitem
+Horas hombre: 108
+\subitem
+8 de Abril al 16 de Mayo
+
+\item
+Elección de un medio de comunicación entre el sitema y una PC: 
+\subitem 
+Descripción: Se eligen medios de comunicación que resulten sencillos de implementar en función de las prestaciones del microprocesador
+Recursos: Manuel López, Santiago Paternain, Rodrigo Rosa, Matías Tailanian
+\subitem
+Tiempo estimado: 27 días
+\subitem
+Horas hombre: 108
+\subitem
+8 de Abril al 16 de Mayo
+
+\item
+Documentación de la Etapa 1
+\subitem 
+Descripción: Se documentará la elección de la plataforma, microprocesador, instrumentación y medio de comunicación.
+\subitem
+Recursos: Manuel López, Santiago Paternain, Rodrigo Rosa, Matías Tailanian
+\subitem
+Tiempo estimado: 15 días
+\subitem
+Horas hombre: 240
+\subitem
+16 de Mayo al 3 de Junio
+
+\item
+Caracterización de los motores
+\subitem 
+Descripción: Se determinará como responden los motores comerciales a los distintos estímulos eléctricos con el fin de conocer su funcionamiento. Esto es fundamental para poder actuar sobre los mismos.
+\subitem
+Recursos: Manuel López, Santiago Paternain
+\subitem
+Tiempo estimado: 9 días
+\subitem
+Horas hombre: 72
+\subitem
+11 de Julio al 22 de Julio
+
+\item
+Diseño de los algoritmos de control de los motores
+\subitem 
+Descripción: Se diseñaran los algoritmos que permitan lograr que los motores respondan según lo deseado en función de la caracterización previamente realizada
+\subitem
+Recursos: Manuel López, Santiago Paternain
+\subitem
+Tiempo estimado: 19 días
+\subitem
+Horas hombre: 152
+
+\subitem
+22 de Julio al 19 de Agosto
+
+\item
+Programación del microprocesador para comunicarse con la instrumentación
+\subitem 
+Descripción: Se programará la interface entre los sensores y el microprocesador así como los filtros necesarios para obtener una buena calidad en las mediciones
+\subitem
+Recursos: Rodrigo Rosa, Matías Tailanian
+\subitem
+Tiempo estimado: 20 días
+\subitem
+Horas hombre: 80
+\subitem
+11 de Julio al 5 de Agosto
+
+\item
+Implementación del software necesario para la comunicación
+\subitem 
+Descripción: Se programará el microprocesador con el fin de poder comunicarse con un PC. 
+\subitem
+Recursos:  Rodrigo Rosa, Matías Tailanian
+\subitem
+Tiempo estimado: 20 días
+\subitem
+Horas hombre: 80
+\subitem
+11 de Julio al 5 de Agosto
+
+\item
+Armado del dispositivo
+\subitem 
+Descripción: Se interconectarán las distintas partes que componen el sistema
+\subitem
+Recursos: Manuel López, Matías Tailanian
+\subitem
+Tiempo estimado: 9 días
+\subitem
+Horas hombre: 72
+\subitem
+
+\item
+Preparación de la presentación y documentación
+\subitem 
+Descripción: Se documentará todo lo realizado hasta el momento a efectos de ser presentado en el primer punto de control.
+\subitem
+Recursos: Manuel López, Santiago Paternain, Rodrigo Rosa, Matías Tailanian
+\subitem
+Tiempo estimado: 10 días
+\subitem
+Horas hombre: 80
+\subitem
+
+\item
+Modelado Físico A
+\subitem 
+Descripción: Se adelantará una parte del modelado físico del sistema.
+\subitem
+Recursos: Santiago Paternain
+\subitem
+Tiempo estimado: 11 días
+\subitem
+Horas hombre: 44
+\subitem
+
+\item
+Modelado Físico B
+\subitem 
+Descripción: Se completará el modelo físico del sistema
+\subitem
+Recursos: Manuel López, Santiago Paternain, Rodrigo Rosa, Matías Tailanian
+\subitem
+Tiempo estimado: 5 días
+\subitem
+Horas hombre: 80
+\subitem
+
+\item
+Estudio del vuelo
+\subitem 
+Descripción: Se estudiarán las restricciones que impone la forma de volar del dispositivo
+\subitem
+Recursos: Manuel López, Santiago Paternain, Rodrigo Rosa, Matías Tailanian
+\subitem
+Tiempo estimado: 11 días
+\subitem
+Horas hombre: 176
+
+\item
+Generador de Rutas
+\subitem 
+Descripción: Se diseñará el algoritmo que permite a partir de N puntos generar una ruta optima que pase por dichos puntos
+\subitem
+Recursos:  Santiago Paternain, Matías Tailanian
+\subitem
+Tiempo estimado: 30 días
+\subitem
+Horas hombre: 240
+
+
+\item
+Diseño del Simulador
+\subitem 
+Descripción: Se diseñara un simulador que permita testear si los algoritmos de control a diseñar son adecuados. Para comprobar el correcto funcionamiento del mismo se realizarán pruebas con sistemas conocidos.
+\subitem
+Recursos: Manuel López, Rodrigo Rosa
+\subitem
+Tiempo estimado: 30 días
+\subitem
+Horas hombre: 240
+
+\item
+Documentación etapa 3
+\subitem 
+Descripción: Se realizarán los documentos referidos al modelo físico del sistema, el estudio del vuelo, el generador de rutas y el simulador.
+\subitem
+Recursos: Manuel López, Santiago Paternain, Rodrigo Rosa, Matías Tailanian
+\subitem
+Tiempo estimado: 31 días
+\subitem
+Horas hombre: 248
+
+\item
+Diseño de los algoritmos de control
+\subitem 
+Descripción: Se diseñaran los algoritmos de control con el fin que el sistema pueda seguir la ruta provista por el generador de rutas
+\subitem
+Recursos: Manuel López, Santiago Paternain, Rodrigo Rosa, Matías Tailanian
+\subitem
+Tiempo estimado: 36 días
+\subitem
+Horas hombre: 288
+
+
+\item
+Simulación, testeo y debugging de algoritmos
+\subitem 
+Descripción: Se verificarán los algoritmos diseñados. Gracias al simulador se evaluará si son satisfactorios. En caso contrario Se corregirá todo lo nocesario
+\subitem
+Recursos: Manuel López, Santiago Paternain, Rodrigo Rosa, Matías Tailanian
+\subitem
+Tiempo estimado: 7 días
+\subitem
+Horas hombre: 112
+
+
+\item
+Preparación del segundo Hito
+\subitem 
+Descripción: Se documentará todo lo realizado hasta el momento.
+\subitem
+Recursos: Manuel López, Santiago Paternain, Rodrigo Rosa, Matías Tailanian
+\subitem
+Tiempo estimado: 10 días
+\subitem
+Horas hombre: 80
+
+
+
+\item
+Programación del microprocesador
+\subitem 
+Descripción: Se programaran los algoritmos diseñados y verificados en el microprocesador
+\subitem
+Recursos: Manuel López, Rodrigo Rosa
+\subitem
+Tiempo estimado: 32 días
+\subitem
+Horas hombre: 256
+
+\item
+Instrumentación del Quadcopter con sensores adicionales
+\subitem 
+Descripción: Se equipará al Quadcopter con los sensores necesarios para el control automático. En particular se instrumentará con giróscopo, acelerómetro y gps.
+\subitem
+Recursos: Santiago Paternain, Matías Tailanian
+\subitem
+Tiempo estimado: 17 días
+\subitem
+Horas hombre: 136
+
+
+\item
+Desarrollo de los algoritmos necesarios para llevar a cabo alguna funcionalidad específica
+
+\subitem 
+Descripción: Se realizarán los algoritmos necesarios para controlar al Quadcopter según alguna funcionalidad a determinar. Como ejemplo puede pensarse en un algoritmo de control basado en el tracking en tiempo real. Para ello se equipará al Quadcopter con una cámara.
+\subitem
+Recursos: Santiago Paternain, Matías Tailanian
+\subitem
+Tiempo estimado: 30 días
+\subitem
+Horas hombre: 240
+
+
+\item
+Prueba de vuelo y debugging final
+\subitem 
+Descripción: Se realizarán pruebas de vuelo sencillas con el fin de verificar el correcto funcionamiento de los algoritmos de control. 
+\subitem
+Recursos: Manuel López, Santiago Paternain, Rodrigo Rosa, Matías Tailanian
+\subitem
+Tiempo estimado: 15 días
+\subitem
+Horas hombre: 240
+
+
+\item
+Documentación final
+\subitem 
+Descripción: Se organizará la documentación generada on anterioridad, o bien se generará nueva documentación en caso de faltar.
+\subitem
+Recursos: Manuel López, Santiago Paternain, Rodrigo Rosa, Matías Tailanian
+\subitem
+Tiempo estimado: 176 días
+\subitem
+Horas hombre: 136
+
+
+\end{itemize}
+
+Para el primer Hito se presentará la documentación correspondiente a los siguientes puntos:
+
+\begin{itemize}
+
+\item
+Elección del \emph{Hardware} necesario para el desarrollo del proyecto: elección del \emph{Quadcopter}, Microprocesador, etc.
+\item
+Programación del microprocesador para comunicarse con la instrumentación y un PC.
+\item
+Caracterización de los motores.
+\item
+Adelanto del modelado físico.
+\end{itemize}
+
+Para el segundo Hito se presentará la documentación2 correspondiente a los siguientes puntos:
+\begin{itemize}
+
+\item
+Modelado físico del \emph{Quadcopter} 
+\item
+Resultados del estudio del vuelo.
+\item
+Simulador.
+\item
+Generador de Rutas.
+\item
+Algoritmos de control desarrollados.
+\end{itemize}
+
+
+
+\newpage
+ 
+\subsection*{Diagrama de Gantt}
+\begin{figure} [h!]
+  \centering
+  \subfloat[2a parte]{\label{fig:gantt2}\includegraphics[width=0.50\textwidth]{./pics_plan/gantt2.jpg}}                
+  \hspace*{50pt}  
+  \subfloat[1a parte]{\label{fig:gantt1}\includegraphics[width=0.38\textwidth]{./pics_plan/gantt1.jpg}}
+  \caption{Diagrama de Gantt: primera y segunda parte}
+  \label{fig:gantts1y2}
+\end{figure}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.4\textwidth]{./pics_plan/gantt3}
+	\caption{Diagrama de Gantt: tercea parte}
+	\label{fig:gantt3}
+\end{figure}
+
+
+\end{document}          
