@@ -30,16 +30,11 @@ Solamente 3 de los 4 \textit{PWM} están mapeados a pines accesibles en el \texti
 
 Se encontraron comentarios en foros sobre posibles problemas al utilizar los \textit{PWM} en conjunto con el \textit{DSP}, pero no se encontró información que confirmara esto en las hojas de datos, y todavía no se cuenta con software adecuado para hacer pruebas.
 
-Se determinó que es posible utilizar el \textit{BB} para generar 4 señales \textit{PWM}, pero con un costo que puede ser importante. Todavía se está analizando si es posible mapear el cuarto \textit{PWM} a otro pin del \textit{omap}. Esto
+Se determinó que es posible utilizar el \textit{BB} para generar 4 señales \textit{PWM}, pero con un costo que puede ser importante.\\
 
 Alternativas bajo estudio:
 
 \begin{itemize}
-\item Mapear el cuarto \textit{PWM} a otro pin del \textit{omap}:
-  \begin{itemize}
-  \item Esto permitiría utilizar el \verb+U14+.
-  \item Seguramente se perdería alguna otra cosa.
-  \end{itemize}
 \item Utilizar alguno de los 6 \textit{PWM} disponibles en el microcontrolador a bordo del \textit{IMU}:
   \begin{itemize}
   \item Permitiría utilizar todas las funcionalidades del \textit{BB}.
