@@ -1,0 +1,35 @@
+Manejo de latex
+
+Cada cap tiene su propio tex, de manera de poder compilar cada uno por separado, y todos juntos cuando haga falta.
+Se usa el paquete subfiles.
+
+#. Instalar subfiles
+En ubuntu, hacer:
+sudo mkdir /usr/share/texmf-texlive/tex/latex/subfiles/
+sudo cp subfiles.sty /usr/share/texmf-texlive/tex/latex/subfiles/
+sudo cp subfiles.cls /usr/share/texmf-texlive/tex/latex/base/
+sudo texhash
+
+#. Como agregar un capítulo
+   1. Crear archivos
+      touch cap_nuevo.tex
+      mkdir pics_cap_nuevo
+   2. Agregar una linea a main.tex (ver archivo xa ubicar donde) de la forma
+      \subfile{cap_nuevo}
+      (Notar que el ".tex" no va)
+   3. El archivo cap_nuevo.tex debe ser de la forma
+      \documentclass[main]{subfiles}
+      \begin{document}
+	...
+	% texto, pics, etc
+	...
+      \end{document}
+
+Ahora deberia ser posible compilar cada archivo por separado, desde por ejemplo cap_nuevo.tex, o todos juntos, desde main.tex.
+Puede que sea necesario correr main.tex una vez xa que el archivo nuevo sea aceptado.
+Debería ser posible hacer referencias desde cap_nuevo.tex a fotos/tablas/equaciones en cap_viejo.tex (y viceversa)
+
+#. Bibliogrf
+Ver info en biblio.bib.
+El paquete subfiles hace el equivalente a copiar todo lo que cae fuera de \begin{document}...\end{document} y ponerlo en cada uno de los archivos. Si ponemos la biblio en cada archivo, entonces va a aparecer muchas veces.
+Las referencias no van a funcionar al compilar desde cada capítulo, pero si deberían funcionar al compilar el main.tex

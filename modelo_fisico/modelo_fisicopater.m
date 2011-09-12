@@ -23,10 +23,6 @@ dx = sym('dx(t)');
 dy = sym('dy(t)');
 dz = sym('dz(t)');
 
-%ddx = sym('ddx(t)');
-%ddy = sym('ddy(t)');
-%ddz = sym('ddz(t)');
-
 syms ddx ddy ddz;
 
 theta = sym('theta(t)');
@@ -36,10 +32,6 @@ psis = sym('psis(t)'); %esto no es un typo, es xq psi es reservada
 dtheta = sym('dtheta(t)');
 dphi = sym('dphi(t)');
 dpsis = sym('dpsis(t)');
-
-%ddtheta = sym('ddtheta(t)');
-%ddphi = sym('ddphi(t)');
-%ddpsis = sym('ddpsis(t)');
 
 syms ddtheta ddphi ddpsis;
 
@@ -58,43 +50,12 @@ T2= sym('T2');
 T3= sym('T3');
 T4= sym('T4');
 
+
 %Momento de inercia del quad
-I_xxq = sym('I_xxq');
-I_xyq = sym('I_xyq');
-I_xzq = sym('I_xzq');
-I_yxq = sym('I_yxq');
-I_yyq = sym('I_yyq');
-I_yzq = sym('I_yzq');
-I_zxq = sym('I_zxq');
-I_zyq = sym('I_zyq');
-I_zzq = sym('I_zzq');
+syms I_xxq I_yyq I_zzq I_xxm I_yym I_zzm
 
-% Momento de inercia completo
-%Iq=[I_xxq I_xyq I_xzq; I_yxq I_yyq I_yzq; I_zxq I_zyq I_zzq];
-
-%Suponiendo simetrías
-Iq= [I_xxq 0 0; 0 I_yyq 0; 0 0 I_zzq];
-
-%Momento de inercia de los motores
-I_xxm = sym('I_xxm');
-I_xym = sym('I_xym');
-I_xzm = sym('I_xzm');
-I_yxm = sym('I_yxm');
-I_yym = sym('I_yym');
-I_yzm = sym('I_yzm');
-I_zxm = sym('I_zxm');
-I_zym = sym('I_zym');
-I_zzm = sym('I_zzm');
-
-%Momento de inercia completo
-%Im=[I_xxm I_xym I_xzm; I_yxm I_yym I_yzm; I_zxm I_zym I_zzm];
-
-%Suponiendo simetrías
-Im= [I_xxm 0 0; 0 I_yym 0; 0 0 I_zzm];
-
-%Vector Velocidad
-v=[dx;dy;dz];
-
+Iq = [I_xxq 0 0; 0 I_yyq 0; 0 0 I_zzq];
+Im = [I_xxm 0 0; 0 I_yym 0; 0 0 I_zzm];
 
 
 %Velocidades angulares de los motores no se consideran los sentidos de las
@@ -134,9 +95,26 @@ m_T_q =simple((Id/(R_theta))*(Id/(R_phi))*(Id/(R_psis)));
 wq1 = sym('wq1(t)');
 wq2 = sym('wq2(t)');
 wq3 = sym ('wq3(t)');
-
 w_sist_quad=[wq1;wq2;wq3];
 
+
+%%%%%%%%%%%%% Consideraciones Cinemáticas %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%Vector Velocidad
+v=[dx;dy;dz];
+
+%Vector velocidad expresado en el sistema del quad
+
+syms vq1 vq2 vq3 dx dy dz
+
+vq = [vq1;vq2;vq3];
+
+equ4 = [vq1;vq2;vq3]- R_psis*R_phi*R_theta*[dx; dy; dz];
+
+S4 =solve(equ4(1),equ4(2),equ4(3),dx,dy,dz);
+S4.dx=simple(S4.dx);
+S4.dy=simple(S4.dy);
+S4.dz=simple(S4.dz);
 
 
 %%%%%%%%%%%%%%%% Primera cardinal %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -147,13 +125,12 @@ w_sist_quad=[wq1;wq2;wq3];
 
 %Vector aceleración
 
-a=[ddx;ddy;ddz];
+syms dvq1 dvq2 dvq3
 
-%Fuerza del empuje en el sistema relativo
-f= (T1+T2+T3+T4)*[0 ; 0; 1];
+a=[dvq1;dvq2;dvq3] + cross(w_sist_quad,[vq1;vq2;vq3]);
 
-%Fuerza total en el sistema mundo
-F=simple([0 ; 0; -g] + m_T_q*f);
+%Fuerza total en el sistema quad
+F=simple(q_T_m*[0 ; 0; -g]+(T1+T2+T3+T4)*[0 ; 0; 1] );
 
 %la ecuación final es a=F/M;
 
@@ -185,34 +162,24 @@ dL = subs(dL,diff(wq1),dwq1);
 dL = subs(dL,diff(wq2),dwq2);
 dL = subs(dL,diff(wq3),dwq3);
 
-% dL = subs(dL,diff(theta),dtheta);
-% dL = subs(dL,diff(phi),dphi);
-% dL = subs(dL,diff(psis),dpsis);
-% dL = subs(dL,diff(dtheta),ddtheta);
-% dL = subs(dL,diff(dphi),ddphi);
-% dL = subs(dL,diff(dpsis),ddpsis);
-% dL = subs(dL,diff(w1),dw1);
-% dL = subs(dL,diff(w2),dw2);
-% dL = subs(dL,diff(w3),dw3);
-% dL = subs(dL,diff(w4),dw4);
+
+
 %Momentos externos valen
 M_q = l*[-T1+T3; T2-T4;0];
 
-%Momentos externos en el sistema absoludo
-M_m=m_T_q*M_q;
 %esto arma un sistema de ecuaciones de 3*3. La joda es despejar diff(theta,
 %t, t), diff(phi, t, t) y diff(psis, t, t)
-caard2 = simple(dL-M_m);
+caard2 = simple(dL-M_q);
 
 
 
 %Resulevo las ecuaciones que tengo
 
-S1=solve(caard1(1),caard1(2),caard1(3),ddx,ddy,ddz);
+S1=solve(caard1(1),caard1(2),caard1(3),dvq1,dvq2,dvq3);
 
-S1.ddx =simple(S1.ddx);
-S1.ddy =simple(S1.ddy);
-S1.ddz =simple(S1.ddz);
+S1.dvq1 =simple(S1.dvq1);
+S1.dvq2 =simple(S1.dvq2);
+S1.dvq3 =simple(S1.dvq3);
 
 S2=solve(caard2(1),caard2(2),caard2(3),dwq1,dwq2,dwq3);
 
@@ -220,7 +187,7 @@ S2.dwq1 =simple(S2.dwq1);
 S2.dwq2 =simple(S2.dwq2);
 S2.dwq3 =simple(S2.dwq3);
 
-
+%Relación entre velocidades angulares y angulos de euler
 
 syms wqu1 wqu2 wqu3 dphi dpsis dtheta
 
@@ -231,3 +198,12 @@ S3 = solve(equ3(1),equ3(2),equ3(3),dtheta,dphi,dpsis);
 S3.dtheta =simple(S3.dtheta);
 S3.dphi =simple(S3.dphi);
 S3.dpsis =simple(S3.dpsis);
+
+
+
+
+
+ 
+
+
+
