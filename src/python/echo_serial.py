@@ -27,7 +27,7 @@ if len(sys.argv) > 3:
 if len(sys.argv) > 4:
     timeout_ = sys.argv[2]
 else:
-    timeout_ = 1
+    timeout_ = 0
 
 print 'Opening %s ...' % (device)
 try:
@@ -42,11 +42,13 @@ print 'Opened %s:\nBaudrate: %s\nStopbits: %s\nTimeout: %s ' % (device,baudrate_
 
 # Reading thread
 def read_ser():
+    line = ''
     while 1:
         line = ser.readline()
-        if len(line) > 0:
-            sys.stdout.write(line)
-
+        sys.stdout.write(line)
+        sys.stdout.flush()
+        line = ''
+        
 errors = 0
 max_errors = 20
 
@@ -55,8 +57,8 @@ read_thread.setDaemon(True)
 read_thread.start()
 
 # Main loop
-escape_sequence = 'killconsole'
-print 'Enter %s to quit' % escape_sequence
+escape_sequence = 'Ctrl+]'
+print 'To terminate press %s followed by RET' % escape_sequence
 while 1:
     try:
         cmd = raw_input()
@@ -66,7 +68,10 @@ while 1:
         if(cmd == ''):
             ser.write('\n')
             continue
-        ser.write(cmd)
+        if(cmd == '\x1d'):
+            quit()
+        ser.write(cmd+'\n')
+        ser.flush()
     except KeyboardInterrupt: 
        ser.write('%c' % 0x03)
 
