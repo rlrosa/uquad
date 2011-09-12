@@ -1,14 +1,14 @@
 #include "imu_comm.h"
 
 #define quit_if_not_ok(retval) if(retval!=ERROR_OK)exit(1);
-#define IMU_COMM_TEST_USAGE "./imu_comm_test /dev/tty#\n"
+#define IMU_COMM_TEST_HOW_TO "\nIncorrect arguments!\nUsage: ./imu_comm_test /dev/tty#\n"
 
 int main(int argc, char *argv[]){
     int retval;
     char * device;
     struct imu * imu = NULL;
     if(argc<2){
-	fprintf(stderr,IMU_COMM_TEST_USAGE);
+	fprintf(stderr,IMU_COMM_TEST_HOW_TO);
 	exit(1);
     }else{
 	device = argv[1];

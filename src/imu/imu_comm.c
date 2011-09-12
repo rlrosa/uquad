@@ -215,6 +215,7 @@ static int imu_gyro_read(struct imu * imu, struct imu_frame * frame, double * gy
 static int imu_acc_read(struct imu * imu, struct imu_frame * frame, double * acc_reading){
     int retval = ERROR_OK, i;
     for(i = 0; i<IMU_ACCS; ++i){
+	// Avoid math on char to be able to hanlde negative results
 	acc_reading[i] = ((double) * (frame->raw + i)) - imu->null_estimates.xyzrpy[i];
 	acc_reading[i] = grad2rad(acc_reading[i]);
 	retval = acc_scale_adjust(imu,acc_reading+i);
@@ -232,15 +233,15 @@ static int imu_acc_read(struct imu * imu, struct imu_frame * frame, double * acc
  * @return error code
  */
 static int imu_get_latest_values(struct imu * imu, double * xyzrpy){
-    int retval = ERROR_OK, iter;
+    int retval = ERROR_OK;
     struct imu_frame * frame = imu->frame_buffer + imu->frames_sampled;
 
     // Get ACC readings
-    retval = imu_acc_read(imu, frame, xyzrpy + iter);
+    retval = imu_acc_read(imu, frame, xyzrpy);
     err_propagate(retval);
 
     // Get gyro reading
-    retval = imu_gyro_read(imu, frame, xyzrpy + iter);
+    retval = imu_gyro_read(imu, frame, xyzrpy);
     err_propagate(retval);
 
     imu->unread_data -= 1;
