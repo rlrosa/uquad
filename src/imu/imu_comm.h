@@ -17,7 +17,7 @@
 
 #define IMU_FRAME_INIT_CHAR 'A'
 #define IMU_FRAME_END_CHAR 'Z'
-#define IMU_INIT_END_SIZE 2
+#define IMU_INIT_END_SIZE 1
 #define IMU_DEFAULT_FRAME_SIZE_BYTES 16 // 4 bytes init/end chars, 2 bytes per sensor reading
 #define IMU_FRAME_SAMPLE_AVG_COUNT 16
 #define IMU_DEFAULT_FS 10
@@ -35,6 +35,7 @@
 #define READ_RETRIES 16
 
 #define err_propagate(retval) if(retval!=ERROR_OK)return retval;
+#define err_check(retval,msg) if(retval!=ERROR_OK){fprintf(stderr,msg);return retval;}
 
 // Example timestamp usage
 //struct timeval detail_time;
@@ -74,16 +75,16 @@ struct imu{
     int frames_sampled;
     int unread_data;
     FILE * device;
-};
+}imu;
 
-int imu_init(struct imu * imu);
+struct imu * imu_comm_init(void);
 
 int imu_comm_connect(struct imu * imu, char * device);
 
 int imu_comm_disconnect(struct imu * imu);
 
-int imu_deinit(struct imu * imu);
+int imu_comm_deinit(struct imu * imu);
 
-int imu_comm_get_data(struct imu * imu);
+int imu_comm_get_data(struct imu * imu, double * xyzrpy);
 
 #endif // IMU_COMM_H

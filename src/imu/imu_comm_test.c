@@ -15,21 +15,27 @@ int main(int argc, char *argv[]){
     }
     
     // Initialize structure
-    retval = imu_init(imu);
-    quit_if_not_ok(retval);
+    imu = imu_comm_init();
+    if(imu==NULL){
+	fprintf(stderr,"Fatal error.");
+	exit(1);
+    }
 
     // Init connection
     retval = imu_comm_connect(imu,device);
     quit_if_not_ok(retval);
 
     // do stuff...
+    double xyzrpy[IMU_SENSOR_COUNT];
+    retval = imu_comm_get_data(imu,xyzrpy);
+    quit_if_not_ok(retval);
 
     // Close connection
     retval = imu_comm_disconnect(imu);
     quit_if_not_ok(retval);
 
     // Deinit structure
-    retval = imu_deinit(imu);
+    retval = imu_comm_deinit(imu);
     quit_if_not_ok(retval);
 
     return 0;

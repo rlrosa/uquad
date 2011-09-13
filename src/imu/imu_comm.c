@@ -1,10 +1,11 @@
 #include "imu_comm.h"
 
-int imu_init(struct imu * imu){
-    imu = malloc(sizeof(struct imu));
+struct imu * imu_comm_init(void){
+    struct imu * imu;
+    imu = (struct imu *)malloc(sizeof(struct imu));
     if(imu == NULL){
 	fprintf(stderr,"Failed to allocate mem. \n");
-	return ERROR_MALLOC;
+	return imu;
     }
     // Set default values
     imu->frames_sampled = 0;
@@ -13,7 +14,7 @@ int imu_init(struct imu * imu){
     imu->settings.T = IMU_DEFAULT_T;
     imu->settings.gyro_sens = IMU_DEFAULT_GYRO_SENS;
     imu->settings.frame_width_bytes = IMU_DEFAULT_FS;
-    return ERROR_OK;
+    return imu;
 }
 
 int imu_comm_connect(struct imu * imu, char * device){
@@ -36,7 +37,7 @@ int imu_comm_disconnect(struct imu * imu){
     return ERROR_OK;
 }
 
-int imu_deinit(struct imu * imu){
+int imu_comm_deinit(struct imu * imu){
     int retval = ERROR_OK;
     if(imu->device != NULL)
 	retval = imu_comm_disconnect(imu);
@@ -112,7 +113,7 @@ static int imu_read_frame(struct imu * imu){
     // init char already read
 
     // Get count
-
+    //TODO 2 bytes here! use char instead of uchar
     watchdog = 0;
     while(watchdog < READ_RETRIES){
 	retval = fread(&tmp,IMU_INIT_END_SIZE,1,imu->device);
@@ -234,6 +235,11 @@ static int imu_acc_read(struct imu * imu, struct imu_frame * frame, double * acc
  */
 static int imu_get_latest_values(struct imu * imu, double * xyzrpy){
     int retval = ERROR_OK;
+    while(imu->unread_data <= 0){
+	retval = imu_read_frame(imu);
+	err_propagate(retval);
+    }
+
     struct imu_frame * frame = imu->frame_buffer + imu->frames_sampled;
 
     // Get ACC readings
@@ -245,5 +251,11 @@ static int imu_get_latest_values(struct imu * imu, double * xyzrpy){
     err_propagate(retval);
 
     imu->unread_data -= 1;
+    return retval;
+}
+
+int imu_comm_get_data(struct imu * imu, double * xyzrpy){
+    int retval;
+    retval = imu_get_latest_values(imu, xyzrpy);
     return retval;
 }
