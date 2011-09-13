@@ -8,7 +8,15 @@
 Resulta imprescindible para controlar el quadcopter comprender cabalmente su comportamiento. Con esta óptica, lo que se busca es obtener el modelo más sencillo que sea capaz de representar adecuadamente al sistema. El objetivo de esta sección es el de realizar el desarrollo de dicho modelo. La forma de modelar el sistema elegida es un Modelo de Variables de Estado, de ahora en más MVE.
 
 Al tratarse de una plataforma comercial no se tienen datos sobre algunos de los parámetros fundamentales para el desarrollo de dicho modelo. Por ejemplo, no se conoce como es la respuesta de los motores (tanto velocidad como empuje), el tensor de inercia del sistema,etc. Por lo tanto dividiremos el análisis del modelo en varias etapas. La primera de ellas consiste en obtener las constantes del sistema, luego se procede a caracterizar la respuesta de los motores, a continuación se  desarrolla el  modelo teórico, finalmente en la última sección se presentan los resultados obtenidos con dicho modelo y se contrastan con la realidad.
+
+Para el estudio en cuestión se considerará el quadcopter según las convenciones expresadas en la figura \ref{fig:quad		}:
     
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.5\textwidth]{./pics_modelo_fisico/quad_coord.jpg}
+	\caption{Modelo del quadcopter	}
+	\label{fig:quad		}
+\end{figure}    
 \section{Constantes del sistema}
 
 \subsection{Dimensiones}
@@ -46,11 +54,11 @@ El tensor de inercia del sistema puede calcularse como la suma de los tensores d
 
 En el caso de la esfera se tiene que el tensor de inercia respecto de  su centro de masa es: \\
 
-$\Pi_{G_E}^{\vec{i_q}, \vec{j_q}, \vec{k_q}}= \left(\begin{array}{ccc}
+$\Pi_{G_E}^{\vec{i_q}, \vec{j_q}, \vec{k_q}}= M_E\left(\begin{array}{ccc}
 
-m  &0&  0\\
-0  &m & 0\\
-0  &0 & m \\
+\frac{2R^2}{5}  &0&  0\\
+0  &\frac{2R^2}{5} & 0\\
+0  &0 & \frac{2R^2}{5} \\
 
 \end{array}\right) $\\
 
@@ -173,9 +181,9 @@ $H_I^1=\left(\begin{array}{ccc}
   -\sin\theta&\cos\theta&0\\
   0&0&1\\
   \end{array}\right)   H_1^2=\left(\begin{array}{ccc}
-  \cos\phi&0&\sin\phi\\
+  \cos\phi&0& -\sin\phi\\
   0&1&0\\
-  -\sin\phi&0&\cos\phi\\
+  \sin\phi&0&\cos\phi\\
   
   \end{array}\right)  H_2^q=\left(\begin{array}{ccc}
    1&0&0\\  
@@ -190,9 +198,9 @@ La transformación de las coordenadas del sistema inercial al sistema solidario a
 
 \begin{footnotesize}
 $H_I^q=H_I^1.H_1^2.H_2^q=\left(\begin{array}{ccc}
-\cos\phi\cos\theta& \cos\phi\sin\theta& \sin\phi\\
--\cos\psi\sin\theta - \cos\theta\sin\phi\sin\psi&\cos\psi\cos\theta - \sin\phi\sin\psi\sin\theta& \cos\phi\sin\psi\\
-\sin\psi\sin\theta - \cos\psi\cos\theta\sin\phi& - \cos\theta\sin\psi - \cos\psi\sin\phi\sin\theta& \cos\phi\cos\psi\\
+\cos\phi\cos\theta& \cos\phi\sin\theta& -\sin\phi\\
+ \cos\theta\sin\phi\sin\psi -\cos\psi\sin\theta &\cos \psi \cos \theta+ \sin\phi\sin\psi\sin\theta& \cos\phi\sin\psi\\
+\sin\psi\sin\theta + \cos\psi\cos\theta\sin\phi&  \cos\psi\sin\phi\sin\theta- \cos\theta\sin\psi & \cos\phi\cos\psi\\
 \end{array} \right)$\\
 \end{footnotesize}
 
@@ -219,7 +227,7 @@ $\left(\begin{array}{c}
 \dot{\phi}\\
 \dot{\theta}\\
 \end{array}\right)=\left(\begin{array}{c}
-\omega_{q1} - \omega_{q3}\tan\phi \cos\psi - \omega_{q2}\tan\phi \sin\psi\\
+\omega_{q1} + \omega_{q3}\tan\phi \cos\psi + \omega_{q2}\tan\phi \sin\psi\\
 \omega_{q2}\cos \psi - \omega_{q3}\sin\psi\\
 \omega_{q3} \frac{\cos\psi}{\cos\phi}  + \omega_{q2}\frac{\sin\psi}{\cos\phi} \\
 \end{array}\right)$\\
@@ -240,9 +248,9 @@ $\left( \begin{array}{c}
 \dot{y}\\
 \dot{z}
 \end{array}  \right) = \left( \begin{array}{c}
-v_{q1} \cos \phi \cos \theta - v_{q2} (\cos \phi \sin \theta + \cos \theta \sin \phi \sin \psi) + v_{q3}(\sin \psi \sin \theta - \cos \psi \cos \theta \sin \phi)  \\
-v_{q1} \cos \phi \sin \theta + v_{q2} (\cos \psi \cos \theta - \sin \theta \sin \phi \sin \psi) - v_{q3}(\cos \theta \sin \psi + \cos \psi \sin \theta \sin \phi) \\
-v_{q1} \sin \phi  + v_{q2} \cos \phi \sin \psi  + v_{q3}\cos \phi \cos \psi \\
+v_{q1} \cos \phi \cos \theta + v_{q2} ( \cos \theta \sin \phi \sin \psi-\cos \phi \sin \theta ) + v_{q3}(\sin \psi \sin \theta + \cos \psi \cos \theta \sin \phi)  \\
+v_{q1} \cos \phi \sin \theta + v_{q2} (\cos \psi \cos \theta + \sin \theta \sin \phi \sin \psi) + v_{q3}( \cos \psi \sin \theta \sin \phi-\cos \theta \sin \psi ) \\
+-v_{q1} \sin \phi  + v_{q2} \cos \phi \sin \psi  + v_{q3}\cos \phi \cos \psi \\
 \end{array} \right)  $\\   
 \end{footnotesize} 
 
@@ -290,10 +298,10 @@ $\left(\begin{array}{c}\dot{v_{q1}}\\
 v_{q2} \omega_{q3} - v_{q3} \omega_{q2}	\\
 v_{q3} \omega_{q1} - v_{q1} \omega_{q3}\\
 v_{q1} \omega_{q2} - v_{q2} \omega_{q1}\\
-\end{array}\right) - g\left(\begin{array}{c}
+\end{array}\right) + g\left(\begin{array}{c}
 \sin \phi\\
-\cos \phi \sin \psi\\
-\cos \phi \ cos \psi\\
+-\cos \phi \sin \psi\\
+-\cos \phi \ cos \psi\\
 
 \end{array}\right)+ \left(\begin{array}{c}
 0\\
@@ -338,28 +346,28 @@ Por otra parte el momento angular del sistema se compone del momento angular del
 EL momento angular de un rígido respecto a un punto Q puede calcularse como:\\
 
 \begin{large}
-$\vec{L_{Q_i}} = M_i(\vec{G_i-Q})\times\vec{V_Q}+\Pi_{Q_i}\vec{\Omega_i}$\\
+$\vec{L_Q} = M_i(\vec{G_i-Q})\times\vec{V_Q}+\Pi_{Q}\vec{\Omega_i}$\\
 \end{large}  
 
-Donde $M_i$, $G_i$, $\Pi_{Q_i}$ y $\vec{\Omega_i}$ son la masa de cada rígido, su centro de masa, su tensor de inercia y su velocidad angular respectivamente.
+Donde $M_i$, $G_i$, $\Pi_{Q}$ y $\vec{\Omega_i}$ son la masa de cada rígido, su centro de masa, su tensor de inercia y su velocidad angular respectivamente.
 
 Como se propuso anteriormente, se elije calcular el momento angular en el centro de masa del quadcopter. Asumiendo que los cuatro motores son idénticos podemos escribir el momento angular del quadcopter sin los motores como:\\
 
 \begin{large}
-$\vec{L_{G_q}} = (M-4 M_m)(\vec{G-G})\times\vec{V_G}+\Pi_{G_q}\vec{w_q}=\Pi_{G_q}\vec{\omega_q}$\\
+$\vec{L_{O\prime}} = (M-4 M_m)(\vec{O\prime-O\prime})\times\vec{V_O\prime}+\Pi_{O\prime_q}\vec{w_q}=\Pi_{O\prime_q}\vec{\omega_q}$\\
 
 \end{large} 
 
 Del mismo modo el momento angular del primer motor queda:\\
 
 \begin{large}
-$\vec{L_{G_{m1}}} = M_m L\vec{x\prime}\times\vec{V_G} + \Pi_{G_{m1}}\vec{\Omega_i} $\\
+$\vec{L_{O\prime_q}} = M_m L\vec{x\prime}\times\vec{V_O\prime} + \Pi_{O\prime_{Mx}}\vec{\Omega_i} $\\
 \end{large}
 
 Por la configuración del sistema se observa que al sumar el primer término de cada momento angular de los motores el resultado es cero. Por otra parte la velocidad angular de cada motor es $\vec{\Omega_i} = \vec{\omega_q}+\omega_i\vec{k\prime}$, donde $\omega_i$ es la velocidad con la que gira cada motor respecto de su eje principal. Nuevamente asumiendo que todos los motores son idénticos se tiene:\\
 
 \begin{large}
-$\vec{L_G} =\Pi_{G_q}\vec{\omega_q}+\Pi_{G_{m}}(4\vec{\omega_q}+\sum_{i=1}^{i=4}\omega_i\vec{k\prime})=(\Pi_{G_q}+4\Pi_{G_{m}})\vec{\omega_q}+\Pi_{G_{m}}\sum_{i=1}^{i=4}\omega_i\vec{k\prime} $\\
+$\vec{L_{O\prime}} =\Pi_{O\prime_q}\vec{\omega_q}+\Pi_{O\prime_{Mx}}(2\vec{\omega_q}+\omega_1\vec{k\prime}+\omega_3\vec{k\prime})+\Pi_{O\prime_{My}}(2\vec{\omega_q}-\omega_2\vec{k\prime}-\omega_4\vec{k\prime})=\Pi_{O\prime}\vec{\omega_q}+\Pi_{O\prime_{Mx}}(\omega_1+\omega_3)\vec{k\prime}-\Pi_{O\prime_{My}}(\omega_2+\omega_4)\vec{k\prime}$\\
 \end{large}
 
 Uno de los términos de la segunda cardinal es la derivada del momento angular. Tanto los tensores de inercia como las velocidades angulares se encuentran expresadas en el sistema relativo. Para realizar dicha derivada se puede utilizar la siguiente fórmula:\\
@@ -370,11 +378,10 @@ $\frac{d\vec{A}}{dt} =\frac{d\prime\vec{A}}{dt}+\vec{\Omega}\times\vec{A} $\\\
 
 En la ecuación anterior $\frac{d}{dt}$ representa la derivada temporal, mientras que $\frac{d\prime}{dt}$ representa la derivada temporal respecto del sistema móvil. Por otra parte $\vec{\Omega}$ es la velocidad angular del sistema móvil respecto al inercial. Lo que se obtiene de dicha derivada es:\\
 
-$\frac{d\vec{L_Q}}{dt} = (\Pi_{G_q}+4\Pi_{G_{m}})\dot{\vec{\omega_q}} +\Pi_{G_{m}}\sum_{i=1}^{i=4}\dot{\omega_i}\vec{k\prime}+\vec{\omega_q}\times((\Pi_{G_q}+4\Pi_{G_{m}})\vec{\omega_q}+\Pi_{G_{m}}\sum_{i=1}^{i=4}\omega_i\vec{k\prime} )$\\
+$\frac{d\vec{L_Q}}{dt} = \Pi_{O\prime}\dot{\vec{\omega_q}}+\Pi_{O\prime_{Mx}} (\dot{\omega_1} +\dot{\omega_3})\vec{k\prime}-\Pi_{O\prime_{My}}(\dot{\omega_2}+\dot{\omega_2})\vec{k\prime}+\vec{\omega_q}\times(\Pi_{O\prime}\vec{\omega_q}+\Pi_{O\prime_{Mx}}(\omega_1+\omega_3)\vec{k\prime}-\Pi_{O\prime_{My}}(\omega_2+\omega_4)\vec{k\prime})$\\
 
-En la ecuación anterior se puede hacer la siguiente simplificación: $\Pi_G = (\Pi_{G_q}+4\Pi_{G_{m}})$, donde $\Pi_G$ es el momento de inercia de todo el sistema en su centro de masa. Resulta evidente que dicho tensor de inercia es el mismo que se calculó en la sección \ref{tensores}. 
 
-A partir del cálculo de esta derivada y de los momentos externos hallados anteriormente, podemos escribir la segunda cardinal. Operando con dicha ecuación se la puede llevar a la forma:\\
+A partir del cálculo de esta derivada y de los momentos externos hallados anteriormente, podemos escribir la segunda cardinal. Teniendo en cuenta que los terminos $I_{zz_mx}$ y $I_{zz_my}$ son identcos y operando con dicha ecuación se la puede llevar a la forma:\\
 
 \begin{large}
 
@@ -384,11 +391,11 @@ $\left(\begin{array}{c}
 \dot{\omega_{q2}}\\
 \dot{\omega_{q3}}\\
 \end{array}\right) = \left(\begin{array}{c}
-\frac{\omega_{q2}\omega_{q3}(I_{yy}-I_{zz})+L(T_2-T_4)-\omega_{q2}I_{zz_m}(\omega_1+\omega_2+\omega_3+\omega_4)}{I_{xx}}\\
+\frac{\omega_{q2}\omega_{q3}(I_{yy}-I_{zz})+L(T_2-T_4)+\omega_{q2}I_{zz_m}(\omega_1-\omega_2+\omega_3-\omega_4)}{I_{xx}}\\
 
-\frac{\omega_{q1}\omega_{q3}(-I_{xx}+I_{zz})+L(T_3-T_1)+\omega_{q1}I_{zz_m}(\omega_1+\omega_2+\omega_3+\omega_4)}{I_{yy}}\\
+\frac{\omega_{q1}\omega_{q3}(-I_{xx}+I_{zz})+L(T_3-T_1)+\omega_{q1}I_{zz_m}(\omega_1-\omega_2+\omega_3-\omega_4)}{I_{yy}}\\
 
-\frac{\omega_{q1}\omega_{q2}(I_{xx}-I_{yy})-I_{zz_m}(\dot{w_1}+\dot{w_2}+\dot{w_3}+\dot{w_4})}{I_{zz}}\\
+\frac{\omega_{q1}\omega_{q2}(I_{xx}-I_{yy})-I_{zz_m}(\dot{w_1}-\dot{w_2}+\dot{w_3}-\dot{w_4})}{I_{zz}}\\
 
 \end{array}\right)$
 \end{large}
