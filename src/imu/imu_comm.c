@@ -80,6 +80,10 @@ int imu_get_sens(int sens){
     return imu_sens_mv_per_g[sens];
 }
 
+static unsigned short int swap_LSB_MSB_16(unsigned short int a){
+    return (((a&0xFF)<<8)|(a>>8));
+}
+
 /** 
  * Reads data until a frame init char is found.
  * Keeps going until a end char is found. Then stops.
@@ -90,7 +94,7 @@ int imu_get_sens(int sens){
  * @return error code
  */
 static int imu_read_frame(struct imu * imu){
-    int retval = ERROR_OK,watchdog,read;
+    int retval = ERROR_OK,watchdog,read,i;
     unsigned char tmp = '@';// Anything diff from IMU_FRAME_INIT_CHAR
     struct imu_frame * new_frame;
     new_frame = imu->frame_buffer+imu->frames_sampled;
@@ -113,15 +117,14 @@ static int imu_read_frame(struct imu * imu){
     // init char already read
 
     // Get count
-    //TODO 2 bytes here! use char instead of uchar
+
     watchdog = 0;
     while(watchdog < READ_RETRIES){
-	retval = fread(&tmp,IMU_INIT_END_SIZE,1,imu->device);
+	retval = fread(& new_frame->count,IMU_BYTES_COUNT,1,imu->device);
 	if(retval == 0){
 	    perror("Read error...");
 	    return ERROR_READ_TIMEOUT;
 	}else{
-	    new_frame->count = (unsigned int) tmp;
 	    break;
 	}
 	++watchdog;
@@ -152,6 +155,9 @@ static int imu_read_frame(struct imu * imu){
     }
     if(watchdog>=READ_RETRIES)
 	return ERROR_READ_TIMEOUT;
+    // Change LSB/MSB
+    for(i=0;i<IMU_SENSOR_COUNT;++i)
+	new_frame->raw[i] = swap_LSB_MSB_16(new_frame->raw[i]);
 
     // Now get the end char
 

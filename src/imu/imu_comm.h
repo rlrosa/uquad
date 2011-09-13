@@ -26,6 +26,7 @@
 
 #define IMU_SAMPLE_COUNT_SIZE 2
 #define IMU_BYTES_PER_SENSOR 2
+#define IMU_BYTES_COUNT 2
 #define IMU_SENSOR_COUNT 6
 #define IMU_ACCS 3
 #define IMU_GYROS 3
@@ -45,8 +46,8 @@
 //detail_time.tv_usec); /* microseconds */
 
 struct imu_frame{
-    unsigned char raw[IMU_DEFAULT_FRAME_SIZE_BYTES];
-    unsigned int count;
+    unsigned short raw[IMU_DEFAULT_FRAME_SIZE_BYTES];
+    unsigned short int count;
     struct timeval timestamp;
 };
 
