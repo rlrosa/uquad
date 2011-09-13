@@ -3,39 +3,7 @@ Model {
   Version		  7.6
   MdlSubVersion		  0
   GraphicalInterface {
-    NumRootInports	    8
-    Inport {
-      BusObject		      ""
-      Name		      "T1"
-    }
-    Inport {
-      BusObject		      ""
-      Name		      "T2"
-    }
-    Inport {
-      BusObject		      ""
-      Name		      "T3"
-    }
-    Inport {
-      BusObject		      ""
-      Name		      "T4"
-    }
-    Inport {
-      BusObject		      ""
-      Name		      "w1"
-    }
-    Inport {
-      BusObject		      ""
-      Name		      "w2"
-    }
-    Inport {
-      BusObject		      ""
-      Name		      "w3"
-    }
-    Inport {
-      BusObject		      ""
-      Name		      "w4"
-    }
+    NumRootInports	    0
     NumRootOutports	    6
     Outport {
       BusObject		      ""
@@ -68,7 +36,7 @@ Model {
       Name		      "z"
     }
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.20"
+    ComputedModelVersion    "1.30"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -88,9 +56,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "pater"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Sun Sep 11 19:39:25 2011"
-  RTWModifiedTimeStamp	  237667616
-  ModelVersionFormat	  "1.%<AutoIncrement:20>"
+  LastModifiedDate	  "Mon Sep 12 19:42:42 2011"
+  RTWModifiedTimeStamp	  237755268
+  ModelVersionFormat	  "1.%<AutoIncrement:30>"
   ConfigurationManager	  "None"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -777,6 +745,15 @@ Model {
       SampleTime	      "-1"
     }
     Block {
+      BlockType		      Step
+      Time		      "1"
+      Before		      "0"
+      After		      "1"
+      SampleTime	      "-1"
+      VectorParams1D	      on
+      ZeroCross		      on
+    }
+    Block {
       BlockType		      SubSystem
       ShowPortLabels	      "FromPortIcon"
       Permissions	      "ReadWrite"
@@ -844,69 +821,84 @@ Model {
     ShowPageBoundaries	    off
     ZoomFactor		    "100"
     ReportName		    "simulink-default.rpt"
-    SIDHighWatermark	    "336"
+    SIDHighWatermark	    "345"
     Block {
-      BlockType		      Inport
-      Name		      "T1"
-      SID		      "312"
-      Position		      [30, 1018, 60, 1032]
-      IconDisplay	      "Port number"
+      BlockType		      Step
+      Name		      "Step"
+      SID		      "337"
+      Position		      [20, 945, 50, 975]
+      Before		      "2.45"
+      After		      "2.4525"
+      SampleTime	      "0"
     }
     Block {
-      BlockType		      Inport
-      Name		      "T2"
-      SID		      "315"
-      Position		      [30, 1058, 60, 1072]
-      Port		      "2"
-      IconDisplay	      "Port number"
+      BlockType		      Step
+      Name		      "Step1"
+      SID		      "338"
+      Position		      [35, 1010, 65, 1040]
+      Time		      "0"
+      Before		      "2.4525"
+      After		      "2.4525"
+      SampleTime	      "0"
     }
     Block {
-      BlockType		      Inport
-      Name		      "T3"
-      SID		      "316"
-      Position		      [30, 1093, 60, 1107]
-      Port		      "3"
-      IconDisplay	      "Port number"
+      BlockType		      Step
+      Name		      "Step2"
+      SID		      "339"
+      Position		      [30, 1080, 60, 1110]
+      Before		      "2.455"
+      After		      "2.4525"
+      SampleTime	      "0"
     }
     Block {
-      BlockType		      Inport
-      Name		      "T4"
-      SID		      "317"
-      Position		      [35, 1133, 65, 1147]
-      Port		      "4"
-      IconDisplay	      "Port number"
+      BlockType		      Step
+      Name		      "Step3"
+      SID		      "340"
+      Position		      [30, 1130, 60, 1160]
+      Time		      "0"
+      Before		      "2.4525"
+      After		      "2.4525"
+      SampleTime	      "0"
     }
     Block {
-      BlockType		      Inport
-      Name		      "w1"
-      SID		      "318"
-      Position		      [40, 1183, 70, 1197]
-      Port		      "5"
-      IconDisplay	      "Port number"
+      BlockType		      Step
+      Name		      "Step4"
+      SID		      "341"
+      Position		      [30, 1175, 60, 1205]
+      Time		      "0"
+      Before		      "4.9"
+      After		      "4.9"
+      SampleTime	      "0"
     }
     Block {
-      BlockType		      Inport
-      Name		      "w2"
-      SID		      "319"
-      Position		      [40, 1228, 70, 1242]
-      Port		      "6"
-      IconDisplay	      "Port number"
+      BlockType		      Step
+      Name		      "Step5"
+      SID		      "342"
+      Position		      [40, 1215, 70, 1245]
+      Time		      "0"
+      Before		      "-5"
+      After		      "-5"
+      SampleTime	      "0"
     }
     Block {
-      BlockType		      Inport
-      Name		      "w3"
-      SID		      "320"
-      Position		      [40, 1283, 70, 1297]
-      Port		      "7"
-      IconDisplay	      "Port number"
+      BlockType		      Step
+      Name		      "Step6"
+      SID		      "343"
+      Position		      [40, 1270, 70, 1300]
+      Time		      "0"
+      Before		      "5.1"
+      After		      "5.1"
+      SampleTime	      "0"
     }
     Block {
-      BlockType		      Inport
-      Name		      "w4"
-      SID		      "321"
-      Position		      [40, 1323, 70, 1337]
-      Port		      "8"
-      IconDisplay	      "Port number"
+      BlockType		      Step
+      Name		      "Step7"
+      SID		      "344"
+      Position		      [35, 1335, 65, 1365]
+      Time		      "0"
+      Before		      "-5"
+      After		      "-5"
+      SampleTime	      "0"
     }
     Block {
       BlockType		      SubSystem
@@ -1579,7 +1571,7 @@ Model {
 	    }
 	    Block {
 	      BlockType		      Inport
-	      Name		      "T4"
+	      Name		      "T1"
 	      SID		      "266"
 	      Position		      [15, 653, 45, 667]
 	      Port		      "3"
@@ -1587,7 +1579,7 @@ Model {
 	    }
 	    Block {
 	      BlockType		      Inport
-	      Name		      "T2"
+	      Name		      "T3"
 	      SID		      "267"
 	      Position		      [15, 688, 45, 702]
 	      Port		      "4"
@@ -1757,14 +1749,14 @@ Model {
 	      DstPort		      1
 	    }
 	    Line {
-	      SrcBlock		      "T2"
+	      SrcBlock		      "T3"
 	      SrcPort		      1
 	      Points		      [75, 0; 0, -15]
 	      DstBlock		      "Subtract"
 	      DstPort		      1
 	    }
 	    Line {
-	      SrcBlock		      "T4"
+	      SrcBlock		      "T1"
 	      SrcPort		      1
 	      Points		      [145, 0; 0, 35]
 	      DstBlock		      "Subtract"
@@ -1984,11 +1976,12 @@ Model {
 	      SaturateOnIntegerOverflow	off
 	    }
 	    Block {
-	      BlockType		      Product
-	      Name		      "Product1"
-	      SID		      "303"
+	      BlockType		      Sum
+	      Name		      "Subtract"
+	      SID		      "345"
 	      Ports		      [2, 1]
-	      Position		      [855, 547, 885, 578]
+	      Position		      [850, 547, 880, 578]
+	      Inputs		      "+-"
 	      InputSameDT	      off
 	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
 	      SaturateOnIntegerOverflow	off
@@ -2077,11 +2070,11 @@ Model {
 	      SrcBlock		      "Izzm"
 	      SrcPort		      1
 	      Points		      [65, 0; 0, -265]
-	      DstBlock		      "Product1"
+	      DstBlock		      "Subtract"
 	      DstPort		      2
 	    }
 	    Line {
-	      SrcBlock		      "Product1"
+	      SrcBlock		      "Subtract"
 	      SrcPort		      1
 	      DstBlock		      "1/Izz"
 	      DstPort		      1
@@ -2102,7 +2095,7 @@ Model {
 	      SrcBlock		      "Ixx-Iyy"
 	      SrcPort		      1
 	      Points		      [40, 0; 0, -15]
-	      DstBlock		      "Product1"
+	      DstBlock		      "Subtract"
 	      DstPort		      1
 	    }
 	  }
@@ -4054,12 +4047,6 @@ Model {
 	      DstPort		      1
 	    }
 	    Line {
-	      SrcBlock		      "Trigonometric\nFunction6"
-	      SrcPort		      1
-	      DstBlock		      "-g"
-	      DstPort		      1
-	    }
-	    Line {
 	      SrcBlock		      "psi"
 	      SrcPort		      1
 	      DstBlock		      "Trigonometric\nFunction1"
@@ -4103,6 +4090,19 @@ Model {
 	      SrcBlock		      "Integrator"
 	      SrcPort		      1
 	      DstBlock		      "vq3"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Trigonometric\nFunction6"
+	      SrcPort		      1
+	      DstBlock		      "Product2"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Product2"
+	      SrcPort		      1
+	      Points		      [15, 0; 0, -10]
+	      DstBlock		      "-g"
 	      DstPort		      1
 	    }
 	  }
@@ -4321,12 +4321,6 @@ Model {
 	      DstPort		      2
 	    }
 	    Line {
-	      SrcBlock		      "Trigonometric\nFunction4"
-	      SrcPort		      1
-	      DstBlock		      "-g"
-	      DstPort		      1
-	    }
-	    Line {
 	      SrcBlock		      "-g"
 	      SrcPort		      1
 	      Points		      [105, 0; 0, 65]
@@ -4364,6 +4358,19 @@ Model {
 	      Points		      [15, 0; 0, -65]
 	      DstBlock		      "Product2"
 	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "Trigonometric\nFunction4"
+	      SrcPort		      1
+	      DstBlock		      "Product2"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Product2"
+	      SrcPort		      1
+	      Points		      [15, 0; 0, -10]
+	      DstBlock		      "-g"
+	      DstPort		      1
 	    }
 	    Annotation {
 	      Position		      [29, 628]
@@ -4415,7 +4422,7 @@ Model {
 	    }
 	    Block {
 	      BlockType		      Inport
-	      Name		      "T1"
+	      Name		      "T4"
 	      SID		      "229"
 	      Position		      [15, 653, 45, 667]
 	      Port		      "3"
@@ -4423,7 +4430,7 @@ Model {
 	    }
 	    Block {
 	      BlockType		      Inport
-	      Name		      "T3"
+	      Name		      "T2"
 	      SID		      "231"
 	      Position		      [15, 688, 45, 702]
 	      Port		      "4"
@@ -4463,6 +4470,16 @@ Model {
 	    }
 	    Block {
 	      BlockType		      Gain
+	      Name		      "-Izzm"
+	      SID		      "242"
+	      Position		      [675, 820, 705, 850]
+	      Gain		      "-1"
+	      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Gain
 	      Name		      "1/Ixx"
 	      SID		      "237"
 	      Position		      [940, 550, 970, 580]
@@ -4482,15 +4499,6 @@ Model {
 	      Name		      "Iyy-Izz"
 	      SID		      "241"
 	      Position		      [690, 555, 720, 585]
-	      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
-	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
-	      SaturateOnIntegerOverflow	off
-	    }
-	    Block {
-	      BlockType		      Gain
-	      Name		      "Izzm"
-	      SID		      "242"
-	      Position		      [675, 820, 705, 850]
 	      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
 	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
 	      SaturateOnIntegerOverflow	off
@@ -4593,14 +4601,14 @@ Model {
 	      DstPort		      1
 	    }
 	    Line {
-	      SrcBlock		      "T3"
+	      SrcBlock		      "T2"
 	      SrcPort		      1
 	      Points		      [75, 0; 0, -15]
 	      DstBlock		      "Subtract"
 	      DstPort		      1
 	    }
 	    Line {
-	      SrcBlock		      "T1"
+	      SrcBlock		      "T4"
 	      SrcPort		      1
 	      Points		      [145, 0; 0, 35]
 	      DstBlock		      "Subtract"
@@ -4644,11 +4652,11 @@ Model {
 	    Line {
 	      SrcBlock		      "Product2"
 	      SrcPort		      1
-	      DstBlock		      "Izzm"
+	      DstBlock		      "-Izzm"
 	      DstPort		      1
 	    }
 	    Line {
-	      SrcBlock		      "Izzm"
+	      SrcBlock		      "-Izzm"
 	      SrcPort		      1
 	      Points		      [65, 0; 0, -260]
 	      DstBlock		      "Sum of\nElements1"
@@ -5146,65 +5154,6 @@ Model {
 	  }
 	}
 	Line {
-	  SrcBlock		  "T1"
-	  SrcPort		  1
-	  Points		  [20, 0]
-	  Branch {
-	    DstBlock		    "Subsystem9"
-	    DstPort		    3
-	  }
-	  Branch {
-	    Points		    [0, -240]
-	    DstBlock		    "Subsystem7"
-	    DstPort		    3
-	  }
-	}
-	Line {
-	  SrcBlock		  "T2"
-	  SrcPort		  1
-	  Points		  [30, 0]
-	  Branch {
-	    Points		    [85, 0; 0, 150]
-	    DstBlock		    "Subsystem10"
-	    DstPort		    4
-	  }
-	  Branch {
-	    Points		    [0, -275]
-	    DstBlock		    "Subsystem7"
-	    DstPort		    4
-	  }
-	}
-	Line {
-	  SrcBlock		  "T3"
-	  SrcPort		  1
-	  Points		  [35, 0]
-	  Branch {
-	    Points		    [85, 0]
-	    DstBlock		    "Subsystem9"
-	    DstPort		    4
-	  }
-	  Branch {
-	    Points		    [0, -295]
-	    DstBlock		    "Subsystem7"
-	    DstPort		    5
-	  }
-	}
-	Line {
-	  SrcBlock		  "T4"
-	  SrcPort		  1
-	  Points		  [40, 0]
-	  Branch {
-	    Points		    [70, 0; 0, 65]
-	    DstBlock		    "Subsystem10"
-	    DstPort		    3
-	  }
-	  Branch {
-	    Points		    [0, -325]
-	    DstBlock		    "Subsystem7"
-	    DstPort		    6
-	  }
-	}
-	Line {
 	  SrcBlock		  "w1"
 	  SrcPort		  1
 	  Points		  [10, 0]
@@ -5285,6 +5234,65 @@ Model {
 	    Points		    [0, 100]
 	    DstBlock		    "Subsystem11"
 	    DstPort		    6
+	  }
+	}
+	Line {
+	  SrcBlock		  "T1"
+	  SrcPort		  1
+	  Points		  [115, 0; 0, -240]
+	  DstBlock		  "Subsystem7"
+	  DstPort		  3
+	}
+	Line {
+	  SrcBlock		  "T2"
+	  SrcPort		  1
+	  Points		  [30, 0]
+	  Branch {
+	    Points		    [85, 0; 0, -275]
+	    DstBlock		    "Subsystem7"
+	    DstPort		    4
+	  }
+	  Branch {
+	    Points		    [0, -30]
+	    DstBlock		    "Subsystem9"
+	    DstPort		    4
+	  }
+	}
+	Line {
+	  SrcBlock		  "T3"
+	  SrcPort		  1
+	  Points		  [35, 0]
+	  Branch {
+	    Points		    [80, 0; 0, -295]
+	    DstBlock		    "Subsystem7"
+	    DstPort		    5
+	  }
+	  Branch {
+	    Points		    [0, 120]
+	    DstBlock		    "Subsystem10"
+	    DstPort		    4
+	  }
+	}
+	Line {
+	  SrcBlock		  "T4"
+	  SrcPort		  1
+	  Points		  [10, 0]
+	  Branch {
+	    Points		    [100, 0; 0, -325]
+	    DstBlock		    "Subsystem7"
+	    DstPort		    6
+	  }
+	  Branch {
+	    Points		    [0, -115; 35, 0]
+	    Branch {
+	      DstBlock		      "Subsystem9"
+	      DstPort		      3
+	    }
+	    Branch {
+	      Points		      [0, 180]
+	      DstBlock		      "Subsystem10"
+	      DstPort		      3
+	    }
 	  }
 	}
 	Annotation {
@@ -5382,57 +5390,58 @@ Model {
       DstPort		      1
     }
     Line {
-      SrcBlock		      "T1"
+      SrcBlock		      "Step4"
       SrcPort		      1
-      DstBlock		      "Subsystem12"
-      DstPort		      1
-    }
-    Line {
-      SrcBlock		      "T2"
-      SrcPort		      1
-      Points		      [135, 0; 0, -20]
-      DstBlock		      "Subsystem12"
-      DstPort		      2
-    }
-    Line {
-      SrcBlock		      "T3"
-      SrcPort		      1
-      Points		      [260, 0; 0, -35]
-      DstBlock		      "Subsystem12"
-      DstPort		      3
-    }
-    Line {
-      SrcBlock		      "T4"
-      SrcPort		      1
-      Points		      [25, 0; 0, -55]
-      DstBlock		      "Subsystem12"
-      DstPort		      4
-    }
-    Line {
-      SrcBlock		      "w1"
-      SrcPort		      1
-      Points		      [130, 0; 0, -85]
+      Points		      [140, 0; 0, -85]
       DstBlock		      "Subsystem12"
       DstPort		      5
     }
     Line {
-      SrcBlock		      "w2"
+      SrcBlock		      "Step"
       SrcPort		      1
-      Points		      [250, 0; 0, -110]
+      Points		      [140, 0; 0, 65]
+      DstBlock		      "Subsystem12"
+      DstPort		      1
+    }
+    Line {
+      SrcBlock		      "Step1"
+      SrcPort		      1
+      Points		      [115, 0; 0, 20]
+      DstBlock		      "Subsystem12"
+      DstPort		      2
+    }
+    Line {
+      SrcBlock		      "Step2"
+      SrcPort		      1
+      Points		      [135, 0; 0, -30]
+      DstBlock		      "Subsystem12"
+      DstPort		      3
+    }
+    Line {
+      SrcBlock		      "Step3"
+      SrcPort		      1
+      Points		      [265, 0; 0, -60]
+      DstBlock		      "Subsystem12"
+      DstPort		      4
+    }
+    Line {
+      SrcBlock		      "Step5"
+      SrcPort		      1
+      Points		      [255, 0; 0, -105]
       DstBlock		      "Subsystem12"
       DstPort		      6
     }
     Line {
-      SrcBlock		      "w3"
+      SrcBlock		      "Step6"
       SrcPort		      1
-      Points		      [255, 0; 0, -145]
+      Points		      [260, 0]
       DstBlock		      "Subsystem12"
       DstPort		      7
     }
     Line {
-      SrcBlock		      "w4"
+      SrcBlock		      "Step7"
       SrcPort		      1
-      Points		      [260, 0]
+      Points		      [265, 0]
       DstBlock		      "Subsystem12"
       DstPort		      8
     }
