@@ -36,7 +36,7 @@ Model {
       Name		      "z"
     }
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.30"
+    ComputedModelVersion    "1.38"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -56,9 +56,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "pater"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Mon Sep 12 19:42:42 2011"
-  RTWModifiedTimeStamp	  237755268
-  ModelVersionFormat	  "1.%<AutoIncrement:30>"
+  LastModifiedDate	  "Tue Sep 13 20:26:07 2011"
+  RTWModifiedTimeStamp	  237844765
+  ModelVersionFormat	  "1.%<AutoIncrement:38>"
   ConfigurationManager	  "None"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -821,14 +821,13 @@ Model {
     ShowPageBoundaries	    off
     ZoomFactor		    "100"
     ReportName		    "simulink-default.rpt"
-    SIDHighWatermark	    "345"
+    SIDHighWatermark	    "351"
     Block {
       BlockType		      Step
       Name		      "Step"
       SID		      "337"
       Position		      [20, 945, 50, 975]
-      Before		      "2.45"
-      After		      "2.4525"
+      After		      "0"
       SampleTime	      "0"
     }
     Block {
@@ -836,9 +835,7 @@ Model {
       Name		      "Step1"
       SID		      "338"
       Position		      [35, 1010, 65, 1040]
-      Time		      "0"
-      Before		      "2.4525"
-      After		      "2.4525"
+      After		      "0"
       SampleTime	      "0"
     }
     Block {
@@ -846,8 +843,7 @@ Model {
       Name		      "Step2"
       SID		      "339"
       Position		      [30, 1080, 60, 1110]
-      Before		      "2.455"
-      After		      "2.4525"
+      After		      "0"
       SampleTime	      "0"
     }
     Block {
@@ -855,9 +851,7 @@ Model {
       Name		      "Step3"
       SID		      "340"
       Position		      [30, 1130, 60, 1160]
-      Time		      "0"
-      Before		      "2.4525"
-      After		      "2.4525"
+      After		      "0"
       SampleTime	      "0"
     }
     Block {
@@ -876,8 +870,8 @@ Model {
       SID		      "342"
       Position		      [40, 1215, 70, 1245]
       Time		      "0"
-      Before		      "-5"
-      After		      "-5"
+      Before		      "4.9"
+      After		      "4.9"
       SampleTime	      "0"
     }
     Block {
@@ -886,8 +880,8 @@ Model {
       SID		      "343"
       Position		      [40, 1270, 70, 1300]
       Time		      "0"
-      Before		      "5.1"
-      After		      "5.1"
+      Before		      "4.9"
+      After		      "4.9"
       SampleTime	      "0"
     }
     Block {
@@ -896,8 +890,8 @@ Model {
       SID		      "344"
       Position		      [35, 1335, 65, 1365]
       Time		      "0"
-      Before		      "-5"
-      After		      "-5"
+      Before		      "4.9"
+      After		      "4.9"
       SampleTime	      "0"
     }
     Block {
@@ -1292,18 +1286,6 @@ Model {
 	      SaturateOnIntegerOverflow	off
 	    }
 	    Block {
-	      BlockType		      Product
-	      Name		      "Divide"
-	      SID		      "21"
-	      Ports		      [2, 1]
-	      Position		      [745, 227, 775, 258]
-	      Inputs		      "*/"
-	      InputSameDT	      off
-	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
-	      RndMeth		      "Floor"
-	      SaturateOnIntegerOverflow	off
-	    }
-	    Block {
 	      BlockType		      Integrator
 	      Name		      "Integrator"
 	      SID		      "22"
@@ -1362,18 +1344,11 @@ Model {
 	    }
 	    Block {
 	      BlockType		      Trigonometry
-	      Name		      "Trigonometric\nFunction1"
-	      SID		      "28"
-	      Ports		      [1, 1]
-	      Position		      [495, 295, 525, 325]
-	      Operator		      "cos"
-	    }
-	    Block {
-	      BlockType		      Trigonometry
 	      Name		      "Trigonometric\nFunction2"
 	      SID		      "29"
 	      Ports		      [1, 1]
 	      Position		      [490, 230, 520, 260]
+	      Operator		      "tan"
 	    }
 	    Block {
 	      BlockType		      Trigonometry
@@ -1382,12 +1357,6 @@ Model {
 	      Ports		      [1, 1]
 	      Position		      [300, 150, 330, 180]
 	      Operator		      "cos"
-	    }
-	    Block {
-	      BlockType		      UnaryMinus
-	      Name		      "Unary Minus"
-	      SID		      "31"
-	      Position		      [610, 230, 640, 260]
 	    }
 	    Block {
 	      BlockType		      Outport
@@ -1420,40 +1389,21 @@ Model {
 	    Line {
 	      SrcBlock		      "Product"
 	      SrcPort		      1
-	      DstBlock		      "Divide"
+	      Points		      [30, 0; 0, 10]
+	      DstBlock		      "Sum"
 	      DstPort		      1
-	    }
-	    Line {
-	      SrcBlock		      "Trigonometric\nFunction1"
-	      SrcPort		      1
-	      Points		      [200, 0]
-	      DstBlock		      "Divide"
-	      DstPort		      2
 	    }
 	    Line {
 	      SrcBlock		      "phi"
 	      SrcPort		      1
 	      Points		      [40, 0; 0, 35]
-	      Branch {
-		Points			[0, 65]
-		DstBlock		"Trigonometric\nFunction1"
-		DstPort			1
-	      }
-	      Branch {
-		DstBlock		"Trigonometric\nFunction2"
-		DstPort			1
-	      }
+	      DstBlock		      "Trigonometric\nFunction2"
+	      DstPort		      1
 	    }
 	    Line {
 	      SrcBlock		      "Trigonometric\nFunction2"
 	      SrcPort		      1
-	      DstBlock		      "Unary Minus"
-	      DstPort		      1
-	    }
-	    Line {
-	      SrcBlock		      "Unary Minus"
-	      SrcPort		      1
-	      Points		      [5, 0; 0, -5]
+	      Points		      [125, 0; 0, -5]
 	      DstBlock		      "Product"
 	      DstPort		      2
 	    }
@@ -1504,12 +1454,6 @@ Model {
 	      Points		      [50, 0; 0, 65]
 	      DstBlock		      "Add"
 	      DstPort		      2
-	    }
-	    Line {
-	      SrcBlock		      "Divide"
-	      SrcPort		      1
-	      DstBlock		      "Sum"
-	      DstPort		      1
 	    }
 	    Line {
 	      SrcBlock		      "wq1"
@@ -1696,8 +1640,8 @@ Model {
 	      Name		      "Sum of\nElements"
 	      SID		      "280"
 	      Ports		      [4, 1]
-	      Position		      [255, 867, 285, 898]
-	      Inputs		      "4"
+	      Position		      [255, 865, 285, 900]
+	      Inputs		      "+|-|+|-|"
 	      InputSameDT	      off
 	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
 	      SaturateOnIntegerOverflow	off
@@ -1765,14 +1709,13 @@ Model {
 	    Line {
 	      SrcBlock		      "w1"
 	      SrcPort		      1
-	      Points		      [95, 0; 0, 35]
+	      Points		      [95, 0; 0, 25]
 	      DstBlock		      "Sum of\nElements"
 	      DstPort		      1
 	    }
 	    Line {
 	      SrcBlock		      "w2"
 	      SrcPort		      1
-	      Points		      [85, 0; 0, 10; 105, 0]
 	      DstBlock		      "Sum of\nElements"
 	      DstPort		      2
 	    }
@@ -1991,8 +1934,8 @@ Model {
 	      Name		      "Sum of\nElements"
 	      SID		      "300"
 	      Ports		      [4, 1]
-	      Position		      [255, 867, 285, 898]
-	      Inputs		      "4"
+	      Position		      [255, 865, 285, 900]
+	      Inputs		      "+|-|+|-|"
 	      InputSameDT	      off
 	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
 	      SaturateOnIntegerOverflow	off
@@ -2027,7 +1970,7 @@ Model {
 	    Line {
 	      SrcBlock		      "w1"
 	      SrcPort		      1
-	      Points		      [95, 0; 0, 35]
+	      Points		      [95, 0; 0, 25]
 	      DstBlock		      "Sum of\nElements"
 	      DstPort		      1
 	    }
@@ -2361,9 +2304,9 @@ Model {
 	    Block {
 	      BlockType		      Sum
 	      Name		      "Add"
-	      SID		      "63"
+	      SID		      "348"
 	      Ports		      [2, 1]
-	      Position		      [570, 227, 600, 258]
+	      Position		      [580, 457, 610, 488]
 	      InputSameDT	      off
 	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
 	      SaturateOnIntegerOverflow	off
@@ -2453,10 +2396,10 @@ Model {
 	    }
 	    Block {
 	      BlockType		      Sum
-	      Name		      "Subtract"
-	      SID		      "67"
+	      Name		      "Subtract1"
+	      SID		      "347"
 	      Ports		      [2, 1]
-	      Position		      [575, 457, 605, 488]
+	      Position		      [575, 227, 605, 258]
 	      Inputs		      "+-"
 	      InputSameDT	      off
 	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
@@ -2517,12 +2460,6 @@ Model {
 	      Ports		      [1, 1]
 	      Position		      [230, 505, 260, 535]
 	      Operator		      "cos"
-	    }
-	    Block {
-	      BlockType		      UnaryMinus
-	      Name		      "Unary Minus"
-	      SID		      "70"
-	      Position		      [845, 240, 875, 270]
 	    }
 	    Block {
 	      BlockType		      Outport
@@ -2664,21 +2601,7 @@ Model {
 	      }
 	    }
 	    Line {
-	      SrcBlock		      "Product"
-	      SrcPort		      1
-	      Points		      [20, 0; 0, 5]
-	      DstBlock		      "Add"
-	      DstPort		      1
-	    }
-	    Line {
-	      SrcBlock		      "Product of\nElements1"
-	      SrcPort		      1
-	      Points		      [20, 0; 0, -30]
-	      DstBlock		      "Add"
-	      DstPort		      2
-	    }
-	    Line {
-	      SrcBlock		      "Add"
+	      SrcBlock		      "Subtract1"
 	      SrcPort		      1
 	      DstBlock		      "Product1"
 	      DstPort		      1
@@ -2694,14 +2617,14 @@ Model {
 	      SrcBlock		      "Product2"
 	      SrcPort		      1
 	      Points		      [20, 0; 0, 10]
-	      DstBlock		      "Subtract"
+	      DstBlock		      "Add"
 	      DstPort		      1
 	    }
 	    Line {
 	      SrcBlock		      "Product of\nElements2"
 	      SrcPort		      1
 	      Points		      [20, 0; 0, -25]
-	      DstBlock		      "Subtract"
+	      DstBlock		      "Add"
 	      DstPort		      2
 	    }
 	    Line {
@@ -2712,7 +2635,7 @@ Model {
 	      DstPort		      1
 	    }
 	    Line {
-	      SrcBlock		      "Subtract"
+	      SrcBlock		      "Add"
 	      SrcPort		      1
 	      DstBlock		      "Product3"
 	      DstPort		      1
@@ -2734,13 +2657,7 @@ Model {
 	    Line {
 	      SrcBlock		      "Product1"
 	      SrcPort		      1
-	      DstBlock		      "Unary Minus"
-	      DstPort		      1
-	    }
-	    Line {
-	      SrcBlock		      "Unary Minus"
-	      SrcPort		      1
-	      Points		      [5, 0; 0, -35]
+	      Points		      [75, 0; 0, -35]
 	      DstBlock		      "Sum of\nElements"
 	      DstPort		      2
 	    }
@@ -2762,6 +2679,20 @@ Model {
 	      SrcPort		      1
 	      DstBlock		      "x"
 	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Product of\nElements1"
+	      SrcPort		      1
+	      Points		      [25, 0; 0, -45]
+	      DstBlock		      "Subtract1"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Product"
+	      SrcPort		      1
+	      Points		      [40, 0; 0, 20]
+	      DstBlock		      "Subtract1"
+	      DstPort		      2
 	    }
 	  }
 	}
@@ -2844,9 +2775,9 @@ Model {
 	    Block {
 	      BlockType		      Sum
 	      Name		      "Add"
-	      SID		      "99"
+	      SID		      "349"
 	      Ports		      [2, 1]
-	      Position		      [575, 457, 605, 488]
+	      Position		      [565, 227, 595, 258]
 	      InputSameDT	      off
 	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
 	      SaturateOnIntegerOverflow	off
@@ -2937,9 +2868,9 @@ Model {
 	    Block {
 	      BlockType		      Sum
 	      Name		      "Subtract1"
-	      SID		      "98"
+	      SID		      "350"
 	      Ports		      [2, 1]
-	      Position		      [565, 227, 595, 258]
+	      Position		      [575, 462, 605, 493]
 	      Inputs		      "+-"
 	      InputSameDT	      off
 	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
@@ -3141,18 +3072,18 @@ Model {
 	      SrcBlock		      "Product"
 	      SrcPort		      1
 	      Points		      [20, 0; 0, 5]
-	      DstBlock		      "Subtract1"
+	      DstBlock		      "Add"
 	      DstPort		      1
 	    }
 	    Line {
 	      SrcBlock		      "Product of\nElements1"
 	      SrcPort		      1
 	      Points		      [20, 0; 0, -30]
-	      DstBlock		      "Subtract1"
+	      DstBlock		      "Add"
 	      DstPort		      2
 	    }
 	    Line {
-	      SrcBlock		      "Subtract1"
+	      SrcBlock		      "Add"
 	      SrcPort		      1
 	      DstBlock		      "Product1"
 	      DstPort		      1
@@ -3162,20 +3093,6 @@ Model {
 	      SrcPort		      1
 	      Points		      [640, 0]
 	      DstBlock		      "Product1"
-	      DstPort		      2
-	    }
-	    Line {
-	      SrcBlock		      "Product2"
-	      SrcPort		      1
-	      Points		      [20, 0; 0, 10]
-	      DstBlock		      "Add"
-	      DstPort		      1
-	    }
-	    Line {
-	      SrcBlock		      "Product of\nElements2"
-	      SrcPort		      1
-	      Points		      [20, 0; 0, -25]
-	      DstBlock		      "Add"
 	      DstPort		      2
 	    }
 	    Line {
@@ -3195,8 +3112,9 @@ Model {
 	      }
 	    }
 	    Line {
-	      SrcBlock		      "Add"
+	      SrcBlock		      "Subtract1"
 	      SrcPort		      1
+	      Points		      [0, -5]
 	      DstBlock		      "Product3"
 	      DstPort		      1
 	    }
@@ -3245,6 +3163,20 @@ Model {
 	      Points		      [0, -255]
 	      DstBlock		      "Sum of\nElements"
 	      DstPort		      3
+	    }
+	    Line {
+	      SrcBlock		      "Product of\nElements2"
+	      SrcPort		      1
+	      Points		      [20, 0; 0, -20]
+	      DstBlock		      "Subtract1"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "Product2"
+	      SrcPort		      1
+	      Points		      [20, 0; 0, 15]
+	      DstBlock		      "Subtract1"
+	      DstPort		      1
 	    }
 	  }
 	}
@@ -3399,6 +3331,12 @@ Model {
 	      Operator		      "cos"
 	    }
 	    Block {
+	      BlockType		      UnaryMinus
+	      Name		      "Unary Minus"
+	      SID		      "351"
+	      Position		      [730, 195, 760, 225]
+	    }
+	    Block {
 	      BlockType		      Outport
 	      Name		      "z"
 	      SID		      "126"
@@ -3462,7 +3400,7 @@ Model {
 	    Line {
 	      SrcBlock		      "Product"
 	      SrcPort		      1
-	      DstBlock		      "Sum of\nElements"
+	      DstBlock		      "Unary Minus"
 	      DstPort		      1
 	    }
 	    Line {
@@ -3521,6 +3459,12 @@ Model {
 	      Points		      [75, 0; 0, -350]
 	      DstBlock		      "Sum of\nElements"
 	      DstPort		      3
+	    }
+	    Line {
+	      SrcBlock		      "Unary Minus"
+	      SrcPort		      1
+	      DstBlock		      "Sum of\nElements"
+	      DstPort		      1
 	    }
 	  }
 	}
@@ -3596,7 +3540,7 @@ Model {
 	      Name		      "-g"
 	      SID		      "193"
 	      Position		      [350, 215, 380, 245]
-	      Gain		      "-9.81"
+	      Gain		      "9.81"
 	      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
 	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
 	      SaturateOnIntegerOverflow	off
@@ -4548,8 +4492,8 @@ Model {
 	      Name		      "Sum of\nElements"
 	      SID		      "252"
 	      Ports		      [4, 1]
-	      Position		      [255, 867, 285, 898]
-	      Inputs		      "4"
+	      Position		      [255, 869, 285, 901]
+	      Inputs		      "+|-|+|-"
 	      InputSameDT	      off
 	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
 	      SaturateOnIntegerOverflow	off
@@ -4617,16 +4561,9 @@ Model {
 	    Line {
 	      SrcBlock		      "w1"
 	      SrcPort		      1
-	      Points		      [95, 0; 0, 35]
+	      Points		      [95, 0; 0, 30]
 	      DstBlock		      "Sum of\nElements"
 	      DstPort		      1
-	    }
-	    Line {
-	      SrcBlock		      "w2"
-	      SrcPort		      1
-	      Points		      [85, 0; 0, 10; 105, 0]
-	      DstBlock		      "Sum of\nElements"
-	      DstPort		      2
 	    }
 	    Line {
 	      SrcBlock		      "w3"
@@ -4698,6 +4635,13 @@ Model {
 	      SrcPort		      1
 	      Points		      [470, 0; 0, -125]
 	      DstBlock		      "Sum of\nElements1"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "w2"
+	      SrcPort		      1
+	      Points		      [185, 0; 0, 5]
+	      DstBlock		      "Sum of\nElements"
 	      DstPort		      2
 	    }
 	  }
@@ -4986,7 +4930,7 @@ Model {
 	  Branch {
 	    Points		    [0, 145]
 	    Branch {
-	      Points		      [0, 5]
+	      Points		      [105, 0]
 	      DstBlock		      "Subsystem4"
 	      DstPort		      6
 	    }
