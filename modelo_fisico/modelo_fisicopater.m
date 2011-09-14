@@ -52,11 +52,11 @@ T4= sym('T4');
 
 
 %Momento de inercia del quad
-syms I_xxq I_yyq I_zzq I_xxm I_yym I_zzm
+syms I_xx I_yy I_zz I_xxmx I_yymx I_zzmx I_xxmy I_yymy I_zzmy
 
-Iq = [I_xxq 0 0; 0 I_yyq 0; 0 0 I_zzq];
-Im = [I_xxm 0 0; 0 I_yym 0; 0 0 I_zzm];
-
+I = [I_xx 0 0; 0 I_yy 0; 0 0 I_zz];
+Imx = [I_xxmx 0 0; 0 I_yymx 0; 0 0 I_zzmx];
+Imy = [I_xxmy 0 0; 0 I_yymy 0; 0 0 I_zzmy];
 
 %Velocidades angulares de los motores no se consideran los sentidos de las
 %mismas
@@ -76,7 +76,7 @@ Id=[1 0 0; 0 1 0;0 0 1];
 R_theta=[cos(theta) sin(theta) 0; -sin(theta) cos(theta) 0; 0 0 1];
 
 %Rotación según el eje y
-R_phi=[cos(phi) 0 sin(phi) ;0 1 0; -sin(phi) 0 cos(phi)];
+R_phi=[cos(phi) 0 -sin(phi) ;0 1 0; sin(phi) 0 cos(phi)];
 
 %Rotación según el eje x
 R_psis=[1 0 0; 0 cos(psis) sin(psis) ;0 -sin(psis) cos(psis)];
@@ -152,7 +152,7 @@ caard1 = a-F/M;
 %Los momentos de inercia están en el sistema relativo
 
 %L escrito en el sistema relativo
-L = simple(Iq+4*Im)*w_sist_quad + Im*(w1+w2+w3+w4)*[0; 0; 1];
+L = simple(I)*w_sist_quad + (Imx*(w1+w3)-Imy*(w2+w4))*[0; 0; 1];
 
 %La derivada de L es la derivada de L en el sistema relativo +w*L
 dL = simple(diff(L,t)+cross(w_sist_quad,L));
@@ -165,7 +165,7 @@ dL = subs(dL,diff(wq3),dwq3);
 
 
 %Momentos externos valen
-M_q = l*[-T1+T3; T2-T4;0];
+M_q = l*[T2-T4; T3-T1;0];
 
 %esto arma un sistema de ecuaciones de 3*3. La joda es despejar diff(theta,
 %t, t), diff(phi, t, t) y diff(psis, t, t)
