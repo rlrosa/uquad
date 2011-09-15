@@ -3,6 +3,7 @@
 
 #include <sys/socket.h>
 #include <sys/time.h>
+#include <sys/select.h>
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
@@ -14,12 +15,13 @@
 #define ERROR_OPEN -4
 #define ERROR_CLOSE -5
 #define ERROR_MALLOC -6
+#define ERROR_AVG_NOT_ENOUGH -7
 
 #define IMU_FRAME_INIT_CHAR 'A'
 #define IMU_FRAME_END_CHAR 'Z'
 #define IMU_INIT_END_SIZE 1
 #define IMU_DEFAULT_FRAME_SIZE_BYTES 16 // 4 bytes init/end chars, 2 bytes per sensor reading
-#define IMU_FRAME_SAMPLE_AVG_COUNT 16
+#define IMU_FRAME_SAMPLE_AVG_COUNT 16 // Reduce variance my taking avg
 #define IMU_DEFAULT_FS 10
 #define IMU_DEFAULT_T 0.1
 #define IMU_DEFAULT_GYRO_SENS 0
@@ -57,6 +59,8 @@ struct imu_null_estimates{
     struct timeval timestamp;
 };
 
+typedef struct imu_null_estimates imu_data;
+
 struct imu_settings{
     // sampling frequency
     unsigned int fs;
@@ -67,7 +71,7 @@ struct imu_settings{
     // 
     unsigned int frame_width_bytes;
 };
-    
+
 struct imu{
     struct imu_settings settings;
     struct imu_null_estimates null_estimates;
@@ -75,6 +79,8 @@ struct imu{
     struct timeval frame_avg_init,frame_avg_end;
     int frames_sampled;
     int unread_data;
+    int avg_ready;
+    imu_data avg;
     FILE * device;
 }imu;
 

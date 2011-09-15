@@ -61,7 +61,7 @@ static int gyro_scale_adjust(struct imu * imu, double * gyro_reading){
     // Note: Should be /300, but /450 seems to work better.
     // Will be sensor specific
     // Should get a true calibration instead of this.
-    *gyro_reading = (*gyro_reading)*0.92955;
+    *gyro_reading *= 0.92955;
     return ERROR_OK;
 }
 
@@ -72,7 +72,7 @@ static int acc_scale_adjust(struct imu * imu, double * acc_reading){
     return ERROR_OK;
 }
 
-static double imu_sens_g[IMU_SENS_OPT_COUNT] = {1.5,2,4,6};
+static double imu_sens_g[IMU_SENS_OPT_COUNT] = {1.5, 2, 4, 6};
 static int imu_sens_mv_per_g[IMU_SENS_OPT_COUNT] = {800,600,400,300};
 int imu_get_sens(int sens){
     if(!(sens<IMU_SENS_OPT_COUNT))
@@ -82,6 +82,19 @@ int imu_get_sens(int sens){
 
 static unsigned short int swap_LSB_MSB_16(unsigned short int a){
     return (((a&0xFF)<<8)|(a>>8));
+}
+
+static int imu_comm_avg(struct imu * imu){
+    int tmp,i,j;
+    for(i=0;i<IMU_SENSOR_COUNT;++i){// loop sensors
+	tmp = 0;
+	for(j=0;j<IMU_FRAME_SAMPLE_AVG_COUNT;++j)// loop sensor data
+	    tmp += (int)imu->frame_buffer[j].raw[i];
+	tmp /= IMU_FRAME_SAMPLE_AVG_COUNT;
+	imu->avg.xyzrpy[i] = (double)tmp;
+    }
+    imu->avg_ready = 1;
+    return ERROR_OK;
 }
 
 /** 
@@ -113,11 +126,9 @@ static int imu_read_frame(struct imu * imu){
     if(watchdog>=IMU_DEFAULT_FRAME_SIZE_BYTES)
 	return ERROR_READ_SYNC;
 
-    // At this point we should be ready to read the frame
-    // init char already read
+    // At this point we should be ready to read the frame, init char already read
 
     // Get count
-
     watchdog = 0;
     while(watchdog < READ_RETRIES){
 	retval = fread(& new_frame->count,IMU_BYTES_COUNT,1,imu->device);
@@ -133,11 +144,9 @@ static int imu_read_frame(struct imu * imu){
 	return ERROR_READ_TIMEOUT;
   
     // Generate timestamp
-
     gettimeofday(& new_frame->timestamp,NULL);
 
     // Read sensors RAW data
-
     watchdog = 0;
     read = 0;
     while(watchdog < READ_RETRIES){
@@ -159,8 +168,7 @@ static int imu_read_frame(struct imu * imu){
     for(i=0;i<IMU_SENSOR_COUNT;++i)
 	new_frame->raw[i] = swap_LSB_MSB_16(new_frame->raw[i]);
 
-    // Now get the end char
-
+    // Now read out the end char
     watchdog = 0;
     while(watchdog < READ_RETRIES){
 	retval = fread(&tmp,IMU_INIT_END_SIZE,1,imu->device);
@@ -179,10 +187,14 @@ static int imu_read_frame(struct imu * imu){
 	return ERROR_READ_TIMEOUT;
 
 
-    // Everything went ok
-
+    // Everything went ok, pat pat :)
     imu->frames_sampled += 1;
     imu->unread_data += 1;
+
+    // If we have enough samples then update avg
+    if(imu->unread_data == IMU_FRAME_SAMPLE_AVG_COUNT)
+	retval = imu_comm_avg(imu);
+
     return ERROR_OK;
 }
 
@@ -260,8 +272,18 @@ static int imu_get_latest_values(struct imu * imu, double * xyzrpy){
     return retval;
 }
 
+int imu_comm_get_avg(struct imu * imu, double * xyzrpy){
+    if(imu->avg_ready){
+	xyzrpy = imu->avg.xyzrpy;
+	imu->avg_ready = 0;
+	return ERROR_OK;
+    }
+    err_check(ERROR_AVG_NOT_ENOUGH,"Not enough samples to average");
+}
+
 int imu_comm_get_data(struct imu * imu, double * xyzrpy){
-    int retval;
+    int retval = ERROR_OK;
     retval = imu_get_latest_values(imu, xyzrpy);
     return retval;
 }
+
