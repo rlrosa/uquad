@@ -1,0 +1,444 @@
+\documentclass[slidestop,compress,mathserif,xcolor=svgnames,table]{beamer}
+
+\usepackage[spanish]{babel}
+\usepackage[latin1]{inputenc} % Ambos para solución de asuntos de idioma.
+\usepackage{amsmath, amsfonts, amssymb} % Matemáticas varias.
+\usepackage{longtable} % Tabla larga necesaria para el apéndice de simbología.
+%\usepackage{multimedia}
+\usepackage{movie15}
+\usepackage{enumitem}
+\usepackage{wrapfig}
+\usepackage{float}
+\setitemize{leftmargin=*}
+
+\setitemize[1]{label=\tiny$\blacksquare$}
+\setitemize[2]{label=\tiny$\bullet$}
+\setitemize[3]{label=\tiny$\bullet$}
+
+% --- Arreglos varios para la inclusion de imágenes
+\usepackage{subfigure}
+\DeclareGraphicsExtensions{.png,.jpg,.pdf,.mps,.gif,.bmp}
+
+% ================= CONFIGURACIÓN DEL BEAMER ====================
+% ===============================================================
+\mode<presentation>{
+% \usepackage{beamerthemeclassic}
+% \setbeameroption{show notes}
+% \setbeameroption{hide notes}
+\setbeameroption{notes on second screen}
+\setbeamercovered{transparent}
+% \usetheme{Warsaw}
+\usetheme{Frankfurt}
+% \usetheme{Berlin}
+% \usetheme{Madrid}
+% \usetheme{Antibes}
+% \usecolortheme{rose}
+% \usecolortheme{lily} % Beamer color theme
+% \usecolortheme{seahorse}
+% \usecolortheme{fly}
+% \usecolortheme[RGB={70,110,45}]{structure}	%verde primaveral
+\usecolortheme[RGB={100,12,20}]{structure}	%rojo sangre
+% \usecolortheme[RGB={30,40,30}]{structure}	% Luto
+% \usecolortheme[RGB={160,230,70}]{structure}	%verde manzana Grand-Smith
+\usefonttheme[onlymath]{serif}
+\usefonttheme{professionalfonts}
+\setbeamerfont{frametitle}{family=\rmfamily,shape=\scshape,size=\normalsize}
+\setbeamertemplate{frametitle}[default][center]
+}
+% Make a TOC appear before every section
+%\AtBeginSection[]
+%{\begin{frame}
+%  \tableofcontents[currentsection]
+% \end{frame}
+%}
+%\AtBeginNote{Notas:\par}
+
+
+% ========================= COMANDOS ============================
+% ===============================================================
+\newcommand{\ket}[1]{|#1\rangle}
+\newcommand{\bcol}{\begin{columns}[T]}
+\newcommand{\ecol}{\end{columns}}
+\newcommand{\col}[1][0.5]{\column{#1\textwidth}}
+\newenvironment{itemize*}%
+  {\begin{itemize}%
+    \setlength{\topsep}{10pt}%
+    \setlength{\itemsep}{0pt}%
+    \setlength{\parskip}{10pt}}%
+  {\end{itemize}
+}
+
+% =================== DATOS DEL DOCUMENTO =======================
+% ===============================================================
+\author{Manuel López, Santiago Paternain, Rodrigo Rosa, Matías Tailanián}
+\date{19 de Setiembre de 2011}
+\title{\textit{Implementación de un UAV con arquitectura de Quadcopter}}
+\subtitle{Primer Hito}
+
+
+
+% ===============================================================
+% ===============================================================
+% ================ COMIENZO DEL DOCUMENTO =======================
+% ===============================================================
+% ===============================================================
+
+
+
+\begin{document}
+
+% ========================= FRAME ===============================
+% ===============================================================
+\frame[plain]{
+  \titlepage
+}
+
+%% ========================= FRAME ===============================
+%% ===============================================================
+%\begin{frame}
+%\frametitle{Resumen}
+%\tableofcontents
+%\end{frame}
+
+
+\section{Panorama Global}
+% ========================= FRAME ===============================
+% ===============================================================
+\begin{frame}
+\frametitle{Panorama Global}
+
+%\begin{columns}
+
+%\column{2in}
+
+\begin{figure}[H]
+  \begin{center}
+  \includegraphics[width=.4\textwidth]{./Pics/quad.jpg}
+  \end{center}
+  %\vspace{-10pt}
+  %\caption{Espectrograma}
+  %\label{fig:espectrograma_ejemplo}
+\end{figure}
+
+Se desea implementar un vehículo aereo no comandado con arquitectura de cuadricóptero.\\
+\pause
+Para ello se adquirirá tanto la plataforma física como la electrónica necesaria para su implementación.\\
+\pause
+Una vez adquiridos los componentes se procederá a ensamblar y programar el sistema.\\
+
+
+
+%\column{2in}
+%a
+
+%\end{columns}
+\end{frame}
+
+\section{Arquitectura del Sistema}
+% ========================= FRAME ===============================
+% ===============================================================
+\begin{frame}
+\frametitle{Arquitectura del Sistema}
+El sistema a implementar puede ser descripto mediante el siguiente diagrama:
+
+\begin{figure}[H]
+  \begin{center}
+  \includegraphics[width=.9\textwidth]{./Pics/sistema.jpg}
+  \end{center}
+  %\vspace{-10pt}
+  %\caption{Espectrograma}
+  %\label{fig:espectrograma_ejemplo}
+\end{figure}
+
+\end{frame}
+
+\section{Planificación Original}
+% ========================= FRAME ===============================
+% ===============================================================
+\begin{frame}
+\frametitle{Planificación Original}
+
+\begin{figure}[H]
+  \begin{center}
+  \includegraphics[width=1.0\textwidth]{./Pics/ganttA1.jpg}
+  \end{center}
+  %\vspace{-10pt}
+  %\caption{Espectrograma}
+  %\label{fig:espectrograma_ejemplo}
+\end{figure}
+
+\end{frame}
+
+% ========================= FRAME ===============================
+% ===============================================================
+\begin{frame}
+\frametitle{Planificación Original}
+
+\begin{figure}[H]
+  \begin{center}
+  \includegraphics[width=1.0\textwidth]{./Pics/ganttA2.jpg}
+  \end{center}
+  %\vspace{-10pt}
+  %\caption{Espectrograma}
+  %\label{fig:espectrograma_ejemplo}
+\end{figure}
+
+\end{frame}
+
+%% ========================= FRAME ===============================
+%% ===============================================================
+%\begin{frame}
+%\frametitle{Planificación Original}
+%
+%\begin{figure}[H]
+%  \begin{center}
+%  \includegraphics[width=1.0\textwidth]{./Pics/ganttA3.jpg}
+%  \end{center}
+%  %\vspace{-10pt}
+%  %\caption{Espectrograma}
+%  %\label{fig:espectrograma_ejemplo}
+%\end{figure}
+%
+%\end{frame}
+
+\section{Avance}
+% ========================= FRAME ===============================
+% ===============================================================
+\begin{frame}
+\frametitle{Avance}
+
+Se han completado los siguientes puntos:
+\pause
+
+%\begin{columns}
+%\column{2in}
+\begin{itemize}
+\item Elección de la plataforma física.
+\pause
+\item Elección de los componentes electrónicos (instrumentación , comunicación).
+\pause
+\item Adquisición de los componentes.
+\pause
+\item Modelado físico.
+
+\end{itemize}
+%\column{2in}
+%a
+
+%\end{columns}
+\end{frame}
+
+\section{Dificultades}
+% ========================= FRAME ===============================
+% ===============================================================
+\begin{frame}
+\frametitle{Dificultades}
+
+Se encontraron las siguientes dificultades:
+\pause
+
+
+\begin{itemize}
+\item Falta de información acerca de los componentes.
+\pause
+\item Problemas de comunicación con la electrónica adquirida.
+\pause
+\item Dificultad para caracterizar ciertos componentes.
+\pause
+\item Daño accidental de algunos componentes.
+\pause
+\item Insuficiencia de la gestión de costos.
+
+\end{itemize}
+\pause
+Debido a estas dificultades no fue posible culminar la caracterización de motores ni la implementación de la comunicación entre el procesador y la instrumentación.\\
+\pause
+El presupuesto para imprevistos no consideraba como probable la avería de ciertos componentes que resultaron dañados.\\
+\pause
+Fue necesario obtener más financiación.
+\end{frame}
+
+\section{Consideraciones a futuro}
+% ========================= FRAME ===============================
+% ===============================================================
+\begin{frame}
+\frametitle{Consideraciones a futuro}
+
+Se plantean las siguientes consideraciones para el resto del proyecto:
+\pause
+
+
+\begin{itemize}
+\item Se repondrán los componentes dañados.
+\pause
+\item Se adquirirán repuestos para componentes para los cuales no se disponía de respaldo o plan  de contingencia inmediato.
+\pause
+\item Se adquirá de electrónica adicional como plan de contingencia en caso de que no sea posible reutilizar algunos componentes privatidos del cuadricóptero. 
+\pause
+\item Se replanificarán las actividades.
+
+\end{itemize}
+\end{frame}
+
+
+\section{Replanificación}
+% ========================= FRAME ===============================
+% ===============================================================
+\begin{frame}
+\frametitle{Replanificación}
+
+\begin{figure}[H]
+  \begin{center}
+  \includegraphics[width=1.0\textwidth]{./Pics/ganttB1.jpg}
+  \end{center}
+  %\vspace{-10pt}
+  %\caption{Espectrograma}
+  %\label{fig:espectrograma_ejemplo}
+\end{figure}
+
+\end{frame}
+
+% ========================= FRAME ===============================
+% ===============================================================
+\begin{frame}
+\frametitle{Replanificación}
+
+\begin{figure}[H]
+  \begin{center}
+  \includegraphics[width=1.0\textwidth]{./Pics/ganttB2.jpg}
+  \end{center}
+  %\vspace{-10pt}
+  %\caption{Espectrograma}
+  %\label{fig:espectrograma_ejemplo}
+\end{figure}
+
+\end{frame}
+
+% ========================= FRAME ===============================
+% ===============================================================
+\begin{frame}
+\frametitle{Replanificación}
+
+\begin{figure}[H]
+  \begin{center}
+  \includegraphics[width=1.0\textwidth]{./Pics/ganttB3.jpg}
+  \end{center}
+  %\vspace{-10pt}
+  %\caption{Espectrograma}
+  %\label{fig:espectrograma_ejemplo}
+\end{figure}
+
+\end{frame}
+
+% ========================= FRAME ===============================
+% ===============================================================
+\begin{frame}
+\frametitle{Planificación Nueva}
+
+\begin{figure}[H]
+  \begin{center}
+  \includegraphics[width=1.0\textwidth]{./Pics/ganttB4.jpg}
+  \end{center}
+  %\vspace{-10pt}
+  %\caption{Espectrograma}
+  %\label{fig:espectrograma_ejemplo}
+\end{figure}
+
+\end{frame}
+
+
+
+
+
+
+\end{document}
+
+
+
+
+% ================ FRAME TÍPICO CON FIGURA ======================
+% ===============================================================
+
+\begin{frame}
+\frametitle{¿Qué es un Parcial?}
+
+\begin{columns}
+
+\column{2in}
+\vspace{-25pt}
+\begin{figure}[h!]
+  \begin{center}
+  \includegraphics[width=.85\textwidth]{./Pics/Espectrograma_ejemplo.jpg}
+  \end{center}
+  \vspace{-10pt}
+  \caption{Espectrograma}
+  \label{fig:espectrograma_ejemplo}
+\end{figure}
+
+\column{2in}
+\begin{itemize}
+	\item \textbf{Item 1}:\pause
+  	\begin{itemize*}
+	  \item subitem 1 \pause
+	  \item subitem 2 \pause
+	  \item subitem 3 \pause
+	\end{itemize*}
+	\item \textbf{Item 2}
+\end{itemize}
+
+\end{columns}
+\end{frame}
+
+
+
+
+% ======================== FIGURAS ==============================
+% ===============================================================
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.75\textwidth]{./Pics/		.eps}
+	\caption{		}
+	\label{fig:		}
+\end{figure}
+
+\begin{figure} [h!]
+  \centering
+  \subfloat[caption 1]{\label{fig:		}
+  		\includegraphics[width=0.45\textwidth]
+  			{./Pics/		.eps}}
+  \subfloat[caption 2]{\label{fig:		} 
+  		\includegraphics[width=0.45\textwidth]
+  			{./Pics/ 		.eps}}
+  \caption{Caption general}
+  \label{fig:	label general	}
+\end{figure}
+
+\begin{wrapfigure}{l}{0.6\textwidth}
+  \vspace{-20pt}
+  \begin{center}
+    \includegraphics[width=0.45\textwidth]
+    	{./Pics/		.eps}
+  \end{center}
+  \vspace{-20pt}
+  \caption{		}
+  \label{ 		}
+  \vspace{-10pt}
+\end{wrapfigure}
+
+\begin{figure} [h!]
+  \begin{center}
+    \begin{tabular}{cc}
+      \resizebox{50mm}{!}
+      	{\includegraphics{./Pics/ 	.eps}} &
+      \resizebox{50mm}{!}
+      	{\includegraphics{./Pics/	.eps}} \\
+      \resizebox{50mm}{!}
+      	{\includegraphics{./Pics/	.eps}} &
+      \resizebox{50mm}{!}
+      	{\includegraphics{./Pics/	.eps}} \\
+    \end{tabular}
+    \caption{ 		}
+    \label{ 		}
+  \end{center}
+\end{figure}
