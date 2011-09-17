@@ -93,62 +93,37 @@
   \titlepage
 }
 
-%% ========================= FRAME ===============================
-%% ===============================================================
-%\begin{frame}
-%\frametitle{Resumen}
-%\tableofcontents
-%\end{frame}
-
-
 \section{Panorama Global}
-% ========================= FRAME ===============================
-% ===============================================================
 \begin{frame}
 \frametitle{Panorama Global}
 
-%\begin{columns}
+Diseñar e integrar un \textbf{sistema de control} que permita el vuelo \emph{autónomo} de un Cuadricópetro comercial.
+\pause
 
-%\column{2in}
+\begin{columns}
 
-\begin{figure}[H]
+\column{2.2in}
+
+\begin{figure}[h!]
   \begin{center}
-  \includegraphics[width=.4\textwidth]{./Pics/quad.jpg}
+  \includegraphics[width=.85\textwidth]{./Pics/quad.jpg}
   \end{center}
-  %\vspace{-10pt}
-  %\caption{Espectrograma}
-  %\label{fig:espectrograma_ejemplo}
 \end{figure}
 
-Se desea implementar un vehículo aereo no comandado con arquitectura de cuadricóptero.\\
+\column{2.2in}
+
+\begin{itemize}
+	\item Generador de rutas\pause
+	\item Instrumentación: obtener variables del sistema \pause
+	\item Actuador sobre motores
+\end{itemize}
+
+\end{columns}
 \pause
-Para ello se adquirirá tanto la plataforma física como la electrónica necesaria para su implementación.\\
-\pause
-Una vez adquiridos los componentes se procederá a ensamblar y programar el sistema.\\
-
-
-
-%\column{2in}
-%a
-
-%\end{columns}
-\end{frame}
-
-\section{Arquitectura del Sistema}
-% ========================= FRAME ===============================
-% ===============================================================
-\begin{frame}
-\frametitle{Arquitectura del Sistema}
-El sistema a implementar puede ser descripto mediante el siguiente diagrama:
-
-\begin{figure}[H]
-  \begin{center}
-  \includegraphics[width=.9\textwidth]{./Pics/sistema.jpg}
-  \end{center}
-  %\vspace{-10pt}
-  %\caption{Espectrograma}
-  %\label{fig:espectrograma_ejemplo}
-\end{figure}
+\vspace{15pt}
+No se diseñará ni la mecánica ni la electrónica del sistema.\\
+Se integrarán los componentes.\\
+Se conservará la posibilidad del manejo manual
 
 \end{frame}
 
@@ -158,74 +133,26 @@ El sistema a implementar puede ser descripto mediante el siguiente diagrama:
 \begin{frame}
 \frametitle{Planificación Original}
 
-\begin{figure}[H]
-  \begin{center}
-  \includegraphics[width=1.0\textwidth]{./Pics/ganttA1.jpg}
-  \end{center}
-  %\vspace{-10pt}
-  %\caption{Espectrograma}
-  %\label{fig:espectrograma_ejemplo}
-\end{figure}
+Al día de la fecha los objetivos planteados son:\pause
 
-\end{frame}
-
-% ========================= FRAME ===============================
-% ===============================================================
-\begin{frame}
-\frametitle{Planificación Original}
-
-\begin{figure}[H]
-  \begin{center}
-  \includegraphics[width=1.0\textwidth]{./Pics/ganttA2.jpg}
-  \end{center}
-  %\vspace{-10pt}
-  %\caption{Espectrograma}
-  %\label{fig:espectrograma_ejemplo}
-\end{figure}
-
-\end{frame}
-
-%% ========================= FRAME ===============================
-%% ===============================================================
-%\begin{frame}
-%\frametitle{Planificación Original}
-%
-%\begin{figure}[H]
-%  \begin{center}
-%  \includegraphics[width=1.0\textwidth]{./Pics/ganttA3.jpg}
-%  \end{center}
-%  %\vspace{-10pt}
-%  %\caption{Espectrograma}
-%  %\label{fig:espectrograma_ejemplo}
-%\end{figure}
-%
-%\end{frame}
-
-\section{Avance}
-% ========================= FRAME ===============================
-% ===============================================================
-\begin{frame}
-\frametitle{Avance}
-
-Se han completado los siguientes puntos:
-\pause
-
-%\begin{columns}
-%\column{2in}
 \begin{itemize}
-\item Elección de la plataforma física.
-\pause
-\item Elección de los componentes electrónicos (instrumentación , comunicación).
-\pause
-\item Adquisición de los componentes.
-\pause
-\item Modelado físico.
-
+\item \textcolor{green}{Elección del \emph{Hardware} necesario para el desarrollo del proyecto: elección del \emph{Quadcopter}, Microprocesador, Instrumentación, Comunicación.} \pause
+\item \textcolor{green}{Adelanto del modelado físico.}\pause
+\item \textcolor{red}{Caracterización de los motores.}\pause
+\item \textcolor{green}{Diseño de los algoritmos de control de los motores.}\pause
+\item Programación del microprocesador para comunicarse con PC. \pause
+	\begin{itemize}
+		\item \textcolor{green}{Comunicación serial}
+		\item \textcolor{green}{Comunicación ethernet}
+		\item \textcolor{red}{Comunicación Wifi}
+	\end{itemize} \pause
+\item Programación del microprocesador para comunicarse con la instrumentación.\pause
+	\begin{itemize}
+		\item \textcolor{green}{Programa en \emph{python} para leer datos en PC}
+		\item \textcolor{red}{Portar dicho programa a \textbf{C}}
+	\end{itemize}
 \end{itemize}
-%\column{2in}
-%a
 
-%\end{columns}
 \end{frame}
 
 \section{Dificultades}
@@ -234,52 +161,14 @@ Se han completado los siguientes puntos:
 \begin{frame}
 \frametitle{Dificultades}
 
-Se encontraron las siguientes dificultades:
-\pause
-
-
 \begin{itemize}
-\item Falta de información acerca de los componentes.
-\pause
-\item Problemas de comunicación con la electrónica adquirida.
-\pause
-\item Dificultad para caracterizar ciertos componentes.
-\pause
-\item Daño accidental de algunos componentes.
-\pause
-\item Insuficiencia de la gestión de costos.
-
+	\item Falta de información acerca de los componentes.\pause
+	\item Daño accidental de algunos componentes. \pause
+	\item Insuficiencia de la gestión de costos.
 \end{itemize}
-\pause
-Debido a estas dificultades no fue posible culminar la caracterización de motores ni la implementación de la comunicación entre el procesador y la instrumentación.\\
 \pause
 El presupuesto para imprevistos no consideraba como probable la avería de ciertos componentes que resultaron dañados.\\
-\pause
-Fue necesario obtener más financiación.
 \end{frame}
-
-\section{Consideraciones a futuro}
-% ========================= FRAME ===============================
-% ===============================================================
-\begin{frame}
-\frametitle{Consideraciones a futuro}
-
-Se plantean las siguientes consideraciones para el resto del proyecto:
-\pause
-
-
-\begin{itemize}
-\item Se repondrán los componentes dañados.
-\pause
-\item Se adquirirán repuestos para componentes para los cuales no se disponía de respaldo o plan  de contingencia inmediato.
-\pause
-\item Se adquirá de electrónica adicional como plan de contingencia en caso de que no sea posible reutilizar algunos componentes privatidos del cuadricóptero. 
-\pause
-\item Se replanificarán las actividades.
-
-\end{itemize}
-\end{frame}
-
 
 \section{Replanificación}
 % ========================= FRAME ===============================
@@ -287,68 +176,41 @@ Se plantean las siguientes consideraciones para el resto del proyecto:
 \begin{frame}
 \frametitle{Replanificación}
 
-\begin{figure}[H]
-  \begin{center}
-  \includegraphics[width=1.0\textwidth]{./Pics/ganttB1.jpg}
-  \end{center}
-  %\vspace{-10pt}
-  %\caption{Espectrograma}
-  %\label{fig:espectrograma_ejemplo}
-\end{figure}
+Entre el $1^{er}$ Hito y el 3 de Octubre no hay tareas planificadas.\\ \pause
+Dicho tiempo se utilizará para terminar las actividades pendientes.\\ \pause
 
+\vspace{20pt}
+
+\begin{Large}
+Plan de contingencia
+\end{Large}
+\pause
+\begin{itemize}
+	\item Adquirir repuestos \pause
+	\item Reparar componentes dañados
+\end{itemize}
+
+\vspace{15pt}
+\pause
+Dado el avance del proyecto, los objetivos para el segundo Hito son:
+\pause
+\begin{itemize}
+	\item Modelado físico del \emph{Quadcopter} 
+	\item Resultados del estudio del vuelo.
+	\item Simulador.
+	\item Generador de Rutas.
+	\item Comenzar el desarrollo de los algoritmos de control.
+\end{itemize}
 \end{frame}
 
-% ========================= FRAME ===============================
-% ===============================================================
 \begin{frame}
-\frametitle{Replanificación}
-
-\begin{figure}[H]
-  \begin{center}
-  \includegraphics[width=1.0\textwidth]{./Pics/ganttB2.jpg}
-  \end{center}
-  %\vspace{-10pt}
-  %\caption{Espectrograma}
-  %\label{fig:espectrograma_ejemplo}
-\end{figure}
-
+\vspace{100pt}
+\begin{center}
+\begin{huge}
+¿Preguntas?
+\end{huge}
+\end{center}
 \end{frame}
-
-% ========================= FRAME ===============================
-% ===============================================================
-\begin{frame}
-\frametitle{Replanificación}
-
-\begin{figure}[H]
-  \begin{center}
-  \includegraphics[width=1.0\textwidth]{./Pics/ganttB3.jpg}
-  \end{center}
-  %\vspace{-10pt}
-  %\caption{Espectrograma}
-  %\label{fig:espectrograma_ejemplo}
-\end{figure}
-
-\end{frame}
-
-% ========================= FRAME ===============================
-% ===============================================================
-\begin{frame}
-\frametitle{Planificación Nueva}
-
-\begin{figure}[H]
-  \begin{center}
-  \includegraphics[width=1.0\textwidth]{./Pics/ganttB4.jpg}
-  \end{center}
-  %\vspace{-10pt}
-  %\caption{Espectrograma}
-  %\label{fig:espectrograma_ejemplo}
-\end{figure}
-
-\end{frame}
-
-
-
-
 
 
 \end{document}
