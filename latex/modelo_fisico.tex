@@ -7,18 +7,150 @@
 
 Resulta imprescindible para controlar el quadcopter comprender cabalmente su comportamiento. Con esta óptica, lo que se busca es obtener el modelo más sencillo que sea capaz de representar adecuadamente al sistema. El objetivo de esta sección es el de realizar el desarrollo de dicho modelo. La forma de modelar el sistema elegida es un Modelo de Variables de Estado, de ahora en más MVE.
 
-Al tratarse de una plataforma comercial no se tienen datos sobre algunos de los parámetros fundamentales para el desarrollo de dicho modelo. Por ejemplo, no se conoce como es la respuesta de los motores (tanto velocidad como empuje), el tensor de inercia del sistema,etc. Por lo tanto dividiremos el análisis del modelo en varias etapas. La primera de ellas consiste en obtener las constantes del sistema, luego se procede a caracterizar la respuesta de los motores, a continuacion se  desarrolla el  modelo teórico, finalmente en la última sección se presentan los resultados obtenidos con dicho modelo y se contrastan con la realidad.    
+Al tratarse de una plataforma comercial no se tienen datos sobre algunos de los parámetros fundamentales para el desarrollo de dicho modelo. Por ejemplo, no se conoce como es la respuesta de los motores (tanto velocidad como empuje), el tensor de inercia del sistema,etc. Por lo tanto dividiremos el análisis del modelo en varias etapas. La primera de ellas consiste en obtener las constantes del sistema, luego se procede a caracterizar la respuesta de los motores, a continuación se  desarrolla el  modelo teórico, finalmente en la última sección se presentan los resultados obtenidos con dicho modelo y se contrastan con la realidad.
 
+Para el estudio en cuestión se considerará el quadcopter según las convenciones expresadas en la figura \ref{fig:quad		}:
+    
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.5\textwidth]{./pics_modelo_fisico/quad_coord.jpg}
+	\caption{Modelo del quadcopter	}
+	\label{fig:quad		}
+\end{figure}    
 \section{Constantes del sistema}
 
+\subsection{Dimensiones}
+
+\subsection{Masa del sistema}
+En una primera aproximación podemos descomponer al quadcopter en una esfera maciza en el centro, cuatro varillas y cuatro motores considerados como cilindros. La masa de los objetos que componen al sistema son:
+
+\begin{table}[H]
+\begin{tabular}{p{80pt}|p{80pt}|p{80pt}|p{80pt}|} 
+\cline{2-3}
+& \cellcolor[gray]{0.8} \textbf{Masa por elemento} 
+& \cellcolor[gray]{0.8} \textbf{Cantidad} 
+& \cellcolor[gray]{0.8} \textbf{Masa total} \\ \cline{2-4} \hline
+\multicolumn{1}{|p{80pt}|}{\cellcolor[gray]{0.8}\textbf{Esfera Central}} 
+&  & 1 & \\ \hline
+\multicolumn{1}{|p{80pt}|}{\cellcolor[gray]{0.8}\textbf{Varilla}} 
+&  & 4 & \\ \hline
+\multicolumn{1}{|p{80pt}|}{\cellcolor[gray]{0.8}\textbf{Motores}} 
+&  & 4 & \\ \hline
+\end{tabular}
+
+\begin{tabular}{p{80pt}|p{80pt}|}
+
+\multicolumn{1}{|p{80pt}|}{\cellcolor[gray]{0.8}\textbf{Masa Total}} &
+\end{tabular}
+\caption{Masas de los objetos que componen al sistema}
+\label{tab:masas}
+\end{table}
+
+
+
+\subsection{Tensor de inercia del sistema}
+\label{tensores}
+El tensor de inercia del sistema puede calcularse como la suma de los tensores de inercia de los rígidos que lo componen. Se considera como fue expresado anteriormente el centro del quadcopter como una esfera maciza. El tensor de inercia de dicha esfera puede calcularse a partir de la definición misma de tensor de inercia, sin embargo por ser una forma geométrica de vasto uso en el campo de la mecánica su tensor de inercia se encuentra ya tabulado. Sucede lo mismo con las restantes formas geométricas que componen al sistema. 
+
+En el caso de la esfera se tiene que el tensor de inercia respecto de  su centro de masa es: \\
+
+$\Pi_{G_E}^{\vec{i_q}, \vec{j_q}, \vec{k_q}}= M_E\left(\begin{array}{ccc}
+
+\frac{2R^2}{5}  &0&  0\\
+0  &\frac{2R^2}{5} & 0\\
+0  &0 & \frac{2R^2}{5} \\
+
+\end{array}\right) $\\
+
+En este caso el centro de masa del sistema corresponde al centro de masa de la esfera a partir de ciertas suposiciones que se realizan sobre la simetría del sistema. Por dicho motivo podemos afirmar que $\Pi_{G_E}^{\vec{i_q}, \vec{j_q}, \vec{k_q}} = \Pi_{O\prime _E}^{\vec{i_q}, \vec{j_q}, \vec{k_q}} $. A partir de las dimensiones y masas expresadas en las secciones anteriores se deduce que:\\
+$\Pi_{O\prime_E}^{\vec{i_q}, \vec{j_q}, \vec{k_q}}= \left(\begin{array}{ccc}
+
+  &0&  0\\
+0  & & 0\\
+0  &0 &  \\
+
+\end{array}\right) $\\
+Por otra parte el tensor de inercia de una varilla, cuya longitud coincide con el versor $\vec{i_q}$, respecto a su centro de masa tiene la forma:\\ 
+$\Pi_{G_{Vx}}^{\vec{i_q}, \vec{j_q}, \vec{k_q}}= M_V\left(\begin{array}{ccc}
+
+\frac{L^2}{6}  &0&  0\\
+0  &\frac{L^2}{12} & 0\\
+0  &0 & \frac{L^2}{12}  \\
+
+\end{array}\right) $\\ 
+
+Sin embargo resulta mucho más interesante obtener el tensor de inercia expresado respecto del centro de masa del sistema. Para realizar dicho cambio se utiliza el Teorema de Steiner. Dicho teorema afirma que: $\Pi_Q = \Pi_G +J_Q^{M,G}$, donde los términos de $J_Q^{M,G}$ pueden calcularse como: $(J_Q^{M,G})_{\alpha \beta} = M(G-Q)^2\delta_{\alpha \beta}-M(G-Q)_{\alpha}M(G-Q)_{\beta}$. El término $\delta_{\alpha \beta}$ es conocido como Delta de Kronecker. Su valor es uno si $\alpha =\beta$ y cero si $\alpha distinto \beta$. En el caso en consideración dicha matriz resulta en:\\
+
+$J_O\prime^{M_{Vx},G}= M_V \left(\begin{array}{ccc}
+
+0  &0&  0\\
+0  & (\frac{L}{2}+R)^2 & 0\\
+0  &0 & (\frac{L}{2}+R)^2  \\
+
+\end{array}\right) $ \\
+
+Por lo tanto el momento de inercia total de dicha varilla es:\\ 
+$\Pi_{O\prime_{Vx}}^{\vec{i_q}, \vec{j_q}, \vec{k_q}}=M_V \left(\begin{array}{ccc}
+
+\frac{L^2}{6}  &0&  0\\
+0  &\frac{L^2}{12}+(\frac{L}{2}+R)^2 & 0\\
+0  &0 & \frac{L^2}{12}+(\frac{L}{2}+R)^2  \\
+
+\end{array}\right)= \left(\begin{array}{ccc}
+
+\frac{L^2}{6}  &0&  0\\
+0  &\frac{L^2}{12}+(\frac{L}{2}+R)^2 & 0\\
+0  &0 & \frac{L^2}{12}+(\frac{L}{2}+R)^2  \\
+
+\end{array}\right)$\\
+
+Análogamente, el tensor de inercia de una varilla cuya longitud se encuentra respecto de la dirección $\vec{j_q}$ respecto del centro de masa del sistema es:\\
+$\Pi_{O\prime_{Vy}}^{\vec{i_q}, \vec{j_q}, \vec{k_q}}=M_V \left(\begin{array}{ccc}
+
+\frac{L^2}{12}+(\frac{L}{2}+R)^2  &0&  0\\
+0  &\frac{L^2}{6} & 0\\
+0  &0 & \frac{L^2}{12}+(\frac{L}{2}+R)^2  \\
+
+\end{array}\right)= \left(\begin{array}{ccc}
+
+\frac{L^2}{6}  &0&  0\\
+0  &\frac{L^2}{12}+(\frac{L}{2}+R)^2 & 0\\
+0  &0 & \frac{L^2}{12}+(\frac{L}{2}+R)^2  \\
+
+\end{array}\right)$\\
+
+Sucede algo similar en lo que respecta a los motores. Tendremos un tensor de inercia para los motores que se encuentran sobre la dirección $\vec{i_q}$ y otro para los motores que se encuentran sobre la dirección $\vec{j_q}$. Aproximando cada motor por un cilindro obtenemos en el primer caso el tensor de inercia tiene el valor: \\
+$\Pi_{O\prime_{Mx}}^{\vec{i_q}, \vec{j_q}, \vec{k_q}}=M_M\left(\begin{array}{ccc}
+
+\frac{r^2}{4}  &0&  0\\
+0  &\frac{r^2}{4}+(L+R+r)^2 & 0\\
+0  &0 & \frac{r^2}{2}+(L+R+r)^2  \\
+
+\end{array}\right)$
+
+En el otro caso se tiene que:\\
+$\Pi_{O\prime_{My}}^{\vec{i_q}, \vec{j_q}, \vec{k_q}}=M_M\left(\begin{array}{ccc}
+
+\frac{r^2}{4}+(L+R+r)^2  &0&  0\\
+0  &\frac{r^2}{4} & 0\\
+0  &0 & \frac{r^2}{2}+(L+R+r)^2  \\
+
+\end{array}\right)$
+
+El tensor de inercia del sistema completo puede calcularse como:\\
+$\Pi_{O\prime}^{\vec{i_q}, \vec{j_q}, \vec{k_q}} =\Pi_{O\prime_E}^{\vec{i_q}, \vec{j_q}, \vec{k_q}} + 2 \Pi_{O\prime_{Vx}}^{\vec{i_q}, \vec{j_q}, \vec{k_q}} + 2 \Pi_{O\prime_{Vy}}^{\vec{i_q}, \vec{j_q}, \vec{k_q}} + + 2 \Pi_{O\prime_{Mx}}^{\vec{i_q}, \vec{j_q}, \vec{k_q}}+ 2 \Pi_{O\prime_{My}}^{\vec{i_q}, \vec{j_q}, \vec{k_q}}$.\\ 
+Por lo tanto tenemos:\\
+
+$\Pi_{O\prime}^{\vec{i_q}, \vec{j_q}, \vec{k_q}} =$
 \section{Caracterización de los motores}
 
 
 \section{Desarrollo teórico}
 
+\ 
 \subsection{Sistema de Referencia}
 
-A lo largo del presente desarrollo se trabajará constantemente con dos sistemas de referencia; uno inercial\footnote{En esta sección se consideran sistemas inerciales en el sentido clásico} solidario a la tierra ($S_I$) y otro solidario al quadcopter ($S_q$). El sistema $S_q$ se puede obtener realizando tres rotaciones compuestas del sistema $S_I$, dichas rotaciones se muestran en la figura \ref{fig:rotaciones}. 
+A lo largo del presente desarrollo se trabajará constantemente con dos sistemas de referencia: uno inercial\footnote{En esta sección se consideran sistemas inerciales en el sentido clásico} solidario a la tierra ($S_I$) y otro solidario al quadcopter ($S_q$) como se muestra en la figura \ref{fig:}. El sistema $S_q$ se puede obtener realizando tres rotaciones compuestas del sistema $S_I$, dichas rotaciones se muestran en la figura \ref{fig:rotaciones}. 
 
 \begin{figure} [h!]
   \centering
@@ -35,10 +167,10 @@ A lo largo del presente desarrollo se trabajará constantemente con dos sistemas 
   \label{fig:rotaciones}
 \end{figure}
 
-La importancia del sistema $S_q$ radica en las simplificaciones que introduce a la hora de escribir las ecuaciones, ya que por ejemplo en dicho sistema el empuje de las helices, los torques que introducen y velocidades angulares de los motores del quadcopter tienen siempre la misma dirección. 
+La importancia del sistema $S_q$ radica en las simplificaciones que introduce a la hora de escribir las ecuaciones, ya que por ejemplo en dicho sistema el empuje de las hélices, los torques que introducen y velocidades angulares de los motores del quadcopter tienen siempre la misma dirección. 
 
 %TODO experto en paint tiene que hacer los propios dibujos
-Las tres transformaciones pueden reprsesentarse matricialmente de la siguiente forma: 
+Las tres transformaciones pueden representarse matricialmente de la siguiente forma: 
 
 
 \begin{small}
@@ -49,9 +181,9 @@ $H_I^1=\left(\begin{array}{ccc}
   -\sin\theta&\cos\theta&0\\
   0&0&1\\
   \end{array}\right)   H_1^2=\left(\begin{array}{ccc}
-  \cos\phi&0&\sin\phi\\
+  \cos\phi&0& -\sin\phi\\
   0&1&0\\
-  -\sin\phi&0&\cos\phi\\
+  \sin\phi&0&\cos\phi\\
   
   \end{array}\right)  H_2^q=\left(\begin{array}{ccc}
    1&0&0\\  
@@ -64,20 +196,22 @@ $H_I^1=\left(\begin{array}{ccc}
 \end{small}  
 La transformación de las coordenadas del sistema inercial al sistema solidario al quadcopter se obtiene realizando el producto de las tres matrices de rotación definidas.\\
 
-\begin{scriptsize}
+\begin{footnotesize}
 $H_I^q=H_I^1.H_1^2.H_2^q=\left(\begin{array}{ccc}
-\cos\phi\cos\theta& \cos\phi\sin\theta& \sin\phi\\
--\cos\psi\sin\theta - \cos\theta\sin\phi\sin\psi&\cos\psi\cos\theta - \sin\phi\sin\psi\sin\theta& \cos\phi\sin\psi\\
-\sin\psi\sin\theta - \cos\psi\cos\theta\sin\phi& - \cos\theta\sin\psi - \cos\psi\sin\phi\sin\theta& \cos\phi\cos\psi\\
-\end{array} \right)$
-\end{scriptsize}
+\cos\phi\cos\theta& \cos\phi\sin\theta& -\sin\phi\\
+ \cos\theta\sin\phi\sin\psi -\cos\psi\sin\theta &\cos \psi \cos \theta+ \sin\phi\sin\psi\sin\theta& \cos\phi\sin\psi\\
+\sin\psi\sin\theta + \cos\psi\cos\theta\sin\phi&  \cos\psi\sin\phi\sin\theta- \cos\theta\sin\psi & \cos\phi\cos\psi\\
+\end{array} \right)$\\
+\end{footnotesize}
+
  
-Adem?as de la relación entre las coordenadas de un sistema y del otro, es útil conocer la relación que existe entre la velocidad angular del sistema y las derivadas de los angulos de euler. 
+\subsection{Cinemática}
+Además de la relación entre las coordenadas de un sistema y del otro, es útil conocer la relación que existe entre la velocidad angular del sistema y las derivadas de los ángulos de euler. 
 Por como fue construido el sistema de referencia solidario al quadcopter, se deduce trivialmente que la velocidad angular del mismo se puede escribir como:\\
 
 $\vec{\omega}=w_{q1}\vec{i_q}+w_{q2}\vec{j_q}+w_{q3}\vec{k_q}=\dot{\theta}\vec{k}+\dot{\phi}\vec{j_1}+\dot{\psi}\vec{i_2}$\\
 
-Al realizar la última rotaci?on el vector $\vec{i_2}$ no se modifica. Por otra parte, multiplicando los vectores $\vec{k}$ y $\vec{j_1}$ por las matrices $H_1^2.H_2^q$ y $H_2^q$ respectivamente se puede obtener la velocidad angular del quadcopter en el sistema de coordenadas referido a el. Lo que tenemos entonces es:\\
+Al realizar la última rotación el vector $\vec{i_2}$ no se modifica. Por otra parte, multiplicando los vectores $\vec{k}$ y $\vec{j_1}$ por las matrices $H_1^2.H_2^q$ y $H_2^q$ respectivamente se puede obtener la velocidad angular del quadcopter en el sistema de coordenadas referido a el. Lo que tenemos entonces es:\\
 
 \begin{footnotesize}
 
@@ -93,18 +227,18 @@ $\left(\begin{array}{c}
 \dot{\phi}\\
 \dot{\theta}\\
 \end{array}\right)=\left(\begin{array}{c}
-\omega_{q1} - \omega_{q3}\tan\phi \cos\psi - \omega_{q2}\tan\phi \sin\psi\\
+\omega_{q1} + \omega_{q3}\tan\phi \cos\psi + \omega_{q2}\tan\phi \sin\psi\\
 \omega_{q2}\cos \psi - \omega_{q3}\sin\psi\\
 \omega_{q3} \frac{\cos\psi}{\cos\phi}  + \omega_{q2}\frac{\sin\psi}{\cos\phi} \\
 \end{array}\right)$\\
 
-De la misma forma deduciremos la relación que existe entre la velocidad del sistema expresada en el marco de referencia inercial con la velocidad expresada en el sistema de referencia solidario al quadcopter. Lo que tenemos es que: 
+De la misma forma deduciremos la relación que existe entre la velocidad del sistema expresada en el marco de referencia inercial con la velocidad expresada en el sistema de referencia solidario al quadcopter. Lo que tenemos es que: \\
 
 $\dot{x}\vec{i}+\dot{y}\vec{j}+\dot{z}\vec{k} = v1\vec{i_q}+v2\vec{j_q}+v3\vec{k_q}$\\
-Para pasar del un sistema de referencia al otro alcanza con multiplicar por la matriz de cambio de base definida previamente. Operando se obtiene la siguiente relación entre las magnitudes de interés.
 
-\begin{scriptsize}
+Para pasar del un sistema de referencia al otro alcanza con multiplicar por la matriz de cambio de base definida previamente. Operando se obtiene la siguiente relación entre las magnitudes de interés.\\
 
+\begin{footnotesize}
 
 
 
@@ -114,29 +248,34 @@ $\left( \begin{array}{c}
 \dot{y}\\
 \dot{z}
 \end{array}  \right) = \left( \begin{array}{c}
-v_{q1} \cos \phi \cos \theta - v_{q2} (\cos \phi \sin \theta + \cos \theta \sin \phi \sin \psi) + v_{q3}(\sin \psi \sin \theta - \cos \psi \cos \theta \sin \phi)  \\
-v_{q1} \cos \phi \sin \theta + v_{q2} (\cos \psi \cos \theta - \sin \theta \sin \phi \sin \psi) - v_{q3}(\cos \theta \sin \psi + \cos \psi \sin \theta \sin \phi) \\
-v_{q1} \sin \phi  + v_{q2} \cos \phi \sin \psi  + v_{q3}\cos \phi \cos \psi \\
-\end{array} \right)  $   
- 
-\end{scriptsize}
-Detendremos en este punto el análisis cinemático para considerar la dinámica del sistema. Para resolver el problema de la dinámica del sistema se consideran las ecuaciones cardinales.
+v_{q1} \cos \phi \cos \theta + v_{q2} ( \cos \theta \sin \phi \sin \psi-\cos \phi \sin \theta ) + v_{q3}(\sin \psi \sin \theta + \cos \psi \cos \theta \sin \phi)  \\
+v_{q1} \cos \phi \sin \theta + v_{q2} (\cos \psi \cos \theta + \sin \theta \sin \phi \sin \psi) + v_{q3}( \cos \psi \sin \theta \sin \phi-\cos \theta \sin \psi ) \\
+-v_{q1} \sin \phi  + v_{q2} \cos \phi \sin \psi  + v_{q3}\cos \phi \cos \psi \\
+\end{array} \right)  $\\   
+\end{footnotesize} 
 
-\subsection{Primera Cardinal}
+Detendremos en este punto el análisis cinemático para considerar la dinámica del sistema. 
+
+\subsection{Dinámica del Sistema}
+Existen diversas formas de atacar el problema de la dinámica de un sistema, en particular se puede encarar el problema desde la mecánica analítica o realizando consideraciones energéticas, sin embargo en este caso se elije trabajar con las ecuaciones cardinales. 
+\subsubsection{Primera Cardinal}
  
-La primer cardinal indica que en un sistema inercial la suma de las fuerzas externas a un objeto es igual a su masa total por su aceleración. Esto se puede escribir:
+La primer cardinal indica que en un sistema inercial la suma de las fuerzas externas a un objeto es igual a su masa total por su aceleración. Esto se puede escribir:\\
 \begin{large}
-\\$\sum \vec{F_{ext}} = M\vec{a}$\\
+$\sum \vec{F_{ext}} = M\vec{a}$\\
 \end{large}
 
 
-El vector aceleración se puede obtener derivando la velocidad. Para realizar la derivada de un vector expresado en un sistema móvil puede utilizarse la siguiente formula: 
+El vector aceleración se puede obtener derivando la velocidad. Para realizar la derivada de un vector expresado en un sistema móvil puede utilizarse la siguiente formula: \\
+\begin{large}
 
-$\frac{d\vec{A}}{dt} =\frac{d\prime\vec{A}}{dt}+\vec{\Omega}\times\vec{A} $ 
+$\frac{d\vec{A}}{dt} =\frac{d\prime\vec{A}}{dt}+\vec{\Omega}\times\vec{A} $ \\
 
-Operando se obtiene que: 
+\end{large}
+Operando se obtiene: \\
 
-$\vec{a} = (\dot{v_{q1}}+v_{q3} \omega_{q2} - v_{q2} \omega_{q3} )\vec{i_q} + (\dot{v_{q2}}+v_{q1} \omega_{q3} - v_{q3} \omega_{q1} )\vec{j_q}+(\dot{v_{q3}}+v_{q2} \omega_{q1} - v_{q1} \omega_{q2} )\vec{k_q} $. Las fuerzas que actúan sobre el sistema son los empujes de cada turbina y el peso. Los empujes ($T_i$ con $i=1..4$) son en el sentido de $\vec{k_q}$ mientras que el peso es en el sentido de $\vec{k}$. Para obtener el peso en el sistema $S_q$ alcanza con realizar el cambio de base del sistema $S_I$ al sistema solidario al quadcopter. El empuje de los motores puede escribirse como:
+$\vec{a} = (\dot{v_{q1}}+v_{q3} \omega_{q2} - v_{q2} \omega_{q3} )\vec{i_q} + (\dot{v_{q2}}+v_{q1} \omega_{q3} - v_{q3} \omega_{q1} )\vec{j_q}+(\dot{v_{q3}}+v_{q2} \omega_{q1} - v_{q1} \omega_{q2} )\vec{k_q} $.\\
+ Las fuerzas que actúan sobre el sistema son los empujes de cada turbina y el peso. Los empujes ($T_i$ con $i=1..4$) son en el sentido de $\vec{k_q}$ mientras que el peso es en el sentido de $\vec{k}$. Para obtener el peso en el sistema $S_q$ alcanza con realizar el cambio de base del sistema $S_I$ al sistema solidario al quadcopter. El empuje de los motores puede escribirse como:
 
 \begin{large}
 
@@ -159,10 +298,10 @@ $\left(\begin{array}{c}\dot{v_{q1}}\\
 v_{q2} \omega_{q3} - v_{q3} \omega_{q2}	\\
 v_{q3} \omega_{q1} - v_{q1} \omega_{q3}\\
 v_{q1} \omega_{q2} - v_{q2} \omega_{q1}\\
-\end{array}\right) - g\left(\begin{array}{c}
+\end{array}\right) + g\left(\begin{array}{c}
 \sin \phi\\
-\cos \phi \sin \psi\\
-\cos \phi \ cos \psi\\
+-\cos \phi \sin \psi\\
+-\cos \phi \ cos \psi\\
 
 \end{array}\right)+ \left(\begin{array}{c}
 0\\
@@ -174,9 +313,9 @@ v_{q1} \omega_{q2} - v_{q2} \omega_{q1}\\
 
 \end{large}
 
-\subsection{Segunda Cardinal}
+\subsubsection{Segunda Cardinal}
 
-La segunda cardinal indica que la derivada del momento angular de un sistema respecto a un punto (Q) es igual al torque externo que se ejerce sobre el mismo más un término que depende de la velocidad de dicho punto. La ecuación queda:\\
+La segunda cardinal indica que la derivada del momento angular de un sistema respecto a un punto Q es igual al torque externo que se ejerce sobre el mismo más un término que depende de la velocidad de dicho punto. La ecuación queda:\\
 
 
 \begin{large}
@@ -185,57 +324,50 @@ $\frac{d\vec{L_Q}}{dt} =M_Q^{ext}+M\vec{v_G}\ \times \dot{\vec{r_Q}} $\\
 
 \end{large}
 
-Asumiendo simetría del sistema, se puede considerar que el centro de masa del sistema se encuentra en el centro de la esfera principal del mismo. Esto no es completamente cierto ya que la batería del UAV queda por fuera de la esfera y los apoyos también, sin embargo se puede asume en una primera aproximación del modelo que si lo es.De esta forma si planteamos la segunda cardinal en el centro de masa obtenemos:\\
+Asumiendo simetría del sistema, se puede considerar que el centro de masa del sistema se encuentra en el centro de la esfera principal del mismo. Esto no es completamente cierto ya que la batería del UAV queda por fuera de la esfera y los apoyos también, sin embargo se puede asume en una primera aproximación del modelo que si lo es. De todas formas si planteamos la segunda cardinal en el centro de masa obtenemos:\\
 
 \begin{large}
 
 $\frac{d\vec{L_G}}{dt} =M_G^{ext}$\\
 \end{large} 
 
-Si nombramos a las turbinas como se observa en el esquema \ref{fig:quad_coord} se obtiene rapidamente que: 
-
-\begin{figure}[h!]
-	\centering
-	\includegraphics[width=0.85\textwidth]{./pics_modelo_fisico/quad_coord.jpg}
-	\caption{Descripción del problema}
-	\label{fig:quad_coord}
-\end{figure}
+Si nombramos a las turbinas como se observa en el esquema \ref{fig:		} se obtiene rapidamente que: \\
 
 \begin{large}
 $M_G^{ext} = L\left(\begin{array}{c}
-T3-T1\\
 T2-T4\\
+T3-T1\\
 0\\
-\end{array} \right)$
+\end{array} \right)$\\
 \end{large}
 
-Por otra parte el momento angular del sistema se compone del momento angular del quadcopter y de cada motor. Consideraremos el quadcopter sin los motores como un primer rigido y los motores cada uno como un rigido independiente.
+Por otra parte el momento angular del sistema se compone del momento angular del quadcopter y de cada motor. Consideraremos el quadcopter sin los motores como un primer rígido y los motores como cuatro rígidos independientes.
 
 EL momento angular de un rígido respecto a un punto Q puede calcularse como:\\
 
 \begin{large}
-$\vec{L_{Q_i}} = M_i(\vec{G_i-Q})\times\vec{V_Q}+\Pi_{Q_i}\vec{\Omega_i}$\\
+$\vec{L_Q} = M_i(\vec{G_i-Q})\times\vec{V_Q}+\Pi_{Q}\vec{\Omega_i}$\\
 \end{large}  
 
-Donde $M_i$, $G_i$, $\Pi_{Q_i}$ y $\vec{\Omega_i}$ son la masa de cada rigido, su centro de masa, su tensor de inercia y su velocidad angular respectivamente.
+Donde $M_i$, $G_i$, $\Pi_{Q}$ y $\vec{\Omega_i}$ son la masa de cada rígido, su centro de masa, su tensor de inercia y su velocidad angular respectivamente.
 
 Como se propuso anteriormente, se elije calcular el momento angular en el centro de masa del quadcopter. Asumiendo que los cuatro motores son idénticos podemos escribir el momento angular del quadcopter sin los motores como:\\
 
 \begin{large}
-$\vec{L_{G_q}} = (M-4 M_m)(\vec{G-G})\times\vec{V_G}+\Pi_{G_q}\vec{w_q}=\Pi_{G_q}\vec{\omega_q}$\\
+$\vec{L_{O\prime}} = (M-4 M_m)(\vec{O\prime-O\prime})\times\vec{V_O\prime}+\Pi_{O\prime_q}\vec{w_q}=\Pi_{O\prime_q}\vec{\omega_q}$\\
 
 \end{large} 
 
 Del mismo modo el momento angular del primer motor queda:\\
 
 \begin{large}
-$\vec{L_{G_{m1}}} = M_m L\vec{x\prime}\times\vec{V_G} + \Pi_{G_{m1}}\vec{\Omega_i} $\\
+$\vec{L_{O\prime_q}} = M_m L\vec{x\prime}\times\vec{V_O\prime} + \Pi_{O\prime_{Mx}}\vec{\Omega_i} $\\
 \end{large}
 
 Por la configuración del sistema se observa que al sumar el primer término de cada momento angular de los motores el resultado es cero. Por otra parte la velocidad angular de cada motor es $\vec{\Omega_i} = \vec{\omega_q}+\omega_i\vec{k\prime}$, donde $\omega_i$ es la velocidad con la que gira cada motor respecto de su eje principal. Nuevamente asumiendo que todos los motores son idénticos se tiene:\\
 
 \begin{large}
-$\vec{L_G} =\Pi_{G_q}\vec{\omega_q}+\Pi_{G_{m}}(4\vec{\omega_q}+\sum_{i=1}^{i=4}\omega_i\vec{k\prime})=(\Pi_{G_q}+4\Pi_{G_{m}})\vec{\omega_q}+\Pi_{G_{m}}\sum_{i=1}^{i=4}\omega_i\vec{k\prime} $\\
+$\vec{L_{O\prime}} =\Pi_{O\prime_q}\vec{\omega_q}+\Pi_{O\prime_{Mx}}(2\vec{\omega_q}+\omega_1\vec{k\prime}+\omega_3\vec{k\prime})+\Pi_{O\prime_{My}}(2\vec{\omega_q}-\omega_2\vec{k\prime}-\omega_4\vec{k\prime})=\Pi_{O\prime}\vec{\omega_q}+\Pi_{O\prime_{Mx}}(\omega_1+\omega_3)\vec{k\prime}-\Pi_{O\prime_{My}}(\omega_2+\omega_4)\vec{k\prime}$\\
 \end{large}
 
 Uno de los términos de la segunda cardinal es la derivada del momento angular. Tanto los tensores de inercia como las velocidades angulares se encuentran expresadas en el sistema relativo. Para realizar dicha derivada se puede utilizar la siguiente fórmula:\\
@@ -246,29 +378,27 @@ $\frac{d\vec{A}}{dt} =\frac{d\prime\vec{A}}{dt}+\vec{\Omega}\times\vec{A} $\\\
 
 En la ecuación anterior $\frac{d}{dt}$ representa la derivada temporal, mientras que $\frac{d\prime}{dt}$ representa la derivada temporal respecto del sistema móvil. Por otra parte $\vec{\Omega}$ es la velocidad angular del sistema móvil respecto al inercial. Lo que se obtiene de dicha derivada es:\\
 
-$\frac{d\vec{L_Q}}{dt} = (\Pi_{G_q}+4\Pi_{G_{m}})\dot{\vec{\omega_q}} +\Pi_{G_{m}}\sum_{i=1}^{i=4}\dot{\omega_i}\vec{k\prime}+\vec{\omega_q}\times((\Pi_{G_q}+4\Pi_{G_{m}})\vec{\omega_q}+\Pi_{G_{m}}\sum_{i=1}^{i=4}\omega_i\vec{k\prime} )$\\
+$\frac{d\vec{L_Q}}{dt} = \Pi_{O\prime}\dot{\vec{\omega_q}}+\Pi_{O\prime_{Mx}} (\dot{\omega_1} +\dot{\omega_3})\vec{k\prime}-\Pi_{O\prime_{My}}(\dot{\omega_2}+\dot{\omega_2})\vec{k\prime}+\vec{\omega_q}\times(\Pi_{O\prime}\vec{\omega_q}+\Pi_{O\prime_{Mx}}(\omega_1+\omega_3)\vec{k\prime}-\Pi_{O\prime_{My}}(\omega_2+\omega_4)\vec{k\prime})$\\
 
-En la ecuación anterior se puede hacer la siguiente simplificación: $\Pi_G = (\Pi_{G_q}+4\Pi_{G_{m}})$, donde $\Pi_G$ es el momento de inercia de todo el sistema en su centro de masa. 
 
-A partir del cálculo de esta derivada y de los momentos externos hallados anteriormente, podemos escribir la segunda cardinal. Operando con dicha ecuación se la puede llevar a la forma:\\
+A partir del cálculo de esta derivada y de los momentos externos hallados anteriormente, podemos escribir la segunda cardinal. Teniendo en cuenta que los terminos $I_{zz_mx}$ y $I_{zz_my}$ son identcos y operando con dicha ecuación se la puede llevar a la forma:\\
 
-\begin{huge}
-ASUMO QUE LOS TENSORES DE INERCIA SON TODOS DIAGONALES\\
-\end{huge}
+\begin{large}
+
 
 $\left(\begin{array}{c}
 \dot{\omega_{q1}}\\
 \dot{\omega_{q2}}\\
 \dot{\omega_{q3}}\\
 \end{array}\right) = \left(\begin{array}{c}
-\frac{\omega_{q2}\omega_{q3}(I_{yy}-I_{zz})+L(T_3-T_1)+\omega_{q2}I_{zz_m}(\omega_1+\omega_2+\omega_3+\omega_4)}{I_{xx}}\\
+\frac{\omega_{q2}\omega_{q3}(I_{yy}-I_{zz})+L(T_2-T_4)+\omega_{q2}I_{zz_m}(\omega_1-\omega_2+\omega_3-\omega_4)}{I_{xx}}\\
 
-\frac{\omega_{q1}\omega_{q3}(-I_{xx}+I_{zz})+L(T_2-T_4)+\omega_{q1}I_{zz_m}(\omega_1+\omega_2+\omega_3+\omega_4)}{I_{yy}}\\
+\frac{\omega_{q1}\omega_{q3}(-I_{xx}+I_{zz})+L(T_3-T_1)+\omega_{q1}I_{zz_m}(\omega_1-\omega_2+\omega_3-\omega_4)}{I_{yy}}\\
 
-\frac{\omega_{q1}\omega_{q2}(I_{xx}-I_{yy})-I_{zz_m}(\dot{w_1}+\dot{w_2}+\dot{w_3}+\dot{w_4})}{I_{zz}}\\
+\frac{\omega_{q1}\omega_{q2}(I_{xx}-I_{yy})-I_{zz_m}(\dot{w_1}-\dot{w_2}+\dot{w_3}-\dot{w_4})}{I_{zz}}\\
 
 \end{array}\right)$
-
+\end{large}
  
 \subsection{Modelo en variables de Estado}
 \subsection{Algunas consideraciones adicionales sobre el modelo}
