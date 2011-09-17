@@ -1,5 +1,5 @@
 from visual import *
-display(title='Quad', background=(255,255,255))
+# display(title='Quad', background=(255,255,255))
 # Ejes absolutos
 arrow(pos=(-35,-30,30),axis=(30,0,0),shaftwidth=2,color=color.blue)
 label(pos=(-5,-30,30), text='y', yoffset=12, height=20, box=0, opacity=0, color=color.black, line=0)
