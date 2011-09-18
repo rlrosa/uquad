@@ -117,6 +117,8 @@ static int imu_comm_avg(struct imu * imu){
 	imu->avg.xyzrpy[i] = (double)tmp;
     }
     imu->avg_ready = 1;
+    imu->unread_data = 0;
+    imu->frames_sampled = 0;//TODO fix this.
     return ERROR_OK;
 }
 
@@ -128,18 +130,23 @@ static int imu_comm_avg(struct imu * imu){
  * 
  * @return error code
  */static int imu_comm_get_sync(struct imu * imu, uquad_bool_t * in_sync){
-    int retval = ERROR_OK;
+    int retval;
     *in_sync = false;
     unsigned char tmp = '@';// Anything diff from IMU_FRAME_INIT_CHAR
     retval = fread(&tmp,IMU_INIT_END_SIZE,1,imu->device);
-    if(retval == 0){
-	err_check(ERROR_READ_TIMEOUT,"Read error...");
+    if(retval < 0){	
+	err_check(ERROR_IO,"Read error: failed to get sync char...");
     }else{
-	if(tmp == IMU_FRAME_INIT_CHAR)
-	    // No error printing, leave that for upper level
-	    *in_sync = true;
+	if(retval > 0){
+	    if(tmp == IMU_FRAME_INIT_CHAR){
+		// No error printing, leave that for upper level
+		*in_sync = true;
+	    }
+	}
     }
-    return ERROR_OK;// otherwise it'll be # of bytes read
+    // If we read 0 then there is no data available, so no sync and no error.
+    // Set retval to ERROR_OK, otherwise it'll be # of bytes read
+    return ERROR_OK;
 }
 
 /** 
@@ -151,7 +158,7 @@ static int imu_comm_avg(struct imu * imu){
  * 
  * @return error code
  */
-static int imu_read_frame(struct imu * imu){
+int imu_comm_read_frame(struct imu * imu){
     int retval = ERROR_OK,watchdog,read,i;
     unsigned char tmp = '@';// Anything diff from IMU_FRAME_INIT_CHAR
     struct imu_frame * new_frame;
@@ -161,15 +168,18 @@ static int imu_read_frame(struct imu * imu){
     watchdog = 0;
     while(watchdog < READ_RETRIES){
 	retval = fread(& new_frame->count,IMU_BYTES_COUNT,1,imu->device);
-	if(retval == 0){
-	    err_check(ERROR_READ_TIMEOUT,"Read error...");
-	}else{
+	if(retval == 1){
 	    break;
+	}else{
+	    if(retval < 0){
+		err_check(ERROR_IO,"Read error: Failed to read count...");
+	    }else{
+		++watchdog;
+	    }
 	}
-	++watchdog;
     }
     if(watchdog>=READ_RETRIES){
-	err_check(ERROR_READ_TIMEOUT,"Read error...");
+	err_check(ERROR_READ_TIMEOUT,"Read error: Timed out waiting for count...");
     }
 
     // Generate timestamp
@@ -180,18 +190,21 @@ static int imu_read_frame(struct imu * imu){
     read = 0;
     while(watchdog < READ_RETRIES){
 	retval = fread(new_frame->raw + read,IMU_BYTES_PER_SENSOR,IMU_SENSOR_COUNT-read,imu->device);
-	if(retval == 0){
-	    err_check(ERROR_READ_TIMEOUT,"Read error...");
-	}else{
+	if(retval > 0){
 	    read += retval;
 	    if(read == IMU_SENSOR_COUNT)
 		// done reading
 		break;
+	}else{
+	    if(retval < 0){
+		err_check(ERROR_IO,"Read error: Failed to read sensor data...");
+	    }else{
+		++watchdog;
+	    }
 	}
-	++watchdog;
     }
     if(watchdog>=READ_RETRIES){
-	err_check(ERROR_READ_TIMEOUT,"Read error...");
+	err_check(ERROR_READ_TIMEOUT,"Read error: Timed out waiting for sensor data...");
     }
 
     // Change LSB/MSB
@@ -202,18 +215,21 @@ static int imu_read_frame(struct imu * imu){
     watchdog = 0;
     while(watchdog < READ_RETRIES){
 	retval = fread(&tmp,IMU_INIT_END_SIZE,1,imu->device);
-	if(retval == 0){
-	    err_check(ERROR_READ_TIMEOUT,"Read error...");
-	}else{
+	if(retval > 0){
 	    if(tmp == IMU_FRAME_END_CHAR)
 		break;
 	    else
 		return ERROR_READ_SYNC;
+	}else{
+	    if(retval < 0){
+		err_check(ERROR_IO,"Read error: Failed to read end char...");
+	    }else{
+		++watchdog;
+	    }
 	}
-	++watchdog;
     }
     if(watchdog>=READ_RETRIES){
-	err_check(ERROR_READ_TIMEOUT,"Read error...");
+	err_check(ERROR_READ_TIMEOUT,"Read error: Timed out waiting for end char...");
     }
 
     // Everything went ok, pat pat :)
@@ -286,7 +302,7 @@ static int imu_comm_acc_read(struct imu * imu, struct imu_frame * frame, double 
 static int imu_comm_get_latest_values(struct imu * imu, imu_data_t * data){
     int retval = ERROR_OK;
     while(imu->unread_data <= 0){
-	retval = imu_read_frame(imu);
+	retval = imu_comm_read_frame(imu);
 	err_propagate(retval);
     }
 
@@ -305,9 +321,17 @@ static int imu_comm_get_latest_values(struct imu * imu, imu_data_t * data){
     return retval;
 }
 
-int imu_comm_get_avg(struct imu * imu, double * xyzrpy){
-    if(imu->avg_ready){
-	xyzrpy = imu->avg.xyzrpy;
+uquad_bool_t imu_comm_avg_ready(struct imu * imu){
+    return imu->avg_ready;
+}
+
+int imu_comm_get_avg(struct imu * imu, imu_data_t * data){
+    int i;
+    if(imu_comm_avg_ready(imu)){
+	for(i=0;i<IMU_SENSOR_COUNT;++i){
+	    data->xyzrpy[i] = imu->avg.xyzrpy[i];
+	}
+	data->timestamp = imu->avg.timestamp;
 	imu->avg_ready = 0;
 	return ERROR_OK;
     }
@@ -351,3 +375,30 @@ int imu_comm_calibrate(struct imu * imu){
     //TODO implement!
     err_check(ERROR_FAIL,"Not implemented!");
 }
+
+int imu_comm_print_frame(struct imu_frame * frame, FILE * stream){
+    int i;
+    if(stream == NULL){
+	stream = stdout;
+    }
+    fprintf(stream,"sec|usec:%d|%d\n",(int)frame->timestamp.tv_sec,(int)frame->timestamp.tv_usec);
+    for(i=0;i<IMU_SENSOR_COUNT;++i){
+	fprintf(stream,"%d\t",frame->raw[i]);
+    }
+    fprintf(stream,"\n");
+    return ERROR_OK;
+}    
+
+int imu_comm_print_data(imu_data_t * data, FILE * stream){
+    int i;
+    if(stream == NULL){
+	stream = stdout;
+    }
+    fprintf(stream,"sec|usec:%d|%d\n",(int)data->timestamp.tv_sec,(int)data->timestamp.tv_usec);
+    for(i=0;i<IMU_SENSOR_COUNT;++i){
+	fprintf(stream,"%f\t",data->xyzrpy[i]);
+    }
+    fprintf(stream,"\n");
+    return ERROR_OK;
+}
+

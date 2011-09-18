@@ -9,6 +9,6 @@
 #define ERROR_IO -8
 
 #define err_propagate(retval) if(retval!=ERROR_OK)return retval;
-#define err_check(retval,msg) if(retval!=ERROR_OK){fprintf(stderr,msg);return retval;}
+#define err_check(retval,msg) if(retval!=ERROR_OK){fprintf(stderr,"%s:%d: %s",__FILE__,__LINE__,msg);return retval;}
 
 /// No functions

@@ -83,11 +83,19 @@ int imu_comm_disconnect(struct imu * imu);
 
 int imu_comm_deinit(struct imu * imu);
 
+uquad_bool_t imu_comm_avg_ready(struct imu * imu);
+
+int imu_comm_get_avg(struct imu * imu, imu_data_t * data);
+
 int imu_comm_get_data(struct imu * imu, imu_data_t * data);
 
 int imu_comm_poll(struct imu * imu, uquad_bool_t * ready);
 
+int imu_comm_read_frame(struct imu * imu);
+
 int imu_comm_calibrate(struct imu * imu);
+
+int imu_comm_print_data(imu_data_t * data, FILE * stream);
 
 #endif // IMU_COMM_H
 
