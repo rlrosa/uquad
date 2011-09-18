@@ -6,4 +6,4 @@
   #endif //true
 #endif //UQUAD_BOOL
 
-typedef uquad_bool UQUAD_BOOL;
+typedef UQUAD_BOOL uquad_bool_t;

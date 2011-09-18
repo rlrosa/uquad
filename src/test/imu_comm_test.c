@@ -34,8 +34,8 @@ int main(int argc, char *argv[]){
     quit_if_not_ok(retval);
 
     // do stuff...
-    imu_data data;
-    uquad_bool data_ready = false;
+    imu_data_t data;
+    uquad_bool_t data_ready = false;
     int i;
     FD_ZERO(&rfds);
     printf("Press any key to abort..\n");
@@ -43,7 +43,7 @@ int main(int argc, char *argv[]){
 	// Run loop until user presses any key or velociraptors chew through the power cable
 	FD_SET(STDIN_FILENO,&rfds);
 	tv.tv_sec = 0;
-	tv.tv_usec = 1000*500;// Wait 500ms (tune this?)
+	tv.tv_usec = 0;
 	retval = select(STDIN_FILENO+1,&rfds,NULL,NULL,&tv);
 	if (retval != 0){
 	    if(retval<0){
@@ -59,20 +59,19 @@ int main(int argc, char *argv[]){
 	    // begin:Useful part of the test
 	    // -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 	    retval = imu_comm_poll(imu,&data_ready);
-	    quit_if_not_ok(retval);
 	    if(data_ready){
 		// IMU will do ADC conv, send, then next sensor, send, etc
 		// We nead to wait for the ADC and for the comm delays.
 		// See imu_comm.h for more info.
 		// We should wait for this, then read out all the info.
 		usleep(120);
-		retval = imu_comm_get_data(imu,xyzrpy);
+		retval = imu_comm_get_data(imu,&data);
 		quit_if_not_ok(retval);
-		
+		fprintf(stdout,"sec|usec:%d|%d\n",(int)data.timestamp.tv_sec,(int)data.timestamp.tv_usec);
 		for(i=0;i<IMU_SENSOR_COUNT;++i){
-		    printf(stdout,"%l\t",xyzrpy[i]);
+		    fprintf(stdout,"%f\t",data.xyzrpy[i]);
 		}
-		printf(stdout,"%l\t",xyzrpy[i]);
+		fprintf(stdout,"\n");
 
 	    }
 	    // end:Useful part of the test

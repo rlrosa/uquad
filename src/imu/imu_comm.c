@@ -2,6 +2,7 @@
 
 struct imu * imu_comm_init(void){
     struct imu * imu;
+    int i;
     imu = (struct imu *)malloc(sizeof(struct imu));
     if(imu == NULL){
 	fprintf(stderr,"Failed to allocate mem. \n");
@@ -12,8 +13,13 @@ struct imu * imu_comm_init(void){
     imu->unread_data = 0;
     imu->settings.fs = IMU_DEFAULT_FS;
     imu->settings.T = IMU_DEFAULT_T;
-    imu->settings.gyro_sens = IMU_DEFAULT_GYRO_SENS;
+    imu->settings.acc_sens = IMU_DEFAULT_ACC_SENS;
     imu->settings.frame_width_bytes = IMU_DEFAULT_FS;
+    for(i=0;i<IMU_SENSOR_COUNT;++i){
+	imu->null_estimates.xyzrpy[i] = (1<< (IMU_ADC_BITS - 1)); // Set to mid scale
+    }
+    imu->null_estimates.timestamp.tv_sec = 0;
+    imu->null_estimates.timestamp.tv_usec = 0;
     return imu;
 }
 
@@ -51,9 +57,18 @@ static double grad2rad(double degrees){
     return degrees*0.017453292519943295;
 }
 
+#if 0
 static double rad2grad(double radians){
     // 180/PI == 57.29577951308232
     return radians*57.29577951308232;
+}
+#endif
+
+static double counts2volts(struct imu * imu, double * acc){
+    // Convert from count to m/s^2
+    // m/s^2 = counts*vref/counts_full_scale
+    *acc = (*acc)*IMU_ADC_COUNTS_2_VOLTS;
+    return ERROR_OK;
 }
 
 static int gyro_scale_adjust(struct imu * imu, double * gyro_reading){
@@ -72,12 +87,20 @@ static int acc_scale_adjust(struct imu * imu, double * acc_reading){
     return ERROR_OK;
 }
 
-static double imu_sens_g[IMU_SENS_OPT_COUNT] = {1.5, 2, 4, 6};
-static int imu_sens_mv_per_g[IMU_SENS_OPT_COUNT] = {800,600,400,300};
+//static double imu_sens_g[IMU_SENS_OPT_COUNT] = {1.5, 2, 4, 6};
+//static int imu_sens_mv_per_g[IMU_SENS_OPT_COUNT] = {800,600,400,300};
+static double imu_sens_mv_per_g[IMU_SENS_OPT_COUNT] = {1.8750,3.3333,13.3333,30};//1000*imu_sens_g/imu_sens_mv_per_g
 int imu_get_sens(int sens){
     if(!(sens<IMU_SENS_OPT_COUNT))
 	return ERROR_FAIL;
     return imu_sens_mv_per_g[sens];
+}
+
+static int volts2g(int sens, double * val_to_convert){
+    if(!(sens<IMU_SENS_OPT_COUNT))
+	return ERROR_FAIL;
+    *val_to_convert = (*val_to_convert)*imu_sens_mv_per_g[sens];
+    return ERROR_OK;
 }
 
 static unsigned short int swap_LSB_MSB_16(unsigned short int a){
@@ -104,18 +127,19 @@ static int imu_comm_avg(struct imu * imu){
  * @param imu 
  * 
  * @return error code
- */static int imu_comm_get_sync(struct imu * imu){
-    int retval = ERROR_OK,watchdog;
+ */static int imu_comm_get_sync(struct imu * imu, uquad_bool_t * in_sync){
+    int retval = ERROR_OK;
+    *in_sync = false;
     unsigned char tmp = '@';// Anything diff from IMU_FRAME_INIT_CHAR
     retval = fread(&tmp,IMU_INIT_END_SIZE,1,imu->device);
     if(retval == 0){
 	err_check(ERROR_READ_TIMEOUT,"Read error...");
     }else{
-	if(tmp != IMU_FRAME_INIT_CHAR)
+	if(tmp == IMU_FRAME_INIT_CHAR)
 	    // No error printing, leave that for upper level
-	    return ERROR_READ_SYNC;
+	    *in_sync = true;
     }
-    return retval;
+    return ERROR_OK;// otherwise it'll be # of bytes read
 }
 
 /** 
@@ -155,7 +179,7 @@ static int imu_read_frame(struct imu * imu){
     watchdog = 0;
     read = 0;
     while(watchdog < READ_RETRIES){
-	retval = fread(new_frame->raw + read,IMU_BYTES_PER_SENSOR,IMU_SENSOR_COUNT,imu->device);
+	retval = fread(new_frame->raw + read,IMU_BYTES_PER_SENSOR,IMU_SENSOR_COUNT-read,imu->device);
 	if(retval == 0){
 	    err_check(ERROR_READ_TIMEOUT,"Read error...");
 	}else{
@@ -216,7 +240,7 @@ static int imu_read_frame(struct imu * imu){
  * 
  * @return error code
  */
-static int imu_gyro_read(struct imu * imu, struct imu_frame * frame, double * gyro_reading){
+static int imu_comm_gyro_read(struct imu * imu, struct imu_frame * frame, double * gyro_reading){
     int retval = ERROR_OK, i;
     for(i = 0; i<IMU_GYROS; ++i){
 	gyro_reading[i] = ((double) *(frame->raw + IMU_ACCS + i)) - imu->null_estimates.xyzrpy[IMU_ACCS + i];
@@ -236,12 +260,15 @@ static int imu_gyro_read(struct imu * imu, struct imu_frame * frame, double * gy
  * 
  * @return error code
  */
-static int imu_acc_read(struct imu * imu, struct imu_frame * frame, double * acc_reading){
+static int imu_comm_acc_read(struct imu * imu, struct imu_frame * frame, double * acc_reading){
     int retval = ERROR_OK, i;
     for(i = 0; i<IMU_ACCS; ++i){
 	// Avoid math on char to be able to hanlde negative results
 	acc_reading[i] = ((double) * (frame->raw + i)) - imu->null_estimates.xyzrpy[i];
-	acc_reading[i] = grad2rad(acc_reading[i]);
+	retval = counts2volts(imu,acc_reading+i);
+	err_propagate(retval);
+	retval = volts2g(imu->settings.acc_sens,acc_reading+i);
+	err_propagate(retval);
 	retval = acc_scale_adjust(imu,acc_reading+i);
 	err_propagate(retval);
     }
@@ -256,22 +283,22 @@ static int imu_acc_read(struct imu * imu, struct imu_frame * frame, double * acc
  * 
  * @return error code
  */
-static int imu_get_latest_values(struct imu * imu, imu_data * data){
+static int imu_comm_get_latest_values(struct imu * imu, imu_data_t * data){
     int retval = ERROR_OK;
     while(imu->unread_data <= 0){
 	retval = imu_read_frame(imu);
 	err_propagate(retval);
     }
 
-    struct imu_frame * frame = imu->frame_buffer + imu->frames_sampled;
+    struct imu_frame * frame = imu->frame_buffer + imu->frames_sampled - 1;
     data->timestamp = frame->timestamp;
 
     // Get ACC readings
-    retval = imu_acc_read(imu, frame, & data->xyzrpy);
+    retval = imu_comm_acc_read(imu, frame, data->xyzrpy);
     err_propagate(retval);
 
     // Get gyro reading
-    retval = imu_gyro_read(imu, frame, & data->xyzrpy);
+    retval = imu_comm_gyro_read(imu, frame, data->xyzrpy + IMU_ACCS);
     err_propagate(retval);
 
     imu->unread_data -= 1;
@@ -287,20 +314,19 @@ int imu_comm_get_avg(struct imu * imu, double * xyzrpy){
     err_check(ERROR_IMU_AVG_NOT_ENOUGH,"Not enough samples to average");
 }
 
-int imu_comm_get_data(struct imu * imu, imu_data * data){
+int imu_comm_get_data(struct imu * imu, imu_data_t * data){
     int retval = ERROR_OK;
-    retval = imu_get_latest_values(imu, data);
+    retval = imu_comm_get_latest_values(imu, data);
     return retval;
 }
 
-int imu_comm_poll(struct imu * imu, uquad_bool ready){
+int imu_comm_poll(struct imu * imu, uquad_bool_t * ready){
     fd_set rfds;
     struct timeval tv;
     *ready = false;
     int retval, fd = fileno(imu->device);
     FD_ZERO(&rfds);
     FD_SET(fd,&rfds);
-    FD_SET(STDIN_FILENO,&rfds);
     tv.tv_sec = 0;
     tv.tv_usec = 0;//(int)ceil(1000*1000*imu->T);
     // Check if we can read without blocking
@@ -310,18 +336,16 @@ int imu_comm_poll(struct imu * imu, uquad_bool ready){
 	    err_check(ERROR_IO,"select() failed!");
 	}else{
 	    // No data available
+	    *ready = false;
 	    return ERROR_OK;
 	}
     }else{
 	// Ready to read. Check if in sync
-	retval = imu_comm_get_sync(imu);
+	retval = imu_comm_get_sync(imu,ready);
 	err_propagate(retval);
-	// If we reached this point then we are ready to read
-	*ready = true;
     }
     return retval;
 }
-	
 
 int imu_comm_calibrate(struct imu * imu){
     //TODO implement!
