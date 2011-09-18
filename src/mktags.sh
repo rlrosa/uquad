@@ -11,7 +11,8 @@ fi
 ETAGS_DIR=/home/rrosa/work/uquad/src/
 
 
-SCAN_DIRS=(imu)
+SCAN_DIRS=(imu
+           common)
 
 
 cd $ETAGS_DIR

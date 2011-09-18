@@ -98,7 +98,28 @@ static int imu_comm_avg(struct imu * imu){
 }
 
 /** 
- * Reads data until a frame init char is found.
+ * Reads 1 byte, expecting it to be IMU_FRAME_INIT_CHAR.
+ * NOTE: Assumes device can be read without blocking.
+ * 
+ * @param imu 
+ * 
+ * @return error code
+ */static int imu_comm_get_sync(struct imu * imu){
+    int retval = ERROR_OK,watchdog;
+    unsigned char tmp = '@';// Anything diff from IMU_FRAME_INIT_CHAR
+    retval = fread(&tmp,IMU_INIT_END_SIZE,1,imu->device);
+    if(retval == 0){
+	err_check(ERROR_READ_TIMEOUT,"Read error...");
+    }else{
+	if(tmp != IMU_FRAME_INIT_CHAR)
+	    // No error printing, leave that for upper level
+	    return ERROR_READ_SYNC;
+    }
+    return retval;
+}
+
+/** 
+ * Assumes sync char was read, reads the rest of the data.
  * Keeps going until a end char is found. Then stops.
  * 
  * @param imu 
@@ -111,38 +132,22 @@ static int imu_read_frame(struct imu * imu){
     unsigned char tmp = '@';// Anything diff from IMU_FRAME_INIT_CHAR
     struct imu_frame * new_frame;
     new_frame = imu->frame_buffer+imu->frames_sampled;
-    watchdog = 0;
-    while(watchdog < IMU_DEFAULT_FRAME_SIZE_BYTES){
-	retval = fread(&tmp,IMU_INIT_END_SIZE,1,imu->device);
-	if(retval == 0){
-	    perror("Read error...");
-	    return ERROR_READ_TIMEOUT;
-	}else{
-	    if(tmp == IMU_FRAME_INIT_CHAR)
-		break;
-	}
-	++watchdog;
-    }
-    if(watchdog>=IMU_DEFAULT_FRAME_SIZE_BYTES)
-	return ERROR_READ_SYNC;
-
-    // At this point we should be ready to read the frame, init char already read
 
     // Get count
     watchdog = 0;
     while(watchdog < READ_RETRIES){
 	retval = fread(& new_frame->count,IMU_BYTES_COUNT,1,imu->device);
 	if(retval == 0){
-	    perror("Read error...");
-	    return ERROR_READ_TIMEOUT;
+	    err_check(ERROR_READ_TIMEOUT,"Read error...");
 	}else{
 	    break;
 	}
 	++watchdog;
     }
-    if(watchdog>=READ_RETRIES)
-	return ERROR_READ_TIMEOUT;
-  
+    if(watchdog>=READ_RETRIES){
+	err_check(ERROR_READ_TIMEOUT,"Read error...");
+    }
+
     // Generate timestamp
     gettimeofday(& new_frame->timestamp,NULL);
 
@@ -152,8 +157,7 @@ static int imu_read_frame(struct imu * imu){
     while(watchdog < READ_RETRIES){
 	retval = fread(new_frame->raw + read,IMU_BYTES_PER_SENSOR,IMU_SENSOR_COUNT,imu->device);
 	if(retval == 0){
-	    perror("Read error...");
-	    return ERROR_READ_TIMEOUT;
+	    err_check(ERROR_READ_TIMEOUT,"Read error...");
 	}else{
 	    read += retval;
 	    if(read == IMU_SENSOR_COUNT)
@@ -162,8 +166,10 @@ static int imu_read_frame(struct imu * imu){
 	}
 	++watchdog;
     }
-    if(watchdog>=READ_RETRIES)
-	return ERROR_READ_TIMEOUT;
+    if(watchdog>=READ_RETRIES){
+	err_check(ERROR_READ_TIMEOUT,"Read error...");
+    }
+
     // Change LSB/MSB
     for(i=0;i<IMU_SENSOR_COUNT;++i)
 	new_frame->raw[i] = swap_LSB_MSB_16(new_frame->raw[i]);
@@ -173,8 +179,7 @@ static int imu_read_frame(struct imu * imu){
     while(watchdog < READ_RETRIES){
 	retval = fread(&tmp,IMU_INIT_END_SIZE,1,imu->device);
 	if(retval == 0){
-	    perror("Read error...");
-	    return ERROR_READ_TIMEOUT;
+	    err_check(ERROR_READ_TIMEOUT,"Read error...");
 	}else{
 	    if(tmp == IMU_FRAME_END_CHAR)
 		break;
@@ -183,9 +188,9 @@ static int imu_read_frame(struct imu * imu){
 	}
 	++watchdog;
     }
-    if(watchdog>=READ_RETRIES)
-	return ERROR_READ_TIMEOUT;
-
+    if(watchdog>=READ_RETRIES){
+	err_check(ERROR_READ_TIMEOUT,"Read error...");
+    }
 
     // Everything went ok, pat pat :)
     imu->frames_sampled += 1;
@@ -251,7 +256,7 @@ static int imu_acc_read(struct imu * imu, struct imu_frame * frame, double * acc
  * 
  * @return error code
  */
-static int imu_get_latest_values(struct imu * imu, double * xyzrpy){
+static int imu_get_latest_values(struct imu * imu, imu_data * data){
     int retval = ERROR_OK;
     while(imu->unread_data <= 0){
 	retval = imu_read_frame(imu);
@@ -259,13 +264,14 @@ static int imu_get_latest_values(struct imu * imu, double * xyzrpy){
     }
 
     struct imu_frame * frame = imu->frame_buffer + imu->frames_sampled;
+    data->timestamp = frame->timestamp;
 
     // Get ACC readings
-    retval = imu_acc_read(imu, frame, xyzrpy);
+    retval = imu_acc_read(imu, frame, & data->xyzrpy);
     err_propagate(retval);
 
     // Get gyro reading
-    retval = imu_gyro_read(imu, frame, xyzrpy);
+    retval = imu_gyro_read(imu, frame, & data->xyzrpy);
     err_propagate(retval);
 
     imu->unread_data -= 1;
@@ -278,12 +284,46 @@ int imu_comm_get_avg(struct imu * imu, double * xyzrpy){
 	imu->avg_ready = 0;
 	return ERROR_OK;
     }
-    err_check(ERROR_AVG_NOT_ENOUGH,"Not enough samples to average");
+    err_check(ERROR_IMU_AVG_NOT_ENOUGH,"Not enough samples to average");
 }
 
-int imu_comm_get_data(struct imu * imu, double * xyzrpy){
+int imu_comm_get_data(struct imu * imu, imu_data * data){
     int retval = ERROR_OK;
-    retval = imu_get_latest_values(imu, xyzrpy);
+    retval = imu_get_latest_values(imu, data);
     return retval;
 }
 
+int imu_comm_poll(struct imu * imu, uquad_bool ready){
+    fd_set rfds;
+    struct timeval tv;
+    *ready = false;
+    int retval, fd = fileno(imu->device);
+    FD_ZERO(&rfds);
+    FD_SET(fd,&rfds);
+    FD_SET(STDIN_FILENO,&rfds);
+    tv.tv_sec = 0;
+    tv.tv_usec = 0;//(int)ceil(1000*1000*imu->T);
+    // Check if we can read without blocking
+    retval = select(fd+1,&rfds,NULL,NULL,&tv);
+    if (retval <= 0){
+	if(retval!=0){
+	    err_check(ERROR_IO,"select() failed!");
+	}else{
+	    // No data available
+	    return ERROR_OK;
+	}
+    }else{
+	// Ready to read. Check if in sync
+	retval = imu_comm_get_sync(imu);
+	err_propagate(retval);
+	// If we reached this point then we are ready to read
+	*ready = true;
+    }
+    return retval;
+}
+	
+
+int imu_comm_calibrate(struct imu * imu){
+    //TODO implement!
+    err_check(ERROR_FAIL,"Not implemented!");
+}

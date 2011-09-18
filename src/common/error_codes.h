@@ -6,6 +6,7 @@
 #define ERROR_CLOSE -5
 #define ERROR_MALLOC -6
 #define ERROR_IMU_AVG_NOT_ENOUGH -7
+#define ERROR_IO -8
 
 #define err_propagate(retval) if(retval!=ERROR_OK)return retval;
 #define err_check(retval,msg) if(retval!=ERROR_OK){fprintf(stderr,msg);return retval;}

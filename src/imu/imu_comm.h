@@ -4,18 +4,11 @@
 #include <sys/socket.h>
 #include <sys/time.h>
 #include <sys/select.h>
+#include <../common/error_codes.h>
+#include <../common/uquad_types.h>
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
-
-#define ERROR_OK 0
-#define ERROR_FAIL -1
-#define ERROR_READ_TIMEOUT -2
-#define ERROR_READ_SYNC -3
-#define ERROR_OPEN -4
-#define ERROR_CLOSE -5
-#define ERROR_MALLOC -6
-#define ERROR_AVG_NOT_ENOUGH -7
 
 #define IMU_FRAME_INIT_CHAR 'A'
 #define IMU_FRAME_END_CHAR 'Z'
@@ -37,16 +30,6 @@
 
 #define READ_RETRIES 16
 
-#define err_propagate(retval) if(retval!=ERROR_OK)return retval;
-#define err_check(retval,msg) if(retval!=ERROR_OK){fprintf(stderr,msg);return retval;}
-
-// Example timestamp usage
-//struct timeval detail_time;
-//gettimeofday(&detail_time,NULL);
-//printf("%d %d",
-//detail_time.tv_usec /1000,  /* milliseconds */
-//detail_time.tv_usec); /* microseconds */
-
 struct imu_frame{
     unsigned short raw[IMU_DEFAULT_FRAME_SIZE_BYTES];
     unsigned short int count;
@@ -54,12 +37,12 @@ struct imu_frame{
 };
 
 /// Based on ADC counts, no units
-struct imu_null_estimates{
+struct imu_data{
     double xyzrpy[IMU_SENSOR_COUNT];
     struct timeval timestamp;
 };
 
-typedef struct imu_null_estimates imu_data;
+typedef struct imu_data imu_null_estimates;
 
 struct imu_settings{
     // sampling frequency
@@ -79,7 +62,7 @@ struct imu{
     struct timeval frame_avg_init,frame_avg_end;
     int frames_sampled;
     int unread_data;
-    int avg_ready;
+    uquad_bool avg_ready;
     imu_data avg;
     FILE * device;
 }imu;
@@ -92,6 +75,39 @@ int imu_comm_disconnect(struct imu * imu);
 
 int imu_comm_deinit(struct imu * imu);
 
-int imu_comm_get_data(struct imu * imu, double * xyzrpy);
+int imu_comm_get_data(struct imu * imu, imu_data * data);
+
+int imu_comm_poll(struct imu * imu, uquad_bool * ready);
+
+int imu_comm_calibrate(struct imu * imu);
 
 #endif // IMU_COMM_H
+
+// -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+// Notes and unused code
+// -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+#if 0
+
+//Example timestamp usage
+struct timeval detail_time;
+gettimeofday(&detail_time,NULL);
+printf("%d %d",
+detail_time.tv_usec /1000,  /* milliseconds */
+detail_time.tv_usec); /* microseconds */
+
+/*
+About IMU code
+- IMU runs a loop that does:
+  - set timer for 1/fs
+  - for each channel
+    - Read ADC chan
+    - send data
+  - check if commands were issued via uart, if so, handle them
+  - wait for timer to finish
+
+That is the "sampling frequency" parameter.
+Each ADC conversion takes 13 clock cycles, except the first which takes 25, to warmup analog circuitry.
+IMU fw defines clock as 10MHz, though default is 1MHz, and nothing seems to change the default. Also, the 1us sleep in main.c makes more sense if the clock were 1Mhz. Not sure about this yet.
+Waiting (1/50kHz)*6 = 120us should be enough
+
+#endif
