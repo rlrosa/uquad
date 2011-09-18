@@ -1,0 +1,44 @@
+Build system base on cmake
+
+All explanations assumes you start from uquad/src/
+Basic intro: http://mathnathan.com/2010/07/11/getting-started-with-cmake/
+
+# -- -- -- -- -- -- -- -- -- -- -- -- -- --
+#. CMake basics
+# -- -- -- -- -- -- -- -- -- -- -- -- -- --
+cmake will parse CMakeLists.txt, and dig into any directories listed as:
+   add_subdirectory(dir_name)
+It will search for headers in the directories (separated by spaces) listed in:
+   include_directories(dir1 dir2)
+
+Each subdirectory has a CMakeLists.txt of its own, that can point deeper into the tree.
+
+# -- -- -- -- -- -- -- -- -- -- -- -- -- --
+#. Setting up the build system do
+# -- -- -- -- -- -- -- -- -- -- -- -- -- --
+sh run_cmake.sh
+
+This will setup everything in src/build/
+- To compile a test program, for example imu_comm_test
+cd build/
+make imu_comm_test
+
+You will find the output in src/build/test/imu_comm_test
+
+# -- -- -- -- -- -- -- -- -- -- -- -- -- --
+#. Adding a new test program:
+# -- -- -- -- -- -- -- -- -- -- -- -- -- --
+- Create a new dir:
+  mkdir test/new_test
+  cd test/new_test
+  cp ../imu_comm_test/CMakeLists.txt .
+
+- Add the new directory to cmake's subdirs by editing test/CMakeLists.txt
+      before editing:
+      	     add_subdirectory(imu_comm_test)
+      after editing:
+      	     add_subdirectory(imu_comm_test new_test)
+
+Edit the CMakeLists.txt in new_test/ according to your needs:
+     - Set the program name
+     - List the required libraries.

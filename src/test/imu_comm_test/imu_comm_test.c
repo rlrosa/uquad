@@ -1,4 +1,4 @@
-#include <../imu/imu_comm.h>
+#include <imu_comm.h>
 #include <sys/time.h>
 #include <sys/types.h>
 #include <unistd.h> // For STDIN_FILENO
