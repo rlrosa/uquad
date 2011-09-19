@@ -7,6 +7,8 @@
 #define ERROR_MALLOC -6
 #define ERROR_IMU_AVG_NOT_ENOUGH -7
 #define ERROR_IO -8
+#define ERROR_WRITE -9
+#define ERROR_INVALID_ARG -10
 
 #define err_propagate(retval) if(retval!=ERROR_OK)return retval;
 #define err_check(retval,msg) if(retval!=ERROR_OK){fprintf(stderr,"%s:%d: %s",__FILE__,__LINE__,msg);return retval;}

@@ -1,35 +1,67 @@
 #include "imu_comm.h"
 
-struct imu * imu_comm_init(void){
-    struct imu * imu;
-    int i;
-    imu = (struct imu *)malloc(sizeof(struct imu));
-    if(imu == NULL){
-	fprintf(stderr,"Failed to allocate mem. \n");
-	return imu;
-    }
-    // Set default values
-    imu->frames_sampled = 0;
-    imu->unread_data = 0;
-    imu->settings.fs = IMU_DEFAULT_FS;
-    imu->settings.T = IMU_DEFAULT_T;
-    imu->settings.acc_sens = IMU_DEFAULT_ACC_SENS;
-    imu->settings.frame_width_bytes = IMU_DEFAULT_FS;
-    for(i=0;i<IMU_SENSOR_COUNT;++i){
-	imu->null_estimates.xyzrpy[i] = (1<< (IMU_ADC_BITS - 1)); // Set to mid scale
-    }
-    imu->null_estimates.timestamp.tv_sec = 0;
-    imu->null_estimates.timestamp.tv_usec = 0;
-    return imu;
-}
-
-int imu_comm_connect(struct imu * imu, char * device){
-    imu->device = fopen(device,"rb");
-    if(imu->device == NULL){
-	fprintf(stderr,"Device %s not found.\n",device);
-	return ERROR_OPEN;
+/** 
+ * IMU fw accepts commands while running.
+ * Avoid halting the fw on the IMU, this code is not prepared for that.
+ * 
+ * @param imu 
+ * @param cmd to send to the imu
+ * 
+ * @return error code
+ */
+static int imu_comm_send_cmd(struct imu * imu, unsigned char cmd){
+    uquad_bool_t ready = false;
+    int retval;
+    retval = imu_comm_check_io_locks(imu->device,false,&ready);
+    err_propagate(retval);
+    if(!ready){
+	// cannot write
+	err_check(ERROR_WRITE,"Write error: Writing command would lock.");
+    }else{
+	// issue command
+	fprintf(imu->device,"%u",cmd);
     }
     return ERROR_OK;
+}
+
+// IMU options
+// sens options
+unsigned char imu_sens_opt[IMU_SENS_OPT_COUNT] = {IMU_COMMAND_ACC_1G, \
+						  IMU_COMMAND_ACC_2G, \
+						  IMU_COMMAND_ACC_4G, \
+						  IMU_COMMAND_ACC_6G};
+// sampling freq options
+unsigned char imu_fs_opt[IMU_FS_OPT_COUNT] = {IMU_COMMAND_FS_50,	\
+					      IMU_COMMAND_FS_100,	\
+					      IMU_COMMAND_FS_150,	\
+					      IMU_COMMAND_FS_200,	\
+					      IMU_COMMAND_FS_250};
+// sampling freq values
+unsigned char imu_fs_values[IMU_FS_OPT_COUNT] = {50,100,150,200,250};
+
+int imu_comm_set_acc_sens(struct imu * imu, int new_value){
+    int retval;
+    if((new_value<0) || (new_value > IMU_SENS_OPT_COUNT)){
+	err_check(ERROR_INVALID_ARG,"Invalid value for acc sensitivity");
+    }
+    retval = imu_comm_send_cmd(imu,imu_sens_opt[new_value]);
+    err_propagate(retval);
+    // Update struct value
+    imu->settings.acc_sens = new_value;
+    return retval;
+}
+
+int imu_comm_set_fs(struct imu * imu, int new_value){
+    int retval;
+    if((new_value<0) || (new_value > IMU_FS_OPT_COUNT)){
+	err_check(ERROR_INVALID_ARG,"Invalid value for sampling frequency");
+    }
+    retval = imu_comm_send_cmd(imu,imu_fs_opt[new_value]);
+    err_propagate(retval);
+    // Update struct value
+    imu->settings.fs = new_value;
+    imu->settings.T = (double)1/imu_fs_values[new_value];
+    return retval;
 }
 
 int imu_comm_disconnect(struct imu * imu){
@@ -43,6 +75,20 @@ int imu_comm_disconnect(struct imu * imu){
     return ERROR_OK;
 }
 
+static int imu_comm_send_defaults(struct imu * imu){
+    int retval;
+    // Set sampling frequency
+    retval = imu_comm_set_fs(imu,IMU_DEFAULT_FS);
+    err_propagate(retval);
+    // Set acc sensitivity
+    retval = imu_comm_set_acc_sens(imu,IMU_DEFAULT_ACC_SENS);
+    err_propagate(retval);
+    // Select binary mode and run
+    retval = imu_comm_send_cmd(imu,IMU_COMMAND_RUN);
+    err_propagate(retval);
+    return retval;
+}
+
 int imu_comm_deinit(struct imu * imu){
     int retval = ERROR_OK;
     if(imu->device != NULL)
@@ -50,6 +96,48 @@ int imu_comm_deinit(struct imu * imu){
     // ignore answer and keep dying, leftovers are not reliable
     free(imu);
     return retval;
+}
+
+/** 
+ * Initialize IMU struct and send default value to IMU, this
+ * ensures starting from a know state.
+ * 
+ * @return error code
+ */
+struct imu * imu_comm_init(void){
+    struct imu * imu;
+    int i;
+    imu = (struct imu *)malloc(sizeof(struct imu));
+    if(imu == NULL){
+	fprintf(stderr,"Failed to allocate mem. \n");
+	return imu;
+    }
+    // Set default values
+    imu->frames_sampled = 0;
+    imu->unread_data = 0;
+    imu->settings.fs = IMU_DEFAULT_FS;
+    imu->settings.T = (double)1/imu_fs_values[IMU_DEFAULT_FS];
+    imu->settings.acc_sens = IMU_DEFAULT_ACC_SENS;
+    imu->settings.frame_width_bytes = IMU_DEFAULT_FRAME_SIZE_BYTES;
+    for(i=0;i<IMU_SENSOR_COUNT;++i){
+	imu->null_estimates.xyzrpy[i] = (1<< (IMU_ADC_BITS - 1)); // Set to mid scale
+    }
+    imu->null_estimates.timestamp.tv_sec = 0;
+    imu->null_estimates.timestamp.tv_usec = 0;
+    return imu;
+}
+
+int imu_comm_connect(struct imu * imu, char * device){
+    int retval;
+    imu->device = fopen(device,"rb");
+    if(imu->device == NULL){
+	fprintf(stderr,"Device %s not found.\n",device);
+	return ERROR_OPEN;
+    }
+    // Send default values to IMU, then get it running, just in case it wasn't
+    retval = imu_comm_send_defaults(imu);
+    err_propagate(retval);
+    return ERROR_OK;
 }
 
 static double grad2rad(double degrees){
@@ -344,30 +432,53 @@ int imu_comm_get_data(struct imu * imu, imu_data_t * data){
     return retval;
 }
 
-int imu_comm_poll(struct imu * imu, uquad_bool_t * ready){
+/** 
+ * Checks if reading/writing will block.
+ * Writing should not be a problem, hw buffers should handle it.
+ * If attempting to read and there is no data available, we do not want to
+ * lock up the sys, that is the purpose of 'select'.
+ * 
+ * @param device attemping to read or write to.
+ * @param check_read if true then checks if reading locks, if false check writing.
+ * @param ready answer returned here
+ * 
+ * @return error code
+ */
+int imu_comm_check_io_locks(FILE * device, uquad_bool_t check_read, uquad_bool_t * ready){
     fd_set rfds;
     struct timeval tv;
-    *ready = false;
-    int retval, fd = fileno(imu->device);
+    *ready = false; // assume failure.
+    int retval, fd = fileno(device);
     FD_ZERO(&rfds);
     FD_SET(fd,&rfds);
+    // do not wait
     tv.tv_sec = 0;
-    tv.tv_usec = 0;//(int)ceil(1000*1000*imu->T);
-    // Check if we can read without blocking
-    retval = select(fd+1,&rfds,NULL,NULL,&tv);
-    if (retval <= 0){
-	if(retval!=0){
-	    err_check(ERROR_IO,"select() failed!");
-	}else{
-	    // No data available
-	    *ready = false;
-	    return ERROR_OK;
-	}
+    tv.tv_usec = 0;
+    // Check if we read/write without locking
+    if(check_read){
+	retval = select(fd+1,&rfds,NULL,NULL,&tv);
     }else{
+	retval = select(fd+1,NULL,&rfds,NULL,&tv);
+    }
+    if(retval > 0){
+	*ready = true;
+    }
+    if (retval < 0){
+	err_check(ERROR_IO,"select() failed!");
+    }
+    // retval == 0 <--> No data available ("ready" was set at the beginning)
+    return ERROR_OK;
+}
+
+int imu_comm_poll(struct imu * imu, uquad_bool_t * ready){
+    int retval;
+    retval = imu_comm_check_io_locks(imu->device, true, ready);
+    err_propagate(retval);
+    if(*ready){
 	// Ready to read. Check if in sync
 	retval = imu_comm_get_sync(imu,ready);
 	err_propagate(retval);
-    }
+    }// else: No data available
     return retval;
 }
 
@@ -382,6 +493,7 @@ int imu_comm_print_frame(struct imu_frame * frame, FILE * stream){
 	stream = stdout;
     }
     fprintf(stream,"sec|usec:%d|%d\n",(int)frame->timestamp.tv_sec,(int)frame->timestamp.tv_usec);
+    fprintf(stream,"%d\t",frame->count);
     for(i=0;i<IMU_SENSOR_COUNT;++i){
 	fprintf(stream,"%d\t",frame->raw[i]);
     }
@@ -401,4 +513,3 @@ int imu_comm_print_data(imu_data_t * data, FILE * stream){
     fprintf(stream,"\n");
     return ERROR_OK;
 }
-
