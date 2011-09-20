@@ -12,7 +12,7 @@
 static int imu_comm_send_cmd(struct imu * imu, unsigned char cmd){
     uquad_bool_t ready = false;
     int retval;
-    retval = imu_comm_check_io_locks(imu->device,false,&ready);
+    retval = imu_comm_check_io_locks(imu->device, NULL, &ready);
     err_propagate(retval);
     if(!ready){
 	// cannot write
@@ -444,35 +444,35 @@ int imu_comm_get_data(struct imu * imu, imu_data_t * data){
  * 
  * @return error code
  */
-int imu_comm_check_io_locks(FILE * device, uquad_bool_t check_read, uquad_bool_t * ready){
-    fd_set rfds;
+int imu_comm_check_io_locks(FILE * device, uquad_bool_t * read_ok, uquad_bool_t * write_ok){
+    fd_set rfds,wfds;
     struct timeval tv;
-    *ready = false; // assume failure.
     int retval, fd = fileno(device);
     FD_ZERO(&rfds);
+    FD_SET(fd,&rfds);
+    FD_ZERO(&wfds);
     FD_SET(fd,&rfds);
     // do not wait
     tv.tv_sec = 0;
     tv.tv_usec = 0;
     // Check if we read/write without locking
-    if(check_read){
-	retval = select(fd+1,&rfds,NULL,NULL,&tv);
-    }else{
-	retval = select(fd+1,NULL,&rfds,NULL,&tv);
+    retval = select(fd+1,&rfds,&wfds,NULL,&tv);
+    if(read_ok != NULL){
+	*read_ok = ((retval > 0) && FD_ISSET(fd,&rfds)) ? true:false;
     }
-    if(retval > 0){
-	*ready = true;
-    }
+    if(write_ok != NULL)
+	*write_ok = ((retval >0) && FD_ISSET(fd,&wfds)) ? true:false;
     if (retval < 0){
 	err_check(ERROR_IO,"select() failed!");
+    }else{
+	// retval == 0 <--> No data available
     }
-    // retval == 0 <--> No data available ("ready" was set at the beginning)
     return ERROR_OK;
 }
 
 int imu_comm_poll(struct imu * imu, uquad_bool_t * ready){
     int retval;
-    retval = imu_comm_check_io_locks(imu->device, true, ready);
+    retval = imu_comm_check_io_locks(imu->device, ready, NULL);
     err_propagate(retval);
     if(*ready){
 	// Ready to read. Check if in sync
