@@ -22,15 +22,11 @@ int main(int argc, char *argv[]){
     }
     
     // Initialize structure
-    imu = imu_comm_init();
+    imu = imu_comm_init(device);
     if(imu==NULL){
 	fprintf(stderr,"Fatal error.");
 	exit(1);
     }
-
-    // Init connection
-    retval = imu_comm_connect(imu,device);
-    err_propagate(retval);
 
     // do stuff...
     imu_data_t data;
@@ -101,12 +97,7 @@ int main(int argc, char *argv[]){
 	}
     }
 
-    // Close connection
-    retval = imu_comm_disconnect(imu);
-    err_propagate(retval);
-    printf("Connection to IMU closed\n");
-
-    // Deinit structure
+    // Deinit structure & close connection
     retval = imu_comm_deinit(imu);
     err_propagate(retval);
     printf("Exit successful!\n");

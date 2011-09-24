@@ -64,17 +64,6 @@ int imu_comm_set_fs(struct imu * imu, int new_value){
     return retval;
 }
 
-int imu_comm_disconnect(struct imu * imu){
-    int retval = ERROR_OK;
-    retval = fclose(imu->device);
-    if(retval != ERROR_OK){
-	fprintf(stderr,"Failed to close connection to device.\n");
-	return ERROR_CLOSE;
-    }
-    imu->device = NULL;
-    return ERROR_OK;
-}
-
 static int imu_comm_send_defaults(struct imu * imu){
     int retval;
     // Set sampling frequency
@@ -89,13 +78,28 @@ static int imu_comm_send_defaults(struct imu * imu){
     return retval;
 }
 
-int imu_comm_deinit(struct imu * imu){
+static int imu_comm_connect(struct imu * imu, const char * device){
+    int retval;
+    imu->device = fopen(device,"rb");
+    if(imu->device == NULL){
+	fprintf(stderr,"Device %s not found.\n",device);
+	return ERROR_OPEN;
+    }
+    // Send default values to IMU, then get it running, just in case it wasn't
+    retval = imu_comm_send_defaults(imu);
+    err_propagate(retval);
+    return ERROR_OK;
+}
+
+static int imu_comm_disconnect(struct imu * imu){
     int retval = ERROR_OK;
-    if(imu->device != NULL)
-	retval = imu_comm_disconnect(imu);
-    // ignore answer and keep dying, leftovers are not reliable
-    free(imu);
-    return retval;
+    retval = fclose(imu->device);
+    if(retval != ERROR_OK){
+	fprintf(stderr,"Failed to close connection to device.\n");
+	return ERROR_CLOSE;
+    }
+    imu->device = NULL;
+    return ERROR_OK;
 }
 
 /** 
@@ -104,9 +108,9 @@ int imu_comm_deinit(struct imu * imu){
  * 
  * @return error code
  */
-struct imu * imu_comm_init(void){
+struct imu * imu_comm_init(const char * device){
     struct imu * imu;
-    int i;
+    int i,retval;
     imu = (struct imu *)malloc(sizeof(struct imu));
     if(imu == NULL){
 	fprintf(stderr,"Failed to allocate mem. \n");
@@ -124,20 +128,21 @@ struct imu * imu_comm_init(void){
     }
     imu->null_estimates.timestamp.tv_sec = 0;
     imu->null_estimates.timestamp.tv_usec = 0;
+
+    // now connect to the imu
+    retval = imu_comm_connect(imu,device);
+    err_propagate(retval);
+
     return imu;
 }
 
-int imu_comm_connect(struct imu * imu, char * device){
-    int retval;
-    imu->device = fopen(device,"rb");
-    if(imu->device == NULL){
-	fprintf(stderr,"Device %s not found.\n",device);
-	return ERROR_OPEN;
-    }
-    // Send default values to IMU, then get it running, just in case it wasn't
-    retval = imu_comm_send_defaults(imu);
-    err_propagate(retval);
-    return ERROR_OK;
+int imu_comm_deinit(struct imu * imu){
+    int retval = ERROR_OK;
+    if(imu->device != NULL)
+	retval = imu_comm_disconnect(imu);
+    // ignore answer and keep dying, leftovers are not reliable
+    free(imu);
+    return retval;
 }
 
 static double grad2rad(double degrees){

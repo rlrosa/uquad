@@ -106,11 +106,7 @@ struct imu{
     FILE * device;
 }imu;
 
-struct imu * imu_comm_init(void);
-
-int imu_comm_connect(struct imu * imu, char * device);
-
-int imu_comm_disconnect(struct imu * imu);
+struct imu * imu_comm_init(const char * device);
 
 int imu_comm_deinit(struct imu * imu);
 
