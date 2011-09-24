@@ -51,6 +51,14 @@ int imu_comm_set_acc_sens(struct imu * imu, int new_value){
     return retval;
 }
 
+int imu_comm_get_acc_sens(struct imu * imu, int * acc_index){
+    if(acc_index == NULL){
+	err_check(ERROR_NULL_POINTER,"Cannot return value, null pointer as argument.");
+    }
+    *acc_index = imu->settings.acc_sens;
+    return ERROR_OK;
+}
+
 int imu_comm_set_fs(struct imu * imu, int new_value){
     int retval;
     if((new_value<0) || (new_value > IMU_FS_OPT_COUNT)){
@@ -63,6 +71,15 @@ int imu_comm_set_fs(struct imu * imu, int new_value){
     imu->settings.T = (double)1/imu_fs_values[new_value];
     return retval;
 }
+
+int imu_comm_get_fs(struct imu * imu, int * fs_index){
+    if(fs_index == NULL){
+	err_check(ERROR_NULL_POINTER,"Cannot return value, null pointer as argument.");
+    }
+    *fs_index = imu->settings.fs;
+    return ERROR_OK;
+}
+
 
 static int imu_comm_send_defaults(struct imu * imu){
     int retval;
@@ -131,8 +148,8 @@ struct imu * imu_comm_init(const char * device){
 
     // now connect to the imu
     retval = imu_comm_connect(imu,device);
-    err_propagate(retval);
-
+    if(retval != ERROR_OK)
+	return NULL;
     return imu;
 }
 

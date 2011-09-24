@@ -133,8 +133,10 @@ int imu_comm_print_data(imu_data_t * data, FILE * stream);
 // -- -- -- -- -- -- -- -- -- -- -- --
 
 int imu_comm_set_acc_sens(struct imu * imu, int new_value);
+int imu_comm_get_acc_sens(struct imu * imu, int * acc_index);
 
 int imu_comm_set_fs(struct imu * imu, int new_value);
+int imu_comm_get_fs(struct imu * imu, int * fs_index);
 
 #endif // IMU_COMM_H
 
