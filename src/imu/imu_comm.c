@@ -473,12 +473,15 @@ int imu_comm_check_io_locks(FILE * device, uquad_bool_t * read_ok, uquad_bool_t 
     FD_ZERO(&rfds);
     FD_SET(fd,&rfds);
     FD_ZERO(&wfds);
-    FD_SET(fd,&rfds);
-    // do not wait
+    FD_SET(fd,&wfds);
+    // Set time waiting time to zero
     tv.tv_sec = 0;
     tv.tv_usec = 0;
     // Check if we read/write without locking
-    retval = select(fd+1,&rfds,&wfds,NULL,&tv);
+    retval = select(fd+1,				\
+		    (read_ok != NULL)?&rfds:NULL,	\
+		    (write_ok != NULL)?&wfds:NULL,	\
+		    NULL,&tv);
     if(read_ok != NULL){
 	*read_ok = ((retval > 0) && FD_ISSET(fd,&rfds)) ? true:false;
     }
