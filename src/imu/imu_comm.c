@@ -27,6 +27,28 @@ static int imu_comm_send_cmd(struct imu * imu, unsigned char cmd){
     return ERROR_OK;
 }
 
+static int imu_comm_halt(struct imu * imu){
+    int retval;
+    if(imu->status == IMU_COMM_STATE_HALTED){
+	printf("IMU already halted.\n");
+	return ERROR_OK;
+    }
+    retval = imu_comm_send_cmd(imu,IMU_COMMAND_IDLE);
+    err_propagate(retval);
+    return ERROR_OK;
+}
+
+static int imu_comm_resume(struct imu * imu){
+    int retval;
+    if(imu->status == IMU_COMM_STATE_RUNNING){
+	printf("IMU already running.\n");
+	return ERROR_OK;
+    }
+    retval = imu_comm_send_cmd(imu,IMU_COMMAND_IDLE);
+    err_propagate(retval);
+    return ERROR_OK;
+}
+
 // IMU options
 // sens options
 unsigned char imu_sens_opt[IMU_SENS_OPT_COUNT] = {IMU_COMMAND_ACC_1G, \
@@ -47,10 +69,17 @@ int imu_comm_set_acc_sens(struct imu * imu, int new_value){
     if((new_value<0) || (new_value > IMU_SENS_OPT_COUNT)){
 	err_check(ERROR_INVALID_ARG,"Invalid value for acc sensitivity");
     }
+    // Stop IMU
+    retval = imu_comm_halt(imu);
+    err_propagate(retval);
+    // Set new acc sens
     retval = imu_comm_send_cmd(imu,imu_sens_opt[new_value]);
     err_propagate(retval);
     // Update struct value
     imu->settings.acc_sens = new_value;
+    // Run IMU
+    retval = imu_comm_resume(imu);
+    err_propagate(retval);    
     return retval;
 }
 
@@ -67,11 +96,18 @@ int imu_comm_set_fs(struct imu * imu, int new_value){
     if((new_value<0) || (new_value > IMU_FS_OPT_COUNT)){
 	err_check(ERROR_INVALID_ARG,"Invalid value for sampling frequency");
     }
+    // Stop IMU
+    retval = imu_comm_halt(imu);
+    err_propagate(retval);
+    // Set new fs
     retval = imu_comm_send_cmd(imu,imu_fs_opt[new_value]);
     err_propagate(retval);
     // Update struct value
     imu->settings.fs = new_value;
     imu->settings.T = (double)1/imu_fs_values[new_value];
+    // Run IMU
+    retval = imu_comm_resume(imu);
+    err_propagate(retval);    
     return retval;
 }
 
@@ -82,7 +118,6 @@ int imu_comm_get_fs(struct imu * imu, int * fs_index){
     *fs_index = imu->settings.fs;
     return ERROR_OK;
 }
-
 
 static int imu_comm_send_defaults(struct imu * imu){
     int retval;
@@ -136,7 +171,7 @@ static int imu_comm_configure(struct imu * imu){
     err_propagate(retval);
 
     // Start running in binary mode with all channels ON
-    retval = imu_comm_send_cmd(imu,IMU_COMMAND_RUN);
+    retval = imu_comm_resume(imu);
     err_propagate(retval);
     return retval;
 }
