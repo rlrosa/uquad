@@ -19,7 +19,10 @@ static int imu_comm_send_cmd(struct imu * imu, unsigned char cmd){
 	err_check(ERROR_WRITE,"Write error: Writing command would lock.");
     }else{
 	// issue command
-	fprintf(imu->device,"%u",cmd);
+	retval = fprintf(imu->device,"%c\n",cmd);
+	if(retval<0){
+	    err_check(ERROR_WRITE,"Write error: Failed to send cmd to IMU");
+	}
     }
     return ERROR_OK;
 }
@@ -89,7 +92,50 @@ static int imu_comm_send_defaults(struct imu * imu){
     // Set acc sensitivity
     retval = imu_comm_set_acc_sens(imu,IMU_DEFAULT_ACC_SENS);
     err_propagate(retval);
-    // Select binary mode and run
+    return retval;
+}
+
+/** 
+ * Configure IMU to respond as expected, specifically, to answer to macros
+ * in imu_comm.h
+ * - Set binary mode.
+ * - Disable auto run
+ * 
+ * @param imu 
+ * 
+ * @return error code
+ */
+static int imu_comm_configure(struct imu * imu){
+    int retval;
+    // The following sequence of commands should get to the main IMU menu, from
+    //from any initial state. If the unit was running then it will ignore all of
+    //this, no damage done.
+
+    // Get out of channel select menu or freq select menu
+    retval = imu_comm_send_cmd(imu,IMU_COMMAND_X);
+    err_propagate(retval);
+
+    // Get out of acc sens menu
+    retval = imu_comm_send_cmd(imu,IMU_COMMAND_ONE);
+    err_propagate(retval);
+
+    // If started from main menu, then previous command would have ended in channel
+    //select menu, so get out of it
+    retval = imu_comm_send_cmd(imu,IMU_COMMAND_X);
+    err_propagate(retval);
+
+    // Assuming binary mode on && autorun off, i don't want to parse...
+    //TODO parse to avoid assuming stuff! or modify imu code to be easier...
+
+    // Get out of menu
+    retval = imu_comm_send_cmd(imu,IMU_COMMAND_EXIT);
+    err_propagate(retval);
+
+    // Now IMU should be in idle state, where it will recieve commands
+    retval = imu_comm_send_defaults(imu);
+    err_propagate(retval);
+
+    // Start running in binary mode with all channels ON
     retval = imu_comm_send_cmd(imu,IMU_COMMAND_RUN);
     err_propagate(retval);
     return retval;
@@ -97,14 +143,11 @@ static int imu_comm_send_defaults(struct imu * imu){
 
 static int imu_comm_connect(struct imu * imu, const char * device){
     int retval;
-    imu->device = fopen(device,"rb");
+    imu->device = fopen(device,"wb+");
     if(imu->device == NULL){
 	fprintf(stderr,"Device %s not found.\n",device);
 	return ERROR_OPEN;
     }
-    // Send default values to IMU, then get it running, just in case it wasn't
-    retval = imu_comm_send_defaults(imu);
-    err_propagate(retval);
     return ERROR_OK;
 }
 
@@ -148,6 +191,11 @@ struct imu * imu_comm_init(const char * device){
 
     // now connect to the imu
     retval = imu_comm_connect(imu,device);
+    if(retval != ERROR_OK)
+	return NULL;
+
+    // Send default values to IMU, then get it running, just in case it wasn't
+    retval = imu_comm_configure(imu);
     if(retval != ERROR_OK)
 	return NULL;
     return imu;

@@ -62,6 +62,13 @@
 /// ASCII 45, sets the sample frequency to 250Hz
 #define IMU_COMMAND_FS_250 '-'
 
+/// ASCII 49, select option #1 in some IMU menus
+#define IMU_COMMAND_ONE '1'
+/// ASCII 57, exit main IMU menu
+#define IMU_COMMAND_EXIT '9'
+/// ASCII 120, select option in some IMU menus
+#define IMU_COMMAND_X 'x'
+
 #define READ_RETRIES 16
 
 #if (IMU_BUTES_PER_SENSOR > 2)
@@ -93,8 +100,12 @@ struct imu_settings{
     int frame_width_bytes;
 };
 
+enum imu_status{IMU_COMM_STATE_RUNNING,IMU_COMM_STATE_HALTED,IMU_COMM_STATE_UNKNOWN};
+typedef enum imu_status imu_status_t;
+
 struct imu{
     struct imu_settings settings;
+    imu_status_t status;
     imu_null_estimates_t null_estimates;
     struct imu_frame frame_buffer[IMU_FRAME_SAMPLE_AVG_COUNT];
     struct timeval frame_avg_init,frame_avg_end;
