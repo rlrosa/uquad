@@ -100,7 +100,7 @@ struct imu_settings{
     int frame_width_bytes;
 };
 
-enum imu_status{IMU_COMM_STATE_RUNNING,IMU_COMM_STATE_HALTED,IMU_COMM_STATE_UNKNOWN};
+enum imu_status{IMU_COMM_STATE_RUNNING,IMU_COMM_STATE_IDLE,IMU_COMM_STATE_UNKNOWN};
 typedef enum imu_status imu_status_t;
 
 struct imu{
@@ -127,13 +127,12 @@ int imu_comm_deinit(struct imu * imu);
 // -- -- -- -- -- -- -- -- -- -- -- --
 
 uquad_bool_t imu_comm_avg_ready(struct imu * imu);
+int imu_comm_get_data_avg(struct imu * imu, imu_data_t * data);
 
-int imu_comm_get_avg(struct imu * imu, imu_data_t * data);
-
-int imu_comm_get_data(struct imu * imu, imu_data_t * data);
+int imu_comm_get_data_latest(struct imu * imu, imu_data_t * data);
+int imu_comm_get_data_latest_unread(struct imu * imu, imu_data_t * data);
 
 int imu_comm_poll(struct imu * imu, uquad_bool_t * ready);
-
 int imu_comm_read_frame(struct imu * imu);
 
 int imu_comm_calibrate(struct imu * imu);

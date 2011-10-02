@@ -1,8 +1,7 @@
 #include "imu_comm.h"
 
 /** 
- * IMU fw accepts commands while running.
- * Avoid halting the fw on the IMU, this code is not prepared for that.
+ * IMU fw accepts commands while in idle mode.
  * 
  * @param imu 
  * @param cmd to send to the imu
@@ -27,10 +26,10 @@ static int imu_comm_send_cmd(struct imu * imu, unsigned char cmd){
     return ERROR_OK;
 }
 
-static int imu_comm_halt(struct imu * imu){
+static int imu_comm_go_idle(struct imu * imu){
     int retval;
-    if(imu->status == IMU_COMM_STATE_HALTED){
-	printf("IMU already halted.\n");
+    if(imu->status == IMU_COMM_STATE_IDLE){
+	printf("IMU already idle.\n");
 	return ERROR_OK;
     }
     // Stop IMU
@@ -39,7 +38,7 @@ static int imu_comm_halt(struct imu * imu){
     // Get out of menu
     retval = imu_comm_send_cmd(imu,IMU_COMMAND_EXIT);
     err_propagate(retval);
-    imu->status = IMU_COMM_STATE_HALTED;
+    imu->status = IMU_COMM_STATE_IDLE;
     return ERROR_OK;
 }
 
@@ -73,7 +72,7 @@ unsigned char imu_fs_values[IMU_FS_OPT_COUNT] = {50,100,150,200,250};
 
 /** 
  * Set accelerometer sensitivity.
- * IMU must be halted, and will be left halted.
+ * IMU must be idle, and will be left idle.
  * 
  * @param imu 
  * @param new_value 
@@ -85,9 +84,9 @@ int imu_comm_set_acc_sens(struct imu * imu, int new_value){
     if((new_value<0) || (new_value > IMU_SENS_OPT_COUNT)){
 	err_check(ERROR_INVALID_ARG,"Invalid value for acc sensitivity");
     }
-    // IMU should be halted
-    if(imu->status != IMU_COMM_STATE_HALTED){
-	err_check(ERROR_IMU_STATUS,"IMU must be halted to set acc sens");
+    // IMU should be idle
+    if(imu->status != IMU_COMM_STATE_IDLE){
+	err_check(ERROR_IMU_STATUS,"IMU must be idle to set acc sens");
     }
 
     // Set new acc sens
@@ -108,7 +107,7 @@ int imu_comm_get_acc_sens(struct imu * imu, int * acc_index){
 
 /** 
  * Set sampling frequency (fs)
- * IMU must be halted, and will be left halted.
+ * IMU must be idle, and will be left idle.
  * 
  * @param imu 
  * @param new_value 
@@ -120,9 +119,9 @@ int imu_comm_set_fs(struct imu * imu, int new_value){
     if((new_value<0) || (new_value > IMU_FS_OPT_COUNT)){
 	err_check(ERROR_INVALID_ARG,"Invalid value for sampling frequency");
     }
-    // IMU should be halted
-    if(imu->status != IMU_COMM_STATE_HALTED){
-	err_check(ERROR_IMU_STATUS,"IMU must be halted to set fs");
+    // IMU should be idle
+    if(imu->status != IMU_COMM_STATE_IDLE){
+	err_check(ERROR_IMU_STATUS,"IMU must be idle to set fs");
     }
 
     // Set new fs
@@ -191,7 +190,7 @@ static int imu_comm_configure(struct imu * imu){
 
     // Now IMU should be in idle state, where it will recieve commands
     // This is open loop, so let's set assume everything went ok.
-    imu->status = IMU_COMM_STATE_HALTED;
+    imu->status = IMU_COMM_STATE_IDLE;
     retval = imu_comm_send_defaults(imu);
     err_propagate(retval);
 
@@ -564,7 +563,7 @@ static int imu_comm_acc_read(struct imu * imu, struct imu_frame * frame, double 
  * 
  * @return error code
  */
-static int imu_comm_get_latest_values(struct imu * imu, imu_data_t * data){
+int imu_comm_get_data_latest(struct imu * imu, imu_data_t * data){
     int retval = ERROR_OK;
 
     struct imu_frame * frame = imu->frame_buffer + frame_circ_index(imu);
@@ -589,13 +588,13 @@ static int imu_comm_get_latest_values(struct imu * imu, imu_data_t * data){
  * 
  * @return error code
  */
-static int imu_comm_get_latest_unread_values(struct imu * imu, imu_data_t * data){
+int imu_comm_get_data_latest_unread(struct imu * imu, imu_data_t * data){
     int retval = ERROR_OK;
     if(imu->unread_data <= 0){
 	err_check(ERROR_FAIL,"No unread data available.");
     }
 
-    struct imu_frame * frame = imu->frame_buffer + imu->frame_next - 1;
+    struct imu_frame * frame = imu->frame_buffer + frame_circ_index(imu);
     data->timestamp = frame->timestamp;
 
     // Get ACC readings
@@ -625,12 +624,6 @@ int imu_comm_get_avg(struct imu * imu, imu_data_t * data){
 	return ERROR_OK;
     }
     err_check(ERROR_IMU_AVG_NOT_ENOUGH,"Not enough samples to average");
-}
-
-int imu_comm_get_data(struct imu * imu, imu_data_t * data){
-    int retval = ERROR_OK;
-    retval = imu_comm_get_latest_values(imu, data);
-    return retval;
 }
 
 /** 
@@ -713,7 +706,7 @@ int imu_comm_print_frame(struct imu_frame * frame, FILE * stream){
     return ERROR_OK;
 }    
 
-int imu_comm_print_data(imu_data_t * data, FILE * stream){
+ int imu_comm_print_data(imu_data_t * data, FILE * stream){
     int i;
     if(stream == NULL){
 	stream = stdout;
