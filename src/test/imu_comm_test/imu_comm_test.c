@@ -39,7 +39,7 @@ int main(int argc, char *argv[]){
     while(1){
 	if(do_sleep){
 	    printf("Waiting...\n");
-	    usleep(1000*500); // Wait for a while... (0.5 sec)
+	    //	    usleep(1000*500); // Wait for a while... (0.5 sec)
 	    printf("Running again.\n");
 	    if(--wait_counter<0){
 		// waited enough, now die
@@ -66,18 +66,16 @@ int main(int argc, char *argv[]){
 		    // We nead to wait for the ADC and for the comm delays.
 		    // See imu_comm.h for more info.
 		    // We should wait for this, then read out all the info.
-		    usleep(120*50);//TODO understand and tune according!!
+		    //		    usleep(120*50);//TODO understand and tune according!!
 		    retval = imu_comm_read_frame(imu);
 		    if(retval == ERROR_READ_TIMEOUT){
 			do_sleep = true;
 			printf("Not enough data available...\n");
 			continue;// skip the rest of the loop
-		    }else{
-			if(retval != ERROR_OK)
-			    err_propagate(retval);
 		    }
 		    do_sleep = false;
-		    retval = imu_comm_print_frame(imu->frame_buffer + imu->frames_sampled - 1,NULL);
+		    retval = imu_comm_print_frame(imu->frame_buffer + frame_circ_index(imu),NULL);
+		    fflush(stdout);
 		    err_propagate(retval);
 		}
 	    }else{ // retval > 0

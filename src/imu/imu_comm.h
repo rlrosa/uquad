@@ -111,6 +111,7 @@ struct imu{
     struct timeval frame_avg_init,frame_avg_end;
     int frames_sampled;
     int unread_data;
+    int frame_next;
     uquad_bool_t avg_ready;
     imu_data_t avg;
     uquad_bool_t in_cfg_mode;

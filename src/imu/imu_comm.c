@@ -33,8 +33,13 @@ static int imu_comm_halt(struct imu * imu){
 	printf("IMU already halted.\n");
 	return ERROR_OK;
     }
+    // Stop IMU
     retval = imu_comm_send_cmd(imu,IMU_COMMAND_IDLE);
     err_propagate(retval);
+    // Get out of menu
+    retval = imu_comm_send_cmd(imu,IMU_COMMAND_EXIT);
+    err_propagate(retval);
+    imu->status = IMU_COMM_STATE_HALTED;
     return ERROR_OK;
 }
 
@@ -44,8 +49,10 @@ static int imu_comm_resume(struct imu * imu){
 	printf("IMU already running.\n");
 	return ERROR_OK;
     }
-    retval = imu_comm_send_cmd(imu,IMU_COMMAND_IDLE);
+    // Run IMU
+    retval = imu_comm_send_cmd(imu,IMU_COMMAND_RUN);
     err_propagate(retval);
+    imu->status = IMU_COMM_STATE_RUNNING;
     return ERROR_OK;
 }
 
@@ -64,22 +71,30 @@ unsigned char imu_fs_opt[IMU_FS_OPT_COUNT] = {IMU_COMMAND_FS_50,	\
 // sampling freq values
 unsigned char imu_fs_values[IMU_FS_OPT_COUNT] = {50,100,150,200,250};
 
+/** 
+ * Set accelerometer sensitivity.
+ * IMU must be halted, and will be left halted.
+ * 
+ * @param imu 
+ * @param new_value 
+ * 
+ * @return error code
+ */
 int imu_comm_set_acc_sens(struct imu * imu, int new_value){
     int retval;
     if((new_value<0) || (new_value > IMU_SENS_OPT_COUNT)){
 	err_check(ERROR_INVALID_ARG,"Invalid value for acc sensitivity");
     }
-    // Stop IMU
-    retval = imu_comm_halt(imu);
-    err_propagate(retval);
+    // IMU should be halted
+    if(imu->status != IMU_COMM_STATE_HALTED){
+	err_check(ERROR_IMU_STATUS,"IMU must be halted to set acc sens");
+    }
+
     // Set new acc sens
     retval = imu_comm_send_cmd(imu,imu_sens_opt[new_value]);
     err_propagate(retval);
     // Update struct value
     imu->settings.acc_sens = new_value;
-    // Run IMU
-    retval = imu_comm_resume(imu);
-    err_propagate(retval);    
     return retval;
 }
 
@@ -91,23 +106,31 @@ int imu_comm_get_acc_sens(struct imu * imu, int * acc_index){
     return ERROR_OK;
 }
 
+/** 
+ * Set sampling frequency (fs)
+ * IMU must be halted, and will be left halted.
+ * 
+ * @param imu 
+ * @param new_value 
+ * 
+ * @return error code
+ */
 int imu_comm_set_fs(struct imu * imu, int new_value){
     int retval;
     if((new_value<0) || (new_value > IMU_FS_OPT_COUNT)){
 	err_check(ERROR_INVALID_ARG,"Invalid value for sampling frequency");
     }
-    // Stop IMU
-    retval = imu_comm_halt(imu);
-    err_propagate(retval);
+    // IMU should be halted
+    if(imu->status != IMU_COMM_STATE_HALTED){
+	err_check(ERROR_IMU_STATUS,"IMU must be halted to set fs");
+    }
+
     // Set new fs
     retval = imu_comm_send_cmd(imu,imu_fs_opt[new_value]);
     err_propagate(retval);
     // Update struct value
     imu->settings.fs = new_value;
     imu->settings.T = (double)1/imu_fs_values[new_value];
-    // Run IMU
-    retval = imu_comm_resume(imu);
-    err_propagate(retval);    
     return retval;
 }
 
@@ -167,6 +190,8 @@ static int imu_comm_configure(struct imu * imu){
     err_propagate(retval);
 
     // Now IMU should be in idle state, where it will recieve commands
+    // This is open loop, so let's set assume everything went ok.
+    imu->status = IMU_COMM_STATE_HALTED;
     retval = imu_comm_send_defaults(imu);
     err_propagate(retval);
 
@@ -214,6 +239,8 @@ struct imu * imu_comm_init(const char * device){
     // Set default values
     imu->frames_sampled = 0;
     imu->unread_data = 0;
+    imu->frame_next = 0;
+    imu->status = IMU_COMM_STATE_UNKNOWN;
     imu->settings.fs = IMU_DEFAULT_FS;
     imu->settings.T = (double)1/imu_fs_values[IMU_DEFAULT_FS];
     imu->settings.acc_sens = IMU_DEFAULT_ACC_SENS;
@@ -300,18 +327,56 @@ static unsigned short int swap_LSB_MSB_16(unsigned short int a){
     return (((a&0xFF)<<8)|(a>>8));
 }
 
+/** 
+ * Returns index of the last frame that was read.
+ * 
+ * @param imu 
+ * 
+ * @return index
+ */
+int frame_circ_index(struct imu * imu){
+    return (imu->frame_next + IMU_FRAME_SAMPLE_AVG_COUNT - 1) % IMU_FRAME_SAMPLE_AVG_COUNT;
+}
+
+/** 
+ * Generates an average for each sensor. Uses a fixed buff size.
+ * This should only be called when sampling starts, of if data is discarded 
+ * or RX is stopped for a while.
+ * 
+ * @param imu 
+ * 
+ * @return error code
+ */
 static int imu_comm_avg(struct imu * imu){
     int tmp,i,j;
     for(i=0;i<IMU_SENSOR_COUNT;++i){// loop sensors
 	tmp = 0;
 	for(j=0;j<IMU_FRAME_SAMPLE_AVG_COUNT;++j)// loop sensor data
 	    tmp += (int)imu->frame_buffer[j].raw[i];
-	tmp /= IMU_FRAME_SAMPLE_AVG_COUNT;
-	imu->avg.xyzrpy[i] = (double)tmp;
+	imu->avg.xyzrpy[i] = ((double)tmp)/IMU_FRAME_SAMPLE_AVG_COUNT;
     }
     imu->avg_ready = 1;
-    imu->unread_data = 0;
-    imu->frames_sampled = 0;//TODO fix this.
+    return ERROR_OK;
+}
+
+/** 
+ * Updates the avg for each sensor using new data.
+ * Assumes imu_comm_avg was previously called.
+ * If there is no correlation between new data and previous data, for example
+ * if TX was stopped for a while, then imu_comm_avg should be called again to
+ * remove old data
+ * 
+ * @param imu 
+ * 
+ * @return 
+ */
+static int imu_comm_avg_update(struct imu * imu){
+    int tmp,i,j;
+    for(i=0;i<IMU_SENSOR_COUNT;++i){// loop sensors
+	tmp = (int)imu->frame_buffer[frame_circ_index(imu)].raw[i];
+	imu->avg.xyzrpy[i] += ((double)tmp)/IMU_FRAME_SAMPLE_AVG_COUNT;
+    }
+    imu->avg_ready = 1;
     return ERROR_OK;
 }
 
@@ -355,7 +420,7 @@ int imu_comm_read_frame(struct imu * imu){
     int retval = ERROR_OK,watchdog,read,i;
     unsigned char tmp = '@';// Anything diff from IMU_FRAME_INIT_CHAR
     struct imu_frame * new_frame;
-    new_frame = imu->frame_buffer+imu->frames_sampled;
+    new_frame = imu->frame_buffer+imu->frame_next;
 
     // Get count
     watchdog = 0;
@@ -374,6 +439,9 @@ int imu_comm_read_frame(struct imu * imu){
     if(watchdog>=READ_RETRIES){
 	err_check(ERROR_READ_TIMEOUT,"Read error: Timed out waiting for count...");
     }
+    
+    // Fix LSB/MSB
+    new_frame->count = swap_LSB_MSB_16(new_frame->count);
 
     // Generate timestamp
     gettimeofday(& new_frame->timestamp,NULL);
@@ -409,10 +477,11 @@ int imu_comm_read_frame(struct imu * imu){
     while(watchdog < READ_RETRIES){
 	retval = fread(&tmp,IMU_INIT_END_SIZE,1,imu->device);
 	if(retval > 0){
-	    if(tmp == IMU_FRAME_END_CHAR)
+	    if(tmp == IMU_FRAME_END_CHAR){
 		break;
-	    else
-		return ERROR_READ_SYNC;
+	    }else{
+		err_check(ERROR_READ_SYNC,"Unexpected end of frame char");
+	    }
 	}else{
 	    if(retval < 0){
 		err_check(ERROR_IO,"Read error: Failed to read end char...");
@@ -426,12 +495,15 @@ int imu_comm_read_frame(struct imu * imu){
     }
 
     // Everything went ok, pat pat :)
-    imu->frames_sampled += 1;
-    imu->unread_data += 1;
-
-    // If we have enough samples then update avg
-    if(imu->unread_data == IMU_FRAME_SAMPLE_AVG_COUNT)
+    if(imu->frames_sampled < IMU_FRAME_SAMPLE_AVG_COUNT){
+	++imu->frames_sampled;
+    }else{
+	// If we have enough samples then update avg
 	retval = imu_comm_avg(imu);
+    }
+
+    ++imu->frame_next; imu->frame_next %= IMU_FRAME_SAMPLE_AVG_COUNT;
+    ++imu->unread_data;
 
     return ERROR_OK;
 }
@@ -494,12 +566,36 @@ static int imu_comm_acc_read(struct imu * imu, struct imu_frame * frame, double 
  */
 static int imu_comm_get_latest_values(struct imu * imu, imu_data_t * data){
     int retval = ERROR_OK;
-    while(imu->unread_data <= 0){
-	retval = imu_comm_read_frame(imu);
-	err_propagate(retval);
+
+    struct imu_frame * frame = imu->frame_buffer + frame_circ_index(imu);
+    data->timestamp = frame->timestamp;
+
+    // Get ACC readings
+    retval = imu_comm_acc_read(imu, frame, data->xyzrpy);
+    err_propagate(retval);
+
+    // Get gyro reading
+    retval = imu_comm_gyro_read(imu, frame, data->xyzrpy + IMU_ACCS);
+    err_propagate(retval);
+
+    return retval;
+}
+
+/** 
+ * If unread data exists, then calculates the latest value of the sensor reading from the RAW data, using current imu calibration.
+ * 
+ * @param imu Current imu status
+ * @param xyzrpy Answer is returned here
+ * 
+ * @return error code
+ */
+static int imu_comm_get_latest_unread_values(struct imu * imu, imu_data_t * data){
+    int retval = ERROR_OK;
+    if(imu->unread_data <= 0){
+	err_check(ERROR_FAIL,"No unread data available.");
     }
 
-    struct imu_frame * frame = imu->frame_buffer + imu->frames_sampled - 1;
+    struct imu_frame * frame = imu->frame_buffer + imu->frame_next - 1;
     data->timestamp = frame->timestamp;
 
     // Get ACC readings
@@ -595,11 +691,19 @@ int imu_comm_calibrate(struct imu * imu){
     err_check(ERROR_FAIL,"Not implemented!");
 }
 
+static int previous_frame_count = -1;
 int imu_comm_print_frame(struct imu_frame * frame, FILE * stream){
     int i;
+    if(previous_frame_count == -1)
+	previous_frame_count = frame->count;
     if(stream == NULL){
 	stream = stdout;
     }
+    if(previous_frame_count != (frame->count - 1)){
+	fprintf(stream,"\n\n\t\tSkipped count!!!\n\n");
+    }
+    previous_frame_count = frame->count;
+
     fprintf(stream,"sec|usec:%d|%d\n",(int)frame->timestamp.tv_sec,(int)frame->timestamp.tv_usec);
     fprintf(stream,"%d\t",frame->count);
     for(i=0;i<IMU_SENSOR_COUNT;++i){
