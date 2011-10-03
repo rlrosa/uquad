@@ -10,8 +10,9 @@
 #define ERROR_WRITE -9
 #define ERROR_INVALID_ARG -10
 #define ERROR_NULL_POINTER -11
+#define ERROR_IMU_STATUS -12
 
-#define err_propagate(retval) if(retval!=ERROR_OK)return retval;
+#define err_propagate(retval) if(retval!=ERROR_OK){fprintf(stderr,"backtrace:%s:%d\n",__FILE__,__LINE__);return retval;}
 #define err_check(retval,msg) if(retval!=ERROR_OK){fprintf(stderr,"%s:%d: %s\n",__FILE__,__LINE__,msg);return retval;}
 
 /// No functions
