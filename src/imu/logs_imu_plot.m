@@ -27,6 +27,6 @@ for i=1:6
   title(sprintf('%c',sensor(i)));
   legend('raw','avg');
   ylabel('ADC value (10bits)');
-  xlabel('sample #');
+  xlabel('time (sec)');
   axis tight
 end

@@ -14,8 +14,8 @@
 #define IMU_FRAME_END_CHAR 'Z'
 #define IMU_INIT_END_SIZE 1
 #define IMU_DEFAULT_FRAME_SIZE_BYTES 16 // 4 bytes init/end chars, 2 bytes per sensor reading
-#define IMU_FRAME_SAMPLE_AVG_COUNT 16 // Reduce variance my taking avg
-#define IMU_DEFAULT_FS 1 // this is an index
+#define IMU_FRAME_SAMPLE_AVG_COUNT 8 // Reduce variance my taking avg
+#define IMU_DEFAULT_FS 5 // this is an index
 #define IMU_DEFAULT_ACC_SENS 0 // this is an index
 #define IMU_ADC_BITS 10
 #define IMU_ADC_VREF 3.3
