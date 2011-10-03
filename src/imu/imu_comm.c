@@ -354,27 +354,9 @@ static int imu_comm_avg(struct imu * imu){
 	    tmp += (int)imu->frame_buffer[j].raw[i];
 	imu->avg.xyzrpy[i] = ((double)tmp)/IMU_FRAME_SAMPLE_AVG_COUNT;
     }
-    imu->avg_ready = 1;
-    return ERROR_OK;
-}
+    imu->avg.timestamp.tv_sec = imu->frame_buffer[frame_circ_index(imu)].timestamp.tv_sec;
+    imu->avg.timestamp.tv_usec = imu->frame_buffer[frame_circ_index(imu)].timestamp.tv_usec;
 
-/** 
- * Updates the avg for each sensor using new data.
- * Assumes imu_comm_avg was previously called.
- * If there is no correlation between new data and previous data, for example
- * if TX was stopped for a while, then imu_comm_avg should be called again to
- * remove old data
- * 
- * @param imu 
- * 
- * @return 
- */
-static int imu_comm_avg_update(struct imu * imu){
-    int tmp,i,j;
-    for(i=0;i<IMU_SENSOR_COUNT;++i){// loop sensors
-	tmp = (int)imu->frame_buffer[frame_circ_index(imu)].raw[i];
-	imu->avg.xyzrpy[i] += ((double)tmp)/IMU_FRAME_SAMPLE_AVG_COUNT;
-    }
     imu->avg_ready = 1;
     return ERROR_OK;
 }
@@ -479,7 +461,7 @@ int imu_comm_read_frame(struct imu * imu){
 	    if(tmp == IMU_FRAME_END_CHAR){
 		break;
 	    }else{
-		err_check(ERROR_READ_SYNC,"Unexpected end of frame char");
+		err_check(ERROR_READ_SYNC,"Unexpected end of frame char: Discarding frame...");
 	    }
 	}else{
 	    if(retval < 0){
@@ -497,8 +479,10 @@ int imu_comm_read_frame(struct imu * imu){
     if(imu->frames_sampled < IMU_FRAME_SAMPLE_AVG_COUNT){
 	++imu->frames_sampled;
     }else{
-	// If we have enough samples then update avg
-	retval = imu_comm_avg(imu);
+	if(imu->frames_sampled == IMU_FRAME_SAMPLE_AVG_COUNT){
+	    // If we have enough samples then calculate an avg
+	    retval = imu_comm_avg(imu);
+	}
     }
 
     ++imu->frame_next; imu->frame_next %= IMU_FRAME_SAMPLE_AVG_COUNT;
@@ -693,11 +677,11 @@ int imu_comm_print_frame(struct imu_frame * frame, FILE * stream){
 	stream = stdout;
     }
     if(previous_frame_count != (frame->count - 1)){
-	fprintf(stream,"\n\n\t\tSkipped count!!!\n\n");
+	fprintf(stderr,"\n\n\t\tSkipped frame!!!\n\n");
     }
     previous_frame_count = frame->count;
 
-    fprintf(stream,"sec|usec:%d|%d\n",(int)frame->timestamp.tv_sec,(int)frame->timestamp.tv_usec);
+    fprintf(stream,"%d\t%d\t",(int)frame->timestamp.tv_sec,(int)frame->timestamp.tv_usec);
     fprintf(stream,"%d\t",frame->count);
     for(i=0;i<IMU_SENSOR_COUNT;++i){
 	fprintf(stream,"%d\t",frame->raw[i]);
@@ -711,7 +695,7 @@ int imu_comm_print_frame(struct imu_frame * frame, FILE * stream){
     if(stream == NULL){
 	stream = stdout;
     }
-    fprintf(stream,"sec|usec:%d|%d\n",(int)data->timestamp.tv_sec,(int)data->timestamp.tv_usec);
+    fprintf(stream,"%d\t%d\t",(int)data->timestamp.tv_sec,(int)data->timestamp.tv_usec);
     for(i=0;i<IMU_SENSOR_COUNT;++i){
 	fprintf(stream,"%f\t",data->xyzrpy[i]);
     }

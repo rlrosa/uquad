@@ -1,15 +1,41 @@
 #include <imu_comm.h>
 #include <sys/time.h>
+#include <time.h>
 #include <sys/types.h>
 #include <unistd.h> // For STDIN_FILENO
 #include <stdio.h>
 
+#define IMU_COMM_TEST_EXIT_CHAR 'q'
 #define IMU_COMM_TEST_HOW_TO "\nIncorrect arguments!\nUsage: ./imu_comm_test /dev/tty#\n"
 #define WAIT_COUNTER_MAX 10
+#define IMU_COMM_TEST_EOL_LIM 128
+
+static int fix_end_of_time_string(char * string, int lim){
+    int i;
+    if(lim<0)
+	return -1;
+    for(i=0;i<lim;++i){
+	if(string[i]!='\n')
+	    continue;
+	break;
+    }
+    if(i==lim){
+	fprintf(stderr,"Failed to fix time string");
+	return ERROR_FAIL;
+    }else{
+	string[i]='\0';
+    }	
+    return ERROR_OK;
+}
 
 int main(int argc, char *argv[]){
     int retval;
+    FILE * output_frames = NULL;
+    FILE * output_avg = NULL;
+    unsigned char tmp;
     char * device;
+    char log_name[FILENAME_MAX];
+    char * time_string;
     struct imu * imu = NULL;
     fd_set rfds;
     struct timeval tv;
@@ -20,7 +46,41 @@ int main(int argc, char *argv[]){
     }else{
 	device = argv[1];
     }
-    
+    if(argc<3){
+	fprintf(stdout,"Using stdout to output...\n");
+    }else{
+	time_t rawtime;
+	int i;
+	struct tm * timeinfo;
+	time(&rawtime);
+	timeinfo = localtime (&rawtime);
+
+	time_string = asctime (timeinfo);
+	retval = fix_end_of_time_string(time_string,IMU_COMM_TEST_EOL_LIM);
+	if(retval != ERROR_OK)
+	    exit(1);
+	// Setup frame log
+	sprintf(log_name,"./logs/%s.log",time_string);
+	output_frames = fopen(log_name,"w");
+	if(output_frames == NULL){
+	    fprintf(stderr,"Failed to create frame log file...");
+	    exit(1);
+	}
+	fprintf(stdout,"Sending frame output to log file: %s\n",log_name);
+
+	// Setup avg log
+	sprintf(log_name,"./logs/%savg.log",time_string);
+	if(retval != ERROR_OK)
+	    exit(1);
+	output_avg = fopen(log_name,"w");
+	if(output_avg == NULL){
+	    fprintf(stderr,"Failed to create avg log file...");
+	    exit(1);
+	}
+	fprintf(stdout,"Sending avg output to log file: %s\n",log_name);
+
+    }
+
     // Initialize structure
     imu = imu_comm_init(device);
     if(imu==NULL){
@@ -35,7 +95,7 @@ int main(int argc, char *argv[]){
     uquad_bool_t data_ready = false;
     int wait_counter = WAIT_COUNTER_MAX;
     FD_ZERO(&rfds);
-    printf("Press any key to abort..\n");
+    printf("Press 'q' to abort..\n");
     while(1){
 	if(do_sleep){
 	    printf("Waiting...\n");
@@ -73,24 +133,29 @@ int main(int argc, char *argv[]){
 			printf("Not enough data available...\n");
 			continue;// skip the rest of the loop
 		    }
+		    if(retval != ERROR_OK)
+			continue;
 		    do_sleep = false;
-		    retval = imu_comm_print_frame(imu->frame_buffer + frame_circ_index(imu),NULL);
-		    fflush(stdout);
+		    retval = imu_comm_print_frame(imu->frame_buffer + frame_circ_index(imu),output_frames);
 		    err_propagate(retval);
+
+		    // Get avg
+		    if(imu_comm_avg_ready(imu)){
+			retval = imu_comm_get_avg(imu,&data);
+			err_propagate(retval);
+			retval = imu_comm_print_data(&data,output_avg);
+			err_propagate(retval);
+		    }
+		    if(output_frames == NULL || output_avg == NULL)
+			fflush(stdout);
 		}
 	    }else{ // retval > 0
 		// Handle user input
 	    	printf("\nKey detected, getting avg...\n");
-		if(imu_comm_avg_ready(imu)){
-		    fprintf(stdout,"\nAvg ready:\n");
-		    retval = imu_comm_get_avg(imu,&data);
-		}else{
-		    fprintf(stdout,"\nAvg NOT ready:\n");
-		    retval = imu_comm_get_avg(imu,&data);
-		}
-		err_propagate(retval);
-		retval = imu_comm_print_data(&data,NULL);
-		break;
+		// Clear user input
+		retval = fread(&tmp,1,1,stdin);
+		if(tmp == IMU_COMM_TEST_EXIT_CHAR)
+		    break;
 	    }
 	}
     }
@@ -98,6 +163,11 @@ int main(int argc, char *argv[]){
     // Deinit structure & close connection
     retval = imu_comm_deinit(imu);
     err_propagate(retval);
+    // Close log files, if any
+    if(output_avg != NULL)
+	fclose(output_avg);
+    if(output_frames != NULL)
+	fclose(output_frames);
     printf("Exit successful!\n");
 
     return 0;
