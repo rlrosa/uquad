@@ -138,8 +138,11 @@ int main(int argc, char *argv[]){
 		    do_sleep = false;
 		    if(output_frames != NULL){
 			// Printing to stdout is unreadable
-			retval = imu_comm_print_frame(imu->frame_buffer + frame_circ_index(imu),output_frames);
-			err_propagate(retval);
+			retval = imu_comm_get_data_raw_latest_unread(imu,&data);
+			if(retval == ERROR_OK){
+			    retval = imu_comm_print_data(&data,output_frames);
+			    err_propagate(retval);
+			}
 		    }
 
 		    // Get avg

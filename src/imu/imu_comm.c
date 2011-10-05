@@ -572,6 +572,30 @@ int imu_comm_get_data_latest(struct imu * imu, imu_data_t * data){
  * 
  * @return error code
  */
+int imu_comm_get_data_raw_latest_unread(struct imu * imu, imu_data_t * data){
+    int retval = ERROR_OK;
+    if(imu->unread_data <= 0){
+	err_check(ERROR_FAIL,"No unread data available.");
+    }
+
+    struct imu_frame * frame = imu->frame_buffer + frame_circ_index(imu);
+    data->timestamp = frame->timestamp;
+    int i;
+    for(i=0;i<IMU_SENSOR_COUNT;++i){
+	data->xyzrpy[i] = frame->raw[i];
+    }
+    imu->unread_data -= 1;
+    return retval;
+}
+
+/** 
+ * If unread data exists, then calculates the latest value of the sensor reading from the RAW data, using current imu calibration.
+ * 
+ * @param imu Current imu status
+ * @param xyzrpy Answer is returned here
+ * 
+ * @return error code
+ */
 int imu_comm_get_data_latest_unread(struct imu * imu, imu_data_t * data){
     int retval = ERROR_OK;
     if(imu->unread_data <= 0){

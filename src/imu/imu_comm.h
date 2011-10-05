@@ -131,6 +131,7 @@ int imu_comm_get_data_avg(struct imu * imu, imu_data_t * data);
 
 int imu_comm_get_data_latest(struct imu * imu, imu_data_t * data);
 int imu_comm_get_data_latest_unread(struct imu * imu, imu_data_t * data);
+int imu_comm_get_data_raw_latest_unread(struct imu * imu, imu_data_t * data);
 
 int imu_comm_poll(struct imu * imu, uquad_bool_t * ready);
 int imu_comm_read_frame(struct imu * imu);
