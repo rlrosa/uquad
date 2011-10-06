@@ -635,6 +635,26 @@ int imu_comm_get_avg(struct imu * imu, imu_data_t * data){
 }
 
 /** 
+ * Return file descriptor corresponding to the IMU.
+ * This should be used when polling devices from the main control loop.
+ * 
+ * @param imu 
+ * @param fds file descriptor is returned here
+ * 
+ * @return error code
+ */
+int imu_comm_get_fds(struct imu * imu,int * fds){
+    if(imu->device == NULL){
+	err_check(ERROR_NULL_POINTER,"Cannot get fds, device set to NULL");
+    }
+    if(fds == NULL){
+	err_check(ERROR_NULL_POINTER,"Cannot return fds in NULL pointer");
+    }
+    *fds = fileno(imu->device);
+    return ERROR_OK;
+}
+
+/** 
  * Checks if reading/writing will block.
  * Writing should not be a problem, hw buffers should handle it.
  * If attempting to read and there is no data available, we do not want to

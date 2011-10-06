@@ -126,6 +126,8 @@ int imu_comm_deinit(struct imu * imu);
 // Reading from IMU
 // -- -- -- -- -- -- -- -- -- -- -- --
 
+int imu_comm_get_fds(struct imu * imu, int * fds);
+
 uquad_bool_t imu_comm_avg_ready(struct imu * imu);
 int imu_comm_get_data_avg(struct imu * imu, imu_data_t * data);
 
