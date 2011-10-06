@@ -4,8 +4,8 @@
 #include <sys/socket.h>
 #include <sys/time.h>
 #include <sys/select.h>
-#include <../common/error_codes.h>
-#include <../common/uquad_types.h>
+#include <uquad_error_codes.h>
+#include <uquad_types.h>
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>

@@ -1,5 +1,5 @@
 #include <uquad_aux_time.h>
-#include <error_codes.h>
+#include <uquad_error_codes.h>
 #include <stdio.h>
 
 #define UQUAD_AUX_TIME_TEST_COUNT 3
