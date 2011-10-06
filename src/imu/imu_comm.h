@@ -6,6 +6,7 @@
 #include <sys/select.h>
 #include <uquad_error_codes.h>
 #include <uquad_types.h>
+#include <uquad_aux_time.h>
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
@@ -30,6 +31,8 @@
 #define IMU_SENS_OPT_COUNT 4
 #define IMU_FS_OPT_COUNT 5
 #define IMU_GRAVITY 9.81
+
+#define IMU_COMM_AVG_MAX_INTERVAL 2*IMU_FRAME_SAMPLE_AVG_COUNT //Too much...?
 
 /// ASCII 35, starts the unit running in binary mode with all channels active
 #define IMU_COMMAND_RUN '#'

@@ -221,6 +221,13 @@ static int imu_comm_disconnect(struct imu * imu){
     return ERROR_OK;
 }
 
+static void imu_comm_restart_sampling(struct imu * imu){
+    imu->unread_data = 0;
+    imu->frames_sampled = 0;
+    imu->frame_next = 0;
+    imu->avg_ready = false;
+}
+
 /** 
  * Initialize IMU struct and send default value to IMU, this
  * ensures starting from a know state.
@@ -236,9 +243,7 @@ struct imu * imu_comm_init(const char * device){
 	return imu;
     }
     // Set default values
-    imu->frames_sampled = 0;
-    imu->unread_data = 0;
-    imu->frame_next = 0;
+    imu_comm_restart_sampling(imu);
     imu->status = IMU_COMM_STATE_UNKNOWN;
     imu->settings.fs = IMU_DEFAULT_FS;
     imu->settings.T = (double)1/imu_fs_values[IMU_DEFAULT_FS];
@@ -338,6 +343,31 @@ int frame_circ_index(struct imu * imu){
 }
 
 /** 
+ * Checks if samples used for avg fall withing a certain interval.
+ * It makes no sense to average samples from completely diff moments.
+ * 
+ * @param imu 
+ * 
+ * @return true if ok to avg, otherwise false
+ */
+static uquad_bool_t imu_comm_avg_validate_time_interval(struct imu *imu){
+    int retval;
+    long double max_interval;
+    struct timeval diff;
+    retval = uquad_timeval_substract(&diff,				\
+				     imu->frame_buffer[frame_circ_index(imu)].timestamp, \
+				     imu->frame_buffer[imu->frame_next].timestamp);
+    if(retval<=0)
+	return false;
+    max_interval = (long double)imu->settings.T*IMU_COMM_AVG_MAX_INTERVAL;
+    max_interval -= diff.tv_sec;
+    if(max_interval<=0)
+	return false;	
+    max_interval -= diff.tv_usec/1000000;
+    return (max_interval > 0)? true:false;
+}   
+
+/** 
  * Generates an average for each sensor. Uses a fixed buff size.
  * This should only be called when sampling starts, of if data is discarded 
  * or RX is stopped for a while.
@@ -348,14 +378,18 @@ int frame_circ_index(struct imu * imu){
  */
 static int imu_comm_avg(struct imu * imu){
     int tmp,i,j;
+    time_t sec_oldest, sec_new;
+    suseconds_t usec_oldest, usec_new;
+    
+    if(imu->frame_buffer[frame_circ_index(imu)].timestamp.tv_sec)
+    imu->avg.timestamp.tv_sec = imu->frame_buffer[frame_circ_index(imu)].timestamp.tv_sec;
+    imu->avg.timestamp.tv_usec = imu->frame_buffer[frame_circ_index(imu)].timestamp.tv_usec;
     for(i=0;i<IMU_SENSOR_COUNT;++i){// loop sensors
 	tmp = 0;
 	for(j=0;j<IMU_FRAME_SAMPLE_AVG_COUNT;++j)// loop sensor data
 	    tmp += (int)imu->frame_buffer[j].raw[i];
 	imu->avg.xyzrpy[i] = ((double)tmp)/IMU_FRAME_SAMPLE_AVG_COUNT;
     }
-    imu->avg.timestamp.tv_sec = imu->frame_buffer[frame_circ_index(imu)].timestamp.tv_sec;
-    imu->avg.timestamp.tv_usec = imu->frame_buffer[frame_circ_index(imu)].timestamp.tv_usec;
 
     imu->avg_ready = 1;
     return ERROR_OK;
@@ -482,6 +516,12 @@ int imu_comm_read_frame(struct imu * imu){
 	if(imu->frames_sampled == IMU_FRAME_SAMPLE_AVG_COUNT){
 	    // If we have enough samples then calculate an avg
 	    retval = imu_comm_avg(imu);
+	    if(retval != ERROR_OK){
+		// Something went wrong with the avg, let's start over
+		imu->frames_sampled == 0;
+		fprintf(stderr,"avg failed, restarting frame count");
+		imu_comm_restart_sampling(imu);
+	    }
 	}
     }
 
