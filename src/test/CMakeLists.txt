@@ -1,1 +1,2 @@
 add_subdirectory(imu_comm_test)
+add_subdirectory(uquad_aux_time_test)
