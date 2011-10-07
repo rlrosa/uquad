@@ -580,6 +580,33 @@ static int imu_comm_acc_read(struct imu * imu, struct imu_frame * frame, double 
 }
 
 /** 
+ * Convert raw data from IMU to double
+ * 
+ * @param frame raw data
+ * @param data converted data
+ * 
+ * @return error code
+ */
+static int imu_comm_raw2data(struct imu * imu, struct imu_frame * frame, imu_data_t * data){
+    int retval;
+    if(data == NULL || frame == NULL){
+	err_check(ERROR_NULL_POINTER,"Non null pointers required as args...");
+    }
+    // Get timestamp
+    data->timestamp = frame->timestamp;
+
+    // Get ACC readings
+    retval = imu_comm_acc_read(imu, frame, data->xyzrpy);
+    err_propagate(retval);
+
+    // Get gyro reading
+    retval = imu_comm_gyro_read(imu, frame, data->xyzrpy + IMU_ACCS);
+    err_propagate(retval);
+
+    return ERROR_OK;
+}
+
+/** 
  * Calculates value of the sensor reading from the RAW data, using current imu calibration.
  * 
  * @param imu Current imu status
@@ -591,14 +618,7 @@ int imu_comm_get_data_latest(struct imu * imu, imu_data_t * data){
     int retval = ERROR_OK;
 
     struct imu_frame * frame = imu->frame_buffer + frame_circ_index(imu);
-    data->timestamp = frame->timestamp;
-
-    // Get ACC readings
-    retval = imu_comm_acc_read(imu, frame, data->xyzrpy);
-    err_propagate(retval);
-
-    // Get gyro reading
-    retval = imu_comm_gyro_read(imu, frame, data->xyzrpy + IMU_ACCS);
+    retval = imu_comm_raw2data(imu,frame,data);
     err_propagate(retval);
 
     return retval;
@@ -643,14 +663,7 @@ int imu_comm_get_data_latest_unread(struct imu * imu, imu_data_t * data){
     }
 
     struct imu_frame * frame = imu->frame_buffer + frame_circ_index(imu);
-    data->timestamp = frame->timestamp;
-
-    // Get ACC readings
-    retval = imu_comm_acc_read(imu, frame, data->xyzrpy);
-    err_propagate(retval);
-
-    // Get gyro reading
-    retval = imu_comm_gyro_read(imu, frame, data->xyzrpy + IMU_ACCS);
+    retval = imu_comm_raw2data(imu,frame,data);
     err_propagate(retval);
 
     imu->unread_data -= 1;
