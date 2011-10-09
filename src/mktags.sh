@@ -13,6 +13,7 @@ ETAGS_DIR=/home/rrosa/work/uquad/src/
 
 SCAN_DIRS=(imu
            common
+           uquad_time
            imu_fw)
 
 

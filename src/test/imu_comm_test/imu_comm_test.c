@@ -6,9 +6,13 @@
 #include <stdio.h>
 
 #define IMU_COMM_TEST_EXIT_CHAR 'q'
+#define IMU_COMM_TEST_CALIB_CHAR 'c'
+#define IMU_COMM_TEST_CALIB_SHOW_CHAR 's'
 #define IMU_COMM_TEST_HOW_TO "\nIncorrect arguments!\nUsage: ./imu_comm_test /dev/tty#\n"
 #define WAIT_COUNTER_MAX 10
 #define IMU_COMM_TEST_EOL_LIM 128
+
+#define wait_for_enter while(fread(tmp,1,1,stdin) == 0)
 
 static int fix_end_of_time_string(char * string, int lim){
     int i;
@@ -28,14 +32,28 @@ static int fix_end_of_time_string(char * string, int lim){
     return ERROR_OK;
 }
 
+static int generate_log_name(char * log_name, char * start_string){
+    time_t rawtime;
+    struct tm * tm;
+    int retval;
+    time(&rawtime);
+    tm = localtime (&rawtime);
+    retval = sprintf(log_name,"%04d_%02d_%02d_xx_%02d_%02d_%02d", 1900 + tm->tm_year, tm->tm_mon + 1,tm->tm_mday, tm->tm_hour, tm->tm_min, tm->tm_sec);
+    if(retval < 0)
+	return ERROR_FAIL;
+    if(start_string != NULL)
+	retval = sprintf(log_name,"%s%s",start_string,log_name);
+    return retval;
+}
+
 int main(int argc, char *argv[]){
     int retval;
     FILE * output_frames = NULL;
     FILE * output_avg = NULL;
-    unsigned char tmp;
+    unsigned char tmp[2];
     char * device;
     char log_name[FILENAME_MAX];
-    char * time_string;
+    char log_filename[FILENAME_MAX];
     struct imu * imu = NULL;
     fd_set rfds;
     struct timeval tv;
@@ -49,19 +67,16 @@ int main(int argc, char *argv[]){
     if(argc<3){
 	fprintf(stdout,"Using stdout to output...\n");
     }else{
-	time_t rawtime;
 	int i;
-	struct tm * timeinfo;
-	time(&rawtime);
-	timeinfo = localtime (&rawtime);
-
-	time_string = asctime (timeinfo);
-	retval = fix_end_of_time_string(time_string,IMU_COMM_TEST_EOL_LIM);
-	if(retval != ERROR_OK)
+	retval = generate_log_name(log_name,NULL);
+	if(retval < 0){
+	    fprintf(stderr,"Failed to create log name...");
 	    exit(1);
+	}
+   
 	// Setup frame log
-	sprintf(log_name,"./logs/%s.log",time_string);
-	output_frames = fopen(log_name,"w");
+	sprintf(log_filename,"./logs/%s.log",log_name);
+	output_frames = fopen(log_filename,"w");
 	if(output_frames == NULL){
 	    fprintf(stderr,"Failed to create frame log file...");
 	    exit(1);
@@ -69,10 +84,12 @@ int main(int argc, char *argv[]){
 	fprintf(stdout,"Sending frame output to log file: %s\n",log_name);
 
 	// Setup avg log
-	sprintf(log_name,"./logs/%savg.log",time_string);
-	if(retval != ERROR_OK)
+	retval = sprintf(log_filename,"./logs/%savg.log",log_name);
+	if(retval < 0){
+	    fprintf(stderr,"Failed to create frame avg log file name...");
 	    exit(1);
-	output_avg = fopen(log_name,"w");
+	}
+	output_avg = fopen(log_filename,"w");
 	if(output_avg == NULL){
 	    fprintf(stderr,"Failed to create avg log file...");
 	    exit(1);
@@ -91,11 +108,14 @@ int main(int argc, char *argv[]){
     // do stuff...
     imu_data_t data;
     uquad_bool_t do_sleep = false;
-    int user_input_detected;
+    int read_will_not_lock;
     uquad_bool_t data_ready = false;
     int wait_counter = WAIT_COUNTER_MAX;
+    int imu_fd;
+    uquad_bool_t calibrating = false;
+    retval = imu_comm_get_fds(imu, &imu_fd);
     FD_ZERO(&rfds);
-    printf("Press 'q' to abort..\n");
+    printf("Options:\n'q' to abort,\n'c' to calibrate\n's' to display current calibration\n\n");
     while(1){
 	if(do_sleep){
 	    printf("Waiting...\n");
@@ -111,34 +131,50 @@ int main(int argc, char *argv[]){
 	}
 	// Run loop until user presses any key or velociraptors chew through the power cable
 	FD_SET(STDIN_FILENO,&rfds);
+	FD_SET(imu_fd,&rfds);
 	tv.tv_sec = 0;
 	tv.tv_usec = 0;
-	user_input_detected = select(STDIN_FILENO+1,&rfds,NULL,NULL,&tv);
-	if (user_input_detected < 0){
+	read_will_not_lock = select((STDIN_FILENO>imu_fd?STDIN_FILENO:imu_fd)+1,&rfds,NULL,NULL,&tv);
+	if (read_will_not_lock < 0){
 	    err_check(ERROR_IO,"select() failed!");
 	}else{
-	    retval = imu_comm_poll(imu,&data_ready);
-	    err_propagate(retval);
-	    if (user_input_detected == 0){
-	    // No user input, so keep running the loop.
-		if(data_ready){
-		    // IMU will do ADC conv, send, then next sensor, send, etc
-		    // We nead to wait for the ADC and for the comm delays.
-		    // See imu_comm.h for more info.
-		    // We should wait for this, then read out all the info.
-		    //		    usleep(120*50);//TODO understand and tune according!!
-		    retval = imu_comm_read_frame(imu);
-		    if(retval == ERROR_READ_TIMEOUT){
-			do_sleep = true;
-			printf("Not enough data available...\n");
-			continue;// skip the rest of the loop
-		    }
-		    if(retval != ERROR_OK)
-			continue;
-		    do_sleep = false;
-		    retval = imu_comm_print_frame(imu->frame_buffer + frame_circ_index(imu),output_frames);
-		    err_propagate(retval);
+	    // Read from IMU
+	    if(FD_ISSET(imu_fd,&rfds)){
+		do_sleep = false;
+		retval = imu_comm_read(imu,&data_ready);
+		// IMU will do ADC conv, send, then next sensor, send, etc
+		// We nead to wait for the ADC and for the comm delays.
+		// See imu_comm.h for more info.
+		if(retval == ERROR_READ_TIMEOUT){
+		    printf("Not enough data available...\n");
+		    do_sleep = true;
+		    continue;// skip the rest of the loop
+		}
+		if(retval != ERROR_OK){
+		    wait_for_enter;
+		    continue;
+		}
 
+		if(imu_comm_get_status(imu) == IMU_COMM_STATE_RUNNING){
+		    if(calibrating){
+			// finished calibration
+			calibrating = false;
+			if(imu_comm_calibration_is_calibrated(imu)){
+			    printf("Calibration successful!\n");
+			}else{
+			    printf("Calibration FAILED...\n");
+			    wait_for_enter;
+			}
+		    }		    
+		    if(output_frames != NULL){
+			// Printing to stdout is unreadable
+			retval = imu_comm_get_data_raw_latest_unread(imu,&data);
+			if(retval == ERROR_OK){
+			    retval = imu_comm_print_data(&data,output_frames);
+			    err_propagate(retval);
+			}
+		    }
+		    
 		    // Get avg
 		    if(imu_comm_avg_ready(imu)){
 			retval = imu_comm_get_avg(imu,&data);
@@ -149,17 +185,46 @@ int main(int argc, char *argv[]){
 		    if(output_frames == NULL || output_avg == NULL)
 			fflush(stdout);
 		}
-	    }else{ // retval > 0
-		// Handle user input
-	    	printf("\nKey detected, getting avg...\n");
-		// Clear user input
-		retval = fread(&tmp,1,1,stdin);
-		if(tmp == IMU_COMM_TEST_EXIT_CHAR)
+	    }
+
+	    // Handle user input
+	    if(FD_ISSET(STDIN_FILENO,&rfds)){
+		printf("\nGetting user input...\n");
+		// Get & clear user input
+		retval = fread(tmp,1,2,stdin);
+		printf("Read:%c\n",tmp[0]);
+		
+		// exit
+		if(tmp[0] == IMU_COMM_TEST_EXIT_CHAR)
 		    break;
+
+		// do calibration
+		if(tmp[0] == IMU_COMM_TEST_CALIB_CHAR){
+		    printf("Starting calibration...\n");
+		    calibrating = true;
+		    retval = imu_comm_calibration_start(imu);
+		    err_propagate(retval);
+		}
+
+		// display current calibration
+		if(tmp[0] == IMU_COMM_TEST_CALIB_SHOW_CHAR){
+		    if(!imu_comm_calibration_is_calibrated(imu)){
+			printf("Calibration not ready.\n");
+		    }else{
+			retval = imu_comm_calibration_get(imu,(imu_null_estimates_t *)&data);
+			err_propagate(retval);
+			printf("Current calibration:\n");
+			retval = imu_comm_calibration_print((imu_null_estimates_t *)&data,stdout);
+			err_propagate(retval);
+		    }
+		}
+		printf("\nPress enter to continue...\n");
+		fflush(stdout);
+		wait_for_enter;
 	    }
 	}
     }
-
+		
     // Deinit structure & close connection
     retval = imu_comm_deinit(imu);
     err_propagate(retval);

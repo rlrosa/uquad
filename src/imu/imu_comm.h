@@ -4,8 +4,9 @@
 #include <sys/socket.h>
 #include <sys/time.h>
 #include <sys/select.h>
-#include <../common/error_codes.h>
-#include <../common/uquad_types.h>
+#include <uquad_error_codes.h>
+#include <uquad_types.h>
+#include <uquad_aux_time.h>
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
@@ -15,6 +16,7 @@
 #define IMU_INIT_END_SIZE 1
 #define IMU_DEFAULT_FRAME_SIZE_BYTES 16 // 4 bytes init/end chars, 2 bytes per sensor reading
 #define IMU_FRAME_SAMPLE_AVG_COUNT 8 // Reduce variance my taking avg
+#define IMU_COMM_CALIBRATION_NULL_SIZE 256 // Tune!
 #define IMU_DEFAULT_FS 5 // this is an index
 #define IMU_DEFAULT_ACC_SENS 0 // this is an index
 #define IMU_ADC_BITS 10
@@ -30,6 +32,8 @@
 #define IMU_SENS_OPT_COUNT 4
 #define IMU_FS_OPT_COUNT 5
 #define IMU_GRAVITY 9.81
+
+#define IMU_COMM_AVG_MAX_INTERVAL 2*IMU_FRAME_SAMPLE_AVG_COUNT //Too much...?
 
 /// ASCII 35, starts the unit running in binary mode with all channels active
 #define IMU_COMMAND_RUN '#'
@@ -100,13 +104,20 @@ struct imu_settings{
     int frame_width_bytes;
 };
 
-enum imu_status{IMU_COMM_STATE_RUNNING,IMU_COMM_STATE_IDLE,IMU_COMM_STATE_UNKNOWN};
+enum imu_status{IMU_COMM_STATE_RUNNING,IMU_COMM_STATE_IDLE,IMU_COMM_STATE_CALIBRATING,IMU_COMM_STATE_UNKNOWN};
 typedef enum imu_status imu_status_t;
 
 struct imu{
+    // config & status
     struct imu_settings settings;
     imu_status_t status;
+    uquad_bool_t in_cfg_mode;
+    FILE * device;
+    // calibration
     imu_null_estimates_t null_estimates;
+    int calibration_counter;
+    uquad_bool_t is_calibrated;
+    // data
     struct imu_frame frame_buffer[IMU_FRAME_SAMPLE_AVG_COUNT];
     struct timeval frame_avg_init,frame_avg_end;
     int frames_sampled;
@@ -114,28 +125,26 @@ struct imu{
     int frame_next;
     uquad_bool_t avg_ready;
     imu_data_t avg;
-    uquad_bool_t in_cfg_mode;
-    FILE * device;
 }imu;
 
 struct imu * imu_comm_init(const char * device);
-
 int imu_comm_deinit(struct imu * imu);
+
+imu_status_t imu_comm_get_status(struct imu * imu);
 
 // -- -- -- -- -- -- -- -- -- -- -- --
 // Reading from IMU
 // -- -- -- -- -- -- -- -- -- -- -- --
+
+int imu_comm_get_fds(struct imu * imu, int * fds);
+int imu_comm_read(struct imu * imu, uquad_bool_t * success);
 
 uquad_bool_t imu_comm_avg_ready(struct imu * imu);
 int imu_comm_get_data_avg(struct imu * imu, imu_data_t * data);
 
 int imu_comm_get_data_latest(struct imu * imu, imu_data_t * data);
 int imu_comm_get_data_latest_unread(struct imu * imu, imu_data_t * data);
-
-int imu_comm_poll(struct imu * imu, uquad_bool_t * ready);
-int imu_comm_read_frame(struct imu * imu);
-
-int imu_comm_calibrate(struct imu * imu);
+int imu_comm_get_data_raw_latest_unread(struct imu * imu, imu_data_t * data);
 
 int imu_comm_print_data(imu_data_t * data, FILE * stream);
 
@@ -148,6 +157,15 @@ int imu_comm_get_acc_sens(struct imu * imu, int * acc_index);
 
 int imu_comm_set_fs(struct imu * imu, int new_value);
 int imu_comm_get_fs(struct imu * imu, int * fs_index);
+
+// -- -- -- -- -- -- -- -- -- -- -- --
+// Calibration
+// -- -- -- -- -- -- -- -- -- -- -- --
+uquad_bool_t imu_comm_calibration_is_calibrated(struct imu * imu);
+int imu_comm_calibration_get(struct imu * imu, imu_null_estimates_t * calibration);
+int imu_comm_calibration_start(struct imu * imu);
+int imu_comm_calibration_abort(struct imu * imu);
+int imu_comm_calibration_print(imu_null_estimates_t * calibration, FILE * stream);
 
 #endif // IMU_COMM_H
 
