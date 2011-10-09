@@ -152,6 +152,17 @@ static int imu_comm_send_defaults(struct imu * imu){
     return retval;
 }
 
+static void imu_comm_calibration_clear(struct imu * imu){
+    imu->is_calibrated = false;
+    imu->calibration_counter = -1;
+    int i;
+    for(i=0;i<IMU_SENSOR_COUNT;++i){
+	imu->null_estimates.xyzrpy[i] = 0;
+    }
+    imu->null_estimates.timestamp.tv_sec = 0;
+    imu->null_estimates.timestamp.tv_usec = 0;
+}
+
 /** 
  * Configure IMU to respond as expected, specifically, to answer to macros
  * in imu_comm.h
@@ -193,6 +204,9 @@ static int imu_comm_configure(struct imu * imu){
     imu->status = IMU_COMM_STATE_IDLE;
     retval = imu_comm_send_defaults(imu);
     err_propagate(retval);
+
+    // Mark IMU as not calibrated
+    imu_comm_calibration_clear(imu);
 
     // Start running in binary mode with all channels ON
     retval = imu_comm_resume(imu);
@@ -524,6 +538,11 @@ int imu_comm_read_frame(struct imu * imu){
 	    }
 	}
     }
+    if(imu->status == IMU_COMM_STATE_CALIBRATING){
+	// Lets keep on working on the calibration
+	retval = imu_comm_calibration_add_frame(imu,new_frame);
+	err_propagate(retval);
+    }
 
     ++imu->frame_next; imu->frame_next %= IMU_FRAME_SAMPLE_AVG_COUNT;
     ++imu->unread_data;
@@ -760,9 +779,161 @@ int imu_comm_poll(struct imu * imu, uquad_bool_t * ready){
     return retval;
 }
 
-int imu_comm_calibrate(struct imu * imu){
-    //TODO implement!
-    err_check(ERROR_FAIL,"Not implemented!");
+// -- -- -- -- -- -- -- -- -- -- -- --
+// Calibration
+// -- -- -- -- -- -- -- -- -- -- -- --
+
+uquad_bool_t imu_comm_calibration_is_calibrated(struct imu * imu){
+    return imu->is_calibrated;
+}	
+
+/** 
+ * Get IMU calibration.
+ * Currently only calibration is null estimation.
+ * //TODO:
+ *   - gain
+ *   - non linearity
+ * 
+ * @param imu 
+ * @param calibration return data here (check return error code before using)
+ * 
+ * @return error code
+ */
+int imu_comm_calibration_get(struct imu * imu, imu_null_estimates_t * calibration){
+
+    int retval,i;
+    if(!imu_comm_calibration_is_calibrated(imu)){
+	err_check(ERROR_IMU_STATUS,"IMU is not calibrated");
+    }
+    if(calibration == NULL){
+	err_check(ERROR_NULL_POINTER,"Cannot return data in null pointer!");
+    }
+
+    for(i=0;i<IMU_SENSOR_COUNT;++i){	
+	calibration->xyzrpy[i] = imu->null_estimates.xyzrpy[i];
+    }
+    calibration->timestamp = imu->null_estimates.timestamp;
+    return ERROR_OK;
+}
+
+static unsigned int calibration_tmp[IMU_SENSOR_COUNT];
+static struct timeval calibration_start_time;
+/** 
+ * Initiate IMU calibration.
+ * NOTE: Assumes sensors are not being excited, ie, imu is staying completely still.
+ * 
+ * @param imu 
+ * 
+ * @return 
+ */
+int imu_comm_calibration_start(struct imu * imu){
+    if(imu->status != IMU_COMM_STATE_RUNNING){
+	err_check(ERROR_IMU_STATUS,"IMU must be running to calibrate!");
+    }
+    imu->status = IMU_COMM_STATE_CALIBRATING;
+    int i;
+    // clear tmp data
+    for(i=0;i<IMU_SENSOR_COUNT;++i){
+	calibration_tmp[i] = 0;
+    }
+    imu->calibration_counter = IMU_COMM_CALIBRATION_NULL_SIZE;
+
+    return ERROR_OK;
+}
+
+/** 
+ * Abort current IMU calibration process. All progress will be lost.
+ * If a previous calibration existed, it will be preserved.
+ *
+ * @param imu 
+ * 
+ * @return error code
+ */
+int imu_comm_calibration_abort(struct imu * imu){
+    if(imu->status != IMU_COMM_STATE_CALIBRATING){
+	err_check(ERROR_IMU_STATUS,"Cannot abort calibration, IMU is not calibrating!");
+    }
+    // Restore IMU status:
+    // if we were calibrating then we were running before
+    imu->status = IMU_COMM_STATE_RUNNING;
+
+    return ERROR_OK;
+}
+
+/** 
+ * Integrate calibration data into IMU.
+ * Replaces previous calibration, if any existed.
+ * 
+ * @param imu 
+ * @param timestamp on the last sample used for the calibration
+ * 
+ * @return error code.
+ */
+int imu_comm_calibration_finish(struct imu * imu, struct timeval calibration_end_time){
+    int retval;
+    if(imu->status != IMU_COMM_STATE_CALIBRATING){
+	err_check(ERROR_IMU_STATUS,"Cannot finish calibration, IMU is not calibrating!");
+    }
+    if(imu->calibration_counter != 0){
+	err_check(ERROR_IMU_STATUS,"Not enough samples gathered!");
+    }
+
+    struct timeval calibration_duration;
+    retval = uquad_timeval_substract(&calibration_duration,calibration_end_time,calibration_start_time);
+    if(retval < 0){
+	err_check(ERROR_FAIL,"Calibration duration should not be negative!");
+    }
+    //TODO check if calib took too long, and refuse it if so
+    //define "too long"
+
+    imu->calibration_counter = -1;
+    int i;
+    for(i=0;i<IMU_SENSOR_COUNT;++i){
+	imu->null_estimates.xyzrpy[i] = ((double)calibration_tmp[i])/IMU_COMM_CALIBRATION_NULL_SIZE;
+    }
+    imu->null_estimates.timestamp = calibration_end_time;
+    imu->is_calibrated = true;
+    imu->status = IMU_COMM_STATE_RUNNING;
+
+    return ERROR_OK;
+}
+
+/** 
+ * Add frame info to build up calibration.
+ * Will divide by frame count after done gathering, to avoid loosing info.
+ * 
+ * @param imu 
+ * @param new_frame frame to add to calib 
+ * 
+ * @return error code
+ */
+int imu_comm_calibration_add_frame(struct imu * imu, struct imu_frame * new_frame){
+    int retval;
+    if(imu->status != IMU_COMM_STATE_CALIBRATING){
+	err_check(ERROR_IMU_STATUS,"Cannot add frames, IMU is not calibrating!");
+    }
+    if(imu->calibration_counter <= 0){
+	err_check(ERROR_FAIL,"Invalid value for calibration_counter");
+    }
+
+    if(imu->calibration_counter == IMU_COMM_CALIBRATION_NULL_SIZE){
+	calibration_start_time = new_frame->timestamp;
+    }
+
+    int i;
+    for(i=0;i<IMU_SENSOR_COUNT;++i){
+	calibration_tmp[i] += new_frame->raw[i];
+    }
+    if(--imu->calibration_counter == 0){
+	retval = imu_comm_calibration_finish(imu,new_frame->timestamp);
+	err_propagate(retval);
+    }
+
+    return ERROR_OK;
+}
+
+int imu_comm_calibration_print(imu_null_estimates_t * calibration, FILE * stream){
+    return imu_comm_print_data((imu_data_t *)calibration, stream);
 }
 
 static int previous_frame_count = -1;

@@ -6,6 +6,8 @@
 #include <stdio.h>
 
 #define IMU_COMM_TEST_EXIT_CHAR 'q'
+#define IMU_COMM_TEST_CALIB_CHAR 'c'
+#define IMU_COMM_TEST_CALIB_SHOW_CHAR 's'
 #define IMU_COMM_TEST_HOW_TO "\nIncorrect arguments!\nUsage: ./imu_comm_test /dev/tty#\n"
 #define WAIT_COUNTER_MAX 10
 #define IMU_COMM_TEST_EOL_LIM 128
@@ -32,7 +34,7 @@ int main(int argc, char *argv[]){
     int retval;
     FILE * output_frames = NULL;
     FILE * output_avg = NULL;
-    unsigned char tmp;
+    unsigned char tmp[2];
     char * device;
     char log_name[FILENAME_MAX];
     char * time_string;
@@ -95,7 +97,7 @@ int main(int argc, char *argv[]){
     uquad_bool_t data_ready = false;
     int wait_counter = WAIT_COUNTER_MAX;
     FD_ZERO(&rfds);
-    printf("Press 'q' to abort..\n");
+    printf("Options:\n'q' to abort,\n'c' to calibrate\n's' to display current calibration\n\n");
     while(1){
 	if(do_sleep){
 	    printf("Waiting...\n");
@@ -157,11 +159,37 @@ int main(int argc, char *argv[]){
 		}
 	    }else{ // retval > 0
 		// Handle user input
-	    	printf("\nKey detected, getting avg...\n");
-		// Clear user input
-		retval = fread(&tmp,1,1,stdin);
-		if(tmp == IMU_COMM_TEST_EXIT_CHAR)
+	    	printf("\nGetting user input...\n");
+		// Get & clear user input
+		retval = fread(tmp,1,2,stdin);
+		printf("Read:%c\n",tmp[0]);
+		
+		// exit
+		if(tmp[0] == IMU_COMM_TEST_EXIT_CHAR)
 		    break;
+
+		// do calibration
+		if(tmp[0] == IMU_COMM_TEST_CALIB_CHAR){
+		    printf("Starting calibration...\n");
+		    retval = imu_comm_calibration_start(imu);
+		    err_propagate(retval);
+		}
+
+		// display current calibration
+		if(tmp[0] == IMU_COMM_TEST_CALIB_SHOW_CHAR){
+		    if(!imu_comm_calibration_is_calibrated(imu)){
+			printf("Calibration not ready.\n");
+		    }else{
+			retval = imu_comm_calibration_get(imu,(imu_null_estimates_t *)&data);
+			err_propagate(retval);
+			printf("Current calibration:\n");
+			retval = imu_comm_calibration_print((imu_null_estimates_t *)&data,stdout);
+			err_propagate(retval);
+		    }
+		}
+		printf("\nPress enter to continue...\n");
+		fflush(stdout);
+		while(fread(tmp,1,1,stdin) == 0);
 	    }
 	}
     }
