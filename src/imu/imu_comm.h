@@ -128,7 +128,6 @@ struct imu{
 }imu;
 
 struct imu * imu_comm_init(const char * device);
-
 int imu_comm_deinit(struct imu * imu);
 
 imu_status_t imu_comm_get_status(struct imu * imu);
@@ -138,6 +137,7 @@ imu_status_t imu_comm_get_status(struct imu * imu);
 // -- -- -- -- -- -- -- -- -- -- -- --
 
 int imu_comm_get_fds(struct imu * imu, int * fds);
+int imu_comm_read(struct imu * imu, uquad_bool_t * success);
 
 uquad_bool_t imu_comm_avg_ready(struct imu * imu);
 int imu_comm_get_data_avg(struct imu * imu, imu_data_t * data);
@@ -145,9 +145,6 @@ int imu_comm_get_data_avg(struct imu * imu, imu_data_t * data);
 int imu_comm_get_data_latest(struct imu * imu, imu_data_t * data);
 int imu_comm_get_data_latest_unread(struct imu * imu, imu_data_t * data);
 int imu_comm_get_data_raw_latest_unread(struct imu * imu, imu_data_t * data);
-
-int imu_comm_poll(struct imu * imu, uquad_bool_t * ready);
-int imu_comm_read_frame(struct imu * imu);
 
 int imu_comm_print_data(imu_data_t * data, FILE * stream);
 

@@ -1,5 +1,9 @@
 #include "imu_comm.h"
 
+imu_status_t imu_comm_get_status(struct imu * imu){
+    return imu->status;
+}
+
 /** 
  * IMU fw accepts commands while in idle mode.
  * 
@@ -416,7 +420,8 @@ static int imu_comm_avg(struct imu * imu){
  * @param imu 
  * 
  * @return error code
- */static int imu_comm_get_sync(struct imu * imu, uquad_bool_t * in_sync){
+ */
+static int imu_comm_get_sync(struct imu * imu, uquad_bool_t * in_sync){
     int retval;
     *in_sync = false;
     unsigned char tmp = '@';// Anything diff from IMU_FRAME_INIT_CHAR
@@ -433,6 +438,28 @@ static int imu_comm_avg(struct imu * imu){
     }
     // If we read 0 then there is no data available, so no sync and no error.
     // Set retval to ERROR_OK, otherwise it'll be # of bytes read
+    return ERROR_OK;
+}
+
+/** 
+ * Attempts to sync with IMU, and read data.
+ * 
+ * @param imu 
+ * @param success 
+ * 
+ * @return 
+ */
+int imu_comm_read(struct imu * imu,uquad_bool_t * success){
+    int retval;
+    retval = imu_comm_get_sync(imu,success);
+    err_propagate(retval);
+    if(*success){
+	// sync worked, now get data
+	retval = imu_comm_read_frame(imu);
+	if(retval!=ERROR_OK)
+	    *success = false;
+	err_propagate(retval);
+    }
     return ERROR_OK;
 }
 
@@ -765,18 +792,6 @@ int imu_comm_check_io_locks(FILE * device, uquad_bool_t * read_ok, uquad_bool_t 
 	// retval == 0 <--> No data available
     }
     return ERROR_OK;
-}
-
-int imu_comm_poll(struct imu * imu, uquad_bool_t * ready){
-    int retval;
-    retval = imu_comm_check_io_locks(imu->device, ready, NULL);
-    err_propagate(retval);
-    if(*ready){
-	// Ready to read. Check if in sync
-	retval = imu_comm_get_sync(imu,ready);
-	err_propagate(retval);
-    }// else: No data available
-    return retval;
 }
 
 // -- -- -- -- -- -- -- -- -- -- -- --

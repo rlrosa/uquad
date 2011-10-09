@@ -12,6 +12,8 @@
 #define WAIT_COUNTER_MAX 10
 #define IMU_COMM_TEST_EOL_LIM 128
 
+#define wait_for_enter while(fread(tmp,1,1,stdin) == 0)
+
 static int fix_end_of_time_string(char * string, int lim){
     int i;
     if(lim<0)
@@ -93,9 +95,12 @@ int main(int argc, char *argv[]){
     // do stuff...
     imu_data_t data;
     uquad_bool_t do_sleep = false;
-    int user_input_detected;
+    int read_will_not_lock;
     uquad_bool_t data_ready = false;
     int wait_counter = WAIT_COUNTER_MAX;
+    int imu_fd;
+    uquad_bool_t calibrating = false;
+    retval = imu_comm_get_fds(imu, &imu_fd);
     FD_ZERO(&rfds);
     printf("Options:\n'q' to abort,\n'c' to calibrate\n's' to display current calibration\n\n");
     while(1){
@@ -113,31 +118,41 @@ int main(int argc, char *argv[]){
 	}
 	// Run loop until user presses any key or velociraptors chew through the power cable
 	FD_SET(STDIN_FILENO,&rfds);
+	FD_SET(imu_fd,&rfds);
 	tv.tv_sec = 0;
 	tv.tv_usec = 0;
-	user_input_detected = select(STDIN_FILENO+1,&rfds,NULL,NULL,&tv);
-	if (user_input_detected < 0){
+	read_will_not_lock = select((STDIN_FILENO>imu_fd?STDIN_FILENO:imu_fd)+1,&rfds,NULL,NULL,&tv);
+	if (read_will_not_lock < 0){
 	    err_check(ERROR_IO,"select() failed!");
 	}else{
-	    retval = imu_comm_poll(imu,&data_ready);
-	    err_propagate(retval);
-	    if (user_input_detected == 0){
-	    // No user input, so keep running the loop.
-		if(data_ready){
-		    // IMU will do ADC conv, send, then next sensor, send, etc
-		    // We nead to wait for the ADC and for the comm delays.
-		    // See imu_comm.h for more info.
-		    // We should wait for this, then read out all the info.
-		    //		    usleep(120*50);//TODO understand and tune according!!
-		    retval = imu_comm_read_frame(imu);
-		    if(retval == ERROR_READ_TIMEOUT){
-			do_sleep = true;
-			printf("Not enough data available...\n");
-			continue;// skip the rest of the loop
-		    }
-		    if(retval != ERROR_OK)
-			continue;
-		    do_sleep = false;
+	    // Read from IMU
+	    if(FD_ISSET(imu_fd,&rfds)){
+		do_sleep = false;
+		retval = imu_comm_read(imu,&data_ready);
+		// IMU will do ADC conv, send, then next sensor, send, etc
+		// We nead to wait for the ADC and for the comm delays.
+		// See imu_comm.h for more info.
+		if(retval == ERROR_READ_TIMEOUT){
+		    printf("Not enough data available...\n");
+		    do_sleep = true;
+		    continue;// skip the rest of the loop
+		}
+		if(retval != ERROR_OK){
+		    wait_for_enter;
+		    continue;
+		}
+
+		if(imu_comm_get_status(imu) == IMU_COMM_STATE_RUNNING){
+		    if(calibrating){
+			// finished calibration
+			calibrating = false;
+			if(imu_comm_calibration_is_calibrated(imu)){
+			    printf("Calibration successful!\n");
+			}else{
+			    printf("Calibration FAILED...\n");
+			    wait_for_enter;
+			}
+		    }		    
 		    if(output_frames != NULL){
 			// Printing to stdout is unreadable
 			retval = imu_comm_get_data_raw_latest_unread(imu,&data);
@@ -146,7 +161,7 @@ int main(int argc, char *argv[]){
 			    err_propagate(retval);
 			}
 		    }
-
+		    
 		    // Get avg
 		    if(imu_comm_avg_ready(imu)){
 			retval = imu_comm_get_avg(imu,&data);
@@ -157,9 +172,11 @@ int main(int argc, char *argv[]){
 		    if(output_frames == NULL || output_avg == NULL)
 			fflush(stdout);
 		}
-	    }else{ // retval > 0
-		// Handle user input
-	    	printf("\nGetting user input...\n");
+	    }
+
+	    // Handle user input
+	    if(FD_ISSET(STDIN_FILENO,&rfds)){
+		printf("\nGetting user input...\n");
 		// Get & clear user input
 		retval = fread(tmp,1,2,stdin);
 		printf("Read:%c\n",tmp[0]);
@@ -171,6 +188,7 @@ int main(int argc, char *argv[]){
 		// do calibration
 		if(tmp[0] == IMU_COMM_TEST_CALIB_CHAR){
 		    printf("Starting calibration...\n");
+		    calibrating = true;
 		    retval = imu_comm_calibration_start(imu);
 		    err_propagate(retval);
 		}
@@ -189,11 +207,11 @@ int main(int argc, char *argv[]){
 		}
 		printf("\nPress enter to continue...\n");
 		fflush(stdout);
-		while(fread(tmp,1,1,stdin) == 0);
+		wait_for_enter;
 	    }
 	}
     }
-
+		
     // Deinit structure & close connection
     retval = imu_comm_deinit(imu);
     err_propagate(retval);
