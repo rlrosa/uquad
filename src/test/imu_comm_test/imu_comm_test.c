@@ -32,6 +32,20 @@ static int fix_end_of_time_string(char * string, int lim){
     return ERROR_OK;
 }
 
+static int generate_log_name(char * log_name, char * start_string){
+    time_t rawtime;
+    struct tm * tm;
+    int retval;
+    time(&rawtime);
+    tm = localtime (&rawtime);
+    retval = sprintf(log_name,"%04d_%02d_%02d_xx_%02d_%02d_%02d", 1900 + tm->tm_year, tm->tm_mon + 1,tm->tm_mday, tm->tm_hour, tm->tm_min, tm->tm_sec);
+    if(retval < 0)
+	return ERROR_FAIL;
+    if(start_string != NULL)
+	retval = sprintf(log_name,"%s%s",start_string,log_name);
+    return retval;
+}
+
 int main(int argc, char *argv[]){
     int retval;
     FILE * output_frames = NULL;
@@ -39,7 +53,7 @@ int main(int argc, char *argv[]){
     unsigned char tmp[2];
     char * device;
     char log_name[FILENAME_MAX];
-    char * time_string;
+    char log_filename[FILENAME_MAX];
     struct imu * imu = NULL;
     fd_set rfds;
     struct timeval tv;
@@ -53,19 +67,16 @@ int main(int argc, char *argv[]){
     if(argc<3){
 	fprintf(stdout,"Using stdout to output...\n");
     }else{
-	time_t rawtime;
 	int i;
-	struct tm * timeinfo;
-	time(&rawtime);
-	timeinfo = localtime (&rawtime);
-
-	time_string = asctime (timeinfo);
-	retval = fix_end_of_time_string(time_string,IMU_COMM_TEST_EOL_LIM);
-	if(retval != ERROR_OK)
+	retval = generate_log_name(log_name,NULL);
+	if(retval < 0){
+	    fprintf(stderr,"Failed to create log name...");
 	    exit(1);
+	}
+   
 	// Setup frame log
-	sprintf(log_name,"./logs/%s.log",time_string);
-	output_frames = fopen(log_name,"w");
+	sprintf(log_filename,"./logs/%s.log",log_name);
+	output_frames = fopen(log_filename,"w");
 	if(output_frames == NULL){
 	    fprintf(stderr,"Failed to create frame log file...");
 	    exit(1);
@@ -73,10 +84,12 @@ int main(int argc, char *argv[]){
 	fprintf(stdout,"Sending frame output to log file: %s\n",log_name);
 
 	// Setup avg log
-	sprintf(log_name,"./logs/%savg.log",time_string);
-	if(retval != ERROR_OK)
+	retval = sprintf(log_filename,"./logs/%savg.log",log_name);
+	if(retval < 0){
+	    fprintf(stderr,"Failed to create frame avg log file name...");
 	    exit(1);
-	output_avg = fopen(log_name,"w");
+	}
+	output_avg = fopen(log_filename,"w");
 	if(output_avg == NULL){
 	    fprintf(stderr,"Failed to create avg log file...");
 	    exit(1);
