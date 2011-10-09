@@ -1,7 +1,19 @@
-Build system base on cmake
+# -- -- -- -- -- -- -- -- -- -- -- -- -- --
+#. Code structure
+# -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
-All explanations assumes you start from uquad/src/
-Basic intro: http://mathnathan.com/2010/07/11/getting-started-with-cmake/
+All explanations assume you start from uquad/src/
+
+Devices: Each device should have it's own API, in a separate folder (example: imu/).
+	 A control loop will check with device has data available, and read only from the devices that do have data, avoiding locking. this is done via select().
+	 Each device should provide a way to access their file descriptor, and a function to update/read data once it is available.
+
+Test programs:
+     Test programs have their individual directory within test/
+
+Build system:
+      Build system is based on cmake. Instruction follow on how to get it running without reading much.
+      Basic intro: http://mathnathan.com/2010/07/11/getting-started-with-cmake/
 
 # -- -- -- -- -- -- -- -- -- -- -- -- -- --
 #. CMake basics
