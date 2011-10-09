@@ -12,8 +12,14 @@ frames_trimmed = frames(avg_count:frames_end_index,:);
 
 avg_time_usec = (avg(:,1) - avg(1,1))*1e6 + avg(:,2);% sec*1e6 + usec
 frames_time_usec = (frames_trimmed(:,1) - frames_trimmed(1,1))*1e6  + frames_trimmed(:,2);
-if(sum(avg_time_usec ~= frames_time_usec ) ~= 0)
-  display('ERROR: avg and frames not in sync!');
+not_sync_count = sum(avg_time_usec ~= frames_time_usec );
+if(not_sync_count ~= 0)
+  fprintf('ERROR: avg and frames not in sync %d times!\n',not_sync_count);
+  figure(243)
+  stem(avg_time_usec ~= frames_time_usec);
+  title('Timestamp mismatches')
+  xlabel('sample #')
+  ylabel('high == mismatch; low == ok')
   return
 end
 
