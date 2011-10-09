@@ -567,9 +567,9 @@ static int imu_comm_gyro_read(struct imu * imu, struct imu_frame * frame, double
     int retval = ERROR_OK, i;
     for(i = 0; i<IMU_GYROS; ++i){
 	gyro_reading[i] = ((double) *(frame->raw + IMU_ACCS + i)) - imu->null_estimates.xyzrpy[IMU_ACCS + i];
-	gyro_reading[i] = grad2rad(gyro_reading[i]);
 	retval = gyro_scale_adjust(imu,gyro_reading+i);
 	err_propagate(retval);
+	gyro_reading[i] = grad2rad(gyro_reading[i]);
     }
     return retval;
 }
