@@ -11,9 +11,8 @@ Al tratarse de una plataforma comercial no se dispone de todos los parámetros fu
 
 %Esto queda mejor para la doc final
 
-%Por lo tanto dividiremos el análisis del modelo en varias etapas. La primera de ellas consiste en obtener las constantes del sistema, luego se procede a caracterizar la respuesta de los motores, a continuación se  desarrolla el  modelo teórico, finalmente en la última sección se presentan los resultados obtenidos con dicho modelo y se contrastan con la realidad. 
+Por lo tanto dividiremos el análisis del modelo en varias etapas. La primera de ellas consiste en obtener las constantes del sistema, luego se procede a caracterizar la respuesta de los motores, a continuación se  desarrolla el  modelo teórico, finalmente en la última sección se presentan los resultados obtenidos con dicho modelo y se contrastan con la realidad. 
 
-Dado que el avance del proyecto no es tal como para haber obtenido dichos parámetros se realizará el desarrollo en función de los mismos.
 
 Para el estudio en cuestión se considerará el cuadricóptero según las convenciones expresadas en la figura \ref{fig:quad}:
     
@@ -24,7 +23,7 @@ Para el estudio en cuestión se considerará el cuadricóptero según las convencion
 	\label{fig:quad}
 \end{figure}
 
-Por un lado se definen las coordenadas ´´del mundo'' $(i_I , j_I , k_I )$, un sistema de referencia inercial fijo. Las magnitudes correspondientes a la base de este referencial se notarán
+Por un lado se definen las coordenadas "del mundo" $(i_I , j_I , k_I )$, un sistema de referencia inercial fijo. Las magnitudes correspondientes a la base de este referencial se notarán
 con el subíndice $I$. Por otro lado se utilizará el sistema de referencia $(i_q , j_q , k_q )$ solidario al cuadricóptero. En este caso las magnitudes medidas en ese referencial se notarán con el subíndice $q$. En la figura \ref{fig:quad} se pueden apreciar ambos sistemas de referencia.
 
 \section{Constantes del sistema}
@@ -171,7 +170,7 @@ I_{xx}  &0&  0\\
 
 \section{Desarrollo teórico}
 
-El desarrollo teórico de la dinámica del sistema consta de algunas consideraciones que si bien no son exactas se considera a priori que son una buena aproximación del sistema y que simplifican considerablemente el desarrollo del modelo en cuestión. En particular la geometría que fue supuesta permite que todos los tensores de inercia sean diagonales en el sistema relativo al cuadricóptero. Se realizaron algunas pruebas primarias que arrojan resultados alentadores respecto del modelo realizado, dichas pruebas no fueron lo suficientemente exhaustivas como para darlas por válidas y por ende no se incluyen en esta ocasión.
+El desarrollo teórico de la dinámica del sistema consta de algunas consideraciones que si bien no son exactas se considera a priori que son una buena aproximación del sistema y que simplifican considerablemente el desarrollo del modelo en cuestión. En particular la geometría que fue supuesta permite que todos los tensores de inercia sean diagonales en el sistema relativo al cuadricóptero.% Se realizaron algunas pruebas primarias que arrojan resultados alentadores respecto del modelo realizado, dichas pruebas no fueron lo suficientemente exhaustivas como para darlas por válidas y por ende no se incluyen en esta ocasión.
 
 %TODO cambiar esto a futuro 
  
@@ -401,9 +400,10 @@ $$\left(\begin{array}{c}
 
 \end{array}\right)$$
  
-%\subsection{Modelo en variables de Estado}
-%\subsection{Algunas consideraciones adicionales sobre el modelo}
-
+\subsection{Modelo en variables de Estado}
+A partir de las relaciones cinemáticas y dinámicas obtenidas en la sección anterior se procede a elegir un vector de estados para el estudio del sistema. Dicho vector es el conformado por las variables $\left\lbrace  x,y,z, v_{q1},v_{q2},v_{q3},\theta,\phi,\psi,\omega_{q1},\omega_{q2},\omega_{q3} \right\rbrace$.
+\subsection{Algunas consideraciones adicionales sobre el modelo}
+En primer lugar, luego de finalizado el análisis se procede a verificar con la bibliografía existente que el modelo desarrollado sea adecuado. Existe bibliografía diversa donde se realiza el modelado físico de sistemas similares. Independientemente del enfoque que se da al análisis los resultados obtenidos finalmente coinciden entre sí y con nuestro modelo. A modo de ejemplo haremos referencia a un curso titulado \emph{Elective in Robotics}  de la \emph{Universitá de Roma} dictado por el profesor Giuseppe Oriolo. En este curso se estudia el control de un cuadricóptero, el análisis se basa al igual que en nuestro caso en el análisis de las cardinales. Los resultados obtenidos son exactamente los mismos, con la diferencia que el profesor Oriolo, luego de un análisis del funcionamiento de las hélices del cuadricóptero deduce la relación entre empuje y velocidad angular. Mientras que en nuestro análisis la respuesta de los motores tanto en empuje como en velocidad angular será determinada experimentalmente. Finalmente realizando algunas aproximaciones, como por ejemplo despreciar los efectos giroscópicos del sistema y asumiendo que el cuadricóptero será operado en condición de \emph{Hovering} ($\theta$ y $\phi$ despreciables) se llega a un modelo simplificado del sistema. Otro de los papers consultados es el escrito por \emph{Tomaso Breciani} del departamento de control automático de la \emph{Lund University}. En dicha bibliografía se obtiene el mismo modelo que en el caso anterior. El objetivo de nuestro proyecto es operar el cuadricóptero en condiciones más generales, por lo tanto no se realizaran dichas aproximaciones. 	
 \end{document}
 
 %Algunos layouts para poner imágnenes. Copien y peguen no
