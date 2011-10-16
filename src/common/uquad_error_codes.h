@@ -14,5 +14,6 @@
 
 #define err_propagate(retval) if(retval!=ERROR_OK){fprintf(stderr,"backtrace:%s:%d\n",__FILE__,__LINE__);return retval;}
 #define err_check(retval,msg) if(retval!=ERROR_OK){fprintf(stderr,"%s:%d: %s\n",__FILE__,__LINE__,msg);return retval;}
+#define mem_alloc_check(pointer) if(pointer==NULL){fprintf(stderr,"%s:%d: malloc failed\n",__FILE__,__LINE__);return pointer;}
 
 /// No functions
