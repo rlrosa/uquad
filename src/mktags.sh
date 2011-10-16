@@ -16,6 +16,7 @@ SCAN_DIRS=(imu
            control
            gps
            submodules/gpsd
+	   uquad_io
            imu_fw)
 
 cd $ETAGS_DIR
