@@ -14,9 +14,6 @@ ETAGS_DIR=/home/rrosa/work/uquad/src/
 SCAN_DIRS=(imu
            common
            control
-           gps
-           submodules/gpsd
-	   uquad_io
            imu_fw)
 
 cd $ETAGS_DIR
