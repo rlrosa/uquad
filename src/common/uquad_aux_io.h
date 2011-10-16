@@ -36,6 +36,15 @@ typedef struct io io_t;
  */
 io_t * io_init(void);
 
+/** 
+ * Unregisters all registered devices and frees all mem.
+ * 
+ * @param io 
+ * 
+ * @return error code
+ */
+int io_deinit(io_t * io);
+
 /// -- -- -- -- -- -- -- -- -- -- -- --
 /// Device list handling
 /// -- -- -- -- -- -- -- -- -- -- -- --

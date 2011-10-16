@@ -178,3 +178,20 @@ int io_dev_ready(io_t * io, int fd, uquad_bool_t * read, uquad_bool_t * write){
 	*write = dev->ready_write;
     return ERROR_OK;
 }
+
+int io_deinit(io_t * io){
+    int retval;
+    io_dev_t * dev, * dev_next;
+    if(!io_dev_list_empty(io)){
+	// Free all registered devices
+	retval = io_get_dev_list(io,&dev);
+	err_propagate(retval);
+	while(dev != NULL){
+	    dev_next = dev->next;
+	    free(dev);
+	    dev = dev_next;
+	}
+	free(io);
+    }
+    return ERROR_OK;
+}
