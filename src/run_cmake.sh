@@ -30,6 +30,8 @@ do
 	    if [ "$i" == help ]
 	    then
 		echo "Usage: ./run_cmake.sh [debug] [arm] [help]"
+		cd ..
+		exit
 	    fi
 	fi
     fi
