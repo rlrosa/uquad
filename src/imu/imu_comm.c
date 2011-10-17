@@ -422,23 +422,30 @@ static int imu_comm_avg(imu_t * imu){
  * @return error code
  */
 static int imu_comm_get_sync(imu_t * imu, uquad_bool_t * in_sync){
-    int retval;
+    int retval,i;
     *in_sync = false;
     unsigned char tmp = '@';// Anything diff from IMU_FRAME_INIT_CHAR
-    retval = fread(&tmp,IMU_INIT_END_SIZE,1,imu->device);
-    if(retval < 0){	
-	err_check(ERROR_IO,"Read error: failed to get sync char...");
-    }else{
-	if(retval > 0){
-	    if(tmp == IMU_FRAME_INIT_CHAR){
-		// No error printing, leave that for upper level
-		*in_sync = true;
+    for(i=0;i<IMU_DEFAULT_FRAME_SIZE_BYTES;++i){
+	retval = fread(&tmp,IMU_INIT_END_SIZE,1,imu->device);
+	if(retval < 0){	
+	    err_check(ERROR_IO,"Read error: failed to get sync char...");
+	}else{
+	    if(retval > 0){
+		if(tmp == IMU_FRAME_INIT_CHAR){
+		    // No error printing, leave that for upper level
+		    *in_sync = true;
+		    return ERROR_OK;
+		}
+	    }else{
+		// retval == 0
+		*in_sync = false;
+		return ERROR_READ_SYNC;
 	    }
 	}
     }
     // If we read 0 then there is no data available, so no sync and no error.
     // Set retval to ERROR_OK, otherwise it'll be # of bytes read
-    return ERROR_OK;
+    return ERROR_READ_TIMEOUT;
 }
 
 /** 
