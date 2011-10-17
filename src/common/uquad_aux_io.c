@@ -36,7 +36,7 @@ static int io_get_dev_list(io_t * io, io_dev_t ** dev){
 static int io_get_last_dev(io_t * io, io_dev_t ** last_dev){
     int dev_count_local = 0;
     if(io_dev_list_empty(io)){
-	last_dev = NULL;
+	*last_dev = NULL;
 	return ERROR_OK;
     }
     io_dev_t * dev = io->dev_list.first;
@@ -85,7 +85,7 @@ int io_rm_dev(io_t * io, int fd){
     io_dev_t * dev = io->dev_list.first;
     io_dev_t * dev_prev = NULL;
     do{
-	if(dev->fd = fd)
+	if(dev->fd == fd)
 	    break;
 	dev_prev = dev;
 	dev = dev->next;
@@ -96,8 +96,8 @@ int io_rm_dev(io_t * io, int fd){
     }
 
     if(dev_prev == NULL){
-	// there was only 1 element, and it will be removed
-	io->dev_list.first = NULL;
+	// Remove the first element of the list
+	io->dev_list.first = dev->next;
     }else{
 	// skip the one that will be deleted, but keep the tail
 	dev_prev->next = dev->next;
