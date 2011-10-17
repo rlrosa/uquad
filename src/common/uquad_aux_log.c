@@ -1,6 +1,6 @@
 #include <uquad_aux_log.h>
 
-int generate_log_name(char * log_name, char * start_string){
+int uquad_log_generate_log_name(char * log_name, char * start_string){
     time_t rawtime;
     struct tm * tm;
     int retval;
@@ -12,4 +12,18 @@ int generate_log_name(char * log_name, char * start_string){
     if(start_string != NULL)
 	retval = sprintf(log_name,"%s%s",start_string,log_name);
     return retval;
+}
+
+int uquad_log_rew_and_clear(FILE * stream, int num_lines){
+    int retval,i;
+    if(stream == NULL){
+	err_check(ERROR_FAIL,"Cannot clear null stream");
+    }
+    for(i=0;i<num_lines;++i){
+	retval = fputs(UQUAD_LOG_UP_ONE_LINE,stdout);
+	if(retval == EOF){
+	    err_check(ERROR_WRITE,"fputs() returned error!");
+	}
+    }
+    return ERROR_OK;
 }
