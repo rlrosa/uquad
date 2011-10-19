@@ -4,9 +4,18 @@
 
 All explanations assume you start from uquad/src/
 
+Main:	The main control loop is not implemented yet.
+	It will be in control/, and consist of a loop in which:
+	   - all the io devices are polled.
+	   - those input devices with data ready are handled (new data is read)
+	   - the state is updated with the new data
+	   - actions are performed in order to achieve whatever goal has been set (hover, go forward, track an object, etc)
+
 Devices: Each device should have it's own API, in a separate folder (example: imu/).
 	 A control loop will check with device has data available, and read only from the devices that do have data, avoiding locking. this is done via select().
 	 Each device should provide a way to access their file descriptor, and a function to update/read data once it is available.
+
+Common:	 Code that can be used in a general context (several devices, control loop, etc) such as io, error handling, logging, etc goes in common/
 
 Test programs:
      Test programs have their individual directory within test/
