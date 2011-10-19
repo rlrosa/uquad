@@ -482,7 +482,7 @@ int imu_comm_read(imu_t * imu,uquad_bool_t * success){
 int imu_comm_read_frame(imu_t * imu){
     int retval = ERROR_OK,watchdog,read,i;
     unsigned char tmp = '@';// Anything diff from IMU_FRAME_INIT_CHAR
-    struct imu_frame * new_frame;
+    imu_frame_t * new_frame;
     new_frame = imu->frame_buffer+imu->frame_next;
 
     // Get count
@@ -597,7 +597,7 @@ int imu_comm_read_frame(imu_t * imu){
  * 
  * @return error code
  */
-static int imu_comm_gyro_read(imu_t * imu, struct imu_frame * frame, double * gyro_reading){
+static int imu_comm_gyro_read(imu_t * imu, imu_frame_t * frame, double * gyro_reading){
     int retval = ERROR_OK, i;
     for(i = 0; i<IMU_GYROS; ++i){
 	gyro_reading[i] = ((double) *(frame->raw + IMU_ACCS + i)) - imu->null_estimates.xyzrpy[IMU_ACCS + i];
@@ -617,7 +617,7 @@ static int imu_comm_gyro_read(imu_t * imu, struct imu_frame * frame, double * gy
  * 
  * @return error code
  */
-static int imu_comm_acc_read(imu_t * imu, struct imu_frame * frame, double * acc_reading){
+static int imu_comm_acc_read(imu_t * imu, imu_frame_t * frame, double * acc_reading){
     int retval = ERROR_OK, i;
     for(i = 0; i<IMU_ACCS; ++i){
 	// Avoid math on char to be able to hanlde negative results
@@ -640,7 +640,7 @@ static int imu_comm_acc_read(imu_t * imu, struct imu_frame * frame, double * acc
  * 
  * @return error code
  */
-static int imu_comm_raw2data(imu_t * imu, struct imu_frame * frame, imu_data_t * data){
+static int imu_comm_raw2data(imu_t * imu, imu_frame_t * frame, imu_data_t * data){
     int retval;
     if(data == NULL || frame == NULL){
 	err_check(ERROR_NULL_POINTER,"Non null pointers required as args...");
@@ -670,7 +670,7 @@ static int imu_comm_raw2data(imu_t * imu, struct imu_frame * frame, imu_data_t *
 int imu_comm_get_data_latest(imu_t * imu, imu_data_t * data){
     int retval = ERROR_OK;
 
-    struct imu_frame * frame = imu->frame_buffer + frame_circ_index(imu);
+    imu_frame_t * frame = imu->frame_buffer + frame_circ_index(imu);
     retval = imu_comm_raw2data(imu,frame,data);
     err_propagate(retval);
 
@@ -691,7 +691,7 @@ int imu_comm_get_data_raw_latest_unread(imu_t * imu, imu_data_t * data){
 	err_check(ERROR_FAIL,"No unread data available.");
     }
 
-    struct imu_frame * frame = imu->frame_buffer + frame_circ_index(imu);
+    imu_frame_t * frame = imu->frame_buffer + frame_circ_index(imu);
     data->timestamp = frame->timestamp;
     int i;
     for(i=0;i<IMU_SENSOR_COUNT;++i){
@@ -715,7 +715,7 @@ int imu_comm_get_data_latest_unread(imu_t * imu, imu_data_t * data){
 	err_check(ERROR_FAIL,"No unread data available.");
     }
 
-    struct imu_frame * frame = imu->frame_buffer + frame_circ_index(imu);
+    imu_frame_t * frame = imu->frame_buffer + frame_circ_index(imu);
     retval = imu_comm_raw2data(imu,frame,data);
     err_propagate(retval);
 
@@ -929,7 +929,7 @@ int imu_comm_calibration_finish(imu_t * imu, struct timeval calibration_end_time
  * 
  * @return error code
  */
-int imu_comm_calibration_add_frame(imu_t * imu, struct imu_frame * new_frame){
+int imu_comm_calibration_add_frame(imu_t * imu, imu_frame_t * new_frame){
     int retval;
     if(imu->status != IMU_COMM_STATE_CALIBRATING){
 	err_check(ERROR_IMU_STATUS,"Cannot add frames, IMU is not calibrating!");
@@ -959,7 +959,7 @@ int imu_comm_calibration_print(imu_null_estimates_t * calibration, FILE * stream
 }
 
 static int previous_frame_count = -1;
-int imu_comm_print_frame(struct imu_frame * frame, FILE * stream){
+int imu_comm_print_frame(imu_frame_t * frame, FILE * stream){
     int i;
     if(previous_frame_count == -1)
 	previous_frame_count = frame->count;
