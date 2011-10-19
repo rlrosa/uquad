@@ -80,7 +80,7 @@ int main(int argc, char *argv[]){
     /// -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
     uquad_bool_t read = false,write = false, aux_bool = false;
     uquad_bool_t reg_imu = true, reg_pipe = true, reg_stdin = true;
-    imu_data_t imu_data;
+    imu_measurements_t imu_measurements;
     unsigned char tmp_buff[2];
     int counter = 0;
     poll_n_read:
@@ -96,7 +96,7 @@ int main(int argc, char *argv[]){
 		if(retval != ERROR_OK){
 		    fprintf(stdout,"\nIMU missed frame?\n\n");
 		}else{
-		    retval = imu_comm_get_data_latest_unread(imu,&imu_data);
+		    retval = imu_comm_get_measurements_latest_unread(imu,&imu_measurements);
 		    if(retval != ERROR_OK)
 			fprintf(stdout,"\nIMU had no data!\n\n");
 		}

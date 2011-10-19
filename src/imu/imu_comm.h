@@ -84,6 +84,7 @@ struct imu_frame{
     unsigned short count;
     struct timeval timestamp;
 };
+typedef struct imu_frame imu_frame_t;
 
 /// Based on ADC counts, no units
 struct imu_data{
@@ -92,7 +93,8 @@ struct imu_data{
 };
 
 typedef struct imu_data imu_data_t;
-typedef struct imu_data imu_null_estimates_t;
+typedef imu_data_t imu_null_estimates_t;
+typedef imu_data_t imu_measurements_t;
 
 struct imu_settings{
     // sampling frequency
@@ -118,7 +120,7 @@ struct imu{
     int calibration_counter;
     uquad_bool_t is_calibrated;
     // data
-    struct imu_frame frame_buffer[IMU_FRAME_SAMPLE_AVG_COUNT];
+    imu_frame_t frame_buffer[IMU_FRAME_SAMPLE_AVG_COUNT];
     struct timeval frame_avg_init,frame_avg_end;
     int frames_sampled;
     int unread_data;
@@ -141,10 +143,10 @@ int imu_comm_get_fds(imu_t * imu, int * fds);
 int imu_comm_read(imu_t * imu, uquad_bool_t * success);
 
 uquad_bool_t imu_comm_avg_ready(imu_t * imu);
-int imu_comm_get_data_avg(imu_t * imu, imu_data_t * data);
+int imu_comm_get_measurements_avg(imu_t * imu, imu_measurements_t * measurements);
 
-int imu_comm_get_data_latest(imu_t * imu, imu_data_t * data);
-int imu_comm_get_data_latest_unread(imu_t * imu, imu_data_t * data);
+int imu_comm_get_measurements_latest(imu_t * imu, imu_measurements_t * measurements);
+int imu_comm_get_measurements_latest_unread(imu_t * imu, imu_measurements_t * measurements);
 int imu_comm_get_data_raw_latest_unread(imu_t * imu, imu_data_t * data);
 
 int imu_comm_print_data(imu_data_t * data, FILE * stream);

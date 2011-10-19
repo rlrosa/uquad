@@ -592,15 +592,15 @@ int imu_comm_read_frame(imu_t * imu){
  * The data received is the result of the ADC.
  * 
  * @param imu 
- * @param frame Contains RAW data from IMU
+ * @param data Contains RAW data from IMU
  * @param gyro_reading Rate in rad/sec
  * 
  * @return error code
  */
-static int imu_comm_gyro_read(imu_t * imu, imu_frame_t * frame, double * gyro_reading){
+static int imu_comm_gyro_read(imu_t * imu, imu_data_t * data, double * gyro_reading){
     int retval = ERROR_OK, i;
     for(i = 0; i<IMU_GYROS; ++i){
-	gyro_reading[i] = ((double) *(frame->raw + IMU_ACCS + i)) - imu->null_estimates.xyzrpy[IMU_ACCS + i];
+	gyro_reading[i] = data->xyzrpy[IMU_ACCS + i] - imu->null_estimates.xyzrpy[IMU_ACCS + i];
 	retval = gyro_scale_adjust(imu,gyro_reading+i);
 	err_propagate(retval);
 	gyro_reading[i] = grad2rad(gyro_reading[i]);
@@ -609,7 +609,7 @@ static int imu_comm_gyro_read(imu_t * imu, imu_frame_t * frame, double * gyro_re
 }
 
 /** 
- * 
+ * Converts raw acc data to m/s^2
  * 
  * @param imu 
  * @param frame Raw data from IMU
@@ -617,11 +617,10 @@ static int imu_comm_gyro_read(imu_t * imu, imu_frame_t * frame, double * gyro_re
  * 
  * @return error code
  */
-static int imu_comm_acc_read(imu_t * imu, imu_frame_t * frame, double * acc_reading){
+static int imu_comm_acc_read(imu_t * imu, imu_data_t * data, double * acc_reading){
     int retval = ERROR_OK, i;
     for(i = 0; i<IMU_ACCS; ++i){
-	// Avoid math on char to be able to hanlde negative results
-	acc_reading[i] = ((double) * (frame->raw + i)) - imu->null_estimates.xyzrpy[i];
+	acc_reading[i] = data->xyzrpy[i] - imu->null_estimates.xyzrpy[i];
 	retval = counts2volts(imu,acc_reading+i);
 	err_propagate(retval);
 	retval = volts2g(imu->settings.acc_sens,acc_reading+i);
@@ -633,55 +632,128 @@ static int imu_comm_acc_read(imu_t * imu, imu_frame_t * frame, double * acc_read
 }
 
 /** 
- * Convert raw data from IMU to double
+ * Convert data from IMU, in ADC counts, to measurements in useful units.
+ * This requires knowledge of IMU settings, and a reasonable calibration.
  * 
- * @param frame raw data
- * @param data converted data
+ * @param data raw data (in ADC counts)
+ * @param measurements converted data
  * 
  * @return error code
  */
-static int imu_comm_raw2data(imu_t * imu, imu_frame_t * frame, imu_data_t * data){
+static int imu_comm_data2measurements(imu_t * imu, imu_data_t * data, imu_measurements_t * measurements){
     int retval;
-    if(data == NULL || frame == NULL){
+    if(measurements == NULL || data == NULL){
 	err_check(ERROR_NULL_POINTER,"Non null pointers required as args...");
     }
     // Get timestamp
-    data->timestamp = frame->timestamp;
+    measurements->timestamp = data->timestamp;
 
     // Get ACC readings
-    retval = imu_comm_acc_read(imu, frame, data->xyzrpy);
+    retval = imu_comm_acc_read(imu, data, measurements->xyzrpy);
     err_propagate(retval);
 
     // Get gyro reading
-    retval = imu_comm_gyro_read(imu, frame, data->xyzrpy + IMU_ACCS);
+    retval = imu_comm_gyro_read(imu, data, measurements->xyzrpy + IMU_ACCS);
     err_propagate(retval);
 
     return ERROR_OK;
 }
 
 /** 
- * Calculates value of the sensor reading from the RAW data, using current imu calibration.
+ * Casts counts to doubles, still in counts.
+ * 
+ * @param frame 
+ * @param data 
+ * 
+ * @return error code
+ */
+static int imu_comm_raw2double_raw(imu_frame_t * frame, imu_data_t * data){
+    int retval, i;
+    if(frame == NULL || data == NULL){
+	err_check(ERROR_NULL_POINTER,"Non null pointers required as args...");
+    }
+    for (i=0; i<IMU_SENSOR_COUNT; ++i){
+	data->xyzrpy[i] = (double) frame->raw[i];
+    }
+    data->timestamp = frame->timestamp;
+    return ERROR_OK;
+}
+
+/** 
+ * Calculates value of the sensor readings from the RAW data, using current imu calibration.
+ * This requires a reasonable calibration.
  * 
  * @param imu Current imu status
  * @param xyzrpy Answer is returned here
  * 
  * @return error code
  */
-int imu_comm_get_data_latest(imu_t * imu, imu_data_t * data){
+int imu_comm_get_measurements_latest(imu_t * imu, imu_measurements_t * measurements){
     int retval = ERROR_OK;
 
     imu_frame_t * frame = imu->frame_buffer + frame_circ_index(imu);
-    retval = imu_comm_raw2data(imu,frame,data);
+    imu_data_t data;
+    retval = imu_comm_raw2double_raw(frame,&data);
+    err_propagate(retval);
+    retval = imu_comm_data2measurements(imu,&data,measurements);
     err_propagate(retval);
 
     return retval;
 }
 
 /** 
- * If unread data exists, then calculates the latest value of the sensor reading from the RAW data, using current imu calibration.
+ * Returns latest data from IMU, in ADC counts.
  * 
- * @param imu Current imu status
- * @param xyzrpy Answer is returned here
+ * @param imu 
+ * @param data Answer is returned here
+ * 
+ * @return error code
+ */
+int imu_comm_get_data_raw_latest(imu_t * imu, imu_data_t * data){
+    int retval = ERROR_OK;
+
+    imu_frame_t * frame = imu->frame_buffer + frame_circ_index(imu);
+    retval = imu_comm_raw2double_raw(frame,data);
+    err_propagate(retval);
+    return ERROR_OK;
+}
+
+/** 
+ * If unread data exists, then calculates the latest value of the sensor readings
+ * from the RAW data, using current imu calibration.
+ * This requires a reasonable calibration.
+ *
+ * Decrements the unread count.
+ * 
+ * @param imu 
+ * @param measurements Answer is returned here
+ * 
+ * @return error code
+ */
+int imu_comm_get_measurements_latest_unread(imu_t * imu, imu_measurements_t * measurements){
+    int retval = ERROR_OK;
+    if(imu->unread_data <= 0){
+	err_check(ERROR_FAIL,"No unread data available.");
+    }
+
+    imu_frame_t * frame = imu->frame_buffer + frame_circ_index(imu);
+    imu_data_t data;
+    retval = imu_comm_raw2double_raw(frame,&data);
+    err_propagate(retval);
+    retval = imu_comm_data2measurements(imu,&data,measurements);
+    err_propagate(retval);
+
+    imu->unread_data -= 1;
+    return retval;
+}
+
+/** 
+ * If unread data exists, gets the latest value of the sensor readings, in ADC counts.
+ * 
+ * Decrements the unread count.
+ * 
+ * @param imu 
+ * @param data Answer is returned here
  * 
  * @return error code
  */
@@ -701,39 +773,15 @@ int imu_comm_get_data_raw_latest_unread(imu_t * imu, imu_data_t * data){
     return retval;
 }
 
-/** 
- * If unread data exists, then calculates the latest value of the sensor reading from the RAW data, using current imu calibration.
- * 
- * @param imu Current imu status
- * @param xyzrpy Answer is returned here
- * 
- * @return error code
- */
-int imu_comm_get_data_latest_unread(imu_t * imu, imu_data_t * data){
-    int retval = ERROR_OK;
-    if(imu->unread_data <= 0){
-	err_check(ERROR_FAIL,"No unread data available.");
-    }
-
-    imu_frame_t * frame = imu->frame_buffer + frame_circ_index(imu);
-    retval = imu_comm_raw2data(imu,frame,data);
-    err_propagate(retval);
-
-    imu->unread_data -= 1;
-    return retval;
-}
-
 uquad_bool_t imu_comm_avg_ready(imu_t * imu){
     return imu->avg_ready;
 }
 
-int imu_comm_get_avg(imu_t * imu, imu_data_t * data){
-    int i;
+int imu_comm_get_avg(imu_t * imu, imu_measurements_t * measurements){
+    int retval, i;
     if(imu_comm_avg_ready(imu)){
-	for(i=0;i<IMU_SENSOR_COUNT;++i){
-	    data->xyzrpy[i] = imu->avg.xyzrpy[i];
-	}
-	data->timestamp = imu->avg.timestamp;
+	retval =  imu_comm_data2measurements(imu, &imu->avg, measurements);
+	err_propagate(retval);
 	imu->avg_ready = 0;
 	return ERROR_OK;
     }
@@ -988,6 +1036,19 @@ int imu_comm_print_frame(imu_frame_t * frame, FILE * stream){
     fprintf(stream,"%d\t%d\t",(int)data->timestamp.tv_sec,(int)data->timestamp.tv_usec);
     for(i=0;i<IMU_SENSOR_COUNT;++i){
 	fprintf(stream,"%f\t",data->xyzrpy[i]);
+    }
+    fprintf(stream,"\n");
+    return ERROR_OK;
+}
+
+ int imu_comm_print_measurements(imu_measurements_t * measurements, FILE * stream){
+    int i;
+    if(stream == NULL){
+	stream = stdout;
+    }
+    fprintf(stream,"%d\t%d\t",(int)measurements->timestamp.tv_sec,(int)measurements->timestamp.tv_usec);
+    for(i=0;i<IMU_SENSOR_COUNT;++i){
+	fprintf(stream,"%f\t",measurements->xyzrpy[i]);
     }
     fprintf(stream,"\n");
     return ERROR_OK;
