@@ -84,6 +84,7 @@ struct imu_frame{
     unsigned short count;
     struct timeval timestamp;
 };
+typedef struct imu_frame imu_frame_t;
 
 /// Based on ADC counts, no units
 struct imu_data{
@@ -92,7 +93,8 @@ struct imu_data{
 };
 
 typedef struct imu_data imu_data_t;
-typedef struct imu_data imu_null_estimates_t;
+typedef imu_data_t imu_null_estimates_t;
+typedef imu_data_t imu_measurements_t;
 
 struct imu_settings{
     // sampling frequency
@@ -118,33 +120,34 @@ struct imu{
     int calibration_counter;
     uquad_bool_t is_calibrated;
     // data
-    struct imu_frame frame_buffer[IMU_FRAME_SAMPLE_AVG_COUNT];
+    imu_frame_t frame_buffer[IMU_FRAME_SAMPLE_AVG_COUNT];
     struct timeval frame_avg_init,frame_avg_end;
     int frames_sampled;
     int unread_data;
     int frame_next;
     uquad_bool_t avg_ready;
     imu_data_t avg;
-}imu;
+};
+typedef struct imu imu_t;
 
-struct imu * imu_comm_init(const char * device);
-int imu_comm_deinit(struct imu * imu);
+imu_t * imu_comm_init(const char * device);
+int imu_comm_deinit(imu_t * imu);
 
-imu_status_t imu_comm_get_status(struct imu * imu);
+imu_status_t imu_comm_get_status(imu_t * imu);
 
 // -- -- -- -- -- -- -- -- -- -- -- --
 // Reading from IMU
 // -- -- -- -- -- -- -- -- -- -- -- --
 
-int imu_comm_get_fds(struct imu * imu, int * fds);
-int imu_comm_read(struct imu * imu, uquad_bool_t * success);
+int imu_comm_get_fds(imu_t * imu, int * fds);
+int imu_comm_read(imu_t * imu, uquad_bool_t * success);
 
-uquad_bool_t imu_comm_avg_ready(struct imu * imu);
-int imu_comm_get_data_avg(struct imu * imu, imu_data_t * data);
+uquad_bool_t imu_comm_avg_ready(imu_t * imu);
+int imu_comm_get_measurements_avg(imu_t * imu, imu_measurements_t * measurements);
 
-int imu_comm_get_data_latest(struct imu * imu, imu_data_t * data);
-int imu_comm_get_data_latest_unread(struct imu * imu, imu_data_t * data);
-int imu_comm_get_data_raw_latest_unread(struct imu * imu, imu_data_t * data);
+int imu_comm_get_measurements_latest(imu_t * imu, imu_measurements_t * measurements);
+int imu_comm_get_measurements_latest_unread(imu_t * imu, imu_measurements_t * measurements);
+int imu_comm_get_data_raw_latest_unread(imu_t * imu, imu_data_t * data);
 
 int imu_comm_print_data(imu_data_t * data, FILE * stream);
 
@@ -152,19 +155,19 @@ int imu_comm_print_data(imu_data_t * data, FILE * stream);
 // Configuring IMU
 // -- -- -- -- -- -- -- -- -- -- -- --
 
-int imu_comm_set_acc_sens(struct imu * imu, int new_value);
-int imu_comm_get_acc_sens(struct imu * imu, int * acc_index);
+int imu_comm_set_acc_sens(imu_t * imu, int new_value);
+int imu_comm_get_acc_sens(imu_t * imu, int * acc_index);
 
-int imu_comm_set_fs(struct imu * imu, int new_value);
-int imu_comm_get_fs(struct imu * imu, int * fs_index);
+int imu_comm_set_fs(imu_t * imu, int new_value);
+int imu_comm_get_fs(imu_t * imu, int * fs_index);
 
 // -- -- -- -- -- -- -- -- -- -- -- --
 // Calibration
 // -- -- -- -- -- -- -- -- -- -- -- --
-uquad_bool_t imu_comm_calibration_is_calibrated(struct imu * imu);
-int imu_comm_calibration_get(struct imu * imu, imu_null_estimates_t * calibration);
-int imu_comm_calibration_start(struct imu * imu);
-int imu_comm_calibration_abort(struct imu * imu);
+uquad_bool_t imu_comm_calibration_is_calibrated(imu_t * imu);
+int imu_comm_calibration_get(imu_t * imu, imu_null_estimates_t * calibration);
+int imu_comm_calibration_start(imu_t * imu);
+int imu_comm_calibration_abort(imu_t * imu);
 int imu_comm_calibration_print(imu_null_estimates_t * calibration, FILE * stream);
 
 #endif // IMU_COMM_H

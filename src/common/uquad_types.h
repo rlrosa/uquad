@@ -1,3 +1,6 @@
+#ifndef UQUAD_TYPES_H
+#define UQUAD_TYPES_H
+
 #ifndef UQUAD_BOOL
   #define UQUAD_BOOL int
   #ifndef true
@@ -7,3 +10,5 @@
 #endif //UQUAD_BOOL
 
 typedef UQUAD_BOOL uquad_bool_t;
+
+#endif

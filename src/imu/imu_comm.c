@@ -1,6 +1,6 @@
 #include "imu_comm.h"
 
-imu_status_t imu_comm_get_status(struct imu * imu){
+imu_status_t imu_comm_get_status(imu_t * imu){
     return imu->status;
 }
 
@@ -12,7 +12,7 @@ imu_status_t imu_comm_get_status(struct imu * imu){
  * 
  * @return error code
  */
-static int imu_comm_send_cmd(struct imu * imu, unsigned char cmd){
+static int imu_comm_send_cmd(imu_t * imu, unsigned char cmd){
     uquad_bool_t ready = false;
     int retval;
     retval = imu_comm_check_io_locks(imu->device, NULL, &ready);
@@ -30,7 +30,7 @@ static int imu_comm_send_cmd(struct imu * imu, unsigned char cmd){
     return ERROR_OK;
 }
 
-static int imu_comm_go_idle(struct imu * imu){
+static int imu_comm_go_idle(imu_t * imu){
     int retval;
     if(imu->status == IMU_COMM_STATE_IDLE){
 	printf("IMU already idle.\n");
@@ -46,7 +46,7 @@ static int imu_comm_go_idle(struct imu * imu){
     return ERROR_OK;
 }
 
-static int imu_comm_resume(struct imu * imu){
+static int imu_comm_resume(imu_t * imu){
     int retval;
     if(imu->status == IMU_COMM_STATE_RUNNING){
 	printf("IMU already running.\n");
@@ -83,7 +83,7 @@ unsigned char imu_fs_values[IMU_FS_OPT_COUNT] = {50,100,150,200,250};
  * 
  * @return error code
  */
-int imu_comm_set_acc_sens(struct imu * imu, int new_value){
+int imu_comm_set_acc_sens(imu_t * imu, int new_value){
     int retval;
     if((new_value<0) || (new_value > IMU_SENS_OPT_COUNT)){
 	err_check(ERROR_INVALID_ARG,"Invalid value for acc sensitivity");
@@ -101,7 +101,7 @@ int imu_comm_set_acc_sens(struct imu * imu, int new_value){
     return retval;
 }
 
-int imu_comm_get_acc_sens(struct imu * imu, int * acc_index){
+int imu_comm_get_acc_sens(imu_t * imu, int * acc_index){
     if(acc_index == NULL){
 	err_check(ERROR_NULL_POINTER,"Cannot return value, null pointer as argument.");
     }
@@ -118,7 +118,7 @@ int imu_comm_get_acc_sens(struct imu * imu, int * acc_index){
  * 
  * @return error code
  */
-int imu_comm_set_fs(struct imu * imu, int new_value){
+int imu_comm_set_fs(imu_t * imu, int new_value){
     int retval;
     if((new_value<0) || (new_value > IMU_FS_OPT_COUNT)){
 	err_check(ERROR_INVALID_ARG,"Invalid value for sampling frequency");
@@ -137,7 +137,7 @@ int imu_comm_set_fs(struct imu * imu, int new_value){
     return retval;
 }
 
-int imu_comm_get_fs(struct imu * imu, int * fs_index){
+int imu_comm_get_fs(imu_t * imu, int * fs_index){
     if(fs_index == NULL){
 	err_check(ERROR_NULL_POINTER,"Cannot return value, null pointer as argument.");
     }
@@ -145,7 +145,7 @@ int imu_comm_get_fs(struct imu * imu, int * fs_index){
     return ERROR_OK;
 }
 
-static int imu_comm_send_defaults(struct imu * imu){
+static int imu_comm_send_defaults(imu_t * imu){
     int retval;
     // Set sampling frequency
     retval = imu_comm_set_fs(imu,IMU_DEFAULT_FS);
@@ -156,7 +156,7 @@ static int imu_comm_send_defaults(struct imu * imu){
     return retval;
 }
 
-static void imu_comm_calibration_clear(struct imu * imu){
+static void imu_comm_calibration_clear(imu_t * imu){
     imu->is_calibrated = false;
     imu->calibration_counter = -1;
     int i;
@@ -177,7 +177,7 @@ static void imu_comm_calibration_clear(struct imu * imu){
  * 
  * @return error code
  */
-static int imu_comm_configure(struct imu * imu){
+static int imu_comm_configure(imu_t * imu){
     int retval;
     // The following sequence of commands should get to the main IMU menu, from
     //from any initial state. If the unit was running then it will ignore all of
@@ -218,7 +218,7 @@ static int imu_comm_configure(struct imu * imu){
     return retval;
 }
 
-static int imu_comm_connect(struct imu * imu, const char * device){
+static int imu_comm_connect(imu_t * imu, const char * device){
     int retval;
     imu->device = fopen(device,"wb+");
     if(imu->device == NULL){
@@ -228,7 +228,7 @@ static int imu_comm_connect(struct imu * imu, const char * device){
     return ERROR_OK;
 }
 
-static int imu_comm_disconnect(struct imu * imu){
+static int imu_comm_disconnect(imu_t * imu){
     int retval = ERROR_OK;
     retval = fclose(imu->device);
     if(retval != ERROR_OK){
@@ -239,7 +239,7 @@ static int imu_comm_disconnect(struct imu * imu){
     return ERROR_OK;
 }
 
-static void imu_comm_restart_sampling(struct imu * imu){
+static void imu_comm_restart_sampling(imu_t * imu){
     imu->unread_data = 0;
     imu->frames_sampled = 0;
     imu->frame_next = 0;
@@ -252,10 +252,10 @@ static void imu_comm_restart_sampling(struct imu * imu){
  * 
  * @return error code
  */
-struct imu * imu_comm_init(const char * device){
-    struct imu * imu;
+imu_t * imu_comm_init(const char * device){
+    imu_t * imu;
     int i,retval;
-    imu = (struct imu *)malloc(sizeof(struct imu));
+    imu = (imu_t *)malloc(sizeof(struct imu));
     if(imu == NULL){
 	fprintf(stderr,"Failed to allocate mem. \n");
 	return imu;
@@ -285,7 +285,7 @@ struct imu * imu_comm_init(const char * device){
     return imu;
 }
 
-int imu_comm_deinit(struct imu * imu){
+int imu_comm_deinit(imu_t * imu){
     int retval = ERROR_OK;
     if(imu->device != NULL)
 	retval = imu_comm_disconnect(imu);
@@ -306,14 +306,14 @@ static double rad2grad(double radians){
 }
 #endif
 
-static double counts2volts(struct imu * imu, double * acc){
+static double counts2volts(imu_t * imu, double * acc){
     // Convert from count to m/s^2
     // m/s^2 = counts*vref/counts_full_scale
     *acc = (*acc)*IMU_ADC_COUNTS_2_VOLTS;
     return ERROR_OK;
 }
 
-static int gyro_scale_adjust(struct imu * imu, double * gyro_reading){
+static int gyro_scale_adjust(imu_t * imu, double * gyro_reading){
     //TODO Implement scale calibration,
     // Note: Should be /300, but /450 seems to work better.
     // Will be sensor specific
@@ -322,7 +322,7 @@ static int gyro_scale_adjust(struct imu * imu, double * gyro_reading){
     return ERROR_OK;
 }
 
-static int acc_scale_adjust(struct imu * imu, double * acc_reading){
+static int acc_scale_adjust(imu_t * imu, double * acc_reading){
     //TODO Implement scale calibration,
     // Will be sensor specific
     // Should get a true calibration instead of this.
@@ -356,7 +356,7 @@ static unsigned short int swap_LSB_MSB_16(unsigned short int a){
  * 
  * @return index
  */
-int frame_circ_index(struct imu * imu){
+int frame_circ_index(imu_t * imu){
     return (imu->frame_next + IMU_FRAME_SAMPLE_AVG_COUNT - 1) % IMU_FRAME_SAMPLE_AVG_COUNT;
 }
 
@@ -368,7 +368,7 @@ int frame_circ_index(struct imu * imu){
  * 
  * @return true if ok to avg, otherwise false
  */
-static uquad_bool_t imu_comm_avg_validate_time_interval(struct imu *imu){
+static uquad_bool_t imu_comm_avg_validate_time_interval(imu_t *imu){
     int retval;
     long double max_interval;
     struct timeval diff;
@@ -394,7 +394,7 @@ static uquad_bool_t imu_comm_avg_validate_time_interval(struct imu *imu){
  * 
  * @return error code
  */
-static int imu_comm_avg(struct imu * imu){
+static int imu_comm_avg(imu_t * imu){
     int tmp,i,j;
     time_t sec_oldest, sec_new;
     suseconds_t usec_oldest, usec_new;
@@ -421,24 +421,31 @@ static int imu_comm_avg(struct imu * imu){
  * 
  * @return error code
  */
-static int imu_comm_get_sync(struct imu * imu, uquad_bool_t * in_sync){
-    int retval;
+static int imu_comm_get_sync(imu_t * imu, uquad_bool_t * in_sync){
+    int retval,i;
     *in_sync = false;
     unsigned char tmp = '@';// Anything diff from IMU_FRAME_INIT_CHAR
-    retval = fread(&tmp,IMU_INIT_END_SIZE,1,imu->device);
-    if(retval < 0){	
-	err_check(ERROR_IO,"Read error: failed to get sync char...");
-    }else{
-	if(retval > 0){
-	    if(tmp == IMU_FRAME_INIT_CHAR){
-		// No error printing, leave that for upper level
-		*in_sync = true;
+    for(i=0;i<IMU_DEFAULT_FRAME_SIZE_BYTES;++i){
+	retval = fread(&tmp,IMU_INIT_END_SIZE,1,imu->device);
+	if(retval < 0){	
+	    err_check(ERROR_IO,"Read error: failed to get sync char...");
+	}else{
+	    if(retval > 0){
+		if(tmp == IMU_FRAME_INIT_CHAR){
+		    // No error printing, leave that for upper level
+		    *in_sync = true;
+		    return ERROR_OK;
+		}
+	    }else{
+		// retval == 0
+		*in_sync = false;
+		return ERROR_READ_SYNC;
 	    }
 	}
     }
     // If we read 0 then there is no data available, so no sync and no error.
     // Set retval to ERROR_OK, otherwise it'll be # of bytes read
-    return ERROR_OK;
+    return ERROR_READ_TIMEOUT;
 }
 
 /** 
@@ -449,7 +456,7 @@ static int imu_comm_get_sync(struct imu * imu, uquad_bool_t * in_sync){
  * 
  * @return 
  */
-int imu_comm_read(struct imu * imu,uquad_bool_t * success){
+int imu_comm_read(imu_t * imu,uquad_bool_t * success){
     int retval;
     retval = imu_comm_get_sync(imu,success);
     err_propagate(retval);
@@ -472,10 +479,10 @@ int imu_comm_read(struct imu * imu,uquad_bool_t * success){
  * 
  * @return error code
  */
-int imu_comm_read_frame(struct imu * imu){
+int imu_comm_read_frame(imu_t * imu){
     int retval = ERROR_OK,watchdog,read,i;
     unsigned char tmp = '@';// Anything diff from IMU_FRAME_INIT_CHAR
-    struct imu_frame * new_frame;
+    imu_frame_t * new_frame;
     new_frame = imu->frame_buffer+imu->frame_next;
 
     // Get count
@@ -585,15 +592,15 @@ int imu_comm_read_frame(struct imu * imu){
  * The data received is the result of the ADC.
  * 
  * @param imu 
- * @param frame Contains RAW data from IMU
+ * @param data Contains RAW data from IMU
  * @param gyro_reading Rate in rad/sec
  * 
  * @return error code
  */
-static int imu_comm_gyro_read(struct imu * imu, struct imu_frame * frame, double * gyro_reading){
+static int imu_comm_gyro_read(imu_t * imu, imu_data_t * data, double * gyro_reading){
     int retval = ERROR_OK, i;
     for(i = 0; i<IMU_GYROS; ++i){
-	gyro_reading[i] = ((double) *(frame->raw + IMU_ACCS + i)) - imu->null_estimates.xyzrpy[IMU_ACCS + i];
+	gyro_reading[i] = data->xyzrpy[IMU_ACCS + i] - imu->null_estimates.xyzrpy[IMU_ACCS + i];
 	retval = gyro_scale_adjust(imu,gyro_reading+i);
 	err_propagate(retval);
 	gyro_reading[i] = grad2rad(gyro_reading[i]);
@@ -602,7 +609,7 @@ static int imu_comm_gyro_read(struct imu * imu, struct imu_frame * frame, double
 }
 
 /** 
- * 
+ * Converts raw acc data to m/s^2
  * 
  * @param imu 
  * @param frame Raw data from IMU
@@ -610,11 +617,10 @@ static int imu_comm_gyro_read(struct imu * imu, struct imu_frame * frame, double
  * 
  * @return error code
  */
-static int imu_comm_acc_read(struct imu * imu, struct imu_frame * frame, double * acc_reading){
+static int imu_comm_acc_read(imu_t * imu, imu_data_t * data, double * acc_reading){
     int retval = ERROR_OK, i;
     for(i = 0; i<IMU_ACCS; ++i){
-	// Avoid math on char to be able to hanlde negative results
-	acc_reading[i] = ((double) * (frame->raw + i)) - imu->null_estimates.xyzrpy[i];
+	acc_reading[i] = data->xyzrpy[i] - imu->null_estimates.xyzrpy[i];
 	retval = counts2volts(imu,acc_reading+i);
 	err_propagate(retval);
 	retval = volts2g(imu->settings.acc_sens,acc_reading+i);
@@ -626,65 +632,138 @@ static int imu_comm_acc_read(struct imu * imu, struct imu_frame * frame, double 
 }
 
 /** 
- * Convert raw data from IMU to double
+ * Convert data from IMU, in ADC counts, to measurements in useful units.
+ * This requires knowledge of IMU settings, and a reasonable calibration.
  * 
- * @param frame raw data
- * @param data converted data
+ * @param data raw data (in ADC counts)
+ * @param measurements converted data
  * 
  * @return error code
  */
-static int imu_comm_raw2data(struct imu * imu, struct imu_frame * frame, imu_data_t * data){
+static int imu_comm_data2measurements(imu_t * imu, imu_data_t * data, imu_measurements_t * measurements){
     int retval;
-    if(data == NULL || frame == NULL){
+    if(measurements == NULL || data == NULL){
 	err_check(ERROR_NULL_POINTER,"Non null pointers required as args...");
     }
     // Get timestamp
-    data->timestamp = frame->timestamp;
+    measurements->timestamp = data->timestamp;
 
     // Get ACC readings
-    retval = imu_comm_acc_read(imu, frame, data->xyzrpy);
+    retval = imu_comm_acc_read(imu, data, measurements->xyzrpy);
     err_propagate(retval);
 
     // Get gyro reading
-    retval = imu_comm_gyro_read(imu, frame, data->xyzrpy + IMU_ACCS);
+    retval = imu_comm_gyro_read(imu, data, measurements->xyzrpy + IMU_ACCS);
     err_propagate(retval);
 
     return ERROR_OK;
 }
 
 /** 
- * Calculates value of the sensor reading from the RAW data, using current imu calibration.
+ * Casts counts to doubles, still in counts.
+ * 
+ * @param frame 
+ * @param data 
+ * 
+ * @return error code
+ */
+static int imu_comm_raw2double_raw(imu_frame_t * frame, imu_data_t * data){
+    int retval, i;
+    if(frame == NULL || data == NULL){
+	err_check(ERROR_NULL_POINTER,"Non null pointers required as args...");
+    }
+    for (i=0; i<IMU_SENSOR_COUNT; ++i){
+	data->xyzrpy[i] = (double) frame->raw[i];
+    }
+    data->timestamp = frame->timestamp;
+    return ERROR_OK;
+}
+
+/** 
+ * Calculates value of the sensor readings from the RAW data, using current imu calibration.
+ * This requires a reasonable calibration.
  * 
  * @param imu Current imu status
  * @param xyzrpy Answer is returned here
  * 
  * @return error code
  */
-int imu_comm_get_data_latest(struct imu * imu, imu_data_t * data){
+int imu_comm_get_measurements_latest(imu_t * imu, imu_measurements_t * measurements){
     int retval = ERROR_OK;
 
-    struct imu_frame * frame = imu->frame_buffer + frame_circ_index(imu);
-    retval = imu_comm_raw2data(imu,frame,data);
+    imu_frame_t * frame = imu->frame_buffer + frame_circ_index(imu);
+    imu_data_t data;
+    retval = imu_comm_raw2double_raw(frame,&data);
+    err_propagate(retval);
+    retval = imu_comm_data2measurements(imu,&data,measurements);
     err_propagate(retval);
 
     return retval;
 }
 
 /** 
- * If unread data exists, then calculates the latest value of the sensor reading from the RAW data, using current imu calibration.
+ * Returns latest data from IMU, in ADC counts.
  * 
- * @param imu Current imu status
- * @param xyzrpy Answer is returned here
+ * @param imu 
+ * @param data Answer is returned here
  * 
  * @return error code
  */
-int imu_comm_get_data_raw_latest_unread(struct imu * imu, imu_data_t * data){
+int imu_comm_get_data_raw_latest(imu_t * imu, imu_data_t * data){
+    int retval = ERROR_OK;
+
+    imu_frame_t * frame = imu->frame_buffer + frame_circ_index(imu);
+    retval = imu_comm_raw2double_raw(frame,data);
+    err_propagate(retval);
+    return ERROR_OK;
+}
+
+/** 
+ * If unread data exists, then calculates the latest value of the sensor readings
+ * from the RAW data, using current imu calibration.
+ * This requires a reasonable calibration.
+ *
+ * Decrements the unread count.
+ * 
+ * @param imu 
+ * @param measurements Answer is returned here
+ * 
+ * @return error code
+ */
+int imu_comm_get_measurements_latest_unread(imu_t * imu, imu_measurements_t * measurements){
     int retval = ERROR_OK;
     if(imu->unread_data <= 0){
 	err_check(ERROR_FAIL,"No unread data available.");
     }
 
-    struct imu_frame * frame = imu->frame_buffer + frame_circ_index(imu);
+    imu_frame_t * frame = imu->frame_buffer + frame_circ_index(imu);
+    imu_data_t data;
+    retval = imu_comm_raw2double_raw(frame,&data);
+    err_propagate(retval);
+    retval = imu_comm_data2measurements(imu,&data,measurements);
+    err_propagate(retval);
+
+    imu->unread_data -= 1;
+    return retval;
+}
+
+/** 
+ * If unread data exists, gets the latest value of the sensor readings, in ADC counts.
+ * 
+ * Decrements the unread count.
+ * 
+ * @param imu 
+ * @param data Answer is returned here
+ * 
+ * @return error code
+ */
+int imu_comm_get_data_raw_latest_unread(imu_t * imu, imu_data_t * data){
+    int retval = ERROR_OK;
+    if(imu->unread_data <= 0){
+	err_check(ERROR_FAIL,"No unread data available.");
+    }
+
+    imu_frame_t * frame = imu->frame_buffer + frame_circ_index(imu);
     data->timestamp = frame->timestamp;
     int i;
     for(i=0;i<IMU_SENSOR_COUNT;++i){
@@ -694,39 +773,15 @@ int imu_comm_get_data_raw_latest_unread(struct imu * imu, imu_data_t * data){
     return retval;
 }
 
-/** 
- * If unread data exists, then calculates the latest value of the sensor reading from the RAW data, using current imu calibration.
- * 
- * @param imu Current imu status
- * @param xyzrpy Answer is returned here
- * 
- * @return error code
- */
-int imu_comm_get_data_latest_unread(struct imu * imu, imu_data_t * data){
-    int retval = ERROR_OK;
-    if(imu->unread_data <= 0){
-	err_check(ERROR_FAIL,"No unread data available.");
-    }
-
-    struct imu_frame * frame = imu->frame_buffer + frame_circ_index(imu);
-    retval = imu_comm_raw2data(imu,frame,data);
-    err_propagate(retval);
-
-    imu->unread_data -= 1;
-    return retval;
-}
-
-uquad_bool_t imu_comm_avg_ready(struct imu * imu){
+uquad_bool_t imu_comm_avg_ready(imu_t * imu){
     return imu->avg_ready;
 }
 
-int imu_comm_get_avg(struct imu * imu, imu_data_t * data){
-    int i;
+int imu_comm_get_avg(imu_t * imu, imu_measurements_t * measurements){
+    int retval, i;
     if(imu_comm_avg_ready(imu)){
-	for(i=0;i<IMU_SENSOR_COUNT;++i){
-	    data->xyzrpy[i] = imu->avg.xyzrpy[i];
-	}
-	data->timestamp = imu->avg.timestamp;
+	retval =  imu_comm_data2measurements(imu, &imu->avg, measurements);
+	err_propagate(retval);
 	imu->avg_ready = 0;
 	return ERROR_OK;
     }
@@ -742,7 +797,7 @@ int imu_comm_get_avg(struct imu * imu, imu_data_t * data){
  * 
  * @return error code
  */
-int imu_comm_get_fds(struct imu * imu,int * fds){
+int imu_comm_get_fds(imu_t * imu,int * fds){
     if(imu->device == NULL){
 	err_check(ERROR_NULL_POINTER,"Cannot get fds, device set to NULL");
     }
@@ -798,7 +853,7 @@ int imu_comm_check_io_locks(FILE * device, uquad_bool_t * read_ok, uquad_bool_t 
 // Calibration
 // -- -- -- -- -- -- -- -- -- -- -- --
 
-uquad_bool_t imu_comm_calibration_is_calibrated(struct imu * imu){
+uquad_bool_t imu_comm_calibration_is_calibrated(imu_t * imu){
     return imu->is_calibrated;
 }	
 
@@ -814,7 +869,7 @@ uquad_bool_t imu_comm_calibration_is_calibrated(struct imu * imu){
  * 
  * @return error code
  */
-int imu_comm_calibration_get(struct imu * imu, imu_null_estimates_t * calibration){
+int imu_comm_calibration_get(imu_t * imu, imu_null_estimates_t * calibration){
 
     int retval,i;
     if(!imu_comm_calibration_is_calibrated(imu)){
@@ -841,7 +896,7 @@ static struct timeval calibration_start_time;
  * 
  * @return 
  */
-int imu_comm_calibration_start(struct imu * imu){
+int imu_comm_calibration_start(imu_t * imu){
     if(imu->status != IMU_COMM_STATE_RUNNING){
 	err_check(ERROR_IMU_STATUS,"IMU must be running to calibrate!");
     }
@@ -864,7 +919,7 @@ int imu_comm_calibration_start(struct imu * imu){
  * 
  * @return error code
  */
-int imu_comm_calibration_abort(struct imu * imu){
+int imu_comm_calibration_abort(imu_t * imu){
     if(imu->status != IMU_COMM_STATE_CALIBRATING){
 	err_check(ERROR_IMU_STATUS,"Cannot abort calibration, IMU is not calibrating!");
     }
@@ -884,7 +939,7 @@ int imu_comm_calibration_abort(struct imu * imu){
  * 
  * @return error code.
  */
-int imu_comm_calibration_finish(struct imu * imu, struct timeval calibration_end_time){
+int imu_comm_calibration_finish(imu_t * imu, struct timeval calibration_end_time){
     int retval;
     if(imu->status != IMU_COMM_STATE_CALIBRATING){
 	err_check(ERROR_IMU_STATUS,"Cannot finish calibration, IMU is not calibrating!");
@@ -922,7 +977,7 @@ int imu_comm_calibration_finish(struct imu * imu, struct timeval calibration_end
  * 
  * @return error code
  */
-int imu_comm_calibration_add_frame(struct imu * imu, struct imu_frame * new_frame){
+int imu_comm_calibration_add_frame(imu_t * imu, imu_frame_t * new_frame){
     int retval;
     if(imu->status != IMU_COMM_STATE_CALIBRATING){
 	err_check(ERROR_IMU_STATUS,"Cannot add frames, IMU is not calibrating!");
@@ -952,7 +1007,7 @@ int imu_comm_calibration_print(imu_null_estimates_t * calibration, FILE * stream
 }
 
 static int previous_frame_count = -1;
-int imu_comm_print_frame(struct imu_frame * frame, FILE * stream){
+int imu_comm_print_frame(imu_frame_t * frame, FILE * stream){
     int i;
     if(previous_frame_count == -1)
 	previous_frame_count = frame->count;
@@ -981,6 +1036,19 @@ int imu_comm_print_frame(struct imu_frame * frame, FILE * stream){
     fprintf(stream,"%d\t%d\t",(int)data->timestamp.tv_sec,(int)data->timestamp.tv_usec);
     for(i=0;i<IMU_SENSOR_COUNT;++i){
 	fprintf(stream,"%f\t",data->xyzrpy[i]);
+    }
+    fprintf(stream,"\n");
+    return ERROR_OK;
+}
+
+ int imu_comm_print_measurements(imu_measurements_t * measurements, FILE * stream){
+    int i;
+    if(stream == NULL){
+	stream = stdout;
+    }
+    fprintf(stream,"%d\t%d\t",(int)measurements->timestamp.tv_sec,(int)measurements->timestamp.tv_usec);
+    for(i=0;i<IMU_SENSOR_COUNT;++i){
+	fprintf(stream,"%f\t",measurements->xyzrpy[i]);
     }
     fprintf(stream,"\n");
     return ERROR_OK;

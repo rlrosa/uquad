@@ -1,5 +1,5 @@
 if(~exist('log_date','var'))
-  warning(sprintf('\nSet string var log_date to select log.\nDo not include extension nor avg, just date.\n'));
+  warning(sprintf('\nSet string var log_date to select log.\nDo not include extension nor avg, just date.\nExample: log_date = ''2011_10_16_xx_22_45_26'''));
   return
 end
 

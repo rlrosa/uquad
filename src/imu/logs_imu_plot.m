@@ -12,9 +12,29 @@ frames_trimmed = frames(avg_count:frames_end_index,:);
 
 avg_time_usec = (avg(:,1) - avg(1,1))*1e6 + avg(:,2);% sec*1e6 + usec
 frames_time_usec = (frames_trimmed(:,1) - frames_trimmed(1,1))*1e6  + frames_trimmed(:,2);
-not_sync_count = sum(avg_time_usec ~= frames_time_usec );
+unmatching_timestamps = avg_time_usec ~= frames_time_usec;
+not_sync_count = sum(unmatching_timestamps);
+
 if(not_sync_count ~= 0)
   fprintf('ERROR: avg and frames not in sync %d times!\n',not_sync_count);
+  user_in = input('Display indexes where not in sync?(1==yes,0==no)\n');
+  if(user_in == 1)
+    unsync_index = find(unmatching_timestamps~=0);
+    display(unsync_index);
+    if(not_sync_count ==1)
+      user_in = input('Split data?(1==yes,0==no)\n');
+      if(user_in == 1)
+        assignin('base','avg1',avg(1:unsync_index-1,:));
+        assignin('base','avg2', avg(unsync_index+1:end,:));
+        assignin('base','avg_time_usec1', avg_time_usec(1:unsync_index-1,:));
+        assignin('base','avg_time_usec2', avg_time_usec(unsync_index+1:end,:));
+        assignin('base','frames1', frames(1:unsync_index-1,:));
+        assignin('base','frames2', frames(unsync_index+1:end,:));
+        assignin('base','frames_time_usec1', frames_time_usec(1:unsync_index-1,:));
+        assignin('base','frames_time_usec2', frames_time_usec(unsync_index+1:end,:));
+      end
+    end    
+  end
   figure(243)
   stem(avg_time_usec ~= frames_time_usec);
   title('Timestamp mismatches')
