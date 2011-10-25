@@ -90,6 +90,7 @@ typedef struct imu_frame imu_frame_t;
 struct imu_data{
     double xyzrpy[IMU_SENSOR_COUNT];
     struct timeval timestamp;
+    unsigned short count;
 };
 
 typedef struct imu_data imu_data_t;

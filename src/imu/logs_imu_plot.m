@@ -1,9 +1,9 @@
 function logs_imu_plot(frames,avg,avg_count)
 % assuming:
-%   frame:  sec usec x y z r p y
-%   avg:    sec usec x y z r p y
-frames_with_counts = 0;
-avg_with_counts = 0;
+%   frame:  sec usec count x y z r p y
+%   avg:    sec usec count x y z r p y
+frames_with_counts = 1;
+avg_with_counts = 1;
 
 %% trim down data
 % Limitation is in size of avg, so trim down frames

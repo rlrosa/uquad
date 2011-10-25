@@ -399,9 +399,8 @@ static int imu_comm_avg(imu_t * imu){
     time_t sec_oldest, sec_new;
     suseconds_t usec_oldest, usec_new;
     
-    if(imu->frame_buffer[frame_circ_index(imu)].timestamp.tv_sec)
-    imu->avg.timestamp.tv_sec = imu->frame_buffer[frame_circ_index(imu)].timestamp.tv_sec;
-    imu->avg.timestamp.tv_usec = imu->frame_buffer[frame_circ_index(imu)].timestamp.tv_usec;
+    imu->avg.timestamp = imu->frame_buffer[frame_circ_index(imu)].timestamp;
+    imu->avg.count = imu->frame_buffer[frame_circ_index(imu)].count;
     for(i=0;i<IMU_SENSOR_COUNT;++i){// loop sensors
 	tmp = 0;
 	for(j=0;j<IMU_FRAME_SAMPLE_AVG_COUNT;++j)// loop sensor data
@@ -647,6 +646,7 @@ static int imu_comm_data2measurements(imu_t * imu, imu_data_t * data, imu_measur
     }
     // Get timestamp
     measurements->timestamp = data->timestamp;
+    measurements->count = data->count;
 
     // Get ACC readings
     retval = imu_comm_acc_read(imu, data, measurements->xyzrpy);
@@ -676,6 +676,7 @@ static int imu_comm_raw2double_raw(imu_frame_t * frame, imu_data_t * data){
 	data->xyzrpy[i] = (double) frame->raw[i];
     }
     data->timestamp = frame->timestamp;
+    data->count = frame->count;
     return ERROR_OK;
 }
 
@@ -1019,8 +1020,7 @@ int imu_comm_print_frame(imu_frame_t * frame, FILE * stream){
     }
     previous_frame_count = frame->count;
 
-    fprintf(stream,"%d\t%d\t",(int)frame->timestamp.tv_sec,(int)frame->timestamp.tv_usec);
-    fprintf(stream,"%d\t",frame->count);
+    fprintf(stream,"%d\t%d\t%d\t",(int)frame->timestamp.tv_sec,(int)frame->timestamp.tv_usec,(int)frame->count);
     for(i=0;i<IMU_SENSOR_COUNT;++i){
 	fprintf(stream,"%d\t",frame->raw[i]);
     }
@@ -1033,7 +1033,7 @@ int imu_comm_print_frame(imu_frame_t * frame, FILE * stream){
     if(stream == NULL){
 	stream = stdout;
     }
-    fprintf(stream,"%d\t%d\t",(int)data->timestamp.tv_sec,(int)data->timestamp.tv_usec);
+    fprintf(stream,"%d\t%d\t%d\t",(int)data->timestamp.tv_sec,(int)data->timestamp.tv_usec,(int)data->count);
     for(i=0;i<IMU_SENSOR_COUNT;++i){
 	fprintf(stream,"%f\t",data->xyzrpy[i]);
     }
@@ -1046,7 +1046,7 @@ int imu_comm_print_frame(imu_frame_t * frame, FILE * stream){
     if(stream == NULL){
 	stream = stdout;
     }
-    fprintf(stream,"%d\t%d\t",(int)measurements->timestamp.tv_sec,(int)measurements->timestamp.tv_usec);
+    fprintf(stream,"%d\t%d\t%d\t",(int)measurements->timestamp.tv_sec,(int)measurements->timestamp.tv_usec, (int)measurements->count);
     for(i=0;i<IMU_SENSOR_COUNT;++i){
 	fprintf(stream,"%f\t",measurements->xyzrpy[i]);
     }
