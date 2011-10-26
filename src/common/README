@@ -1,0 +1,23 @@
+Description of files in src/common
+
+# uquad_aux_io.c
+# uquad_aux_io.h
+support for handling multiple io devices. implements polling via select to avoid locking when checking for new data.
+
+# uquad_aux_log.c
+# uquad_aux_log.h
+functions to assist logging
+	  - generate a file name based on timeval
+	  - rewind/clear a pipe
+
+# uquad_aux_time.c
+# uquad_aux_time.h
+implementation of functions tu handle timeval structs. Current implementation:
+	       - calculate diff between 2 tv
+
+# uquad_error_codes.h
+Defines to use when returning errors. All error codes should be negative integers values (non zero).
+Some macros for error checking.
+
+# uquad_types.h
+useful types, such as boolean, which is not included in std C.
