@@ -8,7 +8,7 @@
 #define IMU_COMM_TEST_EXIT_CHAR 'q'
 #define IMU_COMM_TEST_CALIB_CHAR 'c'
 #define IMU_COMM_TEST_CALIB_SHOW_CHAR 's'
-#define IMU_COMM_TEST_HOW_TO "\nIncorrect arguments!\nUsage: ./imu_comm_test /dev/tty#\n"
+#define IMU_COMM_TEST_HOW_TO "\nIncorrect arguments!\nUsage: ./imu_comm_test /dev/tty# log_to_file\n\nIf last argument is supplied (it can be any string) then the program will log raw data and\n processed data to two files, named according to the current timestamp."
 #define WAIT_COUNTER_MAX 10
 #define IMU_COMM_TEST_EOL_LIM 128
 
