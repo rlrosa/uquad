@@ -35,16 +35,35 @@ It will search for headers in the directories (separated by spaces) listed in:
 Each subdirectory has a CMakeLists.txt of its own, that can point deeper into the tree.
 
 # -- -- -- -- -- -- -- -- -- -- -- -- -- --
-#. Setting up the build system do
+#. Setting up the build system
 # -- -- -- -- -- -- -- -- -- -- -- -- -- --
-sh run_cmake.sh
+To setup the build system do
+   sh run_cmake.sh
+   
+
+Optional arguments to the script are:
+   - debug: Will build code with debug symbols.
+   - arm: Use cross compiler, generate code that will run on the beagle.
+   - help: Show possible arguments.
 
 This will setup everything in src/build/
-- To compile a test program, for example imu_comm_test
-cd build/
-make imu_comm_test
+To compile a test program, for example imu_comm_test
+   cd build/
+   make imu_comm_test
 
 You will find the output in src/build/test/imu_comm_test
+
+# -- -- -- -- -- -- -- -- -- -- -- -- -- --
+#. Cross compiling
+# -- -- -- -- -- -- -- -- -- -- -- -- -- --
+To cross compile code, a toolchain must be available on the system.
+If you're using openembedded+bitbake, then you probably have one lying around.
+Everytime you open a console, the file ~/.bashrc is loaded. Set an environment variable to point to your toolchain in your ~/.bashrc by adding this line:
+    export OE_BEAGLE_TOOLCHAIN=$OE_BUILD_TMPDIR/sysroots/x86_64-linux/usr/armv7a/bin
+
+The variable OE_BUILD_TMPDIR should have been set by openembedded in ~/.oe/environment-2008
+I recommend adding this line to your ~/.bashrc before the line defining OE_BEAGLE_TOOLCHAIN. It will load all the variables defined by openembedded into every console you open:
+    source ~/.oe/environment-2008
 
 # -- -- -- -- -- -- -- -- -- -- -- -- -- --
 #. Adding a new test program:
