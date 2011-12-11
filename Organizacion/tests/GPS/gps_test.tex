@@ -1,0 +1,153 @@
+\documentclass[spanish,12pt,a4paper,titlepage]{report}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{subfig}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage{multirow}
+\usepackage{caption}
+\usepackage[spanish]{babel}
+\usepackage[dvips]{hyperref}
+\usepackage{amssymb}
+\usepackage{listings}
+\usepackage{epsfig}
+\usepackage{amsmath}
+\usepackage{array}
+\usepackage[table]{xcolor}
+\usepackage{multirow}
+%\usepackage[Sonny]{fncychap}
+\usepackage[Lenny]{fncychap}
+%\usepackage[Glenn]{fncychap}
+%\usepackage[Conny]{fncychap}
+%\usepackage[Rejne]{fncychap}
+%\usepackage[Bjarne]{fncychap}
+%\usepackage[Bjornstrup]{fncychap}
+
+%\usepackage{subfiles}
+%\usepackage{framed}
+
+\setlength{\topmargin}{-1.5cm}
+\setlength{\textheight}{25cm}
+\setlength{\oddsidemargin}{0.3cm} 
+\setlength{\textwidth}{15cm}
+\setlength{\columnsep}{0cm}
+
+\begin{document}
+
+\chapter{Test GPS}
+
+\section{Objetivos}
+
+Se realiza una serie de pruebas con el fin de identificar los errores correspondientes al dispositivo de posicionamiento global (\textbf{GPS}). Se realizan pruebas para determinar tanto el error absoluto de la medida, como el error diferencial. Se analizará el error en las direcciones de latitud, longitud y altura. A su vez se realizarán pruebas repetitivas de modo de poder analizar la consistencia temporal de las medidas otorgadas por el dispositivo GPS.
+
+\section{Materiales}
+\begin{itemize}
+\item GPS
+\item Brújula
+\item Plomada
+\item Metro
+\end{itemize}
+\section{Procedimiento}
+
+\subsection{Parte I: Error absoluto}
+Tomar una medida de posición del GPS, en lo posible lugar de coordenadas conocidas. Contrastar los resultados obtenidos con las coordenadas conocidas. Ubicar las coordenadas en un mapa\footnote{\underline{Nota:} El mapa no debe ser de Google Earth ya que posee errores demasiado grandes. Usar mapas de la intendencia.}. Conseguir un mapa topográfico y obtener la altura respecto del nivel del mar de esa zona y contrastar con la altura obtenida del GPS. \\
+
+Realizar este experimento en 3 lugares diferentes, 3 veces en cada lugar.
+
+\subsection{Parte II: Error relativo}
+
+En esta parte se trata de analizar el error relativo entre diferentes medidas del GPS. Resulta interesante caracterizar el comportamiento diferencial de las medidas del GPS ya que si es bueno, constituye una importante ventaja. Aunque el error absoluto sea grande, si el relativo es lo suficientemente chico se puede implementar alguna etapa de corrección inicial de modo de obtener datos georeferenciados muy precisos.\\
+Para ello se realizan las siguientes 2 pruebas.
+
+\subsubsection*{Error en latitud y longitud}
+
+En esta prueba se trata de obtener el error del GPS en el plano paralelo a la tierra.
+
+\begin{enumerate} 
+	\item Seleccionar 4 puntos distintos y asegurarse que estén a la misma altura. En lo posible formando un rectángulo siguiendo las direcciones de latitud y longitud, según lo indique la brújula.
+	\item Tomar las medidas con un metro lo más cuidadosamente posible entre los 4 vértices, y los ángulos que forman las parejas de caras consecutivas.
+	\item Obtener el dato del GPS de los 4 vértices.
+	\item Obtener la diferencia entre medidas
+	\item Convertir datos a unidades del sistema métrico.
+	\item Reproducir el paralelepípedo en un esquema según los datos obtenidos del GPS.
+	\item Contrastar medidas y ángulos reales con los obtenidos del GPS.
+\end{enumerate} 
+
+\subsubsection*{Error en altura}
+
+Para esta prueba se necesita acceder a 2 alturas diferentes en una perpendicular a la esfera terrestre, de modo de poder medir el error en la altura que otorga el GPS.\\
+
+Se toma una primer medida a una cierta altura mayor al nivel del suelo. Luego, utilizando la plomada, se toma una segunda medida en esa misma posición pero a una altura menor. Se mide con el metro la diferencia de las alturas de los 2 lugares donde se tomaron las medidas.\\
+
+Contrastar diferencia de altura real con la obtenida mediante el GPS.
+
+\subsection{Parte III: Consistencia}
+
+Esta prueba se basa en la repetitividad de una misma prueba para analizar las diferencias entre los datos obtenidos por GPS en diferentes ocasiones.\\
+
+Se tomarán las medidas de los 4 puntos seleccionados en la parte anterior un total de 10 veces cada punto. Se analizarán los resultados obtenidos para caracterizar la consistencia del dispositivo GPS. Graficar las medidas obtenidas en latitud, longitud y altura para cada punto por separado. Hallar el error máximo de las medidas en un mismo punto.
+
+\section{Desarrollo}
+\subsection{Parte I: Error absoluto}
+
+\begin{table}[H]
+\begin{center}
+\begin{tabular}{|p{40pt}|p{110pt}|p{110pt}|p{110pt}|} 
+\hline
+  \cellcolor[gray]{0.8} \textbf{Medida} 
+& \cellcolor[gray]{0.8} \textbf{Posición 1} 
+& \cellcolor[gray]{0.8} \textbf{Posición 2} 
+& \cellcolor[gray]{0.8} \textbf{Posición 3} \\ \hline \hline
+\multicolumn{1}{|p{40pt}|}{\cellcolor[gray]{0.8}\textbf{1}} & \hspace{50pt}/ & \hspace{50pt}/ & \hspace{50pt}/ \\ \hline 
+\multicolumn{1}{|p{40pt}|}{\cellcolor[gray]{0.8}\textbf{2}} & \hspace{50pt}/& \hspace{50pt}/& \hspace{50pt}/ \\ \hline 
+\multicolumn{1}{|p{40pt}|}{\cellcolor[gray]{0.8}\textbf{3}} & \hspace{50pt}/& \hspace{50pt}/& \hspace{50pt}/ \\ \hline 
+\end{tabular} 
+\caption{Medidas GPS}
+\label{tab:I-medidas}
+\end{center}
+\end{table}
+
+\newpage
+\subsection{Parte II: Error relativo}
+
+\begin{table}[H]
+\begin{center}
+\begin{tabular}{|p{100pt}|p{100pt}|p{100pt}|p{100pt}|} \hline
+\cellcolor[gray]{0.8} \textbf{Punto 1} & \cellcolor[gray]{0.8} \textbf{Punto 2} & \cellcolor[gray]{0.8} \textbf{Punto 3} & \cellcolor[gray]{0.8} \textbf{Punto 4} \\ \hline \hline
+\hspace{50pt}/ & \hspace{50pt}/ & \hspace{50pt}/ & \hspace{50pt}/ \\ \hline 
+\end{tabular} 
+\caption{Medidas GPS}
+\label{tab:I-medidas}
+\end{center}
+\end{table}
+
+\newpage
+\subsection{Parte III: Consistencia}
+
+\begin{table}[H]
+\begin{center}
+\begin{tabular}{|p{40pt}|p{80pt}|p{80pt}|p{80pt}|p{80pt}|} \hline
+  \cellcolor[gray]{0.8} \textbf{Medida} 
+& \cellcolor[gray]{0.8} \textbf{Punto 1} 
+& \cellcolor[gray]{0.8} \textbf{Punto 2} 
+& \cellcolor[gray]{0.8} \textbf{Punto 3} 
+& \cellcolor[gray]{0.8} \textbf{Punto 4} \\ \hline \hline
+\multicolumn{1}{|p{40pt}|}{\cellcolor[gray]{0.8}\textbf{1}} & \hspace*{40pt}/& \hspace*{40pt}/& \hspace*{40pt}/& \hspace*{40pt}/\\ \hline 
+\multicolumn{1}{|p{40pt}|}{\cellcolor[gray]{0.8}\textbf{2}} & \hspace*{40pt}/& \hspace*{40pt}/& \hspace*{40pt}/& \hspace*{40pt}/\\ \hline 
+\multicolumn{1}{|p{40pt}|}{\cellcolor[gray]{0.8}\textbf{3}} & \hspace*{40pt}/& \hspace*{40pt}/& \hspace*{40pt}/& \hspace*{40pt}/\\ \hline
+\multicolumn{1}{|p{40pt}|}{\cellcolor[gray]{0.8}\textbf{4}} & \hspace*{40pt}/& \hspace*{40pt}/& \hspace*{40pt}/& \hspace*{40pt}/\\ \hline
+\multicolumn{1}{|p{40pt}|}{\cellcolor[gray]{0.8}\textbf{5}} & \hspace*{40pt}/& \hspace*{40pt}/& \hspace*{40pt}/& \hspace*{40pt}/\\ \hline
+\multicolumn{1}{|p{40pt}|}{\cellcolor[gray]{0.8}\textbf{6}} & \hspace*{40pt}/& \hspace*{40pt}/& \hspace*{40pt}/& \hspace*{40pt}/\\ \hline
+\multicolumn{1}{|p{40pt}|}{\cellcolor[gray]{0.8}\textbf{7}} & \hspace*{40pt}/& \hspace*{40pt}/& \hspace*{40pt}/& \hspace*{40pt}/\\ \hline
+\multicolumn{1}{|p{40pt}|}{\cellcolor[gray]{0.8}\textbf{8}} & \hspace*{40pt}/& \hspace*{40pt}/& \hspace*{40pt}/& \hspace*{40pt}/\\ \hline
+\multicolumn{1}{|p{40pt}|}{\cellcolor[gray]{0.8}\textbf{9}} & \hspace*{40pt}/& \hspace*{40pt}/& \hspace*{40pt}/& \hspace*{40pt}/\\ \hline
+\multicolumn{1}{|p{40pt}|}{\cellcolor[gray]{0.8}\textbf{10}} & \hspace*{40pt}/& \hspace*{40pt}/& \hspace*{40pt}/& \hspace*{40pt}/\\ \hline
+\end{tabular} 
+\caption{Toma de medidas}
+\label{tab:I-medidas}
+\end{center}
+\end{table}
+
+
+
+\end{document}
