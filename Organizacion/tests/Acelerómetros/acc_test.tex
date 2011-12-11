@@ -1,0 +1,89 @@
+\documentclass[spanish,12pt,a4paper,titlepage]{report}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{subfig}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage{multirow}
+\usepackage{caption}
+\usepackage[spanish]{babel}
+\usepackage[dvips]{hyperref}
+\usepackage{amssymb}
+\usepackage{listings}
+\usepackage{epsfig}
+\usepackage{amsmath}
+\usepackage{array}
+\usepackage[table]{xcolor}
+\usepackage{multirow}
+%\usepackage[Sonny]{fncychap}
+\usepackage[Lenny]{fncychap}
+%\usepackage[Glenn]{fncychap}
+%\usepackage[Conny]{fncychap}
+%\usepackage[Rejne]{fncychap}
+%\usepackage[Bjarne]{fncychap}
+%\usepackage[Bjornstrup]{fncychap}
+
+%\usepackage{subfiles}
+%\usepackage{framed}
+
+\setlength{\topmargin}{-1.5cm}
+\setlength{\textheight}{25cm}
+\setlength{\oddsidemargin}{0.3cm} 
+\setlength{\textwidth}{15cm}
+\setlength{\columnsep}{0cm}
+
+\begin{document}
+
+\chapter{Calibración de acelerómetro}
+
+\section{Objetivos}
+
+Se realiza una serie de pruebas con el fin de calibrar el acelerómetro de tres ejes de la IMU. Se estudiarán diversos modelos posibles para dicha calibración (lineal, cúbico,etc). Se estimaran además las fuentes de error del mismo (ruido y bias).
+
+\section{Materiales}
+\begin{itemize}
+\item IMU
+\item Beagleboard
+\item Tocadiscos
+\item Cronómetro
+\item Regla
+\item Resorte
+\item balanza
+\end{itemize}
+\section{Procedimiento}
+
+\subsection{Parte I: Calibración}
+Se realizan dos experimentos a fin de obtener una serie de datos suficientemente diversa como para obtener una calibración aceptable.
+
+\subsubsection*{Medidas en reposo}
+
+Se tomarán medidas con el sistema (IMU+Beagleboard) en reposo. Durante un minuto y con una frecuencia de 100 muestras por segundo se tomarán medidas de aceleración en los tres ejes con el sistema orientado con el eje z alineado con la vertical. Se repite el proceso, para las otras dos direcciones principales.
+
+\subsubsection*{Medidas a Velocidad angular constante}
+En primer lugar se debe obtener la velocidad angular del tocadisco. Se toma el tiempo que demora el tocadiscos en dar 10 vueltas completas. Se ubica el sistema a una distancia conocida del centro del tocadiscos. Se calcula la aceleración centrípeta en ese punto. Se toman medidas durante un minuto con una frecuencia de 100 muestras por segundo con las tres orientaciones posibles. 
+Se repite el experimento a una distancia distinta. 
+
+\subsubsection*{Medidas de aceleración en un movimiento oscilatorio}
+Se mide la masa del sistema.Se determina la constante elástica del sistema midiendo el estiramiento del resorte al unir el sistema al resorte. Se calcula la aceleración máxima del sistema si el sistema parte del reposo y estirado 20cm medidos desde la nueva posición de equilibrio. Se consideran los máximos y mínimos de las aceleraciones obtendias durante 30 segundos a una tasa de 100 muestras por segundo en los tres ejes.
+
+\subsubsection*{Modelos}
+A partir de las medidas obtenidas y los valores teóricos de las aceleraciones en cada experimento realizado se propone una aproximación lineal y una cúbica. Se obtienen los parámetros de dichos modelos con el método de mínimos cuadrados.
+
+\subsection{Parte II: Definición del modelo}
+Se repite el experimento de medir la aceleración de una oscilación. Se ajusta la curva según los modelos propuestos. Se opta por el modelo que de una mejor respuesta sabiendo que la misma debe ser sinusoidal.
+
+\subsection{Parte III: Determinación de no idealidades}
+A esta altura se intenta caracterizar las dos fuentes principales de no idealidades de los acelerómetros: El ruido y el Bias.
+
+\subsubsection*{Ruido}
+Se modela el ruido propio del acelerómetro como gaussiano de media nula. Se toman medidas en reposo en los tres ejes durante 10 minutos. A partir de dichas medidas se estima la potencia del ruido. Se diseña un filtro para disminuir dicho ruido. Se grafican las aceleraciones de todos los experimentos realizados hasta el momento con el filtrado definido en este experimento. Se comparan las nuevas respuestas de los acelerómetros con las obtenidas antes del filtrado. 
+
+\subsubsection*{Bias}
+Se toman muestras de 10 minutos en reposo para los tres ejes. Se integran dichas muestras y se observa el error de velocidad y posición obtenidos. Se repite el experimento 2 veces más con algunas horas de diferencia. Se comparan los resultados obtenidos, se estudia si hay algún patrón. 
+
+
+
+
+
+
+\end{document}
