@@ -34,56 +34,53 @@
 
 \begin{document}
 
-\chapter{Calibraci髇 de aceler髆etro}
+\chapter{Calibraci贸n de aceler贸metro}
 
 \section{Objetivos}
 
-Se realiza una serie de pruebas con el fin de calibrar el aceler髆etro de tres ejes de la IMU. Se estudiar醤 diversos modelos posibles para dicha calibraci髇 (lineal, c鷅ico,etc). Se estimaran adem醩 las fuentes de error del mismo (ruido y bias).
+Se realiza una serie de pruebas con el fin de calibrar el aceler贸metro de tres ejes de la IMU. Se estudiar谩n diversos modelos posibles para dicha calibraci贸n (lineal, c煤bico,etc). Se estimaran adem谩s las fuentes de error del mismo (ruido y bias).
 
 \section{Materiales}
 \begin{itemize}
 \item IMU
 \item Beagleboard
 \item Tocadiscos
-\item Cron髆etro
+\item Cron贸metro
 \item Regla
 \item Resorte
 \item balanza
 \end{itemize}
 \section{Procedimiento}
 
-\subsection{Parte I: Calibraci髇}
-Se realizan dos experimentos a fin de obtener una serie de datos suficientemente diversa como para obtener una calibraci髇 aceptable.
+\subsection{Parte I: Calibraci贸n}
+Se realizan dos experimentos a fin de obtener una serie de datos suficientemente diversa como para obtener una calibraci贸n aceptable.
 
 \subsubsection*{Medidas en reposo}
 
-Se tomar醤 medidas con el sistema (IMU+Beagleboard) en reposo. Durante un minuto y con una frecuencia de 100 muestras por segundo se tomar醤 medidas de aceleraci髇 en los tres ejes con el sistema orientado con el eje z alineado con la vertical. Se repite el proceso, para las otras dos direcciones principales.
+Se tomar谩n medidas con el sistema (IMU+Beagleboard) en reposo. Durante un minuto y con una frecuencia de 100 muestras por segundo se tomar谩n medidas de aceleraci贸n en los tres ejes con el sistema orientado con el eje z alineado con la vertical. Se repite el proceso, para las otras dos direcciones principales.
 
 \subsubsection*{Medidas a Velocidad angular constante}
-En primer lugar se debe obtener la velocidad angular del tocadisco. Se toma el tiempo que demora el tocadiscos en dar 10 vueltas completas. Se ubica el sistema a una distancia conocida del centro del tocadiscos. Se calcula la aceleraci髇 centr韕eta en ese punto. Se toman medidas durante un minuto con una frecuencia de 100 muestras por segundo con las tres orientaciones posibles. 
+En primer lugar se debe obtener la velocidad angular del tocadisco. Se toma el tiempo que demora el tocadiscos en dar 10 vueltas completas. Se ubica el sistema a una distancia conocida del centro del tocadiscos. Se calcula la aceleraci贸n centr铆peta en ese punto. Se toman medidas durante un minuto con una frecuencia de 100 muestras por segundo con las tres orientaciones posibles. 
 Se repite el experimento a una distancia distinta. 
 
-\subsubsection*{Medidas de aceleraci髇 en un movimiento oscilatorio}
-Se mide la masa del sistema.Se determina la constante el醩tica del sistema midiendo el estiramiento del resorte al unir el sistema al resorte. Se calcula la aceleraci髇 m醲ima del sistema si el sistema parte del reposo y estirado 20cm medidos desde la nueva posici髇 de equilibrio. Se consideran los m醲imos y m韓imos de las aceleraciones obtendias durante 30 segundos a una tasa de 100 muestras por segundo en los tres ejes.
+\subsubsection*{Medidas de aceleraci贸n en un movimiento oscilatorio}
+Se mide la masa del sistema.Se determina la constante el谩stica del sistema midiendo el estiramiento del resorte al unir el sistema al resorte. Se calcula la aceleraci贸n m谩xima del sistema si el sistema parte del reposo y estirado 20cm medidos desde la nueva posici贸n de equilibrio. Se consideran los m谩ximos y m铆nimos de las aceleraciones obtendias durante 30 segundos a una tasa de 100 muestras por segundo en los tres ejes.
 
 \subsubsection*{Modelos}
-A partir de las medidas obtenidas y los valores te髍icos de las aceleraciones en cada experimento realizado se propone una aproximaci髇 lineal y una c鷅ica. Se obtienen los par醡etros de dichos modelos con el m閠odo de m韓imos cuadrados.
+A partir de las medidas obtenidas y los valores te贸ricos de las aceleraciones en cada experimento realizado se propone una aproximaci贸n lineal y una c煤bica. Se obtienen los par谩metros de dichos modelos con el m茅todo de m铆nimos cuadrados.
 
-\subsection{Parte II: Definici髇 del modelo}
-Se repite el experimento de medir la aceleraci髇 de una oscilaci髇. Se ajusta la curva seg鷑 los modelos propuestos. Se opta por el modelo que de una mejor respuesta sabiendo que la misma debe ser sinusoidal.
+\subsection{Parte II: Definici贸n del modelo}
+Se repite el experimento de medir la aceleraci贸n de una oscilaci贸n. Se ajusta la curva seg煤n los modelos propuestos. Se opta por el modelo que de una mejor respuesta sabiendo que la misma debe ser sinusoidal.
 
-\subsection{Parte III: Determinaci髇 de no idealidades}
-A esta altura se intenta caracterizar las dos fuentes principales de no idealidades de los aceler髆etros: El ruido y el Bias.
+\subsection{Parte III: Determinaci贸n de no idealidades}
+A esta altura se intenta caracterizar las dos fuentes principales de no idealidades de los aceler贸metros: El ruido y el Bias.
 
 \subsubsection*{Ruido}
-Se modela el ruido propio del aceler髆etro como gaussiano de media nula. Se toman medidas en reposo en los tres ejes durante 10 minutos. A partir de dichas medidas se estima la potencia del ruido. Se dise馻 un filtro para disminuir dicho ruido. Se grafican las aceleraciones de todos los experimentos realizados hasta el momento con el filtrado definido en este experimento. Se comparan las nuevas respuestas de los aceler髆etros con las obtenidas antes del filtrado. 
+Se modela el ruido propio del aceler贸metro como gaussiano de media nula. Se toman medidas en reposo en los tres ejes durante 10 minutos. A partir de dichas medidas se estima la potencia del ruido. Se dise帽a un filtro para disminuir dicho ruido. Se grafican las aceleraciones de todos los experimentos realizados hasta el momento con el filtrado definido en este experimento. Se comparan las nuevas respuestas de los aceler贸metros con las obtenidas antes del filtrado. 
 
 \subsubsection*{Bias}
-Se toman muestras de 10 minutos en reposo para los tres ejes. Se integran dichas muestras y se observa el error de velocidad y posici髇 obtenidos. Se repite el experimento 2 veces m醩 con algunas horas de diferencia. Se comparan los resultados obtenidos, se estudia si hay alg鷑 patr髇. 
+Se toman muestras de 10 minutos en reposo para los tres ejes. Se integran dichas muestras y se observa el error de velocidad y posici贸n obtenidos. Se repite el experimento 2 veces m谩s con algunas horas de diferencia. Se comparan los resultados obtenidos, se estudia si hay alg煤n patr贸n.\\ 
 
-
-
-
-
+Realizar la integraci贸n del error te贸rico en la posici贸n, asegurado por el fabricante, seg煤n la hoja de datos. Comparar con el bias obtenido. Determinar si los sensores funcionan como lo asegura el fabricante.
 
 \end{document}
