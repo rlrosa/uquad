@@ -73,7 +73,7 @@ int main(int argc, char *argv[])
 		libgps_dump_state(&gpsdata);
 	    }
 	}
-    } else if (gps_open(NULL, 0, &collect) <= 0) {
+    } else if (gps_open(NULL, 0, &collect) < 0) {
 	(void)fputs("Daemon is not running.\n", stdout);
 	exit(1);
     } else if (optind < argc) {
