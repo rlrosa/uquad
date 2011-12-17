@@ -1,4 +1,5 @@
 function varargout = lazo_abierto(varargin)
+global ti tf x0 y0 z0 psi0 phi0 theta0 vq10 vq20 vq30 wq10 wq20 wq30
 % LAZO_ABIERTO MATLAB code for lazo_abierto.fig
 %      LAZO_ABIERTO, by itself, creates a new LAZO_ABIERTO or raises the existing
 %      singleton*.
@@ -22,7 +23,7 @@ function varargout = lazo_abierto(varargin)
 
 % Edit the above text to modify the response to help lazo_abierto
 
-% Last Modified by GUIDE v2.5 04-Dec-2011 23:51:27
+% Last Modified by GUIDE v2.5 17-Dec-2011 16:29:06
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -362,6 +363,51 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
+function edit14_Callback(hObject, eventdata, handles)
+% hObject    handle to edit14 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit14 as text
+%        str2double(get(hObject,'String')) returns contents of edit14 as a double
+var=str2double(get(hObject,'String'));
+    assignin('base','ti',var)
+
+% --- Executes during object creation, after setting all properties.
+function edit14_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit14 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function edit15_Callback(hObject, eventdata, handles)
+% hObject    handle to edit15 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit15 as text
+%        str2double(get(hObject,'String')) returns contents of edit15 as a double
+var=str2double(get(hObject,'String'));
+    assignin('base','tf',var)
+
+% --- Executes during object creation, after setting all properties.
+function edit15_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit15 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
 % --- Executes on button press in pushbutton1.
 function pushbutton1_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton1 (see GCBO)
@@ -371,7 +417,6 @@ function pushbutton1_Callback(hObject, eventdata, handles)
     
     %Calculo las velocidades iniciales en el sistema del quadricoptero
     determinar_vel;
- 
     
     sim_lazo_abierto
     
@@ -387,8 +432,11 @@ function axes1_CreateFcn(hObject, eventdata, handles)
 % handles    empty - handles not created until after all CreateFcns called
 
 % Hint: place code in OpeningFcn to populate axes1
-x=3;
+x=0;
 y=0;
 z=0;
 grid on;
-plot3(x,y,z,'LineWidth',2);grid on;
+plot3(Variables(4),Variables(5),Variables(6),'LineWidth',2);grid on;
+
+
+
