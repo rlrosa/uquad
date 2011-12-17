@@ -14,4 +14,6 @@
  */
 int uquad_timeval_substract (struct timeval * result, struct timeval x, struct timeval y);
 
+#define sleep_ms(ms) usleep(1000*ms)
+
 #endif

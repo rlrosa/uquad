@@ -1,20 +1,50 @@
-#define ERROR_OK 0
-#define ERROR_FAIL -1
-#define ERROR_READ_TIMEOUT -2
-#define ERROR_READ_SYNC -3
-#define ERROR_OPEN -4
-#define ERROR_CLOSE -5
-#define ERROR_MALLOC -6
-#define ERROR_IMU_AVG_NOT_ENOUGH -7
-#define ERROR_IO -8
-#define ERROR_WRITE -9
-#define ERROR_INVALID_ARG -10
-#define ERROR_NULL_POINTER -11
-#define ERROR_IMU_STATUS -12
-#define ERROR_IO_DEV_NOT_FOUND -13
+#ifndef UQUAD_ERROR_CODES_H
+#define UQUAD_ERROR_CODES_H
 
+enum UQUAD_ERROR_CODES{
+ERROR_OK = 0,
+ERROR_FAIL,
+ERROR_READ_TIMEOUT,
+ERROR_READ_SYNC,
+ERROR_OPEN,
+ERROR_CLOSE,
+ERROR_MALLOC,
+ERROR_IMU_AVG_NOT_ENOUGH,
+ERROR_IO,
+ERROR_WRITE,
+ERROR_INVALID_ARG,
+ERROR_NULL_POINTER,
+ERROR_IMU_STATUS,
+ERROR_IO_DEV_NOT_FOUND,
+ERROR_GPS_OPEN,
+ERROR_GPS_STREAM
+};
+
+/**
+ * Print error message to stderr
+ * 
+ */
+#define err_log(msg) fprintf(stderr,"%s:%d: %s\n",__FILE__,__LINE__,msg)
+
+/**
+ * If @retval is an error, then propagate error without printing anything.
+ * 
+ */
 #define err_propagate(retval) if(retval!=ERROR_OK){fprintf(stderr,"backtrace:%s:%d\n",__FILE__,__LINE__);return retval;}
+
+/**
+ * If @retval is an error, then print @msg to stderr and propagate error.
+ * 
+ */
 #define err_check(retval,msg) if(retval!=ERROR_OK){fprintf(stderr,"%s:%d: %s\n",__FILE__,__LINE__,msg);return retval;}
+
+
+/**
+ * Verifies that malloc succeeded.
+ * 
+ */
 #define mem_alloc_check(pointer) if(pointer==NULL){fprintf(stderr,"%s:%d: malloc failed\n",__FILE__,__LINE__);return pointer;}
 
 /// No functions
+
+#endif //UQUAD_ERROR_CODES_H
