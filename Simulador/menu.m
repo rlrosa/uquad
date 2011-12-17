@@ -22,7 +22,7 @@ function varargout = menu(varargin)
 
 % Edit the above text to modify the response to help menu
 
-% Last Modified by GUIDE v2.5 17-Dec-2011 16:03:43
+% Last Modified by GUIDE v2.5 17-Dec-2011 18:08:18
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -78,7 +78,7 @@ function pushbutton1_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-global Variables ti tf X0 x0 y0 z0 Vx0 Vy0 Vz0 vq10 vq20 vq30 wq10 wq20 wq30 theta0 psi0 phi0 Ixx Iyy Izz Izzm L M g Cond_iniciales;
+%global Variables ti tf X0 x0 y0 z0 Vx0 Vy0 Vz0 vq10 vq20 vq30 wq10 wq20 wq30 theta0 psi0 phi0 Ixx Iyy Izz Izzm L M g Cond_iniciales;
 clc
 clear all
 lazo_abierto
@@ -110,3 +110,10 @@ handles
 axes(handles.img2); %per fixar la img2 com actual
 image(x);
 axis off; 
+
+
+% --- Executes on button press in pushbutton4.
+function pushbutton4_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton4 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
