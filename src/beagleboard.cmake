@@ -8,7 +8,7 @@ SET(CMAKE_C_COMPILER   $ENV{OE_BEAGLE_TOOLCHAIN}/arm-angstrom-linux-gnueabi-gcc)
 SET(CMAKE_CXX_COMPILER   $ENV{OE_BEAGLE_TOOLCHAIN}/arm-angstrom-linux-gnueabi-g++)
 
 # where is the target environment 
-SET(CMAKE_FIND_ROOT_PATH /home/rrosa/work/setup-scripts/build/tmp-angstrom_2008_1/sysroots/x86_64-linux/usr/armv7a/)
+SET(CMAKE_FIND_ROOT_PATH $ENV{OE_BEAGLE_TOOLCHAIN}/)
 
 # search for programs in the build host directories
 SET(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
