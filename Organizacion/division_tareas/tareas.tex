@@ -79,44 +79,45 @@
 \begin{tabular}{|p{50pt}|p{250pt}|p{100pt}|} 
 \hline
 \cellcolor[gray]{0.8} $N^o$ \textbf{tarea} & \cellcolor[gray]{0.8} \textbf{Descripción} & \cellcolor[gray]{0.8} \textbf{Recursos} \\ \hline
-1  & Hacer funcionar el analizador lógico & M. L.\\ \hline
-2  & Decodificar el código I2C, entenderlo y aprender a enviar comandos & M. L., M. T.\\ \hline
-3  & Probar si los comandos enviados producen el efecto deseado sobre los motores & \\ \hline
-4  & Investigar en papers u otros documentos si será necesario incluir algún otro sensor & TODOS \\ \hline
-5  & Interconectar todos los sensores, armar los conversores de niveles lógicos necesarios & M. T. \\ \hline
+I.1.2  & Buscar implementaciones del protocolo I2C, entenderlo y estudiar su funcionamiento & TODOS.\\ \hline
+I.1.2  & Hacer funcionar el analizador lógico y aprender a utilizar el software correspondiente. & M. L.\\ \hline
+I.1.3  & Diseñar pruebas para la caracterización de los ESCs, decodificar el código I2C, entenderlo y aprender a enviar comandos & M. L., M. T.\\ \hline
+I.1.4  & Probar si los comandos enviados producen el efecto deseado sobre los motores. Para ello se deberá caracterizar los motores y las relaciones código $i^2c$ - velocidad de giro y código $i^2c$ - fuerza & \\ \hline
+I.2.1  & Investigar en papers u otros documentos si será necesario incluir algún otro sensor & TODOS \\ \hline
+I.2.2  & Conectar todos los sensores, armar los conversores de niveles lógicos necesarios & M. T. \\ \hline
 \end{tabular}
 \end{table}
 \begin{table}[H]
 \begin{tabular}{|p{50pt}|p{250pt}|p{100pt}|} 
 \hline
-6  & Investigar e implementar alguna manera de mejorar la presición del GPS & S. P. \\ \hline
-7  & Definir la forma de realizar el switcheo entre el control remoto y el control automático. Definir el hardware necesario para ello & TODOS \\ \hline
-8  & Programar el firmware necesario para una buena comunicación entre los \textbf{ESC's} y los motores, ya sea mediante protocolo \textbf{I2C} o \textbf{PWM} & M. L. \\ \hline
-9  & Programar el firmware necesario para una buena comunicación entre la \textbf{BeagleBoard} y la \textbf{IMU}. & R. R. \\ \hline
-10  & Programar el firmware necesario para una buena comunicación entre la \textbf{BeagleBoard} y el \textbf{GPS}. & R. .R \\ \hline
-11  & Programar el firmware necesario para una buena comunicación entre la \textbf{BeagleBoard} y el dispositivo \textbf{Wi-Fi}. & M. T. \\ \hline
-12  & Definir criterios para integrar los sensores: algoritmo base, interrogación periódica a los sensores, cada cuanto tiempo, en que orden, etc. & S. P., R. R. \\ \hline
-13  & Simular los algoritmos y corroborar el buen funcionamiento teórico. & S. P., R. R. \\ \hline
-14  & Programar los algoritmos definitivos y probarlos & S. P., R. R. \\ \hline
-15  & Definir la actitud de vuelo del cuadricóptero. & TODOS \\ \hline
-16  & Simular vuelo en MatLab. & M. T. \\ \hline
-17  & Programar algoritmos definitivos y testearlos. & R. R. \\ \hline
-18  & Definir el esquema general de los algoritmos de control & TODOS \\ \hline
-19  & Programar los distintos bloques de control y su interrelación & TODOS \\ \hline
-20  & Simular algoritmos de control & TODOS \\ \hline
-21  & Testear algoritmos de control & TODOS \\ \hline
-22  & Realizar los ajustes necesarios y reprogramar si es necesario & TODOS \\ \hline
-23  & Programar el software necesario para la conmutación entre el control automático y el remoto. & TODOS \\ \hline
-24  & Testear el switcheo del mando automático al manual y realizar los ajustes necesarios. & TODOS \\ \hline
-25  & Desarrollo del modelo físico y contrastación con papers existentes & S. P. \\ \hline
-26  & Simular el comportamiento del cuadricóptero según el modelo físico. & S. P. \\ \hline
-27  & Desarrollar el simulador en MatLab & S. P., M. T. \\ \hline
-28  & Identificar las no idealidades de los sensores & S. P., M. T. \\ \hline
-29  & Implementar un modelo de ajuste de las medidas tomadas por los sensores, diseñar pruebas y en función de estas hallar los parámetros de los modelos propuestos para finalmente calibrar de la mejor forma los sensores. & S. P., M. T. \\ \hline
+I.2.3  & Diseñar pruebas y en función de estas calibrar de la mejor forma posible los sensores. Investigar e implementar alguna manera de mejorar la precisión de los sensores  & S. P., M. T. \\ \hline
+I.2.4 & Identificar las no idealidades de los sensores & S. P., M. T. \\ \hline
+I.2.5 & Implementar un modelo de ajuste de las medidas tomadas por los sensores & S. P., M. T. \\ \hline
+I.3.1 & Definir la forma de realizar el switcheo entre el control remoto y el control automático. Definir el hardware necesario para ello & TODOS \\ \hline \hline
+II.1.1  & Programar el firmware necesario para una buena comunicación entre los \textbf{ESC's} y los motores, ya sea mediante protocolo \textbf{I2C} o \textbf{PWM} & M. L. \\ \hline
+II.1.2  & Programar el firmware necesario para una buena comunicación entre la \textbf{BeagleBoard} y la \textbf{IMU}. & R. R. \\ \hline
+II.1.3  & Programar el firmware necesario para una buena comunicación entre la \textbf{BeagleBoard} y el \textbf{GPS}. & R. .R \\ \hline 
+II.1.4  & Programar el firmware necesario para una buena comunicación entre la \textbf{BeagleBoard} y el dispositivo \textbf{Wi-Fi}. & M. T. \\ \hline \hline
+III.1.1  & Definir criterios para integrar los sensores: algoritmo base, interrogación periódica a los sensores, cada cuanto tiempo, en que orden, etc. & S. P., R. R. \\ \hline
+III.1.2  & Simular los algoritmos y corroborar el buen funcionamiento teórico. & S. P., R. R. \\ \hline
+III.1.3  & Programar los algoritmos definitivos y probarlos & S. P., R. R. \\ \hline 
+III.2.1  & Definir la actitud de vuelo del cuadricóptero. & TODOS \\ \hline
+III.2.2  & Simular vuelo en MatLab. & M. T. \\ \hline
+III.2.3  & Programar algoritmos definitivos y testearlos. & R. R. \\ \hline
+III.3.1  & Definir el esquema general de los algoritmos de control & TODOS \\ \hline
+III.3.2  & Programar los distintos bloques de control y su interrelación & TODOS \\ \hline
+III.3.3  & Simular algoritmos de control & TODOS \\ \hline
+III.3.4  & Testear algoritmos de control & TODOS \\ \hline
+III.3.5  & Realizar los ajustes necesarios y reprogramar si es necesario & TODOS \\ \hline
+III.4.1  & Programar el software necesario para la conmutación entre el control automático y el remoto. & TODOS \\ \hline
+III.4.2  & Testear el switcheo del mando automático al manual y realizar los ajustes necesarios. & TODOS \\ \hline \hline
+IV.1.1  &  Determinar los parámetros del cuadricóptero con la mayor exactitud posible, como pueden ser la masa o el tamaño.  &  \\ \hline
+IV.1.2  & Desarrollo del modelo físico y contrastación con papers existentes & S. P. \\ \hline
+IV.1.3  &  Simular el comportamiento del cuadricóptero según el modelo físico. & S. P.    \\ \hline
+IV.2.2  &  Desarrollar el simulador en MatLab & S. P., M. T.    \\ \hline
 \end{tabular} 
 \caption{Descripción de las tareas y asignación de recursos}
 \label{tab:tareas_y_recursos}
 \end{table}
-
 
 \end{document}
