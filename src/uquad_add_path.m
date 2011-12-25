@@ -11,3 +11,5 @@ addpath(sprintf('%s%cgps',uquad_src,slash));
 % IMU support scripts
 addpath(sprintf('%s%cimu',uquad_src,slash));
 
+% set format to avoid confusing GPS data
+format long g
