@@ -2,7 +2,7 @@
 polygon_points = 6;
 
 %% Load times corresponding to points 1,2,3,4,5,6 in each log
-j% each row of t corresponds to the times for one log file
+% each row of t corresponds to the times for one log file
 t  =  {'2011-12-21T18:31:27.524Z' '2011-12-21T18:34:44.524Z'   ...
        '2011-12-21T18:36:23.524Z' '2011-12-21T18:38:26.524Z'   ...
        '2011-12-21T18:39:29.524Z' '2011-12-21T18:40:25.525Z' ; ...
@@ -48,14 +48,16 @@ easting = zeros(polygon_points,log_count);
 northing = zeros(polygon_points,log_count);
 elevation = zeros(polygon_points,log_count);
 utm_zone = zeros(polygon_points,log_count);
+sat = zeros(polygon_points,log_count);
 
 for i=1:log_count
-  [e_tmp, n_tmp, alt_tmp, ~] = ...
+  [e_tmp, n_tmp, alt_tmp, ~, sat_tmp] = ...
     gpxlogger_time_to_UTM(xs(i),t(i,:));
   easting(:,i) = e_tmp;
   northing(:,i) = n_tmp;
   elevation(:,i) = alt_tmp;
   %utm_zone(:,i) = utm_z_tmp; % string problems
+  sat(:,i) = sat_tmp;
 end
 
 %% Use relative values
@@ -74,6 +76,11 @@ end
 for i = 1:log_count/3
   figure; subplot 311
   for j = 1:3
+    fprintf('Sat. count for plot %d:\n\t',3*(i-1)+j)
+    for k = 1:log_count
+      fprintf('%d\t', sat(k,3*(i-1)+j))
+    end
+    fprintf('\n')
     subplot(3,1,j)
     plot(easting(:,3*(i-1)+j), northing(:,3*(i-1)+j),'x')
     title(sprintf('Polygon - log #%d',3*(i-1)+j))

@@ -1,4 +1,4 @@
-function [easting, northing, elevation, utmzone] = ... 
+function [easting, northing, elevation, utmzone, sat] = ... 
   gpxlogger_xml_handler(in, force_plot)
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 % function [easting, northing, elevation, utmzone] = ... 
@@ -17,6 +17,7 @@ function [easting, northing, elevation, utmzone] = ...
 %   - easting, northing: Coordinates in UTM
 %   - elevation: Elevation in meters.
 %   - utmzone: See deg2utm.m
+%   - sat: # of satelites used (-1 if data unavailable)
 %
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 if(nargin < 1)
@@ -45,11 +46,19 @@ end
 packet_count = size(xs.child(2).child(2).child(2).child,2);
 lat = zeros(packet_count,1);
 lon = zeros(packet_count,1);
+sat = zeros(packet_count,1);
 elevation = zeros(packet_count,1);
 for trkpt_i=1:packet_count
-  lat(trkpt_i) = str2double(xs.child(2).child(2).child(2).child(trkpt_i).attribs(1).value);
-  lon(trkpt_i) = str2double(xs.child(2).child(2).child(2).child(trkpt_i).attribs(2).value);
-  elevation(trkpt_i) = str2double(xs.child(2).child(2).child(2).child(trkpt_i).child(1).value);
+  curr = xs.child(2).child(2).child(2).child(trkpt_i);
+  lat(trkpt_i) = str2double(curr.attribs(1).value);
+  lon(trkpt_i) = str2double(curr.attribs(2).value);
+  elevation(trkpt_i) = str2double(curr.child(1).value);
+  if (size(curr.child,2) >= 8)
+    sat(trkpt_i) = str2double(curr.child(5).value);
+  else
+    % sat count is not always logged
+    sat(trkpt_i) = -1;
+  end
 end
 [easting, northing, utmzone] = deg2utm(lat, lon);
 
@@ -58,5 +67,5 @@ fprintf('Success!\n')
 
 if(nargout == 0 || force_plot)
   fprintf('Generating plot...\n')
-  gps_plot3(easting,northing,elevation);
+  gps_plot3(easting,northing,elevation, sat);
 end
