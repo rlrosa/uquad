@@ -38,25 +38,17 @@
 
 \section{Objetivos}
 
-Se realiza una serie de pruebas con el fin de identificar los errores correspondientes al dispositivo de posicionamiento global (\textbf{GPS}). Se realizan pruebas para determinar tanto el error absoluto de la medida, como el error diferencial. Se analizará el error en las direcciones de latitud, longitud y altura. A su vez se realizarán pruebas repetitivas de modo de poder analizar la consistencia temporal de las medidas otorgadas por el dispositivo GPS.
+Se realiza una serie de pruebas con el fin de identificar los errores correspondientes al dispositivo de posicionamiento global (GPS). Se realizan pruebas para determinar tanto el error absoluto de la medida, como el error diferencial. Se analizará el error en las direcciones de latitud, longitud y altura. A su vez se realizarán pruebas repetitivas de modo de poder analizar la consistencia temporal de las medidas otorgadas por el dispositivo GPS.
 
-Si el error absoluto es muy grande, igual es posible obtener información útil utilizando medidas diferenciales. Se analizará el error relativo entre diferentes medidas del GPS. Resulta interesante caracterizar el comportamiento diferencial de las medidas del GPS ya que si es bueno, constituye una importante ventaja. Aunque el error absoluto sea grande, si el relativo es lo suficientemente chico se puede implementar alguna etapa de corrección inicial de modo de obtener datos georeferenciados muy precisos.\\
+Si el error absoluto es muy grande, igual puede ser posible obtener información útil utilizando medidas diferenciales. Se analizará el error relativo entre diferentes medidas del GPS. Resulta interesante caracterizar el comportamiento diferencial de las medidas del GPS ya que si es bueno, se puede implementar alguna etapa de corrección inicial de modo de obtener datos georeferenciados muy precisos.
 
-\section{Materiales}
-\begin{itemize}
-\item GPS
-\item Brújula
-\item Plomada
-\item Metro
-\end{itemize}
-
-\section{Parte I: Error absoluto}
-Tomar una medida de posición del GPS, en lo posible lugar de coordenadas conocidas. Contrastar los resultados obtenidos con las coordenadas conocidas. Ubicar las coordenadas en un mapa\footnote{\underline{Nota:} El mapa no debe ser de Google Earth ya que posee errores demasiado grandes. Usar mapas de la intendencia.}. Conseguir un mapa topográfico y obtener la altura respecto del nivel del mar de esa zona y contrastar con la altura obtenida del GPS. \\
-
-Realizar este experimento en 3 lugares diferentes, 3 veces en cada lugar.
-
+%\section{Error absoluto}
+%Tomar una medida de posición del GPS, en lo posible lugar de coordenadas conocidas. Contrastar los resultados obtenidos con las coordenadas conocidas. Ubicar las coordenadas en un mapa\footnote{\underline{Nota:} El mapa no debe ser de Google Earth ya que posee errores demasiado grandes. Usar mapas de la intendencia.}. Conseguir un mapa topográfico y obtener la altura respecto del nivel del mar de esa zona y contrastar con la altura obtenida del GPS.
+%
+%Realizar este experimento en 3 lugares diferentes, 3 veces en cada lugar.
+%
 \newpage
-\section{Parte II: Error relativo en latitud y longitud}
+\section{Error relativo en latitud y longitud}
 
 En esta prueba se trata de obtener el error del GPS en el plano paralelo a la tierra.
 
@@ -89,7 +81,7 @@ Todas las líneas punteadas son de 1m de largo, lo que resulta en un rectángulo
 Los pasos a seguir son los siguientes:
 
 \begin{enumerate}
-\item Construir un rectángulo como el mencionado sobre un superficie plana.
+\item Construir un rectángulo (como el mencionado) sobre un superficie plana.
 \item Medir, con un metro, las distancias entre todos los puntos.
 \item Utilizar mínimos cuadrados para minimizar el error entre las distancias esperadas, y las experimentales. Esto puede llevar a trabajar con un polígono que \textbf{no} sea un rectángulo, pero el error será menor que el que resultaría de usar los valores teóricos.
 \item Fijar la altura y la orientación del GPS, y tomar medidas en cada uno de los puntos \verb+[1,2,3,4,5,6]+.
@@ -142,7 +134,7 @@ En las figuras \ref{fig:gps_interf.jpg} y \ref{fig:gps_interf1.jpg} se muestran 
 \subsection{Estimación de la posición de un punto fijo}
 \label{sec:estimacion-de-la-posicion-de-un-punto-fijo}
 
-Antes de proceder con el experimento, se tomaron medidas de la ubicación de algunos de los vértices del polígono. Si el ruido asociado a esta medida supera 1m, entonces no vale la pena hacer el resto del experimento. No será posible estimar, de manera razonable, la posición de los vértices del polígono, ya que estos están distan, en algunos casos, solamente 1m entre sí.
+Antes de proceder con el experimento, se tomaron medidas de la ubicación de algunos de los vértices del polígono. Si el ruido asociado a esta medida es del orden de 1m, entonces no vale la pena hacer el resto del experimento. No será posible estimar, de manera razonable, la posición de los vértices del polígono, ya que estos están distan, en algunos casos, solamente 1m entre sí.
 
 Se tomaron medidas con el GPS en dos orientaciones. En las figuras \ref{fig:log_09_individual.png} y \ref{fig:log_10_individual.png} se observan los datos resultantes luego de aproximadamente 1 minuto con el GPS quieto. En todas las gráficas se muestran los datos luego de restar el promedio, o sea que se muestra el error respecto al valor promedio.
 
@@ -249,7 +241,7 @@ En la tabla \ref{tab:polygon-sat} se muestran la cantidad de satélites utilizad
 \textbf{Log 6} & 10 & 10 & 10 & 10 & 10 & 10\\
 \hline
 \end{tabular} 
-\caption{Satelites disponibles al tomar los datos de las figuras \ref{fig:polygon_1.png} y \ref{fig:polygon_2.png}.}
+\caption{Satélites disponibles al tomar los datos de las figuras \ref{fig:polygon_1.png} y \ref{fig:polygon_2.png}.}
 \label{tab:polygon-sat}
 \end{center}
 \end{table}
@@ -293,12 +285,14 @@ ans =
           1.37520004160367          2.60741605799409
 \end{verbatim}
 
-\subsection{Conclusión}
+\subsection{Conclusión - Latitud-Longitud}
 \label{sec:error-lat-lon-conclusion}
 
 El GPS funciona como era de esperarse, con un error menor a 3m. Para estimar la posición del quad con más precisión, va a ser necesario recurrir a sensores adicionales, o a algún tipo de manipulación de los datos del GPS.
 
-Este experimento se realizó libre de ruido. El quad agregará vibraciones, interferencia electromagnética, y sera mucho menos estable que el GPS aferrado a una escalera. El error en las medidas de este experimento fue, en general, significativamente menor a 3m, pero una vez montado en el quad, es probable que el error en la información proveniente del GPS sea cercana a los 3m, por culpa de los factores mencionados.
+No se calculó el error mediante mínimos cuadrados. Un análisis tan preciso no tiene sentido, ya que la magnitud del error es muy grande.
+
+Este experimento se realizó libre de ruido. El quad agregará vibraciones, interferencia electromagnética, y será mucho menos estable que el GPS aferrado a una escalera. El error en las medidas de este experimento fue, en general, significativamente menor a 3m, pero una vez montado en el quad, es probable que el error en la información proveniente del GPS sea cercana a los 3m, por culpa de los factores mencionados.
 
 %
 %\begin{enumerate} 
@@ -370,14 +364,14 @@ Los resultados del experimento apoyado sobre el marco y asomado con el atril se 
 \end{center}
 \end{figure}
 
-\subsection{Conclusión}
+\subsection{Conclusión - Altura}
 \label{sec:error-en-altura-conclusion}
 
 Los resultados concuerdan con lo esperado, la inestabilidad en la lectura del GPS disminuye al reducir las fuentes de rebotes.
 
 Las lecturas del GPS no tiene suficiente precisión como para ser utilizadas de manera exclusiva para determinar la altura del quad. En los mejores casos hay un error de $0.5-1$m, y en los peores casos hay errores de hasta 15m. Con una buena geometría y a varios metros del piso, el error es tolerable, pero no sirve para programar el aterrizaje/despegue, ni el vuelo a baja altura.
 
-Aún no se ha determinado si la mayor causa del deterioro de la performance del GPS fueron los rebotes y/o la mala geometría. La mala geometría resulta de tener solamente la mitad del cielo visible, ya que la pared de la casa bloquea el resto. Al asomar el GPS hacia afuera, se lo aleja de los rebotes, y también se incrementa la cantidad de cielo visible, por lo que es dificil separar cual de los cambios es el responsable de los cambios en los resultados.
+Aún no se ha determinado si la mayor causa del deterioro de la performance del GPS fueron los rebotes y/o la mala geometría. La mala geometría resulta de tener solamente la mitad del cielo visible, ya que la pared de la casa bloquea el resto. Al asomar el GPS hacia afuera, se lo aleja de los rebotes, y también se incrementa la cantidad de cielo visible, por lo que es difícil separar cual de los cambios es el responsable de los cambios en los resultados.
 
 Se concluye que es necesario utilizar otra fuente de información, como por ejemplo un sensor de presión, para estimar la altura del quad.
 
@@ -465,8 +459,8 @@ La performance del GPS cumple con lo especificado, en un contexto adecuado (buen
 
 La posición de la antena no parece afectar mucho los resultados, esto puede deberse a la geometría de la misma, es probable que tenga una cierta simetría que hace que la orientación del GPS no afecte la lecturas.
 
-El GPS se utilizará como medio de correción del drift que resulta de utilizar sensores que miden diferencias (acelerómetros, gyróscopos, etc), y estos otros sensores se usarán para obtener la precisión necesaria para maniobrar el quad.
+El GPS se utilizará como medio de corrección del drift que resulta de utilizar sensores que miden diferencias (acelerómetros, gyróscopos, etc), y estos otros sensores se usarán para obtener la precisión necesaria para maniobrar el quad.
 
-En cuanto a la estimación de la altura, no alcanza con el GPS, acelerómetros y gyróscopos, se require de un sonar, un sensor de presión, etc.
+En cuanto a la estimación de la altura, no alcanza con el GPS, acelerómetros y gyróscopos, se requiere de un sonar, un sensor de presión, etc.
 
 \end{document}
