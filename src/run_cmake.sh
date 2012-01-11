@@ -1,4 +1,3 @@
-#!/bin/bash
 cd build
 dest_platform=
 debug=
@@ -16,13 +15,13 @@ do
 	    cd ../arm_build
 	    if [ ! "${OE_BUILD_TMPDIR}" ]
 	    then
-		echo Error! Add this line to "~/.bashrc": source ~/.oe/environment-2008
+		echo Error! Add this line to "~/.bashrc": source ~/.oe/environment-oecore
 		cd ..
 		exit
 	    else
 		if [ ! "${OE_BEAGLE_TOOLCHAIN}" ]
 		then
-		    export OE_BEAGLE_TOOLCHAIN=$OE_BUILD_TMPDIR/sysroots/x86_64-linux/usr/armv7a/bin
+		    export OE_BEAGLE_TOOLCHAIN=$OE_BUILD_TMPDIR/sysroots/x86_64-linux/usr/bin/armv7a-angstrom-linux-gnueabi
 		    echo Toolchain env var not found, setting it to $OE_BEAGLE_TOOLCHAIN
 		fi
 	    fi
