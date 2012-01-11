@@ -58,7 +58,18 @@ int main(int argc, char *argv[])
                         fprintf(stdout,"\nGPS had no data!\n\n");
 		    }else{
 			//gps_fix = gps_comm_get_data(gps);
-			fprintf(stdout,"%d\n",gps_comm_get_status(gps));
+			fprintf(stdout,"fix mode:%d\n",gps_comm_get_status(gps));
+			if(gps_comm_get_status(gps)){
+			    gps_fix = gps_comm_get_data(gps);
+			    fprintf(stdout,"\tlat:%f\n\tlon:%f\n\talt:%f\n\ttimestamp:%f\n\n",
+				   gps_fix.latitude,
+				   gps_fix.longitude,
+				   gps_fix.altitude,
+				   gps_fix.time);
+			}else{
+			    printf("\n");
+			}
+
 		    }
                 }
             }
