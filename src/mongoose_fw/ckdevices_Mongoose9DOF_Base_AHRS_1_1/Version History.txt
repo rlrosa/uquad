@@ -1,0 +1,20 @@
+Mongoose 9DOF Base AHRS Firmware
+Version History
+www.ckdevices.com
+
+
+Version		Date			Comments and Notes
+---------------------------------------------------------------------------------------
+v1.0		July 20, 2011		-Initial Release
+
+
+---------------------------------------------------------------------------------------
+v1.1		Oct 12, 2011		-Updated to work with the 16MHz version of Mongoose (will still work with the 8MHz version)
+					-The main loop rate, and the integration time (G_Dt), have been adjusted for 200Hz
+					-Fixed a bug in the BMP085 routines that was reporting the pressure incorrectly
+					-NOTE: In order to run at 200Hz, the I2C library needs to be modified to run at 400KHz instead of 100KHz
+  						-locate your Arduino instalition folder
+  						-open the file "libraries\Wire\utility\twi.h" 
+ 						-on line 32 change "#define TWI_FREQ 100000L" to "#define TWI_FREQ 400000L"
+
+					
