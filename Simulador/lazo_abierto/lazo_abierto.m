@@ -1,5 +1,5 @@
 function varargout = lazo_abierto(varargin)
-global ti tf x0 y0 z0 psi0 phi0 theta0 vq10 vq20 vq30 wq10 wq20 wq30
+global ti tf x0 y0 z0 psi0 phi0 theta0 vq10 vq20 vq30 wq10 wq20 wq30 Variables indice
 % LAZO_ABIERTO MATLAB code for lazo_abierto.fig
 %      LAZO_ABIERTO, by itself, creates a new LAZO_ABIERTO or raises the existing
 %      singleton*.
@@ -23,7 +23,7 @@ global ti tf x0 y0 z0 psi0 phi0 theta0 vq10 vq20 vq30 wq10 wq20 wq30
 
 % Edit the above text to modify the response to help lazo_abierto
 
-% Last Modified by GUIDE v2.5 17-Dec-2011 16:29:06
+% Last Modified by GUIDE v2.5 11-Jan-2012 15:31:48
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -383,6 +383,7 @@ function edit14_CreateFcn(hObject, eventdata, handles)
 %       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
+    var=get(hObject,'String');
 end
 
 
@@ -418,25 +419,48 @@ function pushbutton1_Callback(hObject, eventdata, handles)
     %Calculo las velocidades iniciales en el sistema del quadricoptero
     determinar_vel;
     
+    %Simulo el sistema en lazo abierto
     sim_lazo_abierto
     
     
+ 
 
-    
+
+
+
+
+% --- Executes on selection change in listbox1.
+function listbox1_Callback(hObject, eventdata, handles)
+% hObject    handle to listbox1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns listbox1 contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from listbox1
+assignin('base','indice',get(handles.listbox1,'Value'));
 
 
 % --- Executes during object creation, after setting all properties.
-function axes1_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to axes1 (see GCBO)
+function listbox1_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to listbox1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
-% Hint: place code in OpeningFcn to populate axes1
+% Hint: listbox controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes during object creation, after setting all properties.
+function axes2_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to axes2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: place code in OpeningFcn to populate axes2
 x=0;
 y=0;
 z=0;
 grid on;
-plot3(Variables(4),Variables(5),Variables(6),'LineWidth',2);grid on;
-
-
-

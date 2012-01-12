@@ -1,5 +1,5 @@
 Model {
-  Name			  "dinamica_quad"
+  Name			  "lazo_cerrado"
   Version		  7.6
   MdlSubVersion		  0
   GraphicalInterface {
@@ -68,7 +68,7 @@ Model {
       Name		      "z"
     }
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.70"
+    ComputedModelVersion    "1.72"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -88,9 +88,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "pater"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Sat Dec 24 22:32:06 2011"
+  LastModifiedDate	  "Sat Dec 24 22:33:49 2011"
   RTWModifiedTimeStamp	  246666676
-  ModelVersionFormat	  "1.%<AutoIncrement:70>"
+  ModelVersionFormat	  "1.%<AutoIncrement:72>"
   ConfigurationManager	  "None"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -842,7 +842,7 @@ Model {
     }
   }
   System {
-    Name		    "dinamica_quad"
+    Name		    "lazo_cerrado"
     Location		    [0, 53, 1366, 768]
     Open		    on
     ModelBrowserVisibility  off
@@ -857,7 +857,7 @@ Model {
     ShowPageBoundaries	    off
     ZoomFactor		    "51"
     ReportName		    "simulink-default.rpt"
-    SIDHighWatermark	    "409"
+    SIDHighWatermark	    "410"
     Block {
       BlockType		      Inport
       Name		      "T1"
@@ -920,6 +920,13 @@ Model {
       Position		      [90, 703, 120, 717]
       Port		      "8"
       IconDisplay	      "Port number"
+    }
+    Block {
+      BlockType		      Constant
+      Name		      "Constant"
+      SID		      "410"
+      Position		      [985, 820, 1270, 1000]
+      Value		      "K"
     }
     Block {
       BlockType		      SubSystem
@@ -5501,9 +5508,6 @@ Model {
 	}
 	Annotation {
 	  Position		  [287, 900]
-	}
-	Annotation {
-	  Position		  [745, 344]
 	}
       }
     }
