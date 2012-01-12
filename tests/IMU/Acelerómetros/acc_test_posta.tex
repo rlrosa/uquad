@@ -1,5 +1,5 @@
 \documentclass[spanish,12pt,a4paper,titlepage]{report}
-\usepackage[utf8]{inputenc}
+\usepackage[latin1]{inputenc}
 \usepackage{graphicx}
 \usepackage{subfig}
 \usepackage{float}
@@ -32,6 +32,7 @@
 \setlength{\textwidth}{15cm}
 \setlength{\columnsep}{0cm}
 
+
 \begin{document}
 
 \chapter{Caracterización del acelerómetro}
@@ -44,12 +45,12 @@ Se realiza una serie de pruebas con el fin de caracterizar el acelerómetro de tr
 \begin{itemize}
 \item IMU
 \item Beagle
-\item Paralelepípedo
-\item regla
-\item compás
-\item dispositivo que gire a velocidad constante
-\item mesa nivelable
-\item nivel.
+\item Prisma
+\item Regla
+\item Compás
+\item Dispositivo que gire a velocidad constante
+\item Mesa nivelable
+\item Nivel.
 \end{itemize}
 \section{Procedimiento}
 
@@ -81,7 +82,7 @@ $$a^p=T^p_a a^a   T^p_a=\left( \begin{matrix}
 
 Donde $\alpha_{ij}$ es la rotación del  i-ésimo eje de sensibilidad del acelerómetro sobre el j-esimo eje del sistema de la plataforma.
 
-Definiendo el sistema de la plataforma de forma que el eje de coordenadas x^p coincida con el eje x^a y definiendo el eje y^p de forma que el eje y^p se encuentra en el plano definido por x^a e y^a, la matriz se puede reducir a la siguiente forma como demuestra D. H. Titterton and J. L. Weston, "Strapdown Inertial
+Definiendo el sistema de la plataforma de forma que el eje de coordenadas $x^p$ coincida con el eje $x^a$ y definiendo el eje $y^p$ de forma que el eje $y^p$ se encuentra en el plano definido por $x^a$ e $y^a$, la matriz se puede reducir a la siguiente forma como demuestra D. H. Titterton and J. L. Weston, "Strapdown Inertial
 Navigation Technology," 2 ed: Institution of Engineering and
 Technology 2004.
 
@@ -120,9 +121,7 @@ Dichas medidas serán:
 Para realizar una buena calibración es muy importante contar con una figura geométrica en forma de paralelepípedo de forma de poder solidarizar la IMU a dicho objeto. De esta forma nos aseguramos que no se realizan errores a la hora de orientar un eje en una dirección particular. Del mismo modo, es ideal disponer de una superficie perpendicular a la vertical. Con dicho motivo se precisará una mesa nivelable y un nivel. 
 
 \subsubsection*{Medidas estáticas}
-En reposo el acelerómetro medirá una fuerza igual a g en la dirección vertical y hacia "arriba". En cada uno de los ejes de sensibilidad del acelerómetro se medirá la proyección ortogonal de dicho vector gravedad sobre cada eje. De esta forma, con distintas orientaciones se obtendrá una descomposición distinta. 
-
-Se repetirán las medidas en 9 direcciones distintas. 
+En reposo el acelerómetro medirá una fuerza igual a g en la dirección vertical y en el sentido radial saliente de la Tierra. En cada uno de los ejes de sensibilidad del acelerómetro se medirá la proyección ortogonal de dicho vector gravedad sobre cada eje. De esta forma, con distintas orientaciones se obtendrá una descomposición distinta. Se repetirán las medidas en 9 direcciones distintas. 
 
 \subsubsection*{Medidas dinámicas}
 Utilizando un dispositivo que gire a velocidad constante y conocida se puede determinar la aceleración centrípeta de un cuerpo solidario a dicho dispositivo a una cierta distancia del eje de giro. 
@@ -150,7 +149,7 @@ A partir de dichas medidas se determina la potencia del ruido.
 
 En la misma configuración que el experimento anterior, se realiza una medida durante 12hs consecutivas. 
 
-Se analizarán dichas medidas a fin de caracterizar el drift de máximo.
+Se analizarán dichas medidas a fin de caracterizar el drift máximo.
 
 
 
