@@ -45,11 +45,11 @@ El objetivo de este Test es el de caracterizar el funcionamiento de los motores.
 \item Relación entre comando I2C y la fuerza
 \end{itemize}
 
-La primer relación sirve para desprendernos de uno de los parámetros a la hora de realizar el control. Del mismo modo sirve para verificar que la respuesta de los motores verifica las relaciones estudiadas en diversas bibliografías.
+La primer relación sirve para desprendernos de uno de los parámetros a la hora de realizar el control. Del mismo modo sirve para verificar que la respuesta de los motores verifica las relaciones estudiadas en diversas bibliografías.\\
 
-La segunda es fundamental de conocer ya que lo que el procesador controlará es un comando I2C y no directamente la velocidad del motor. 
+La segunda es fundamental de conocer ya que lo que el procesador controlará es un comando I2C y no directamente la velocidad del motor. \\
 
-La tercer relación resulta redundante conociendo las anteriores. Sin embargo parece interesante realizar dicho relevamiento a fin de verificar que no surja ninguna inconsistencia. 
+La tercer relación resulta redundante conociendo las anteriores. Sin embargo parece interesante realizar dicho relevamiento a fin de verificar que no surja ninguna inconsistencia. \\
 \section{Materiales}
 \begin{itemize}
 \item Motores
@@ -64,21 +64,32 @@ La tercer relación resulta redundante conociendo las anteriores. Sin embargo pa
 
 \subsection{Consideraciones previas}
 \subsubsection*{Funcionamiento del dispositivo IR}
-Es necesario entender el funcionamiento del detector IR para poder realizar un experimento adecuado. Dicho dispositivo es sensible a las radiaciones infrarrojas. El mismo debe recibir la información modulada en una frecuencia de 56kHz para luego decodificarla. Si se lo expone a una luz infrarroja constante la salida del dispositivo es un "1" lógico. Del mismo modo, si se quita dicha fuente de luz la salida continua siendo un "1". 
+Es necesario entender el funcionamiento del detector IR para poder realizar un experimento adecuado. Dicho dispositivo es sensible a las radiaciones infrarrojas. El mismo debe recibir la información modulada en una frecuencia de 56kHz para luego decodificarla. Si se lo expone a una luz infrarroja constante la salida del dispositivo es un "1" lógico. Del mismo modo, si se quita dicha fuente de luz la salida continua siendo un "1". \\
 
 En la hoja de datos del dispositivo se explica que mientras se recibe una onda cuadrada de frecuencia 56kHz la salida del mismo es un "0". Por lo tanto para poder distinguir cuando llega la radiación emitida por la LED de cuando no llega se debe hacer que esta última conmute entre ON y OFF con una frecuencia de 56kHz.
 
 \subsubsection*{Diseño del circuito de medida de velocidad angular}
 
-La idea del dispositivo de medida es sencilla. Se trata de hacer "pasar" la radiación infrarroja emitida por una LED a través de la hélice en funcionamiento de uno de los motores. Esta radiación es recogida del otro lado por el receptor IR.
+La idea del dispositivo de medida es sencilla. Se trata de hacer "pasar" la radiación infrarroja emitida por una LED a través de la hélice en funcionamiento de uno de los motores. Esta radiación es recogida del otro lado por el receptor IR.\\
 
-De este modo tendremos a la salida del detector, pulsos de frecuencia correspondientes a la velocidad con la que la hélice obstruye el camino entre el sensor y la LED. La velocidad angular será entonces la mitad de dicha frecuencia. 
+De este modo tendremos a la salida del detector, pulsos de frecuencia correspondientes a la velocidad con la que la hélice obstruye el camino entre el sensor y la LED. La velocidad angular será entonces la mitad de dicha frecuencia.\\ 
 
-El dispositivo se trata de un cuerpo en forma de \textit{U}, donde de un lado se tiene la LED infrarroja y del otro el detector.
+\begin{wrapfigure}{l}{0.55\textwidth}
+  \vspace{-20pt}
+  \begin{center}
+    \includegraphics[width=0.42\textwidth]{./Pics/u.jpg}
+  \end{center}
+  \vspace{-20pt}
+  \caption{Dispositivo en forma de U}
+  \label{fig:u}
+  \vspace{-10pt}
+\end{wrapfigure}
 
-Como explicamos anteriormente la LED debe ser conmutada con una frecuencia de 56kHz por lo tanto se la alimentará con un generador de señales funcionando como generador de onda cuadrada a dicha frecuencia. Para lograr un correcto funcionamiento de la misma se requiere una corriente superior a los $100mA$. La amplitud de la onda cuadrada se regulará a $5V$ y se trabajará con una resistencia de $20\Omega$ en serie. Midiendo la tensión en la resistencia se puede comprobar que dichos valores son adecuados para el propósito.
+El dispositivo se trata de un cuerpo en forma de "U", donde de un lado se tiene la LED infrarroja y del otro el detector, tal como se puede ver en la figura \ref{fig:u}.\\
 
-La salida del receptor IR se conecta directamente a un frecuencímetro. 
+Como explicamos anteriormente la LED debe ser conmutada con una frecuencia de 56kHz por lo tanto se la alimentará con un generador de señales funcionando como generador de onda cuadrada a dicha frecuencia. Para lograr un correcto funcionamiento de la misma se requiere una corriente superior a los $100mA$. La amplitud de la onda cuadrada se regulará a $5V$ y se trabajará con una resistencia de $20\Omega$ en serie. Midiendo la tensión en la resistencia se puede comprobar que dichos valores son adecuados para el propósito.\\
+
+La salida del receptor IR se conecta directamente a un frecuencímetro.\\
 
 \subsection{Tests a realizar}
 
