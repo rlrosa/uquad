@@ -66,23 +66,28 @@ Basados en la extensa literatura existente (Calibration of a MEMS inertial measu
 \end{itemize} 
 
 \subsubsection*{Relación no lineal}
-En la hoja de datos del acelerómetro MMA7260Q se declara que en cualquiera de los tres ejes los errores debido a una respuesta no lineal es en el peor caso $\pm$ 1.0\% del valor de fondo de escala. 
+En la hoja de datos del acelerómetro MMA7260Q se declara que en cualquiera de los tres ejes los errores debido a una respuesta no lineal son en el peor caso $\pm$ 1.0\% del valor de fondo de escala. 
 
 Por lo tanto se decide considerar para el acelerómetro una respuesta lineal.
 
 \subsubsection*{No ortogonalidad de los ejes}
-Debido a defectos de construcción los ejes de sensibilidad del dispositivo pueden no ser ortogonales. Evidentemente si no se considera este aspecto se tendrá un error, que puede ser importante, en las medidas de aceleración. A modo de ejemplo, el acelerómetro en reposo colocado horizontalmente debería medir una aceleración igual a g en el eje vertical y cero en los ejes perpendiculares al primero. Debido a la no ortogonalidad del dispositvo se pueden tener entonces medidas que no coincidan con la realidad. Se modela esta no idealidad considerando la siguiente relación entre la aceleración medida en cada eje de sensibilidad del acelerómetro y la aceleración medida en el sistema solidario a la plataforma:
+Debido a defectos de construcción los ejes de sensibilidad del dispositivo pueden no ser ortogonales. Evidentemente si no se considera este aspecto se tendrá un error, que puede ser importante, en las medidas de aceleración. A modo de ejemplo, el acelerómetro en reposo colocado horizontalmente debería medir una aceleración igual a g en el eje vertical y cero en los ejes perpendiculares al primero. Debido a la no ortogonalidad del dispositivo se pueden tener entonces medidas que no coincidan con la realidad. Se modela esta no idealidad considerando la siguiente relación entre la aceleración medida en cada eje de sensibilidad del acelerómetro y la aceleración medida en el sistema solidario a la plataforma:
 
-$$a^p=T^p_a a^a   T^p_a=\left( \begin{matrix}
+$$\mathbf{a}^p=T^p_a \mathbf{a}^a   T^p_a=\left( \begin{matrix}
 1 &-\alpha_{yz} &\alpha_{yz}\\
 -\alpha_{xz} &1& -\alpha_{zx} \\
 -\alpha_{xy} &\alpha_{yx} &1\\
 \end{matrix} 
 \right)$$
 
-Donde $\alpha_{ij}$ es la rotación del  i-ésimo eje de sensibilidad del acelerómetro sobre el j-esimo eje del sistema de la plataforma.
+Donde:
+\begin{itemize}
+\item $\alpha_{ij}$ es la rotación del  i-ésimo eje de sensibilidad del acelerómetro sobre el j-ésimo eje del sistema de la plataforma.
+\item $\mathbf{a}^p$ es el vector de aceleración medido por el acelerómetro.
+\item $\mathbf{a}^a$ es el vector de aceleración medido en el sistema solidario a la plataforma.
+\end{itemize}
 
-Definiendo el sistema de la plataforma de forma que el eje de coordenadas $x^p$ coincida con el eje $x^a$ y definiendo el eje $y^p$ de forma que el eje $y^p$ se encuentra en el plano definido por $x^a$ e $y^a$, la matriz se puede reducir a la siguiente forma como demuestra D. H. Titterton and J. L. Weston, "Strapdown Inertial
+Definiendo el sistema de la plataforma $[x^p,y^p,z^p]$ de forma que el eje de coordenadas $x^p$ coincida con el eje $x^a$ (del sistema del acelerómetro $[x^a,y^a,z^a]$) y definiendo el eje $y^p$ de forma que el eje $y^p$ se encuentra en el plano definido por $x^a$ e $y^a$, la matriz se puede reducir a la siguiente forma como demuestra D. H. Titterton and J. L. Weston, "Strapdown Inertial
 Navigation Technology," 2 ed: Institution of Engineering and
 Technology 2004.
 
@@ -99,13 +104,13 @@ Estos parámetros son constantes ya que su origen es puramente de construcción y 
 
 La salida del acelerómetro es una tensión que luego es convertida a un nivel digital gracias a un conversor AD. Asumiendo un modelo lineal, la relación entre la aceleración y la medida realizada se puede expresar matricialmente de la siguiente forma:
  
-$$\tilde{a}^a K_a a^a + b_a$$ donde $K_a$ es una matriz que representa el factor de escala para convertir del valor digital a una aceleración correspondiente. $b_a$ no es otra cosa que un término independiente para corregir la posición del cero, que no necesariamente corresponde a la mitad de la escala digital. Estos dos parámetros poseen algunas de las fuentes de error que resulta más difícil de corregir. Resulta que dichos parámetros varían con la temperatura, por lo tanto se pueden observar algunas variaciones según la estación del año o el momento del día. A su vez, dichos parámetros poseen un drift aleatorio. 
+$$\tilde{\mathbf{a}}^a K_a \mathbf{a}^a + \mathbf{b}_a$$ donde $K_a$ es una matriz que representa el factor de escala para convertir del valor digital a una aceleración correspondiente. $\mathbf{b}^a$ no es otra cosa que un término independiente para corregir la posición del cero, que no necesariamente corresponde a la mitad de la escala digital. Estos dos parámetros poseen algunas de las fuentes de error que resulta más difícil de corregir. Resulta que dichos parámetros varían con la temperatura, por lo tanto se pueden observar algunas variaciones según la estación del año o el momento del día. A su vez, dichos parámetros poseen un drift aleatorio. 
 
 Podemos pensar estos parámetros como un valor estático más un valor relativamente pequeño que varía según estas descripciones. 
 En una primera instancia intentaremos caracterizar los valores estáticos.   
 
 \subsection*{Ruido Inherente}
-Existe además un ruido inherente del cual no nos preocuparemos en demasía ya que el mismo se modela como un proceso estocástico de distribución normal y media nula. Por lo tanto, en esta etapa de calibración donde se tomaran muchas muestras y se promediaran se puede trabajar sin considerar este ruido.
+Existe además un ruido inherente del cual no nos preocuparemos en demasía ya que el mismo se modela como un proceso estocástico de distribución normal y media nula. Por lo tanto, en esta etapa de calibración donde se tomarán muchas muestras y se promediarán se puede trabajar sin considerar este ruido.
 
 \subsection{Determinación de parámetros estáticos}
 
@@ -117,20 +122,20 @@ Dichas medidas serán:
 \item Dinámicas (Movimientos circulares a distintos radios)
 \end{itemize}
 
-\subsubsection*{Previos}
-Para realizar una buena calibración es muy importante contar con una figura geométrica en forma de paralelepípedo de forma de poder solidarizar la IMU a dicho objeto. De esta forma nos aseguramos que no se realizan errores a la hora de orientar un eje en una dirección particular. Del mismo modo, es ideal disponer de una superficie perpendicular a la vertical. Con dicho motivo se precisará una mesa nivelable y un nivel. 
+\subsubsection*{Preparación}
+Para realizar una buena calibración es muy importante contar con una figura geométrica en forma de paralelepípedo de forma de poder solidarizar la IMU a dicho objeto. De esta forma nos aseguramos que no se introducen errores a la hora de orientar un eje en una dirección particular. Del mismo modo, es ideal disponer de una superficie perpendicular a la vertical. Con dicho motivo se precisará una mesa nivelable y un nivel. 
 
 \subsubsection*{Medidas estáticas}
-En reposo el acelerómetro medirá una fuerza igual a g en la dirección vertical y en el sentido radial saliente de la Tierra. En cada uno de los ejes de sensibilidad del acelerómetro se medirá la proyección ortogonal de dicho vector gravedad sobre cada eje. De esta forma, con distintas orientaciones se obtendrá una descomposición distinta. Se repetirán las medidas en 9 direcciones distintas. 
+En reposo el acelerómetro medirá una fuerza igual a \textit{g} en la dirección vertical y en el sentido radial saliente de la Tierra. En cada uno de los ejes de sensibilidad del acelerómetro se medirá la proyección ortogonal de dicho vector gravedad sobre cada eje. De esta forma, con distintas orientaciones se obtendrá una descomposición distinta. Se repetirán las medidas en 9 direcciones distintas. 
 
 \subsubsection*{Medidas dinámicas}
 Utilizando un dispositivo que gire a velocidad constante y conocida se puede determinar la aceleración centrípeta de un cuerpo solidario a dicho dispositivo a una cierta distancia del eje de giro. 
 
-A priori, la forma más sencilla de realizar dichas medidas es utilizando un tocadisco. Sin embargo este aparato tiene la desventaja que las velocidades angulares son relativamente pequeñas y por ende no se logran aceleraciones centrípetas mayores que g. Por lo tanto a la hora de realizar la calibración se tendrán muchos puntos en el rango $\left[-g:g\right]$ y ninguno por fuera de este intervalo. El rango del acelerómetro puede ser regulado entre $\pm2g$,$\pm4g$ y $\pm6g$. Por lo tanto sería conveniente lograr aceleraciones mayores.
+A priori, la forma más sencilla de realizar dichas medidas es utilizando un tocadisco. Sin embargo este aparato tiene la desventaja que las velocidades angulares son relativamente pequeñas y por ende no se logran aceleraciones centrípetas mayores que \textit{g}. Por lo tanto a la hora de realizar la calibración se tendrán muchos puntos en el rango $\left[-g:g\right]$ y ninguno por fuera de este intervalo. El rango del acelerómetro puede ser regulado entre $\pm2g$,$\pm4g$ y $\pm6g$. Es de interés obtener aceleraciones mayores a \textit{g}, y por lo tanto queda descartada la opción del tocadisco.
 
-Una posibilidad alternativa es utilizar el dispositivo construido por el grupo PI. En el caso de que conocieran la velocidad con la que gira el dispositivo tenemos el problema resuelto.  
+Una alternativa sería utilizar directamente un motor, cuyas características se conozcan en forma precisa.
 
-Una segunda alternativa es directamente utilizar un motor del cual se conozcan las características en forma precisa.
+Una posible alternativa es utilizar el dispositivo construido por el grupo PI. En el caso de que conocieran la velocidad con la que gira el dispositivo tendríamos el problema resuelto.  
 
 \subsection{Caracterización de las no idealidades variables}
 
