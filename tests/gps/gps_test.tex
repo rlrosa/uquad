@@ -47,10 +47,20 @@ Si el error absoluto es muy grande, igual puede ser posible obtener información
 %
 %Realizar este experimento en 3 lugares diferentes, 3 veces en cada lugar.
 %
-\newpage
-\section{Error relativo en latitud y longitud}
 
-En esta prueba se trata de obtener el error del GPS en el plano paralelo a la tierra.
+\section{Materiales}
+
+\begin{itemize}
+\item GPS.
+\item Laptop.
+\item Escalera.
+\item Cinta métrica.
+\end{itemize}
+
+\newpage
+\section{Procedimiento}
+
+En esta prueba se trata de obtener el error del GPS en el plano paralelo a la tierra, es decir, el error en latitud y longitud.
 
 El experimento que se diseñó consiste en marcar un rectángulo sobre el suelo (pasto), utilizando 6 puntos, con la siguiente disposición:
 
@@ -216,9 +226,11 @@ De cualquier forma se procedió con el experimento, tomando datos con el GPS en 
 
 Como era de esperarse, la precisión del GPS no resultó adecuada para este experimento. En las figuras \ref{fig:polygon_1.png} y \ref{fig:polygon_2.png} se observa lo que debería ser un rectángulo.
 
+Intentando mejorar los resultados, se tomaron promedios en una ventana de 15 muestras, usando un filto \textit{moving average}. Esto también se observa en las figuras \ref{fig:polygon_1.png} y \ref{fig:polygon_2.png}.
+
 \begin{figure}[h!]
   \begin{center}
-  \includegraphics[width=1\textwidth]{./img/polygon_1.png}
+  \includegraphics[width=1.1\textwidth]{./img/polygon_1.png}
   \end{center}
   \caption{Primeros 3 intentos de estimar el polígono.}
   \label{fig:polygon_1.png}
@@ -227,12 +239,13 @@ Como era de esperarse, la precisión del GPS no resultó adecuada para este expe
 \newpage
 \begin{figure}[h!]
   \begin{center}
-  \includegraphics[width=1\textwidth]{./img/polygon_2.png}
+  \includegraphics[width=1.1\textwidth]{./img/polygon_2.png}
   \end{center}
   \caption{Segundos 3 intentos de estimar el polígono.}
   \label{fig:polygon_2.png}
 \end{figure}
 
+\newpage
 En la tabla \ref{tab:polygon-sat} se muestran la cantidad de satélites utilizados cuando se obtuvieron los datos de las figuras \ref{fig:polygon_1.png} y \ref{fig:polygon_2.png}.
 
 \begin{table}[H]
@@ -257,7 +270,6 @@ En la tabla \ref{tab:polygon-sat} se muestran la cantidad de satélites utilizad
 \end{center}
 \end{table}
 
-\newpage
 \subsubsection*{Errores}
 \label{sec:errores}
 
@@ -296,6 +308,85 @@ ans =
           1.37520004160367          2.60741605799409
 \end{verbatim}
 
+\newpage
+Los datos crudos, antes de ser procesados, son los siguientes:
+
+\begin{verbatim}
+easting =
+  Columns 1 through 2
+          577829.024663918          577831.395779166
+          577829.029379162          577831.303457993
+          577830.976611558          577831.303457993
+          577827.660593625          577830.841852163
+          577827.772718459          577830.931344107
+          577827.928126702           577831.11598643
+  Columns 3 through 4
+          577830.928514889          577830.394392373
+          577830.837136806          577830.209750046
+          577831.114100281          577830.209750046
+           577831.11598643          577829.750973439
+          577831.301571839          577829.570103359
+          577831.306287223           577829.11321287
+  Columns 5 through 6
+            577828.8315342          577831.423128412
+          577829.101896266          577831.327977979
+          577830.202205538          577831.327977979
+          577830.387790914          577830.504631801
+          577829.745315091          577829.952590828
+          577830.203148602          577830.033595277
+
+northing =
+  Columns 1 through 2
+          6138921.43134999          6138920.85665408
+           6138921.9858422          6138920.74653271
+          6138925.29647715          6138920.74653271
+          6138922.21929478          6138920.19592587
+          6138924.65828346          6138919.97335191
+          6138921.44067456          6138920.19359465
+  Columns 3 through 4
+          6138919.64065658          6138921.30879564
+          6138919.64143365          6138921.08855289
+          6138919.97179776          6138921.08855289
+          6138920.19359465          6138920.87064132
+          6138920.52473583          6138921.09399232
+          6138921.07922804           6138921.0978776
+  Columns 5 through 6
+          6138920.21302122          6138924.07270891
+          6138919.76709629          6138923.62989222
+          6138920.20136535          6138923.62989222
+          6138920.53250654          6138923.52598743
+          6138920.20525066          6138923.08705604
+          6138920.31226379          6138921.86639612
+\end{verbatim}
+
+\newpage
+\begin{verbatim}
+elevation =
+  Columns 1 through 2
+                        54                        54
+                      50.4                        54
+                      47.4                      53.9
+                      44.5                      54.3
+                      44.5                      54.4
+                      47.9                      54.4
+  Columns 3 through 4
+                      54.5                        54
+                      54.5                      54.2
+                      54.5                      54.3
+                      54.4                      54.5
+                      54.2                      54.5
+                      54.3                      53.9
+  Columns 5 through 6
+                      55.6                        56
+                      56.4                      56.3
+                      57.7                      56.3
+                      57.8                      56.5
+                      57.6                      56.6
+                      57.5                      56.7
+\end{verbatim}
+
+ Cada columna corresponde a una serie. La columna 1 de easting va con la columna 1 de northing y la columna 1 de elevation, etc.
+
 \subsection{Conclusión - Latitud-Longitud}
 \label{sec:error-lat-lon-conclusion}
 
@@ -317,6 +408,7 @@ Este experimento se realizó libre de ruido. El cuadricóptero agregará vibraci
 %\end{enumerate} 
 %
 
+\newpage
 \section{Error en altura}
 \label{sec:error-en-altura}
 
