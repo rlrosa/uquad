@@ -2,8 +2,8 @@
 % clear all
 % clc
 
-prueba  = '4';
-intento = '2';
+prueba  = '8';
+intento = '5';
 F = fopen(['./logs/',prueba,intento,'.vcd']);
 D = textscan(F,'%s','delimiter','\t');
 fclose(F);
