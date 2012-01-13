@@ -88,9 +88,9 @@ Los pasos a seguir son los siguientes:
 \item Tomar un punto como origen, y comparar la figura que resulta de los datos provenientes del GPS con las medidas tomadas con el metro.
 \end{enumerate}
 
-Este experimento permitirá estimar, en un caso muy hipotético, la performance que se puede esperar del GPS. El caso real, montado en el quad, estará afectado por vibraciones e interferencia causada por la presencia de los motores y la electrónica.
+Este experimento permitirá estimar, en un caso muy hipotético, la performance que se puede esperar del GPS. El caso real, montado en el cuadricóptero, estará afectado por vibraciones e interferencia causada por la presencia de los motores y la electrónica.
 
-De cualquiera forma, este experimento sirve para establecer que \textbf{no} se puede esperar del GPS.
+De cualquiera forma, este experimento sirve para establecer qué \textbf{no} se puede esperar del GPS.
 
 En la figura \ref{fig:gps_setup.png} se observa el experimento. Se utilizó una escalera para tener el GPS a una altura fija, separado del piso. Al nivel del piso los rebotes degradan seriamente la performance del GPS. Las 4 patas de la escalera se utilizaron para alinear el punto que se deseaba medir.
 
@@ -109,26 +109,37 @@ En la figura \ref{fig:gps_setup.png} se observa el experimento. Se utilizó una 
 \subsection{Posibles fuentes de rebotes/interferencia}
 \label{sec:posibles-fuentes-de-rebotes-interferencia}
 
-Se buscó un lugar abierto, para evitar errores que puedan surgir por rebotes en paredes, edificios, etc. De cualquier forma, no se hizo el experimento en un lugar completamente abierto, ya que no se contaba con uno.
+Se buscó un lugar abierto, para evitar errores que puedan surgir por rebotes en paredes, edificios, etc. De cualquier forma, no pudo realizar el experimento en un lugar completamente abierto.
 
 En las figuras \ref{fig:gps_interf.jpg} y \ref{fig:gps_interf1.jpg} se muestran posibles fuentes de rebotes/interferencia:
 
-\begin{figure}[h!]
-  \begin{center}
-  \includegraphics[width=.9\textwidth]{./img/gps_interf.jpg}
-  \end{center}
-  \caption{Rebotes/Interferencia: Edificio con antena.}
-  \label{fig:gps_interf.jpg}
+\begin{figure} [h!]
+  \centering
+  \subfloat[Edificio con antena.]{\label{fig:gps_interf.jpg}
+  		\includegraphics[width=0.45\textwidth]{./img/gps_interf.jpg}}
+  \subfloat[Edificio.]{\label{fig:gps_interf1.jpg}
+  		\includegraphics[width=0.45\textwidth]{./img/gps_interf1.jpg}}
+  \caption{Rebotes/Interferencia}
+  \label{fig:rebotes}
 \end{figure}
 
-\newpage
-\begin{figure}[h!]
-  \begin{center}
-  \includegraphics[width=.9\textwidth]{./img/gps_interf1.jpg}
-  \end{center}
-  \caption{Rebotes/Interferencia: Edificio.}
-  \label{fig:gps_interf1.jpg}
-\end{figure}
+
+%\begin{figure}[h!]
+%  \begin{center}
+%  \includegraphics[width=.9\textwidth]{./img/gps_interf.jpg}
+%  \end{center}
+%  \caption{Rebotes/Interferencia: Edificio con antena.}
+%  \label{fig:gps_interf.jpg}
+%\end{figure}
+%
+%\newpage
+%\begin{figure}[h!]
+%  \begin{center}
+%  \includegraphics[width=.9\textwidth]{./img/gps_interf1.jpg}
+%  \end{center}
+%  \caption{Rebotes/Interferencia: Edificio.}
+%  \label{fig:gps_interf1.jpg}
+%\end{figure}
 
 \newpage
 \subsection{Estimación de la posición de un punto fijo}
@@ -288,11 +299,11 @@ ans =
 \subsection{Conclusión - Latitud-Longitud}
 \label{sec:error-lat-lon-conclusion}
 
-El GPS funciona como era de esperarse, con un error menor a 3m. Para estimar la posición del quad con más precisión, va a ser necesario recurrir a sensores adicionales, o a algún tipo de manipulación de los datos del GPS.
+El GPS funciona como era de esperarse, con un error menor a 3m. Para estimar la posición del cuadricóptero con más precisión, va a ser necesario recurrir a sensores adicionales, o a algún tipo de manipulación de los datos del GPS.
 
 No se calculó el error mediante mínimos cuadrados. Un análisis tan preciso no tiene sentido, ya que la magnitud del error es muy grande.
 
-Este experimento se realizó libre de ruido. El quad agregará vibraciones, interferencia electromagnética, y será mucho menos estable que el GPS aferrado a una escalera. El error en las medidas de este experimento fue, en general, significativamente menor a 3m, pero una vez montado en el quad, es probable que el error en la información proveniente del GPS sea cercana a los 3m, por culpa de los factores mencionados.
+Este experimento se realizó libre de ruido. El cuadricóptero agregará vibraciones, interferencia electromagnética, y será mucho menos estable que el GPS aferrado a una escalera. El error en las medidas de este experimento fue, en general, significativamente menor a 3m, pero una vez montado en el cuadricóptero, es probable que el error en la información proveniente del GPS sea cercana a los 3m, por culpa de los factores mencionados.
 
 %
 %\begin{enumerate} 
@@ -369,11 +380,11 @@ Los resultados del experimento apoyado sobre el marco y asomado con el atril se 
 
 Los resultados concuerdan con lo esperado, la inestabilidad en la lectura del GPS disminuye al reducir las fuentes de rebotes.
 
-Las lecturas del GPS no tiene suficiente precisión como para ser utilizadas de manera exclusiva para determinar la altura del quad. En los mejores casos hay un error de $0.5-1$m, y en los peores casos hay errores de hasta 15m. Con una buena geometría y a varios metros del piso, el error es tolerable, pero no sirve para programar el aterrizaje/despegue, ni el vuelo a baja altura.
+Las lecturas del GPS no tiene suficiente precisión como para ser utilizadas de manera exclusiva para determinar la altura del cuadricóptero. En los mejores casos hay un error de $0.5-1$m, y en los peores casos hay errores de hasta 15m. Con una buena geometría y a varios metros del piso, el error es tolerable, pero no sirve para programar el aterrizaje/despegue, ni el vuelo a baja altura.
 
 Aún no se ha determinado si la mayor causa del deterioro de la performance del GPS fueron los rebotes y/o la mala geometría. La mala geometría resulta de tener solamente la mitad del cielo visible, ya que la pared de la casa bloquea el resto. Al asomar el GPS hacia afuera, se lo aleja de los rebotes, y también se incrementa la cantidad de cielo visible, por lo que es difícil separar cual de los cambios es el responsable de los cambios en los resultados.
 
-Se concluye que es necesario utilizar otra fuente de información, como por ejemplo un sensor de presión, para estimar la altura del quad.
+Se concluye que es necesario utilizar otra fuente de información, como por ejemplo un sensor de presión, para estimar la altura del cuadricóptero.
 
 %\newpage
 
@@ -455,11 +466,11 @@ Se concluye que es necesario utilizar otra fuente de información, como por ejem
 \section{Conclusión}
 \label{sec:conclusion}
 
-La performance del GPS cumple con lo especificado, en un contexto adecuado (buena geometría y buena visibilidad) da errores menores a 3m. Esto implica que el GPS no se puede utilizar para determinar la posición del quad con una precisión razonable. Es de interés tener suficiente precisión como para poder maniobrar el quad, y por lo tanto la posición se tiene que poder estimar con un error menor a 10cm.
+La performance del GPS cumple con lo especificado, en un contexto adecuado (buena geometría y buena visibilidad) da errores menores a 3m. Esto implica que el GPS no se puede utilizar para determinar la posición del cuadricóptero con una precisión razonable. Es de interés tener suficiente precisión como para poder maniobrar el cuadricóptero, y por lo tanto la posición se tiene que poder estimar con un error menor a 10cm.
 
 La posición de la antena no parece afectar mucho los resultados, esto puede deberse a la geometría de la misma, es probable que tenga una cierta simetría que hace que la orientación del GPS no afecte la lecturas.
 
-El GPS se utilizará como medio de corrección del drift que resulta de utilizar sensores que miden diferencias (acelerómetros, gyróscopos, etc), y estos otros sensores se usarán para obtener la precisión necesaria para maniobrar el quad.
+El GPS se utilizará como medio de corrección del drift que resulta de utilizar sensores que miden diferencias (acelerómetros, gyróscopos, etc), y estos otros sensores se usarán para obtener la precisión necesaria para maniobrar el cuadricóptero.
 
 En cuanto a la estimación de la altura, no alcanza con el GPS, acelerómetros y gyróscopos, se requiere de un sonar, un sensor de presión, etc.
 
