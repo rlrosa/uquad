@@ -1,11 +1,12 @@
-function [easting, northing, alt, utm_zone, sat] = ...
+function [easting, northing, alt, utm_zone, sat, ind] = ...
   gpxlogger_time_to_UTM(xs, times)
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-% function [easting, northing, alt, utm_zone, sat] = ...
+% function [easting, northing, alt, utm_zone, sat, ind] = ...
 %  gpxlogger_time_to_UTM(xs, times)
 %
 % Looks for timestamps TIMES, returning the corresponding UTM coordinates.
 % Also returns the # of satelites that were available when data was taken.
+% The index where each value was found is returned in ind
 %
 % Example:
 %   xs = xmltools('1.log');
@@ -23,6 +24,7 @@ lat = zeros(times_len,1);
 lon = zeros(times_len,1);
 alt = zeros(times_len,1);
 sat = zeros(times_len,1);
+ind = zeros(times_len,1);
 
 for trkpt_i = 1:packet_count
   time_str = xs.child(2).child(2).child(2).child(trkpt_i).child(2).value;
@@ -45,6 +47,7 @@ for trkpt_i = 1:packet_count
       lat(i) = str2double(curr.attribs(1).value);
       lon(i) = str2double(curr.attribs(2).value);
       alt(i) = str2double(curr.child(1).value);
+      ind(i) = trkpt_i;
       if (size(curr.child,2) >= 8)
         sat(i) = str2double(curr.child(5).value);
       else

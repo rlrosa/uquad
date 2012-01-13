@@ -49,6 +49,12 @@ x = x - mean(x);
 y = y - mean(y);
 z = z - mean(z);
 
+% calculate smoothed trayectory
+avg_size = 15;
+x_avg = moving_avg(x, avg_size);
+y_avg = moving_avg(y, avg_size);
+z_avg = moving_avg(z, avg_size);
+
 path_color = path_colors(fig_count + 1);
 plot3(x, y, z,sprintf('.-%c',path_color));
 xlabel('Relative Easting (m)')
@@ -63,6 +69,10 @@ plot3(x(1),y(1),z(1), 'ro')
 plot3(x(1),y(1),z(1), 'ro', 'Markersize', 20)
 plot3(x(1),y(1),z(1), 'ro', 'Markersize', 10)
 plot3(x(1),y(1),z(1), 'rx', 'Markersize', 20)
+
+% Plot smoothed trayectory
+plot3(x_avg, y_avg, z_avg,sprintf('x-%c',path_color),'LineWidth',2);
+
 hold off
 legend('Trajectory', 'Initial pos')
 
@@ -76,6 +86,7 @@ subplot 131
 title('Individual relative measurements')
 hold on
 plot(x,sprintf('.-%c',path_color));
+plot(x_avg,sprintf('x-%c',path_color), 'LineWidth', 2);
 xlabel('Time (s)')
 ylabel('Relative Easting (m)')
 hold off
@@ -83,6 +94,7 @@ grid on
 subplot 132
 hold on
 plot(y,sprintf('.-%c',path_color));
+plot(y_avg,sprintf('x-%c',path_color), 'LineWidth', 2);
 xlabel('Time (s)')
 ylabel('Relative Northing (m)')
 hold off
@@ -90,6 +102,7 @@ grid on
 subplot 133
 hold on
 plot(z,sprintf('.-%c',path_color));
+plot(z_avg,sprintf('x-%c',path_color), 'LineWidth', 2);
 xlabel('Time (s)')
 ylabel('Relative Elevation (m)')
 hold off
