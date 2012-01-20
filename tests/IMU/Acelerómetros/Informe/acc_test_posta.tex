@@ -1,0 +1,165 @@
+\documentclass[spanish,12pt,a4paper,titlepage]{report}
+\usepackage[latin1]{inputenc}
+\usepackage{graphicx}
+\usepackage{subfig}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage{multirow}
+\usepackage{caption}
+\usepackage[spanish]{babel}
+\usepackage[dvips]{hyperref}
+\usepackage{amssymb}
+\usepackage{listings}
+\usepackage{epsfig}
+\usepackage{amsmath}
+\usepackage{array}
+\usepackage[table]{xcolor}
+\usepackage{multirow}
+%\usepackage[Sonny]{fncychap}
+\usepackage[Lenny]{fncychap}
+%\usepackage[Glenn]{fncychap}
+%\usepackage[Conny]{fncychap}
+%\usepackage[Rejne]{fncychap}
+%\usepackage[Bjarne]{fncychap}
+%\usepackage[Bjornstrup]{fncychap}
+
+%\usepackage{subfiles}
+%\usepackage{framed}
+
+\setlength{\topmargin}{-1.5cm}
+\setlength{\textheight}{25cm}
+\setlength{\oddsidemargin}{0.3cm} 
+\setlength{\textwidth}{15cm}
+\setlength{\columnsep}{0cm}
+
+
+\begin{document}
+
+\chapter{Caracterización del acelerómetro}
+
+\section{Objetivos}
+
+Se realiza una serie de pruebas con el fin de caracterizar el acelerómetro de tres ejes de la IMU.  
+
+\section{Materiales}
+\begin{itemize}
+\item IMU
+\item Beagle
+\item Prisma
+\item Regla
+\item Compás
+\item Dispositivo que gire a velocidad constante
+\item Mesa nivelable
+\item Nivel.
+\end{itemize}
+\section{Procedimiento}
+
+\subsection{No idealidades}
+Basados en la extensa literatura existente (Calibration of a MEMS inertial measurement unit, Isaac Slog, Peter Handel) sobre calibración de sensores de la tecnología MEMS, se encuentran que existen diversas no idealidades que afectan la lectura de los valores de aceleración registrados por el acelerómetro. Las no idealidades detectadas a considerar son:
+
+\begin{itemize}
+\item Relación entre aceleración y lectura del acelerómetro no lineal.
+\item No ortogonalidad de los ejes
+\item Drift aleatorio
+\item Variación de las medidas con la temperatura
+\item Ruido inherente
+\end{itemize} 
+
+\subsubsection*{Relación no lineal}
+En la hoja de datos del acelerómetro MMA7260Q se declara que en cualquiera de los tres ejes los errores debido a una respuesta no lineal son en el peor caso $\pm$ 1.0\% del valor de fondo de escala. 
+
+Por lo tanto se decide considerar para el acelerómetro una respuesta lineal.
+
+\subsubsection*{No ortogonalidad de los ejes}
+Debido a defectos de construcción los ejes de sensibilidad del dispositivo pueden no ser ortogonales. Evidentemente si no se considera este aspecto se tendrá un error, que puede ser importante, en las medidas de aceleración. A modo de ejemplo, el acelerómetro en reposo colocado horizontalmente debería medir una aceleración igual a g en el eje vertical y cero en los ejes perpendiculares al primero. Debido a la no ortogonalidad del dispositivo se pueden tener entonces medidas que no coincidan con la realidad. Se modela esta no idealidad considerando la siguiente relación entre la aceleración medida en cada eje de sensibilidad del acelerómetro y la aceleración medida en el sistema solidario a la plataforma:
+
+\begin{huge}
+AGREGAR DIBUJO DE LA ESFERA CON LAS ROTACIONES RICO RICO
+\end{huge}
+
+$$\mathbf{a}^p=T^p_a \mathbf{a}^a, \quad  T^p_a=\left( \begin{matrix}
+1 &-\alpha_{yz} &\alpha_{zy}\\
+\alpha_{xz} &1& -\alpha_{zx} \\
+-\alpha_{xy} &\alpha_{yx} &1\\
+\end{matrix} 
+\right)$$
+
+Donde:
+\begin{itemize}
+\item $\alpha_{ij}$ es la rotación del  i-ésimo eje de sensibilidad del acelerómetro sobre el j-ésimo eje del sistema de la plataforma.
+\item $\mathbf{a}^a$ es el vector de aceleración medido por el acelerómetro.
+\item $\mathbf{a}^p$ es el vector de aceleración medido en el sistema solidario a la plataforma.
+\end{itemize}
+
+Definiendo el sistema de la plataforma $[x^p,y^p,z^p]$ de forma que el eje de coordenadas $x^p$ coincida con el eje $x^a$ (del sistema del acelerómetro $[x^a,y^a,z^a]$) y definiendo el eje $y^p$ de forma que el eje $y^p$ se encuentra en el plano definido por $x^a$ e $y^a$, la matriz se puede reducir a la siguiente forma como demuestra D. H. Titterton and J. L. Weston, "Strapdown Inertial
+Navigation Technology," 2 ed: Institution of Engineering and
+Technology 2004.
+
+$$T^p_a=\left( \begin{matrix}
+1 &-\alpha_{yz} &\alpha_{yz}\\
+0 &1& -\alpha_{zx} \\
+0&0 &1\\
+\end{matrix} 
+\right)$$
+
+Estos parámetros son constantes ya que su origen es puramente de construcción y se puede asumir que las orientaciones se mantendrán durante la vida útil del sensor.
+
+\subsection*{Drift aleatorio y variación de las medidas con la temperatura}
+
+La salida del acelerómetro es una tensión que luego es convertida a un nivel digital gracias a un conversor AD. Asumiendo un modelo lineal, la relación entre la aceleración y la medida realizada se puede expresar matricialmente de la siguiente forma:
+ 
+$$\tilde{\mathbf{a}}^a = K_a \mathbf{a}^a + \mathbf{b}_a$$ donde $K_a$ es una matriz que representa el factor de escala para convertir del valor digital a una aceleración correspondiente. $\mathbf{b}_a$ no es otra cosa que un término independiente para corregir la posición del cero, que no necesariamente corresponde a la mitad de la escala digital. Estos dos parámetros poseen algunas de las fuentes de error que resulta más difícil de corregir. Resulta que dichos parámetros varían con la temperatura, por lo tanto se pueden observar algunas variaciones según la estación del año o el momento del día. A su vez, dichos parámetros poseen un drift aleatorio. 
+
+Podemos pensar estos parámetros como un valor estático más un valor relativamente pequeño que varía según estas descripciones. 
+En una primera instancia intentaremos caracterizar los valores estáticos.   
+
+\subsection*{Ruido Inherente}
+Existe además un ruido inherente del cual no nos preocuparemos en demasía ya que el mismo se modela como un proceso estocástico de distribución normal y media nula. Por lo tanto, en esta etapa de calibración donde se tomarán muchas muestras y se promediarán se puede trabajar sin considerar este ruido.
+
+\subsection{Determinación de parámetros estáticos}
+
+Como se desprende de la sección anterior, para poder calibrar el acelerómetro se deben determinar nueve parámetros. Por dicho motivo, se precisan realizar al menos 9 medidas diferentes. Para mejorar los resultados se trabajará con 18 medidas y se procederá a determinar los parámetros que minimizan el error cuadrático medio entre los valores efectivamente medidos y los valores teóricos. 
+
+Dichas medidas serán:
+\begin{itemize}
+\item Estáticas (Diferentes orientaciones)
+\item Dinámicas (Movimientos circulares a distintos radios)
+\end{itemize}
+
+\subsubsection*{Preparación}
+Para realizar una buena calibración es muy importante contar con una figura geométrica en forma de paralelepípedo de forma de poder solidarizar la IMU a dicho objeto. De esta forma nos aseguramos que no se introducen errores a la hora de orientar un eje en una dirección particular. Del mismo modo, es ideal disponer de una superficie perpendicular a la vertical. Con dicho motivo se precisará una mesa nivelable y un nivel. 
+
+\subsubsection*{Medidas estáticas}
+En reposo el acelerómetro medirá una fuerza igual a \textit{g} en la dirección vertical y en el sentido radial saliente de la Tierra. En cada uno de los ejes de sensibilidad del acelerómetro se medirá la proyección ortogonal de dicho vector gravedad sobre cada eje. De esta forma, con distintas orientaciones se obtendrá una descomposición distinta. Se repetirán las medidas en 9 direcciones distintas. 
+
+\subsubsection*{Medidas dinámicas}
+Utilizando un dispositivo que gire a velocidad constante y conocida se puede determinar la aceleración centrípeta de un cuerpo solidario a dicho dispositivo a una cierta distancia del eje de giro. 
+
+A priori, la forma más sencilla de realizar dichas medidas es utilizando un tocadisco. Sin embargo este aparato tiene la desventaja que las velocidades angulares son relativamente pequeñas y por ende no se logran aceleraciones centrípetas mayores que \textit{g}. Por lo tanto a la hora de realizar la calibración se tendrán muchos puntos en el rango $\left[-g:g\right]$ y ninguno por fuera de este intervalo. El rango del acelerómetro puede ser regulado entre $\pm2g$,$\pm4g$ y $\pm6g$. Es de interés obtener aceleraciones mayores a \textit{g}, y por lo tanto queda descartada la opción del tocadisco.
+
+Una alternativa sería utilizar directamente un motor, cuyas características se conozcan en forma precisa.
+
+Una posible alternativa es utilizar el dispositivo construido por el grupo PI. En el caso de que conocieran la velocidad con la que gira el dispositivo tendríamos el problema resuelto.  
+
+\subsection{Caracterización de las no idealidades variables}
+
+Luego de dicha calibración resta a determinar dos parámetros de los acelerómetros. 
+\begin{itemize}
+\item Ruido inherente
+\item Drift aleatorio
+\end{itemize}
+
+\subsubsection*{Ruido inherente}
+El ruido en las medidas del acelerómetro se modela como gaussiano de media nula. Para obtener dichos parámetros se realizan medidas de 1 minuto de duración en tres días distintos con el acelerómetro estático con el eje z alineado con la vertical. 
+
+A partir de dichas medidas se determina la potencia del ruido.
+
+\subsubsection*{Drift aleatorio}
+
+En la misma configuración que el experimento anterior, se realiza una medida durante 12hs consecutivas. 
+
+Se analizarán dichas medidas a fin de caracterizar el drift máximo.
+
+
+
+\end{document}
