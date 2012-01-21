@@ -24,5 +24,5 @@ for i=1:length(files)
   log_name = files(i).name;
   fprintf('Loading %s...\n',log_name);
   xs(i) = xmltools(sprintf('%s%c%s',path_to_load,slash,log_name));
-  fprintf('%s loaded. %d files remaining...\n',log_name, length(files) - 1);
+  fprintf('%s loaded. %d files remaining...\n',log_name, length(files) - i);
 end
