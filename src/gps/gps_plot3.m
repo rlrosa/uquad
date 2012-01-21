@@ -1,5 +1,5 @@
 function gps_plot3(easting, northing, elevation, sat, ...
-  f_handle, fig_count, smooth_win)
+  f_handle, fig_count, smooth_win, rel_plot)
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 % function gps_plot3(easting, northing, elevation, sat, ...
 % f_handle, fig_count, do_smooth)
@@ -16,6 +16,9 @@ function gps_plot3(easting, northing, elevation, sat, ...
 %     plot.
 %   smooth_win (optional): Size of the window to use to calculate an
 %     average (moving average). If set to 0, no average will be performed.
+%   rel_plot: Plot relative data. Absolute data is cut by MatLab when
+%     plotting. To be able to read values in the xaxis/yaxis, relative data
+%     must be plotted.
 %
 % Example:
 %
@@ -30,6 +33,9 @@ x = easting;
 y = northing;
 z = elevation;
 
+if(nargin < 8)
+  rel_plot = 1;
+end
 if(nargin < 7)
   smooth_win = 0;
 end
@@ -52,9 +58,14 @@ else
 end
 
 % use relative plot to improve axis resolution
-x = x - mean(x);
-y = y - mean(y);
-z = z - mean(z);
+if(rel_plot)
+  x = x - mean(x);
+  y = y - mean(y);
+  z = z - mean(z);
+  title_string = 'relativo';
+else
+  title_string = '';
+end
 
 % calculate smoothed trayectory
 if(smooth_win)
@@ -65,15 +76,15 @@ end
 
 path_color = path_colors(fig_count + 1);
 plot3(x, y, z,sprintf('.-%c',path_color));
-xlabel('Relative Easting (m)')
-ylabel('Relative Northing (m)')
-zlabel('Relative Elevation (m)')
+xlabel(sprintf('Easting %s (m)', title_string))
+ylabel(sprintf('Northing %s (m)', title_string))
+zlabel(sprintf('Elevation %s (m)', title_string))
 grid on;
 title('3D Trajectory in UTM');
 
 % Display initial position.
 hold on;
-display_initial_pos = 1;
+display_initial_pos = 0;
 if(display_initial_pos)
   plot3(x(1),y(1),z(1), 'ro','HandleVisibility','off')
   plot3(x(1),y(1),z(1), 'ro', 'Markersize', 20,'HandleVisibility','off')
@@ -90,7 +101,7 @@ hold off
 legend('Trajectory')
 
 % Plot individually, to improve resolution
-plot_individual_data = 1;
+plot_individual_data = 0;
 if plot_individual_data
   if(nargin < 5)
     f_handle = figure;
@@ -98,28 +109,32 @@ if plot_individual_data
     figure(f_handle + 1)
   end
   subplot 131
-  title('Individual relative measurements')
+  title('Coordenadas individuales (%s)', title_string)
   hold on
   plot(x,sprintf('.-%c',path_color));
   if(smooth_win)plot(x_avg,sprintf('x-%c',path_color), 'LineWidth', 2);end
-  xlabel('Time (s)')
-  ylabel('Relative Easting (m)')
+  xlabel('Tiempo (s)')
+  ylabel(sprintf('Easting %s (m)', title_string))
   hold off
   grid on
   subplot 132
   hold on
   plot(y,sprintf('.-%c',path_color));
   if(smooth_win)plot(y_avg,sprintf('x-%c',path_color), 'LineWidth', 2);end
-  xlabel('Time (s)')
-  ylabel('Relative Northing (m)')
+  xlabel('Tiempo (s)')
+  ylabel(sprintf('Northing %s (m)', title_string))
   hold off
   grid on
   subplot 133
   hold on
   plot(z,sprintf('.-%c',path_color));
   if(smooth_win)plot(z_avg,sprintf('x-%c',path_color), 'LineWidth', 2);end
-  xlabel('Time (s)')
-  ylabel('Relative Elevation (m)')
+  xlabel('Tiempo (s)')
+  if(rel_plot)
+    ylabel('Altura relativa (m)')
+  else
+    ylabel('Altura (m)')
+  end
   hold off
   grid on
 
@@ -132,9 +147,9 @@ if plot_individual_data
   end
   hold on
   plot(sat,sprintf('.-%c',path_color));
-  title('Satelites available')
-  xlabel('Time (s)')
-  ylabel('Satelite count')
+  title('Satelites disponibles')
+  xlabel('Tiempo (s)')
+  ylabel('# de Satelites')
   hold off
   grid on
 end
