@@ -34,7 +34,8 @@
 
 \begin{document}
 
-\chapter{Test GPS}
+\chapter{GPS - Test 1}
+\label{chap-gps-test-1}
 
 \section{Objetivos}
 
@@ -59,6 +60,7 @@ Si el error absoluto es muy grande, igual puede ser posible obtener información
 
 \newpage
 \section{Procedimiento}
+\label{sec:procedimiento}
 
 En esta prueba se trata de obtener el error del GPS en el plano paralelo a la tierra, es decir, el error en latitud y longitud.
 
@@ -152,7 +154,7 @@ En las figuras \ref{fig:gps_interf.jpg} y \ref{fig:gps_interf1.jpg} se muestran 
 %\end{figure}
 
 \newpage
-\subsection{Estimación de la posición de un punto fijo}
+\subsection{Estimación de la posición de un punto fijo - 1 minuto}
 \label{sec:estimacion-de-la-posicion-de-un-punto-fijo}
 
 Antes de proceder con el experimento, se tomaron medidas de la ubicación de algunos de los vértices del polígono. Si el ruido asociado a esta medida es del orden de 1m, entonces no vale la pena hacer el resto del experimento. No será posible estimar, de manera razonable, la posición de los vértices del polígono, ya que estos están distan, en algunos casos, solamente 1m entre sí.
@@ -213,12 +215,17 @@ Se tomaron medidas con el GPS en dos orientaciones. En las figuras \ref{fig:log_
   \label{fig:log_05_individual.png}
 \end{figure}
 
-\subsubsection{Punto fijo: Conclusiones}
+\subsubsection{Punto fijo - 1 minuto: Conclusiones}
 \label{sec:punto-fijo-conclusiones}
 
-En varios casos se observaron errores del orden del metro, pero en otros el error fue menor a medio metro. No se esperan buenos resultados a priori, la precisión del GPS no parece adecuada para este experimento.
+En varios casos se observaron errores del orden del metro, pero en otros el error fue menor a medio metro. No se espera que sea posible reconstruir la figura descrita al comienzo de la sección \ref{sec:procedimiento}, ya que la distancia entre los puntos es del orden del error en las medidas del GPS.
 
-De cualquier forma se procedió con el experimento, tomando datos con el GPS en 4 orientaciones por si la precisión resulta muy sensible a la posición de la antena.
+A partir de esta conclusión, se decidió:
+\begin{itemize}
+\item Proceder con el experimento descrito en la sección \ref{sec:procedimiento}, tomando datos con el GPS en 4 orientaciones por si la precisión resulta muy sensible a la posición de la antena.
+\item Construir un polígono similar al descrito en la sección \ref{sec:procedimiento}, pero más grande, y realizar otra prueba de punto fijo, pero tomando 10 minutos de datos en cada punto.
+%TODO agregar ref al capítulo cuando integremos.
+\end{itemize}
 
 \newpage
 \subsection{Polígono}
@@ -558,12 +565,14 @@ Se concluye que es necesario utilizar otra fuente de información, como por ejem
 \section{Conclusión}
 \label{sec:conclusion}
 
-La performance del GPS cumple con lo especificado, en un contexto adecuado (buena geometría y buena visibilidad) da errores menores a 3m. Esto implica que el GPS no se puede utilizar para determinar la posición del cuadricóptero con una precisión razonable. Es de interés tener suficiente precisión como para poder maniobrar el cuadricóptero, y por lo tanto la posición se tiene que poder estimar con un error menor a 10cm.
+La performance del GPS cumple con lo especificado, en un contexto adecuado (buena geometría y buena visibilidad) da errores menores a 3m. Es de interés tener suficiente precisión como para poder maniobrar el cuadricóptero, y por lo tanto la posición se tiene que poder estimar con un error menor a 10cm. Se necesitará el apoyo de otros sensores para cumplir con este objetivo.
 
 La posición de la antena no parece afectar mucho los resultados, esto puede deberse a la geometría de la misma, es probable que tenga una cierta simetría que hace que la orientación del GPS no afecte la lecturas.
 
 El GPS se utilizará como medio de corrección del drift que resulta de utilizar sensores que miden diferencias (acelerómetros, gyróscopos, etc), y estos otros sensores se usarán para obtener la precisión necesaria para maniobrar el cuadricóptero.
 
 En cuanto a la estimación de la altura, no alcanza con el GPS, acelerómetros y gyróscopos, se requiere de un sonar, un sensor de presión, etc.
+
+Se decidió realizar otro experimento para obtener más información sobre la performance del GPS. Ver \ref{chap-gsp-test-2}.
 
 \end{document}
