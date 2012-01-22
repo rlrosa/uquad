@@ -109,7 +109,7 @@ if plot_individual_data
     figure(f_handle + 1)
   end
   subplot 131
-  title('Coordenadas individuales (%s)', title_string)
+  title(sprintf('Coordenadas individuales (%s)', title_string))
   hold on
   plot(x,sprintf('.-%c',path_color));
   if(smooth_win)plot(x_avg,sprintf('x-%c',path_color), 'LineWidth', 2);end
