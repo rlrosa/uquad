@@ -5,7 +5,10 @@
 %   la data junta (plot3d de easting, northing y elevation).
 
 if(~exist('xs','var'))
-  error('Cannot find data! xs not defined!\nRefer to comments in 10m_data.m for help')
+  error(sprintf('Cannot find data! xs not defined!\nRefer to comments in 10m_data.m for help'))
+else
+  fprintf('Using data from variable named xs\n\t-->VERIFY this is what you expect<--\n\nPress any key to continue...\n');
+  pause;
 end
 
 % Asignar un valor > 0 a la siguiente variable para generar un plot con
@@ -43,12 +46,26 @@ for i =1:6
     gps_plot3(easting, northing, elevation, sat, gcf, 0);
   end
 end
+fuera_porcentage = fuera_porcentage*100;
 
 if(todos_en_el_mismo_plot)
-  legend('Pt. 1', 'Pt. 2', 'Pt. 3', 'Pt. 4', 'Pt. 5', 'Pt. 6')
-  title('10 minutos en cada punto')
+  legend(...
+    sprintf('Pt. 1 - %2.1f%%',fuera_porcentage(1)), ...
+    sprintf('Pt. 2 - %2.1f%%',fuera_porcentage(2)), ...
+    sprintf('Pt. 3 - %2.1f%%',fuera_porcentage(3)), ...
+    sprintf('Pt. 4 - %2.1f%%',fuera_porcentage(4)), ...
+    sprintf('Pt. 5 - %2.1f%%',fuera_porcentage(5)), ...
+    sprintf('Pt. 6 - %2.1f%%',fuera_porcentage(6)))
+  if(length(easting) > 600)
+    tmp = 10;
+  else
+    tmp = 2;
+  end
+  title(sprintf('%d minutos en cada punto',tmp))
   hold on
-  circle([0,0],radio,50,'-.k')
+  circle([0,0],radio,50,'-.k');
+  grid on
+  axis equal
   hold off
 end
 

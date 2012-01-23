@@ -5,7 +5,10 @@
 %   la data junta (plot3d de easting, northing y elevation).
 
 if(~exist('xs','var'))
-  error('Cannot find data! xs not defined!\nRefer to comments in 2m_data.m for help')
+  error(sprintf('Cannot find data! xs not defined!\nRefer to comments in 2m_data.m for help'))
+else
+  fprintf('Using data from variable named xs\n\t-->VERIFY this is what you expect<--\n\nPress any key to continue...\n');
+  pause;
 end
 
 % Asignar un valor > 0 a la siguiente variable para generar un plot con
@@ -61,7 +64,12 @@ end
 if(todos_en_el_mismo_plot)
   %legend('Pt. 1', 'Pt. 2', 'Pt. 3', 'Pt. 4', 'Pt. 5', 'Pt. 6')
   legend hide
-  title('2 minutos en cada punto')
+  if(length(easting) > 600)
+    tmp = 10;
+  else
+    tmp = 2;
+  end
+  title(sprintf('%d minutos en cada punto',tmp))
   % armar el pol
   px_plot = [px(1:3);px(6:-1:4);px(1)];
   py_plot = [py(1:3);py(6:-1:4);py(1)];
@@ -80,6 +88,8 @@ if(todos_en_el_mismo_plot)
   fclose(fid);
   
   fprintf('Saved average data to avg_data! (easting,northing,elevation)\n');
+  grid on
+  axis equal
   hold off
 end
 

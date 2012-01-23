@@ -1,9 +1,9 @@
 function gps_plot3(easting, northing, elevation, sat, ...
-  f_handle, fig_count, smooth_win, rel_plot)
+  f_handle, fig_count, smooth_win, rel_plot, plot_individual_data)
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 % function gps_plot3(easting, northing, elevation, sat, ...
-% f_handle, fig_count, do_smooth)
-%
+%   f_handle, fig_count, smooth_win, rel_plot, plot_individual_data)
+% 
 % Generates 3d plot from GPS data.
 % 
 % Inputs:
@@ -19,6 +19,8 @@ function gps_plot3(easting, northing, elevation, sat, ...
 %   rel_plot: Plot relative data. Absolute data is cut by MatLab when
 %     plotting. To be able to read values in the xaxis/yaxis, relative data
 %     must be plotted.
+%   plot_individual_data (optional): If > 0, then easting, northing and sat
+%     count will be plotted in separate plots.
 %
 % Example:
 %
@@ -27,12 +29,19 @@ function gps_plot3(easting, northing, elevation, sat, ...
 % gps_plot3(x, y, z, sat);
 % gps_plot3(x_1, y_1, z_1, sat_1, figure(1), 1);
 % 
+% % Plot individual data on new figures, without smoothing nor averaging.
+% figure;
+% gps_plot3(easting, northing, elevation, sat,gcf,0,0,1,1)
+%
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 path_colors = 'bgkycr';
 x = easting;
 y = northing;
 z = elevation;
 
+if(nargin < 9)
+  plot_individual_data = 0;
+end
 if(nargin < 8)
   rel_plot = 1;
 end
@@ -101,7 +110,6 @@ hold off
 legend('Trajectory')
 
 % Plot individually, to improve resolution
-plot_individual_data = 0;
 if plot_individual_data
   if(nargin < 5)
     f_handle = figure;
