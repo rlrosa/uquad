@@ -123,7 +123,7 @@ En la figura \ref{fig:tripode_con_plomada.jpg} se observa el trípode que sostie
   		\includegraphics[width=0.45\textwidth]{./img/tripode_con_plomada.jpg}}
   \subfloat[GPS amarrado al trípode.]{\label{fig:vista_usb.jpg}
   		\includegraphics[width=0.45\textwidth]{./img/vista_usb.jpg}}
-  \caption{Rebotes/Interferencia}
+  \caption{GPS + Atril}
   \label{fig:rebotes}
 \end{figure}
 
@@ -163,396 +163,125 @@ En la figura \ref{fig:10min_grid.png} se muestran los datos luego de restar el p
 
 \begin{figure}[h!]
   \includegraphics[width=1.1\textwidth]{./img/10min_grid.png}
-  \caption{GPS quieto en cada punto del polígono, GPS orientado como en \ref{sec:gps2-procedimiento}.}
+  \caption{GPS quieto en cada punto del polígono, GPS orientado como se describe en \ref{sec:gps2-procedimiento} y se muestra en \ref{fig:vista_usb.jpg}.}
   \label{fig:10min_grid.png}
 \end{figure}
 
 \newpage
-En la figura \ref{fig:10min_todos.png} se observan todas las gráficas de la figura \ref{fig:10min_grid.png}, pero superpuestas.
+En la figura \ref{fig:10m_todos.png} se observan todas las gráficas de la figura \ref{fig:10min_grid.png}, pero superpuestas.
 
-Si el GPS fuese perfecto, entonces todas las muestras coincidirían con el promedio, y estarían ubicadas en el punto \verb+[0,0]+. El círculo negro tiene 2.5m de radio, y fuera de él caen menos del 25\% de las muestras, para todos los puntos. Los datos para cada punto se observan en la tabla \ref{tab:fuera_del_circulo_10m}
-
-\begin{table}[H]
-\begin{center}
-\begin{tabular}{|l|c|}
-\hline
-\textbf{Punto 1} & 25.4\% \\
-\hline
-\textbf{Punto 2} & 23.1\% \\
-\hline
-\textbf{Punto 3} & 0.0\% \\
-\hline
-\textbf{Punto 4} & 0.0\% \\
-\hline
-\textbf{Punto 5} & 11.5\% \\
-\hline
-\textbf{Punto 6} & 15.0\% \\
-\hline
-\end{tabular} 
-\caption{Porcentaje de muestras \textbf{fuera} del círculo negro en la figura \ref{fig:10min_todos.png}.}
-\label{tab:fuera_del_circulo_10m}
-\end{center}
-\end{table}
+Si el GPS fuese perfecto, entonces todas las muestras coincidirían con el promedio, y estarían ubicadas en el punto \verb+[0,0]+. El círculo negro tiene 2.5m de radio, las muestras que caen fuera de él están a más de 2.5m del valor promedio. En la leyenda se muestra que porcentaje de las muestras caen fuera del círculo.
 
 \begin{figure}[h!]
-  \includegraphics[width=1.1\textwidth]{./img/10min_todos.png}
-  \caption{Error respecto al valor medio (Plots de \ref{fig:10min_grid.png} superpuestos).}
-  \label{fig:10min_todos.png}
+  \includegraphics[width=1.1\textwidth]{./img/10m_todos.png}
+  \caption{Error respecto al valor medio (Plots de \ref{fig:10min_grid.png} superpuestos). En la leyenda se muestran que porecentaje de muestras que caen a más de 2.5m del promedio.}
+  \label{fig:10m_todos.png}
 \end{figure}
 
-El polígono resultante de dibujar las posiciones absolutas de los cada uno de los puntos se observa en la figura \ref{fig}
+\newpage
+\subsection{Punto fijo - 2 minutos}
 
-\subsubsection{Punto fijo - 10 minutos: Conclusiones}
+Se repitió el experimento tomando solamente 2 minutos de muestras por punto. Se optó por tomar datos durante solamente 2 minutos para agilizar el experimento. Los resultados son similares a los que se obtuvieron con el experimento de 10 minutos.
+
+Se orientó el GPS de 3 maneras distintas, siempre alineando el trípode con uno de los lados de 12m del rectángulo:
+
+\begin{enumerate}
+\item USB hacia la calle, LED hacia el estacionamiento, como en la figura \ref{fig:or3.jpg}.
+\item USB hacia la rambla, LED hacia el IIE.
+\item Como en la figura \ref{fig:or2.jpg}.
+\item Nuevamente, USB hacia la calle, LED hacia el estacionamiento, como en la figura \ref{fig:or3.jpg}.
+\end{enumerate}
+
+\begin{figure} [h!]
+  \centering
+  \subfloat[Orientación \#3]{\label{fig:or2.jpg}
+  		\includegraphics[width=0.45\textwidth]{./img/or2.jpg}}
+  \subfloat[Orientación \#4.]{\label{fig:or3.jpg}
+  		\includegraphics[width=0.45\textwidth]{./img/or3.jpg}}
+  \caption{Fotos de algunas de las orientaciones del GPS en las pruebas de 2 minutos por punto.}
+  \label{fig:or-2-m}
+\end{figure}
+
+Los resultados se observan en las siguientes figuras. Nuevamente, en la leyenda se muestra que porcentaje de las muestras a más de 2.5m del valor promedio.
+
+\newpage
+\begin{figure}[h!]
+  \includegraphics[width=.9\textwidth]{./img/2m_or1_todos.png}
+  \caption{Orientación: USB hacia la calle, LED hacia el estacionamiento, como en la figura \ref{fig:or3.jpg}.}
+\vspace{-30pt}
+  \label{fig:2m_or1_todos.png}
+\end{figure}
+
+\begin{figure}[h!]
+  \includegraphics[width=1\textwidth]{./img/2m_or2_todos.png}
+  \caption{Orientación: USB hacia la rambla, LED hacia el IIE.}
+  \label{fig:2m_or2_todos.png}
+\end{figure}
+
+\newpage
+\begin{figure}[h!]
+  \includegraphics[width=1\textwidth]{./img/or2_todos_cut.png}
+  \caption{Orientación: Como en la figura \ref{fig:or2.jpg}.}
+\vspace{-30pt}
+  \label{fig:or2_todos_cut.png}
+\end{figure}
+
+\begin{figure}[h!]
+  \includegraphics[width=.9\textwidth]{./img/or3_todos.png}
+  \caption{Orientación: USB hacia la calle, LED hacia el estacionamiento, como en la figura \ref{fig:or3.jpg}.}
+  \label{fig:or3_todos.png}
+\end{figure}
+
+\newpage
+\subsubsection{Punto fijo: Análisis}
 \label{sec:gps2-punto-fijo-conclusiones}
+
+\begin{itemize}
+\item \textbf{Satélites Disponbiles}
+La teoría dice que con 4 satélites debería alcanzar para obtener un \textit{fix 3D}, es decir, estimar la posición sobre la esfera terrestre, y la distancia (altura) a la misma. Durante el experimento de la figura \ref{fig:or2_todos_cut.png}, en un momento el GPS se perdió, y el número de satélites disponibles, que usualmente anda por los 9 o 10, pasó a ser 4. Los datos correspondientes se muestran en la figura \ref{fig:or2_todos_sat_mal.png}. El trazo naranja, con un error de hasta 23 metros, corresponde a instantes donde la cantidad de satélites era entre 4 y 5. Luego de volver a 9 o 10 satélites, los datos vuelven a ser más razonables.
+
+\begin{figure}[h!]
+  \includegraphics[width=1\textwidth]{./img/or2_todos_sat_mal.png}
+  \caption{Datos con solamente 4 satélites. Orientación: Como en la figura \ref{fig:or2.jpg}.}
+  \label{fig:or2_todos_sat_mal.png}
+\end{figure}
+
+Quitando las muestras correspondientes 
+No se pudo encontrar una explicación para la mala calidad de las muestras correspondientes al punto 5 en la figura \ref{fig:or2_todos_cut.png}. La cantidad de satélites disponibles se mantuvo estable en 9 o 10 durante la adquisición de esos datos.
+\item \textbf{Orientación}
+A priori no parece haber una correlación directa entre la calidad de los resultados y la orientación del GPS, en particular por las diferencias entre las figuras \ref{fig:or3_todos.png} y \ref{fig:2m_or1_todos.png}, que fueron tomadas con la misma orientación.
+No queda claro si se puede descartar alguna correlación, ya que parece intuitivo que existiese, debido a que el GPS tiene una antena adentro.
+La falta de correlación entre las figuras \ref{fig:or3_todos.png} y \ref{fig:2m_or1_todos.png} puede deberse a que las muestras fueron tomadas en dias distintos, a horas distintas, y por ende con distintos satélites, ubicados en distintos lugares respecto del GPS. Se optó por tomar datos de un punto fijo, e ir rotando el GPS, para descartar/confirmar una posible correlación entre la calidad de los resultados y la orientación del GPS. Ver sección 
+\end{itemize}
+
+
+
+
+\subsubsection{Punto fijo: Conclusiones.}
+\label{sec:gps2-punto-fijo-conclusiones}
+
+\subsubsection{Orientación}
+\label{sec:orientacion}
 
 %TODO
 
-\textbf{HABRIA (VOY A) QUE HACER OTRA TIRADA PARA VER XQ CAMBIA TANTO LA COSA, A VER SI TIENE QUE VER CON 1 Y 2, O SI NA Q VER.}
+\subsubsection{Orientación - Conclusiones}
+\label{sec:orientacion-conclusiones}
+
+%TODO
 
 \newpage
 \subsection{Polígono}
 \label{sec:gps2-poligono}
 
-Se tomaron 2 minu
-
-Intentando mejorar los resultados, se tomaron promedios en una ventana de 15 muestras, usando un filto \textit{moving average}. Esto también se observa en las figuras \ref{fig:polygon_1.png} y \ref{fig:polygon_2.png}.
-
-% \begin{figure}[h!]
-%   \begin{center}
-%   \includegraphics[width=1.1\textwidth]{./img/polygon_1.png}
-%   \end{center}
-%   \caption{Primeros 3 intentos de estimar el polígono.}
-%   \label{fig:polygon_1.png}
-% \end{figure}
-
-% \newpage
-% \begin{figure}[h!]
-%   \begin{center}
-%   \includegraphics[width=1.1\textwidth]{./img/polygon_2.png}
-%   \end{center}
-%   \caption{Segundos 3 intentos de estimar el polígono.}
-%   \label{fig:polygon_2.png}
-% \end{figure}
-
-\newpage
-En la tabla \ref{tab:polygon-sat} se muestran la cantidad de satélites utilizados cuando se obtuvieron los datos de las figuras \ref{fig:polygon_1.png} y \ref{fig:polygon_2.png}.
-
-\begin{table}[H]
-\begin{center}
-\begin{tabular}{|l||c|c|c|c|c|c|}
-\hline
-\textbf{Log 1} & 8 & 8 & 8 & 7 & 8 & 8 \\
-\hline
-\textbf{Log 2} & 9 & 9 & 9 & 9 & 9 & 9 \\
-\hline
-\textbf{Log 3} & 9 & 9 & 9 & 9 & 9 & 9 \\
-\hline
-\textbf{Log 4} & 10 & 10 & 10 & 10 & 10 & 10 \\
-\hline
-\textbf{Log 5} & 10 & 10 & 10 & 10 & 10 & 10 \\
-\hline
-\textbf{Log 6} & 10 & 10 & 10 & 10 & 10 & 10\\
-\hline
-\end{tabular} 
-\caption{Satélites disponibles al tomar los datos de las figuras \ref{fig:polygon_1.png} y \ref{fig:polygon_2.png}.}
-\label{tab:polygon-sat}
-\end{center}
-\end{table}
-
-\subsubsection*{Errores}
-\label{sec:errores}
-
-Las especificaciones del GPS garantizan un error menor a 3m. La distancia de cada punto al punto 1 sirve para mostrar que el GPS cumple con las especificaciones. 
-
-\begin{verbatim}
->> sqrt(easting.^2 + northing.^2)
-
-ans =
-
-  Columns 1 through 2
-
-                         0                         0
-         0.554512260087323         0.143700779969825
-          4.33004706557553         0.143700779969825
-          1.57529195895029         0.862204669928841
-          3.46128113366155         0.997959241296461
-          1.09657686103998           0.7196747757109
-
-  Columns 3 through 4
-
-                         0                         0
-        0.0913813877153522         0.287401564952104
-          0.37960034205882         0.287401564952104
-         0.583854507635003         0.778438910449184
-         0.959566360784181         0.851817377628425
-          1.48734655792341          1.29842494542402
-
-  Columns 5 through 6
-
-                         0                         0
-         0.521483162980721         0.452924086277894
-          1.37072089636507         0.452924086277894
-          1.58871200295859          1.06889681896435
-         0.913813929586754          1.77030855041003
-          1.37520004160367          2.60741605799409
-\end{verbatim}
-
-\newpage
-Los datos crudos, antes de ser procesados, son los siguientes:
-
-\begin{verbatim}
-easting =
-  Columns 1 through 2
-          577829.024663918          577831.395779166
-          577829.029379162          577831.303457993
-          577830.976611558          577831.303457993
-          577827.660593625          577830.841852163
-          577827.772718459          577830.931344107
-          577827.928126702           577831.11598643
-  Columns 3 through 4
-          577830.928514889          577830.394392373
-          577830.837136806          577830.209750046
-          577831.114100281          577830.209750046
-           577831.11598643          577829.750973439
-          577831.301571839          577829.570103359
-          577831.306287223           577829.11321287
-  Columns 5 through 6
-            577828.8315342          577831.423128412
-          577829.101896266          577831.327977979
-          577830.202205538          577831.327977979
-          577830.387790914          577830.504631801
-          577829.745315091          577829.952590828
-          577830.203148602          577830.033595277
-
-northing =
-  Columns 1 through 2
-          6138921.43134999          6138920.85665408
-           6138921.9858422          6138920.74653271
-          6138925.29647715          6138920.74653271
-          6138922.21929478          6138920.19592587
-          6138924.65828346          6138919.97335191
-          6138921.44067456          6138920.19359465
-  Columns 3 through 4
-          6138919.64065658          6138921.30879564
-          6138919.64143365          6138921.08855289
-          6138919.97179776          6138921.08855289
-          6138920.19359465          6138920.87064132
-          6138920.52473583          6138921.09399232
-          6138921.07922804           6138921.0978776
-  Columns 5 through 6
-          6138920.21302122          6138924.07270891
-          6138919.76709629          6138923.62989222
-          6138920.20136535          6138923.62989222
-          6138920.53250654          6138923.52598743
-          6138920.20525066          6138923.08705604
-          6138920.31226379          6138921.86639612
-\end{verbatim}
-
-\newpage
-\begin{verbatim}
-elevation =
-  Columns 1 through 2
-                        54                        54
-                      50.4                        54
-                      47.4                      53.9
-                      44.5                      54.3
-                      44.5                      54.4
-                      47.9                      54.4
-  Columns 3 through 4
-                      54.5                        54
-                      54.5                      54.2
-                      54.5                      54.3
-                      54.4                      54.5
-                      54.2                      54.5
-                      54.3                      53.9
-  Columns 5 through 6
-                      55.6                        56
-                      56.4                      56.3
-                      57.7                      56.3
-                      57.8                      56.5
-                      57.6                      56.6
-                      57.5                      56.7
-\end{verbatim}
-
- Cada columna corresponde a una serie. La columna 1 de easting va con la columna 1 de northing y la columna 1 de elevation, etc.
-
-\subsection{Conclusión - Latitud-Longitud}
-\label{sec:error-lat-lon-conclusion}
-
-El GPS funciona como era de esperarse, con un error menor a 3m. Para estimar la posición del cuadricóptero con más precisión, va a ser necesario recurrir a sensores adicionales, o a algún tipo de manipulación de los datos del GPS.
-
-No se calculó el error mediante mínimos cuadrados. Un análisis tan preciso no tiene sentido, ya que la magnitud del error es muy grande.
-
-Este experimento se realizó libre de ruido. El cuadricóptero agregará vibraciones, interferencia electromagnética, y será mucho menos estable que el GPS aferrado a una escalera. El error en las medidas de este experimento fue, en general, significativamente menor a 3m, pero una vez montado en el cuadricóptero, es probable que el error en la información proveniente del GPS sea cercana a los 3m, por culpa de los factores mencionados.
-
-%
-%\begin{enumerate} 
-%	\item Seleccionar 4 puntos distintos y asegurarse que estén a la misma altura. En lo posible formando un rectángulo siguiendo las direcciones de latitud y longitud, según lo indique la brújula.
-%	\item Tomar las medidas con un metro lo más cuidadosamente posible entre los 4 vértices, y los ángulos que forman las parejas de caras consecutivas.
-%	\item Obtener el dato del GPS de los 4 vértices.
-%	\item Obtener la diferencia entre medidas
-%	\item Convertir datos a unidades del sistema métrico.
-%	\item Reproducir el paralelepípedo en un esquema según los datos obtenidos del GPS.
-%	\item Contrastar medidas y ángulos reales con los obtenidos del GPS.
-%\end{enumerate} 
-%
-
-\newpage
-\section{Error en altura}
-\label{sec:error-en-altura}
-
-Para determinar el error la información sobre la altura que provee el GPS, se diseñó un experimento, que consiste en tomar medidas en una perpendicular a la esfera terrestre, a 4 alturas diferentes: 0m, 1m, 2m y 3m respecto al suelo.
-
-En la primera etapa del experimento, se mantuvo el GPS quieto en cada uno de los niveles, y se tomaron muestras durante aproximadamente 60 segundos. El objetivo de esta etapa era verificar si era viable el experimento.
-
-\subsection{Punto fijo}
-\label{sec:altura-punto-fijo}
-
-Para este experimento se colocó una escalera en el medio del estacionamiento de atrás de la Facultad de Ingeniería, se ató un piolín con marcas cada 1 metro, y una plomada en la punta para mantenerlo tenso y vertical.
-
-% \begin{figure}[h!]
-%   \begin{center}
-%   \includegraphics[width=.7\textwidth]{./img/altura_punto_fijo_fing.png}
-%   \end{center}
-%   \caption{Variación de la altura determinada por el GPS a distintas alturas.}
-%   \label{fig:altura_punto_fijo_fing.png}
-% \end{figure}
-
-En la figura \ref{fig:altura_punto_fijo_fing.png} se observan los resultados del experimento. Es de esperarse que el error sea mayor al estar apoyado sobre el suelo, ya que los rebotes pueden deteriorar el sistema. El error a 1m de altura es mayor al que se obtuvo con el GPS en el suelo, una posible explicación para esto sería que el GPS estaba muy cerca de la escalera metálica, lo cual podría introducir una cantidad significativa de rebotes.
-
-Los resultados de este experimento llevan a pensar que el GPS da información estable si y solo si se encuentra a al menos 2m del suelo. No se cuenta con suficiente información como para afirmar esto con certeza, por lo que se optó por tomar más datos, teniendo especial cuidado con el tema de los rebotes.
-
-\subsection{Punto fijo - Estabilidad y rebotes}
-\label{sec:altura-punto-fijo-estabilidad}
-
-Para analizar el efecto de los rebotes sobre la estabilidad de la información proveniente del GPS, se tomaron varias series de datos con el GPS quieto, sobre el marco de una ventana, y luego asomado 1 metro hacia afuera (y arriba) de la ventana, donde el efecto de los rebotes debería ser menor.
-
-En la figura \ref{fig:gps_gabi3.jpg} se observa la configuración del GPS al tomar los datos apoyado sobre el marco de la ventana, y en la figura \ref{fig:gps_gabi1.jpg} se observa el atril utilizado para alejar al GPS de la superficie.
-
-% \begin{figure}[h!]
-%   \begin{center}
-% \subfloat[GPS expuesto a rebotes sobre la superficie en la que se apoya.]{\includegraphics[width=.3\textwidth]{./img/gps_gabi3.jpg}\label{fig:gps_gabi1.jpg}}
-% \hspace{50pt}
-% \subfloat[GPS alejado de superficies.]{\includegraphics[width=.3\textwidth]{./img/gps_gabi1.jpg}\label{fig:gps_gabi3.jpg}}
-%   \end{center}
-% \end{figure}
-
-Los resultados del experimento apoyado sobre el marco y asomado con el atril se observan en las figuras \ref{fig:gps_ventana.png} y \ref{fig:gps_atril.png} respectivamente.
-
-% \begin{figure}[h!]
-%   \begin{center}
-%   \includegraphics[width=.75\textwidth]{./img/gps_ventana.png}
-%   \caption{GPS apoyado sobre superficie.}
-%   \label{fig:gps_ventana.png}
-% \end{center}
-% \end{figure}
-
-% \newpage
-% \begin{figure}[h!]
-% \begin{center}
-%   \includegraphics[width=.75\textwidth]{./img/gps_atril.png}
-%   \caption{GPS alejado de superficies.}
-%   \label{fig:gps_atril.png}
-% \end{center}
-% \end{figure}
-
-\subsection{Conclusión - Altura}
-\label{sec:error-en-altura-conclusion}
-
-Los resultados concuerdan con lo esperado, la inestabilidad en la lectura del GPS disminuye al reducir las fuentes de rebotes.
-
-Las lecturas del GPS no tiene suficiente precisión como para ser utilizadas de manera exclusiva para determinar la altura del cuadricóptero. En los mejores casos hay un error de $0.5-1$m, y en los peores casos hay errores de hasta 15m. Con una buena geometría y a varios metros del piso, el error es tolerable, pero no sirve para programar el aterrizaje/despegue, ni el vuelo a baja altura.
-
-Aún no se ha determinado si la mayor causa del deterioro de la performance del GPS fueron los rebotes y/o la mala geometría. La mala geometría resulta de tener solamente la mitad del cielo visible, ya que la pared de la casa bloquea el resto. Al asomar el GPS hacia afuera, se lo aleja de los rebotes, y también se incrementa la cantidad de cielo visible, por lo que es difícil separar cual de los cambios es el responsable de los cambios en los resultados.
-
-Se concluye que es necesario utilizar otra fuente de información, como por ejemplo un sensor de presión, para estimar la altura del cuadricóptero.
-
-%\newpage
-
-%\section{GPS con corrección diferencial}
-%\label{sec:gps-diff}
-%
-%Para evaluar la performance del GPS en espacios más grandes, se relevó un polígono, tomando datos con el GPS a evaluar, junto con otro GPS que cuenta con correción diferencial, y es de mejor calidad.
-%
-%En la figura \ref se observa el camino recorrido, y los puntos de interés.
-%
-%\section{Parte III: Consistencia}
-%
-%Esta prueba se basa en la repetitividad de una misma prueba para analizar las diferencias entre los datos obtenidos por GPS en diferentes ocasiones.\\
-%
-%Se tomarán las medidas de los 4 puntos seleccionados en la parte anterior un total de 10 veces cada punto. Se analizarán los resultados obtenidos para caracterizar la consistencia del dispositivo GPS. Graficar las medidas obtenidas en latitud, longitud y altura para cada punto por separado. Hallar el error máximo de las medidas en un mismo punto.
-
-%\section{Desarrollo}
-%\subsection{Parte I: Error absoluto}
-%
-%\begin{table}[H]
-%\begin{center}
-%\begin{tabular}{|p{40pt}|p{110pt}|p{110pt}|p{110pt}|} 
-%\hline
-%  \cellcolor[gray]{0.8} \textbf{Medida} 
-%& \cellcolor[gray]{0.8} \textbf{Posición 1} 
-%& \cellcolor[gray]{0.8} \textbf{Posición 2} 
-%& \cellcolor[gray]{0.8} \textbf{Posición 3} \\ \hline \hline
-%\multicolumn{1}{|p{40pt}|}{\cellcolor[gray]{0.8}\textbf{1}} & \hspace{50pt}/ & \hspace{50pt}/ & \hspace{50pt}/ \\ \hline 
-%\multicolumn{1}{|p{40pt}|}{\cellcolor[gray]{0.8}\textbf{2}} & \hspace{50pt}/& \hspace{50pt}/& \hspace{50pt}/ \\ \hline 
-%\multicolumn{1}{|p{40pt}|}{\cellcolor[gray]{0.8}\textbf{3}} & \hspace{50pt}/& \hspace{50pt}/& \hspace{50pt}/ \\ \hline 
-%\end{tabular} 
-%\caption{Medidas GPS}
-%\label{tab:I-medidas}
-%\end{center}
-%\end{table}
-%
-%\newpage
-%\subsection{Parte II: Error relativo}
-%
-%\begin{table}[H]
-%\begin{center}
-%\begin{tabular}{|p{100pt}|p{100pt}|p{100pt}|p{100pt}|} \hline
-%\cellcolor[gray]{0.8} \textbf{Punto 1} & \cellcolor[gray]{0.8} \textbf{Punto 2} & \cellcolor[gray]{0.8} \textbf{Punto 3} & \cellcolor[gray]{0.8} \textbf{Punto 4} \\ \hline \hline
-%\hspace{50pt}/ & \hspace{50pt}/ & \hspace{50pt}/ & \hspace{50pt}/ \\ \hline 
-%\end{tabular} 
-%\caption{Medidas GPS}
-%\label{tab:I-medidas}
-%\end{center}
-%\end{table}
-%
-%\newpage
-%\subsection{Parte III: Consistencia}
-%
-%\begin{table}[H]
-%\begin{center}
-%\begin{tabular}{|p{40pt}|p{80pt}|p{80pt}|p{80pt}|p{80pt}|} \hline
-%  \cellcolor[gray]{0.8} \textbf{Medida} 
-%& \cellcolor[gray]{0.8} \textbf{Punto 1} 
-%& \cellcolor[gray]{0.8} \textbf{Punto 2} 
-%& \cellcolor[gray]{0.8} \textbf{Punto 3} 
-%& \cellcolor[gray]{0.8} \textbf{Punto 4} \\ \hline \hline
-%\multicolumn{1}{|p{40pt}|}{\cellcolor[gray]{0.8}\textbf{1}} & \hspace*{40pt}/& \hspace*{40pt}/& \hspace*{40pt}/& \hspace*{40pt}/\\ \hline 
-%\multicolumn{1}{|p{40pt}|}{\cellcolor[gray]{0.8}\textbf{2}} & \hspace*{40pt}/& \hspace*{40pt}/& \hspace*{40pt}/& \hspace*{40pt}/\\ \hline 
-%\multicolumn{1}{|p{40pt}|}{\cellcolor[gray]{0.8}\textbf{3}} & \hspace*{40pt}/& \hspace*{40pt}/& \hspace*{40pt}/& \hspace*{40pt}/\\ \hline
-%\multicolumn{1}{|p{40pt}|}{\cellcolor[gray]{0.8}\textbf{4}} & \hspace*{40pt}/& \hspace*{40pt}/& \hspace*{40pt}/& \hspace*{40pt}/\\ \hline
-%\multicolumn{1}{|p{40pt}|}{\cellcolor[gray]{0.8}\textbf{5}} & \hspace*{40pt}/& \hspace*{40pt}/& \hspace*{40pt}/& \hspace*{40pt}/\\ \hline
-%\multicolumn{1}{|p{40pt}|}{\cellcolor[gray]{0.8}\textbf{6}} & \hspace*{40pt}/& \hspace*{40pt}/& \hspace*{40pt}/& \hspace*{40pt}/\\ \hline
-%\multicolumn{1}{|p{40pt}|}{\cellcolor[gray]{0.8}\textbf{7}} & \hspace*{40pt}/& \hspace*{40pt}/& \hspace*{40pt}/& \hspace*{40pt}/\\ \hline
-%\multicolumn{1}{|p{40pt}|}{\cellcolor[gray]{0.8}\textbf{8}} & \hspace*{40pt}/& \hspace*{40pt}/& \hspace*{40pt}/& \hspace*{40pt}/\\ \hline
-%\multicolumn{1}{|p{40pt}|}{\cellcolor[gray]{0.8}\textbf{9}} & \hspace*{40pt}/& \hspace*{40pt}/& \hspace*{40pt}/& \hspace*{40pt}/\\ \hline
-%\multicolumn{1}{|p{40pt}|}{\cellcolor[gray]{0.8}\textbf{10}} & \hspace*{40pt}/& \hspace*{40pt}/& \hspace*{40pt}/& \hspace*{40pt}/\\ \hline
-%\end{tabular} 
-%\caption{Toma de medidas}
-%\label{tab:I-medidas}
-%\end{center}
-%\end{table}
+%TODO
+% meter fotitos de polígonos
+% estimar cada vértice v## como el promedio del log ##, y ver dif entre diag v##-v##' y las medidas con el metro y correjidas con MC
+% 
+% meter fotito del satelite IMM, con el GPS arriba
 
 \newpage
 \section{Conclusión}
 \label{sec:conclusion}
-
-La performance del GPS cumple con lo especificado, en un contexto adecuado (buena geometría y buena visibilidad) da errores menores a 3m. Esto implica que el GPS no se puede utilizar para determinar la posición del cuadricóptero con una precisión razonable. Es de interés tener suficiente precisión como para poder maniobrar el cuadricóptero, y por lo tanto la posición se tiene que poder estimar con un error menor a 10cm.
-
-La posición de la antena no parece afectar mucho los resultados, esto puede deberse a la geometría de la misma, es probable que tenga una cierta simetría que hace que la orientación del GPS no afecte la lecturas.
-
-El GPS se utilizará como medio de corrección del drift que resulta de utilizar sensores que miden diferencias (acelerómetros, gyróscopos, etc), y estos otros sensores se usarán para obtener la precisión necesaria para maniobrar el cuadricóptero.
-
-En cuanto a la estimación de la altura, no alcanza con el GPS, acelerómetros y gyróscopos, se requiere de un sonar, un sensor de presión, etc.
 
 \end{document}
