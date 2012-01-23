@@ -110,4 +110,129 @@ Luego de estudiados los comandos que se utiliza para comandar los motores y una 
 Se tomaran medidas para todos los valores posibles del comando I2C, es decir entre 0 y 256.
 Se repite el experimento para los cuatro motores.
 
+
+\section{Resultados y análisis}
+
+\subsubsection{Obtención de la curva fuerza contra velocidad angular}
+
+Luego de apoyar el motor y su soporte sobre la balanza se oprime el botón $"$tare". Por lo tanto el peso medido corresponde al opuesto de la fuerza realizada por los motores dividido la constante gravitacional de la Tierra ($9.81ms^{-2}$). Los resultados obtenidos se presentan la tabla \ref{tab:fuerza-vel}.
+
+
+
+
+
+\begin{table}[H]
+\centering
+\begin{tabular}{p{80pt}|p{80pt}} 
+ \cellcolor[gray]{0.8} \textbf{Peso (g)} & \cellcolor[gray]{0.8} \textbf{Frecuencia (Hz)} \\ \hline
+ 
+ 0  & 0  \\ \hline
+\cline{1-2}
+37 & 34.2\\ \hline
+\cline{1-2}
+ 40  & 35.4  \\ \hline
+\cline{1-2}
+62 & 43.1\\ \hline
+\cline{1-2}
+ 68  & 44.7  \\ \hline
+\cline{1-2}
+72 & 47.1\\ \hline
+\cline{1-2}
+ 74  & 47.3  \\ \hline
+\cline{1-2}
+77 & 49.4\\ \hline
+\cline{1-2}
+ 80  & 49.4  \\ \hline
+\cline{1-2}
+84 & 50.5\\ \hline
+\cline{1-2}
+ 100  & 54.8  \\ \hline
+\cline{1-2}
+105 & 56.4\\ \hline
+\cline{1-2}
+ 122  & 60.5  \\ \hline
+\cline{1-2}
+132 & 62.8\\ \hline
+\cline{1-2}
+ 163  & 70.0  \\ \hline
+\cline{1-2}
+194 & 75.4\\ \hline
+\cline{1-2}
+ 220  & 80.6  \\ \hline
+\cline{1-2}
+245 & 83.7\\ \hline
+\cline{1-2}
+ 260  & 86.3  \\ \hline
+\cline{1-2}
+280 & 90.0\\ \hline
+\cline{1-2}
+ 295  & 91.2  \\ \hline
+\cline{1-2}
+315 & 95.4\\ \hline
+\cline{1-2}
+ 332  & 37.2  \\ \hline
+\cline{1-2}
+342 & 98.3\\ \hline
+\cline{1-2}
+355 & 100.6\\ \hline
+\cline{1-2}
+ 360  & 1041.0  \\ \hline
+\cline{1-2}
+420 & 110.0\\ \hline
+\cline{1-2}
+ 440  & 111.9  \\ \hline
+\cline{1-2}
+444 & 110.5\\ \hline
+\cline{1-2}
+\end{tabular}
+\caption{Medidas obtenidas de peso y frecuencia medida por el dispositivo IR}
+\label{tab:fuerza-vel}
+\end{table}
+
+Así mismo se representa la curva Fuerza-Velocidad angular en la figura \ref{fig:grafica1}.
+
+
+\begin{figure}
+  \vspace{-20pt}
+  \begin{center}
+    \includegraphics[width=0.8\textwidth]{./Pics/puntosfvel.jpg}
+  \end{center}
+  \vspace{-20pt}
+  \caption{Curva experimental de Fuerza-Velocidad angular}
+  \label{fig:grafica1}
+  \vspace{-10pt}
+\end{figure}
+
+
+De la observación de los puntos obtenidos se infiere que la respuesta Fuerza-velocidad angular es del cuadrática o cúbica. Suponiendo ambos modelos se obtienen los coeficientes de los polinomios en ambos casos. A partir de dichos coeficientes se grafican las curvas teóricas en ambos casos a fin de compararlas con los puntos obtenidos experimentalmente. Del mismo modo se calcula el error cuadrático medio para ambos modelos propuestos. Los resultados obtenidos se presentan en la figura \ref{fig:grafica2}.
+
+
+\begin{figure}
+  \vspace{-20pt}
+  \begin{center}
+    \includegraphics[width=0.8\textwidth]{./Pics/modsfvel.jpg}
+  \end{center}
+  \vspace{-20pt}
+  \caption{Curva de los modelos propuestos para la respuesta Fuerza-Velocidad angular}
+  \label{fig:grafica2}
+  \vspace{-10pt}
+\end{figure}
+
+
+
+Como se puede observar en la figura \ref{fig:grafica2} ambas curvas coinciden notablemente entre sí y con los datos experimentales. Por lo tanto podemos afirmar que cualqueira de los dos modelos es adecuado para representar la respuesta Fuerza-velocidad angular. Del mismo modo el error cuadrático medio entre los resultados obtenidos experimentalmente y los resultados predichos por cada modelo es 5.4743. Dicha constatación nos permite afirmar que trabajar con el modelo cúbico no nos aporta ninguna ventaja significativa. La razón de esta pequeña diferencia es que el coeficiente que multiplica al término $\omega^3$ es cinco órdenes de magnitud inferior que el coeficiente que multiplica al término $\omega^2$. 
+
+
+Con los parámetros obtenidos y asumiendo un modelo cuadrático podemos afirmar que la respuesta de los motores Fuerza-Velocdad angular tiene la forma de :
+
+\begin{equation}
+3,7646 \times 10^{-5}\omega ^2 - 9,0535 \times 10^{-4}\omega +0.0170
+\end{equation}
+
+Donde las unidades del primer coeficiente son $Ns^2$, las del segundo son $Ns$ y las del término independiente son $N$.
+
+
+
 \end{document}
+
+
