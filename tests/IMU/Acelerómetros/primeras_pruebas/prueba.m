@@ -10,7 +10,7 @@ str='bgrcmy';
 
 %% Datos
 
-[a,w] = imu_read('z.txt');
+[a,w] = imu_read('z1.txt');
 Nn    = size(a,1);
 ang = w*T;
 

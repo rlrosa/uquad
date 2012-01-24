@@ -28,7 +28,7 @@ alfa=asin((a-b)/c);
 
 at7=[0 g*cos(alfa) -g*sin(alfa)]';
 at8=[-g*sin(alfa) 0 g*cos(alfa)]';
-%at9=[-g*cos(alfa) g*sin(alfa) 0]';
+at9=[-g*cos(alfa) g*sin(alfa) 0]';
 
 %para el de 60
 a=35.6;
@@ -52,12 +52,9 @@ at13=[0 g*cos(alfa) -g*sin(alfa)]';
 at14=[-g*sin(alfa) 0 g*cos(alfa)]';
 at15=[-g*cos(alfa) g*sin(alfa) 0]';
 
-%Aceleraciones teóricas
 
 
 
-a=[at1 at2 at3 at4 at5 at6 at7 at8 at9 at10 at11 at12 at13 at14 at15];
-assignin('base','at',a);
 
 %Aceleraciones medidas
 
@@ -86,7 +83,7 @@ am7=[mean(a(:,2)) mean(a(:,1)) mean(a(:,3))]';
 am8=[mean(a(:,2)) mean(a(:,1)) mean(a(:,3))]';
 
 [a,w]=imu_read('logs/z_0_-x.txt');
-%am9=[mean(a(:,2)) mean(a(:,1)) mean(a(:,3))]';
+am9=[mean(a(:,2)) mean(a(:,1)) mean(a(:,3))]';
 
 [a,w]=imu_read('logs/x_60_y.txt');
 am10=[mean(a(:,2)) mean(a(:,1)) mean(a(:,3))]';
@@ -106,11 +103,19 @@ am14=[mean(a(:,2)) mean(a(:,1)) mean(a(:,3))]';
 [a,w]=imu_read('logs/z_70_-x.txt');
 am15=[mean(a(:,2)) mean(a(:,1)) mean(a(:,3))]';
 
-a=[am1 am2 am3 am4 am5 am6 am7 am8 am9 am10 am11 am12 am13 am14 am15];
+
+%%
+%Aceleraciones teóricas
+
+%a=[at1 at2 at3 at4 at5 at6 at7 at8 at9 at10 at11 at12 at13 at14 at15];
+a=[at1 at2 at3 at4 at5 at6 at7 at8 at10 at11 at12 at13 at14 at15];
+assignin('base','at',a);
+
+%Aceleraciones medidas
+%a=[am1 am2 am3 am4 am5 am6 am7 am8 am9 am10 am11 am12 am13 am14 am15];
+a=[am1 am2 am3 am4 am5 am6 am7 am8 am10 am11 am12 am13 am14 am15];
 
 assignin('base','am',a);
-
-
 
 %%
 x0=[512/(6*g) 512/(6*g) 512/(6*g) 512 512 512 0 0 0 0 0 0];
