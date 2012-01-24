@@ -64,15 +64,15 @@ La tercer relación resulta redundante conociendo las anteriores. Sin embargo pa
 
 \subsection{Consideraciones previas}
 \subsubsection*{Funcionamiento del dispositivo IR}
-Es necesario entender el funcionamiento del detector IR para poder realizar un experimento adecuado. Dicho dispositivo es sensible a las radiaciones infrarrojas. El mismo debe recibir la información modulada en una frecuencia de 56kHz para luego decodificarla. Si se lo expone a una luz infrarroja constante la salida del dispositivo es un "1" lógico. Del mismo modo, si se quita dicha fuente de luz la salida continua siendo un "1". \\
+Es necesario entender el funcionamiento del \emph{detector IR} para poder realizar un experimento adecuado. Dicho dispositivo es sensible a las \emph{radiaciones infrarrojas}. Si se lo expone a una luz infrarroja constante la salida del dispositivo es un ``1" lógico. Del mismo modo, si se quita dicha fuente de luz la salida continúa siendo un ``1''. \\
 
-En la hoja de datos del dispositivo se explica que mientras se recibe una onda cuadrada de frecuencia 56kHz la salida del mismo es un "0". Por lo tanto para poder distinguir cuando llega la radiación emitida por la LED de cuando no llega se debe hacer que esta última conmute entre ON y OFF con una frecuencia de 56kHz.
+En la hoja de datos del dispositivo se explica que mientras se recibe una onda cuadrada de frecuencia 56kHz la salida del mismo es un ``0". Por lo tanto para poder distinguir cuando llega la radiación emitida por la LED de cuando no llega se debe hacer que esta última conmute entre ON y OFF con una frecuencia de 56kHz. Dicho de otro modo, el detector IR debe recibir la información modulada en una frecuencia de 56kHz para luego decodificarla.
 
 \subsubsection*{Diseño del circuito de medida de velocidad angular}
 
-La idea del dispositivo de medida es sencilla. Se trata de hacer "pasar" la radiación infrarroja emitida por una LED a través de la hélice en funcionamiento de uno de los motores. Esta radiación es recogida del otro lado por el receptor IR.\\
+La idea del dispositivo de medida es sencilla. Se trata de hacer ``pasar" la radiación infrarroja emitida por el LED a través de la hélice en funcionamiento de uno de los motores. Esta radiación es recogida del otro lado por el receptor IR.\\
 
-De este modo tendremos a la salida del detector, pulsos de frecuencia correspondientes a la velocidad con la que la hélice obstruye el camino entre el sensor y la LED. La velocidad angular será entonces la mitad de dicha frecuencia.\\ 
+De este modo tendremos a la salida del detector, pulsos de frecuencia correspondientes a la velocidad con la que la hélice obstruye el camino entre el sensor y la LED. \textbf{La velocidad angular será entonces la mitad de dicha frecuencia}.\\ 
 
 \begin{wrapfigure}{l}{0.55\textwidth}
   \vspace{-20pt}
@@ -85,7 +85,7 @@ De este modo tendremos a la salida del detector, pulsos de frecuencia correspond
   \vspace{-10pt}
 \end{wrapfigure}
 
-El dispositivo se trata de un cuerpo en forma de "U", donde de un lado se tiene la LED infrarroja y del otro el detector, tal como se puede ver en la figura \ref{fig:u}.\\
+El dispositivo se trata de un cuerpo en forma de ``U", donde de un lado se tiene la LED infrarroja y del otro el detector, tal como se puede ver en la figura \ref{fig:u}.\\
 
 Como explicamos anteriormente la LED debe ser conmutada con una frecuencia de 56kHz por lo tanto se la alimentará con un generador de señales funcionando como generador de onda cuadrada a dicha frecuencia. Para lograr un correcto funcionamiento de la misma se requiere una corriente superior a los $100mA$. La amplitud de la onda cuadrada se regulará a $5V$ y se trabajará con una resistencia de $20\Omega$ en serie. Midiendo la tensión en la resistencia se puede comprobar que dichos valores son adecuados para el propósito.\\
 
@@ -95,31 +95,22 @@ La salida del receptor IR se conecta directamente a un frecuencímetro.\\
 
 \subsubsection*{Obtención de la curva fuerza contra velocidad angular}
 
-Se sujeta el motor gracias a una morsa y se coloca sobre la balanza. A priori la morsa es suficientemente pesada como para que el empuje del motor no supere el peso de la misma. Moviendo las palancas del control remoto se le imprime mayor velocidad a las hélices lo cual produce (supuestamente) un aumento del empuje. Dicha variación se refleja en la disminución de la lectura de la balanza. 
-Simultáneamente, gracias al dispositivo IR se medirá la velocidad angular con la cual gira el motor. 
+Se sujeta el motor gracias a una morsa y se coloca sobre la balanza. A priori la morsa es suficientemente pesada como para que el empuje del motor no supere el peso de la misma. Moviendo las palancas del control remoto se le imprime mayor velocidad a las hélices lo cual producirá un aumento del empuje. Dicha variación se refleja en la disminución de la lectura de la balanza. 
+Simultáneamente, gracias al dispositivo IR, se medirá la velocidad angular con la cual gira el motor. 
 
-Se tomarán medidas para 10 posiciones de la palanca.
-Se repetirá el experimento para los cuatro motores a fin de asegurar que el funcionamiento de los mismos es idéntico.
-
-
+Se tomarán medidas para distintas posiciones de la palanca.
 
 \subsubsection*{Obtención de la curva valor del comando I2C contra velocidad angular y de la curva valor del comando I2C contra fuerza}
 
 Luego de estudiados los comandos que se utiliza para comandar los motores y una vez que la BeagleBoard se encuentra capacitada para comunicarse a través de un protocolo I2C se puede proceder a desarrollar esta prueba. En la misma configuración que en los experimentos anteriores se procede a medir los valores de velocidad angular y empuje producidos por los motores. 
 
-Se tomaran medidas para todos los valores posibles del comando I2C, es decir entre 0 y 256.
-Se repite el experimento para los cuatro motores.
-
+Se tomaran medidas para todos los valores posibles del comando I2C, es decir entre 0 y 255.
 
 \section{Resultados y análisis}
 
 \subsubsection{Obtención de la curva fuerza contra velocidad angular}
 
-Luego de apoyar el motor y su soporte sobre la balanza se oprime el botón $"$tare". Por lo tanto el peso medido corresponde al opuesto de la fuerza realizada por los motores dividido la constante gravitacional de la Tierra ($9.81ms^{-2}$). Los resultados obtenidos se presentan la tabla \ref{tab:fuerza-vel}.
-
-
-
-
+Luego de apoyar el motor y su soporte sobre la balanza se oprime el botón ``tare". Por lo tanto el peso medido corresponde al opuesto de la fuerza realizada por los motores dividido la constante gravitacional de la Tierra ($9.81ms^{-2}$). Los resultados obtenidos se presentan la tabla \ref{tab:fuerza-vel}.
 
 \begin{table}[H]
 \centering
@@ -176,7 +167,7 @@ Luego de apoyar el motor y su soporte sobre la balanza se oprime el botón $"$ta
 \cline{1-2}
 355 & 100.6\\ \hline
 \cline{1-2}
- 360  & 1041.0  \\ \hline
+360  & 101.0  \\ \hline
 \cline{1-2}
 420 & 110.0\\ \hline
 \cline{1-2}
@@ -189,7 +180,7 @@ Luego de apoyar el motor y su soporte sobre la balanza se oprime el botón $"$ta
 \label{tab:fuerza-vel}
 \end{table}
 
-Así mismo se representa la curva Fuerza-Velocidad angular en la figura \ref{fig:grafica1}.
+Del mismo modo se representa la curva Fuerza-Velocidad angular en la figura \ref{fig:grafica1}.
 
 
 \begin{figure}
@@ -204,7 +195,7 @@ Así mismo se representa la curva Fuerza-Velocidad angular en la figura \ref{fig
 \end{figure}
 
 
-De la observación de los puntos obtenidos se infiere que la respuesta Fuerza-velocidad angular es del cuadrática o cúbica. Suponiendo ambos modelos se obtienen los coeficientes de los polinomios en ambos casos. A partir de dichos coeficientes se grafican las curvas teóricas en ambos casos a fin de compararlas con los puntos obtenidos experimentalmente. Del mismo modo se calcula el error cuadrático medio para ambos modelos propuestos. Los resultados obtenidos se presentan en la figura \ref{fig:grafica2}.
+De la observación de los puntos obtenidos se infiere que la respuesta Fuerza-velocidad angular es del tipo cuadrática o cúbica. Suponiendo ambos modelos se obtienen los coeficientes de los polinomios en ambos casos. A partir de dichos coeficientes se grafican las curvas teóricas en ambos casos a fin de compararlas con los puntos obtenidos experimentalmente. Del mismo modo se calcula el error cuadrático medio para ambos modelos propuestos. Los resultados obtenidos se presentan en la figura \ref{fig:grafica2}.
 
 
 \begin{figure}
@@ -218,20 +209,15 @@ De la observación de los puntos obtenidos se infiere que la respuesta Fuerza-ve
   \vspace{-10pt}
 \end{figure}
 
+Como se puede observar en la figura \ref{fig:grafica2} ambas curvas coinciden notablemente entre sí y con los datos experimentales. Por lo tanto podemos afirmar que cualquiera de los dos modelos es adecuado para representar la respuesta Fuerza-velocidad angular. Del mismo modo el error cuadrático medio entre los resultados obtenidos experimentalmente y los resultados predichos por cada modelo es, en ambos casos, 5.4743. Dicha constatación nos permite afirmar que trabajar con el modelo cúbico no nos aporta ninguna ventaja significativa. La razón de esta pequeña diferencia es que el coeficiente que multiplica al término $\omega^3$ es cinco órdenes de magnitud inferior que el coeficiente que multiplica al término $\omega^2$, logrando que el modelo cúbico termine pareciéndose, en definitiva, a un modelo cuadrático.\\
 
-
-Como se puede observar en la figura \ref{fig:grafica2} ambas curvas coinciden notablemente entre sí y con los datos experimentales. Por lo tanto podemos afirmar que cualqueira de los dos modelos es adecuado para representar la respuesta Fuerza-velocidad angular. Del mismo modo el error cuadrático medio entre los resultados obtenidos experimentalmente y los resultados predichos por cada modelo es 5.4743. Dicha constatación nos permite afirmar que trabajar con el modelo cúbico no nos aporta ninguna ventaja significativa. La razón de esta pequeña diferencia es que el coeficiente que multiplica al término $\omega^3$ es cinco órdenes de magnitud inferior que el coeficiente que multiplica al término $\omega^2$. 
-
-
-Con los parámetros obtenidos y asumiendo un modelo cuadrático podemos afirmar que la respuesta de los motores Fuerza-Velocdad angular tiene la forma de :
+Con los parámetros obtenidos y asumiendo un modelo cuadrático podemos afirmar que la respuesta de los motores Fuerza-Velocidad angular tiene la forma de:
 
 \begin{equation}
 3,7646 \times 10^{-5}\omega ^2 - 9,0535 \times 10^{-4}\omega +0.0170
 \end{equation}
 
 Donde las unidades del primer coeficiente son $Ns^2$, las del segundo son $Ns$ y las del término independiente son $N$.
-
-
 
 \end{document}
 
