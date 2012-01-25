@@ -55,27 +55,30 @@ Se realiza una serie de pruebas con el fin de caracterizar el acelerómetro de tr
 \section{Procedimiento}
 
 \subsection{No idealidades}
-Basados en la extensa literatura existente (Calibration of a MEMS inertial measurement unit, Isaac Slog, Peter Handel) sobre calibración de sensores de la tecnología MEMS, se encuentran que existen diversas no idealidades que afectan la lectura de los valores de aceleración registrados por el acelerómetro. Las no idealidades detectadas a considerar son:
+ Existen diversas no idealidades que afectan la lectura de los valores de aceleración registrados por el acelerómetro. Las no idealidades  a considerar basados en lo desarrollado por \cite{bib:calib_IMU} son:
 
 \begin{itemize}
-\item Relación entre aceleración y lectura del acelerómetro no lineal.
+\item Ruido inherente
+\item Relación entre aceleración real y lectura del acelerómetro no lineal.
 \item No ortogonalidad de los ejes
 \item Drift aleatorio
 \item Variación de las medidas con la temperatura
-\item Ruido inherente
+
 \end{itemize} 
 
+
+\subsubsection*{Ruido Inherente}
+Existe un ruido inherente del cual no nos preocuparemos en demasía ya que el mismo se modela como un proceso estocástico de distribución normal y media nula, como veremos luego. Por lo tanto, en esta etapa de calibración donde se tomarán muchas muestras y se promediarán se puede trabajar sin considerar este ruido.
+
 \subsubsection*{Relación no lineal}
-En la hoja de datos del acelerómetro MMA7260Q se declara que en cualquiera de los tres ejes los errores debido a una respuesta no lineal son en el peor caso $\pm$ 1.0\% del valor de fondo de escala. 
+En la hoja de datos del acelerómetro MMA7260Q se declara que en cualquiera de los tres ejes los errores debido a una respuesta no lineal son, en el peor caso, $\pm$ 1.0\% del valor de fondo de escala. 
 
 Por lo tanto se decide considerar para el acelerómetro una respuesta lineal.
 
 \subsubsection*{No ortogonalidad de los ejes}
-Debido a defectos de construcción los ejes de sensibilidad del dispositivo pueden no ser ortogonales. Evidentemente si no se considera este aspecto se tendrá un error, que puede ser importante, en las medidas de aceleración. A modo de ejemplo, el acelerómetro en reposo colocado horizontalmente debería medir una aceleración igual a g en el eje vertical y cero en los ejes perpendiculares al primero. Debido a la no ortogonalidad del dispositivo se pueden tener entonces medidas que no coincidan con la realidad. Se modela esta no idealidad considerando la siguiente relación entre la aceleración medida en cada eje de sensibilidad del acelerómetro y la aceleración medida en el sistema solidario a la plataforma:
+Debido a defectos de construcción los ejes de sensibilidad del dispositivo pueden no ser ortogonales. Evidentemente si no se considera este aspecto se tendrá un error que puede ser importante en las medidas de aceleración. A modo de ejemplo, el acelerómetro en reposo colocado horizontalmente debería medir una aceleración igual a g en el eje vertical y cero en los ejes perpendiculares al primero. Debido a la no ortogonalidad del dispositivo se pueden tener entonces medidas que no coincidan con la realidad. Se modela esta no idealidad considerando la siguiente relación entre la aceleración medida en cada eje de sensibilidad del acelerómetro y la aceleración medida en un sistema solidario a la plataforma:
 
-\begin{huge}
-AGREGAR DIBUJO DE LA ESFERA CON LAS ROTACIONES RICO RICO
-\end{huge}
+
 
 $$\mathbf{a}^p=T^p_a \mathbf{a}^a, \quad  T^p_a=\left( \begin{matrix}
 1 &-\alpha_{yz} &\alpha_{zy}\\
@@ -86,80 +89,185 @@ $$\mathbf{a}^p=T^p_a \mathbf{a}^a, \quad  T^p_a=\left( \begin{matrix}
 
 Donde:
 \begin{itemize}
-\item $\alpha_{ij}$ es la rotación del  i-ésimo eje de sensibilidad del acelerómetro sobre el j-ésimo eje del sistema de la plataforma.
+\item $\alpha_{ij}$ es la rotación del  i-ésimo eje de sensibilidad del acelerómetro sobre el j-ésimo eje del sistema de la plataforma. Dichas rotaciones se ven representadas en la figura \ref{fig:ejes}.
 \item $\mathbf{a}^a$ es el vector de aceleración medido por el acelerómetro.
 \item $\mathbf{a}^p$ es el vector de aceleración medido en el sistema solidario a la plataforma.
 \end{itemize}
 
-Definiendo el sistema de la plataforma $[x^p,y^p,z^p]$ de forma que el eje de coordenadas $x^p$ coincida con el eje $x^a$ (del sistema del acelerómetro $[x^a,y^a,z^a]$) y definiendo el eje $y^p$ de forma que el eje $y^p$ se encuentra en el plano definido por $x^a$ e $y^a$, la matriz se puede reducir a la siguiente forma como demuestra D. H. Titterton and J. L. Weston, "Strapdown Inertial
-Navigation Technology," 2 ed: Institution of Engineering and
-Technology 2004.
-
-$$T^p_a=\left( \begin{matrix}
-1 &-\alpha_{yz} &\alpha_{yz}\\
-0 &1& -\alpha_{zx} \\
-0&0 &1\\
-\end{matrix} 
-\right)$$
+\begin{figure}
+  \vspace{-20pt}
+  \begin{center}
+    \includegraphics[width=0.5\textwidth]{./Pics/ejes_acc.jpg}
+  \end{center}
+  \vspace{-20pt}
+  \caption{Rotaciones entre los ejes de la plataforma y del acelerómetro}
+  \label{fig:ejes}
+  \vspace{-10pt}
+\end{figure}
 
 Estos parámetros son constantes ya que su origen es puramente de construcción y se puede asumir que las orientaciones se mantendrán durante la vida útil del sensor.
 
-\subsection*{Drift aleatorio y variación de las medidas con la temperatura}
+\subsubsection*{Drift aleatorio y variación de las medidas con la temperatura}
 
 La salida del acelerómetro es una tensión que luego es convertida a un nivel digital gracias a un conversor AD. Asumiendo un modelo lineal, la relación entre la aceleración y la medida realizada se puede expresar matricialmente de la siguiente forma:
  
-$$\tilde{\mathbf{a}}^a = K_a \mathbf{a}^a + \mathbf{b}_a$$ donde $K_a$ es una matriz que representa el factor de escala para convertir del valor digital a una aceleración correspondiente. $\mathbf{b}_a$ no es otra cosa que un término independiente para corregir la posición del cero, que no necesariamente corresponde a la mitad de la escala digital. Estos dos parámetros poseen algunas de las fuentes de error que resulta más difícil de corregir. Resulta que dichos parámetros varían con la temperatura, por lo tanto se pueden observar algunas variaciones según la estación del año o el momento del día. A su vez, dichos parámetros poseen un drift aleatorio. 
+$$\tilde{\mathbf{a}}^a = K_a \mathbf{a}^a + \mathbf{b}_a$$ donde $K_a$ es una matriz diagonal que representa el factor de escala para convertir del valor digital a una aceleración correspondiente. $\mathbf{b}_a$ no es otra cosa que un término independiente para corregir la posición del cero, que no necesariamente corresponde a la mitad de la escala digital. Estos dos parámetros poseen algunas de las fuentes de error que resulta más difícil de corregir. Resulta que dichos parámetros varían con la temperatura, por lo tanto se pueden observar algunas variaciones según la estación del año o el momento del día. A su vez, dichos parámetros poseen un drift aleatorio. 
 
 Podemos pensar estos parámetros como un valor estático más un valor relativamente pequeño que varía según estas descripciones. 
 En una primera instancia intentaremos caracterizar los valores estáticos.   
 
-\subsection*{Ruido Inherente}
-Existe además un ruido inherente del cual no nos preocuparemos en demasía ya que el mismo se modela como un proceso estocástico de distribución normal y media nula. Por lo tanto, en esta etapa de calibración donde se tomarán muchas muestras y se promediarán se puede trabajar sin considerar este ruido.
+\subsubsection{Modelo del acelerómetro}
 
-\subsection{Determinación de parámetros estáticos}
+A partir del anális realizado se puede concluir que el modelo de acelerómetro que se considerará es el siguiente:
 
-Como se desprende de la sección anterior, para poder calibrar el acelerómetro se deben determinar nueve parámetros. Por dicho motivo, se precisan realizar al menos 9 medidas diferentes. Para mejorar los resultados se trabajará con 18 medidas y se procederá a determinar los parámetros que minimizan el error cuadrático medio entre los valores efectivamente medidos y los valores teóricos. 
-
-Dichas medidas serán:
-\begin{itemize}
-\item Estáticas (Diferentes orientaciones)
-\item Dinámicas (Movimientos circulares a distintos radios)
-\end{itemize}
-
-\subsubsection*{Preparación}
-Para realizar una buena calibración es muy importante contar con una figura geométrica en forma de paralelepípedo de forma de poder solidarizar la IMU a dicho objeto. De esta forma nos aseguramos que no se introducen errores a la hora de orientar un eje en una dirección particular. Del mismo modo, es ideal disponer de una superficie perpendicular a la vertical. Con dicho motivo se precisará una mesa nivelable y un nivel. 
-
-\subsubsection*{Medidas estáticas}
-En reposo el acelerómetro medirá una fuerza igual a \textit{g} en la dirección vertical y en el sentido radial saliente de la Tierra. En cada uno de los ejes de sensibilidad del acelerómetro se medirá la proyección ortogonal de dicho vector gravedad sobre cada eje. De esta forma, con distintas orientaciones se obtendrá una descomposición distinta. Se repetirán las medidas en 9 direcciones distintas. 
-
-\subsubsection*{Medidas dinámicas}
-Utilizando un dispositivo que gire a velocidad constante y conocida se puede determinar la aceleración centrípeta de un cuerpo solidario a dicho dispositivo a una cierta distancia del eje de giro. 
-
-A priori, la forma más sencilla de realizar dichas medidas es utilizando un tocadisco. Sin embargo este aparato tiene la desventaja que las velocidades angulares son relativamente pequeñas y por ende no se logran aceleraciones centrípetas mayores que \textit{g}. Por lo tanto a la hora de realizar la calibración se tendrán muchos puntos en el rango $\left[-g:g\right]$ y ninguno por fuera de este intervalo. El rango del acelerómetro puede ser regulado entre $\pm2g$,$\pm4g$ y $\pm6g$. Es de interés obtener aceleraciones mayores a \textit{g}, y por lo tanto queda descartada la opción del tocadisco.
-
-Una alternativa sería utilizar directamente un motor, cuyas características se conozcan en forma precisa.
-
-Una posible alternativa es utilizar el dispositivo construido por el grupo PI. En el caso de que conocieran la velocidad con la que gira el dispositivo tendríamos el problema resuelto.  
-
+$$\tilde{\mathbf{a^a}}=K_a(T_a^p)^{-1}\mathbf{a^p}+b_a$$
 \subsection{Caracterización de las no idealidades variables}
 
-Luego de dicha calibración resta a determinar dos parámetros de los acelerómetros. 
+Previo a la calibración de los parámetros estáticos parece interesante estudiar una serie ``larga" de muestras. En particular se tomará una hora de muestras a una tasa de muestreo de 100Hz. Estos datos serán útiles para la determinación de dos no idealidades:  
 \begin{itemize}
 \item Ruido inherente
 \item Drift aleatorio
 \end{itemize}
 
-\subsubsection*{Ruido inherente}
-El ruido en las medidas del acelerómetro se modela como gaussiano de media nula. Para obtener dichos parámetros se realizan medidas de 1 minuto de duración en tres días distintos con el acelerómetro estático con el eje z alineado con la vertical. 
 
-A partir de dichas medidas se determina la potencia del ruido.
+\subsection{Determinación de parámetros estáticos}
 
-\subsubsection*{Drift aleatorio}
-
-En la misma configuración que el experimento anterior, se realiza una medida durante 12hs consecutivas. 
-
-Se analizarán dichas medidas a fin de caracterizar el drift máximo.
+Como se desprende de la sección anterior, para poder calibrar el acelerómetro se deben determinar nueve parámetros. Por dicho motivo, se precisan realizar al menos 12 medidas diferentes. Para mejorar los resultados se trabajará con 15 medidas y se procederá a determinar los parámetros que minimizan el error cuadrático medio entre los valores efectivamente medidos y los valores teóricos. 
 
 
 
+\subsubsection*{Preparación}
+Para realizar una buena calibración es muy importante contar con una figura geométrica en forma de paralelepípedo de forma de poder solidarizar la IMU a dicho objeto. De esta forma nos aseguramos que no se introducen errores a la hora de orientar un eje en una dirección particular. Del mismo modo, es ideal disponer de una superficie perpendicular a la vertical. El prisma que se utilizó fue un cubo de lapacho, los ángulos del mismo son prácticamente rectos difiriendo a lo sumo un grado. Se construyo una plataforma que puede girar sobre un eje. A su vez, es posible ajustar el dispositivo de forma de asegurar que dicho eje se encuentre en posición horizontal. Para realizar las 15 medidas se irá modificando el ángulo de la plataforma. Dicho ángulo puede calcularse como $\arcsin(\frac{b-a}{c})$. Donde las distancias son las indicadas en la figura \ref{fig: mesa}.
+
+\subsubsection*{Medidas a realizar}
+En reposo el acelerómetro medirá una fuerza igual a \textit{g} en la dirección vertical y en el sentido radial saliente de la Tierra. En cada uno de los ejes de sensibilidad del acelerómetro se medirá la proyección ortogonal de dicho vector gravedad sobre cada eje. De esta forma, con distintas orientaciones se obtendrá una descomposición distinta. Se repetirán las medidas en 12 direcciones distintas. 
+
+
+\section{Resultados y análisis}
+\subsection{Medida estática durante una hora}
+
+En la figura \ref{fig:1hora} pueden observarse los datos crudos obtenidos por la IMU, tanto las aceleraciones registradas en los tres ejes, como las velocidades angulares. 
+
+\begin{figure}
+  \vspace{-20pt}
+  \begin{center}
+    \includegraphics[width=0.8\textwidth]{./Pics/1hora.jpg}
+  \end{center}
+  \vspace{-20pt}
+  \caption{Aceleraciones y velocidades angulares registradas por la IMU orientada con el eje z verticalmente y en reposo}
+  \label{fig:1hora}
+  \vspace{-10pt}
+\end{figure}
+
+En lo que respecta a los acelerómetros se observa que dos medidas corresponden a un valor cercano a 510, mientras que la aceleración medida en z es cercana a 570. El eje z es el ubicado verticalmente, por lo tanto en dicha dirección se debería leer una medida equivalente a g, mientras que en los otros dos ejes se debería leer un valor que corresponde a aceleración cero. Más allá de estas consideraciones, que permiten simplemente demostrar cierta coherencia entre lo esperado y lo obtenido,podemos afirmar que el ruido observado es asociable a un ruido blanco de media nula. Por otra parte no parece haber una deriva en las medidas realizadas. 
+
+A partir de dichas constataciones se podrá afirmar que trabajar con el valor promedio de una tirada de medidas arrojará un resultado muy similiar al que se obtendría trabajando con la tirada completa. 
+
+
+\subsection{Medias estáticas para el acelerómetro}
+
+
+Como se aclaró en la oportunidad anterior se trabajará con el promedio de las aceleraciones medidas en una serie de datos de un minuto de duración para cada orientación. A su vez, se miden las distancias indicadas en la figura \ref{fig: mesa}. Además de variar el ángulo de la mesa, se rotará el prisma de forma de realizar una medida con cada eje perpendicular al plano de la mesa. Los resultados obtenidos se presentan en la tabla \ref{tab: acc} donde orientación y significa el eje y perpendicular al plano de la mesa. Lo mismo sucede para orientación z y -x. La aceleración medida es un número sin unidades entre 0 y 1024.
+
+
+\begin{table}[H]
+\centering
+\begin{tiny}
+
+
+
+
+\begin{tabular}{p{30pt}|p{30pt}|p{30pt}|p{30pt}|p{30pt}|p{30pt}|p{30pt}|p{30pt}|}
+\hline
+\multicolumn{2}{|p{75pt}|}{\cellcolor[gray]{0.8} \textbf{Posición}}  &\multicolumn{2}{|p{75pt}|}{\cellcolor[gray]{0.8} \textbf{Orientación y}}  & \multicolumn{2}{|p{75pt}|}{\cellcolor[gray]{0.8} \textbf{Orientación z}}&\multicolumn{2}{|p{75pt}|}{\cellcolor[gray]{0.8} \textbf{Orientación -x}} \\
+\hline 
+\multicolumn{1}{|p{30pt}|}{\cellcolor[gray]{0.6} \textbf{Distancias (cm)}} & \multicolumn{1}{|p{30pt}|}{\cellcolor[gray]{0.6} \textbf{Ángulo(°)}} &\multicolumn{1}{|p{30pt}|}{\cellcolor[gray]{0.6} \textbf{a medida}}  &
+
+\multicolumn{1}{|p{30pt}|}{a teórica ($ms^{-2})$ }&\multicolumn{1}{|p{30pt}|}{\cellcolor[gray]{0.6} \textbf{a medida}}  &\multicolumn{1}{|p{30pt}|}{a teórica ($ms^{-2})$ }&\multicolumn{1}{|p{30pt}|}{\cellcolor[gray]{0.6} \textbf{a medida}}  &\multicolumn{1}{|p{30pt}|}{a teórica ($ms^{-2})$ } \\
+\hline
+
+\multicolumn{1}{|p{30pt}|}{a=36; b=36; c=37.4 } & \multicolumn{1}{|p{30pt}|}{$\alpha=0$ } &\multicolumn{1}{|p{30pt}|}{(507.60; 569.51; 508.75)}  &\multicolumn{1}{|p{30pt}|}{(0; 9.81; 0) }&\multicolumn{1}{|p{30pt}|}{(507.67; 507.68; 571.48) }&
+
+\multicolumn{1}{|p{30pt}|}{(0; 0; 9.81)}&\multicolumn{1}{|p{30pt}|}{(443.99; 506.45; 509.00) }  &\multicolumn{1}{|p{30pt}|}{(-9.81; 0; 0) } \\
+\hline
+
+\multicolumn{1}{|p{30pt}|}{a=36; b=23; c=37.4 } & \multicolumn{1}{|p{30pt}|}{$\alpha=20.34$ } &\multicolumn{1}{|p{30pt}|}{(507.47; 565.34; 486.63)}  &\multicolumn{1}{|p{30pt}|}{(0; 9.20; -3.41) }&\multicolumn{1}{|p{30pt}|}{(485.17; 507.53; 567.51) }  &\multicolumn{1}{|p{30pt}|}{(-3.41;  0; 9.20)}&\multicolumn{1}{|p{30pt}|}{(447.86; 528.42; 508.81) }  &\multicolumn{1}{|p{30pt}|}{(-9.20; 3.41; 0) } \\
+\hline
+
+\multicolumn{1}{|p{30pt}|}{a=35.8; b=9.7; c=37.4 } & \multicolumn{1}{|p{30pt}|}{$\alpha=44.26$ } &\multicolumn{1}{|p{30pt}|}{(507.79; 551.16; 464.84)}  &\multicolumn{1}{|p{30pt}|}{(0; 7.03; -6.85) }&\multicolumn{1}{|p{30pt}|}{(462.83; 507.35; 553.34) }  &\multicolumn{1}{|p{30pt}|}{(-6.85; 0; 7.03)}&\multicolumn{1}{|p{30pt}|}{(443.99; 506.46; 509.00) }  &\multicolumn{1}{|p{30pt}|}{(-7.03; 6.85; 0) } \\
+\hline
+
+\multicolumn{1}{|p{30pt}|}{a=35.6; b=3.5; c=37.4 } & \multicolumn{1}{|p{30pt}|}{$\alpha=59.13$ } &\multicolumn{1}{|p{30pt}|}{(507.96; 538.2; 454.74)}  &\multicolumn{1}{|p{30pt}|}{(0; 5.03; -8.42) }&\multicolumn{1}{|p{30pt}|}{(452.76; 507.02; 540.61) }  &\multicolumn{1}{|p{30pt}|}{(-8.42; 0; 5.03)}&\multicolumn{1}{|p{30pt}|}{(475.02; 560.34; 508.57) }  &\multicolumn{1}{|p{30pt}|}{(-5.03; 8.42; 0)} \\
+\hline
+
+\multicolumn{1}{|p{30pt}|}{a=35.6; b=0; c=37.4 } & \multicolumn{1}{|p{30pt}|}{$\alpha=72.16$ } &\multicolumn{1}{|p{30pt}|}{(507.34; 525.37; 449.04)}  &\multicolumn{1}{|p{30pt}|}{(0; 3.01; -9.34) }&\multicolumn{1}{|p{30pt}|}{(446.98; 506.91; 527.87) }  &\multicolumn{1}{|p{30pt}|}{(-9.34; 0; 3.01)}&\multicolumn{1}{|p{30pt}|}{(487.84; 566.23; 508.66) }  &\multicolumn{1}{|p{30pt}|}{(-3.01;  9.3379; 0) } \\
+\hline
+
+
+
+
+\end{tabular}
+\caption{Medidas de las distancias a,b y c, ángulos de inclinación calculados, aceleraciones medidas y aceleraciones teóricas en los tres ejes de la plataforma}
+\label{tab:  acc}
+\end{tiny}
+
+
+
+\end{table} 
+
+El problema de calibración consiste en encontrar el vector de parámetros $\theta$ que mejor ajusta las medidas obtenidas a los valores teóricos de aceleración. El vector $\theta$ se compone de los elementos de la diagonal de la matriz $K_a$, de los elementos de $b_a$ y de los $\alpha_{ij}$ de la matriz $T_a^p$. Es decir: $$\theta =\left[ k_{ax} , k_{ay} , k_{az} ,b_{ax} ,b_{ay} ,b_{az}, \alpha_{yz} , \alpha_{zy} , \alpha_{xz} , \alpha_{zx} , \alpha_{xy} , \alpha_{yx} \right]$$
+
+Como criterio de ajuste se decide minimizar la suma de los cuadrados de las diferencia entre la aceleración teórica y la aceleración medida. Dicho problema se puede expresar matemáticamente como:
+
+$$\theta \quad : \quad  min \left\lbrace \sum_{i=1}^{M} {\vert \vert\tilde{\mathbf{a}}_{i}^p-T_a^pK_a^{-1}\left(\tilde{\mathbf{a}}_{i}^a -\mathbf{b}_a \right)\vert \vert} \right\rbrace$$
+donde M es la cantidad de medidas realizadas, $\tilde{\mathbf{a}}_{i}^p$ los valores de aceleración teóricos en cada eje de la plataforma según la posición y orientación de la IMU y $\tilde{\mathbf{a}}_{i}^a$ los valores obtenidos de la IMU.
+Las relaciones entre los parámetros a determinar $\mathbf{no}$ es lineal, por lo tanto se utilizará para su determinación un algoritmo de mínimos cuadrados no lineales. \emph{Matlab}  provee un algoritmo con dicho fin: \emph{lsqnonlin}. El algoritmo precisa además una semilla para comenzar, dicha semilla debe ser bien elegida de forma de que el mínimo encontrado por el algoritmo sea el deseado. Sucede que dicho algoritmo encuentra mínimos locales. Si la semilla proporcionada se encuentra muy lejos de la solución que en realidad interesa, se puede obtener una solución que no sirva. El rango de aceleraciones que se maneja es de $\pm 6g$, mientras que los valores digitales del acelerómetro se encuentran entre 0 y 1024. Idealmente  una aceleración cero corresponde a 512 y la ganancia debe ser $\frac{512}{6g}$ para los tres ejes. Finalmente, los ángulos se suponen pequeños, por lo tanto una semilla válida parece ser: $$\theta_0=\left[ \frac{512}{6g}, \frac{512}{6g}, \frac{512}{6g}, 512, 512, 512, 0, 0, 0, 0, 0, 0 \right]$$En una primera llamada al algoritmo se obtienen los 12 parámetros. A priori parecería que se podría seguir trabajando con estos parámetros. Sin embargo, se constata que hay dos residuos ( correspondientes a las medidas de aceleración en los ejes -x e y  en la novena medida) que tienen valor 2.14 y 5.31, mientras que la suma de los cuadrados de los residuos alcanza un valor de 42.39. Esta medida aporta más de la mitad a la suma de los cuadrados de los errores. Por lo tanto parece prudente considerarla como un \emph{outlier} y descartarla. Se vuelve a realizar el ajuste sin considerar esta medida. En esta segunda oportunidad la suma de los errores al cuadrado se ve reducida enormemente, alcanzando un valor de 0.02. 
+
+Esta reducción confirma que el valor descartado es un \emph{outlier}, ya que al no tener que ajustar los parámetros considerando dicho valor el error total se reduce considerablemente. Es interesante realizar nuevamente dicha medida. (¿Vale la pena hacerlo?)
+ %TODO. 
+
+
+
+Los parámetros que minimizan la suma de los errores al cuadrado son los siguientes:
+
+\begin{scriptsize}
+
+
+
+
+
+$$\theta_0=\left[ 6.4932 \quad 6.3747 \quad 6.3894 \quad 507.5670 \quad 506.9107 \quad508.6760 \quad -0.0002 \quad 0.0021 \quad-0.0054 \quad 0.0130 \quad -0.0006 \quad0.0014 \right]$$
+\end{scriptsize}
+
+
+Una vez obtenidos estos parámetros se grafican en la imagen \ref{fig:convertidas} las medidas de aceleración obtenidas para algunos casos. Por simpleza en el análisis se toman los tres casos en los cuales $\alpha = 0$. Puede verse que las aceleraciones medidas se corresponden en muy buena forma con las aceleraciones teóricas, sin embargo las mismas poseen un error. Este error medido en la aceleración se integrará dos veces a la hora de obtener la posición produciendo una deriva en la posición. Es importante caracterizar esta deriva, ya que nos permite saber durante cuanto tiempo podemos utilizar la medida del acelerómetro sin necesidad de integrarla con la de otro sensor (por ejemplo un GPS). Dichos errores pueden verse representados gráficamente en la figura \ref{fig:errores}
+
+\begin{figure}[H] %{l}{1.11\textwidth}
+  \vspace{-20pt}
+  \begin{center}
+    \subfloat[Orientación y] {\includegraphics[width=0.37\textwidth]{./Pics/y.jpg}}
+    \subfloat[Orientación z] {\includegraphics[width=0.37\textwidth]{./Pics/z.jpg}}
+    \subfloat[Orientación -x] {\includegraphics[width=0.37\textwidth]{./Pics/-x.jpg}}    
+  \end{center}
+  \vspace{-20pt}
+  \caption{Medidas de aceleración en el sistema de la plataforma. Caso $\alpha = 0$}
+  \label{fig:convertidas}
+  \vspace{-10pt}
+\end{figure}
+
+\begin{figure}[H] %{l}{1.11\textwidth}
+  \vspace{-20pt}
+  \begin{center}
+    \subfloat[Errores en las direcciones x,  z] {\includegraphics[width=0.37\textwidth]{./Pics/errory.jpg}}
+    \subfloat[Errores en las direcciones x,  y] {\includegraphics[width=0.37\textwidth]{./Pics/errorz.jpg}}
+    \subfloat[Errores en las direcciones y,  z] {\includegraphics[width=0.37\textwidth]{./Pics/error-x.jpg}}    
+  \end{center}
+  \vspace{-20pt}
+  \caption{Errores en la posición en los ejes en los cuales no hay aceleración Caso $\alpha = 0$}
+  \label{fig:errores}
+  \vspace{-10pt}
+\end{figure}
+
+
+De los resultados gráficos obtenidos parece razonable pensar que se puede trabajar con el acelerómetro sin corrección del GPS durante 10 segundos aproximadamente, ya que en estas condiciones el error en la posición es inferior a los 2 metros.  
 \end{document}
