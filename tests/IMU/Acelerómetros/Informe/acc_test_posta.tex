@@ -240,7 +240,34 @@ $$\theta_0=\left[ 6.4932 \quad 6.3747 \quad 6.3894 \quad 507.5670 \quad 506.9107
 \end{scriptsize}
 
 
-Una vez obtenidos estos parámetros se grafican las medidas de aceleración obtenidas para algunos casos. En particular y por simpleza se toman los tres casos en los cuales $\alpha = 0$. 
+Una vez obtenidos estos parámetros se grafican en la imagen \ref{fig:convertidas} las medidas de aceleración obtenidas para algunos casos. Por simpleza en el análisis se toman los tres casos en los cuales $\alpha = 0$. Puede verse que las aceleraciones medidas se corresponden en muy buena forma con las aceleraciones teóricas, sin embargo las mismas poseen un error. Este error medido en la aceleración se integrará dos veces a la hora de obtener la posición produciendo una deriva en la posición. Es importante caracterizar esta deriva ya que nos permite saber durante cuanto tiempo podemos utilizar la medida del acelerómetro sin necesidad de integrarla con la de otro sensor (Por ejemplo un GPS). Dichos errores pueden verse representados graficamente en la figura \ref{fig:errores}
+
+\begin{wrapfigure}{l}{1.11\textwidth}
+  \vspace{-20pt}
+  \begin{center}
+    \subfloat[Orientación y] {\includegraphics[width=0.37\textwidth]{./Pics/y.jpg}}
+    \subfloat[Orientación z] {\includegraphics[width=0.37\textwidth]{./Pics/z.jpg}}
+    \subfloat[Orientación -x] {\includegraphics[width=0.37\textwidth]{./Pics/-x.jpg}}    
+  \end{center}
+  \vspace{-20pt}
+  \caption{Medidas de aceleración en el sistema de la plataforma. Caso $\alpha = 0$}
+  \label{fig:convertidas}
+  \vspace{-10pt}
+\end{wrapfigure}
+
+\begin{wrapfigure}{l}{1.11\textwidth}
+  \vspace{-20pt}
+  \begin{center}
+    \subfloat[Errores en las direcciones x,  z] {\includegraphics[width=0.37\textwidth]{./Pics/errory.jpg}}
+    \subfloat[Errores en las direcciones x,  y] {\includegraphics[width=0.37\textwidth]{./Pics/errorz.jpg}}
+    \subfloat[Errores en las direcciones y,  z] {\includegraphics[width=0.37\textwidth]{./Pics/error-x.jpg}}    
+  \end{center}
+  \vspace{-20pt}
+  \caption{Errores en la posición en los ejes en los cuales no hay aceleración Caso $\alpha = 0$}
+  \label{fig:errores}
+  \vspace{-10pt}
+\end{wrapfigure}
 
 
+De los resultados gráficos obtenidos parece razonable pensar que se puede trabajar con el acelerómetro sin corrección del GPS durante 10 segundos aproximadamente ya que en estas condiciones el error en la posición es inferior a los 2 metros.  
 \end{document}
