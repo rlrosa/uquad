@@ -1,5 +1,5 @@
 function varargout = lazo_abierto(varargin)
-global ti tf x0 y0 z0 psi0 phi0 theta0 vq10 vq20 vq30 wq10 wq20 wq30 Variables indice
+global t ti tf x0 y0 z0 psi0 phi0 theta0 vq10 vq20 vq30 wq10 wq20 wq30 Variables indice w1 w2 w3 w4
 % LAZO_ABIERTO MATLAB code for lazo_abierto.fig
 %      LAZO_ABIERTO, by itself, creates a new LAZO_ABIERTO or raises the existing
 %      singleton*.
@@ -23,7 +23,7 @@ global ti tf x0 y0 z0 psi0 phi0 theta0 vq10 vq20 vq30 wq10 wq20 wq30 Variables i
 
 % Edit the above text to modify the response to help lazo_abierto
 
-% Last Modified by GUIDE v2.5 11-Jan-2012 15:31:48
+% Last Modified by GUIDE v2.5 25-Jan-2012 17:17:21
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -415,7 +415,50 @@ function pushbutton1_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
     
+    assignin('base','M',1);
+    %A partir de los tiempos establecidos armo la linea de tiempo
+    ti=evalin('base','ti');
+    tf=evalin('base','tf');
+
+    time=linspace(ti,tf,(tf-ti)*5);
+    assignin('base','t',time);
+
+    %A partir de la situación de vuelo definida establezco las Acciones a tomar
+    %%%%Entradas%%%%%
+    wang1=zeros(size(time));
+    wang2=zeros(size(time));
+    wang3=zeros(size(time));
+    wang4=zeros(size(time));
+
+    ind=evalin('base','indice');
+    if (ind==2)
+        
+        m=evalin('base','M');
+        psio=evalin('base','psi0');
+        phio=evalin('base','phi0');
+        
+        fuerzam=9.81*m/(4*cos(psio)*cos(phio));
+        
+    syms x
     
+    val=solve(3.7646e-5*x^2-9.0535e-4*x+0.0170-fuerzam);
+    val=eval(val);
+        if (val(1)>=0)
+            val=val(1);
+        else val=val(2);
+        end
+        val
+        
+        wang1(time>(ti-1))=val;
+        wang2(time>(ti-1))= val;
+        wang3(time>(ti-1))= val;
+        wang4(time>(ti-1))= val;
+
+    end
+    assignin('base','w1',wang1);
+    assignin('base','w2',wang2);
+    assignin('base','w3',wang3);
+    assignin('base','w4',wang4);
     %Calculo las velocidades iniciales en el sistema del quadricoptero
     determinar_vel;
     
@@ -464,3 +507,10 @@ x=0;
 y=0;
 z=0;
 grid on;
+
+
+% --- Executes during object creation, after setting all properties.
+function uipanel2_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to uipanel2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
