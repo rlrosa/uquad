@@ -3,23 +3,7 @@ Model {
   Version		  7.6
   MdlSubVersion		  0
   GraphicalInterface {
-    NumRootInports	    8
-    Inport {
-      BusObject		      ""
-      Name		      "T1"
-    }
-    Inport {
-      BusObject		      ""
-      Name		      "T2"
-    }
-    Inport {
-      BusObject		      ""
-      Name		      "T3"
-    }
-    Inport {
-      BusObject		      ""
-      Name		      "T4"
-    }
+    NumRootInports	    4
     Inport {
       BusObject		      ""
       Name		      "w1"
@@ -68,7 +52,7 @@ Model {
       Name		      "z"
     }
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.70"
+    ComputedModelVersion    "1.73"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -88,9 +72,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "pater"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Sat Dec 24 22:32:06 2011"
-  RTWModifiedTimeStamp	  246666676
-  ModelVersionFormat	  "1.%<AutoIncrement:70>"
+  LastModifiedDate	  "Wed Jan 25 17:25:52 2012"
+  RTWModifiedTimeStamp	  249413148
+  ModelVersionFormat	  "1.%<AutoIncrement:73>"
   ConfigurationManager	  "None"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -855,46 +839,14 @@ Model {
     TiledPaperMargins	    [1.270000, 1.270000, 1.270000, 1.270000]
     TiledPageScale	    1
     ShowPageBoundaries	    off
-    ZoomFactor		    "51"
+    ZoomFactor		    "97"
     ReportName		    "simulink-default.rpt"
-    SIDHighWatermark	    "409"
-    Block {
-      BlockType		      Inport
-      Name		      "T1"
-      SID		      "352"
-      Position		      [95, 458, 125, 472]
-      IconDisplay	      "Port number"
-    }
-    Block {
-      BlockType		      Inport
-      Name		      "T2"
-      SID		      "353"
-      Position		      [95, 493, 125, 507]
-      Port		      "2"
-      IconDisplay	      "Port number"
-    }
-    Block {
-      BlockType		      Inport
-      Name		      "T3"
-      SID		      "354"
-      Position		      [95, 528, 125, 542]
-      Port		      "3"
-      IconDisplay	      "Port number"
-    }
-    Block {
-      BlockType		      Inport
-      Name		      "T4"
-      SID		      "355"
-      Position		      [95, 563, 125, 577]
-      Port		      "4"
-      IconDisplay	      "Port number"
-    }
+    SIDHighWatermark	    "480"
     Block {
       BlockType		      Inport
       Name		      "w1"
       SID		      "356"
       Position		      [90, 598, 120, 612]
-      Port		      "5"
       IconDisplay	      "Port number"
     }
     Block {
@@ -902,7 +854,7 @@ Model {
       Name		      "w2"
       SID		      "357"
       Position		      [90, 633, 120, 647]
-      Port		      "6"
+      Port		      "2"
       IconDisplay	      "Port number"
     }
     Block {
@@ -910,7 +862,7 @@ Model {
       Name		      "w3"
       SID		      "358"
       Position		      [90, 668, 120, 682]
-      Port		      "7"
+      Port		      "3"
       IconDisplay	      "Port number"
     }
     Block {
@@ -918,8 +870,300 @@ Model {
       Name		      "w4"
       SID		      "359"
       Position		      [90, 703, 120, 717]
-      Port		      "8"
+      Port		      "4"
       IconDisplay	      "Port number"
+    }
+    Block {
+      BlockType		      SubSystem
+      Name		      "Subsystem"
+      SID		      "421"
+      Ports		      [1, 1]
+      Position		      [300, 217, 415, 293]
+      MinAlgLoopOccurrences   off
+      PropExecContextOutsideSubsystem off
+      RTWSystemCode	      "Auto"
+      FunctionWithSeparateData off
+      Opaque		      off
+      RequestExecContextInheritance off
+      MaskHideContents	      off
+      System {
+	Name			"Subsystem"
+	Location		[0, 53, 1366, 768]
+	Open			off
+	ModelBrowserVisibility	off
+	ModelBrowserWidth	200
+	ScreenColor		"white"
+	PaperOrientation	"landscape"
+	PaperPositionMode	"auto"
+	PaperType		"A4"
+	PaperUnits		"centimeters"
+	TiledPaperMargins	[1.270000, 1.270000, 1.270000, 1.270000]
+	TiledPageScale		1
+	ShowPageBoundaries	off
+	ZoomFactor		"100"
+	Block {
+	  BlockType		  Inport
+	  Name			  "w"
+	  SID			  "423"
+	  Position		  [205, 183, 235, 197]
+	  IconDisplay		  "Port number"
+	}
+	Block {
+	  BlockType		  Sum
+	  Name			  "Add"
+	  SID			  "416"
+	  Ports			  [3, 1]
+	  Position		  [525, 204, 555, 236]
+	  Inputs		  "+++"
+	  InputSameDT		  off
+	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
+	  SaturateOnIntegerOverflow off
+	}
+	Block {
+	  BlockType		  Constant
+	  Name			  "Constant"
+	  SID			  "417"
+	  Position		  [420, 330, 450, 360]
+	  Value			  "0.0170"
+	}
+	Block {
+	  BlockType		  Gain
+	  Name			  "Gain"
+	  SID			  "418"
+	  Position		  [410, 152, 460, 188]
+	  Gain			  "3.7646e-5"
+	  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
+	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
+	  SaturateOnIntegerOverflow off
+	}
+	Block {
+	  BlockType		  Gain
+	  Name			  "Gain1"
+	  SID			  "419"
+	  Position		  [420, 255, 450, 285]
+	  Gain			  "-9.0535e-4"
+	  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
+	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
+	  SaturateOnIntegerOverflow off
+	}
+	Block {
+	  BlockType		  Product
+	  Name			  "Product"
+	  SID			  "420"
+	  Ports			  [2, 1]
+	  Position		  [330, 152, 360, 183]
+	  InputSameDT		  off
+	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
+	  SaturateOnIntegerOverflow off
+	}
+	Block {
+	  BlockType		  Outport
+	  Name			  "T"
+	  SID			  "422"
+	  Position		  [590, 253, 620, 267]
+	  IconDisplay		  "Port number"
+	}
+	Line {
+	  SrcBlock		  "Add"
+	  SrcPort		  1
+	  Points		  [0, 40]
+	  DstBlock		  "T"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "Gain1"
+	  SrcPort		  1
+	  Points		  [55, 0]
+	  DstBlock		  "Add"
+	  DstPort		  2
+	}
+	Line {
+	  SrcBlock		  "Product"
+	  SrcPort		  1
+	  DstBlock		  "Gain"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "Gain"
+	  SrcPort		  1
+	  Points		  [20, 0; 0, 40]
+	  DstBlock		  "Add"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "Constant"
+	  SrcPort		  1
+	  Points		  [55, 0]
+	  DstBlock		  "Add"
+	  DstPort		  3
+	}
+	Line {
+	  SrcBlock		  "w"
+	  SrcPort		  1
+	  Points		  [20, 0]
+	  Branch {
+	    Points		    [15, 0; 0, -30]
+	    DstBlock		    "Product"
+	    DstPort		    1
+	  }
+	  Branch {
+	    Points		    [0, -15]
+	    DstBlock		    "Product"
+	    DstPort		    2
+	  }
+	  Branch {
+	    Points		    [0, 80]
+	    DstBlock		    "Gain1"
+	    DstPort		    1
+	  }
+	}
+      }
+    }
+    Block {
+      BlockType		      SubSystem
+      Name		      "Subsystem1"
+      SID		      "457"
+      Ports		      [1, 1]
+      Position		      [300, 322, 415, 398]
+      MinAlgLoopOccurrences   off
+      PropExecContextOutsideSubsystem off
+      RTWSystemCode	      "Auto"
+      FunctionWithSeparateData off
+      Opaque		      off
+      RequestExecContextInheritance off
+      MaskHideContents	      off
+      System {
+	Name			"Subsystem1"
+	Location		[0, 53, 1366, 768]
+	Open			off
+	ModelBrowserVisibility	off
+	ModelBrowserWidth	200
+	ScreenColor		"white"
+	PaperOrientation	"landscape"
+	PaperPositionMode	"auto"
+	PaperType		"A4"
+	PaperUnits		"centimeters"
+	TiledPaperMargins	[1.270000, 1.270000, 1.270000, 1.270000]
+	TiledPageScale		1
+	ShowPageBoundaries	off
+	ZoomFactor		"100"
+	Block {
+	  BlockType		  Inport
+	  Name			  "w"
+	  SID			  "458"
+	  Position		  [205, 183, 235, 197]
+	  IconDisplay		  "Port number"
+	}
+	Block {
+	  BlockType		  Sum
+	  Name			  "Add"
+	  SID			  "459"
+	  Ports			  [3, 1]
+	  Position		  [525, 204, 555, 236]
+	  Inputs		  "+++"
+	  InputSameDT		  off
+	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
+	  SaturateOnIntegerOverflow off
+	}
+	Block {
+	  BlockType		  Constant
+	  Name			  "Constant"
+	  SID			  "460"
+	  Position		  [420, 330, 450, 360]
+	  Value			  "0.0170"
+	}
+	Block {
+	  BlockType		  Gain
+	  Name			  "Gain"
+	  SID			  "461"
+	  Position		  [410, 152, 460, 188]
+	  Gain			  "3.7646e-5"
+	  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
+	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
+	  SaturateOnIntegerOverflow off
+	}
+	Block {
+	  BlockType		  Gain
+	  Name			  "Gain1"
+	  SID			  "462"
+	  Position		  [420, 255, 450, 285]
+	  Gain			  "-9.0535e-4"
+	  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
+	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
+	  SaturateOnIntegerOverflow off
+	}
+	Block {
+	  BlockType		  Product
+	  Name			  "Product"
+	  SID			  "463"
+	  Ports			  [2, 1]
+	  Position		  [330, 152, 360, 183]
+	  InputSameDT		  off
+	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
+	  SaturateOnIntegerOverflow off
+	}
+	Block {
+	  BlockType		  Outport
+	  Name			  "T"
+	  SID			  "464"
+	  Position		  [590, 253, 620, 267]
+	  IconDisplay		  "Port number"
+	}
+	Line {
+	  SrcBlock		  "Add"
+	  SrcPort		  1
+	  Points		  [0, 40]
+	  DstBlock		  "T"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "Gain1"
+	  SrcPort		  1
+	  Points		  [55, 0]
+	  DstBlock		  "Add"
+	  DstPort		  2
+	}
+	Line {
+	  SrcBlock		  "Product"
+	  SrcPort		  1
+	  DstBlock		  "Gain"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "Gain"
+	  SrcPort		  1
+	  Points		  [20, 0; 0, 40]
+	  DstBlock		  "Add"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "Constant"
+	  SrcPort		  1
+	  Points		  [55, 0]
+	  DstBlock		  "Add"
+	  DstPort		  3
+	}
+	Line {
+	  SrcBlock		  "w"
+	  SrcPort		  1
+	  Points		  [20, 0]
+	  Branch {
+	    Points		    [15, 0; 0, -30]
+	    DstBlock		    "Product"
+	    DstPort		    1
+	  }
+	  Branch {
+	    Points		    [0, -15]
+	    DstBlock		    "Product"
+	    DstPort		    2
+	  }
+	  Branch {
+	    Points		    [0, 80]
+	    DstBlock		    "Gain1"
+	    DstPort		    1
+	  }
+	}
+      }
     }
     Block {
       BlockType		      SubSystem
@@ -936,7 +1180,7 @@ Model {
       MaskHideContents	      off
       System {
 	Name			"Subsystem12"
-	Location		[0, 82, 1366, 768]
+	Location		[0, 53, 1366, 768]
 	Open			on
 	ModelBrowserVisibility	off
 	ModelBrowserWidth	200
@@ -5508,6 +5752,298 @@ Model {
       }
     }
     Block {
+      BlockType		      SubSystem
+      Name		      "Subsystem2"
+      SID		      "465"
+      Ports		      [1, 1]
+      Position		      [300, 417, 415, 493]
+      MinAlgLoopOccurrences   off
+      PropExecContextOutsideSubsystem off
+      RTWSystemCode	      "Auto"
+      FunctionWithSeparateData off
+      Opaque		      off
+      RequestExecContextInheritance off
+      MaskHideContents	      off
+      System {
+	Name			"Subsystem2"
+	Location		[0, 53, 1366, 768]
+	Open			off
+	ModelBrowserVisibility	off
+	ModelBrowserWidth	200
+	ScreenColor		"white"
+	PaperOrientation	"landscape"
+	PaperPositionMode	"auto"
+	PaperType		"A4"
+	PaperUnits		"centimeters"
+	TiledPaperMargins	[1.270000, 1.270000, 1.270000, 1.270000]
+	TiledPageScale		1
+	ShowPageBoundaries	off
+	ZoomFactor		"100"
+	Block {
+	  BlockType		  Inport
+	  Name			  "w"
+	  SID			  "466"
+	  Position		  [205, 183, 235, 197]
+	  IconDisplay		  "Port number"
+	}
+	Block {
+	  BlockType		  Sum
+	  Name			  "Add"
+	  SID			  "467"
+	  Ports			  [3, 1]
+	  Position		  [525, 204, 555, 236]
+	  Inputs		  "+++"
+	  InputSameDT		  off
+	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
+	  SaturateOnIntegerOverflow off
+	}
+	Block {
+	  BlockType		  Constant
+	  Name			  "Constant"
+	  SID			  "468"
+	  Position		  [420, 330, 450, 360]
+	  Value			  "0.0170"
+	}
+	Block {
+	  BlockType		  Gain
+	  Name			  "Gain"
+	  SID			  "469"
+	  Position		  [410, 152, 460, 188]
+	  Gain			  "3.7646e-5"
+	  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
+	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
+	  SaturateOnIntegerOverflow off
+	}
+	Block {
+	  BlockType		  Gain
+	  Name			  "Gain1"
+	  SID			  "470"
+	  Position		  [420, 255, 450, 285]
+	  Gain			  "-9.0535e-4"
+	  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
+	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
+	  SaturateOnIntegerOverflow off
+	}
+	Block {
+	  BlockType		  Product
+	  Name			  "Product"
+	  SID			  "471"
+	  Ports			  [2, 1]
+	  Position		  [330, 152, 360, 183]
+	  InputSameDT		  off
+	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
+	  SaturateOnIntegerOverflow off
+	}
+	Block {
+	  BlockType		  Outport
+	  Name			  "T"
+	  SID			  "472"
+	  Position		  [590, 253, 620, 267]
+	  IconDisplay		  "Port number"
+	}
+	Line {
+	  SrcBlock		  "Add"
+	  SrcPort		  1
+	  Points		  [0, 40]
+	  DstBlock		  "T"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "Gain1"
+	  SrcPort		  1
+	  Points		  [55, 0]
+	  DstBlock		  "Add"
+	  DstPort		  2
+	}
+	Line {
+	  SrcBlock		  "Product"
+	  SrcPort		  1
+	  DstBlock		  "Gain"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "Gain"
+	  SrcPort		  1
+	  Points		  [20, 0; 0, 40]
+	  DstBlock		  "Add"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "Constant"
+	  SrcPort		  1
+	  Points		  [55, 0]
+	  DstBlock		  "Add"
+	  DstPort		  3
+	}
+	Line {
+	  SrcBlock		  "w"
+	  SrcPort		  1
+	  Points		  [20, 0]
+	  Branch {
+	    Points		    [15, 0; 0, -30]
+	    DstBlock		    "Product"
+	    DstPort		    1
+	  }
+	  Branch {
+	    Points		    [0, -15]
+	    DstBlock		    "Product"
+	    DstPort		    2
+	  }
+	  Branch {
+	    Points		    [0, 80]
+	    DstBlock		    "Gain1"
+	    DstPort		    1
+	  }
+	}
+      }
+    }
+    Block {
+      BlockType		      SubSystem
+      Name		      "Subsystem3"
+      SID		      "473"
+      Ports		      [1, 1]
+      Position		      [300, 517, 415, 593]
+      MinAlgLoopOccurrences   off
+      PropExecContextOutsideSubsystem off
+      RTWSystemCode	      "Auto"
+      FunctionWithSeparateData off
+      Opaque		      off
+      RequestExecContextInheritance off
+      MaskHideContents	      off
+      System {
+	Name			"Subsystem3"
+	Location		[0, 53, 1366, 768]
+	Open			off
+	ModelBrowserVisibility	off
+	ModelBrowserWidth	200
+	ScreenColor		"white"
+	PaperOrientation	"landscape"
+	PaperPositionMode	"auto"
+	PaperType		"A4"
+	PaperUnits		"centimeters"
+	TiledPaperMargins	[1.270000, 1.270000, 1.270000, 1.270000]
+	TiledPageScale		1
+	ShowPageBoundaries	off
+	ZoomFactor		"100"
+	Block {
+	  BlockType		  Inport
+	  Name			  "w"
+	  SID			  "474"
+	  Position		  [205, 183, 235, 197]
+	  IconDisplay		  "Port number"
+	}
+	Block {
+	  BlockType		  Sum
+	  Name			  "Add"
+	  SID			  "475"
+	  Ports			  [3, 1]
+	  Position		  [525, 204, 555, 236]
+	  Inputs		  "+++"
+	  InputSameDT		  off
+	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
+	  SaturateOnIntegerOverflow off
+	}
+	Block {
+	  BlockType		  Constant
+	  Name			  "Constant"
+	  SID			  "476"
+	  Position		  [420, 330, 450, 360]
+	  Value			  "0.0170"
+	}
+	Block {
+	  BlockType		  Gain
+	  Name			  "Gain"
+	  SID			  "477"
+	  Position		  [410, 152, 460, 188]
+	  Gain			  "3.7646e-5"
+	  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
+	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
+	  SaturateOnIntegerOverflow off
+	}
+	Block {
+	  BlockType		  Gain
+	  Name			  "Gain1"
+	  SID			  "478"
+	  Position		  [420, 255, 450, 285]
+	  Gain			  "-9.0535e-4"
+	  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
+	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
+	  SaturateOnIntegerOverflow off
+	}
+	Block {
+	  BlockType		  Product
+	  Name			  "Product"
+	  SID			  "479"
+	  Ports			  [2, 1]
+	  Position		  [330, 152, 360, 183]
+	  InputSameDT		  off
+	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
+	  SaturateOnIntegerOverflow off
+	}
+	Block {
+	  BlockType		  Outport
+	  Name			  "T"
+	  SID			  "480"
+	  Position		  [590, 253, 620, 267]
+	  IconDisplay		  "Port number"
+	}
+	Line {
+	  SrcBlock		  "Add"
+	  SrcPort		  1
+	  Points		  [0, 40]
+	  DstBlock		  "T"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "Gain1"
+	  SrcPort		  1
+	  Points		  [55, 0]
+	  DstBlock		  "Add"
+	  DstPort		  2
+	}
+	Line {
+	  SrcBlock		  "Product"
+	  SrcPort		  1
+	  DstBlock		  "Gain"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "Gain"
+	  SrcPort		  1
+	  Points		  [20, 0; 0, 40]
+	  DstBlock		  "Add"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "Constant"
+	  SrcPort		  1
+	  Points		  [55, 0]
+	  DstBlock		  "Add"
+	  DstPort		  3
+	}
+	Line {
+	  SrcBlock		  "w"
+	  SrcPort		  1
+	  Points		  [20, 0]
+	  Branch {
+	    Points		    [15, 0; 0, -30]
+	    DstBlock		    "Product"
+	    DstPort		    1
+	  }
+	  Branch {
+	    Points		    [0, -15]
+	    DstBlock		    "Product"
+	    DstPort		    2
+	  }
+	  Branch {
+	    Points		    [0, 80]
+	    DstBlock		    "Gain1"
+	    DstPort		    1
+	  }
+	}
+      }
+    }
+    Block {
       BlockType		      Outport
       Name		      "theta"
       SID		      "305"
@@ -5594,49 +6130,85 @@ Model {
     Line {
       SrcBlock		      "w4"
       SrcPort		      1
-      DstBlock		      "Subsystem12"
-      DstPort		      8
+      Points		      [165, 0]
+      Branch {
+	DstBlock		"Subsystem12"
+	DstPort			8
+      }
+      Branch {
+	Points			[-5, 0]
+	DstBlock		"Subsystem3"
+	DstPort			1
+      }
     }
     Line {
       SrcBlock		      "w3"
       SrcPort		      1
-      DstBlock		      "Subsystem12"
-      DstPort		      7
+      Points		      [145, 0]
+      Branch {
+	DstBlock		"Subsystem12"
+	DstPort			7
+      }
+      Branch {
+	Points			[0, -220]
+	DstBlock		"Subsystem2"
+	DstPort			1
+      }
     }
     Line {
       Labels		      [0, 0]
       SrcBlock		      "w2"
       SrcPort		      1
-      DstBlock		      "Subsystem12"
-      DstPort		      6
+      Points		      [105, 0]
+      Branch {
+	DstBlock		"Subsystem12"
+	DstPort			6
+      }
+      Branch {
+	Points			[0, -280]
+	DstBlock		"Subsystem1"
+	DstPort			1
+      }
     }
     Line {
       SrcBlock		      "w1"
       SrcPort		      1
-      DstBlock		      "Subsystem12"
-      DstPort		      5
+      Points		      [40, 0]
+      Branch {
+	DstBlock		"Subsystem12"
+	DstPort			5
+      }
+      Branch {
+	Points			[0, -345]
+	DstBlock		"Subsystem"
+	DstPort			1
+      }
     }
     Line {
-      SrcBlock		      "T4"
+      SrcBlock		      "Subsystem3"
       SrcPort		      1
+      Points		      [290, 0; 0, 15]
       DstBlock		      "Subsystem12"
       DstPort		      4
     }
     Line {
-      SrcBlock		      "T3"
+      SrcBlock		      "Subsystem2"
       SrcPort		      1
+      Points		      [290, 0; 0, 80]
       DstBlock		      "Subsystem12"
       DstPort		      3
     }
     Line {
-      SrcBlock		      "T2"
+      SrcBlock		      "Subsystem1"
       SrcPort		      1
+      Points		      [585, 0]
       DstBlock		      "Subsystem12"
       DstPort		      2
     }
     Line {
-      SrcBlock		      "T1"
+      SrcBlock		      "Subsystem"
       SrcPort		      1
+      Points		      [585, 0]
       DstBlock		      "Subsystem12"
       DstPort		      1
     }
