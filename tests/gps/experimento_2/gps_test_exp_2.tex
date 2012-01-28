@@ -202,7 +202,7 @@ Se orientó el GPS de 3 maneras distintas, siempre alineando el trípode con uno
   \label{fig:or-2-m}
 \end{figure}
 
-Los resultados se observan en las siguientes figuras. Nuevamente, en la leyenda se muestra que porcentaje de las muestras a más de 2.5m del valor promedio.
+Los resultados se observan en las siguientes figuras. Nuevamente, en la leyenda se muestra que \textbf{porcentaje de las muestras a más de 2.5m del valor promedio}.
 
 \newpage
 \begin{figure}[h!]
@@ -237,8 +237,9 @@ Los resultados se observan en las siguientes figuras. Nuevamente, en la leyenda 
 \label{sec:gps2-punto-fijo-conclusiones}
 
 \begin{itemize}
-\item \textbf{Satélites Disponbiles}
-La teoría dice que con 4 satélites debería alcanzar para obtener un \textit{fix 3D}, es decir, estimar la posición sobre la esfera terrestre, y la distancia (altura) a la misma. Durante el experimento de la figura \ref{fig:or2_todos_cut.png}, en un momento el GPS se perdió, y el número de satélites disponibles, que usualmente anda por los 9 o 10, pasó a ser 4. Los datos correspondientes se muestran en la figura \ref{fig:or2_todos_sat_mal.png}. El trazo naranja, con un error de hasta 23 metros, corresponde a instantes donde la cantidad de satélites era entre 4 y 5. Luego de volver a 9 o 10 satélites, los datos vuelven a ser más razonables.
+\item Influencia de la cantidad de \textbf{satélites disponbiles}
+
+La teoría dice que con 4 satélites debería alcanzar para obtener un \textit{fix 3D}, es decir, estimar la posición sobre la esfera terrestre, y la distancia (altura) a la misma. Durante el experimento de la figura \ref{fig:or2_todos_cut.png}, en un momento el GPS perdió señal, y el número de satélites disponibles, que usualmente anda por los 9 o 10, pasó a ser 4. Los datos correspondientes se muestran en la figura \ref{fig:or2_todos_sat_mal.png}. El trazo naranja, con un error de hasta 23 metros, corresponde a instantes donde la cantidad de satélites era entre 4 y 5. Luego de volver a 9 o 10 satélites, los datos vuelven a ser más razonables.
 
 \begin{figure}[h!]
   \includegraphics[width=1\textwidth]{./img/or2_todos_sat_mal.png}
@@ -246,33 +247,65 @@ La teoría dice que con 4 satélites debería alcanzar para obtener un \textit{f
   \label{fig:or2_todos_sat_mal.png}
 \end{figure}
 
-Quitando las muestras correspondientes 
+En la figura \ref{fig:or2_todos_cut.png} se observa el mismo log que en \ref{fig:or2_todos_sat_mal.png}, pero luego de haber quitado las muestras correspondientes al período donde se deterioró la señal.
+
 No se pudo encontrar una explicación para la mala calidad de las muestras correspondientes al punto 5 en la figura \ref{fig:or2_todos_cut.png}. La cantidad de satélites disponibles se mantuvo estable en 9 o 10 durante la adquisición de esos datos.
-\item \textbf{Orientación}
-A priori no parece haber una correlación directa entre la calidad de los resultados y la orientación del GPS, en particular por las diferencias entre las figuras \ref{fig:or3_todos.png} y \ref{fig:2m_or1_todos.png}, que fueron tomadas con la misma orientación.
-No queda claro si se puede descartar alguna correlación, ya que parece intuitivo que existiese, debido a que el GPS tiene una antena adentro.
-La falta de correlación entre las figuras \ref{fig:or3_todos.png} y \ref{fig:2m_or1_todos.png} puede deberse a que las muestras fueron tomadas en dias distintos, a horas distintas, y por ende con distintos satélites, ubicados en distintos lugares respecto del GPS. Se optó por tomar datos de un punto fijo, e ir rotando el GPS, para descartar/confirmar una posible correlación entre la calidad de los resultados y la orientación del GPS. Ver sección 
+\item Influencia de la \textbf{orientación}:
+
+No parece haber una correlación directa entre resultados y la orientación del GPS, evidencia de esto son las figuras \ref{fig:or3_todos.png} y \ref{fig:2m_or1_todos.png}, que fueron tomadas con la misma orientación.
+
+Resulta  intuitivo suponer que existe, debido a que el GPS tiene una antena adentro. En la sección \ref{sec:gps-orientacion} se estudia un poco más este asunto.
 \end{itemize}
 
-
-
-
-\subsubsection{Punto fijo: Conclusiones.}
-\label{sec:gps2-punto-fijo-conclusiones}
-
+\newpage
 \subsubsection{Orientación}
-\label{sec:orientacion}
+\label{sec:gps-orientacion}
 
-%TODO
+Para evaluar si existe una correlación entre la orientación y las medidas del GPS, se hizo el siguiente experimento:
+\begin{enumerate}
+\item Tomar datos durante 10 minutos con el GPS arriba del trípode, dos patas alineadas con una recta fija.
+\item Rotar el trípode 120 grados en sentido horario (visto desde arriba), de manera que otro lado del triángulo que forman las patas del trípode quede alineado con la recta. Tomar datos durante 10 minutos.
+\item Rotar y tomar datos nuevamente.
+\end{enumerate}
+
+Los resultados del experimento se observan en la figura.
+
+\begin{figure}[h!]
+\hspace{-70pt}
+  \includegraphics[width=1.4\textwidth]{./img/orientacion_individual.png}
+  \caption{Datos rotando el GPS sobre un punto fijo.}
+  \label{fig:orientacion_individual.png}
+\end{figure}
 
 \subsubsection{Orientación - Conclusiones}
 \label{sec:orientacion-conclusiones}
 
-%TODO
+No se encontró una correlación entre la orientación del GPS y el error en las medidas.
+El experimento se realizó con cielo abierto, con una buena geometría. Tal vez en situaciones de visibilidad limitada se podría observar una correlación.
+
+Tener visibilidad limitada por obstáculo deteriora la performance del GPS. No es el objetivo de este informe evaluar la performance en ambientes complicados.
 
 \newpage
 \subsection{Polígono}
 \label{sec:gps2-poligono}
+
+En la figura \ref{fig:10min_pol.png}, en rojo se observa el polígono resultante de unir el promedio de las muestras de 10 minutos tomadas en cada uno de los vértices. En la figura \ref{fig:10m_mapa.png} se dicho polígono, proyectado sobre una foto satelital\footnote{El mapa y las fotos se obtuvieron de \url{http://sig.montevideo.gub.uy/mapas/mapa-principal}} observa lo mismo, pero con promedio de 2 minutos.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=.8\textwidth]{./img/10min_pol.png}
+  \caption{Polígono formado por los promedios de 10 minutos.}
+  \label{fig:10min_pol.png}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=.8\textwidth]{./img/10m_mapa.png}
+  \caption{Proyección del polígono formado por los promedios de 10 minutos sobre una foto satelital..}
+  \label{fig:10m_mapa.png}
+\end{figure}
+
+En las siguiente figuras se observan los polígonos formados por los promedios de varias sequencias de 2 minutos por punto. 
 
 %TODO
 % meter fotitos de polígonos
@@ -283,5 +316,12 @@ La falta de correlación entre las figuras \ref{fig:or3_todos.png} y \ref{fig:2m
 \newpage
 \section{Conclusión}
 \label{sec:conclusion}
+
+Comparando los resultados con secuencias de 2 minutos con el de la secuencia de 10 minutos, se observa que la performance es similar. Se concluye que tomar más de 2 minutos de datos para estimar la posición no reduce el error significativamente, y por lo tanto no vale la pena.
+
+Tomando el promedio de 2 minutos como posición (lat,long, etc) real, se observó que el 75\% de los datos que mide el GPS tienen un error inferior a 2.5m cuando la visibilidad es buena, es decir, cuando el GPS trabaja con 9 o 10 satélites.
+
+Se concluye que es razonable asumir que las medidas del GPS tienen un error de 2.5m.
+
 
 \end{document}

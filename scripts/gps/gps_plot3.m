@@ -89,7 +89,7 @@ xlabel(sprintf('Easting %s (m)', title_string))
 ylabel(sprintf('Northing %s (m)', title_string))
 zlabel(sprintf('Elevation %s (m)', title_string))
 grid on;
-title('3D Trajectory in UTM');
+title('Trayectoria en UTM');
 
 % Display initial position.
 hold on;

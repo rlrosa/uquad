@@ -77,8 +77,8 @@ if(todos_en_el_mismo_plot)
   hold on
   plot3(px_plot, py_plot, pz_plot, 'r.-')
   text(px_plot(1:end-1), py_plot(1:end-1), pz_plot(1:end-1), ...
-    char('1','2','3','6','5','4'),'FontSize',14, ...
-    'BackgroundColor',[.7 .9 .7])
+    char('1','2','3','6','5','4'),'FontSize',16, ...
+    'BackgroundColor',[.7 .9 .7],'FontWeight','bold')
   % show values
   avg_data = [px, py, pz];
   fprintf('Will save data to avg_data...\n');
