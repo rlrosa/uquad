@@ -26,6 +26,10 @@
 %\usepackage{subfiles}
 %\usepackage{framed}
 
+\usepackage{color}
+\newcommand{\highlight}[1]{\colorbox{yellow}{#1}}    %\highlight{this is some highlighted text}
+\newcommand{\highlightdos}[1]{\colorbox{green}{#1}}    %\highlight{this is some highlighted text}
+
 \setlength{\topmargin}{-1.5cm}
 \setlength{\textheight}{25cm}
 \setlength{\oddsidemargin}{0.3cm} 
@@ -34,6 +38,11 @@
 
 
 \begin{document}
+
+\begin{huge}
+\emph{\textbf{En \highlight{este haighlaitiado} pongo las cosas que me parecen mal, o q hay q cambiar y en \highlightdos{este otro} pongo lo q me parece que debería ir}}
+\end{huge}
+
 
 \chapter{Caracterización del acelerómetro}
 
@@ -132,12 +141,40 @@ Previo a la calibración de los parámetros estáticos parece interesante estudiar 
 
 \subsection{Determinación de parámetros estáticos}
 
-Como se desprende de la sección anterior, para poder calibrar el acelerómetro se deben determinar nueve parámetros. Por dicho motivo, se precisan realizar al menos 12 medidas diferentes. Para mejorar los resultados se trabajará con 15 medidas y se procederá a determinar los parámetros que minimizan el error cuadrático medio entre los valores efectivamente medidos y los valores teóricos. 
-
-
+Como se desprende de la sección anterior, para poder calibrar el acelerómetro se deben determinar \highlight{nueve parámetros} $\rightarrow$ \highlightdos{12 parámetros}. Por dicho motivo, se precisan realizar al menos 12 medidas diferentes. Para mejorar los resultados se trabajará con 15 medidas y se procederá a determinar los parámetros que minimizan el error cuadrático medio entre los valores efectivamente medidos y los valores teóricos. 
 
 \subsubsection*{Preparación}
-Para realizar una buena calibración es muy importante contar con una figura geométrica en forma de paralelepípedo de forma de poder solidarizar la IMU a dicho objeto. De esta forma nos aseguramos que no se introducen errores a la hora de orientar un eje en una dirección particular. Del mismo modo, es ideal disponer de una superficie perpendicular a la vertical. El prisma que se utilizó fue un cubo de lapacho, los ángulos del mismo son prácticamente rectos difiriendo a lo sumo un grado. Se construyo una plataforma que puede girar sobre un eje. A su vez, es posible ajustar el dispositivo de forma de asegurar que dicho eje se encuentre en posición horizontal. Para realizar las 15 medidas se irá modificando el ángulo de la plataforma. Dicho ángulo puede calcularse como $\arcsin(\frac{b-a}{c})$. Donde las distancias son las indicadas en la figura \ref{fig: mesa}.
+Para realizar una buena calibración es muy importante contar con una figura geométrica en forma de paralelepípedo de forma de poder solidarizar la IMU a dicho objeto. De esta forma nos aseguramos que no se introducen errores a la hora de orientar un eje en una dirección particular. Del mismo modo, es ideal disponer de una superficie perpendicular a la vertical.\\
+
+\begin{wrapfigure}{r}{0.5\textwidth}
+  \vspace{-20pt}
+  \begin{center}
+    \includegraphics[width=0.42\textwidth]{./Pics/cubo.jpg}
+  \end{center}
+  \vspace{-20pt}
+  \caption{Cubo de lapacho}
+  \label{fig:cubo}
+  \vspace{-10pt}
+\end{wrapfigure}
+El prisma que se utilizó fue un cubo de lapacho, como puede verse en la figura \ref{fig:cubo}. \\
+
+Los ángulos del mismo son prácticamente rectos difiriendo a lo sumo en \highlight{un} $\rightarrow$ \highlightdos{medio} grado. \\
+
+Se construyo una plataforma \highlightdos{de madera} en forma de mesa con la tapa superior móvil, de modo que permite el giro sobre uno de sus lados, como se muestra en la figura \ref{fig:mesa} \highlight{que puede girar sobre un eje}. A su vez, es posible ajustar el dispositivo de forma de asegurar que dicho eje se encuentre en posición horizontal, \highlightdos{por medio de 3 patas de altura regulable}. Para realizar las 15 medidas se irá modificando el ángulo de la \highlightdos{tapa movil de la} plataforma. \highlightdos{En cada posición de la plataforma se tomarán medidas en 3 posiciones distintas del cubo.} El ángulo con la horizontal de la tapa superior puede calcularse como:
+\begin{equation}
+\arcsin \left( \frac{b-a}{c} \right)
+\end{equation} 
+Donde las distancias son las indicadas en la figura \ref{fig:mesa-flotando}.
+
+\begin{figure}[h!]
+	\begin{center}
+		\includegraphics[width=0.5\textwidth]{./Pics/mesa-flotando.jpg}
+	\end{center}
+	\vspace{-20pt}
+	\caption{Mesa - Plano inclinado regulable}
+	\label{fig:mesa-flotando}
+\end{figure}
+
 
 \subsubsection*{Medidas a realizar}
 En reposo el acelerómetro medirá una fuerza igual a \textit{g} en la dirección vertical y en el sentido radial saliente de la Tierra. En cada uno de los ejes de sensibilidad del acelerómetro se medirá la proyección ortogonal de dicho vector gravedad sobre cada eje. De esta forma, con distintas orientaciones se obtendrá una descomposición distinta. Se repetirán las medidas en 12 direcciones distintas. 
@@ -148,15 +185,20 @@ En reposo el acelerómetro medirá una fuerza igual a \textit{g} en la dirección v
 
 En la figura \ref{fig:1hora} pueden observarse los datos crudos obtenidos por la IMU, tanto las aceleraciones registradas en los tres ejes, como las velocidades angulares. 
 
-\begin{figure}
-  \vspace{-20pt}
+\begin{huge}
+\emph{\textbf{\highlight{Hay que cambiar esta gráfica}\\
+\indent\highlight {Los ejes estan mal}}}
+\end{huge}
+
+\begin{figure}[h!]
+%  \vspace{-20pt}
   \begin{center}
     \includegraphics[width=0.8\textwidth]{./Pics/1hora.jpg}
   \end{center}
   \vspace{-20pt}
   \caption{Aceleraciones y velocidades angulares registradas por la IMU orientada con el eje z verticalmente y en reposo}
   \label{fig:1hora}
-  \vspace{-10pt}
+%  \vspace{-10pt}
 \end{figure}
 
 En lo que respecta a los acelerómetros se observa que dos medidas corresponden a un valor cercano a 510, mientras que la aceleración medida en z es cercana a 570. El eje z es el ubicado verticalmente, por lo tanto en dicha dirección se debería leer una medida equivalente a g, mientras que en los otros dos ejes se debería leer un valor que corresponde a aceleración cero. Más allá de estas consideraciones, que permiten simplemente demostrar cierta coherencia entre lo esperado y lo obtenido,podemos afirmar que el ruido observado es asociable a un ruido blanco de media nula. Por otra parte no parece haber una deriva en las medidas realizadas. 
