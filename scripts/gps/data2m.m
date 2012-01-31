@@ -11,6 +11,9 @@ else
   pause;
 end
 
+% Escribir a archivos cargables por matlab
+w_out = 0;
+
 % Asignar un valor > 0 a la siguiente variable para generar un plot con
 % todos los datos (puede ser un quilombo)
 % Un valor distinto de cero imprime en una grilla
@@ -36,12 +39,13 @@ for i =1:6
 
   % save data to log, in tab separated format:
   %   easting northing elevation sat lat lon
-  data_to_save = [easting, northing, elevation, sat, lat, lon];
-  log_name = sprintf('log0%d_data',i);
-  fprintf('Will save current log data to %s...\n',log_name);
-  save(sprintf('%s',log_name),'data_to_save')
-  fprintf('Saved log data to %s!\n Format: (tab separated)\neasting northing elevation sat lat lon\n\n',log_name);
-  
+  if(w_out)
+    data_to_save = [easting, northing, elevation, sat, lat, lon];
+    log_name = sprintf('log0%d_data',i);
+    fprintf('Will save current log data to %s...\n',log_name);
+    save(sprintf('%s',log_name),'data_to_save')
+    fprintf('Saved log data to %s!\n Format: (tab separated)\neasting northing elevation sat lat lon\n\n',log_name);
+  end
   % saco una cantidad ahi, un valor se que cae cerca del lugar donde se
   % tomaron los datos asi en los ejes la resolucion permite leer algo util.
   easting = easting - 576066.600750781;
@@ -81,13 +85,14 @@ if(todos_en_el_mismo_plot)
     'BackgroundColor',[.7 .9 .7],'FontWeight','bold')
   % show values
   avg_data = [px, py, pz];
-  fprintf('Will save data to avg_data...\n');
-  save 'avg_data' -ascii -double -tabs avg_data
-  fid = fopen('avg_data','a');
-  fprintf(fid,'%%  easting\t\t\t  northing\t\t\t  elevation\n');
-  fclose(fid);
-  
-  fprintf('Saved average data to avg_data! (easting,northing,elevation)\n');
+  if(w_out)
+    fprintf('Will save data to avg_data...\n');
+    save 'avg_data' -ascii -double -tabs avg_data
+    fid = fopen('avg_data','a');
+    fprintf(fid,'%%  easting\t\t\t  northing\t\t\t  elevation\n');
+    fclose(fid);
+    fprintf('Saved average data to avg_data! (easting,northing,elevation)\n');
+  end
   grid on
   axis equal
   hold off
