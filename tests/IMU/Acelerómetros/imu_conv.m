@@ -41,6 +41,7 @@ wconv=w;
 
   T=1/fs;
     t=[0:T:T*(length(a(:,1))-1)];
+    tp=[0:10*T:T*(length(a(:,1))-1)];
 figure()
     %subplot(211)
     plot(t,aconv(:,1)); hold on; plot(t,aconv(:,2),'r'); plot(t,aconv(:,3),'g'); legend('a_x','a_y','a_z'); grid;
@@ -50,28 +51,46 @@ figure()
     %title('Velocidades angulares en °/s')
     
     
-    %Desplazamiento
-  
+    %Desplazamiento promediando 10 muestras
+    vp=zeros(length(a(:,1))/10,3);
     
+     
+    for i=1:length(vp(:,1))-1
+        vp(i+1,:)=vp(i,:)+sum(aconv(i:i+9,:))*T;
+        
+    end
+    xp=zeros(size(vp));
+     for i=1:length(vp(:,1))-1
+        xp(i+1,:)=xp(i,:)+vp(i,:)*10*T;
+        
+    end
+    %Desplazamiento sin promediar
     v=zeros(size(a));
     for i=1:length(v(:,1))-1
         v(i+1,:)=v(i,:)+aconv(i,:)*T;
     end
     
-    x=zeros(size(a));
     
+    x=zeros(size(v));
+  
     for i=1:length(x(:,1))-1
         x(i+1,:)=x(i,:)+v(i,:)*T;
+        
     end
     
-    size(t)
-    size(x)
+    
+    
     
     figure()
-    %subplot(211)
-    %plot(t,x(:,1),'b'); hold on ;
-    plot(t,x(:,2),'r'); hold on ;
+    
+    
+    subplot(211)
+    plot(t,x(:,1),'b'); hold on ;
+    %plot(t,x(:,2),'r'); hold on ;
     plot(t,x(:,3),'g'); hold on  
     ;grid
-    %subplot(212)
-    %plot(t,v(:,1),'b'); hold on ;plot(t,v(:,2),'r'); hold on ;plot(t,v(:,3),'g'); hold on  ;grid
+    subplot(212)
+%    plot(tp,xp(:,1),'b');hold on ;
+    %plot(tp,xp(:,2),'r'); hold on ;
+   %
+%   plot(tp,xp(:,3),'g'); hold on  ;grid

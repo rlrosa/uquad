@@ -26,6 +26,10 @@
 %\usepackage{subfiles}
 %\usepackage{framed}
 
+\usepackage{color}
+\newcommand{\highlight}[1]{\colorbox{yellow}{#1}}    %\highlight{this is some highlighted text}
+\newcommand{\highlightdos}[1]{\colorbox{green}{#1}}    %\highlight{this is some highlighted text}
+
 \setlength{\topmargin}{-1.5cm}
 \setlength{\textheight}{25cm}
 \setlength{\oddsidemargin}{0.3cm} 
@@ -34,6 +38,11 @@
 
 
 \begin{document}
+
+\begin{huge}
+\emph{\textbf{En \highlight{este haighlaitiado} pongo las cosas que me parecen mal, o q hay q cambiar y en \highlightdos{este otro} pongo lo q me parece que debería ir}}
+\end{huge}
+
 
 \chapter{Caracterización del acelerómetro}
 
@@ -132,12 +141,40 @@ Previo a la calibración de los parámetros estáticos parece interesante estudiar 
 
 \subsection{Determinación de parámetros estáticos}
 
-Como se desprende de la sección anterior, para poder calibrar el acelerómetro se deben determinar nueve parámetros. Por dicho motivo, se precisan realizar al menos 12 medidas diferentes. Para mejorar los resultados se trabajará con 15 medidas y se procederá a determinar los parámetros que minimizan el error cuadrático medio entre los valores efectivamente medidos y los valores teóricos. 
-
-
+Como se desprende de la sección anterior, para poder calibrar el acelerómetro se deben determinar \highlight{nueve parámetros} $\rightarrow$ \highlightdos{12 parámetros}. Por dicho motivo, se precisan realizar al menos 12 medidas diferentes. Para mejorar los resultados se trabajará con 15 medidas y se procederá a determinar los parámetros que minimizan el error cuadrático medio entre los valores efectivamente medidos y los valores teóricos. 
 
 \subsubsection*{Preparación}
-Para realizar una buena calibración es muy importante contar con una figura geométrica en forma de paralelepípedo de forma de poder solidarizar la IMU a dicho objeto. De esta forma nos aseguramos que no se introducen errores a la hora de orientar un eje en una dirección particular. Del mismo modo, es ideal disponer de una superficie perpendicular a la vertical. El prisma que se utilizó fue un cubo de lapacho, los ángulos del mismo son prácticamente rectos difiriendo a lo sumo un grado. Se construyo una plataforma que puede girar sobre un eje. A su vez, es posible ajustar el dispositivo de forma de asegurar que dicho eje se encuentre en posición horizontal. Para realizar las 15 medidas se irá modificando el ángulo de la plataforma. Dicho ángulo puede calcularse como $\arcsin(\frac{b-a}{c})$. Donde las distancias son las indicadas en la figura \ref{fig: mesa}.
+Para realizar una buena calibración es muy importante contar con una figura geométrica en forma de paralelepípedo de forma de poder solidarizar la IMU a dicho objeto. De esta forma nos aseguramos que no se introducen errores a la hora de orientar un eje en una dirección particular. Del mismo modo, es ideal disponer de una superficie perpendicular a la vertical.\\
+
+\begin{wrapfigure}{r}{0.5\textwidth}
+  \vspace{-20pt}
+  \begin{center}
+    \includegraphics[width=0.42\textwidth]{./Pics/cubo.jpg}
+  \end{center}
+  \vspace{-20pt}
+  \caption{Cubo de lapacho}
+  \label{fig:cubo}
+  \vspace{-10pt}
+\end{wrapfigure}
+El prisma que se utilizó fue un cubo de lapacho, como puede verse en la figura \ref{fig:cubo}. \\
+
+Los ángulos del mismo son prácticamente rectos difiriendo a lo sumo en \highlight{un} $\rightarrow$ \highlightdos{medio} grado. \\
+
+Se construyo una plataforma \highlightdos{de madera} en forma de mesa con la tapa superior móvil, de modo que permite el giro sobre uno de sus lados, como se muestra en la figura \ref{fig:mesa} \highlight{que puede girar sobre un eje}. A su vez, es posible ajustar el dispositivo de forma de asegurar que dicho eje se encuentre en posición horizontal, \highlightdos{por medio de 3 patas de altura regulable}. Para realizar las 15 medidas se irá modificando el ángulo de la \highlightdos{tapa movil de la} plataforma. \highlightdos{En cada posición de la plataforma se tomarán medidas en 3 posiciones distintas del cubo.} El ángulo con la horizontal de la tapa superior puede calcularse como:
+\begin{equation}
+\arcsin \left( \frac{b-a}{c} \right)
+\end{equation} 
+Donde las distancias son las indicadas en la figura \ref{fig:mesa-flotando}.
+
+\begin{figure}[h!]
+	\begin{center}
+		\includegraphics[width=0.5\textwidth]{./Pics/mesa-flotando.jpg}
+	\end{center}
+	\vspace{-20pt}
+	\caption{Mesa - Plano inclinado regulable}
+	\label{fig:mesa-flotando}
+\end{figure}
+
 
 \subsubsection*{Medidas a realizar}
 En reposo el acelerómetro medirá una fuerza igual a \textit{g} en la dirección vertical y en el sentido radial saliente de la Tierra. En cada uno de los ejes de sensibilidad del acelerómetro se medirá la proyección ortogonal de dicho vector gravedad sobre cada eje. De esta forma, con distintas orientaciones se obtendrá una descomposición distinta. Se repetirán las medidas en 12 direcciones distintas. 
@@ -148,20 +185,25 @@ En reposo el acelerómetro medirá una fuerza igual a \textit{g} en la dirección v
 
 En la figura \ref{fig:1hora} pueden observarse los datos crudos obtenidos por la IMU, tanto las aceleraciones registradas en los tres ejes, como las velocidades angulares. 
 
-\begin{figure}
-  \vspace{-20pt}
+\begin{huge}
+\emph{\textbf{\highlight{Hay que cambiar esta gráfica}\\
+\indent\highlight {Los ejes estan mal}}}
+\end{huge}
+
+\begin{figure}[h!]
+%  \vspace{-20pt}
   \begin{center}
     \includegraphics[width=0.8\textwidth]{./Pics/1hora.jpg}
   \end{center}
   \vspace{-20pt}
   \caption{Aceleraciones y velocidades angulares registradas por la IMU orientada con el eje z verticalmente y en reposo}
   \label{fig:1hora}
-  \vspace{-10pt}
+%  \vspace{-10pt}
 \end{figure}
 
 En lo que respecta a los acelerómetros se observa que dos medidas corresponden a un valor cercano a 510, mientras que la aceleración medida en z es cercana a 570. El eje z es el ubicado verticalmente, por lo tanto en dicha dirección se debería leer una medida equivalente a g, mientras que en los otros dos ejes se debería leer un valor que corresponde a aceleración cero. Más allá de estas consideraciones, que permiten simplemente demostrar cierta coherencia entre lo esperado y lo obtenido,podemos afirmar que el ruido observado es asociable a un ruido blanco de media nula. Por otra parte no parece haber una deriva en las medidas realizadas. 
 
-A partir de dichas constataciones se podrá afirmar que trabajar con el valor promedio de una tirada de medidas arrojará un resultado muy similiar al que se obtendría trabajando con la tirada completa. 
+A partir de dichas constataciones se podrá afirmar que trabajar con el valor promedio de una tirada de medidas arrojará un resultado muy similar al que se obtendría trabajando con la tirada completa. 
 
 
 \subsection{Medias estáticas para el acelerómetro}
@@ -221,12 +263,9 @@ Como criterio de ajuste se decide minimizar la suma de los cuadrados de las dife
 
 $$\theta \quad : \quad  min \left\lbrace \sum_{i=1}^{M} {\vert \vert\tilde{\mathbf{a}}_{i}^p-T_a^pK_a^{-1}\left(\tilde{\mathbf{a}}_{i}^a -\mathbf{b}_a \right)\vert \vert} \right\rbrace$$
 donde M es la cantidad de medidas realizadas, $\tilde{\mathbf{a}}_{i}^p$ los valores de aceleración teóricos en cada eje de la plataforma según la posición y orientación de la IMU y $\tilde{\mathbf{a}}_{i}^a$ los valores obtenidos de la IMU.
-Las relaciones entre los parámetros a determinar $\mathbf{no}$ es lineal, por lo tanto se utilizará para su determinación un algoritmo de mínimos cuadrados no lineales. \emph{Matlab}  provee un algoritmo con dicho fin: \emph{lsqnonlin}. El algoritmo precisa además una semilla para comenzar, dicha semilla debe ser bien elegida de forma de que el mínimo encontrado por el algoritmo sea el deseado. Sucede que dicho algoritmo encuentra mínimos locales. Si la semilla proporcionada se encuentra muy lejos de la solución que en realidad interesa, se puede obtener una solución que no sirva. El rango de aceleraciones que se maneja es de $\pm 6g$, mientras que los valores digitales del acelerómetro se encuentran entre 0 y 1024. Idealmente  una aceleración cero corresponde a 512 y la ganancia debe ser $\frac{512}{6g}$ para los tres ejes. Finalmente, los ángulos se suponen pequeños, por lo tanto una semilla válida parece ser: $$\theta_0=\left[ \frac{512}{6g}, \frac{512}{6g}, \frac{512}{6g}, 512, 512, 512, 0, 0, 0, 0, 0, 0 \right]$$En una primera llamada al algoritmo se obtienen los 12 parámetros. A priori parecería que se podría seguir trabajando con estos parámetros. Sin embargo, se constata que hay dos residuos ( correspondientes a las medidas de aceleración en los ejes $-x$ e $y$  en la novena medida) que tienen valor 2.14 y 5.31, mientras que la suma de los cuadrados de los residuos alcanza un valor de 42.39. Esta medida aporta más de la mitad a la suma de los cuadrados de los errores. Por lo tanto parece prudente considerarla como un \emph{outlier} y descartarla. Se vuelve a realizar el ajuste sin considerar esta medida. En esta segunda oportunidad la suma de los errores al cuadrado se ve reducida enormemente, alcanzando un valor de 0.02. 
+Las relaciones entre los parámetros a determinar $\mathbf{no}$ es lineal, por lo tanto se utilizará para su determinación un algoritmo de mínimos cuadrados no lineales. \emph{Matlab}  provee un algoritmo con dicho fin: \emph{lsqnonlin}. El algoritmo precisa además una semilla para comenzar, dicha semilla debe ser bien elegida de forma de que el mínimo encontrado por el algoritmo sea el deseado. Sucede que dicho algoritmo encuentra mínimos locales. Si la semilla proporcionada se encuentra muy lejos de la solución que en realidad interesa, se puede obtener una solución que no sirva. El rango de aceleraciones que se maneja es de $\pm 6g$, mientras que los valores digitales del acelerómetro se encuentran entre 0 y 1024. Idealmente  una aceleración cero corresponde a 512 y la ganancia debe ser $\frac{512}{6g}$ para los tres ejes. Finalmente, los ángulos se suponen pequeños, por lo tanto una semilla válida parece ser: $$\theta_0=\left[ \frac{512}{6g}, \frac{512}{6g}, \frac{512}{6g}, 512, 512, 512, 0, 0, 0, 0, 0, 0 \right]$$En una primera llamada al algoritmo se obtienen los 12 parámetros. A priori parecería que se podría seguir trabajando con estos parámetros. Sin embargo, se constata que hay dos residuos ( correspondientes a las medidas de aceleración en los ejes $-x$ e $y$  en la novena medida) que tienen valor 2.14 y 5.31, mientras que la suma de los cuadrados de los residuos alcanza un valor de 42.39.  Esta medida aporta más de la mitad a la suma de los cuadrados de los errores. La desviación estándar que se obtiene es de $1.68 ms^{-2}$, este resultado es completamente inaceptable. Por lo tanto parece prudente considerar la medida en cuestión como un \emph{outlier} y descartarla. Se vuelve a realizar el ajuste sin considerar esta medida. En esta segunda oportunidad la suma de los errores al cuadrado se ve reducida enormemente, alcanzando un valor de 0.02. La desviación estándar que se obtiene con este nuevo set de medidas es $1.68 ms^{-2}$ 
 
-Esta reducción confirma que el valor descartado es un \emph{outlier}, ya que al no tener que ajustar los parámetros considerando dicho valor el error total se reduce considerablemente. Es interesante realizar nuevamente dicha medida. (¿Vale la pena hacerlo?)
- %TODO. 
-
-
+Esta reducción confirma que el valor descartado es un \emph{outlier}, ya que al no tener que ajustar los parámetros considerando dicho valor el error total se reduce considerablemente. 
 
 Los parámetros que minimizan la suma de los errores al cuadrado son los siguientes:
 
