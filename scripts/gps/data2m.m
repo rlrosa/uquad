@@ -1,5 +1,6 @@
 % Antes de ejecutar este script:
 %   - Cargar los logs en una estructura, usando gpxlogs_to_struct.m
+%     Ej.: xs = gpxlogs_to_struct(pwd);
 %
 %   - Configurar gps_plot3 para que solo imprima la grafica que tiene toda
 %   la data junta (plot3d de easting, northing y elevation).
@@ -28,6 +29,10 @@ px = zeros(6,1);
 py = zeros(6,1);
 pz = zeros(6,1);
 
+easting_resto = 0;
+northing_resto = 0;
+elevation_resto = 0;
+
 figure
 for i =1:6
   [easting, northing, elevation, utm_zone, sat, lat, lon] = ...
@@ -37,6 +42,8 @@ for i =1:6
   elevation_acum = [elevation_acum; elevation];
   sat_acum = [sat_acum; sat];
 
+  repetidos(easting, northing, elevation);
+  
   % save data to log, in tab separated format:
   %   easting northing elevation sat lat lon
   if(w_out)
@@ -48,9 +55,15 @@ for i =1:6
   end
   % saco una cantidad ahi, un valor se que cae cerca del lugar donde se
   % tomaron los datos asi en los ejes la resolucion permite leer algo util.
-  easting = easting - 576066.600750781;
-  northing = northing - 6135583.22188047;
-  elevation = elevation - 21.8;
+  if(i==1)
+    easting_resto = mean(easting);
+    northing_resto = mean(northing);
+    elevation_resto = mean(elevation);
+  end
+
+  easting = easting - easting_resto;
+  northing = northing - northing_resto;
+  elevation = elevation - elevation_resto;
   
   % armar un promedio de este punto
   px(i) = mean(easting);
@@ -61,7 +74,7 @@ for i =1:6
     gps_plot3(easting, northing, elevation, sat, gcf, i-1, 0, 0);
   else
     subplot(320 + i)
-    gps_plot3(easting, northing, elevation, sat, gcf, 0);
+    gps_plot3(easting, northing, elevation, sat, gcf, 0, 0, 0);
   end
 end
 
@@ -85,6 +98,17 @@ if(todos_en_el_mismo_plot)
     'BackgroundColor',[.7 .9 .7],'FontWeight','bold')
   % show values
   avg_data = [px, py, pz];
+  fprintf('\n\n');
+  in = input('Hacer MC? (0==no,sino si)');
+  if(isempty(in) || in ~= 0)
+    fprintf('Estimando error usando MC...\n');
+    diags = load('diags.txt');
+    avg_x = avg_data(:,1)-avg_data(1,1);
+    avg_y = avg_data(:,2)-avg_data(1,2);
+    fxy = gps_polygon([avg_x;avg_y]*100,diags);
+    err_rel = gps_err_rel(fxy);
+  end
+    
   if(w_out)
     fprintf('Will save data to avg_data...\n');
     save 'avg_data' -ascii -double -tabs avg_data

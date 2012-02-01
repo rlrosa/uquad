@@ -9,6 +9,11 @@ function xs = gpxlogs_to_struct(path)
 %
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+if(nargin < 1)
+  path = pwd;
+  fprintf('Loading logs from current directory...\n\n');
+end
+
 if(isunix)
     slash = '/';
 else
