@@ -63,9 +63,7 @@ El experimento que se diseñó consiste en marcar un rectángulo sobre el suelo 
 
 \begin{quote}
 \begin{quote}
-\begin{quote}
 \begin{verbatim}
-
       Árbol              
  Árbol               Árbol
            Gente_q_me_va_a_afanar
@@ -75,26 +73,16 @@ El experimento que se diseñó consiste en marcar un rectángulo sobre el suelo 
  -- > -- > -- > -- > -- > -- > -- > 
  3                2                1
  x ---- ---- ---- x ---- ---- ---- x
- |                                 |
- |                                 |
- 
- |                                 |
- |                                 |
- x ---- ---- ---- x ---- ---- ---- x
+ |                                 |      Orientación del GPS:
+ |                                 |            led
+ |                                 |             ^
+ |                                 |             |
+ |                                 |             |
+ x ---- ---- ---- x ---- ---- ---- x            usb
  6                5                4
 
-     Estacionamiento de la fac
-
- Orientación del GPS:
-
-                    led
-                     ^
-                     |
-                     |
-                    usb
-
+     Estacionamiento de la facultad
 \end{verbatim}
-\end{quote}
 \end{quote}
 \end{quote}
 
@@ -127,6 +115,13 @@ En la figura \ref{fig:tripode_con_plomada.jpg} se observa el trípode que sostie
   \label{fig:rebotes}
 \end{figure}
 
+\subsection{Medio para la adquisición de datos}
+\label{sec:adquisicion-de-datos}
+
+Para tomar datos se conectó el GPS, que manda información mediante USB-serie, al puerto USB de una computadora. En la computadora se utilizó el \href{http://catb.org/gpsd/}{GPSD}, un software open-source que hace de \textit{daemon}, y se encarga de transformar lo que llega del GPS en una estructura de datos fácil de manejar en \verb+C+.
+
+Quedan dudas sobre el funcionamiento de este software, en particular sobre la estrategia utilizada para lograr mandar datos a 1Hz, constante, a la computadora. Parece repetir información cuandono cuenta con información nueva. De cualquier forma, funciona razonablemente bien, y es fácil de usar, así que parece adecuado para este experimento.
+
 \newpage
 \subsection{Verificación del polígono}
 \label{sec:verificacion-del-poligono}
@@ -141,17 +136,46 @@ Las medidas tomadas se resumen en la tabla \ref{tab:diagonales-poligono}, donde 
 
 \begin{table}[H]
 \begin{center}
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+\begin{tabular}{|c|c|c|c|c|}
 \hline
-D12 & D14 & D15 & D16 & D23 & D24 & D25 & D26 & D34 & D35 & D36 & D45 & D56 \\
+\textbf{D12} & \textbf{D13} & \textbf{D14} & \textbf{D15} & \textbf{D16} \\
 \hline
-603 & 606 & 855 & 1345 & 603 & 853 & 608 & 853 & 1344 & 850 & 602 & 602 & 603 \\
+603 & 1205 & 606 & 855 & 1345 \\
+\hline
+\hline
+\textbf{D23} & \textbf{D24} & \textbf{D25} & \textbf{D26} & \textbf{D34} \\
+\hline
+603 & 853 & 608 & 853 & 1344\\
+\hline
+\hline
+\textbf{D35} & \textbf{D36} & \textbf{D45} & \textbf{D46} & \textbf{D56} \\
+\hline
+850 & 602 & 602 & 1202 & 603 \\
 \hline
 \end{tabular}
-\caption{Diagonales del polígono en cm. Lectura: $D42$ representa la longitud (en cm) de la recta que une el punto $4$ con el punto $2$.}
+\caption{Diagonales del polígono en cm.\\\textbf{Lectura}: \textbf{D24} representa la longitud (en cm) de la recta que une el punto $2$ con el punto $4$.}
 \label{tab:diagonales-poligono}
 \end{center}
 \end{table}
+
+\begin{wrapfigure}{r}{0.6\textwidth}
+  \begin{center}
+    \includegraphics[width=.5\textwidth]{./img/pol_mc.png}
+  \end{center}
+  \caption{Polígono luego de MC.}
+\label{fig:pol_mc.png}
+\end{wrapfigure}
+
+El polígono resultante se observa en la figura \ref{fig:pol_mc.png}. El error relativo, es decir, el cociente entre las medidas de cada recta \textbf{D\#\#} resultante de aplicar MC, y lo esperado en el polígono teórico, de 6m de lado, es:
+
+\begin{itemize}
+\item $9.51\%$ en el peor caso.
+\item $4.65\%$ en promedio.
+\end{itemize}
+
+Se considera que el error, siendo  menor al 10\% en el peor caso, es aceptable.
+
+En realidad se podría hacer una figura irregular cualquiera, y tomarlo en cuanto en el resto del experimento, pero complicaría la interpretación intuitiva de los resultados.
 
 \newpage
 \subsection{Punto fijo - 10 minutos}
@@ -162,10 +186,12 @@ Se tomaron datos durante 10 minutos ($\approx$ 600 muestras) en cada uno de los 
 En la figura \ref{fig:10min_grid.png} se muestran los datos luego de restar el promedio, o sea que se muestra el error respecto al valor promedio.
 
 \begin{figure}[h!]
-  \includegraphics[width=1.1\textwidth]{./img/10min_grid.png}
+  \includegraphics[width=0.8\textwidth]{./img/10min_grid.png}
   \caption{GPS quieto en cada punto del polígono, GPS orientado como se describe en \ref{sec:gps2-procedimiento} y se muestra en \ref{fig:vista_usb.jpg}.}
   \label{fig:10min_grid.png}
 \end{figure}
+
+Cabe destacar que en la figura \ref{fig:10min_grid.png} no parece haber la misma cantidad de muestras por punto, peses a que en el log habían aproximadamente la misma cantidad de datos por punto. Esto se debe a que a veces en el log se genera información repetida, es decir, lo que se recibe del GPS permanece constante. No queda claro si este es debido a un problema de software, o si se trata del comportamiento normal del GPS, que podría, por ejemplo, mandar información repetida si no ha logrado actualizarse.
 
 \newpage
 En la figura \ref{fig:10m_todos.png} se observan todas las gráficas de la figura \ref{fig:10min_grid.png}, pero superpuestas.
@@ -207,28 +233,28 @@ Los resultados se observan en las siguientes figuras. Nuevamente, en la leyenda 
 \newpage
 \begin{figure}[h!]
   \includegraphics[width=.9\textwidth]{./img/2m_or1_todos.png}
-  \caption{Orientación: USB hacia la calle, LED hacia el estacionamiento, como en la figura \ref{fig:or3.jpg}.}
+  \caption{Orientación: \textbf{4}.}
 \vspace{-30pt}
   \label{fig:2m_or1_todos.png}
 \end{figure}
 
 \begin{figure}[h!]
   \includegraphics[width=1\textwidth]{./img/2m_or2_todos.png}
-  \caption{Orientación: USB hacia la rambla, LED hacia el IIE.}
+  \caption{Orientación: \textbf{2}.}
   \label{fig:2m_or2_todos.png}
 \end{figure}
 
 \newpage
 \begin{figure}[h!]
   \includegraphics[width=1\textwidth]{./img/or2_todos_cut.png}
-  \caption{Orientación: Como en la figura \ref{fig:or2.jpg}.}
+  \caption{Orientación: \textbf{3}.}
 \vspace{-30pt}
   \label{fig:or2_todos_cut.png}
 \end{figure}
 
 \begin{figure}[h!]
   \includegraphics[width=.9\textwidth]{./img/or3_todos.png}
-  \caption{Orientación: USB hacia la calle, LED hacia el estacionamiento, como en la figura \ref{fig:or3.jpg}.}
+  \caption{Orientación: \textbf{4}}
   \label{fig:or3_todos.png}
 \end{figure}
 
@@ -243,7 +269,7 @@ La teoría dice que con 4 satélites debería alcanzar para obtener un \textit{f
 
 \begin{figure}[h!]
   \includegraphics[width=1\textwidth]{./img/or2_todos_sat_mal.png}
-  \caption{Datos con solamente 4 satélites. Orientación: Como en la figura \ref{fig:or2.jpg}.}
+  \caption{Datos con solamente 4 satélites. Orientación: \textbf{3}.}
   \label{fig:or2_todos_sat_mal.png}
 \end{figure}
 
@@ -289,7 +315,7 @@ Tener visibilidad limitada por obstáculo deteriora la performance del GPS. No e
 \subsection{Polígono}
 \label{sec:gps2-poligono}
 
-En la figura \ref{fig:10min_pol.png}, en rojo se observa el polígono resultante de unir el promedio de las muestras de 10 minutos tomadas en cada uno de los vértices. En la figura \ref{fig:10m_mapa.png} se dicho polígono, proyectado sobre una foto satelital\footnote{El mapa y las fotos se obtuvieron de \url{http://sig.montevideo.gub.uy/mapas/mapa-principal}} observa lo mismo, pero con promedio de 2 minutos.
+En la figura \ref{fig:10min_pol.png}, la línea en roja representa el polígono resultante de unir el promedio, en cada vértica, de las muestras tomadas durante de 10 minutos. En la figura \ref{fig:10m_mapa.png} se dicho polígono, proyectado sobre una foto satelital\footnote{El mapa y las fotos se obtuvieron de \url{http://sig.montevideo.gub.uy/mapas/mapa-principal}}.
 
 \begin{figure}[h!]
   \centering
@@ -305,23 +331,101 @@ En la figura \ref{fig:10min_pol.png}, en rojo se observa el polígono resultante
   \label{fig:10m_mapa.png}
 \end{figure}
 
-En las siguiente figuras se observan los polígonos formados por los promedios de varias sequencias de 2 minutos por punto. 
-
-%TODO
-% meter fotitos de polígonos
-% estimar cada vértice v## como el promedio del log ##, y ver dif entre diag v##-v##' y las medidas con el metro y correjidas con MC
-% 
-% meter fotito del satelite IMM, con el GPS arriba
+En las siguientes figuras se observan los polígonos formados por los promedios de varias sequencias de 2 minutos por punto. 
 
 \newpage
-\section{Conclusión}
+\begin{figure}[h!]
+  \includegraphics[width=.9\textwidth]{./img/2m_or1_pol.png}
+  \caption{Orientación: \textbf{4}.}
+\vspace{-30pt}
+  \label{fig:2m_or1_pol.png}
+\end{figure}
+
+\begin{figure}[h!]
+  \includegraphics[width=1\textwidth]{./img/2m_or2_pol.png}
+  \caption{Orientación: \textbf{2}.}
+  \label{fig:2m_or2_pol.png}
+\end{figure}
+
+\newpage
+\begin{figure}[h!]
+  \includegraphics[width=1\textwidth]{./img/or2_poly_cut.png}
+  \caption{Orientación: \textbf{3}.}
+\vspace{-30pt}
+  \label{fig:or2_poly_cut.png}
+\end{figure}
+
+\begin{figure}[h!]
+  \includegraphics[width=.9\textwidth]{./img/or3_pol.png}
+  \caption{Orientación: \textbf{4}}
+  \label{fig:or3_pol.png}
+\end{figure}
+
+
+
+\newpage
+\section{Caminata por el borde del polígono}
+\label{sec:caminata-por-el-borde-del-poligono}
+
+Para simular una situación más parecida a la que se tendrá con el GPS montado sobre el cuadricóptero, se colocó el trípode con el GPS en un mochila, y se procedió a recorrer el polígono con con la mochila puesta.
+
+Los errores en la medida de un punto fijo hacen pensar que sería posible que la trayectoria determinada por el GPS luego de este experimento fuese algo parecido a un rectángulo.
+
+En las figuras siguientes se observan los datos tomados durante 3 caminatas siguiendo el contorno del polígono, siguiendo la secuencia \verb+1-2-3-6-5-4+\footnote{Notar que no se recorre en el mismo orden en el que se numeran los puntos del rectángulo}. Se empezó a loguear datos en el punto 1, y se terminó nuevamente en el punto 1. En las figuras solamente se muestra el \verb+1+ correspondiente al final de la caminata, el primero es donde comienza el trazo.
+
+\begin{figure} [h!]
+  \centering
+  \subfloat[Caminata \#1]{\label{fig:caminata1.png}
+  		\includegraphics[width=0.55\textwidth]{./img/caminata1.png}}
+  \subfloat[Caminata \#2]{\label{fig:caminata2.png}
+  		\includegraphics[width=0.55\textwidth]{./img/caminata2.png}}
+\\
+  \subfloat[Caminata \#3]{\label{fig:caminata3.png}
+  		\includegraphics[width=0.55\textwidth]{./img/caminata3.png}}
+  \caption{Caminatas por la frontera del polígono.}
+  \label{fig:caminatas}
+\end{figure}
+
+\subsection{Caminata - Análisis}
+\label{sec:caminata-analisis}
+
+Se observa un error importante en la figura resultante, no se parece en nada a un rectángulo. La posición parece tender a estabilizarse una vez que se llega al destino final, el punto 1. Ahí se continuó logueando datos por unos 20 segundos. En la figura \ref{fig:caminata2.png} la posición final parece tener un drift que se aleja de la posición inicial, en lugar de acercarse. No se encontró una justificación para este comportamiento, pero es similar al observado para puntos fijos, por lo que no se le prestó especial atención.
+
+\begin{figure}[h!]
+  \includegraphics[width=1\textwidth]{./img/caminatas.png}
+  \caption{Caminatas superpuestas}
+  \label{fig:caminatas.png}
+\end{figure}
+
+
+\newpage
+\section{Conclusiones}
 \label{sec:conclusion}
 
 Comparando los resultados con secuencias de 2 minutos con el de la secuencia de 10 minutos, se observa que la performance es similar. Se concluye que tomar más de 2 minutos de datos para estimar la posición no reduce el error significativamente, y por lo tanto no vale la pena.
 
 Tomando el promedio de 2 minutos como posición (lat,long, etc) real, se observó que el 75\% de los datos que mide el GPS tienen un error inferior a 2.5m cuando la visibilidad es buena, es decir, cuando el GPS trabaja con 9 o 10 satélites.
 
-Se concluye que es razonable asumir que las medidas del GPS tienen un error de 2.5m.
+\begin{itemize}
+\item Bajo las condiciones anteriores, se concluye que es razonable asumir que las medidas del GPS tienen un error de 2.5m, y que promedios de 2 minutos son suficientes (y más no es necesario).
+\item El GPS es adecuando para navegación en un sentido más global. No parece ser adecuando para tareas de navegación local, del orden del metro, pero sí para distancias del orden de la decena de metros. En la figura \ref se observa (ver línea delgada) el log del recorrido con el GPS, que consistió en recorrer Julio María Sosa, sobre el cordón de un lado, y regresar por el lado opuesto, también cerca del cordón.
+\end{itemize}
 
+\begin{figure}[h!]
+\centering
+  \includegraphics[width=.8\textwidth]{./img/calle.png}
+  \caption{Caminatas extensa}
+  \label{fig:calle.png}
+\end{figure}
+
+
+
+
+
+Queda pendiente resolver el problema de los datos repetidos. Hay dos hipótesis por ahora:
+\begin{enumerate}
+\item El GPS no entrega datos \textbf{nuevos} a 1Hz, y el software refleja esto manteniendo el datos constante.
+\item Hay algún problema con el software, puede ser falta de conocimiento sobre como usarlo.
+\end{enumerate}
 
 \end{document}
