@@ -363,11 +363,40 @@ En las siguientes figuras se observan los polígonos formados por los promedios 
 
 
 
-%TODO
-% meter fotitos de polígonos
-% estimar cada vértice v## como el promedio del log ##, y ver dif entre diag v##-v##' y las medidas con el metro y correjidas con MC
-% 
-% meter fotito del satelite IMM, con el GPS arriba
+\newpage
+\section{Caminata por el borde del polígono}
+\label{sec:caminata-por-el-borde-del-poligono}
+
+Para simular una situación más parecida a la que se tendrá con el GPS montado sobre el cuadricóptero, se colocó el trípode con el GPS en un mochila, y se procedió a recorrer el polígono con con la mochila puesta.
+
+Los errores en la medida de un punto fijo hacen pensar que sería posible que la trayectoria determinada por el GPS luego de este experimento fuese algo parecido a un rectángulo.
+
+En las figuras siguientes se observan los datos tomados durante 3 caminatas siguiendo el contorno del polígono, siguiendo la secuencia \verb+1-2-3-6-5-4+\footnote{Notar que no se recorre en el mismo orden en el que se numeran los puntos del rectángulo}. Se empezó a loguear datos en el punto 1, y se terminó nuevamente en el punto 1. En las figuras solamente se muestra el \verb+1+ correspondiente al final de la caminata, el primero es donde comienza el trazo.
+
+\begin{figure} [h!]
+  \centering
+  \subfloat[Caminata \#1]{\label{fig:caminata1.png}
+  		\includegraphics[width=0.55\textwidth]{./img/caminata1.png}}
+  \subfloat[Caminata \#2]{\label{fig:caminata2.png}
+  		\includegraphics[width=0.55\textwidth]{./img/caminata2.png}}
+\\
+  \subfloat[Caminata \#3]{\label{fig:caminata3.png}
+  		\includegraphics[width=0.55\textwidth]{./img/caminata3.png}}
+  \caption{Caminatas por la frontera del polígono.}
+  \label{fig:caminatas}
+\end{figure}
+
+\subsection{Caminata - Análisis}
+\label{sec:caminata-analisis}
+
+Se observa un error importante en la figura resultante, no se parece en nada a un rectángulo. La posición parece tender a estabilizarse una vez que se llega al destino final, el punto 1. Ahí se continuó logueando datos por unos 20 segundos. En la figura \ref{fig:caminata2.png} la posición final parece tener un drift que se aleja de la posición inicial, en lugar de acercarse. No se encontró una justificación para este comportamiento, pero es similar al observado para puntos fijos, por lo que no se le prestó especial atención.
+
+\begin{figure}[h!]
+  \includegraphics[width=1\textwidth]{./img/caminatas.png}
+  \caption{Caminatas superpuestas}
+  \label{fig:caminatas.png}
+\end{figure}
+
 
 \newpage
 \section{Conclusiones}
@@ -377,13 +406,26 @@ Comparando los resultados con secuencias de 2 minutos con el de la secuencia de 
 
 Tomando el promedio de 2 minutos como posición (lat,long, etc) real, se observó que el 75\% de los datos que mide el GPS tienen un error inferior a 2.5m cuando la visibilidad es buena, es decir, cuando el GPS trabaja con 9 o 10 satélites.
 
-Bajo las condiciones anteriores, se concluye que es razonable asumir que las medidas del GPS tienen un error de 2.5m.
+\begin{itemize}
+\item Bajo las condiciones anteriores, se concluye que es razonable asumir que las medidas del GPS tienen un error de 2.5m, y que promedios de 2 minutos son suficientes (y más no es necesario).
+\item El GPS es adecuando para navegación en un sentido más global. No parece ser adecuando para tareas de navegación local, del orden del metro, pero sí para distancias del orden de la decena de metros. En la figura \ref se observa (ver línea delgada) el log del recorrido con el GPS, que consistió en recorrer Julio María Sosa, sobre el cordón de un lado, y regresar por el lado opuesto, también cerca del cordón.
+\end{itemize}
+
+\begin{figure}[h!]
+\centering
+  \includegraphics[width=.8\textwidth]{./img/calle.png}
+  \caption{Caminatas extensa}
+  \label{fig:calle.png}
+\end{figure}
+
+
+
+
 
 Queda pendiente resolver el problema de los datos repetidos. Hay dos hipótesis por ahora:
 \begin{enumerate}
-\item El GPS no entrega datos a 1Hz, y el software refleja esto manteniendo el datos constante.
+\item El GPS no entrega datos \textbf{nuevos} a 1Hz, y el software refleja esto manteniendo el datos constante.
 \item Hay algún problema con el software, puede ser falta de conocimiento sobre como usarlo.
 \end{enumerate}
-
 
 \end{document}
