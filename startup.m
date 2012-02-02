@@ -13,6 +13,7 @@ addpath(sprintf('%s%cscripts%cgps',uquad_root,slash,slash));
 % IMU support scripts
 addpath(sprintf('%s%cscripts%cimu',uquad_root,slash,slash));
 addpath(genpath(sprintf('%s%ctests%cIMU',uquad_root,slash,slash)));
+addpath(sprintf('%s%cSniffer_I2C',uquad_root,slash));
 
 % set format to avoid confusing GPS data
 format long g
