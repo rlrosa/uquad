@@ -1,18 +1,82 @@
 function [aconv,wconv] = imu_conv(a,w)
 
 fs=100;
-kax=6.4932;
-kay=6.3747;
-kaz=6.3894;
-bax=507.5670;
-bay=506.9107;
-baz=508.6760;
-ayza=-1.6034e-04;
-azya=-0.0021;
-axza=-0.0054;
-azxa=0.0130;
-axya= -5.9798e-04;
-ayxa= 0.0014;
+
+%Calibración para 6g
+
+% kax=6.4887;
+% kay=6.3802;
+% kaz=6.3898;
+% bax=507.5408;
+% bay=506.8803;
+% baz=508.6485;
+% ayza=5.9012e-04;
+% azya=-0.0020;
+% axza=-0.0046;
+% azxa=0.0130;
+% axya= -0.0013;
+% ayxa= 6.0841e-04;
+
+%Calibración 6g con las 12 primeras medidas
+% kax=6.5002;
+% kay=6.3956;
+% kaz=6.3924;
+% bax=507.6980;
+% bay=506.7932;
+% baz=508.6186;
+% ayza=-0.0014;
+% azya=0.0042;
+% axza=-0.0040;
+% azxa=0.0143;
+% axya= -0.0020;
+% ayxa= 2.4688e-4;
+
+%Calibración 6g con las medidas 2:12
+% kax=6.4883;
+% kay=6.3786;
+% kaz=6.3879;
+% bax=507.5413;
+% bay=506.8812;
+% baz=508.6517;
+% ayza=4.3935e-4;
+% azya=0.0021;
+% axza=-0.0045;
+% azxa=0.0129;
+% axya= -0.0017;
+% ayxa= 0.0015;
+
+% 
+% % %Calibración 6g con torcidas
+% kax=6.4926;
+% kay=6.3883;
+% kaz=6.3498;
+% bax=507.5717;
+% bay=506.8291;
+% baz=508.8650;
+% ayza=-0.0023;
+% azya=0.0046;
+% axza=-0.0036;
+% azxa=0.0133;
+% axya= 0.0032;
+% ayxa= 0.0109;
+
+
+%Calibración para 4g 
+kax=9.7200;
+kay=9.6034;
+kaz=9.5701;
+bax=507.6939;
+bay=508.6372;
+baz=506.1258;
+ayza=-0.0051;
+azya=0.0021;
+axza=-0.0042;
+azxa=0.0242;
+axya= -0.0070;
+ayxa= 0.0085;
+
+
+
 
 
 Ka=[kax 0 0;
@@ -24,12 +88,12 @@ ba=[bax; bay; baz];
 Ta=[1 -ayza azya;
    axza 1 -azxa;
    -axya ayxa 1];
-acorregida=zeros(size(a));
-
-acorregida(:,1)=a(:,2);
-acorregida(:,2)=a(:,1);
-acorregida(:,3)=a(:,3);
-a=acorregida;
+% acorregida=zeros(size(a));
+% 
+% acorregida(:,1)=a(:,2);
+% acorregida(:,2)=a(:,1);
+% acorregida(:,3)=a(:,3);
+% a=acorregida;
 aconv=zeros(size(a));
 for i=1:length(a(:,1))
     aux=Ta*(Ka^(-1))*(a(i,:)'-ba);

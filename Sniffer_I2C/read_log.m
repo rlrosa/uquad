@@ -5,6 +5,7 @@
 prueba  = '5';
 intento = '2';
 F = fopen(['./logs/',prueba,intento,'.vcd']);
+F = fopen('pruebitaa.vcd');
 D = textscan(F,'%s','delimiter','\t');
 fclose(F);
 

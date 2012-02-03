@@ -39,9 +39,6 @@
 
 \begin{document}
 
-\begin{huge}
-\emph{\textbf{En \highlight{este haighlaitiado} pongo las cosas que me parecen mal, o q hay q cambiar y en \highlightdos{este otro} pongo lo q me parece que debería ir}}
-\end{huge}
 
 
 \chapter{Caracterización del acelerómetro}
@@ -53,17 +50,14 @@ Se realiza una serie de pruebas con el fin de caracterizar el acelerómetro de tr
 \section{Materiales}
 \begin{itemize}
 \item IMU
-\item Beagle
-\item Prisma
-\item Regla
-\item Compás
-%\item Dispositivo que gire a velocidad constante
+\item Prisma de madera
+\item Escuadra
 \item Mesa nivelable
 \item Nivel.
 \end{itemize}
-\section{Procedimiento}
+\section{Marco Teórico}
 
-\subsection{No idealidades}
+
  Existen diversas no idealidades que afectan la lectura de los valores de aceleración registrados por el acelerómetro. Las no idealidades  a considerar basados en lo desarrollado por \cite{bib:calib_IMU} son:
 
 \begin{itemize}
@@ -130,6 +124,8 @@ En una primera instancia intentaremos caracterizar los valores estáticos.
 A partir del anális realizado se puede concluir que el modelo de acelerómetro que se considerará es el siguiente:
 
 $$\tilde{\mathbf{a^a}}=K_a(T_a^p)^{-1}\mathbf{a^p}+b_a$$
+
+\section{Procedimiento}
 \subsection{Caracterización de las no idealidades variables}
 
 Previo a la calibración de los parámetros estáticos parece interesante estudiar una serie ``larga" de muestras. En particular se tomará una hora de muestras a una tasa de muestreo de 100Hz. Estos datos serán útiles para la determinación de dos no idealidades:  
@@ -138,10 +134,11 @@ Previo a la calibración de los parámetros estáticos parece interesante estudiar 
 \item Drift aleatorio
 \end{itemize}
 
+Además se realizará una medida variando la temperatura ambiente a fin de determinar la magnitud del Drift térmico.
 
 \subsection{Determinación de parámetros estáticos}
 
-Como se desprende de la sección anterior, para poder calibrar el acelerómetro se deben determinar \highlight{nueve parámetros} $\rightarrow$ \highlightdos{12 parámetros}. Por dicho motivo, se precisan realizar al menos 12 medidas diferentes. Para mejorar los resultados se trabajará con 15 medidas y se procederá a determinar los parámetros que minimizan el error cuadrático medio entre los valores efectivamente medidos y los valores teóricos. 
+Como se desprende de la sección anterior, para poder calibrar el acelerómetro se deben determinar 12 parámetros. Por dicho motivo, se precisan realizar al menos 12 medidas diferentes. Para mejorar los resultados se trabajará con 24 medidas y se procederá a determinar los parámetros que minimizan el error cuadrático medio entre los valores efectivamente medidos y los valores teóricos. 
 
 \subsubsection*{Preparación}
 Para realizar una buena calibración es muy importante contar con una figura geométrica en forma de paralelepípedo de forma de poder solidarizar la IMU a dicho objeto. De esta forma nos aseguramos que no se introducen errores a la hora de orientar un eje en una dirección particular. Del mismo modo, es ideal disponer de una superficie perpendicular a la vertical.\\
@@ -158,13 +155,10 @@ Para realizar una buena calibración es muy importante contar con una figura geom
 \end{wrapfigure}
 El prisma que se utilizó fue un cubo de lapacho, como puede verse en la figura \ref{fig:cubo}. \\
 
-Los ángulos del mismo son prácticamente rectos difiriendo a lo sumo en \highlight{un} $\rightarrow$ \highlightdos{medio} grado. \\
+Los ángulos del mismo son prácticamente rectos difiriendo a lo sumo en medio grado. \\
 
-Se construyo una plataforma \highlightdos{de madera} en forma de mesa con la tapa superior móvil, de modo que permite el giro sobre uno de sus lados, como se muestra en la figura \ref{fig:mesa} \highlight{que puede girar sobre un eje}. A su vez, es posible ajustar el dispositivo de forma de asegurar que dicho eje se encuentre en posición horizontal, \highlightdos{por medio de 3 patas de altura regulable}. Para realizar las 15 medidas se irá modificando el ángulo de la \highlightdos{tapa movil de la} plataforma. \highlightdos{En cada posición de la plataforma se tomarán medidas en 3 posiciones distintas del cubo.} El ángulo con la horizontal de la tapa superior puede calcularse como:
-\begin{equation}
-\arcsin \left( \frac{b-a}{c} \right)
-\end{equation} 
-Donde las distancias son las indicadas en la figura \ref{fig:mesa-flotando}.
+Se construyo una plataforma de madera en forma de mesa con la tapa superior móvil, de modo que permite el giro sobre uno de sus lados, como se muestra en la figura \ref{fig:mesa}.  A su vez, es posible ajustar el dispositivo de forma de asegurar que dicho eje se encuentre en posición horizontal, por medio de 3 patas de altura regulable. Para realizar las 24 medidas se irá modificando el ángulo de la tapa móvil de la plataforma. En cada posición de la plataforma se tomarán medidas colocando el cubo en distintas posiciones. 
+
 
 \begin{figure}[h!]
 	\begin{center}
@@ -185,10 +179,6 @@ En reposo el acelerómetro medirá una fuerza igual a \textit{g} en la dirección v
 
 En la figura \ref{fig:1hora} pueden observarse los datos crudos obtenidos por la IMU, tanto las aceleraciones registradas en los tres ejes, como las velocidades angulares. 
 
-\begin{huge}
-\emph{\textbf{\highlight{Hay que cambiar esta gráfica}\\
-\indent\highlight {Los ejes estan mal}}}
-\end{huge}
 
 \begin{figure}[h!]
 %  \vspace{-20pt}
@@ -209,7 +199,7 @@ A partir de dichas constataciones se podrá afirmar que trabajar con el valor pro
 \subsection{Medias estáticas para el acelerómetro}
 
 
-Como se aclaró en la oportunidad anterior se trabajará con el promedio de las aceleraciones medidas en una serie de datos de un minuto de duración para cada orientación. A su vez, se miden las distancias indicadas en la figura \ref{fig: mesa}. Además de variar el ángulo de la mesa, se rotará el prisma de forma de realizar una medida con cada eje perpendicular al plano de la mesa. Los resultados obtenidos se presentan en la tabla \ref{tab: acc} donde orientación y significa el eje y perpendicular al plano de la mesa. Lo mismo sucede para orientación z y -x. La aceleración medida es un número sin unidades entre 0 y 1024.
+Como se aclaró en la oportunidad anterior se trabajará con el promedio de las aceleraciones medidas en una serie de datos de 1 minuto de duración para cada orientación. Además de variar el ángulo ($\theta$)de la mesa, se rotará el prisma de forma de realizar una medida con cada eje perpendicular al plano de la mesa. Asimismo utilizando una escuadra se lograran rotaciones de 45° respecto del eje perpendicular a la tapa($\phi$). Los resultados obtenidos se presentan en la tabla \ref{tab: acc} donde orientación y significa el eje y perpendicular al plano de la mesa. Lo mismo sucede para orientación z y -x. La aceleración medida es un número sin unidades entre 0 y 1024. 
 
 
 \begin{table}[H]
@@ -223,33 +213,26 @@ Como se aclaró en la oportunidad anterior se trabajará con el promedio de las ac
 \hline
 \multicolumn{2}{|p{75pt}|}{\cellcolor[gray]{0.8} \textbf{Posición}}  &\multicolumn{2}{|p{75pt}|}{\cellcolor[gray]{0.8} \textbf{Orientación y}}  & \multicolumn{2}{|p{75pt}|}{\cellcolor[gray]{0.8} \textbf{Orientación z}}&\multicolumn{2}{|p{75pt}|}{\cellcolor[gray]{0.8} \textbf{Orientación -x}} \\
 \hline 
-\multicolumn{1}{|p{30pt}|}{\cellcolor[gray]{0.6} \textbf{Distancias (cm)}} & \multicolumn{1}{|p{30pt}|}{\cellcolor[gray]{0.6} \textbf{Ángulo(°)}} &\multicolumn{1}{|p{30pt}|}{\cellcolor[gray]{0.6} \textbf{a medida}}  &
+\multicolumn{1}{|p{30pt}|}{\cellcolor[gray]{0.6} \textbf{$\theta(°)$}} & \multicolumn{1}{|p{30pt}|}{\cellcolor[gray]{0.6} \textbf{$\phi(°)$}} &\multicolumn{1}{|p{30pt}|}{\cellcolor[gray]{0.6} \textbf{a medida}}  &
 
 \multicolumn{1}{|p{30pt}|}{a teórica ($ms^{-2})$ }&\multicolumn{1}{|p{30pt}|}{\cellcolor[gray]{0.6} \textbf{a medida}}  &\multicolumn{1}{|p{30pt}|}{a teórica ($ms^{-2})$ }&\multicolumn{1}{|p{30pt}|}{\cellcolor[gray]{0.6} \textbf{a medida}}  &\multicolumn{1}{|p{30pt}|}{a teórica ($ms^{-2})$ } \\
 \hline
 
-\multicolumn{1}{|p{30pt}|}{a=36; b=36; c=37.4 } & \multicolumn{1}{|p{30pt}|}{$\alpha=0$ } &\multicolumn{1}{|p{30pt}|}{(507.60; 569.51; 508.75)}  &\multicolumn{1}{|p{30pt}|}{(0; 9.81; 0) }&\multicolumn{1}{|p{30pt}|}{(507.67; 507.68; 571.48) }&
-
-\multicolumn{1}{|p{30pt}|}{(0; 0; 9.81)}&\multicolumn{1}{|p{30pt}|}{(443.99; 506.45; 509.00) }  &\multicolumn{1}{|p{30pt}|}{(-9.81; 0; 0) } \\
-\hline
-
-\multicolumn{1}{|p{30pt}|}{a=36; b=23; c=37.4 } & \multicolumn{1}{|p{30pt}|}{$\alpha=20.34$ } &\multicolumn{1}{|p{30pt}|}{(507.47; 565.34; 486.63)}  &\multicolumn{1}{|p{30pt}|}{(0; 9.20; $-3.41$) }&\multicolumn{1}{|p{30pt}|}{(485.17; 507.53; 567.51) }  &\multicolumn{1}{|p{30pt}|}{(-3.41;  0; 9.20)}&\multicolumn{1}{|p{30pt}|}{(447.86; 528.42; 508.81) }  &\multicolumn{1}{|p{30pt}|}{(-9.20; 3.41; 0) } \\
-\hline
-
-\multicolumn{1}{|p{30pt}|}{a=35.8; b=9.7; c=37.4 } & \multicolumn{1}{|p{30pt}|}{$\alpha=44.26$ } &\multicolumn{1}{|p{30pt}|}{(507.79; 551.16; 464.84)}  &\multicolumn{1}{|p{30pt}|}{(0; 7.03; $-6.85$) }&\multicolumn{1}{|p{30pt}|}{(462.83; 507.35; 553.34) }  &\multicolumn{1}{|p{30pt}|}{(-6.85; 0; 7.03)}&\multicolumn{1}{|p{30pt}|}{(443.99; 506.46; 509.00) }  &\multicolumn{1}{|p{30pt}|}{(-7.03; 6.85; 0) } \\
-\hline
-
-\multicolumn{1}{|p{30pt}|}{a=35.6; b=3.5; c=37.4 } & \multicolumn{1}{|p{30pt}|}{$\alpha=59.13$ } &\multicolumn{1}{|p{30pt}|}{(507.96; 538.2; 454.74)}  &\multicolumn{1}{|p{30pt}|}{(0; 5.03; $-8.42$) }&\multicolumn{1}{|p{30pt}|}{(452.76; 507.02; 540.61) }  &\multicolumn{1}{|p{30pt}|}{(-8.42; 0; 5.03)}&\multicolumn{1}{|p{30pt}|}{(475.02; 560.34; 508.57) }  &\multicolumn{1}{|p{30pt}|}{(-5.03; 8.42; 0)} \\
-\hline
-
-\multicolumn{1}{|p{30pt}|}{a=35.6; b=0; c=37.4 } & \multicolumn{1}{|p{30pt}|}{$\alpha=72.16$ } &\multicolumn{1}{|p{30pt}|}{(507.34; 525.37; 449.04)}  &\multicolumn{1}{|p{30pt}|}{(0; 3.01; $-9.34$) }&\multicolumn{1}{|p{30pt}|}{(446.98; 506.91; 527.87) }  &\multicolumn{1}{|p{30pt}|}{(-9.34; 0; 3.01)}&\multicolumn{1}{|p{30pt}|}{(487.84; 566.23; 508.66) }  &\multicolumn{1}{|p{30pt}|}{(-3.01;  9.3379; 0) } \\
-\hline
+\multicolumn{1}{|p{30pt}|}{0 } & \multicolumn{1}{|p{30pt}|}{0 } &\multicolumn{1}{|p{30pt}|}{(506.42; 602.77; 505.63)}  &\multicolumn{1}{|p{30pt}|}{(0.00; 9.81; 0.00) }&\multicolumn{1}{|p{30pt}|}{(508.38; 510.78; 600.24 }&\multicolumn{1}{|p{30pt}|}{(0.00; 0.00; 9.81)}&\multicolumn{1}{|p{30pt}|}{(412.39; 507.76; 506.49) }  &\multicolumn{1}{|p{30pt}|}{(-9.81; -0.00; 0.00) } \\ \hline
+\multicolumn{1}{|p{30pt}|}{10 } & \multicolumn{1}{|p{30pt}|}{0 } &\multicolumn{1}{|p{30pt}|}{(506.59; 600.90; 488.81)}  &\multicolumn{1}{|p{30pt}|}{(0.00; 9.66; -1.70) }&\multicolumn{1}{|p{30pt}|}{(491.24; 511.04; 598.95 }&\multicolumn{1}{|p{30pt}|}{(-1.70; 0.00; 9.66)}&\multicolumn{1}{|p{30pt}|}{(413.87; 524.86; 506.36) }  &\multicolumn{1}{|p{30pt}|}{(-9.66; 1.70; 0.00) } \\ \hline
+\multicolumn{1}{|p{30pt}|}{10 } & \multicolumn{1}{|p{30pt}|}{45 } &\multicolumn{1}{|p{30pt}|}{(518.76; 601.08; 493.49)}  &\multicolumn{1}{|p{30pt}|}{(1.20; 9.66; -1.20) }&\multicolumn{1}{|p{30pt}|}{(495.62; 522.40; 598.66 }&\multicolumn{1}{|p{30pt}|}{(-1.20; 1.20; 9.66)}&\multicolumn{1}{|p{30pt}|}{(413.88; 520.13; 518.45) }  &\multicolumn{1}{|p{30pt}|}{(-9.66; 1.20; 1.20) } \\ \hline
+\multicolumn{1}{|p{30pt}|}{20 } & \multicolumn{1}{|p{30pt}|}{0 } &\multicolumn{1}{|p{30pt}|}{(506.53; 596.05; 472.22)}  &\multicolumn{1}{|p{30pt}|}{(0.00; 9.22; -3.36) }&\multicolumn{1}{|p{30pt}|}{(473.72; 510.47; 594.21 }&\multicolumn{1}{|p{30pt}|}{(-3.36; 0.00; 9.22)}&\multicolumn{1}{|p{30pt}|}{(418.20; 541.15; 506.15) }  &\multicolumn{1}{|p{30pt}|}{(-9.22; 3.36; 0.00) } \\ \hline
+\multicolumn{1}{|p{30pt}|}{20 } & \multicolumn{1}{|p{30pt}|}{45 } &\multicolumn{1}{|p{30pt}|}{(530.63; 596.54; 481.98)}  &\multicolumn{1}{|p{30pt}|}{(2.37; 9.22; -2.37) }&\multicolumn{1}{|p{30pt}|}{(483.85; 534.25; 593.94 }&\multicolumn{1}{|p{30pt}|}{(-2.37; 2.37; 9.22)}&\multicolumn{1}{|p{30pt}|}{(418.29; 531.87; 530.06) }  &\multicolumn{1}{|p{30pt}|}{(-9.22; 2.37; 2.37) } \\ \hline
+\multicolumn{1}{|p{30pt}|}{30 } & \multicolumn{1}{|p{30pt}|}{0 } &\multicolumn{1}{|p{30pt}|}{(507.33; 589.08; 458.34)}  &\multicolumn{1}{|p{30pt}|}{(0.00; 8.50; -4.90) }&\multicolumn{1}{|p{30pt}|}{(459.55; 510.09; 587.67 }&\multicolumn{1}{|p{30pt}|}{(-4.90; 0.00; 8.50)}&\multicolumn{1}{|p{30pt}|}{(424.70; 555.01; 506.96) }  &\multicolumn{1}{|p{30pt}|}{(-8.50; 4.90; 0.00) } \\ \hline
+\multicolumn{1}{|p{30pt}|}{30 } & \multicolumn{1}{|p{30pt}|}{45 } &\multicolumn{1}{|p{30pt}|}{(541.23; 589.86; 472.74)}  &\multicolumn{1}{|p{30pt}|}{(3.47; 8.50; -3.47) }&\multicolumn{1}{|p{30pt}|}{(473.94; 543.67; 587.47 }&\multicolumn{1}{|p{30pt}|}{(-3.47; 3.47; 8.50)}&\multicolumn{1}{|p{30pt}|}{(424.92; 541.96; 540.38) }  &\multicolumn{1}{|p{30pt}|}{(-8.50; 3.47; 3.47) } \\ \hline
+\multicolumn{1}{|p{30pt}|}{45 } & \multicolumn{1}{|p{30pt}|}{0 } &\multicolumn{1}{|p{30pt}|}{(507.61; 573.51; 438.99)}  &\multicolumn{1}{|p{30pt}|}{(0.00; 6.94; -6.94) }&\multicolumn{1}{|p{30pt}|}{(439.12; 510.58; 572.01 }&\multicolumn{1}{|p{30pt}|}{(-6.94; 0.00; 6.94)}&\multicolumn{1}{|p{30pt}|}{(440.34; 575.47; 506.71) }  &\multicolumn{1}{|p{30pt}|}{(-6.94; 6.94; 0.00) } \\ \hline
+\multicolumn{1}{|p{30pt}|}{45 } & \multicolumn{1}{|p{30pt}|}{45 } &\multicolumn{1}{|p{30pt}|}{(555.44; 574.48; 459.13)}  &\multicolumn{1}{|p{30pt}|}{(4.90; 6.94; -4.91) }&\multicolumn{1}{|p{30pt}|}{(459.97; 557.65; 571.66 }&\multicolumn{1}{|p{30pt}|}{(-4.91; 4.90; 6.94)}&\multicolumn{1}{|p{30pt}|}{(440.50; 556.14; 553.97) }  &\multicolumn{1}{|p{30pt}|}{(-6.94; 4.90; 4.90) } \\ \hline
 
 
 
 
 \end{tabular}
-\caption{Medidas de las distancias a,b y c, ángulos de inclinación calculados, aceleraciones medidas y aceleraciones teóricas en los tres ejes de la plataforma}
+\caption{Aceleraciones medidas y aceleraciones teóricas en los tres ejes de la plataforma}
 \label{tab:  acc}
 \end{tiny}
 
@@ -257,51 +240,61 @@ Como se aclaró en la oportunidad anterior se trabajará con el promedio de las ac
 
 \end{table} 
 
+Para la calibración se consideran solamente 24 de las 27 medidas realizadas a fin. Esto es útil ya que se tienen 3 medidas que no serán tenidas en cuenta en la calibración para realizar una verificación de la bondad de la calibración obtenida.
+
 El problema de calibración consiste en encontrar el vector de parámetros $\theta$ que mejor ajusta las medidas obtenidas a los valores teóricos de aceleración. El vector $\theta$ se compone de los elementos de la diagonal de la matriz $K_a$, de los elementos de $b_a$ y de los $\alpha_{ij}$ de la matriz $T_a^p$. Es decir: $$\theta =\left[ k_{ax} , k_{ay} , k_{az} ,b_{ax} ,b_{ay} ,b_{az}, \alpha_{yz} , \alpha_{zy} , \alpha_{xz} , \alpha_{zx} , \alpha_{xy} , \alpha_{yx} \right]$$
 
 Como criterio de ajuste se decide minimizar la suma de los cuadrados de las diferencia entre la aceleración teórica y la aceleración medida. Dicho problema se puede expresar matemáticamente como:
 
 $$\theta \quad : \quad  min \left\lbrace \sum_{i=1}^{M} {\vert \vert\tilde{\mathbf{a}}_{i}^p-T_a^pK_a^{-1}\left(\tilde{\mathbf{a}}_{i}^a -\mathbf{b}_a \right)\vert \vert} \right\rbrace$$
 donde M es la cantidad de medidas realizadas, $\tilde{\mathbf{a}}_{i}^p$ los valores de aceleración teóricos en cada eje de la plataforma según la posición y orientación de la IMU y $\tilde{\mathbf{a}}_{i}^a$ los valores obtenidos de la IMU.
-Las relaciones entre los parámetros a determinar $\mathbf{no}$ es lineal, por lo tanto se utilizará para su determinación un algoritmo de mínimos cuadrados no lineales. \emph{Matlab}  provee un algoritmo con dicho fin: \emph{lsqnonlin}. El algoritmo precisa además una semilla para comenzar, dicha semilla debe ser bien elegida de forma de que el mínimo encontrado por el algoritmo sea el deseado. Sucede que dicho algoritmo encuentra mínimos locales. Si la semilla proporcionada se encuentra muy lejos de la solución que en realidad interesa, se puede obtener una solución que no sirva. El rango de aceleraciones que se maneja es de $\pm 6g$, mientras que los valores digitales del acelerómetro se encuentran entre 0 y 1024. Idealmente  una aceleración cero corresponde a 512 y la ganancia debe ser $\frac{512}{6g}$ para los tres ejes. Finalmente, los ángulos se suponen pequeños, por lo tanto una semilla válida parece ser: $$\theta_0=\left[ \frac{512}{6g}, \frac{512}{6g}, \frac{512}{6g}, 512, 512, 512, 0, 0, 0, 0, 0, 0 \right]$$En una primera llamada al algoritmo se obtienen los 12 parámetros. A priori parecería que se podría seguir trabajando con estos parámetros. Sin embargo, se constata que hay dos residuos ( correspondientes a las medidas de aceleración en los ejes $-x$ e $y$  en la novena medida) que tienen valor 2.14 y 5.31, mientras que la suma de los cuadrados de los residuos alcanza un valor de 42.39.  Esta medida aporta más de la mitad a la suma de los cuadrados de los errores. La desviación estándar que se obtiene es de $1.68 ms^{-2}$, este resultado es completamente inaceptable. Por lo tanto parece prudente considerar la medida en cuestión como un \emph{outlier} y descartarla. Se vuelve a realizar el ajuste sin considerar esta medida. En esta segunda oportunidad la suma de los errores al cuadrado se ve reducida enormemente, alcanzando un valor de 0.02. La desviación estándar que se obtiene con este nuevo set de medidas es $1.68 ms^{-2}$ 
-
-Esta reducción confirma que el valor descartado es un \emph{outlier}, ya que al no tener que ajustar los parámetros considerando dicho valor el error total se reduce considerablemente. 
+Las relaciones entre los parámetros a determinar $\mathbf{no}$ es lineal, por lo tanto se utilizará para su determinación un algoritmo de mínimos cuadrados no lineales. \emph{Matlab}  provee un algoritmo con dicho fin: \emph{lsqnonlin}. El algoritmo precisa además una semilla para comenzar, dicha semilla debe ser bien elegida de forma de que el mínimo encontrado por el algoritmo sea el deseado. Sucede que dicho algoritmo encuentra mínimos locales. Si la semilla proporcionada se encuentra muy lejos de la solución que en realidad interesa, se puede obtener una solución que no sirva. El rango de aceleraciones que se maneja es de $\pm 4g$, mientras que los valores digitales del acelerómetro se encuentran entre 0 y 1024. Idealmente  una aceleración cero corresponde a 512 y la ganancia debe ser $\frac{512}{4g}$ para los tres ejes. Finalmente, los ángulos se suponen pequeños, por lo tanto una semilla válida parece ser: $$\theta_0=\left[ \frac{512}{4g}, \frac{512}{4g}, \frac{512}{4g}, 512, 512, 512, 0, 0, 0, 0, 0, 0 \right]$$
 
 Los parámetros que minimizan la suma de los errores al cuadrado son los siguientes:
 
 \begin{scriptsize}
-$$\theta_0=\left[ 6.4932 \quad 6.3747 \quad 6.3894 \quad 507.5670 \quad 506.9107 \quad508.6760 \quad -0.0002 \quad 0.0021 \quad-0.0054 \quad 0.0130 \quad -0.0006 \quad0.0014 \right]$$
+$$\theta_0=\left[ 9.7200 \quad 9.6034 \quad 9.5701 \quad 507.6939 \quad 508.6372 \quad506.1258 \quad -0.0051 \quad 0.0021 \quad-0.0042 \quad 0.0242 \quad -0.0070 \quad0.0085 \right]$$
 \end{scriptsize}
 
+Luego de realizada la minimización se calcula la media del error cometido y la desviación estándar del error.
+$$
+\mu=1.7 \times 10^{-12} ms^{-2}$$ \\
+$$\sigma = 0.0484 ms^{-2}
+$$ 
+ 
+La media del error cometido es completamente despreciable, por lo tanto podemos afirmar que el $95\% $ de las medidas de aceleración realizadas tendrán un error inferior $2\sigma=0.969$. Este error se integrará dos veces a la hora de obtener la posición del cuadricóptero, por lo tanto en el $95 \%$ de los casos estaremos cometiendo un error inferior a los 5 metros al cabo de 10 segundos de navegación. 
+ 
+Para verificar la calibración realizada se utilizan las medidas siguientes:
+\begin{itemize}
+\item $\theta = 0 \quad \phi = 0 \quad$ orientación y
+\item $\theta = 20 \quad \phi = 0 \quad$ orientación z
+\item $\theta = 10 \quad \phi = 45 \quad$ orientación -x
+\end{itemize}
 
-Una vez obtenidos estos parámetros se grafican en la imagen \ref{fig:convertidas} las medidas de aceleración obtenidas para algunos casos. Por simpleza en el análisis se toman los tres casos en los cuales $\alpha = 0$. Puede verse que las aceleraciones medidas se corresponden en muy buena forma con las aceleraciones teóricas, sin embargo las mismas poseen un error. Este error medido en la aceleración se integrará dos veces a la hora de obtener la posición produciendo una deriva en la posición. Es importante caracterizar esta deriva, ya que nos permite saber durante cuanto tiempo podemos utilizar la medida del acelerómetro sin necesidad de integrarla con la de otro sensor (por ejemplo un GPS). Dichos errores pueden verse representados gráficamente en la figura \ref{fig:errores}
+Se presenta para las tres medidas la aceleración teórica, la medida y el error en la tabla \ref{tab:diff}. 
 
-\begin{figure}[H] %{l}{1.11\textwidth}
-  \vspace{-20pt}
-  \begin{center}
-    \subfloat[Orientación y] {\includegraphics[width=0.37\textwidth]{./Pics/y.jpg}}
-    \subfloat[Orientación z] {\includegraphics[width=0.37\textwidth]{./Pics/z.jpg}}
-    \subfloat[Orientación -x] {\includegraphics[width=0.37\textwidth]{./Pics/-x.jpg}}    
-  \end{center}
-  \vspace{-20pt}
-  \caption{Medidas de aceleración en el sistema de la plataforma. Caso $\alpha = 0$}
-  \label{fig:convertidas}
-  \vspace{-10pt}
-\end{figure}
-
-\begin{figure}[H] %{l}{1.11\textwidth}
-  \vspace{-20pt}
-  \begin{center}
-    \subfloat[Errores en las direcciones x,  z] {\includegraphics[width=0.37\textwidth]{./Pics/errory.jpg}}
-    \subfloat[Errores en las direcciones x,  y] {\includegraphics[width=0.37\textwidth]{./Pics/errorz.jpg}}
-    \subfloat[Errores en las direcciones y,  z] {\includegraphics[width=0.37\textwidth]{./Pics/error-x.jpg}}    
-  \end{center}
-  \vspace{-20pt}
-  \caption{Errores en la posición en los ejes en los cuales no hay aceleración Caso $\alpha = 0$}
-  \label{fig:errores}
-  \vspace{-10pt}
-\end{figure}
+\begin{table}[H]
+\centering
 
 
-De los resultados gráficos obtenidos parece razonable pensar que se puede trabajar con el acelerómetro sin corrección del GPS durante 10 segundos aproximadamente, ya que en estas condiciones el error en la posición es inferior a los 2 metros.  
+
+
+
+\begin{tabular}{p{90pt}|p{90pt}|p{90pt}|p{90pt}|}
+\hline
+\cellcolor[gray]{0.8}{Medida} & \cellcolor[gray]{0.8}{Aceleración Medida ($ms^{-2}$)}&\cellcolor[gray]{0.8}{Aceleración teórica($m^{-2}$)}& \cellcolor[gray]{0.8}{Error($ms^{-2}$)} \\
+\hline
+1&(-0.08;9.80;0.03) & (0.00;9.81;0.00)& (-0.08;0.01;0.03)\\
+\hline
+2&(-3.48;-0.02;9.18) & (-3.36;0.00;9.22)& (-1.2;-0.02;-0.04)\\
+\hline
+3&(-9.64;1.21;1.23) & (-9.66;1.21;1.2)& (0.02;0.00;0.03)\\
+\hline
+\end{tabular}
+\caption{Medidas de verificación}
+\label{tab:diff}
+\end{table}
+
+Si bien estos valores no son una buena muestra estadística sirven como verificación ya que en la mayoría de los casos se obtiene un error inferior a $\sigma$ y tenemos solamente un error superior a $2\sigma$.
+
 \end{document}
