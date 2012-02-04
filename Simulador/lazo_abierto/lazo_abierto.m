@@ -1,5 +1,5 @@
 function varargout = lazo_abierto(varargin)
-global t ti tf x0 y0 z0 psi0 phi0 theta0 vq10 vq20 vq30 wq10 wq20 wq30 Variables indice w1 w2 w3 w4
+global t ti tf x0 y0 z0 psi0 phi0 theta0 vq10 vq20 vq30 wq10 wq20 wq30 Variables indice w1 w2 w3 w4 dw1 dw2 dw3 dw4
 % LAZO_ABIERTO MATLAB code for lazo_abierto.fig
 %      LAZO_ABIERTO, by itself, creates a new LAZO_ABIERTO or raises the existing
 %      singleton*.
@@ -431,11 +431,14 @@ function pushbutton1_Callback(hObject, eventdata, handles)
     wang4=zeros(size(time));
 
     ind=evalin('base','indice');
-    if (ind==2)
-        
-        m=evalin('base','M');
+    val=0;
+    
+    m=evalin('base','M');
         psio=evalin('base','psi0');
         phio=evalin('base','phi0');
+    if (ind==2)
+        
+        
         
         fuerzam=9.81*m/(4*cos(psio)*cos(phio));
         
@@ -447,23 +450,49 @@ function pushbutton1_Callback(hObject, eventdata, handles)
             val=val(1);
         else val=val(2);
         end
-        val
+        
         
         wang1(time>(ti-1))=val;
         wang2(time>(ti-1))= val;
         wang3(time>(ti-1))= val;
         wang4(time>(ti-1))= val;
 
+    
+    
+    elseif ind==3
+        fuerzam=9.81*m/(4*cos(psio)*cos(phio));
+         syms x
+    
+        val=solve(3.7646e-5*x^2-9.0535e-4*x+0.0170-fuerzam);
+        val=eval(val);
+        if (val(1)>=0)
+            val=val(1);
+        else val=val(2);
+        end
+        wang1(time>(ti-1)) = val;
+        wang2(time>(ti-1)) = 3/2*val;
+        wang3(time>(ti-1)) = val;
+        wang4(time>(ti-1)) = val/2;
+        
     end
+%     dwang1=diff(wang1);
+%     dwang2=diff(wang2);
+%     dwang3=diff(wang3);
+%     dwang4=diff(wang4);
     assignin('base','w1',wang1);
     assignin('base','w2',wang2);
     assignin('base','w3',wang3);
     assignin('base','w4',wang4);
+    %assignin('base','dw1',0);
+    %assignin('base','dw2',0);
+    %assignin('base','dw3',0);
+    %assignin('base','dw4',0);
     %Calculo las velocidades iniciales en el sistema del quadricoptero
     determinar_vel;
     
     %Simulo el sistema en lazo abierto
     sim_lazo_abierto
+    
     
     
  

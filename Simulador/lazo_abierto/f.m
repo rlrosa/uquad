@@ -20,7 +20,20 @@ wq1=X(10);
 wq2=X(11);
 wq3=X(12);
 
+w1=evalin('base','w1');
+w2=evalin('base','w2');
+w3=evalin('base','w3');
+w4=evalin('base','w4');
+dw1=evalin('base','dw1');
+dw2=evalin('base','dw2');
+dw3=evalin('base','dw3');
+dw4=evalin('base','dw4');
 
+ T1=3.7646e-4*w1.^2-9.0535e-04*w1+0.0170*ones(size(w1),1);
+   T2=3.7646e-4*w2.^2-9.0535e-04*w2+0.0170*ones(size(w1),1);
+   T3=3.7646e-4*w3.^2-9.0535e-04*w3+0.0170*ones(size(w1),1);
+   T4=3.7646e-4*w4.^2-9.0535e-04*w4+0.0170*ones(size(w1),1);
+   
 dX=[vq1*cos(phi)*cos(theta)+vq2*(cos(theta)*sin(phi)*sin(psi)-cos(phi)*sin(theta))+vq3*(sin(psi)*sin(theta)+cos(psi)*cos(theta)*sin(phi));
     vq1*cos(phi)*sin(theta)+vq2*(cos(psi)*cos(theta)+sin(theta)*sin(phi)*sin(psi)+vq3*(cos(psi)*sin(theta)*sin(phi)-cos(theta)*sin(psi)));
     -vq1*sin(phi)+vq2*cos(phi)*sin(psi)+vq3*(cos(phi)*cos(psi));
