@@ -2,10 +2,13 @@
 % clear all
 % clc
 
-prueba  = '5';
-intento = '2';
-F = fopen(['./logs/',prueba,intento,'.vcd']);
-F = fopen('pruebitaa.vcd');
+function [D0_val,D2_val,D4_val,D6_val,...
+          D0_add,D2_add,D4_add,D6_add] = read_log(archivo)
+
+% prueba  = '5';
+% intento = '2';
+% F = fopen(['./logs/',prueba,intento,'.vcd']);
+F = fopen(archivo);
 D = textscan(F,'%s','delimiter','\t');
 fclose(F);
 
@@ -71,7 +74,8 @@ while i<size(data,2)
     i=i+3;
 end
 
-figure('Name',['Prueba ',prueba,', Intento ',intento])
+% figure('Name',['Prueba ',prueba,', Intento ',intento])
+figure('Name','Potencia')
 subplot 221
     plot(D0_val,'b*')
 %     axis([1 length(D0_val) 0 100])
@@ -97,6 +101,33 @@ subplot 224
     xlabel('Muestras')
     ylabel('Información envidada')
     
+    
+% figure('Name','Registro')
+% subplot 221
+%     plot(D0_add,'b*')
+% %     axis([1 length(D0_add) 0 100])
+%     title('D0')
+%     xlabel('Muestras')
+%     ylabel('Registro del esclavo')
+% subplot 222
+%     plot(D2_add,'y>')
+% %     axis([1 length(D2_add) 0 100])
+%     title('D2')
+%     xlabel('Muestras')
+%     ylabel('Registro del esclavo')
+% subplot 223
+%     plot(D4_add,'ro')
+% %     axis([1 length(D4_add) 0 100])
+%     title('D4')
+%     xlabel('Muestras')
+%     ylabel('Registro del esclavo')
+% subplot 224
+%     plot(D6_add,'gs')
+% %     axis([1 length(D6_add) 0 100])
+%     title('D6')
+%     xlabel('Muestras')
+%     ylabel('Registro del esclavo')
+%     
 % figure
 % plot(D0_val,'b*')
 % hold on
