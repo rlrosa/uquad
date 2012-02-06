@@ -106,7 +106,7 @@ if(todos_en_el_mismo_plot)
     avg_x = avg_data(:,1)-avg_data(1,1);
     avg_y = avg_data(:,2)-avg_data(1,2);
     fxy = gps_polygon([avg_x;avg_y]*100,diags);
-    err_rel = gps_err_rel(fxy);
+    [diag_err, err_rel] = gps_err_rel(fxy);
   end
     
   if(w_out)
