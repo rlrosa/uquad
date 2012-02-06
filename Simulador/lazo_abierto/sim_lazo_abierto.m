@@ -36,16 +36,16 @@ assignin('base','X0',X0);
 
 
 %%Simulación del modelo Simulink
-[t,X]=sim('dinamica_quad',[0 10], [],[t',w1',w2',w3',w4']);
+[t,X]=sim('dinamica_quad',[ti tf], [],[t',w1',w2',w3',w4']);
 
 %Simulación por Ode45
-%[t,X]=ode45(@f,[0,10],X0,[T1',T2',T3',T4',w1',w2',w3',w4']);
+%[t,X]=ode45(@f,[ti,tf],X0,[w1,w2,w3,w4]);
 
 
 assignin('base','Variables',X);
 
 %Ploteo la trayectoria del sistema
-plot3(X(:,4),X(:,5),X(:,6));grid on
+plot3(X(:,1),X(:,2),X(:,3));grid on
 hold on;
-plot3(X(1:5:end,4),X(1:5:end,5),X(1:5:end,6),'x');grid on
+plot3(X(1:5:end,1),X(1:5:end,2),X(1:5:end,3),'x');grid on
 hold off;
