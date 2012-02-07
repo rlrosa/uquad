@@ -1,5 +1,5 @@
 function sim_lazo_abierto 
-global ti tf x0 y0 z0 psi0 phi0 theta0 vq10 vq20 vq30 wq10 wq20 wq30 X0
+global ti tf t x0 y0 z0 psi0 phi0 theta0 vq10 vq20 vq30 wq10 wq20 wq30 X0 w1 w2 w3 w4 
 
 %%%%%%%%Constantes del sistema%%%%%%%%%%%%%%%%%%%%%%
 assignin('base','g',-9.81); %Constante gravitacional
@@ -23,43 +23,29 @@ vq30=evalin('base','vq30');
 wq10=evalin('base','wq10');
 wq20=evalin('base','wq20');
 wq30=evalin('base','wq30');
+ti=evalin('base','ti');
+tf=evalin('base','tf');
+t=evalin('base','t');
+w1=evalin('base','w1');
+w2=evalin('base','w2');
+w3=evalin('base','w3');
+w4=evalin('base','w4');
 
 X0=[x0,y0,z0,psi0,phi0,theta0,vq10,vq20,vq30,wq10,wq20,wq30];
 assignin('base','X0',X0);
-%%Defino el tiempo de simulación y la cantidad de puntos.
-
-ti=evalin('base','ti');
-tf=evalin('base','tf');
-t=(ti:0.2:tf);
-%t=linspace(ti,tf,(tf-ti)*5);
-
-
-%%%%Entradas%%%%%
-T1=zeros(size(t));
-T2=zeros(size(t));
-T3=zeros(size(t));
-T4=zeros(size(t));
-
-T1(t>-1)=(9.81/4)/cos(pi/3);
-T2(t>-1)=(9.81/4)/cos(pi/3);
-T3(t>-1)=(9.81/4)/cos(pi/3);
-T4(t>-1)=(9.81/4)/cos(pi/3);
-
-
-w1=zeros(size(t));
-w2=zeros(size(t));
-w3=zeros(size(t));
-w4=zeros(size(t));
 
 
 %%Simulación del modelo Simulink
-[t,X]=sim('dinamica_quad',[0 10], [],[t',T1',T2',T3',T4',w1',w2',w3',w4']);
+[t,X]=sim('dinamica_quad',[ti tf], [],[t',w1',w2',w3',w4']);
 
 %Simulación por Ode45
-%[t,X]=ode45(@f,[0,10],X0,[T1',T2',T3',T4',w1',w2',w3',w4']);
+%[t,X]=ode45(@f,[ti,tf],X0,[w1,w2,w3,w4]);
 
 
 assignin('base','Variables',X);
 
 %Ploteo la trayectoria del sistema
-plot3(X(:,4),X(:,5),X(:,6));grid on
+plot3(X(:,1),X(:,2),X(:,3));grid on
+hold on;
+plot3(X(1:5:end,1),X(1:5:end,2),X(1:5:end,3),'x');grid on
+hold off;

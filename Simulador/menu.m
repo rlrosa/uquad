@@ -57,7 +57,7 @@ handles.output = hObject;
 
 % Update handles structure
 guidata(hObject, handles);
-
+addpath('./lazo_abierto/');
 % UIWAIT makes menu wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
 
@@ -81,7 +81,8 @@ function pushbutton1_Callback(hObject, eventdata, handles)
 %global Variables ti tf X0 x0 y0 z0 Vx0 Vy0 Vz0 vq10 vq20 vq30 wq10 wq20 wq30 theta0 psi0 phi0 Ixx Iyy Izz Izzm L M g Cond_iniciales;
 clc
 clear all
-lazo_abierto
+addpath('./lazo_abierto')
+lazo_abierto;
 
 % --- Executes on button press in pushbutton2.
 function pushbutton2_Callback(hObject, eventdata, handles)
@@ -97,19 +98,7 @@ function pushbutton3_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 
-% --- Executes on mouse press over axes background.
-function axes1_ButtonDownFcn(hObject, eventdata, handles)
-% hObject    handle to axes1 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 
-[x,map] = imread('logo.jpg'); %filename=bitmap file
-colormap(map);
-axis off; %borra los axis que te pone por defecto MATLAB
-handles
-axes(handles.img2); %per fixar la img2 com actual
-image(x);
-axis off; 
 
 
 % --- Executes on button press in pushbutton4.
@@ -117,3 +106,4 @@ function pushbutton4_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton4 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+

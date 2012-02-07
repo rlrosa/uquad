@@ -1,5 +1,5 @@
 function varargout = lazo_abierto(varargin)
-global ti tf x0 y0 z0 psi0 phi0 theta0 vq10 vq20 vq30 wq10 wq20 wq30
+%global t ti tf x0 y0 z0 psi0 phi0 theta0 vq10 vq20 vq30 wq10 wq20 wq30 Variables indice w1 w2 w3 w4 dw1 dw2 dw3 dw4
 % LAZO_ABIERTO MATLAB code for lazo_abierto.fig
 %      LAZO_ABIERTO, by itself, creates a new LAZO_ABIERTO or raises the existing
 %      singleton*.
@@ -23,7 +23,7 @@ global ti tf x0 y0 z0 psi0 phi0 theta0 vq10 vq20 vq30 wq10 wq20 wq30
 
 % Edit the above text to modify the response to help lazo_abierto
 
-% Last Modified by GUIDE v2.5 17-Dec-2011 16:29:06
+% Last Modified by GUIDE v2.5 25-Jan-2012 17:17:21
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -383,6 +383,7 @@ function edit14_CreateFcn(hObject, eventdata, handles)
 %       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
+    var=get(hObject,'String');
 end
 
 
@@ -414,29 +415,156 @@ function pushbutton1_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
     
+    assignin('base','M',1);
+    %A partir de los tiempos establecidos armo la linea de tiempo
+    ti=evalin('base','ti');
+    tf=evalin('base','tf');
+
+    time=linspace(ti,tf,(tf-ti)*5);
+    assignin('base','t',time);
+
+    %A partir de la situación de vuelo definida establezco las Acciones a tomar
+    %%%%Entradas%%%%%
+    wang1=zeros(size(time));
+    wang2=zeros(size(time));
+    wang3=zeros(size(time));
+    wang4=zeros(size(time));
+
+    ind=evalin('base','indice');
+    val=0;
     
+    m=evalin('base','M');
+    psio=evalin('base','psi0');
+    phio=evalin('base','phi0');
+    syms x
+    if (ind~=1) && (ind~=9)
+        fuerza_hov=9.81*m/4;
+         val=solve(3.7646e-5*x^2-9.0535e-4*x+0.0170-fuerza_hov);
+         val_hov=eval(val);
+        
+         if (val_hov(1)>=0)
+                 val_hov=val_hov(1);
+         else val_hov=val_hov(2);
+         end
+            wang1(time>(ti-1)) = val_hov; 
+            wang2(time>(ti-1)) = val_hov;
+            wang3(time>(ti-1)) = val_hov;
+            wang4(time>(ti-1)) = val_hov;
+    end
+    
+    switch ind
+        
+        case 3
+            wang1(time>tf/2) = val_hov+100;            
+        case 4                    
+            wang2(time>tf/2) = val_hov+100;            
+        case 5                       
+            wang3(time>tf/2) = val_hov+100;         
+        case 6
+             wang4(time>tf/2) = val_hov+100;
+        case 7
+            wang1(time>tf/2) = val_hov+100;
+            wang2(time>tf/2) = val_hov+100;
+            wang3(time>tf/2) = val_hov+100;
+            wang4(time>tf/2) = val_hov+100;
+        case 8  
+            
+         fuerza_mas=fuerza_hov+1;
+         val=solve(3.7646e-5*x^2-9.0535e-4*x+0.0170-fuerza_mas);
+         val_mas=eval(val);
+        
+         fuerza_menos=fuerza_hov-1;
+         val=solve(3.7646e-5*x^2-9.0535e-4*x+0.0170-fuerza_menos);
+         val_menos=eval(val);
+         
+          if (val_mas(1)>=0)
+                 val_mas=val_mas(1);
+         else val_mas=val_mas(2);
+         end
+         
+         if (val_menos(1)>=0)
+                 val_menos=val_menos(1);
+         else val_menos=val_menos(2);
+         end
+            wang1(time>tf/2) = val_menos;
+            wang2(time>tf/2) = val_mas;
+            wang3(time>tf/2) = val_menos;
+            wang4(time>tf/2) = val_mas;
+        case 9   
+            fuerza_rec=9.81*m/(4*cos(psio)*cos(phio));
+            val=solve(3.7646e-5*x^2-9.0535e-4*x+0.0170-fuerza_rec);
+            val_rec=eval(val);
+        
+            if (val_rec(1)>=0)
+                     val_rec=val_rec(1);
+            else val_rec=val_rec(2);
+            end 
+            
+       
+             wang1(time>(ti-1)) = val_rec;
+             wang2(time>(ti-1)) = val_rec;
+             wang3(time>(ti-1)) = val_rec;
+             wang4(time>(ti-1)) = val_rec;         
+    
+    end
+    assignin('base','w1',wang1);
+    assignin('base','w2',wang2);
+    assignin('base','w3',wang3);
+    assignin('base','w4',wang4);
+   
     %Calculo las velocidades iniciales en el sistema del quadricoptero
     determinar_vel;
     
+    %Simulo el sistema en lazo abierto
     sim_lazo_abierto
     
     
-
     
+ 
+
+
+
+
+
+% --- Executes on selection change in listbox1.
+function listbox1_Callback(hObject, eventdata, handles)
+% hObject    handle to listbox1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns listbox1 contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from listbox1
+assignin('base','indice',get(handles.listbox1,'Value'));
 
 
 % --- Executes during object creation, after setting all properties.
-function axes1_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to axes1 (see GCBO)
+function listbox1_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to listbox1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
-% Hint: place code in OpeningFcn to populate axes1
+% Hint: listbox controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes during object creation, after setting all properties.
+function axes2_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to axes2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: place code in OpeningFcn to populate axes2
 x=0;
 y=0;
 z=0;
 grid on;
-plot3(Variables(4),Variables(5),Variables(6),'LineWidth',2);grid on;
 
 
-
+% --- Executes during object creation, after setting all properties.
+function uipanel2_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to uipanel2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called

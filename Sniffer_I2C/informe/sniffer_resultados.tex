@@ -36,9 +36,9 @@
 
 \chapter{Sniffer $i^2c$}
 
-El cuadricóptero adquirido resuelve la comunicación entre los controladores de los motores (\textbf{ESCs}) y el microprocesador mediante el protocolo $i^2c$.\\
+El cuadricóptero adquirido resuelve la comunicación entre los controladores de los motores (\textbf{ESCs}) y el microprocesador mediante el protocolo $\mathbf{i^2c}$.\\
 
-Para el presente proyecto resulta de vital importancia conocer dicho protocolo, ya se utilizará otro microprocesador que deberá comandar a esos mismos ESCs, supliendo el trabajo del anterior. Es entonces imprescindible conocer al detalle el funcionamiento de este protocolo, para luego poder reproducirlo.\\
+Para el presente proyecto resulta de vital importancia conocer dicho protocolo, ya que se utilizará otro microprocesador que deberá comandar a esos mismos ESCs, supliendo el trabajo del anterior. Es entonces imprescindible conocer al detalle el funcionamiento de este protocolo, para luego poder reproducirlo.\\
 
 Dado que no se cuenta con la colaboración de los fabricantes, y toda la información parece ser privativa, no pudiendo conseguir dato alguno de su implementación, es necesario realizar un proceso de ingeniería inversa para poder analizar, decodificar, entender y reproducir el protocolo existente. Dicho proceso de ingeniería inversa se realiza utilizando el hardware existente del cuadricóptero comercial adquirido y un analizador lógico\footnote{ChronoVu} que es capaz de leer e interpretar las líneas del bus $i^2c$ sin intervenir en las mismas.\\ \\
 
@@ -50,10 +50,10 @@ Dado que no se cuenta con la colaboración de los fabricantes, y toda la informa
 	\vspace{-20pt}
 	\caption{Definición de ejes}
 	\label{fig:ejes_quad}
+	\vspace{-70pt}
 \end{wrapfigure}
 
 Antes de presentar los resultados obtenidos en el proceso, se realiza una breve introducción al protocolo $i^2c$ y se presenta en la figura \ref{fig:ejes_quad} la definición de los ejes a utilizar, lo cual será de utilidad más adelante.
-
 
 \newpage
 \section{Introducción al protocolo $i^2c$}
@@ -131,17 +131,17 @@ Al mover el mando de la derecha (\textbf{Throttle/Aile}) en la dirección horizo
 Se analizan las siguientes situaciones:
 \begin{table}[H]
 \begin{center}
-\begin{tabular}{|c|c|c|c|c|} 
-\hline \cellcolor[gray]{0.8} \textbf{N$^o$ prueba} & \cellcolor[gray]{0.8} \textbf{Elev} & \cellcolor[gray]{0.8} \textbf{Ruddle} & \cellcolor[gray]{0.8} \textbf{Aile} & \cellcolor[gray]{0.8} \textbf{Throttle}  \\ \hline
-0 & abajo\footnote{el mínimo necesario para encender los motores} & medio & medio & medio \\ \hline
-1 & medio & medio & medio & medio \\ \hline
-2 & arriba & medio & medio & medio \\ \hline
-3 & medio & izquierda & medio & medio \\ \hline
-4 & medio & derecha & medio & medio \\ \hline
-5 & medio & medio & izquierda & medio \\ \hline
-6 & medio & medio & derecha & medio \\ \hline
-7 & medio & medio & medio & abajo \\ \hline
-8 & medio & medio & medio & arriba \\ \hline
+\begin{tabular}{|p{30pt}|c|c|c|c|p{130pt}|} 
+\hline \cellcolor[gray]{0.8} \centering \textbf{Id} & \cellcolor[gray]{0.8} \textbf{Elev} & \cellcolor[gray]{0.8} \textbf{Ruddle} & \cellcolor[gray]{0.8} \textbf{Aile} & \cellcolor[gray]{0.8} \textbf{Throttle} & \cellcolor[gray]{0.8} \textbf{Movimiento}  \\ \hline
+\centering 0 & atrás\footnote{el mínimo necesario para encender los motores} & medio & medio & medio & idle \\ \hline
+\centering 1 & medio & medio & medio & medio & vertical hacia arriba con aceleración constante \\ \hline
+\centering 2 & adelante & medio & medio & medio & vertical hacia arriba con aceleración constante \\ \hline
+\centering 3 & medio & izquierda & medio & medio & giro según eje $z$ \\ \hline
+\centering 4 & medio & derecha & medio & medio &  giro según eje $-z$ \\ \hline
+\centering 5 & medio & medio & izquierda & medio & giro según eje $-x$  \\ \hline
+\centering 6 & medio & medio & derecha & medio & giro según eje $x$  \\ \hline
+\centering 7 & medio & medio & medio & atrás & giro según eje $-y$  \\ \hline
+\centering 8 & medio & medio & medio & adelante & giro según eje $y$  \\ \hline
 \end{tabular} 
 \end{center}
 \caption{Pruebas realizadas}
@@ -157,25 +157,25 @@ Se realiza un análisis de los resultados obtenidos para cada motor, graficando 
 	\label{fig:grafica_motores}
 \end{figure}
 
-En la figura \ref{fig:grafica_motores} se puede observar que a los 4 motores les llega un byte con el valor constante en $50$, el cual corresponde a la mínima potencia entregada a los motores para encenderlos.\\
+En la figura \ref{fig:grafica_motores} se puede observar que a los 4 motores les llega un byte con el valor promedio en $50$, el cual corresponde a la mínima potencia entregada a los motores para encenderlos.\\
 
 Haciendo un análisis similar con el resto de las pruebas detalladas en la tabla \ref{tab:pruebas} se construye la tabla \ref{tab:resumen_snif} donde se muestran los valrores enviados a cada motor en promedio en todas las pruebas.\\
 
 \begin{table}[H]
 \begin{center}
-\begin{tabular}{c|c|c|c|c|} 
+\begin{tabular}{c|c|c|c|c|c|} 
 \cline{2-5}
 & \multicolumn{4}{c|}{\cellcolor[gray]{0.8} Valor promedio} \\ \hline
-\multicolumn{1}{|c|}{\cellcolor[gray]{0.8} Prueba} & \cellcolor[gray]{0.8} D0 & \cellcolor[gray]{0.8} D2 & \cellcolor[gray]{0.8} D4 & \cellcolor[gray]{0.8} D6 \\ \hline
-\multicolumn{1}{|c|}{\cellcolor[gray]{0.8}0} & 50 & 50 & 50 & 50 \\ \hline
-\multicolumn{1}{|c|}{\cellcolor[gray]{0.8}1} & 80 & 140 & 180 & 140 \\ \hline
-\multicolumn{1}{|c|}{\cellcolor[gray]{0.8}2} & 180 & 220 & 250 & 240 \\ \hline \hline
-\multicolumn{1}{|c|}{\cellcolor[gray]{0.8}3} & 160 & 70 & 60 & 250 \\ \hline
-\multicolumn{1}{|c|}{\cellcolor[gray]{0.8}4} & 50 & 200 & 200 & 100 \\ \hline \hline
-\multicolumn{1}{|c|}{\cellcolor[gray]{0.8}5} & 250 & 160 & 140 & 50 \\ \hline
-\multicolumn{1}{|c|}{\cellcolor[gray]{0.8}6} & 50 & 160 & 150 & 250 \\ \hline
-\multicolumn{1}{|c|}{\cellcolor[gray]{0.8}7} & 90 & 50 & 250 & 160 \\ \hline
-\multicolumn{1}{|c|}{\cellcolor[gray]{0.8}8} & 50 & 250 & 70 &  100 \\ \hline
+\multicolumn{1}{|c|}{\cellcolor[gray]{0.8} Prueba} & \cellcolor[gray]{0.8} D0 & \cellcolor[gray]{0.8} D2 & \cellcolor[gray]{0.8} D4 & \cellcolor[gray]{0.8} D6 & \cellcolor[gray]{0.8} Movimiento \\ \hline
+\multicolumn{1}{|c|}{\cellcolor[gray]{0.8}0} & 50 & 50 & 50 & 50 & Idle \\ \hline
+\multicolumn{1}{|c|}{\cellcolor[gray]{0.8}1} & 80 & 140 & 180 & 140 & $a_z=cte\neq 0$\\ \hline
+\multicolumn{1}{|c|}{\cellcolor[gray]{0.8}2} & 180 & 220 & 250 & 240 & $a_z=cte\neq 0$ \\ \hline \hline
+\multicolumn{1}{|c|}{\cellcolor[gray]{0.8}3} & 160 & 70 & 60 & 250 & giro según eje $z$ \\ \hline
+\multicolumn{1}{|c|}{\cellcolor[gray]{0.8}4} & 50 & 200 & 200 & 100 & giro según eje $-z$\\ \hline \hline
+\multicolumn{1}{|c|}{\cellcolor[gray]{0.8}5} & 250 & 160 & 140 & 50 & giro según eje $-x$\\ \hline
+\multicolumn{1}{|c|}{\cellcolor[gray]{0.8}6} & 50 & 160 & 150 & 250 & giro según eje $x$ \\ \hline
+\multicolumn{1}{|c|}{\cellcolor[gray]{0.8}7} & 90 & 50 & 250 & 160 & giro según eje $-y$\\ \hline
+\multicolumn{1}{|c|}{\cellcolor[gray]{0.8}8} & 110 & 250 & 50 &  100 & giro según eje $y$\\ \hline
 \end{tabular} 
 \caption{Resumen de los resultados obtenidos}
 \label{tab:resumen_snif}
@@ -184,16 +184,53 @@ Haciendo un análisis similar con el resto de las pruebas detalladas en la tabla
 
 De dicha tabla se pueden sacar algunas conclusiones importantes:
 \begin{itemize}
-\item La comunicación entre el amo y los esclavos por medio del protocolo $i^2c$ se lleva a cabo mediante un  formato del tipo \begin{verbatim} Dirección del esclavo - Lugar de memoria donde guardar el dato - dato \end{verbatim}
+\item La comunicación entre el amo y los esclavos por medio del protocolo $i^2c$ se lleva a cabo mediante un  formato del tipo \begin{verbatim} Dirección esclavo - Lugar de memoria donde guardar dato - dato \end{verbatim}
 \item Dicho formato se repite para todos los esclavos
 \item Cada esclavo recibe una actualización de estado (un dato nuevo) cada $2 ms$
 \item La velocidad mínima de funcionamiento se logra enviando el valor 50
 \item La velocidad máxima de funcionamiento se logra enviando el valor 250
-\item La dirección de memoria interna de todos los esclavos donde se guardan los datos recibidos por el maestro es siempre $0xA2$ (ó $162$).
-% TODO
-\item La suma de este mas este es igual a la suma del otro mas el otro otro
-\item Se identifica que las direcciones corresponden a estos motores: Foto con nombres
+\item La dirección de memoria interna de todos los esclavos donde se guardan los datos recibidos por el maestro es siempre 0x$A2$ (ó $162$).
+\item La correspondencia entre las direcciones y los motores se muestra en la figura \ref{fig:correspondencias}. Mirando el cuadricóptero desde arriba, el motor con dirección 0xD0 es el de la derecha, el motor con dirección 0xD6 el de la izquierda, el 0xD4 el de adelante y el 0xD2 el de atrás.
+\item Las direcciones 0xD0, 0xD2, 0xD4 y 0xD6 (de 8 bits) en realidad no refieren únicamente a direccionamiento, sino que incluyen además el bit de lectura/escritura, por lo cual cada esclavo tendrá una única dirección de 7 bits. Notar que las direcciones 0xD0 a 0xD6 al pasarlas a binario todas terminan en 0, lo cual implica que se tratan de comandos de escritura. Al omitir el último bit se obtienen las direcciones (sin incluir el bit de lectura/escritura) como se puede ver a continuación:
+\begin{eqnarray}
+\mathrm{0xD0} (11010000) &\longrightarrow &\mathrm{0x68} (1101000) \\
+\mathrm{0xD2} (11010010) &\longrightarrow &\mathrm{0x69} (1101001) \\
+\mathrm{0xD4} (11010100) &\longrightarrow &\mathrm{0x6A} (1101010) \\
+\mathrm{0xD6} (11010110) &\longrightarrow &\mathrm{0x6B} (1101011) 
+\end{eqnarray}
+Las direcciones de los motores son entonces: \textbf{0x68}, \textbf{0x69}, \textbf{0x6A}, \textbf{0x6B}.
+\item En las pruebas 0, 1, 2, 5, 6 y 7 se observa que la suma del valor promedio enviado al motor D0 más el enviado a la dirección D2 es similar a la suma de los valores entregados a los motores con dirección D4 y D6, lo cual implica un equilibrio en los pares realizados en ambos sentidos. Se infiere entonces que el movimiento según el eje ``z" se logra desequilibrando los pares en ambos sentidos (según ``z'' y según ``-z'')
 \end{itemize}
 
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.4\textwidth]{./pics/correspondencias.jpg}
+	\caption{correspondencias}
+	\label{fig:correspondencias}
+\end{figure}
+
+\section{Verificación}
+\begin{huge}
+TODO
+\end{huge}
+
+Comando i2cdetect de la librería nosequé... Resultado en terminal
+\begin{verbatim}
+root@beagleboard:~# i2cdetect -r 2
+WARNING! This program can confuse your I2C bus, cause data loss and worse!
+I will probe file /dev/i2c-2 using read byte commands.
+I will probe address range 0x03-0x77.
+Continue? [Y/n] y
+
+     0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f
+00:          -- -- -- -- -- -- -- -- -- -- -- -- -- 
+10: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+20: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+30: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+40: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+50: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+60: -- -- -- -- -- -- -- -- 68 69 6a 6b -- -- -- -- 
+70: -- -- -- -- -- -- -- --
+\end{verbatim}
 
 \end{document}

@@ -4,9 +4,28 @@
 #   - Device name (optional).
 #   Example:
 #       python imu_display.py /dev/ttyUSB0
-# Usage:
-#   Press Ctrl+C to reset zero level.
-
+# Info:
+#   - Calibration:
+#       Press Ctrl+C to reset null estimates.
+#       Gain calibration is hardcoded.
+#   - IMU commands:
+#       While the program is running, click on the console window (outputing data), then
+#       press the space bar and press enter (send ' ' to the IMU). This will halt the IMU,
+#       and open an interactive menu.
+#       Select '9' to run again.
+#       NOTE: All sensors must be enabled for program to work.
+#   - Ouput:
+#       Data is shown on the console, and written to a log file in logs/
+#       You might need to create the directory, if it doesn't exist.
+#   - Mode:
+#       Set the variable 'mode' to match either: (line 56 (approx.))
+#          - only gyro
+#          - only acc
+#          - kalman(gyro,acc)
+#   
+# Currently console must be closed for program to quit.
+#
+#
 # Based on script:
 #		Test for Razor 9DOF IMU
 #		Jose Julio @2009
@@ -34,7 +53,7 @@ else:
 MODE_GYRO = 0
 MODE_ACC = 1
 MODE_KALMAN = 2
-mode = MODE_KALMAN
+mode = MODE_GYRO
 # IMU setting
 len_frec_line = 35 # Length of '5) Set output frequency, currently '
 len_sens_line = 44 # Length of '4) Set accelerometer sensitivity, currently '
@@ -61,7 +80,7 @@ zero = volt_zero_rate_level * volt_max / vref
 # Convert from voltage to degrees/sec
 # Full scale is 300deg/sec, and in a 10 bit ADC that corresponds to 20**10-1=1023
 # The adjustment is input_v*300/(1023-512) approx input_v*0.58708414872798431
-gyro_adjust = 475.0/(1023.0-512.0)
+gyro_adjust = 475.0/(1023.0-512.0)*.9
 
 ## Acc
 # Convert according to sens
@@ -260,7 +279,7 @@ def kalman(st,cov,gyro,acc_angle,T):
     st = st_ + k*y
     cov = (1-k)*cov_
     return [st,cov]
-    
+
 # Data input loop
 def read_loop():
     # IMU settings
@@ -473,6 +492,6 @@ while 1:
         else:
             errors = errors + 1
             
+
 imu_data.close()
 f.close
-quit()

@@ -8,12 +8,51 @@
 %Autor - título del trabajo - título de la publicación - fecha - lugar de edición
 %
 % Citar un item:
-%... en \cite{bib:nombre_del_paper} se muestra que la idea es una cagada
+% 1. En el archivo .tex que se desea realizar una cita hay que poner el comando /cite como sigue:
+%... en \cite{bib:referencia-a-biblio} se muestra que la idea es una cagada
+% 2. Luego abrir biblio.bib y agregar un bloquecito como el que sigue:
+% @misc{bib:referencia-a-biblio,
+% author="Yo",
+% title="El titulo",
+% year="el año q viene",
+% url="www.mi-pagina-web.com"
+% }
+% 3. Apretar F11 (compilar como BibTex) por lo menos un par de veces para q las referencias queden bien
 %
+% Las referencias a la bibliografía solo van a quedar bien al compilar el main.tex. Al compilar cada archivo por separado no lo va a entender pero no hay q asustarse. 
+% 4. Compilar el main.tex
 
 @misc{bib:jj_9dof,
 author="José Julio",
 title="Visual Python for Gyroscope Utilization",
 year="2009",
 url="http://edge.rit.edu/content/EDGE/public/Home"
+}
+
+@misc{bib:prueba,
+author="Yo",
+title="El titulo",
+year="2009",
+url="http://edge.rit.edu/content/EDGE/public/Home"
+}
+
+@misc{bib:calib_imu,
+author="Isaac Skog, Peter Handel(con diéresis en la a)",
+title="Calibration of a MEMS inertial measurment unit",
+year="2006",
+
+}
+
+@misc{bib:sat-dop-values,
+title="Meaning of DOP values",
+author="Wikipedia",
+year="2012",
+url="http://en.wikipedia.org/wiki/Dilution_of_precision_%28GPS%29#Meaning_of_DOP_Values"
+}
+
+@misc{bib:sat-pos,
+title="The Impact Of Satellite Geometry",
+author="Satellite Navigation and Positioning Lab - UNSW",
+year="1999",
+url="http://www.gmat.unsw.edu.au/snap/gps/gps_survey/principles_gps.htm"
 }

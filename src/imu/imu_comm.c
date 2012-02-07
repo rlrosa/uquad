@@ -197,6 +197,7 @@ static int imu_comm_configure(imu_t * imu){
     err_propagate(retval);
 
     // Assuming binary mode on && autorun off, i don't want to parse...
+    printf("Assuming binary mode and autorun off (will fail if this is false)\n");
     //TODO parse to avoid assuming stuff! or modify imu code to be easier...
 
     // Get out of menu
