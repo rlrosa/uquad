@@ -49,11 +49,17 @@ for i=1:3
   easting = easting - e_rel;
   northing = northing - n_rel;
   gps_plot3(easting, northing, elevation, sat,gcf,i-1,0,0,0);
+  easting_init = easting(1);
+  northing_init = northing(1);
+  elevation_init = elevation(1);
   hold on
   [easting, northing, elevation, utm_zone, sat, ind] = ...
     gpxlogger_time_to_UTM(xs_caminatas(i), caminatas_t(i,:));
   easting = easting - e_rel;
   northing = northing - n_rel;
+  easting = [easting_init;easting];
+  northing = [northing_init;northing];
+  elevation = [elevation_init;elevation];
   plot3(easting,northing,elevation, ...
     sprintf('%c.',cols(i)),'MarkerSize',20, ...
     'HandleVisibility','off');
@@ -62,7 +68,7 @@ for i=1:3
     'HandleVisibility','off');
   title(sprintf('Caminata #%d',i))
   text(easting, northing, elevation, ...
-    char('2','3','6','5','4','1'),'FontSize',16, ...
+    char('1','2','3','6','5','4','1'),'FontSize',16, ...
     'BackgroundColor','w','FontWeight','bold', ...
     'Color', cols(i), 'EdgeColor', 'k')
   if(separate_fig)

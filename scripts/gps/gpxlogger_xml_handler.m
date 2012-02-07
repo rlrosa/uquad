@@ -1,4 +1,4 @@
-function [easting, northing, elevation, utmzone, sat, lat, lon] = ... 
+function [easting, northing, elevation, utmzone, sat, lat, lon, dop] = ... 
   gpxlogger_xml_handler(in, force_plot)
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 % function [easting, northing, elevation, utmzone, sat, lat, lon] = ... 
@@ -48,12 +48,20 @@ packet_count = size(xs.child(2).child(2).child(2).child,2);
 lat = zeros(packet_count,1);
 lon = zeros(packet_count,1);
 sat = zeros(packet_count,1);
+dop = zeros(packet_count,3);
 elevation = zeros(packet_count,1);
 for trkpt_i=1:packet_count
   curr = xs.child(2).child(2).child(2).child(trkpt_i);
   lat(trkpt_i) = str2double(curr.attribs(1).value);
   lon(trkpt_i) = str2double(curr.attribs(2).value);
   elevation(trkpt_i) = str2double(curr.child(1).value);
+  if(size(curr.child,2) >= 8)
+    dop(trkpt_i,1) = str2double(curr.child(6).value);%hdop
+    dop(trkpt_i,2) = str2double(curr.child(7).value);%vdop
+    dop(trkpt_i,3) = str2double(curr.child(8).value);%pdop
+  else
+    dop(trkpt_i,:) = ones(1,3)*-1;
+  end
   if (size(curr.child,2) >= 8)
     sat(trkpt_i) = str2double(curr.child(5).value);
   else
