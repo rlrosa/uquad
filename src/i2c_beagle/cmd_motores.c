@@ -20,9 +20,10 @@
 #define PRINT_COUNT 500
 #define RUN_FOREVER 0
 #define SLEEP_INC_US 0 // esto es lo que incrementa el sleep dsp de los 4 motores
-#define LOOPS 300
+#define LOOPS 250
 #define LOOP_ZEROS_LEN 300
 #define SLEEP_DSP_DE_4_MOTORES_INIT_US 700
+#define PASO 1
 
 #define sleep_ms(ms) usleep(1000*ms)
 
@@ -80,6 +81,7 @@ int main(int argc, char *argv[])
 	int addr[4] = {0x69, 0x6a, 0x6b, 0x68}; /* The I2C address */
 	int us_sleep = SLEEP_DSP_DE_4_MOTORES_INIT_US; // Esto es lo que espera entre 
 	int j,state,index;
+	int do_init = 0;
 
 	while(1)
 	{
@@ -91,7 +93,17 @@ int main(int argc, char *argv[])
 		    for (i = 0; i < 4; i++)
 		    {
 			// Cambiar el orden al en la ultima tirada
-			index = (j == LOOPS - 1) ? (3 + i) % 4 : i;
+		      if(j==LOOPS-1)
+			{
+			  index = (3 + i)%4;
+			  do_init = 1;
+			}
+		      else
+			{
+			  index = i;
+			  do_init = 0;
+			}
+		      //			index = (j == LOOPS - 1) ? (3 + i) % 4 : i;
 			/* Open device with address addr*/	
 			if (ioctl(file,I2C_SLAVE,addr[index]) < 0)
 			{
@@ -101,8 +113,8 @@ int main(int argc, char *argv[])
 			    return -1;
 			}
 
-			/* Write value to the device */
-			__u8 registeraaaa = 0xA2; /* Device register to access */
+			/* Write value to the device */			
+			__u8 registeraaaa = do_init ? 0xA0 : 0xA2; /* Device register to access */
 			__s32 res;
 
 			/* Using SMBus commands */
@@ -141,9 +153,9 @@ int main(int argc, char *argv[])
 		    success_count++;
 		    usleep(us_sleep);
 		} // loop de LOOPS
-		if(!state)
-		    sleep_ms(420);
-		else
+		/* if(!state) */
+		/*     sleep_ms(420); */
+		/* else */
 		    state = 0;// para que siga en loop xa siempre
 	    } // estados (ceros, o velocidades)
 	    us_sleep += SLEEP_INC_US;
