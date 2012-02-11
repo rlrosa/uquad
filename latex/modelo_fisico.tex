@@ -186,6 +186,7 @@ No debe perderse de vista que el cuadricóptero con el que se trabaja fue diseñad
 %TODO
 
 \subsubsection{La Tierra como sistema de referencia inercial}
+
 \subsubsection{Curvatura de la Tierra}
 
 
@@ -413,12 +414,93 @@ $$ \Pi_{O\prime}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}\left(\begin{array}{c}
 
 \subsection{Fuerzas y momentos involucradas}
 
-Para completar el análisis del sistema es fundamental conocer las expresiones de las fuerzas y los momentos involucrados. Por un lado se debe considerar la acción del peso en el sistema. Además debemos conocer con precisión las fuerzas y momentos que introducen las hélices del cuadricóptero ya que son estos los elementos sobre los cuales se pueden realizar las acciones de control. Finalmente consideraremos también el efecto del viento. Esta última es una fuerza que no puede conocerse a priori y será considerada como una perturbación en el sistema. Nuevamente se aclara que las fuerzas aerodinámicas no son tenidas en consideración     
+Para completar el análisis del sistema es fundamental conocer las expresiones de las fuerzas y los momentos involucrados. Por un lado se debe considerar la acción del peso en el sistema. Además debemos conocer con precisión las fuerzas y momentos que introducen las hélices del cuadricóptero ya que son estos los elementos sobre los cuales se pueden realizar las acciones de control. Finalmente consideraremos también el efecto del viento. Esta última es una fuerza que no puede conocerse a priori y será considerada como una perturbación en el sistema. Recordamos que las bajas velocidades a las que el sistema se mueve nos permiten despreciar las fuerzas aerodinámicas, a excepción de aquellas que tienen como origen el giro de las hélices.
 \subsubsection{Peso}
-%TODO
-\subsubsection{Empuje de las hélices}
- Las fuerzas que actúan sobre el sistema son los empujes de cada turbina y el peso. Los empujes ($T_i$ con $i=1..4$) son en el sentido de $\vec{k_q}$ mientras que el peso es en el sentido de $\vec{k}$. Para obtener el peso en el sistema $S_q$ alcanza con realizar el cambio de base del sistema $S_I$ al sistema solidario al cuadricóptero. Esto se logra multiplicando el vector correspondiente a la fuerza del peso $(0, 0, -Mg)^T$ por la matriz de cambio de base $H_I^q$. El empuje de los motores puede escribirse como:
+Como ya se aclaró anteriormente, debido a la pequeña variación de la altura, el peso del cuadricóptero será considerado constante. Esta fuerza se aplica sobre el centro de masa del sistema, cabe recordar que en el presente análisis se considera la segunda cardinal en torno a dicho punto. Por lo tanto la distancia entre el eje en el cual se calculan los momentos y el punto de aplicación es cero. Recordando que: $$
+M=\vec{d}\times\vec{F}
+$$
+se deduce trivialmente que el momento del peso es cero. La expresión para el peso es:
+$$
+\vec{P}=-mg\vec{k}
+$$
 
+Insistimos en el hecho que nos interesa conocer las fuerzas en el sistema solidario al cuadricóptero. Para expresar esta fuerza en dicho sistema se multiplica el peso por la matriz $H_I^q$. Lo que se obtiene es:
+
+$$
+\vec{P}=\left(\begin{array}{c}
+\sin\phi\\
+-\cos\phi\sin\psi\\
+-\cos\phi\cos\psi\\
+\end{array}\right)Mg
+$$
+\subsubsection{Fuerzas y momentos de las hélices}
+
+La teoría de fluidos que explica el comportamiento de las hélices es compleja y ampliamente difundida por lo que no es de interés desarrollarla en profundidad en este trabajo. Diversa bibliografía puede ser consultada en donde se explican adecuadamente los fenómenos involucrados en las fuerzas aerodinámicas presentes en una hélice. Sin embargo si parece pertinente realizar un breve resumen de dichas fuerzas. Para el presente análisis consideraremos una hélice rotando en sentido antihorario, el razonamiento para una hélice rotando en sentido opuesto es análogo. En la figura \ref{fig:helice} se observan dos vistas de la misma hélice. En la figura \ref{fig:helice_arriba} puede observarse una hoja de la hélice. En la figura \ref{fig:fuerza-helice} se representa una vista transversal de la hélice con las fuerzas aerodinámicas involucradas.\\ 
+
+\begin{figure} [h!]
+  \centering
+  \subfloat[Vista superior de una hélice]{\label{fig:helice_arriba}
+  		\includegraphics[width=0.45\textwidth]
+  			{./pics_modelo_fisico/helice2.jpg}}
+  \subfloat[Fuerzas aerodinámicas presentes en una hélice]{\label{fig:fuerza-helice} 
+  		\includegraphics[width=0.45\textwidth]
+  			{./pics_modelo_fisico/helice.jpg}}
+  \caption{Vistas de una hélice y diagrama de fuerzas aerodinámicas presentes}
+  \label{fig:helice}
+\end{figure}
+
+La \emph{Blade Element Theory}(BET) intenta explicar las fuerzas presentes en la hélice considerando en primer lugar las fuerzas en un elemento de área infinitesimal de la hélice. Una vez halladas estas fuerzas se integra sobre el total de la superficie obteniendo así las fuerzas y momentos totales. Como se explica en \ref{bib:fuerzas-motores}, las fuerzas presentes sobre un elemento de área de la hélice son la fuerza de \emph{lift} y la fuerza de \emph{drag}, dichas fuerzas se encuentran representadas en la figura \ref{fig:helice} como $dL$ y $dD$ respectivamente. La forma que tienen dichas fuerzas es:
+
+$$
+dL=\frac{1}{2}\rho_A \omega_p^2 C_L c r^2dr$$\\
+
+$$
+dL=\frac{1}{2}\rho_A \omega_p^2 C_D c r?^2dr
+$$
+
+Donde $\rho_A$ es la densidad del aire, $\omega_p$ la velocidad angular de la hélice, $r$ la distancia del elemento de hélice al eje de la hélice, c es la longitud promedio de la cuerda de la hélice \footnote{segmento imaginario que une el borde de ataque con el borde de fuga },$ C_L$ y $C_D$ son coeficientes adimensionados.
+
+%Todo poner alguna figurita o algo para explicar las partes de la hélice. Se puede hacer antes en una introducción o un primer capítulo que defina muchas cosas.
+
+
+La fuerza infinitesimal de empuje ($dT$) puede escribirse en función de las fuerzas de \emph{lift} y de \emph{drag} de la siguiente forma:
+
+$$dT=dL\cos\phi_I-dD\sin\phi$$
+
+Realizando la aproximación que $\phi$ es un ángulo pequeño y que la fuerza de \emph{lift} es al menos un orden mayor que la de \emph{drag} se puede afirmar que:
+
+$$dT=dL
+$$
+
+El empuje por lo tanto puede calcularse como la integral de $dT$ respecto de $r$. Considerando que la hélice consta de dos hojas, se obtiene que:
+
+\begin{equation}
+\label{eq:fuerza}
+T=\frac{1}{3}\rho_A C_L c R_P^3\omega_p^2
+\end{equation}
+
+
+Donde $R_P$ es el radio radio de la hélice. En todo momento tenemos dos fuerzas (una sobre cada hoja de la hélice) en dirección vertical y hacia arriba. Si nos referimos a la configuración de la figura \ref{fig:fuerza-helice}, el momento de las fuerzas $dT$ es hacia la izquierda para la hoja considerada, sin embargo para la otra hoja este momento será hacia la derecha. Se puede concluir entonces que el torque neto que aporta esta fuerza en torno al eje de rotación de la hélice es nulo.\\   
+
+Intentaremos ahora obtener la resultante de las fuerzas horizontales sobre la hélice y el torque de dichas fuerzas. Comenzaremos por analizar que sucede con las sumas de las fuerzas, para luego proceder a calcular el momento de las mismas. Consideremos ahora la fuerza $dF$ como la que se muestra en la figura \ref{fig:fuerza-helice}. Como se observa en la figura dicha fuerza es hacia la derecha. Si consideramos la fuerza horizontal sobre la otra hoja de la hélice, se obtiene una fuerza hacia la izquierda. Por lo tanto la suma de las fuerzas horizontales es nula. Sin embargo los momentos de las fuerzas en una y otra hoja de la hélice no se anulan, el momento que producen ambas es en la dirección de $k_q$. Por lo tanto el momento total será la suma de los momentos infinitesimales en toda la superficie de una hoja de la hélice multiplicado por la cantidad de hojas, es decir 2. 
+
+En primer lugar escribimos la fuerza horizontal como una composición de la fuerza de \emph{lift} y la fuerza de \emph{drag}. 
+$$dF=dD\cos\phi+dL\sin\phi \approx dD +dL\left(\frac{V}{\omega_p}\right)$$
+
+En esta ecuación $V$ y $\omega_p r$ representan la velocidad del flujo de aire en las direcciones vertical y horizontal respectivamente. Operando se obtiene el momento total de la hélice en la dirección entrante:
+
+\begin{equation}
+\label{eq:momento}
+Q=\frac{1}{4}\rho_A c R_P^4(C_D+K)\omega_p^2
+\end{equation}
+
+ 
+
+En resumen, la teoría BET nos permite afirmar que sobre cada hélice del cuadricóptero que rota en sentido antihorario se aplicará una fuerza en la dirección $\vec{k_q}$ cuyo módulo se expresó en la ecuación \ref{eq:fuerza} y un momento en la dirección $\vec{k_q}$ cuyo módulo es lo expresado en la ecuación \ref{eq:momento}. Para una hélice rotando en sentido anti-horario se obtiene exactamente los mismos resultados excepto que el momento es en sentido opuesto.\\
+
+Hasta aquí sabemos que sucede las fuerzas y momentos aplicados sobre una hélice. Nos concentraremos ahora en estudiar como influyen estas fuerzas y momentos en el cuadricóptero. Para lo que sigue continuaremos trabajando con las convenciones adoptadas en \ref{fig:quad}. 
+ 
+A partir de lo estudiado anteriormente se deduce trivialmente que el empuje de las hélices puede expresarse en el sistema $S_q$ como:
 $$
 \sum_{i=1}^{i=4} \vec{T_i} =\sum_{i=1}^{i=4}T_i\left(\begin{array}{c}
 0\\
@@ -427,16 +509,16 @@ $$
 \end{array} \right)
 $$
 
+Se determinó que las fuerzas de empuje no introducen un momento neto en el eje de las mismas. Sin embargo no debemos perder de vista que la segunda cardinal fue planteada en el centro de masa del sistema, por lo tanto respecto de dicho punto las fuerzas sí introducen un momento que puede calcularse como $M1=L\vec{x\prime} \times T1\vec{k_q}$ para el motor 1. La expresión del momento es análoga para los restantes motores.
 
+Debemos considerar además el momento obtenido para cada hélice en la dirección $\vec{k_q}$. Cabe recordad que se dedujo que para hélices rotando en sentido anti- horario se tiene un momento positivo, mientras que para una hélice rotando en sentido horario el momento es negativo. Realizando estas consideraciones es posible afirmar que la suma total de los momentos es:
 
-Si nombramos a las turbinas como se observa en el esquema \ref{fig:quad} se obtiene rápidamente que:
-
-$$M_G^{ext} = L\left(\begin{array}{c}
-T2-T4\\
-T3-T1\\
-0\\
+$$M_G^{ext} = \left(\begin{array}{c}
+L(T2-T4)\\
+L(T3-T1)\\
+Q_1-Q2+Q3-Q_4\\
 \end{array} \right)$$
-\subsubsection{Momento de \emph{drag}}
+
 \subsection{Modelo en variables de Estado}
 A partir de las relaciones cinemáticas y dinámicas obtenidas en la sección anterior se procede a elegir un vector de estados para el estudio del sistema. Dicho vector es el conformado por las variables $\left\lbrace  x,y,z, v_{q1},v_{q2},v_{q3},\theta,\phi,\psi,\omega_{q1},\omega_{q2},\omega_{q3} \right\rbrace$.
 \subsection{Algunas consideraciones adicionales sobre el modelo}
