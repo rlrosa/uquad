@@ -1,5 +1,6 @@
 %Cargo las medidas obtenidas
-x=load('datos_crudos');
+clc
+x=load('archivo');
 %y=load('log2.txt');
 
 %x=[x;y];

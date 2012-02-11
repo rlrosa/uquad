@@ -85,7 +85,7 @@ Las líneas \textbf{SDA} y \textbf{SCL} son de drenador abierto, lo que signific
 Cada dispositivo tiene asignada una dirección que lo identifica. Para establecer una comunicación la secuencia típica empieza por el maestro enviando una secuencia de comienzo de conexión, seguida de la dirección del esclavo con el cual desea comunicarse. Seguidamente el maestro envía un bit que determina si la acción que desea realizar es escritura o lectura, a lo que el esclavo correspondiente responde con un bit de \emph{acknowledge} (\textbf{Ack}). Luego el maestro envía la dirección de memoria interna del esclavo donde debe ser almacenada la información enviada, y por último envía los datos. Para finalizar la conexión, el maestro envía una secuencia de fin de conexión.
 
 \newpage
-\section{Resultados}
+\section{Pruebas en régimen}
 
 Como se dijo anteriormente, para realizar el proceso de ingeniería inversa se utilizó el cuadricóptero y un analizador lógico. La forma de operar es enviar comandos conocidos con el control remoto y analizar los datos que se cursan en las líneas del bus. En la figura \ref{fig:sniffing} se muestra una foto del proceso descripto.
 
@@ -107,8 +107,6 @@ Al realizar este proceso se puede observar que se repiten cada $2ms$ bloques sim
 
 Rápidamente, visto lo anterior, se puede deducir que hay 4 esclavos correspondientes a los 4 ESC's de los 4 motores, cuyas direcciones en hexadecimal son \textbf{D0}, \textbf{D2}, \textbf{D4} y \textbf{D6}. La dirección de la memoria interna de los esclavos donde se almacenan los datos que envía el maestro es, en todos los casos \textbf{A2}. Además el maestro envía un tercer conjunto de datos que refiere, de alguna manera, a la velocidad con la que debe girar cada motor.
 Este conjunto de órdenes, agrupadas por bloques como el que se muestra en la figura \ref{fig:bloque_snif}, se repite periódicamente, indicando la velocidad con la que debe girar cada motor.\\
-
-\subsection*{Pruebas}
 
 Para comprender las pruebas realizadas es importante dejar en claro algunos aspectos previos. En la figura \ref{fig:tx} se muestra el transmisor utilizado para enviar comandos al cuadricóptero, un \textbf{Walkera WK-2801} y se indican los nombres de los mandos más importantes del mismo.
 
@@ -159,7 +157,7 @@ Se realiza un análisis de los resultados obtenidos para cada motor, graficando 
 
 En la figura \ref{fig:grafica_motores} se puede observar que a los 4 motores les llega un byte con el valor promedio en $50$, el cual corresponde a la mínima potencia entregada a los motores para encenderlos.\\
 
-Haciendo un análisis similar con el resto de las pruebas detalladas en la tabla \ref{tab:pruebas} se construye la tabla \ref{tab:resumen_snif} donde se muestran los valrores enviados a cada motor en promedio en todas las pruebas.\\
+Haciendo un análisis similar con el resto de las pruebas detalladas en la tabla \ref{tab:pruebas} se construye la tabla \ref{tab:resumen_snif} donde se muestran los valores enviados a cada motor en promedio en todas las pruebas.\\
 
 \begin{table}[H]
 \begin{center}
@@ -182,14 +180,64 @@ Haciendo un análisis similar con el resto de las pruebas detalladas en la tabla
 \end{center}
 \end{table}
 
-De dicha tabla se pueden sacar algunas conclusiones importantes:
+De dicha tabla se pueden sacar algunas conclusiones que se analizarán en la sección \ref{sec:conclu};
+
+\section{Prueba de arranque}
+\label{sec:arranque}
+
+En esta sección se analiza la secuencia de arranque del cuadricóptero, para obtener conclusiones sobre la misma. Se parte con la palanca de elevación al mínimo y se procede a moverla para hacer arrancar los motores.\\
+
+Mientras la palanca de elevación se mantiene al mínimo, se le envía el valor 0 a los cuatro motores. Al mover la palanca, luego de un \emph{tiempo muerto} donde las líneas quedan inactivas, se les empieza a mandar el valor correspondiente a cada motor, como se puede ver en la figura \ref{fig:snif_arranque_lejos}.
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=1\textwidth]{./pics/snif_arranque_lejos.png}
+	\caption{Arranque}
+	\label{fig:snif_arranque_lejos}
+\end{figure}
+
+Observando más detenidamente los comandos enviados se pueden sacar algunas conclusiones importantes. En la gran mayoría de los casos se envían los comandos en el orden $D2\rightarrow D4\rightarrow D6\rightarrow D0$ y se guardan en el registro 0xA2 del esclavo. Pero se puede observar una importante diferencia en la el último comando que se manda a cada motor antes de arrancar, es decir, el último comando en la tanda de ceros mostrada en la figura \ref{fig:snif_arranque_lejos}. En la figura \ref{fig:snif_arranque_ceros} se muestra una tanda regular de ceros y en la figura \ref{fig:snif_arranque_ultimos_ceros} se muestra la última tanda de ceros mencionada.\\
+
+\begin{figure} [h!]
+\centering
+  \subfloat[Tanda normal de ceros]{\label{fig:snif_arranque_ceros}
+  		\includegraphics[width=1\textwidth]{./pics/snif_arranque_ceros.png}} \\
+  \subfloat[Última tanda de ceros]{\label{fig:snif_arranque_ultimos_ceros} 
+  		\includegraphics[width=1\textwidth]{./pics/snif_arranque_ultimos_ceros.png}}
+  \caption{Envío de ceros}
+  \label{fig:snif_arranque_cerca}
+\end{figure}
+
+Se observan 2 claras diferencias:
+\begin{itemize}
+\item \textbf{El orden en el que se envían datos a los motores no es mismo} que el anterior. En este caso el orden es: $D0\rightarrow D2\rightarrow D4\rightarrow D6$.
+\item \textbf{El registro en el que se escriben los datos es 0xA0}
+\end{itemize}
+
+
+\section{Prueba de frenado}
+Se procede del mismo modo que en la prueba anterior (sección \ref{sec:arranque}), analizando los comandos enviados a los motores a la hora de apagarlos. Se realiza una prueba análoga a la anterior partiendo de los motores funcionando y bajando al mínimo la palanca de elevación, causando que estos se detengan.\\
+
+Una vez que se lleva la palanca de elevación al mínimo, los motores se apagan y se permanece enviando ceros a los motores en el orden $D2\rightarrow D4\rightarrow D6\rightarrow D0$. Se pueden sacar algunas conclusiones importantes de la última tanda de valores distintos de cero enviados:
+\begin{itemize}
+\item \textbf{El orden en el que se envían datos es $D0\rightarrow D2\rightarrow D4\rightarrow D6$}
+\item \textbf{El registro en el que se escriben los datos es 0xA1}
+\end{itemize}
+
+\section{Conclusiones}
+\label{sec:conclu}
+
 \begin{itemize}
 \item La comunicación entre el amo y los esclavos por medio del protocolo $i^2c$ se lleva a cabo mediante un  formato del tipo \begin{verbatim} Dirección esclavo - Lugar de memoria donde guardar dato - dato \end{verbatim}
 \item Dicho formato se repite para todos los esclavos
 \item Cada esclavo recibe una actualización de estado (un dato nuevo) cada $2 ms$
 \item La velocidad mínima de funcionamiento se logra enviando el valor 50
 \item La velocidad máxima de funcionamiento se logra enviando el valor 250
-\item La dirección de memoria interna de todos los esclavos donde se guardan los datos recibidos por el maestro es siempre 0x$A2$ (ó $162$).
+\item Cuando el mando de Elevación del control se encuentra al mínimo, se les envía el valor 0 a los cuatro motores periódicamente con el formato mencionado.
+\item La dirección de memoria interna de todos los esclavos donde se guardan los datos recibidos por el maestro es siempre 0x$A2$ (ó $162$), a excepción del arranque y el frenado.
+\item El último comando enviado antes de arrancar se guarda en el registro 0xA0.
+\item El último comando enviado antes de frenar se guarda en el registro 0xA1.
+\item El orden normal en el que se envían los comandos es $D2\rightarrow D4\rightarrow D6\rightarrow D0$, menos en los casos descriptos en los 2 puntos anteriores donde el orden es $D0\rightarrow D2\rightarrow D4\rightarrow D6$.
 \item La correspondencia entre las direcciones y los motores se muestra en la figura \ref{fig:correspondencias}. Mirando el cuadricóptero desde arriba, el motor con dirección 0xD0 es el de la derecha, el motor con dirección 0xD6 el de la izquierda, el 0xD4 el de adelante y el 0xD2 el de atrás.
 \item Las direcciones 0xD0, 0xD2, 0xD4 y 0xD6 (de 8 bits) en realidad no refieren únicamente a direccionamiento, sino que incluyen además el bit de lectura/escritura, por lo cual cada esclavo tendrá una única dirección de 7 bits. Notar que las direcciones 0xD0 a 0xD6 al pasarlas a binario todas terminan en 0, lo cual implica que se tratan de comandos de escritura. Al omitir el último bit se obtienen las direcciones (sin incluir el bit de lectura/escritura) como se puede ver a continuación:
 \begin{eqnarray}
@@ -211,7 +259,7 @@ Las direcciones de los motores son entonces: \textbf{0x68}, \textbf{0x69}, \text
 
 \section{Verificación}
 \begin{huge}
-TODO
+TODO: verificaciones - arreglar fotos que tienen un marco feo - cambiar D0 con D2 en la ultima figura - grafica en el arranque - snifeada al frenar
 \end{huge}
 
 Comando i2cdetect de la librería nosequé... Resultado en terminal
