@@ -28,147 +28,7 @@ con el subíndice $I$. Por otro lado se utilizará el sistema de referencia $(i_q 
 
 
 
-%TODO Esta parte me parece que es mucho mejor patearla para un anexo
-\section{Constantes del sistema}
-En una primera aproximación podemos descomponer al cuadricóptero en una esfera maciza en el centro, cuatro varillas y cuatro motores considerados como cilindros.
 
-\subsection{Dimensiones}
-Bajo estas suposiciones las cantidades de interés en lo que refiere a las dimensiones de sistema son:
-
-\begin{itemize}
-\item Radio de la esfera central (R)
-\item Largo de las varillas (L)
-\item Radio de los motores(r)
-\end{itemize}
-
-
-\subsection{Masa del sistema}
-La masa de los objetos que componen al sistema son:
-
-\begin{table}[H]
-\centering
-\begin{tabular}{p{80pt}|p{80pt}|p{80pt}|p{80pt}|} 
-\cline{2-3}
-& \cellcolor[gray]{0.8} \textbf{Masa por elemento} 
-& \cellcolor[gray]{0.8} \textbf{Cantidad} 
-& \cellcolor[gray]{0.8} \textbf{Masa total} \\ \cline{2-4} \hline
-\multicolumn{1}{|p{80pt}|}{\cellcolor[gray]{0.8}\textbf{Esfera Central}} 
-& $M_E$  & 1 & $M_E$ \\ \hline
-\multicolumn{1}{|p{80pt}|}{\cellcolor[gray]{0.8}\textbf{Varilla}} 
-& $M_V$ & 4 &$4 M_V$ \\ \hline
-\multicolumn{1}{|p{80pt}|}{\cellcolor[gray]{0.8}\textbf{Motores}} 
-&$M_M$  & 4 & $4 M_M$\\ \hline
-\multicolumn{1}{|p{80pt}|}{\cellcolor[gray]{0.8}\textbf{Masa Total}} & M\\
-\cline{1-2}
-\end{tabular}
-\caption{Masas de los objetos que componen al sistema}
-\label{tab:masas}
-\end{table}
-
-
-
-\subsection{Tensor de inercia del sistema}
-\label{tensores}
-El tensor de inercia del sistema puede calcularse como la suma de los tensores de inercia de los rígidos que lo componen. Se considera como fue expresado anteriormente el centro del cuadricóptero como una esfera maciza. El tensor de inercia de dicha esfera puede calcularse a partir de la definición misma de tensor de inercia, sin embargo por ser una forma geométrica de vasto uso en el campo de la mecánica su tensor de inercia se encuentra ya tabulado. Sucede lo mismo con las restantes formas geométricas que componen al sistema. 
-
-En el caso de la esfera se tiene que el tensor de inercia respecto de  su centro de masa es: 
-
-$$
-\Pi_{G_E}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}= M_E\left(\begin{array}{ccc}
-\frac{2R^2}{5}  &0&  0\\
-0  &\frac{2R^2}{5} & 0\\
-0  &0 & \frac{2R^2}{5} \\
-\end{array}\right) \\
-$$
-
-En este caso el centro de masa del sistema corresponde al centro de masa de la esfera a partir de ciertas suposiciones que se realizan sobre la simetría del sistema. Por dicho motivo podemos afirmar que $\Pi_{G_E}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}} = \Pi_{O\prime _E}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}} $, siendo $O\prime$ el centro de la esfera. %A partir de las dimensiones y masas expresadas en las secciones anteriores se deduce que:\\
-%$\Pi_{O\prime_E}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}}= \left(\begin{array}{ccc}%
-
-%  &0&  0\\
-%0  & & 0\\
-%0  &0 &  \\
-
-%\end{array}\right) $\\
-Por otra parte el tensor de inercia de una varilla, cuya longitud coincide con el versor $\vec{i_q}$, respecto a su centro de masa tiene la forma:
-
-$$
-\Pi_{G_{Vx}}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}= M_V\left(\begin{array}{ccc}
-\frac{L^2}{24}  &0&  0\\
-0  &\frac{L^2}{12} & 0\\
-0  &0 & \frac{L^2}{12}  \\
-\end{array}\right) \\ 
-$$
-
-Sin embargo resulta mucho más interesante obtener el tensor de inercia expresado respecto del centro de masa del sistema. Para realizar dicho cambio se utiliza el Teorema de Steiner. Dicho teorema afirma que: $\Pi_Q = \Pi_G +J_Q^{M,G}$, donde los términos de $J_Q^{M,G}$ pueden calcularse como: $(J_Q^{M,G})_{\alpha \beta} = M(G-Q)^2\delta_{\alpha \beta}-M(G-Q)_{\alpha}M(G-Q)_{\beta}$. El término $\delta_{\alpha \beta}$ es conocido como Delta de Kronecker. Su valor es uno si $\alpha =\beta$ y cero si $\alpha distinto \beta$. En el caso en consideración dicha matriz resulta en:
-
-$$
-J_O\prime^{M_{Vx},G}= M_V \left(\begin{array}{ccc}
-0  &0&  0\\
-0  & (\frac{L}{2}+R)^2 & 0\\
-0  &0 & (\frac{L}{2}+R)^2  \\
-\end{array}\right) \\
-$$
-
-Por lo tanto el momento de inercia total de dicha varilla es:
-$$
-\Pi_{O\prime_{Vx}}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}=M_V \left(\begin{array}{ccc}
-\frac{L^2}{24}  &0&  0\\
-0  &\frac{L^2}{3}+\frac{LR}{2}^2+R^2 & 0\\
-0  &0 & \frac{L^2}{3}+\frac{LR}{2}^2+R^2  \\
-\end{array}\right)$$
-%=\left(\begin{array}{ccc}
-%\frac{L^2}{6}  &0&  0\\
-%0  &\frac{L^2}{12}+(\frac{L}{2}+R)^2 & 0\\
-%0  &0 & \frac{L^2}{12}+(\frac{L}{2}+R)^2  \\
-%\end{array}\right)\\
-
-
-Análogamente, el tensor de inercia de una varilla cuya longitud se encuentra respecto de la dirección $\vec{j_q}$ respecto del centro de masa del sistema es:
-
-$$
-\Pi_{O\prime_{Vy}}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}=M_V \left(\begin{array}{ccc}
-\frac{L^2}{3}+\frac{LR}{2}^2+R^2  &0&  0\\
-0  &\frac{L^2}{24} & 0\\
-0  &0 & \frac{L^2}{3}+\frac{LR}{2}^2+R^2  \\
-\end{array}\right)$$
-%= \left(\begin{array}{ccc}
-%\frac{L^2}{6}  &0&  0\\
-%0  &\frac{L^2}{12}+(\frac{L}{2}+R)^2 & 0\\
-%0  &0 & \frac{L^2}{12}+(\frac{L}{2}+R)^2  
-%\end{array}\right)
-
-
-Sucede algo similar en lo que respecta a los motores. Tendremos un tensor de inercia para los motores que se encuentran sobre la dirección $\vec{i_q}$ y otro para los motores que se encuentran sobre la dirección $\vec{j_q}$. Aproximando cada motor por un cilindro obtenemos en el primer caso el tensor de inercia tiene el valor:
-
-$$
-\Pi_{O\prime_{Mx}}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}=M_M\left(\begin{array}{ccc}
-\frac{r^2}{4}  &0&  0\\
-0  &\frac{r^2}{4}+(L+R+r)^2 & 0\\
-0  &0 & \frac{r^2}{2}+(L+R+r)^2  
-\end{array}\right)
-$$
-
-En el otro caso se tiene que:
-$$\Pi_{O\prime_{My}}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}=M_M\left(\begin{array}{ccc}
-\frac{r^2}{4}+(L+R+r)^2  &0&  0\\
-0  &\frac{r^2}{4} & 0\\
-0  &0 & \frac{r^2}{2}+(L+R+r)^2  \\
-\end{array}\right)$$
-Llamaremos por conveniencia $I_{zz_m}$ al termino $\frac{r^2}{2}+(L+R+r)^2$. El tensor de inercia del sistema completo puede calcularse como:
-$$\Pi_{O\prime}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}} =\Pi_{O\prime_E}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}} + 2 \Pi_{O\prime_{Vx}}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}} + 2 \Pi_{O\prime_{Vy}}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}} + 2 \Pi_{O\prime_{Mx}}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}+ 2 \Pi_{O\prime_{My}}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}$$.
-
-Podemos escribir dicho tensor de inercia como:
-
-$$\Pi_{O\prime_{My}}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}=\left(\begin{array}{ccc}
-I_{xx}  &0&  0\\
-0  &I_{yy}& 0\\
-0  &0 & I_{zz}  
-\end{array}\right)$$
-
-%Por lo tanto tenemos:\\
-
-%$\Pi_{O\prime}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}} =$
-%\section{Caracterización de los motores}
 
 
 \section{Desarrollo teórico}
@@ -460,9 +320,6 @@ $$
 
 Donde $\rho_A$ es la densidad del aire, $\omega_p$ la velocidad angular de la hélice, $r$ la distancia del elemento de hélice al eje de la hélice, c es la longitud promedio de la cuerda de la hélice \footnote{segmento imaginario que une el borde de ataque con el borde de fuga },$ C_L$ y $C_D$ son coeficientes adimensionados.
 
-%Todo poner alguna figurita o algo para explicar las partes de la hélice. Se puede hacer antes en una introducción o un primer capítulo que defina muchas cosas.
-
-
 La fuerza infinitesimal de empuje ($dT$) puede escribirse en función de las fuerzas de \emph{lift} y de \emph{drag} de la siguiente forma:
 
 $$dT=dL\cos\phi_I-dD\sin\phi$$
@@ -519,10 +376,64 @@ L(T3-T1)\\
 Q_1-Q2+Q3-Q_4\\
 \end{array} \right)$$
 
+\subsection{Consideraciones adicionales sobre el modelado}
+
+Previo a construir el modelo en variables de estado es importante realizar algunas consideraciones adicionales. 
+
+\subsubsection{Fuerzas y momentos de los motores}
+Resulta importante conocer conocer la relación que existe entre la velocidad angular de los motores y las fuerzas y torques aerodinámicos presentes. En base al estudio realizado se podrían conocer dichas relaciones calculando los parámetros que dependen de la geometría de la hélice, sin embargo este estudio resulta tedioso y la mayor parte de los métodos existentes para determinar dichos parámetros con buena precisión son destructivos. Por lo tanto se optó por obtener dichas respuestas en forma experimental. El proceso detallado puede consultarse en el anexo \ref{anexo motores}. En dichos experimentos se obtuvo que:
+
+$$
+T=3.7646\times 10^{-5}\omega^2-9.0535\times 10^{-4}\omega +0.0170
+$$\\$$Q= 5.4746\times 10^{-7}\omega^2+7.4924\times 10^{-5}\omega -5.7275\times10^-4$$
+
+Estos resultados parecen adecuados respecto de lo desarrollado teóricamente ya que ambas respuestas son cuadráticas. 
+
+\subsubsection{Aproximaciones finales}
+%Todo: Hay que ver la respuesta al escalón para tener una estimación de cuanto puede valer como máximo la derivada de las velocidades angulares del motor para ver si es despreciable respecto a los momentos.
+
 \subsection{Modelo en variables de Estado}
-A partir de las relaciones cinemáticas y dinámicas obtenidas en la sección anterior se procede a elegir un vector de estados para el estudio del sistema. Dicho vector es el conformado por las variables $\left\lbrace  x,y,z, v_{q1},v_{q2},v_{q3},\theta,\phi,\psi,\omega_{q1},\omega_{q2},\omega_{q3} \right\rbrace$.
-\subsection{Algunas consideraciones adicionales sobre el modelo}
-En primer lugar, luego de finalizado el análisis se procede a verificar con la bibliografía existente que el modelo desarrollado sea adecuado. Existe bibliografía diversa donde se realiza el modelado físico de sistemas similares. Independientemente del enfoque que se da al análisis los resultados obtenidos finalmente coinciden entre sí y con nuestro modelo. A modo de ejemplo haremos referencia a un curso titulado \emph{Elective in Robotics}  de la \emph{Universitá de Roma} dictado por el profesor Giuseppe Oriolo. En este curso se estudia el control de un cuadricóptero, el análisis se basa al igual que en nuestro caso en el análisis de las cardinales. Los resultados obtenidos son exactamente los mismos, con la diferencia que el profesor Oriolo, luego de un análisis del funcionamiento de las hélices del cuadricóptero deduce la relación entre empuje y velocidad angular. Mientras que en nuestro análisis la respuesta de los motores tanto en empuje como en velocidad angular será determinada experimentalmente. Finalmente realizando algunas aproximaciones, como por ejemplo despreciar los efectos giroscópicos del sistema y asumiendo que el cuadricóptero será operado en condición de \emph{Hovering} ($\theta$ y $\phi$ despreciables) se llega a un modelo simplificado del sistema. Otro de los papers consultados es el escrito por \emph{Tomaso Breciani} del departamento de control automático de la \emph{Lund University}. En dicha bibliografía se obtiene el mismo modelo que en el caso anterior. El objetivo de nuestro proyecto es operar el cuadricóptero en condiciones más generales, por lo tanto no se realizaran dichas aproximaciones. 	
+
+Luego de realizados los estudios sobre la cinemática y dinámica del sistema y de comprender cabalmente las fuerzas y momentos que son involucrados en el sistema se procede a construir el modelo en variables de estado.\\ 
+
+Se debe aclarar que la elección realizada del vector de estados se debe exclusivamente a la conveniencia práctica que se encuentra al trabajar con las variables expresadas en el sistema del cuadricóptero. Esta conveniencia se ve reflejada en dos aspectos, en primer lugar las simplificaciones que introduce trabajar con estas variables en el marco de un desarrollo teórico de las ecuaciones que gobiernan al sistema, por otra parte, al disponer de sensores montados sobre el cuadricóptero, los mismos medirán las velocidades angulares y lineales en el sistema $S_q$. Bajo esta elección parece razonable escoger el vector de estados de la siguiente manera:
+$$X=\left\lbrace  x,y,z, v_{q1},v_{q2},v_{q3},\theta,\phi,\psi,\omega_{q1},\omega_{q2},\omega_{q3} \right\rbrace$$
+
+Las fuerzas y momentos dependen todos de las velocidades angulares de las hélices, luego de las simplificaciones realizadas el vector entrada se compone simplemente de las velocidades de las hélices es decir que:
+
+$$u=\left\lbrace\omega_1, \omega_2, \omega_3, \omega_4\right\rbrace$$
+
+El modelo en variables de estado es por lo tanto:
+
+$$ \begin{array}{l}
+
+\dot{x}=v_{q1} \cos \phi \cos \theta + v_{q2} ( \cos \theta \sin \phi \sin \psi-\cos \phi \sin \theta ) + v_{q3}(\sin \psi \sin \theta + \cos \psi \cos \theta \sin \phi)  \\
+
+\dot{y}=v_{q1} \cos \phi \sin \theta + v_{q2} (\cos \psi \cos \theta + \sin \theta \sin \phi \sin \psi) + v_{q3}( \cos \psi \sin \theta \sin \phi-\cos \theta \sin \psi ) \\
+
+\dot{z}= -v_{q1} \sin \phi  + v_{q2} \cos \phi \sin \psi  + v_{q3}\cos \phi \cos \psi \\
+
+
+\dot{\psi}=\omega_{q1} + \omega_{q3}\tan\phi \cos\psi + \omega_{q2}\tan\phi \sin\psi\\
+\dot{\phi}=\omega_{q2}\cos \psi - \omega_{q3}\sin\psi\\
+\dot{\theta}=\omega_{q3} \frac{\cos\psi}{\cos\phi}  + \omega_{q2}\frac{\sin\psi}{\cos\phi} \\
+
+
+\dot{v_{q1}}=v_{q2} \omega_{q3} - v_{q3} \omega_{q2}+Mg\sin\phi\\	
+\dot{v_{q2}}=v_{q3} \omega_{q1} - v_{q1} \omega_{q3}-Mg\cos\phi\sin\psi\\
+\dot{v_{q3}}=v_{q1} \omega_{q2} - v_{q2} \omega_{q1}-Mg\cos\phi\cos\psi+\sum_{i=1}^4T_i\\
+
+
+\dot{\omega_{q1}}=\frac{\omega_{q2}\omega_{q3}(I_{yy}-I_{zz})+\omega_{q2}I_{zz_m}(\omega_1-\omega_2+\omega_3-\omega_4)}{I_{xx}}+\frac{L(T_2-T_4)}{I_{xx}}\\
+\dot{\omega_{q2}}=\frac{\omega_{q1}\omega_{q3}(-I_{xx}+I_{zz})+\omega_{q1}I_{zz_m}(\omega_1-\omega_2+\omega_3-\omega_4)}{{I_yy}}+\frac{L(T_3-T_1)}{I_{yy}}\\
+\dot{\omega_{q3}}=\frac{-I_{zz_m}(\dot{w_1}-\dot{w_2}+\dot{w_3}-\dot{w_4})}{I_{zz}}+\frac{Q_1-Q_2+Q_3-Q_4}{I_{zz}}\\
+
+
+
+
+
+
+\end{array}  $$
 \end{document}
 
 %Algunos layouts para poner imágnenes. Copien y peguen no
