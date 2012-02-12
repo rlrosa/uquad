@@ -209,24 +209,34 @@ Como se aclaró en la oportunidad anterior se trabajará con el promedio de las ac
 
 
 
-\begin{tabular}{p{30pt}|p{30pt}|p{30pt}|p{30pt}|p{30pt}|p{30pt}|p{30pt}|p{30pt}|}
+\begin{tabular}{|p{30pt}|p{30pt}|p{40pt}|p{40pt}|p{40pt}|p{40pt}|p{40pt}|p{40pt}|}
 \hline
-\multicolumn{2}{|p{75pt}|}{\cellcolor[gray]{0.8} \textbf{Posición}}  &\multicolumn{2}{|p{75pt}|}{\cellcolor[gray]{0.8} \textbf{Orientación y}}  & \multicolumn{2}{|p{75pt}|}{\cellcolor[gray]{0.8} \textbf{Orientación z}}&\multicolumn{2}{|p{75pt}|}{\cellcolor[gray]{0.8} \textbf{Orientación -x}} \\
-\hline 
-\multicolumn{1}{|p{30pt}|}{\cellcolor[gray]{0.6} \textbf{$\theta(°)$}} & \multicolumn{1}{|p{30pt}|}{\cellcolor[gray]{0.6} \textbf{$\phi(°)$}} &\multicolumn{1}{|p{30pt}|}{\cellcolor[gray]{0.6} \textbf{a medida}}  &
+  \multicolumn{2}{|p{73pt}|}{\cellcolor[gray]{0.6} \textbf{Posición}}  
+& \multicolumn{2}{|p{93pt}|}{\cellcolor[gray]{0.6} \textbf{Orientación y}}  
+& \multicolumn{2}{|p{93pt}|}{\cellcolor[gray]{0.6} \textbf{Orientación z}}
+& \multicolumn{2}{|p{93pt}|}{\cellcolor[gray]{0.6} \textbf{Orientación -x}} 
+\\ \hline 
+  \multicolumn{1}{|p{30pt}|}{\cellcolor[gray]{0.7} \textbf{$\theta(°)$}} 
+& \multicolumn{1}{|p{30pt}|}{\cellcolor[gray]{0.7} \textbf{$\phi(°)$}} 
+& \multicolumn{1}{|p{40pt}|}{\cellcolor[gray]{0.8} \textbf{a medida}}  
+& \multicolumn{1}{|p{40pt}|}{\cellcolor[gray]{0.7} a teórica ($ms^{-2})$ }
+& \multicolumn{1}{|p{40pt}|}{\cellcolor[gray]{0.8} \textbf{a medida}}  
+& \multicolumn{1}{|p{40pt}|}{\cellcolor[gray]{0.7} a teórica ($ms^{-2})$ }
+& \multicolumn{1}{|p{40pt}|}{\cellcolor[gray]{0.8} \textbf{a medida}}  
+& \multicolumn{1}{|p{40pt}|}{\cellcolor[gray]{0.7} a teórica ($ms^{-2})$ }
+\\ \hline
+0 & 0 & (506.42; 602.77; 505.63) & (0.00; 9.81; 0.00) & (508.38; 510.78; 600.24) & (0.00; 0.00; 9.81)
+& (412.39; 507.76; 506.49) & (-9.81; -0.00; 0.00)
+\\ \hline
 
-\multicolumn{1}{|p{30pt}|}{a teórica ($ms^{-2})$ }&\multicolumn{1}{|p{30pt}|}{\cellcolor[gray]{0.6} \textbf{a medida}}  &\multicolumn{1}{|p{30pt}|}{a teórica ($ms^{-2})$ }&\multicolumn{1}{|p{30pt}|}{\cellcolor[gray]{0.6} \textbf{a medida}}  &\multicolumn{1}{|p{30pt}|}{a teórica ($ms^{-2})$ } \\
-\hline
-
-\multicolumn{1}{|p{30pt}|}{0 } & \multicolumn{1}{|p{30pt}|}{0 } &\multicolumn{1}{|p{30pt}|}{(506.42; 602.77; 505.63)}  &\multicolumn{1}{|p{30pt}|}{(0.00; 9.81; 0.00) }&\multicolumn{1}{|p{30pt}|}{(508.38; 510.78; 600.24 }&\multicolumn{1}{|p{30pt}|}{(0.00; 0.00; 9.81)}&\multicolumn{1}{|p{30pt}|}{(412.39; 507.76; 506.49) }  &\multicolumn{1}{|p{30pt}|}{(-9.81; -0.00; 0.00) } \\ \hline
-\multicolumn{1}{|p{30pt}|}{10 } & \multicolumn{1}{|p{30pt}|}{0 } &\multicolumn{1}{|p{30pt}|}{(506.59; 600.90; 488.81)}  &\multicolumn{1}{|p{30pt}|}{(0.00; 9.66; -1.70) }&\multicolumn{1}{|p{30pt}|}{(491.24; 511.04; 598.95 }&\multicolumn{1}{|p{30pt}|}{(-1.70; 0.00; 9.66)}&\multicolumn{1}{|p{30pt}|}{(413.87; 524.86; 506.36) }  &\multicolumn{1}{|p{30pt}|}{(-9.66; 1.70; 0.00) } \\ \hline
-\multicolumn{1}{|p{30pt}|}{10 } & \multicolumn{1}{|p{30pt}|}{45 } &\multicolumn{1}{|p{30pt}|}{(518.76; 601.08; 493.49)}  &\multicolumn{1}{|p{30pt}|}{(1.20; 9.66; -1.20) }&\multicolumn{1}{|p{30pt}|}{(495.62; 522.40; 598.66 }&\multicolumn{1}{|p{30pt}|}{(-1.20; 1.20; 9.66)}&\multicolumn{1}{|p{30pt}|}{(413.88; 520.13; 518.45) }  &\multicolumn{1}{|p{30pt}|}{(-9.66; 1.20; 1.20) } \\ \hline
-\multicolumn{1}{|p{30pt}|}{20 } & \multicolumn{1}{|p{30pt}|}{0 } &\multicolumn{1}{|p{30pt}|}{(506.53; 596.05; 472.22)}  &\multicolumn{1}{|p{30pt}|}{(0.00; 9.22; -3.36) }&\multicolumn{1}{|p{30pt}|}{(473.72; 510.47; 594.21 }&\multicolumn{1}{|p{30pt}|}{(-3.36; 0.00; 9.22)}&\multicolumn{1}{|p{30pt}|}{(418.20; 541.15; 506.15) }  &\multicolumn{1}{|p{30pt}|}{(-9.22; 3.36; 0.00) } \\ \hline
-\multicolumn{1}{|p{30pt}|}{20 } & \multicolumn{1}{|p{30pt}|}{45 } &\multicolumn{1}{|p{30pt}|}{(530.63; 596.54; 481.98)}  &\multicolumn{1}{|p{30pt}|}{(2.37; 9.22; -2.37) }&\multicolumn{1}{|p{30pt}|}{(483.85; 534.25; 593.94 }&\multicolumn{1}{|p{30pt}|}{(-2.37; 2.37; 9.22)}&\multicolumn{1}{|p{30pt}|}{(418.29; 531.87; 530.06) }  &\multicolumn{1}{|p{30pt}|}{(-9.22; 2.37; 2.37) } \\ \hline
-\multicolumn{1}{|p{30pt}|}{30 } & \multicolumn{1}{|p{30pt}|}{0 } &\multicolumn{1}{|p{30pt}|}{(507.33; 589.08; 458.34)}  &\multicolumn{1}{|p{30pt}|}{(0.00; 8.50; -4.90) }&\multicolumn{1}{|p{30pt}|}{(459.55; 510.09; 587.67 }&\multicolumn{1}{|p{30pt}|}{(-4.90; 0.00; 8.50)}&\multicolumn{1}{|p{30pt}|}{(424.70; 555.01; 506.96) }  &\multicolumn{1}{|p{30pt}|}{(-8.50; 4.90; 0.00) } \\ \hline
-\multicolumn{1}{|p{30pt}|}{30 } & \multicolumn{1}{|p{30pt}|}{45 } &\multicolumn{1}{|p{30pt}|}{(541.23; 589.86; 472.74)}  &\multicolumn{1}{|p{30pt}|}{(3.47; 8.50; -3.47) }&\multicolumn{1}{|p{30pt}|}{(473.94; 543.67; 587.47 }&\multicolumn{1}{|p{30pt}|}{(-3.47; 3.47; 8.50)}&\multicolumn{1}{|p{30pt}|}{(424.92; 541.96; 540.38) }  &\multicolumn{1}{|p{30pt}|}{(-8.50; 3.47; 3.47) } \\ \hline
-\multicolumn{1}{|p{30pt}|}{45 } & \multicolumn{1}{|p{30pt}|}{0 } &\multicolumn{1}{|p{30pt}|}{(507.61; 573.51; 438.99)}  &\multicolumn{1}{|p{30pt}|}{(0.00; 6.94; -6.94) }&\multicolumn{1}{|p{30pt}|}{(439.12; 510.58; 572.01 }&\multicolumn{1}{|p{30pt}|}{(-6.94; 0.00; 6.94)}&\multicolumn{1}{|p{30pt}|}{(440.34; 575.47; 506.71) }  &\multicolumn{1}{|p{30pt}|}{(-6.94; 6.94; 0.00) } \\ \hline
-\multicolumn{1}{|p{30pt}|}{45 } & \multicolumn{1}{|p{30pt}|}{45 } &\multicolumn{1}{|p{30pt}|}{(555.44; 574.48; 459.13)}  &\multicolumn{1}{|p{30pt}|}{(4.90; 6.94; -4.91) }&\multicolumn{1}{|p{30pt}|}{(459.97; 557.65; 571.66 }&\multicolumn{1}{|p{30pt}|}{(-4.91; 4.90; 6.94)}&\multicolumn{1}{|p{30pt}|}{(440.50; 556.14; 553.97) }  &\multicolumn{1}{|p{30pt}|}{(-6.94; 4.90; 4.90) } \\ \hline
+ 10  &  0  & (506.59; 600.90; 488.81)  & (0.00; 9.66; -1.70) & (491.24; 511.04; 598.95 ) & (-1.70; 0.00; 9.66)& (413.87; 524.86; 506.36)   & (-9.66; 1.70; 0.00)  \\ \hline
+ 10  &  45  & (518.76; 601.08; 493.49)  & (1.20; 9.66; -1.20) & (495.62; 522.40; 598.66 )& (-1.20; 1.20; 9.66)& (413.88; 520.13; 518.45)   & (-9.66; 1.20; 1.20)  \\ \hline
+ 20 &  0  & (506.53; 596.05; 472.22)  & (0.00; 9.22; -3.36) & (473.72; 510.47; 594.21 & (-3.36; 0.00; 9.22)& (418.20; 541.15; 506.15)   & (-9.22; 3.36; 0.00)  \\ \hline
+ 20  &  45  & (530.63; 596.54; 481.98)  & (2.37; 9.22; -2.37) & (483.85; 534.25; 593.94 )& (-2.37; 2.37; 9.22)& (418.29; 531.87; 530.06)   & (-9.22; 2.37; 2.37)  \\ \hline
+ 30  &  0  & (507.33; 589.08; 458.34)  & (0.00; 8.50; -4.90) & (459.55; 510.09; 587.67 & (-4.90; 0.00; 8.50)& (424.70; 555.01; 506.96)   & (-8.50; 4.90; 0.00)  \\ \hline
+ 30  &  45  & (541.23; 589.86; 472.74)  & (3.47; 8.50; -3.47) & (473.94; 543.67; 587.47 & (-3.47; 3.47; 8.50)& (424.92; 541.96; 540.38)   & (-8.50; 3.47; 3.47)  \\ \hline
+ 45  &  0  & (507.61; 573.51; 438.99)  & (0.00; 6.94; -6.94) & (439.12; 510.58; 572.01 ) & (-6.94; 0.00; 6.94)& (440.34; 575.47; 506.71)   & (-6.94; 6.94; 0.00)  \\ \hline
+ 45  &  45  & (555.44; 574.48; 459.13)  & (4.90; 6.94; -4.91) & (459.97; 557.65; 571.66 & (-4.91; 4.90; 6.94)& (440.50; 556.14; 553.97)   & (-6.94; 4.90; 4.90)  \\ \hline
 
 
 
