@@ -2,9 +2,12 @@
 % clear all
 % clc
 
-function [D0_val,D2_val,D4_val,D6_val,...
+function [dat,D0_val,D2_val,D4_val,D6_val,...
           D0_add,D2_add,D4_add,D6_add] = read_log(archivo)
 
+D0_val=0;D2_val=0;D4_val=0;D6_val=0;
+D0_add=0;D2_add=0;D4_add=0;D6_add=0;
+      
 % prueba  = '5';
 % intento = '2';
 % F = fopen(['./logs/',prueba,intento,'.vcd']);
@@ -74,6 +77,19 @@ while i<size(data,2)
     i=i+3;
 end
 
+j=1;
+for i=1:length(data)
+    if data{i}(1) ~='x'
+        dat(j)=bin2dec(data{i});
+        j=j+1;
+    end
+end
+
+
+%% PLOTS
+
+if (length(D0_val~=1) && length(D2_val)~=1 && length(D4_val)~=1 && length(D6_val)~=1)
+
 % figure('Name',['Prueba ',prueba,', Intento ',intento])
 figure('Name','Potencia')
 subplot 221
@@ -100,34 +116,39 @@ subplot 224
     title('D6')
     xlabel('Muestras')
     ylabel('Información envidada')
+
+end
+
+if (length(D0_add)~=1 && length(D2_add)~=1 && length(D4_add)~=1 && length(D6_add)~=1)
     
+figure('Name','Registro')
+subplot 221
+    plot(D0_add,'b*')
+%     axis([1 length(D0_add) 0 100])
+    title('D0')
+    xlabel('Muestras')
+    ylabel('Registro del esclavo')
+subplot 222
+    plot(D2_add,'y>')
+%     axis([1 length(D2_add) 0 100])
+    title('D2')
+    xlabel('Muestras')
+    ylabel('Registro del esclavo')
+subplot 223
+    plot(D4_add,'ro')
+%     axis([1 length(D4_add) 0 100])
+    title('D4')
+    xlabel('Muestras')
+    ylabel('Registro del esclavo')
+subplot 224
+    plot(D6_add,'gs')
+%     axis([1 length(D6_add) 0 100])
+    title('D6')
+    xlabel('Muestras')
+    ylabel('Registro del esclavo')
     
-% figure('Name','Registro')
-% subplot 221
-%     plot(D0_add,'b*')
-% %     axis([1 length(D0_add) 0 100])
-%     title('D0')
-%     xlabel('Muestras')
-%     ylabel('Registro del esclavo')
-% subplot 222
-%     plot(D2_add,'y>')
-% %     axis([1 length(D2_add) 0 100])
-%     title('D2')
-%     xlabel('Muestras')
-%     ylabel('Registro del esclavo')
-% subplot 223
-%     plot(D4_add,'ro')
-% %     axis([1 length(D4_add) 0 100])
-%     title('D4')
-%     xlabel('Muestras')
-%     ylabel('Registro del esclavo')
-% subplot 224
-%     plot(D6_add,'gs')
-% %     axis([1 length(D6_add) 0 100])
-%     title('D6')
-%     xlabel('Muestras')
-%     ylabel('Registro del esclavo')
-%     
+end    
+  
 % figure
 % plot(D0_val,'b*')
 % hold on
