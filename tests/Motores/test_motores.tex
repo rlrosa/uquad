@@ -1,5 +1,5 @@
 \documentclass[spanish,12pt,a4paper,titlepage]{report}
-\usepackage[utf8]{inputenc}
+\usepackage[latin1]{inputenc}
 \usepackage{graphicx}
 \usepackage{subfig}
 \usepackage{float}
@@ -35,22 +35,22 @@
 
 \begin{document}
 
-\chapter{Caracterizaci√≥n de los motores}
+\chapter{CaracterizaciÛn de los motores}
 \section{Objetivo}
 El objetivo de este Test es el de caracterizar el funcionamiento de los motores. Con dicho fin se busca determinar:
 
 \begin{itemize}
-\item Relaci√≥n entre velocidad angular y fuerza
-\item Relaci√≥n entre comando I2C y la velocidad angular.
-\item Relaci√≥n entre comando I2C y la fuerza
-\item Relaci√≥n entre torque de \emph{drag} y la velocidad angular
+\item RelaciÛn entre velocidad angular y fuerza
+\item RelaciÛn entre comando I2C y la velocidad angular.
+\item RelaciÛn entre comando I2C y la fuerza
+\item RelaciÛn entre torque de \emph{drag} y la velocidad angular
 \end{itemize}
 
-La primer y √∫ltima relaciones sirven para desprendernos de uno de los par√°metros a la hora de realizar el control. Del mismo modo sirve para verificar que la respuesta de los motores verifica las relaciones estudiadas en diversas bibliograf√≠as.\\
+La primer y ˙ltima relaciones sirven para desprendernos de uno de los par·metros a la hora de realizar el control. Del mismo modo sirve para verificar que la respuesta de los motores verifica las relaciones estudiadas en diversas bibliografÌas.\\
 
-La segunda es fundamental de conocer ya que lo que el procesador controlar√° es un comando I2C y no directamente la velocidad del motor. \\
+La segunda es fundamental de conocer ya que lo que el procesador controlar· es un comando I2C y no directamente la velocidad del motor. \\
 
-La tercer relaci√≥n resulta redundante conociendo las anteriores. Sin embargo parece interesante realizar dicho relevamiento a fin de verificar que no surja ninguna inconsistencia. \\
+La tercer relaciÛn resulta redundante conociendo las anteriores. Sin embargo parece interesante realizar dicho relevamiento a fin de verificar que no surja ninguna inconsistencia. \\
 
 
 \section{Materiales}
@@ -67,15 +67,15 @@ La tercer relaci√≥n resulta redundante conociendo las anteriores. Sin embargo pa
 
 \subsection{Consideraciones previas}
 \subsubsection*{Funcionamiento del dispositivo IR}
-Es necesario entender el funcionamiento del \emph{detector IR} para poder realizar un experimento adecuado. Dicho dispositivo es sensible a las \emph{radiaciones infrarrojas}. Si se lo expone a una luz infrarroja constante la salida del dispositivo es un ``1" l√≥gico. Del mismo modo, si se quita dicha fuente de luz la salida contin√∫a siendo un ``1''. \\
+Es necesario entender el funcionamiento del \emph{detector IR} para poder realizar un experimento adecuado. Dicho dispositivo es sensible a las \emph{radiaciones infrarrojas}. Si se lo expone a una luz infrarroja constante la salida del dispositivo es un ``1" lÛgico. Del mismo modo, si se quita dicha fuente de luz la salida contin˙a siendo un ``1''. \\
 
-En la hoja de datos del dispositivo se explica que mientras se recibe una onda cuadrada de frecuencia 56kHz la salida del mismo es un ``0". Por lo tanto para poder distinguir cuando llega la radiaci√≥n emitida por la LED de cuando no llega se debe hacer que esta √∫ltima conmute entre ON y OFF con una frecuencia de 56kHz. Dicho de otro modo, el detector IR debe recibir la informaci√≥n modulada en una frecuencia de 56kHz para luego decodificarla.
+En la hoja de datos del dispositivo se explica que mientras se recibe una onda cuadrada de frecuencia 56kHz la salida del mismo es un ``0". Por lo tanto para poder distinguir cuando llega la radiaciÛn emitida por la LED de cuando no llega se debe hacer que esta ˙ltima conmute entre ON y OFF con una frecuencia de 56kHz. Dicho de otro modo, el detector IR debe recibir la informaciÛn modulada en una frecuencia de 56kHz para luego decodificarla.
 
-\subsubsection*{Dise√±o del circuito de medida de velocidad angular}
+\subsubsection*{DiseÒo del circuito de medida de velocidad angular}
 
-La idea del dispositivo de medida es sencilla. Se trata de hacer ``pasar" la radiaci√≥n infrarroja emitida por el LED a trav√©s de la h√©lice en funcionamiento de uno de los motores. Esta radiaci√≥n es recogida del otro lado por el receptor IR.\\
+La idea del dispositivo de medida es sencilla. Se trata de hacer ``pasar" la radiaciÛn infrarroja emitida por el LED a travÈs de la hÈlice en funcionamiento de uno de los motores. Esta radiaciÛn es recogida del otro lado por el receptor IR.\\
 
-De este modo tendremos a la salida del detector, pulsos de frecuencia correspondientes a la velocidad con la que la h√©lice obstruye el camino entre el sensor y la LED. \textbf{La velocidad angular ser√° entonces la mitad de dicha frecuencia}.\\ 
+De este modo tendremos a la salida del detector, pulsos de frecuencia correspondientes a la velocidad con la que la hÈlice obstruye el camino entre el sensor y la LED. \textbf{La velocidad angular ser· entonces la mitad de dicha frecuencia}.\\ 
 
 \begin{wrapfigure}{l}{0.55\textwidth}
   \vspace{-20pt}
@@ -90,50 +90,50 @@ De este modo tendremos a la salida del detector, pulsos de frecuencia correspond
 
 El dispositivo se trata de un cuerpo en forma de ``U", donde de un lado se tiene la LED infrarroja y del otro el detector, tal como se puede ver en la figura \ref{fig:u}.\\
 
-Como explicamos anteriormente la LED debe ser conmutada con una frecuencia de 56kHz por lo tanto se la alimentar√° con un generador de se√±ales funcionando como generador de onda cuadrada a dicha frecuencia. Para lograr un correcto funcionamiento de la misma se requiere una corriente superior a los $100mA$. La amplitud de la onda cuadrada se regular√° a $5V$ y se trabajar√° con una resistencia de $20\Omega$ en serie. Midiendo la tensi√≥n en la resistencia se puede comprobar que dichos valores son adecuados para el prop√≥sito.\\
+Como explicamos anteriormente la LED debe ser conmutada con una frecuencia de 56kHz por lo tanto se la alimentar· con un generador de seÒales funcionando como generador de onda cuadrada a dicha frecuencia. Para lograr un correcto funcionamiento de la misma se requiere una corriente superior a los $100mA$. La amplitud de la onda cuadrada se regular· a $5V$ y se trabajar· con una resistencia de $20\Omega$ en serie. Midiendo la tensiÛn en la resistencia se puede comprobar que dichos valores son adecuados para el propÛsito.\\
 
-La salida del receptor IR se conecta directamente a un frecuenc√≠metro.\\
+La salida del receptor IR se conecta directamente a un frecuencÌmetro.\\
 
 \subsection{Tests a realizar}
 
-\subsubsection*{Obtenci√≥n de la curva fuerza contra velocidad angular}
+\subsubsection*{ObtenciÛn de la curva fuerza contra velocidad angular}
 
-Se sujeta el motor gracias a una morsa y se coloca sobre la balanza. A priori la morsa es suficientemente pesada como para que el empuje del motor no supere el peso de la misma. Moviendo las palancas del control remoto se le imprime mayor velocidad a las h√©lices lo cual producir√° un aumento del empuje. Dicha variaci√≥n se refleja en la disminuci√≥n de la lectura de la balanza. 
-Simult√°neamente, gracias al dispositivo IR, se medir√° la velocidad angular con la cual gira el motor. 
+Se sujeta el motor gracias a una morsa y se coloca sobre la balanza. A priori la morsa es suficientemente pesada como para que el empuje del motor no supere el peso de la misma. Moviendo las palancas del control remoto se le imprime mayor velocidad a las hÈlices lo cual producir· un aumento del empuje. Dicha variaciÛn se refleja en la disminuciÛn de la lectura de la balanza. 
+Simult·neamente, gracias al dispositivo IR, se medir· la velocidad angular con la cual gira el motor. 
 
-Se tomar√°n medidas para distintas posiciones de la palanca.
+Se tomar·n medidas para distintas posiciones de la palanca.
 
-\subsubsection*{Obtenci√≥n de la curva valor del comando I2C contra velocidad angular y de la curva valor del comando I2C contra fuerza}
+\subsubsection*{ObtenciÛn de la curva valor del comando I2C contra velocidad angular y de la curva valor del comando I2C contra fuerza}
 
-Luego de estudiados los comandos que se utiliza para comandar los motores y una vez que la BeagleBoard se encuentra capacitada para comunicarse a trav√©s de un protocolo I2C se puede proceder a desarrollar esta prueba. En la misma configuraci√≥n que en los experimentos anteriores se procede a medir los valores de velocidad angular y empuje producidos por los motores. 
+Luego de estudiados los comandos que se utiliza para comandar los motores y una vez que la BeagleBoard se encuentra capacitada para comunicarse a travÈs de un protocolo I2C se puede proceder a desarrollar esta prueba. En la misma configuraciÛn que en los experimentos anteriores se procede a medir los valores de velocidad angular y empuje producidos por los motores. 
 
 Se tomaran medidas para todos los valores posibles del comando I2C, es decir entre 0 y 255.
 
-\subsubsection*{Obtenci√≥n de la la curva torque de \emph{drag} contra velocidad angular}
+\subsubsection*{ObtenciÛn de la la curva torque de \emph{drag} contra velocidad angular}
 \label{dragt}
-Se coloca el cuadric√≥ptero sobre la balanza como se muestra en la figura \ref{quad}. El torque de \emph{drag} es en la direcci√≥n paralela al eje que pasa por el centro del motor. Al colocar el motor en la posici√≥n que se observa en la figura \ref{fig:quad} se obtiene un torque en la misma direcci√≥n que el torque producido por el peso y la normal. La distancia entre el eje del motor y el centro de masa del cuadric√≥ptero es conocida.
+Se coloca el cuadricÛptero sobre la balanza como se muestra en la figura \ref{quad}. El torque de \emph{drag} es en la direcciÛn paralela al eje que pasa por el centro del motor. Al colocar el motor en la posiciÛn que se observa en la figura \ref{fig:quad} se obtiene un torque en la misma direcciÛn que el torque producido por el peso y la normal. La distancia entre el eje del motor y el centro de masa del cuadricÛptero es conocida.
 
 Si calculamos respecto del eje que pasa por el centro del motor se obtiene:
 \begin{equation}
 \tau =  \tau_{drag}+l(Mg-N)
 \end{equation}
 
-Las dem√°s fuerzas (fuerzas reactivas en el plano de la balanza) no realizan ning√∫n torque en la direcci√≥n de inter√©s. La diferencia $Mg-N$ puede medirse directamente en la balanza. Por lo tanto conocer el torque resulta sencillo. Del mismo modo que en las secciones anteriores la velocidad angular ser√° medida gracias al dispositivo IR construido. Luego de realizadas las medidas se ajustar√° la curva utilizando el m√©todo de m√≠nimos cuadrados. 
+Las dem·s fuerzas (fuerzas reactivas en el plano de la balanza) no realizan ning˙n torque en la direcciÛn de interÈs. La diferencia $Mg-N$ puede medirse directamente en la balanza. Por lo tanto conocer el torque resulta sencillo. Del mismo modo que en las secciones anteriores la velocidad angular ser· medida gracias al dispositivo IR construido. Luego de realizadas las medidas se ajustar· la curva utilizando el mÈtodo de mÌnimos cuadrados. 
 \begin{figure}
   \vspace{-20pt}
   \begin{center}
     \includegraphics[width=0.8\textwidth]{./Pics/quad.jpg}
   \end{center}
   \vspace{-20pt}
-  \caption{Setup de medida para la obtenci√≥n de la curva de \emph{drag}}
+  \caption{Setup de medida para la obtenciÛn de la curva de \emph{drag}}
   \label{fig:quad}
   \vspace{-10pt}
 \end{figure}
-\section{Resultados y an√°lisis}
+\section{Resultados y an·lisis}
 
-\subsubsection{Obtenci√≥n de la curva fuerza contra velocidad angular}
+\subsubsection{ObtenciÛn de la curva fuerza contra velocidad angular}
 
-Luego de apoyar el motor y su soporte sobre la balanza se oprime el bot√≥n ``tare". Por lo tanto el peso medido corresponde al opuesto de la fuerza realizada por los motores dividido la constante gravitacional de la Tierra ($9.81ms^{-2}$). Los resultados obtenidos se presentan la tabla \ref{tab:fuerza-vel}.
+Luego de apoyar el motor y su soporte sobre la balanza se oprime el botÛn ``tare". Por lo tanto el peso medido corresponde al opuesto de la fuerza realizada por los motores dividido la constante gravitacional de la Tierra ($9.81ms^{-2}$). Los resultados obtenidos se presentan la tabla \ref{tab:fuerza-vel}.
 
 \begin{table}[H]
 \centering
@@ -190,7 +190,7 @@ Del mismo modo se representa la curva Fuerza-Velocidad angular en la figura \ref
 \end{figure}
 
 
-De la observaci√≥n de los puntos obtenidos se infiere que la respuesta Fuerza-velocidad angular es del tipo cuadr√°tica o c√∫bica. Suponiendo ambos modelos se obtienen los coeficientes de los polinomios en ambos casos. A partir de dichos coeficientes se grafican las curvas te√≥ricas en ambos casos a fin de compararlas con los puntos obtenidos experimentalmente. Del mismo modo se calcula el error cuadr√°tico medio para ambos modelos propuestos. Los resultados obtenidos se presentan en la figura \ref{fig:grafica2}.
+De la observaciÛn de los puntos obtenidos se infiere que la respuesta Fuerza-velocidad angular es del tipo cuadr·tica o c˙bica. Suponiendo ambos modelos se obtienen los coeficientes de los polinomios en ambos casos. A partir de dichos coeficientes se grafican las curvas teÛricas en ambos casos a fin de compararlas con los puntos obtenidos experimentalmente. Del mismo modo se calcula el error cuadr·tico medio para ambos modelos propuestos. Los resultados obtenidos se presentan en la figura \ref{fig:grafica2}.
 
 
 \begin{figure}
@@ -204,29 +204,29 @@ De la observaci√≥n de los puntos obtenidos se infiere que la respuesta Fuerza-ve
   \vspace{-10pt}
 \end{figure}
 
-Como se puede observar en la figura \ref{fig:grafica2} ambas curvas coinciden notablemente entre s√≠ y con los datos experimentales. Por lo tanto podemos afirmar que cualquiera de los dos modelos es adecuado para representar la respuesta Fuerza-velocidad angular. Del mismo modo el error promedio obtenido es $1.55\times 10^{-16}N$ para el modelo cuadr√°tico, para el modelo c√∫bico es $3.16\times 10^{-17}N$. Si bien la diferencia es de un orden de magnitud, en ambos casos puede considerarse despreciable. La desviaci√≥n estandar es $0.0346N$ para el primer modelo y $0.0341N$ para el modelo c√∫bico. La raz√≥n de esta peque√±a diferencia es que el coeficiente que multiplica al t√©rmino $\omega^3$ es cinco √≥rdenes de magnitud inferior que el coeficiente que multiplica al t√©rmino $\omega^2$, logrando que el modelo c√∫bico termine pareci√©ndose, en definitiva, a un modelo cuadr√°tico.\\
+Como se puede observar en la figura \ref{fig:grafica2} ambas curvas coinciden notablemente entre sÌ y con los datos experimentales. Por lo tanto podemos afirmar que cualquiera de los dos modelos es adecuado para representar la respuesta Fuerza-velocidad angular. Del mismo modo el error promedio obtenido es $1.55\times 10^{-16}N$ para el modelo cuadr·tico, para el modelo c˙bico es $3.16\times 10^{-17}N$. Si bien la diferencia es de un orden de magnitud, en ambos casos puede considerarse despreciable. La desviaciÛn estandar es $0.0346N$ para el primer modelo y $0.0341N$ para el modelo c˙bico. La razÛn de esta pequeÒa diferencia es que el coeficiente que multiplica al tÈrmino $\omega^3$ es cinco Ûrdenes de magnitud inferior que el coeficiente que multiplica al tÈrmino $\omega^2$, logrando que el modelo c˙bico termine pareciÈndose, en definitiva, a un modelo cuadr·tico.\\
 
-Con los par√°metros obtenidos y asumiendo un modelo cuadr√°tico podemos afirmar que la respuesta de los motores Fuerza-Velocidad angular tiene la forma de:
+Con los par·metros obtenidos y asumiendo un modelo cuadr·tico podemos afirmar que la respuesta de los motores Fuerza-Velocidad angular tiene la forma de:
 
 \begin{equation}
 T=3,7646 \times 10^{-5}\omega ^2 - 9,0535 \times 10^{-4}\omega +0.0170
 \end{equation}
 
-Donde las unidades del primer coeficiente son $Ns^2$, las del segundo son $Ns$ y las del t√©rmino independiente son $N$.
+Donde las unidades del primer coeficiente son $Ns^2$, las del segundo son $Ns$ y las del tÈrmino independiente son $N$.
 
-Este modelo resulta, adem√°s, coherente con la ecuaci√≥n para el empuje de una h√©lice:
+Este modelo resulta, adem·s, coherente con la ecuaciÛn para el empuje de una hÈlice:
 
 \begin{equation}
 L=\frac{1}{2}\rho V^2S_{ref}C_L
 \end{equation}
 
-donde $L$ es la fuerza de elevaci√≥n (en $N$), $\rho$ es la densidad del aire (en $kg/m^3$), $V$ es la velocidad de giro (en $m/s^2$), $S_{ref}$ es el √°rea de referencia (en $m^2$) (para  una  h√©lice,  el  √°rea  de  referencia  es  aquella  formada  cuando √©sta gira creando un c√≠rculo con un radio de la longitud de la h√©lice) y $C_L$ es el coeficiente de elevaci√≥n (adimensionado), el cual depende de geometr√≠a de la h√©lice y el √°ngulo de ataque, entre otros factores.
+donde $L$ es la fuerza de elevaciÛn (en $N$), $\rho$ es la densidad del aire (en $kg/m^3$), $V$ es la velocidad de giro (en $m/s^2$), $S_{ref}$ es el ·rea de referencia (en $m^2$) (para  una  hÈlice,  el  ·rea  de  referencia  es  aquella  formada  cuando Èsta gira creando un cÌrculo con un radio de la longitud de la hÈlice) y $C_L$ es el coeficiente de elevaciÛn (adimensionado), el cual depende de geometrÌa de la hÈlice y el ·ngulo de ataque, entre otros factores.
 
 
 
 
-\subsubsection{Obtenci√≥n de la curva torque de \emph{drag} contra velocidad angular}
-En la tabla \ref{tab:torque-vel} se presentan los resultados obtenidos en el experimento descripto en la secci√≥n \ref{dragt}
+\subsubsection{ObtenciÛn de la curva torque de \emph{drag} contra velocidad angular}
+En la tabla \ref{tab:torque-vel} se presentan los resultados obtenidos en el experimento descripto en la secciÛn \ref{dragt}
 
 \begin{table}[H]
 \centering
@@ -243,12 +243,12 @@ En la tabla \ref{tab:torque-vel} se presentan los resultados obtenidos en el exp
 51.5 & 20 & & \\ \hline
 
 \end{tabular}
-\caption{Medidas obtenidas de peso y frecuencia medida por el dispositivo IR para la determinaci√≥n de la curva de \emph{drag}}
+\caption{Medidas obtenidas de peso y frecuencia medida por el dispositivo IR para la determinaciÛn de la curva de \emph{drag}}
 \label{tab:torque-vel}
 \end{table}
 
 
-No fue posible realizar medidas a velocidades angulares mayores ya que la fuerza en la direcci√≥n del eje de la h√©lice produc√≠a un momento que a velocidades superiores implicaba una rotaci√≥n del cuadric√≥ptero respecto de un eje vertical. De todas formas, asumiendo un modelo cuadr√°tico y uno c√∫bico se deben determinar 3 y 4 par√°metros respectivamente. 9 medidas parece una cantidad adecuada con este fin. En la figura \ref{fig:grafica3} se muestran los puntos medidos y las curvas obtenidas asumiendo los dos modelos considerados.
+No fue posible realizar medidas a velocidades angulares mayores ya que la fuerza en la direcciÛn del eje de la hÈlice producÌa un momento que a velocidades superiores implicaba una rotaciÛn del cuadricÛptero respecto de un eje vertical. De todas formas, asumiendo un modelo cuadr·tico y uno c˙bico se deben determinar 3 y 4 par·metros respectivamente. 9 medidas parece una cantidad adecuada con este fin. En la figura \ref{fig:grafica3} se muestran los puntos medidos y las curvas obtenidas asumiendo los dos modelos considerados.
 
 
 \begin{figure}
@@ -263,11 +263,11 @@ No fue posible realizar medidas a velocidades angulares mayores ya que la fuerza
 \end{figure}
 
 
-A partir de la observaci√≥n de la gr√°fica y de los par√°metros obtenidos no es posible realizar una elecci√≥n en favor de uno de los dos modelos sobre el otro. Sin embargo si realizamos un estudio m√°s detallado del error se encuentran indicios de que el modelo cuadr√°tico es una mejor aproximaci√≥n, tal cual lo prev√©e la bibliograf√≠a consultada. 
+A partir de la observaciÛn de la gr·fica y de los par·metros obtenidos no es posible realizar una elecciÛn en favor de uno de los dos modelos sobre el otro.  
 
-El error promedio obtenido al considerar un modelo cuadr√°tico es de $5.78 \times 10^{-19} Nm$, mientras que al considerar el modelo c√∫bico se obtiene un error promedio de $0.025Nm$. Por otra parte la desviaci√≥n est√°ndar del error en el caso del modelo c√∫bico es $0.0147Nm$ mientras que la obtenida considerando el modelo cuadr√°tico es $0.002Nm$.
+El error promedio obtenido al considerar un modelo cuadr·tico es de $5.78 \times 10^{-19} Nm$, mientras que al considerar el modelo c˙bico se obtiene un error promedio de $6.55\times10{-18}Nm$. Por otra parte la desviaciÛn est·ndar del error en el caso del modelo c˙bico es $0.0019Nm$ mientras que la obtenida considerando el modelo cuadr·tico es $0.0016Nm$.
 
-Por estos motivos parece m√°s acertado inclinarse por el modelo cuadr√°tico. En este caso se obtiene:
+Los valores obtenidos de error promedio y desviaciÛn est·ndar tampoco permiten extraer una conclusiÛn definitiva. Teniendo en cuenta que no se pudieron realizar medidas para mayores velocidades angulares se optar· por guiarse por el modelo propuesto en la bibliografÌa. En este caso se obtiene:
 \begin{equation}
 \tau_{drag}=5.47 \times 10^{-7}\omega ^2+7.49 \times \omega + 10^{-5}-5.73 \times 10^{-4}
 \end{equation} 

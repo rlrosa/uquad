@@ -7,9 +7,9 @@
 
 Resulta imprescindible para controlar el cuadricóptero comprender cabalmente su comportamiento. Con esta óptica, lo que se busca es obtener el modelo más sencillo que sea capaz de representar adecuadamente al sistema. El objetivo de esta sección es el de realizar el desarrollo de dicho modelo. La forma de modelar el sistema elegida es un Modelo de Variables de Estado, de ahora en más MVE. Lo que se busca es obtener una representación del sistema de la forma $\dot{\overrightarrow{x}}=f\left(\overrightarrow{x},\overrightarrow{u},t\right)$, donde $\overrightarrow{x}$ es el vector de estados del sistema, $\overrightarrow{u}$ es el vector que representa las entradas del sistema y $t$ es el tiempo. \\
 
-Al tratarse de una plataforma comercial no se dispone de todos los parámetros fundamentales para el desarrollo de dicho modelo. Por ejemplo, no se conoce como es la respuesta de los motores (tanto velocidad como empuje), el tensor de inercia del sistema,etc. Sí bien algunos parámetros como las masas de las distintas partes que componen el sistema y las distancias involucradas en el desarrollo que se hará a continuación son sencillas de obtener, se tuvieron que realizar experimentos y cálculos más sofisticados para la completa caracterización del sistema. Estos aspectos no serán desarrollados en profundidad a lo largo de este trabajo, pero pueden consultarse los valores de las constantes obtenidas   en el anexo%TODO
+Al tratarse de una plataforma comercial no se dispone de todos los parámetros fundamentales para el desarrollo de dicho modelo. Por ejemplo, no se conoce como es la respuesta de los motores (tanto velocidad como empuje), el tensor de inercia del sistema,etc. Sí bien algunos parámetros como las masas de las distintas partes que componen el sistema y las distancias involucradas en el desarrollo que se hará a continuación son sencillas de obtener, se tuvieron que realizar experimentos y cálculos más sofisticados para la completa caracterización del sistema. Estos aspectos no serán desarrollados en profundidad a lo largo de este trabajo, pero pueden consultarse los valores de las constantes obtenidas   en el anexo \ref{anexo_tensores}
 ,mientras que el cálculo de los tensores de inercia de interés
- y la obtención de la respuesta de los motores se encuentran desarrollados en profundidad en los anexos %TODO 
+ y la obtención de la respuesta de los motores se encuentran desarrollados en profundidad en los anexos \ref{anexo_motores}
 respectivamente.\\
 
 En la presente sección nos limitaremos a obtener las ecuaciones que gobiernan el comportamiento del cuadricóptero.\\
@@ -19,7 +19,7 @@ Para el estudio en cuestión se considerará el cuadricóptero según las convencion
 con el subíndice $I$. Por otro lado se utilizará el sistema de referencia $(i_q , j_q , k_q )$ solidario al cuadricóptero. En este caso las magnitudes medidas en ese referencial se notarán con el subíndice $q$. En la figura \ref{fig:quad} se pueden apreciar ambos sistemas de referencia.
 
     
-\begin{figure}[h!]
+\begin{figure}
 	\centering
 	\includegraphics[width=0.7\textwidth]{./pics_modelo_fisico/quad_coord.jpg}
 	\caption{Modelo del cuadcóptero	}
@@ -31,11 +31,9 @@ con el subíndice $I$. Por otro lado se utilizará el sistema de referencia $(i_q 
 
 
 
-\section{Desarrollo teórico}
-
 En la presente sección se utilizarán las herramientas de la mecánica clásica a fin de obtener un modelo, que como tal, no es una representación exacta de la realidad. Se realizarán diversas hipótesis que permiten conocer el sistema en forma aproximada, pero perfectamente adecuada para las condiciones en las cuales se operará el cuadricóptero. 
 
-\subsection{Hipótesis de trabajo}
+\section{Hipótesis de trabajo}
 
 Previo al desarrollo del modelo es muy importante esclarecer las hipótesis en las cuales opera el cuadricóptero. Una vez definidas las mismas se puede tener presente que aproximaciones son factibles de realizar.
 
@@ -45,20 +43,25 @@ No debe perderse de vista que el cuadricóptero con el que se trabaja fue diseñad
 
 %TODO
 
-\subsubsection{La Tierra como sistema de referencia inercial}
+\subsection{La Tierra como sistema de referencia inercial}
+Evidentemente la Tierra {\bf no} es un sistema de referencia inercial ya que la misma se encuentra sometida a la traslación en torno al Sol y a una rotación en sobre su eje. El radio promedio de la órbita Heliocéntrica($R_H$) es de $1.5\times10^8Km$, dicha órbita se recorre en 365 días lo que nos da una velocidad promedio de:
 
-\subsubsection{Curvatura de la Tierra}
+$$V_T=\frac{1.5\times10^{11}m}{365\times24\times60\times60s}\approx4.8\times10^3ms^{-1}$$
+Esta velocidad implica que la aceleración de transporte de la Tierra es de aproximadamente:
+
+$a_T=\frac{V_T^2}{R_H}\approx15.36\times10^{-5}ms^{-2}$
+\subsection{Curvatura de la Tierra}
 
 
-\subsubsection{Atracción gravitacional}
+\subsection{Atracción gravitacional}
 
-\subsubsection{Presión atmosférica}
+\subsection{Presión atmosférica}
 
-\subsubsection{Fuerzas aerodinámicas}
+\subsection{Fuerzas aerodinámicas}
 
-\subsection{Sistema de referencia}
+\section{Sistema de referencia}
 
-Como ya se mencionó, a lo largo del presente desarrollo se trabajará constantemente con dos sistemas de referencia: uno inercial\footnote{En esta sección se consideran sistemas inerciales en el sentido clásico} solidario a la tierra ($S_I$) y otro solidario al cuadcóptero ($S_q$) como se muestra en la figura \ref{fig:quad}. El sistema $S_I$ se define de acuerdo a la convención %TODO
+Como ya se mencionó, a lo largo del presente desarrollo se trabajará constantemente con dos sistemas de referencia: uno inercial\footnote{En esta sección se consideran sistemas inerciales en el sentido clásico} solidario a la tierra ($S_I$) y otro solidario al cuadcóptero ($S_q$) como se muestra en la figura \ref{fig:quad}. El sistema $S_I$ es un sistema local donde la dirección $\vec{i}$, $\vec{j}$ y $\vec{k}$ corresponden a las direcciones Este, Norte y hacia arriba.
 El sistema $S_q$ se puede obtener realizando tres rotaciones compuestas del sistema $S_I$, dichas rotaciones se muestran en la figura \ref{fig:rotaciones}. Los ángulos $\theta, \phi$ y $\psi$ son conocidos como ángulos de Euler.
 
 \begin{figure} [h!]
@@ -115,7 +118,7 @@ $$
  A su vez, la transformación inversa puede obtenerse multiplicando las coordenadas del sistema $S_q$ por la matriz $H_q^I$. Dicha matriz puede obtenerse de la siguiente forma:
  $$ H_q^I=(H_2^q.H_1^2.H_I^1)^{-1}=(H_I^1)^{-1}.(H_1^2)^{-1}.(H_2^q)^{-1}=H_1^I.H_2^1.H_q^2$$
  
-\subsection{Cinemática}
+\section{Cinemática}
 Además de la relación entre las coordenadas de un sistema y del otro, es interesante conocer la relación que existe entre la velocidad angular del sistema y las derivadas de los ángulos de Euler. Sea $\vec{\omega}$ la velocidad angular del cuadricóptero(y por ende la del sistema $S_q$). La expresión de la velocidad angular en el sistema de referencia del cuadricóptero es la siguiente:
 $$
 \vec{\omega}=w_{q1}\vec{i_q}+w_{q2}\vec{j_q}+w_{q3}\vec{k_q}
@@ -180,9 +183,9 @@ v_{q1} \cos \phi \sin \theta + v_{q2} (\cos \psi \cos \theta + \sin \theta \sin 
 
 Hasta aquí hemos obtenido simplemente relaciones cinemáticas; por un lado entre la velocidad angular del sistema $S_q$ y las derivadas de los ángulos de Euler, por el otro se tiene el vínculo entre la velocidad absoluta del sistema y la velocidad absoluta expresada en el sistema $S_q$ y los ángulos de Euler. Sin embargo aún no conocemos cuales son las Fuerzas y Momentos presentes en el sistema, ni que efectos producen sobre el mismo. Es aquí que nos detendremos en el análisis cinemático para considerar la dinámica del sistema. 
 
-\subsection{Dinámica del Sistema}
+\section{Dinámica del Sistema}
 Existen diversas formas de atacar el problema de la dinámica de un sistema, en particular se puede encarar el problema desde la mecánica analítica o realizando consideraciones energéticas, sin embargo en este caso se elije trabajar con las ecuaciones cardinales. 
-\subsubsection{Primera Cardinal}
+\subsection{Primera Cardinal}
  
 La primer cardinal indica que en un sistema inercial la suma de las fuerzas externas a un objeto es igual a su masa total por su aceleración. Esto se puede escribir:
 $$\sum \vec{F_{ext}} = M\vec{a}$$
@@ -212,7 +215,7 @@ v_{q1} \omega_{q2} - v_{q2} \omega_{q1}\\
 $$
 
 
-\subsubsection{Segunda Cardinal}
+\subsection{Segunda Cardinal}
 
 La segunda cardinal indica que la derivada del momento angular de un sistema respecto a un punto Q es igual al torque externo que se ejerce sobre el mismo más un término que depende de la velocidad de dicho punto. La ecuación queda:
 
@@ -272,10 +275,10 @@ $$ \Pi_{O\prime}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}\left(\begin{array}{c}
 \end{array}\right) + M_G^{ext}$$
 
 
-\subsection{Fuerzas y momentos involucradas}
+\section{Fuerzas y momentos involucradas}
 
 Para completar el análisis del sistema es fundamental conocer las expresiones de las fuerzas y los momentos involucrados. Por un lado se debe considerar la acción del peso en el sistema. Además debemos conocer con precisión las fuerzas y momentos que introducen las hélices del cuadricóptero ya que son estos los elementos sobre los cuales se pueden realizar las acciones de control. Finalmente consideraremos también el efecto del viento. Esta última es una fuerza que no puede conocerse a priori y será considerada como una perturbación en el sistema. Recordamos que las bajas velocidades a las que el sistema se mueve nos permiten despreciar las fuerzas aerodinámicas, a excepción de aquellas que tienen como origen el giro de las hélices.
-\subsubsection{Peso}
+\subsection{Peso}
 Como ya se aclaró anteriormente, debido a la pequeña variación de la altura, el peso del cuadricóptero será considerado constante. Esta fuerza se aplica sobre el centro de masa del sistema, cabe recordar que en el presente análisis se considera la segunda cardinal en torno a dicho punto. Por lo tanto la distancia entre el eje en el cual se calculan los momentos y el punto de aplicación es cero. Recordando que: $$
 M=\vec{d}\times\vec{F}
 $$
@@ -293,7 +296,7 @@ $$
 -\cos\phi\cos\psi\\
 \end{array}\right)Mg
 $$
-\subsubsection{Fuerzas y momentos de las hélices}
+\subsection{Fuerzas y momentos de las hélices}
 
 La teoría de fluidos que explica el comportamiento de las hélices es compleja y ampliamente difundida por lo que no es de interés desarrollarla en profundidad en este trabajo. Diversa bibliografía puede ser consultada en donde se explican adecuadamente los fenómenos involucrados en las fuerzas aerodinámicas presentes en una hélice. Sin embargo si parece pertinente realizar un breve resumen de dichas fuerzas. Para el presente análisis consideraremos una hélice rotando en sentido antihorario, el razonamiento para una hélice rotando en sentido opuesto es análogo. En la figura \ref{fig:helice} se observan dos vistas de la misma hélice. En la figura \ref{fig:helice_arriba} puede observarse una hoja de la hélice. En la figura \ref{fig:fuerza-helice} se representa una vista transversal de la hélice con las fuerzas aerodinámicas involucradas.\\ 
 
@@ -376,11 +379,11 @@ L(T3-T1)\\
 Q_1-Q2+Q3-Q_4\\
 \end{array} \right)$$
 
-\subsection{Consideraciones adicionales sobre el modelado}
+\section{Consideraciones adicionales sobre el modelado}
 
 Previo a construir el modelo en variables de estado es importante realizar algunas consideraciones adicionales. 
 
-\subsubsection{Fuerzas y momentos de los motores}
+\subsection{Fuerzas y momentos de los motores}
 Resulta importante conocer conocer la relación que existe entre la velocidad angular de los motores y las fuerzas y torques aerodinámicos presentes. En base al estudio realizado se podrían conocer dichas relaciones calculando los parámetros que dependen de la geometría de la hélice, sin embargo este estudio resulta tedioso y la mayor parte de los métodos existentes para determinar dichos parámetros con buena precisión son destructivos. Por lo tanto se optó por obtener dichas respuestas en forma experimental. El proceso detallado puede consultarse en el anexo \ref{anexo motores}. En dichos experimentos se obtuvo que:
 
 $$
@@ -389,12 +392,12 @@ $$\\$$Q= 5.4746\times 10^{-7}\omega^2+7.4924\times 10^{-5}\omega -5.7275\times10
 
 Estos resultados parecen adecuados respecto de lo desarrollado teóricamente ya que ambas respuestas son cuadráticas. 
 
-\subsubsection{Aproximaciones finales}
+\subsection{Aproximaciones finales}
 %Todo: Hay que ver la respuesta al escalón para tener una estimación de cuanto puede valer como máximo la derivada de las velocidades angulares del motor para ver si es despreciable respecto a los momentos.
 
-\subsection{Modelo en variables de Estado}
+\section{Modelo en variables de Estado}
 
-Luego de realizados los estudios sobre la cinemática y dinámica del sistema y de comprender cabalmente las fuerzas y momentos que son involucrados en el sistema se procede a construir el modelo en variables de estado.\\ 
+Luego de realizados los estudios sobre la cinemática y dinámica del sistema y luego de comprender cabalmente las fuerzas y momentos involucrados se procede a construir el modelo en variables de estado.\\ 
 
 Se debe aclarar que la elección realizada del vector de estados se debe exclusivamente a la conveniencia práctica que se encuentra al trabajar con las variables expresadas en el sistema del cuadricóptero. Esta conveniencia se ve reflejada en dos aspectos, en primer lugar las simplificaciones que introduce trabajar con estas variables en el marco de un desarrollo teórico de las ecuaciones que gobiernan al sistema, por otra parte, al disponer de sensores montados sobre el cuadricóptero, los mismos medirán las velocidades angulares y lineales en el sistema $S_q$. Bajo esta elección parece razonable escoger el vector de estados de la siguiente manera:
 $$X=\left\lbrace  x,y,z, v_{q1},v_{q2},v_{q3},\theta,\phi,\psi,\omega_{q1},\omega_{q2},\omega_{q3} \right\rbrace$$
@@ -405,35 +408,30 @@ $$u=\left\lbrace\omega_1, \omega_2, \omega_3, \omega_4\right\rbrace$$
 
 El modelo en variables de estado es por lo tanto:
 
-$$ \begin{array}{l}
-
-\dot{x}=v_{q1} \cos \phi \cos \theta + v_{q2} ( \cos \theta \sin \phi \sin \psi-\cos \phi \sin \theta ) + v_{q3}(\sin \psi \sin \theta + \cos \psi \cos \theta \sin \phi)  \\
-
-\dot{y}=v_{q1} \cos \phi \sin \theta + v_{q2} (\cos \psi \cos \theta + \sin \theta \sin \phi \sin \psi) + v_{q3}( \cos \psi \sin \theta \sin \phi-\cos \theta \sin \psi ) \\
-
-\dot{z}= -v_{q1} \sin \phi  + v_{q2} \cos \phi \sin \psi  + v_{q3}\cos \phi \cos \psi \\
-
-
-\dot{\psi}=\omega_{q1} + \omega_{q3}\tan\phi \cos\psi + \omega_{q2}\tan\phi \sin\psi\\
-\dot{\phi}=\omega_{q2}\cos \psi - \omega_{q3}\sin\psi\\
-\dot{\theta}=\omega_{q3} \frac{\cos\psi}{\cos\phi}  + \omega_{q2}\frac{\sin\psi}{\cos\phi} \\
-
-
-\dot{v_{q1}}=v_{q2} \omega_{q3} - v_{q3} \omega_{q2}+Mg\sin\phi\\	
-\dot{v_{q2}}=v_{q3} \omega_{q1} - v_{q1} \omega_{q3}-Mg\cos\phi\sin\psi\\
-\dot{v_{q3}}=v_{q1} \omega_{q2} - v_{q2} \omega_{q1}-Mg\cos\phi\cos\psi+\sum_{i=1}^4T_i\\
-
-
-\dot{\omega_{q1}}=\frac{\omega_{q2}\omega_{q3}(I_{yy}-I_{zz})+\omega_{q2}I_{zz_m}(\omega_1-\omega_2+\omega_3-\omega_4)}{I_{xx}}+\frac{L(T_2-T_4)}{I_{xx}}\\
-\dot{\omega_{q2}}=\frac{\omega_{q1}\omega_{q3}(-I_{xx}+I_{zz})+\omega_{q1}I_{zz_m}(\omega_1-\omega_2+\omega_3-\omega_4)}{{I_yy}}+\frac{L(T_3-T_1)}{I_{yy}}\\
-\dot{\omega_{q3}}=\frac{-I_{zz_m}(\dot{w_1}-\dot{w_2}+\dot{w_3}-\dot{w_4})}{I_{zz}}+\frac{Q_1-Q_2+Q_3-Q_4}{I_{zz}}\\
+\begin{equation}
+\boxed{\begin{aligned}&\dot{x}=v_{q1} \cos \phi \cos \theta + v_{q2} ( \cos \theta \sin \phi \sin \psi-\cos \phi \sin \theta ) + v_{q3}(\sin \psi \sin \theta + \cos \psi \cos \theta \sin \phi)\\
+&\dot{y}=v_{q1} \cos \phi \sin \theta + v_{q2} (\cos \psi \cos \theta + \sin \theta \sin \phi \sin \psi) + v_{q3}( \cos \psi \sin \theta \sin \phi-\cos \theta \sin \psi )\\
+&\dot{z}= -v_{q1} \sin \phi  + v_{q2} \cos \phi \sin \psi  + v_{q3}\cos \phi \cos \psi\\
+&\dot{\psi}=\omega_{q1} + \omega_{q3}\tan\phi \cos\psi + \omega_{q2}\tan\phi \sin\psi\\
+&\dot{\phi}=\omega_{q2}\cos \psi - \omega_{q3}\sin\psi\\
+&\dot{\theta}=\omega_{q3} \frac{\cos\psi}{\cos\phi}  + \omega_{q2}\frac{\sin\psi}{\cos\phi}\\
+&\dot{v_{q1}}=v_{q2} \omega_{q3} - v_{q3} \omega_{q2}+Mg\sin\phi\\
+&\dot{v_{q2}}=v_{q3} \omega_{q1} - v_{q1} \omega_{q3}-Mg\cos\phi\sin\psi\\
+&\dot{v_{q3}}=v_{q1} \omega_{q2} - v_{q2} \omega_{q1}-Mg\cos\phi\cos\psi+\sum_{i=1}^4T_i\\
+&\dot{\omega_{q1}}=\frac{\omega_{q2}\omega_{q3}(I_{yy}-I_{zz})+\omega_{q2}I_{zz_m}(\omega_1-\omega_2+\omega_3-\omega_4)}{I_{xx}}+\frac{L(T_2-T_4)}{I_{xx}}\\
+&\dot{\omega_{q2}}=\frac{\omega_{q1}\omega_{q3}(-I_{xx}+I_{zz})+\omega_{q1}I_{zz_m}(\omega_1-\omega_2+\omega_3-\omega_4)}{{I_yy}}+\frac{L(T_3-T_1)}{I_{yy}}\\
+&\dot{\omega_{q3}}=\frac{-I_{zz_m}(\dot{w_1}-\dot{w_2}+\dot{w_3}-\dot{w_4})}{I_{zz}}+\frac{Q_1-Q_2+Q_3-Q_4}{I_{zz}}\\
+\end{aligned}}
+\end{equation}
 
 
 
 
 
 
-\end{array}  $$
+
+
+
 \end{document}
 
 %Algunos layouts para poner imágnenes. Copien y peguen no
