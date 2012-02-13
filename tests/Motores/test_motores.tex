@@ -271,5 +271,184 @@ Por estos motivos parece más acertado inclinarse por el modelo cuadrático. En 
 \begin{equation}
 \tau_{drag}=5.47 \times 10^{-7}\omega ^2+7.49 \times \omega + 10^{-5}-5.73 \times 10^{-4}
 \end{equation} 
-\end{document}
 
+
+\subsection{Obtención de la curva $i^2c$ contra velocidad angular}
+
+Se le envían distintos comandos $i^2c$ a los ESC's y se mide la velocidad angular de todos los motores. Se promedian las velocidades angulares para obtener la respuesta promedio de un motor, avalados por el análisis realizado en la sección \ref{sec:motores}. Los datos obtenidos se presentan en la tabla \ref{tab:iw}. La velocidad angular fue medida, al igual que en los casos anteriores mediante el dispositivo IR en forma de ``U''.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|} 
+	\hline
+	\cellcolor[gray]{0.8} \textbf{Comando $i^2c$} & 
+	\cellcolor[gray]{0.8} \textbf{Velocidad angular (rad/s)} \\ \hline \hline
+	  0 &        0 \\ \hline 
+	 50 & 108.6206 \\ \hline
+	 70 & 154.0166 \\ \hline
+	 90 & 198.8628 \\ \hline
+	110 & 235.6194 \\ \hline
+	130 & 270.5697 \\ \hline
+	150 & 301.0431 \\ \hline
+	170 & 330.3385 \\ \hline
+	200 & 366.0741 \\ \hline
+	250 & 417.5177 \\ \hline
+\end{tabular}
+\caption{Comando $i^2c$ enviado y velocidad angular obtenida}
+\label{tab:iw}
+\end{table}
+
+En la figura \ref{fig:iwi} se muestran gráficamente los resultados obtenidos de ajustar un modelo cuadrático a la curva \emph{comando $i^2c$ vs. velocidad angular}.
+
+\begin{figure} [h!]
+\centering
+  \subfloat[Curva $i^2c$ contra velocidad angular]{\label{fig:iw}
+  		\includegraphics[width=.5\textwidth]{./Pics/iw.png}} 
+  \subfloat[Curva velocidad angular contra $i^2c$]{\label{fig:wi} 
+  		\includegraphics[width=.5\textwidth]{./Pics/wi.png}}
+  \caption{$i^2c$ y velocidad angular}
+  \label{fig:iwi}
+\end{figure}
+
+Se realiza el ajuste de dos maneras similares. En la primera, mostrada en la figura \ref{fig:iw}, se propone un modelo cuadrático y otro cúbico para la velocidad angular en función del comando $i^2c$. En la segunda, mostrada en la figura \ref{fig:wi}, se proponen los modelos cuadrático y cúbico para el comando $i^2c$ en función de la velocidad angular.
+
+\subsubsection*{Ajuste 1}
+Se ajusta la velocidad angular con el comando $i^2c$ de forma que la velocidad angular siga un modelo cuadrático frente al comando $i^2c$.\\
+
+Los resultados obtenidos son, para el modelo cuadrático:
+\begin{itemize}
+\item Modelo: $w=-3.380\times 10^{-3}x^2+2.531x-3.493$
+\item Desviación estándar: $\sigma = 2.854$
+\end{itemize}
+Los resultados para el modelo cúbico son:
+\begin{itemize}
+\item Modelo: $w=-3.521\times 10^{-6}x^3-2.064\times 10^{-3}x^2+2.407x-1.602$
+\item Desviación estándar: $\sigma = 2.452$
+\end{itemize}
+
+No resulta claro su alguno de los modelos es el indicado. Se obtienen desviaciones no muy chicas. Hay que probar con otro modelo.
+
+\subsubsection*{Ajuste 2}
+Se ajusta la velocidad angular con el comando $i^2c$ de forma que el comando $i^2c$ siga un modelo cuadrático frente a la velocidad angular.\\
+
+Los resultados obtenidos son, para el modelo cuadrático:
+\begin{itemize}
+\item Modelo: $x=6737\times 10^{-4}w^2+2.924\times 10^{-1}w+4.351$
+\item Desviación estándar: $\sigma = 4.171$
+\end{itemize}
+Los resultados para el modelo cúbico son:
+\begin{itemize}
+\item Modelo: $x=2.211\times 10^{-6}w^3-7.115\times 10^{-4}w^2+5.104\times 10^{-1}w+1.999\times 10^{-2}$
+\item Desviación estándar: $\sigma = 4.013\times 10^{-1}$
+\end{itemize}
+
+En este caso se puede ver que la desviación estándar obtenida con el modelo cúbico es 1 orden menor que la obtenida con el modelo cuadrático. Además al observar la figura \ref{fig:wi} se divisa claramente que la curva del modelo cúbico se ajusta mejor a los datos obtenidos experimentalmente. Se concluye entonces que las magnitudes en cuestión se relacionan de la siguiente forma:
+$$x=2.211\times 10^{-6}w^3-7.115\times 10^{-4}w^2+5.104\times 10^{-1}w+1.999\times 10^{-2}$$
+
+\subsection{Obtención de la curva $i^2c$ contra fuerza}
+
+Se enviaron distintos comandos de $i^2c$ y utilizando una balanza electrónica de 5g de apreciación se procedió a medir la fuerza que realizan los 4 motores juntos. Luego, avalados por las conclusiones de la sección \ref{sec:motores}, se obtiene la fuerza de cada motor, simplemente dividiendo la fuerza total entre 4. Los datos se presentan en la tabla \ref{tab:if}.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|} 
+	\hline
+	\cellcolor[gray]{0.8} \textbf{Comando $i^2c$} & 
+	\cellcolor[gray]{0.8} \textbf{Fuerza (N)} \\ \hline \hline
+	  0 &      0 \\ \hline
+	 50 &0.34335 \\ \hline
+	 70 &0.73575 \\ \hline
+	 90 & 1.2263 \\ \hline
+	110 & 1.8762 \\ \hline
+	130 &  2.477 \\ \hline
+	150 & 3.0656 \\ \hline
+	170 & 3.7278 \\ \hline
+	200 & 4.5862 \\ \hline
+	250 &  5.886 \\ \hline
+\end{tabular}
+\caption{Comando $i^2c$ enviado y fuerza obtenida}
+\label{tab:if}
+\end{table}
+
+Se desea ajustar la fuerza que realizan los motores con modelos lineal, cuadrático y cúbico, en función del comando $i^2c$. Los resultados se presentan en la figura \ref{fig:if}.
+
+\begin{figure}[h!]
+  \begin{center}
+	\includegraphics[width=0.7\textwidth]{./Pics/if.png}
+  \end{center}
+  \caption{Curva $i^2c$ contra fuerza}
+  \label{fig:if}
+\end{figure}
+
+\begin{itemize}
+\item Modelo Lineal
+	\begin{itemize}
+	\item Modelo: $F=2.565\times 10^{-2}x-7.363\times 10^{-1}$
+	\item Desviación estándar: $1.520$
+	\end{itemize}
+\item Modelo Cuadrático
+	\begin{itemize}
+	\item Modelo: $F=4.211\times 10^{-5}x^2+1.508\times 10^{-2}x-2.830\times 10^{-1}$
+	\item Desviación estándar: $2.087\times 10^{-1}$
+	\end{itemize}
+\item Modelo Cúbico
+	\begin{itemize}
+	\item Modelo: $F=-4.955\times 10^{-7}x^3+2.274\times 10^{-4}x^2-2.352\times 10^{-3}x- 1.689\times 10^{-2}$
+	\item Desviación estándar: $3.667\times 10^{-2}$
+	\end{itemize}		
+\end{itemize}
+
+TODO: Decidirse por una. Parece q es la cúbica no?
+
+
+\subsection{Comparación entre motores}
+\label{sec:motores}
+Se envían diferentes comandos $i^2c$ al cuadricóptero y se mide la velocidad angular de todos los motores. Los datos obtenidos se muestran en la tabla \ref{tab:motores}.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|c|c|c|} 
+	\cline{3-6} \multicolumn{1}{c}{} & \multicolumn{1}{c}{} & 
+	\multicolumn{4}{|c|}{\cellcolor[gray]{0.6}Velocidad angular (rad/s)} \\ \hline
+	\cellcolor[gray]{0.8} {$\mathbf{i^2c}$} & 
+	\cellcolor[gray]{0.8} \textbf{Fuerza (N)} &
+	\cellcolor[gray]{0.8} \textbf{Motor Do} &
+	\cellcolor[gray]{0.8} \textbf{Motor D2} &
+	\cellcolor[gray]{0.8} \textbf{Motor D4} &
+	\cellcolor[gray]{0.8} \textbf{Motor D6}   \\ \hline \hline
+	  0 &      0 &    0 &    0 &    0 &    0 \\ \hline
+	 50 &0.34335 & 34.2 & 34.3 & 35.5 & 34.3 \\ \hline
+	 70 &0.73575 & 49.2 & 49.5 &   49 & 48.4 \\ \hline
+	 90 & 1.2263 & 63.7 & 62.7 & 63.3 & 63.5 \\ \hline
+	110 & 1.8762 & 76.7 & 74.4 & 75.5 & 73.4 \\ \hline
+	130 &  2.477 & 87.3 & 86.3 & 86.2 & 84.7 \\ \hline
+	150 & 3.0656 & 97.5 & 95.4 & 96.2 & 94.2 \\ \hline
+	170 & 3.7278 &104.7 &104.2 &106.2 &105.5 \\ \hline
+	200 & 4.5862 &115.5 &113.4 &119.9 &117.3 \\ \hline
+	250 &  5.886 &133.5 &132.4 &131.5 &134.2 \\ \hline
+\end{tabular}
+\caption{Comando $i^2c$ enviado y fuerza obtenida}
+\label{tab:motores}
+\end{table}
+
+El análisis gráfico se presenta en la figura \ref{fig:motores}.
+
+\begin{figure}[h!]
+  \begin{center}
+	\includegraphics[width=0.7\textwidth]{./Pics/motores.png}
+  \end{center}
+  \caption{Comparación de la curva $i^2c$ vs. velocidad angular para los 4 motores}
+  \label{fig:motores}
+\end{figure}
+
+Puede verse claramente que el comportamiento de los motores es en todos los casos similar.\\
+
+TODO: Poner alguna medida del error entre motores. de las diferencias entre motores más bien.
+
+Se puede decir entonces que:
+\begin{itemize}
+\item La fuerza medida (de los 4 motores juntos) corresponde con el cuádruple de la fuerza ejercida por cada uno de ellos
+\item Es válido promediar las velocidades angulares de los 4 motores y trabajar con esos promedios como un motor típico. Además de este modo se reducen los posibles errores que se pueden haber causado a la hora de realizar las medidas.
+\end{itemize}
+
+\end{document}

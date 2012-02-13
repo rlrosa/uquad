@@ -4,7 +4,7 @@ close all
 clear all
 clc
 
-x=load('./i2c_vs_todo/notas_cuad.txt');
+x=load('./tests/Motores/data/i2c_vs_todo/notas_cuad.txt');
 
 i2c   = x(:,1);                % Comando i2c
 Fm    = 9.81/1000*x(:,2)/4;    % Fuerza en N-m por motor

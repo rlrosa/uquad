@@ -1,4 +1,4 @@
-function [p_quad,Ftest_cuad,e_cuad,sigma_cuad,p_cub,Ftest_cub,e_cub,sigma_cub] = curv_fit(w,Fm,wtest)
+function [p_quad,Ftest_cuad,e_cuad_prom,sigma_cuad,p_cub,Ftest_cub,e_cub_prom,sigma_cub] = curv_fit(w,Fm,wtest)
 
 % MODELO CUADRATICO
 B_cuad     = [w.^2 w ones(size(w,1),1)];
