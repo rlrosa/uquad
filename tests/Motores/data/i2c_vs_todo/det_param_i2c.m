@@ -13,10 +13,10 @@ w     = (pi*mean(x(:,3:6)'))'; % Velocidad angular promedio de los motores (rad/
 % PLOT VELOCIDADES DE LOS 4 MOTORES
 
 figure
-    plot(i2c,x(:,4)); hold on; 
-    plot(i2c,x(:,5),'r');
-    plot(i2c,x(:,6),'g');
-    plot(i2c,x(:,3),'k');
+    plot(i2c,x(:,4),'s-'); hold on; 
+    plot(i2c,x(:,5),'r+-');
+    plot(i2c,x(:,6),'g*-');
+    plot(i2c,x(:,3),'k^-');
     title('\fontsize{16}Comando i^2c vs velocidad angular')
     xlabel('\fontsize{13}Comando i^2c')
     ylabel('\fontsize{13}Velocidad angular (rad/s)')
