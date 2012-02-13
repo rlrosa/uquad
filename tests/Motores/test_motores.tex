@@ -265,7 +265,7 @@ No fue posible realizar medidas a velocidades angulares mayores ya que la fuerza
 
 A partir de la observaciÛn de la gr·fica y de los par·metros obtenidos no es posible realizar una elecciÛn en favor de uno de los dos modelos sobre el otro.  
 
-El error promedio obtenido al considerar un modelo cuadr·tico es de $5.78 \times 10^{-19} Nm$, mientras que al considerar el modelo c˙bico se obtiene un error promedio de $6.55\times10{-18}Nm$. Por otra parte la desviaciÛn est·ndar del error en el caso del modelo c˙bico es $0.0019Nm$ mientras que la obtenida considerando el modelo cuadr·tico es $0.0016Nm$.
+El error promedio obtenido al considerar un modelo cuadr·tico es de $5.78 \times 10^{-19} Nm$, mientras que al considerar el modelo c˙bico se obtiene un error promedio de $6.55\times 10{-18}Nm$. Por otra parte la desviaciÛn est·ndar del error en el caso del modelo c˙bico es $0.0019Nm$ mientras que la obtenida considerando el modelo cuadr·tico es $0.0016Nm$.
 
 Los valores obtenidos de error promedio y desviaciÛn est·ndar tampoco permiten extraer una conclusiÛn definitiva. Teniendo en cuenta que no se pudieron realizar medidas para mayores velocidades angulares se optar· por guiarse por el modelo propuesto en la bibliografÌa. En este caso se obtiene:
 \begin{equation}
@@ -273,9 +273,9 @@ Los valores obtenidos de error promedio y desviaciÛn est·ndar tampoco permiten e
 \end{equation} 
 
 
-\subsection{Obtenci√≥n de la curva $i^2c$ contra velocidad angular}
+\subsection{ObtenciÛn de la curva $i^2c$ contra velocidad angular}
 
-Se le env√≠an distintos comandos $i^2c$ a los ESC's y se mide la velocidad angular de todos los motores. Se promedian las velocidades angulares para obtener la respuesta promedio de un motor, avalados por el an√°lisis realizado en la secci√≥n \ref{sec:motores}. Los datos obtenidos se presentan en la tabla \ref{tab:iw}. La velocidad angular fue medida, al igual que en los casos anteriores mediante el dispositivo IR en forma de ``U''.
+Se le envÌan a distintos comandos $i^2c$ a los ESC's y se mide la velocidad angular de todos los motores. Se promedian las velocidades angulares para obtener la respuesta promedio de un motor, avalados por el an·lisis realizado en la secciÛn \ref{sec:motores}. Los datos obtenidos se presentan en la tabla \ref{tab:iw}. La velocidad angular fue medida, al igual que en los casos anteriores mediante el dispositivo IR en forma de ``U''.
 
 \begin{table}[H]
 \centering
@@ -298,7 +298,7 @@ Se le env√≠an distintos comandos $i^2c$ a los ESC's y se mide la velocidad angul
 \label{tab:iw}
 \end{table}
 
-En la figura \ref{fig:iwi} se muestran gr√°ficamente los resultados obtenidos de ajustar un modelo cuadr√°tico a la curva \emph{comando $i^2c$ vs. velocidad angular}.
+En la figura \ref{fig:iwi} se muestran gr·ficamente los resultados obtenidos de ajustar un modelo cuadr·tico a la curva \emph{comando $i^2c$ vs. velocidad angular}.
 
 \begin{figure} [h!]
 \centering
@@ -310,44 +310,44 @@ En la figura \ref{fig:iwi} se muestran gr√°ficamente los resultados obtenidos de
   \label{fig:iwi}
 \end{figure}
 
-Se realiza el ajuste de dos maneras similares. En la primera, mostrada en la figura \ref{fig:iw}, se propone un modelo cuadr√°tico y otro c√∫bico para la velocidad angular en funci√≥n del comando $i^2c$. En la segunda, mostrada en la figura \ref{fig:wi}, se proponen los modelos cuadr√°tico y c√∫bico para el comando $i^2c$ en funci√≥n de la velocidad angular.
+Se realiza el ajuste de dos maneras similares. En la primera, mostrada en la figura \ref{fig:iw}, se propone un modelo cuadr·tico y otro c˙bico para la velocidad angular en funciÛn del comando $i^2c$. En la segunda, mostrada en la figura \ref{fig:wi}, se proponen los modelos cuadr·tico y cÌ∫bico para el comando $i^2c$ en funciÛn de la velocidad angular.
 
 \subsubsection*{Ajuste 1}
-Se ajusta la velocidad angular con el comando $i^2c$ de forma que la velocidad angular siga un modelo cuadr√°tico frente al comando $i^2c$.\\
+Se ajusta la velocidad angular con el comando $i^2c$ de forma que la velocidad angular siga un modelo cuadr·tico frente al comando $i^2c$.\\
 
-Los resultados obtenidos son, para el modelo cuadr√°tico:
+Los resultados obtenidos son, para el modelo cuadr·tico:
 \begin{itemize}
 \item Modelo: $w=-3.380\times 10^{-3}x^2+2.531x-3.493$
-\item Desviaci√≥n est√°ndar: $\sigma = 2.854$
+\item DesviaciÛn est·ndar: $\sigma = 2.854$
 \end{itemize}
-Los resultados para el modelo c√∫bico son:
+Los resultados para el modelo c˙bico son:
 \begin{itemize}
 \item Modelo: $w=-3.521\times 10^{-6}x^3-2.064\times 10^{-3}x^2+2.407x-1.602$
-\item Desviaci√≥n est√°ndar: $\sigma = 2.452$
+\item DesviaciÛn est·ndar: $\sigma = 2.452$
 \end{itemize}
 
 No resulta claro su alguno de los modelos es el indicado. Se obtienen desviaciones no muy chicas. Hay que probar con otro modelo.
 
 \subsubsection*{Ajuste 2}
-Se ajusta la velocidad angular con el comando $i^2c$ de forma que el comando $i^2c$ siga un modelo cuadr√°tico frente a la velocidad angular.\\
+Se ajusta la velocidad angular con el comando $i^2c$ de forma que el comando $i^2c$ siga un modelo cuadr·tico frente a la velocidad angular.\\
 
-Los resultados obtenidos son, para el modelo cuadr√°tico:
+Los resultados obtenidos son, para el modelo cuadr·tico:
 \begin{itemize}
 \item Modelo: $x=6737\times 10^{-4}w^2+2.924\times 10^{-1}w+4.351$
-\item Desviaci√≥n est√°ndar: $\sigma = 4.171$
+\item DesviaciÛn est·ndar: $\sigma = 4.171$
 \end{itemize}
-Los resultados para el modelo c√∫bico son:
+Los resultados para el modelo c˙bico son:
 \begin{itemize}
 \item Modelo: $x=2.211\times 10^{-6}w^3-7.115\times 10^{-4}w^2+5.104\times 10^{-1}w+1.999\times 10^{-2}$
-\item Desviaci√≥n est√°ndar: $\sigma = 4.013\times 10^{-1}$
+\item DesviaciÛn est·ndar: $\sigma = 4.013\times 10^{-1}$
 \end{itemize}
 
-En este caso se puede ver que la desviaci√≥n est√°ndar obtenida con el modelo c√∫bico es 1 orden menor que la obtenida con el modelo cuadr√°tico. Adem√°s al observar la figura \ref{fig:wi} se divisa claramente que la curva del modelo c√∫bico se ajusta mejor a los datos obtenidos experimentalmente. Se concluye entonces que las magnitudes en cuesti√≥n se relacionan de la siguiente forma:
+En este caso se puede ver que la desviaciÛn est·ndar obtenida con el modelo c˙bico es 1 orden menor que la obtenida con el modelo cuadr·tico. Adem·s al observar la figura \ref{fig:wi} se divisa claramente que la curva del modelo c˙bico se ajusta mejor a los datos obtenidos experimentalmente. Se concluye entonces que las magnitudes en cuestiÛn se relacionan de la siguiente forma:
 $$x=2.211\times 10^{-6}w^3-7.115\times 10^{-4}w^2+5.104\times 10^{-1}w+1.999\times 10^{-2}$$
 
-\subsection{Obtenci√≥n de la curva $i^2c$ contra fuerza}
+\subsection{ObtenciÛn de la curva $i^2c$ contra fuerza}
 
-Se enviaron distintos comandos de $i^2c$ y utilizando una balanza electr√≥nica de 5g de apreciaci√≥n se procedi√≥ a medir la fuerza que realizan los 4 motores juntos. Luego, avalados por las conclusiones de la secci√≥n \ref{sec:motores}, se obtiene la fuerza de cada motor, simplemente dividiendo la fuerza total entre 4. Los datos se presentan en la tabla \ref{tab:if}.
+Se enviaron distintos comandos de $i^2c$ y utilizando una balanza electrÛnica de 5g de apreciaciÛn se procediÛ a medir la fuerza que realizan los 4 motores juntos. Luego, avalados por las conclusiones de la secciÛn \ref{sec:motores}, se obtiene la fuerza de cada motor, simplemente dividiendo la fuerza total entre 4. Los datos se presentan en la tabla \ref{tab:if}.
 
 \begin{table}[H]
 \centering
@@ -370,7 +370,7 @@ Se enviaron distintos comandos de $i^2c$ y utilizando una balanza electr√≥nica d
 \label{tab:if}
 \end{table}
 
-Se desea ajustar la fuerza que realizan los motores con modelos lineal, cuadr√°tico y c√∫bico, en funci√≥n del comando $i^2c$. Los resultados se presentan en la figura \ref{fig:if}.
+Se desea ajustar la fuerza que realizan los motores con modelos lineal, cuadr·tico y c˙bico, en funciÛn del comando $i^2c$. Los resultados se presentan en la figura \ref{fig:if}.
 
 \begin{figure}[h!]
   \begin{center}
@@ -384,26 +384,26 @@ Se desea ajustar la fuerza que realizan los motores con modelos lineal, cuadr√°t
 \item Modelo Lineal
 	\begin{itemize}
 	\item Modelo: $F=2.565\times 10^{-2}x-7.363\times 10^{-1}$
-	\item Desviaci√≥n est√°ndar: $1.520$
+	\item DesviaciÛn est·ndar: $1.520$
 	\end{itemize}
-\item Modelo Cuadr√°tico
+\item Modelo Cuadr·tico
 	\begin{itemize}
 	\item Modelo: $F=4.211\times 10^{-5}x^2+1.508\times 10^{-2}x-2.830\times 10^{-1}$
-	\item Desviaci√≥n est√°ndar: $2.087\times 10^{-1}$
+	\item DesviaciÛn est·ndar: $2.087\times 10^{-1}$
 	\end{itemize}
-\item Modelo C√∫bico
+\item Modelo C˙bico
 	\begin{itemize}
 	\item Modelo: $F=-4.955\times 10^{-7}x^3+2.274\times 10^{-4}x^2-2.352\times 10^{-3}x- 1.689\times 10^{-2}$
-	\item Desviaci√≥n est√°ndar: $3.667\times 10^{-2}$
+	\item DesviaciÛn est·ndar: $3.667\times 10^{-2}$
 	\end{itemize}		
 \end{itemize}
 
-TODO: Decidirse por una. Parece q es la c√∫bica no?
+TODO: Decidirse por una. Parece q es la c˙bica no?
 
 
-\subsection{Comparaci√≥n entre motores}
+\subsection{ComparaciÛn entre motores}
 \label{sec:motores}
-Se env√≠an diferentes comandos $i^2c$ al cuadric√≥ptero y se mide la velocidad angular de todos los motores. Los datos obtenidos se muestran en la tabla \ref{tab:motores}.
+Se envÌ≠an diferentes comandos $i^2c$ al cuadricÛptero y se mide la velocidad angular de todos los motores. Los datos obtenidos se muestran en la tabla \ref{tab:motores}.
 
 \begin{table}[H]
 \centering
@@ -431,24 +431,24 @@ Se env√≠an diferentes comandos $i^2c$ al cuadric√≥ptero y se mide la velocidad a
 \label{tab:motores}
 \end{table}
 
-El an√°lisis gr√°fico se presenta en la figura \ref{fig:motores}.
+El an·lisis gr·fico se presenta en la figura \ref{fig:motores}.
 
 \begin{figure}[h!]
   \begin{center}
 	\includegraphics[width=0.7\textwidth]{./Pics/motores.png}
   \end{center}
-  \caption{Comparaci√≥n de la curva $i^2c$ vs. velocidad angular para los 4 motores}
+  \caption{ComparaciÛn de la curva $i^2c$ vs. velocidad angular para los 4 motores}
   \label{fig:motores}
 \end{figure}
 
 Puede verse claramente que el comportamiento de los motores es en todos los casos similar.\\
 
-TODO: Poner alguna medida del error entre motores. de las diferencias entre motores m√°s bien.
+TODO: Poner alguna medida del error entre motores. de las diferencias entre motores m·s bien.
 
 Se puede decir entonces que:
 \begin{itemize}
-\item La fuerza medida (de los 4 motores juntos) corresponde con el cu√°druple de la fuerza ejercida por cada uno de ellos
-\item Es v√°lido promediar las velocidades angulares de los 4 motores y trabajar con esos promedios como un motor t√≠pico. Adem√°s de este modo se reducen los posibles errores que se pueden haber causado a la hora de realizar las medidas.
+\item La fuerza medida (de los 4 motores juntos) corresponde con el cu·druple de la fuerza ejercida por cada uno de ellos
+\item Es v·lido promediar las velocidades angulares de los 4 motores y trabajar con esos promedios como un motor tÌ≠pico. Adem·s de este modo se reducen los posibles errores que se pueden haber causado a la hora de realizar las medidas.
 \end{itemize}
 
 \end{document}
