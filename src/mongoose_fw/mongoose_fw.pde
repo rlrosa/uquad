@@ -1,10 +1,13 @@
-// Mongoose Base AHRS firmware v1.1
-// Mongoose 9DoF IMU + Barometric pressure sensor
-// www.ckdevices.com
+// uQuad!
 //
-// Released under Creative Commons License 
-// Modifications and additions by Cory Duce to allow it to work with Mongoose hardware
-// Based on code by Doug Weibel and Jose Julio which was based on ArduIMU v1.5 by Jordi Munoz and William Premerlani, Jose Julio and Doug Weibel
+// Based on:
+// 	Mongoose Base AHRS firmware v1.1
+// 	Mongoose 9DoF IMU + Barometric pressure sensor
+// 	www.ckdevices.com
+//
+//	Released under Creative Commons License 
+// 	Modifications and additions by Cory Duce to allow it to work with Mongoose hardware
+// 	Based on code by Doug Weibel and Jose Julio which was based on ArduIMU v1.5 by Jordi Munoz and William Premerlani, Jose Julio and Doug Weibel
 //
 
 // Axis definition: 
