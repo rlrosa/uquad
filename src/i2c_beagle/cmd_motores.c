@@ -36,6 +36,9 @@
 #define OK 0
 #define NOT_OK -1
 
+#define UQUAD_STARTUP_RETRIES 100
+#define UQUAD_STOP_RETRIES 1000
+
 #define backtrace() fprintf(stderr,"%s:%d\n",__FUNCTION__,__LINE__)
 
 #define sleep_ms(ms) usleep(1000*ms)
@@ -57,7 +60,7 @@ int uquad_mot_enable_all(int i2c_dev);
 int uquad_mot_disable(int i2c_dev, int mot_i2c_addr);
 int uquad_mot_disable_all(int i2c_dev);
 int uquad_mot_set_speed(int i2c_dev, int mot_i2c_addr, __u8 val);
-int uquad_mot_set_speed_all(int i2c_dev, __u8 val);
+int uquad_mot_set_speed_all(int i2c_dev, __u8 val, int swap_order);
 // Aux
 void uquad_sigint_handler(int signal_num);
 
@@ -77,7 +80,7 @@ int uquad_mot_i2c_send_byte(int i2c_dev, __u8 reg, __u8 value){
     if(i2c_smbus_write_byte_data(i2c_dev,reg,value) < 0)
     {
 	/* ERROR HANDLING: i2c transaction failed */
-	backtrace();
+	fprintf(stderr,"Failed to send value %d\tto 0x%02X\n",(int)value,(int)reg);
 	printf("errno info:\t %s\n",strerror(errno));
     }
     return OK;
@@ -157,11 +160,13 @@ int uquad_mot_set_speed(int i2c_dev, int mot_i2c_addr, __u8 val){
 				 val);
 }
 
-int uquad_mot_set_speed_all(int i2c_dev, __u8 val){
+int uquad_mot_set_speed_all(int i2c_dev, __u8 val, int swap_order){
     int i;
     for(i=0;i<MOT_COUNT;++i)
     {
-	if(uquad_mot_set_speed(i2c_dev,mot_i2c_addr[i],val))
+	if(uquad_mot_set_speed(i2c_dev,
+			       mot_i2c_addr[swap_order?(3+i)%4:i],
+			       val))
 	{
 	    backtrace();
 	    break;
@@ -175,17 +180,54 @@ int uquad_mot_set_speed_all(int i2c_dev, __u8 val){
     return OK;
 }
 
+int uquad_mot_startup_all(int i2c_file){
+    int i, watchdog = 0;
+    if(uquad_mot_set_speed_all(i2c_file, 0,1) < 0)
+    {
+	backtrace();
+	return NOT_OK;
+    }
+    while(uquad_mot_enable_all(i2c_file) < 0)
+    {
+	// wait for start
+	if(++watchdog == UQUAD_STARTUP_RETRIES)
+	{
+	    backtrace();
+	    return NOT_OK;
+	}
+    }	    
+    return OK;
+}
+
+int uquad_mot_stop_all(int i2c_file, __u8 curr_vel){
+    int watchdog = 0;
+    if(uquad_mot_set_speed_all(i2c_file, curr_vel,1) < 0)
+    {
+	backtrace();
+	return NOT_OK;
+    }	
+    while(uquad_mot_disable_all(i2c_file) < 0)
+    {
+	// wait for stop
+	if(++watchdog == UQUAD_STOP_RETRIES)
+	{
+	    backtrace();
+	    return NOT_OK;
+	}
+    }
+    return OK;
+}
+	
+
 void uquad_sigint_handler(int signal_num){
     int ret = OK;
     printf("Caught signal %d.\n",signal_num);
     if( i2c_file>= 0 )
     {
 	printf("Shutting down motors...\n");
-	ret = uquad_mot_disable_all(i2c_file);
-	if(ret != OK)
-	    fprintf(stderr,"Failed to shutdown motors...\n");
-	else
-	    printf("Motors successfully stoped!\n");
+	while(uquad_mot_disable_all(i2c_file) != OK)
+	    fprintf(stderr,"Failed to shutdown motors!... Retrying...\n");
+	printf("Motors successfully stoped!\n");
     }
     exit(ret);
 }
@@ -291,9 +333,9 @@ int main(int argc, char *argv[])
     for(;;)
     { 
 	// all
-      	ret = uquad_mot_set_speed_all(i2c_file, curr_vel);
+      	ret = uquad_mot_set_speed_all(i2c_file, curr_vel,0);
 	// only 1
-	//	ret = uquad_mot_set_speed(i2c_file, 0x68, curr_vel);
+	//ret = uquad_mot_set_speed(i2c_file, 0x6a, curr_vel);
 	if(ret<0)
 	{
 	    backtrace();
@@ -302,6 +344,27 @@ int main(int argc, char *argv[])
 	new_vel = uquad_read_stdin();
 	if((new_vel >= 0) && (new_vel < 0xff))
 	{
+	    // startup
+	    if((curr_vel == 0) && (new_vel > 0))
+	    {
+		printf("Will startup motors...\n");
+		ret = uquad_mot_startup_all(i2c_file);
+		if(ret != OK)
+		    printf("FAILED to startup motors...\n");
+		else
+		    printf("Startup was successfull!...\n");
+	    }
+	    // stop
+	    if((curr_vel > 0) && (new_vel == 0))
+	    {
+		printf("Will stop motors...\n");
+		ret = uquad_mot_stop_all(i2c_file, curr_vel);
+		if(ret != OK)
+		    printf("FAILED to stop motors...\n");
+		else
+		    printf("Stopping was successfull!...\n");
+	    }
+	    // continue
 	    curr_vel = (__u8) new_vel;
 	    printf("Speed changed to %c\n",curr_vel);
 	}	    

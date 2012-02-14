@@ -1,4 +1,12 @@
 \documentclass[spanish,12pt,a4paper,titlepage]{report}
+
+
+
+\usepackage{cancel}
+
+
+
+
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
 \usepackage{subfig}
@@ -214,15 +222,56 @@ Se observan 2 claras diferencias:
 \item \textbf{El registro en el que se escriben los datos es 0xA0}
 \end{itemize}
 
+Dichas diferencias se pueden observar claramente al graficar todos los datos obtenidos, como se muestra en la figura \ref{fig:arranque}. Se grafica para cada motor el valor que le llega (figura \ref{fig:arranque_val}) y el registro donde el valor es escrito (figura \ref{fig:arranque_reg}). Al analizar los resultados gráficamente resulta evidente el cambio en el registro al terminar de mandar los ceros. En la figura \ref{fig:arranque_val} se puede observar que el último cero que se manda a los motores, se manda alrededor de la muestra 150. Analizando la figura \ref{fig:arranque_reg} es clarísimo que alrededor de la muestra 150, el registro al que se envían los comandos cambia al valor 160 (0xA0), tal como se había observado anteriormente.
+
+\begin{figure} [h!]
+\centering
+  \subfloat[Valores enviados a los motores]{\label{fig:arranque_val}
+  		\includegraphics[width=.5\textwidth]{./pics/arranque_val.png}}
+  \subfloat[Registro al que se envía el valor]{\label{fig:arranque_reg} 
+  		\includegraphics[width=.5\textwidth]{./pics/arranque_reg.png}}
+  \caption{Arranque}
+  \label{fig:arranque}
+\end{figure}
+
 
 \section{Prueba de frenado}
+\label{sec:frenado}
 Se procede del mismo modo que en la prueba anterior (sección \ref{sec:arranque}), analizando los comandos enviados a los motores a la hora de apagarlos. Se realiza una prueba análoga a la anterior partiendo de los motores funcionando y bajando al mínimo la palanca de elevación, causando que estos se detengan.\\
 
-Una vez que se lleva la palanca de elevación al mínimo, los motores se apagan y se permanece enviando ceros a los motores en el orden $D2\rightarrow D4\rightarrow D6\rightarrow D0$. Se pueden sacar algunas conclusiones importantes de la última tanda de valores distintos de cero enviados:
+Una vez que se lleva la palanca de elevación al mínimo, los motores se apagan y se permanece enviando ceros a los motores en el orden $D2\rightarrow D4\rightarrow D6\rightarrow D0$. Se pueden sacar algunas conclusiones importantes de la última tanda de valores distintos de cero enviados, mostrada en la figura \ref{fig:snif_frenado}:
 \begin{itemize}
 \item \textbf{El orden en el que se envían datos es $D0\rightarrow D2\rightarrow D4\rightarrow D6$}
 \item \textbf{El registro en el que se escriben los datos es 0xA1}
 \end{itemize}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=1\textwidth]{./pics/snif_frenado.png}
+	\caption{Frenado}
+	\label{fig:snif_frenado}
+\end{figure}
+
+Se presenta también un análisis gráfico en la figura \ref{fig:frenado}. En este caso, a diferencia del de la sección \ref{sec:arranque}, no es posible divisar con claridad el registro 0xA1 (161) en la figura \ref{fig:frenado_reg}, ya que se escriben comandos a una cantidad importante de registros diferentes.\\
+
+\begin{figure} [h!]
+\centering
+  \subfloat[Valores enviados a los motores]{\label{fig:frenado_val}
+  		\includegraphics[width=.5\textwidth]{./pics/frenado_val.png}}
+  \subfloat[Registro al que se envía el valor]{\label{fig:frenado_reg} 
+  		\includegraphics[width=.5\textwidth]{./pics/frenado_reg.png}}
+  \caption{Frenado}
+  \label{fig:frenado}
+\end{figure}
+
+Avalados por la prueba realizada en la sección \ref{sec:MSP} que se verá luego, se afirma que en realidad la aparición de estos registros (por ejemplo los números 81, 145, etc) son causados por el proceso de \emph{sniffeo} y no son, de hecho, el comando mandado a los motores.\\
+
+Analicemos por ejemplo el valor 81. Es claro que el resultado de dividir el valor 162 (correspondiente al conocido registro 0xA2) es exactamente 81, por lo cual parece probable que haya sido generado por un error del \emph{sniffer}, ya que un corrimiento hacia la derecha de un bit en una palabra binaria es equivalente a realizar una división entre 2. Es probable entonces que el sniffer haya incluido un bit en 0 antes de la verdadera palabra y haya descartado el último bit, causando una aparente división entre 2. Más graficamente:\\
+
+\begin{center} 162 = 10100010 $\rightarrow$ \color{green}0\color{black}1010001\color{red}\xcancel{0}\color{black} = 81\\
+\end{center}
+
+En verde se muestra el bit agregado y en rojo el eliminado.
 
 \section{Conclusiones}
 \label{sec:conclu}
@@ -238,7 +287,7 @@ Una vez que se lleva la palanca de elevación al mínimo, los motores se apagan 
 \item El último comando enviado antes de arrancar se guarda en el registro 0xA0.
 \item El último comando enviado antes de frenar se guarda en el registro 0xA1.
 \item El orden normal en el que se envían los comandos es $D2\rightarrow D4\rightarrow D6\rightarrow D0$, menos en los casos descriptos en los 2 puntos anteriores donde el orden es $D0\rightarrow D2\rightarrow D4\rightarrow D6$.
-\item La correspondencia entre las direcciones y los motores se muestra en la figura \ref{fig:correspondencias}. Mirando el cuadricóptero desde arriba, el motor con dirección 0xD0 es el de la derecha, el motor con dirección 0xD6 el de la izquierda, el 0xD4 el de adelante y el 0xD2 el de atrás.
+\item La correspondencia entre las direcciones y los motores se muestra en la figura \ref{fig:correspondencias}. El motor con dirección 0xD0 es el de adelante, el motor con dirección 0xD4 es el de atrás y mirándolo de frente el de la izquierda se corresponde con 0xD0, y el de la derecha con 0xD6
 \item Las direcciones 0xD0, 0xD2, 0xD4 y 0xD6 (de 8 bits) en realidad no refieren únicamente a direccionamiento, sino que incluyen además el bit de lectura/escritura, por lo cual cada esclavo tendrá una única dirección de 7 bits. Notar que las direcciones 0xD0 a 0xD6 al pasarlas a binario todas terminan en 0, lo cual implica que se tratan de comandos de escritura. Al omitir el último bit se obtienen las direcciones (sin incluir el bit de lectura/escritura) como se puede ver a continuación:
 \begin{eqnarray}
 \mathrm{0xD0} (11010000) &\longrightarrow &\mathrm{0x68} (1101000) \\
@@ -257,12 +306,11 @@ Las direcciones de los motores son entonces: \textbf{0x68}, \textbf{0x69}, \text
 	\label{fig:correspondencias}
 \end{figure}
 
-\section{Verificación}
-\begin{huge}
-TODO: verificaciones - arreglar fotos que tienen un marco feo - cambiar D0 con D2 en la ultima figura - grafica en el arranque - snifeada al frenar
-\end{huge}
+\section{Verificaciones}
+Se presentan diversas verificaciones realizadas para corroborar la veracidad de las conclusiones sacadas, además de la corroboración experimental utilizando el puerto $i^2c$ de la Beagleboard.\\
 
-Comando i2cdetect de la librería nosequé... Resultado en terminal
+\subsection*{i2cdetect}
+Utilizando la librería \emph{i2c Tools}\footnote{http://www.lm-sensors.org/wiki/i2cToolsDocumentation} con la Beagleboard es posible mandar el comando \textbf{i2cdetect} que lo que hace es preguntar a todos los esclavos que estén presentes en el bus, por su dirección. El resultado en terminal es el siguiente
 \begin{verbatim}
 root@beagleboard:~# i2cdetect -r 2
 WARNING! This program can confuse your I2C bus, cause data loss and worse!
@@ -280,5 +328,56 @@ Continue? [Y/n] y
 60: -- -- -- -- -- -- -- -- 68 69 6a 6b -- -- -- -- 
 70: -- -- -- -- -- -- -- --
 \end{verbatim}
+
+Puede verse claramente que las direcciones de los esclavos obtenidas por la función mencionada son: \textbf{0x68}, \textbf{0x69}, \textbf{0x6A}, \textbf{0x6B}.
+
+\subsection*{MSP430F5438}
+\label{sec:MSP}
+Se utiliza el chip \textbf{MSP430F5438}, que se muestra en la figura \ref{fig:MSP430F5438}.
+
+\begin{wrapfigure}{r}{0.5\textwidth}
+	\begin{center}
+	\includegraphics[width=0.4\textwidth]{./pics/MSP430F5438.jpg}
+	\end{center}
+	\vspace{-20pt}
+	\caption{MSP430F5438}
+	\label{fig:MSP430F5438}
+\end{wrapfigure}
+
+El MSP430F5438 posee un puerto $i^2c$ habilitado para su utilización. Se configurara como esclavo y se guarda en una variable todos los comandos recibidos en el bus. De este modo se logra independizarse de los problemas que pueda introducir el sniffer y se obtiene exactamente el comando mandado a ese esclavo. Se le configura la dirección 0x68 para comunicarse con el maestro cuando éste mande comandos a esa dirección.\\
+
+Luego, analizando la variable donde se guardan los comandos, es posible obtener información más concluyente.\\
+
+En la figura \ref{fig:MSP_arranque} se muestran los resultados obtenidos al adquirir datos en un arranque.
+
+\begin{figure} [h!]
+\centering
+  \subfloat[Valores enviados a los motores]{\label{fig:MSP_arranque_val}
+  		\includegraphics[width=.5\textwidth]{./pics/MSP_arranque_val.png}}
+  \subfloat[Registro al que se envía el valor]{\label{fig:MSP_arranque_reg} 
+  		\includegraphics[width=.5\textwidth]{./pics/MSP_arranque_reg.png}}
+  \caption{Arranque detectado por el MSP430F5438}
+  \label{fig:MSP_arranque}
+\end{figure}
+
+En la figura \ref{fig:MSP_frenado} se muestran los resultados obtenidos al adquirir datos en un frenado.
+
+\begin{figure} [h!]
+\centering
+  \subfloat[Valores enviados a los motores]{\label{fig:MSP_frenado_val}
+  		\includegraphics[width=.5\textwidth]{./pics/MSP_frenado_val.png}}
+  \subfloat[Registro al que se envía el valor]{\label{fig:MSP_frenado_reg} 
+  		\includegraphics[width=.5\textwidth]{./pics/MSP_frenado_reg.png}}
+  \caption{Frenado}
+  \label{fig:MSP_frenado}
+\end{figure}
+
+Estas últimas dos figuras son las corroboraciones más concluyentes que se obtuvieron. Ratifica y deja bien en claro lo antes dicho sobre los registros: \textbf{para el arranque se escribe en la dirección 0xA0 del esclavo y para el frenado se escribe en la dirección 0xA1.}\\
+
+A su vez sirve de confirmación para los errores del sniffeado detectados en la sección \ref{sec:frenado}.
+
+
+
+
 
 \end{document}
