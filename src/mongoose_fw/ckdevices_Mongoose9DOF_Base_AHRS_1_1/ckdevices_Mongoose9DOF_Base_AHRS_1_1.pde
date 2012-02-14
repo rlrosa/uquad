@@ -41,6 +41,8 @@
 #include <EEPROM.h>
 #include <Wire.h>
 
+#include <utility/twi.h> // For CPU_FREQ
+
 #define ToRad(x) (x*0.01745329252)  // *pi/180
 #define ToDeg(x) (x*57.2957795131)  // *180/pi
 
@@ -53,7 +55,7 @@
 #define Accel_Scale(x) x*(GRAVITY/9.81)//Scaling the raw data of the accel to actual acceleration in meters for seconds square
 
 
-// IGT-3200 Sensitivity (from datasheet) => 14.375 LSBs/�/s
+// IGT-3200 Sensitivity (from datasheet) => 14.375 LSBs/?/s
 // Tested values : 
 #define Gyro_Gain_X   14.375 //X axis Gyro gain
 #define Gyro_Gain_Y   14.375 //Y axis Gyro gain
@@ -84,6 +86,18 @@ int SENSOR_SIGN[9] = { 1,1,1,1,1,1,1,1,1};  //Correct directions x,y,z - gyros, 
 //#define PRINT_GPS 0     //Will print GPS data
 //#define PRINT_BINARY 0  //Will print binary message and suppress ASCII messages (above)
 
+#define ATOMIC_IMU_FORMAT 1
+#if ATOMIC_IMU_FORMAT
+#define PRINT_EULER             0   //Will print the Euler angles Roll, Pitch and Yaw
+#define PRINT_SENSOR_DATA       0   //Will print the Corrected Sensor Data
+#define PRINT_SENSOR_DATA_RAW   1   //Will print the raw uncorrected Sensor Data
+#define PRINT_DCM               0   //Will print the whole direction cosine matrix
+#define PRINT_MagCal            0
+
+//#define PRINT_GPS 0     //Will print GPS data
+#define PRINT_BINARY 1  //Will print binary message and suppress ASCII messages (above)
+#endif
+
 #define debugPin 6
 #define STATUS_LED 4  //PD4 on the Atmega328. Red LED
 
@@ -93,6 +107,7 @@ int SENSOR_SIGN[9] = { 1,1,1,1,1,1,1,1,1};  //Correct directions x,y,z - gyros, 
 
 
 float G_Dt=0.005;    // Integration time (DCM algorithm)  We will run the integration loop at 50Hz if possible
+float G_Dt_ms=G_Dt;
 
 long timer=0;   //general purpuse timer
 long timer_old;
@@ -187,15 +202,28 @@ void setup()
  
   pinMode (STATUS_LED,OUTPUT);  // Status LED
   pinMode (debugPin,OUTPUT);  // debug LED
-
   Serial.println();
+#if ATOMIC_IMU_FORMAT
+  Serial.println("uQuad!");
+  Serial.println();
+  Serial.println("Output format:");
+  Serial.println("A\tG_Dt\ta_x\ta_y\ta_z\tg_x\tg_y\tg_z\tm_x\tm_y\tm_z\tZ");
+#else
   Serial.println("ckdevices Mongoose Base AHRS firmware v1.1");
   Serial.println("9 Degree of Freedom Attitude and Heading Reference System with barometric pressure");
   Serial.println("www.ckdevices.com");
-  
+#endif
+
   delay(300);
 
   Wire.begin();    //Init the I2C
+
+  //================================
+  // Set i2c to 400kHz
+  //
+  #define TWI_FREQ_NUNCHUCK 400000L
+  TWBR = ((CPU_FREQ / TWI_FREQ_NUNCHUCK) - 16) / 2;
+
   delay(20);
   
   //================================
@@ -235,12 +263,14 @@ void loop() //Main Loop
 {
   if((DIYmillis()-timer)>=5)  // Main loop runs at 50Hz
   {
+        // We enter here every 5ms
         digitalWrite(debugPin,HIGH);
         
         
         timer_old = timer;
         timer=DIYmillis();
-        G_Dt = (timer-timer_old)/1000.0;    // Real time of loop run. We use this on the DCM algorithm (gyro integration time)
+	G_Dt_ms = timer-timer_old;
+        G_Dt = G_Dt_ms/1000.0;    // Real time of loop run. We use this on the DCM algorithm (gyro integration time)
         if(G_Dt > 1)
             G_Dt = 0;  //keeps dt from blowing up, goes to zero to keep gyros from departing
         
@@ -321,11 +351,3 @@ void loop() //Main Loop
   }
    
 }
-
-
-
-
-
-
-
-   
