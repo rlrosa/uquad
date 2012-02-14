@@ -63,7 +63,23 @@ La tercer relación resulta redundante conociendo las anteriores. Sin embargo par
 \item Beagleboard
 \end{itemize}
 
+%TODO canetti 13 feb
+% agregar modelo de la balanza, apreciación, caracterización del error, etc
+% num de parte de RX/TX  IR
+% modelo beagleboard
+% tiene que poderse reproducir!
+% agregar croquis del plan
+% ref rota en la sección obtención de la la curva
+
 \section{Procedimiento}
+
+%TODO canetti 13 feb
+% agregar modelo de la balanza, apreciación, caracterización del error, etc
+% num de parte de RX/TX  IR
+% modelo beagleboard
+% tiene que poderse reproducir!
+% agregar croquis del plan
+% ref rota en la sección obtención de la la curva
 
 \subsection{Consideraciones previas}
 \subsubsection*{Funcionamiento del dispositivo IR}
@@ -109,7 +125,7 @@ Luego de estudiados los comandos que se utiliza para comandar los motores y una 
 
 Se tomaran medidas para todos los valores posibles del comando I2C, es decir entre 0 y 255.
 
-\subsubsection*{Obtención de la la curva torque de \emph{drag} contra velocidad angular}
+\subsubsection*{Obtención de la curva torque de \emph{drag} contra velocidad angular}
 \label{dragt}
 Se coloca el cuadricóptero sobre la balanza como se muestra en la figura \ref{quad}. El torque de \emph{drag} es en la dirección paralela al eje que pasa por el centro del motor. Al colocar el motor en la posición que se observa en la figura \ref{fig:quad} se obtiene un torque en la misma dirección que el torque producido por el peso y la normal. La distancia entre el eje del motor y el centro de masa del cuadricóptero es conocida.
 
@@ -231,7 +247,7 @@ En la tabla \ref{tab:torque-vel} se presentan los resultados obtenidos en el exp
 \begin{table}[H]
 \centering
 \begin{tabular}{|p{80pt}|p{80pt}||p{80pt}|p{80pt}|} 
- \cellcolor[gray]{0.8} \textbf{Peso (g)} & \cellcolor[gray]{0.8} \textbf{Frecuencia (Hz)} & \cellcolor[gray]{0.8} \textbf{Peso (g)} & \cellcolor[gray]{0.8} \textbf{Frecuencia (Hz)}\\ \hline
+\cellcolor[gray]{0.8} \textbf{Frecuencia (Hz)} & \cellcolor[gray]{0.8} \textbf{Peso (g)} & \cellcolor[gray]{0.8} \textbf{Frecuencia (Hz)} & \cellcolor[gray]{0.8} \textbf{Peso (g)} \\ \hline
  
  0  & 0     & 54.4 & 22\\ \hline
 
@@ -262,7 +278,10 @@ No fue posible realizar medidas a velocidades angulares mayores ya que la fuerza
   \vspace{-10pt}
 \end{figure}
 
-
+%TODO canetti 13 feb
+% si la literatura dice que es monótona, y que se recomiendo aproximar por un modelo cuadrático, entonces uno elije una curva que es razonablemente fácil de ajustar, pero que teng aun andamiento que sea similar a lo que se ve en la práctica.
+%   -> el modelo cúbico tira fruta en altos valores, no tiene sentido que a mayores velocidades tengamos pares inferiores. hay que encarar con esto. 
+% 
 A partir de la observación de la gráfica y de los parámetros obtenidos no es posible realizar una elección en favor de uno de los dos modelos sobre el otro.  
 
 El error promedio obtenido al considerar un modelo cuadrático es de $5.78 \times 10^{-19} Nm$, mientras que al considerar el modelo cúbico se obtiene un error promedio de $6.55\times 10{-18}Nm$. Por otra parte la desviación estándar del error en el caso del modelo cúbico es $0.0019Nm$ mientras que la obtenida considerando el modelo cuadrático es $0.0016Nm$.
@@ -279,20 +298,21 @@ Se le envían a distintos comandos $i^2c$ a los ESC's y se mide la velocidad angu
 
 \begin{table}[H]
 \centering
-\begin{tabular}{|c|c|} 
+\begin{tabular}{|c|c|c|} 
 	\hline
 	\cellcolor[gray]{0.8} \textbf{Comando $i^2c$} & 
+	\cellcolor[gray]{0.8} \textbf{Velocidad angular (rpm)} &
 	\cellcolor[gray]{0.8} \textbf{Velocidad angular (rad/s)} \\ \hline \hline
-	  0 &        0 \\ \hline 
-	 50 & 108.6206 \\ \hline
-	 70 & 154.0166 \\ \hline
-	 90 & 198.8628 \\ \hline
-	110 & 235.6194 \\ \hline
-	130 & 270.5697 \\ \hline
-	150 & 301.0431 \\ \hline
-	170 & 330.3385 \\ \hline
-	200 & 366.0741 \\ \hline
-	250 & 417.5177 \\ \hline
+0 & 0 & 0\\ \hline 
+50 & 17.29 & 108.6206 \\ \hline 
+70 & 24.51 & 154.0166 \\ \hline 
+90 & 31.65 & 198.8628 \\ \hline 
+110 & 37.50 & 235.6194 \\ \hline 
+130 & 43.06 & 270.5697 \\ \hline 
+150 & 47.91 & 301.0431 \\ \hline 
+170 & 52.58 & 330.3385 \\ \hline 
+200 & 58.26 & 366.0741 \\ \hline 
+250 & 66.45 & 417.5177 \\ \hline 
 \end{tabular}
 \caption{Comando $i^2c$ enviado y velocidad angular obtenida}
 \label{tab:iw}
@@ -403,7 +423,7 @@ TODO: Decidirse por una. Parece q es la cúbica no?
 
 \subsection{Comparación entre motores}
 \label{sec:motores}
-Se enví­an diferentes comandos $i^2c$ al cuadricóptero y se mide la velocidad angular de todos los motores. Los datos obtenidos se muestran en la tabla \ref{tab:motores}.
+Se envían diferentes comandos $i^2c$ al cuadricóptero y se mide la velocidad angular de todos los motores. Los datos obtenidos se muestran en la tabla \ref{tab:motores}.
 
 \begin{table}[H]
 \centering
@@ -412,7 +432,7 @@ Se enví­an diferentes comandos $i^2c$ al cuadricóptero y se mide la velocidad an
 	\multicolumn{4}{|c|}{\cellcolor[gray]{0.6}Velocidad angular (rad/s)} \\ \hline
 	\cellcolor[gray]{0.8} {$\mathbf{i^2c}$} & 
 	\cellcolor[gray]{0.8} \textbf{Fuerza (N)} &
-	\cellcolor[gray]{0.8} \textbf{Motor Do} &
+	\cellcolor[gray]{0.8} \textbf{Motor D0} &
 	\cellcolor[gray]{0.8} \textbf{Motor D2} &
 	\cellcolor[gray]{0.8} \textbf{Motor D4} &
 	\cellcolor[gray]{0.8} \textbf{Motor D6}   \\ \hline \hline
