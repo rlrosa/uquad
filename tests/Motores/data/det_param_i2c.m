@@ -122,13 +122,13 @@ figure
     legend('\fontsize{13}Medias experimentales','\fontsize{13}Curva modelo cuadrático',...
         '\fontsize{13}Curva modelo cúbico','location','northwest')
   
-B_4      = [w.^4 w.^3 w.^2 w ones(size(w,1),1)];
-p_4      = (B_4'*B_4)\(B_4'*i2c);
-Ftest_4  = p_4(1)*wtest.^4+p_4(2)*wtest.^3+p_4(3)*wtest.^2+p_4(4)*wtest+p_4(5)*ones(size(wtest,1),1);
-
-e_4      = i2c-(p_4(1)*w.^4+p_4(2)*w.^3+p_4(3)*w.^2+p_4(4)*w+p_4(5)*ones(size(w,1),1));
-e_4_prom = mean(e_4);
-sigma_4  = std(e_4);
-fprintf('\nModelo Cuatroático\n\tError: %d\n\tSigma: %d',e_4_prom,sigma_4)
-fprintf('\nEl modelo cuatroático es casi idéntico al cúbico. El término en w^4 es 6 órdenes más chico que el de w^3\n')
+% B_4      = [w.^4 w.^3 w.^2 w ];
+% p_4      = (B_4'*B_4)\(B_4'*i2c);
+% Ftest_4  = p_4(1)*wtest.^4+p_4(2)*wtest.^3+p_4(3)*wtest.^2+p_4(4)*wtest;
+% 
+% e_4      = i2c-(p_4(1)*w.^4+p_4(2)*w.^3+p_4(3)*w.^2+p_4(4)*w);
+% e_4_prom = mean(e_4);
+% sigma_4  = std(e_4);
+% fprintf('\nModelo Cuatroático\n\tError: %d\n\tSigma: %d',e_4_prom,sigma_4)
+% fprintf('\nEl modelo cuatroático es casi idéntico al cúbico. El término en w^4 es 6 órdenes más chico que el de w^3\n')
 

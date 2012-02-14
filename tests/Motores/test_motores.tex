@@ -37,7 +37,7 @@
 
 \chapter{Caracterización de los motores}
 \section{Objetivo}
-El objetivo de este Test es el de caracterizar el funcionamiento de los motores. Con dicho fin se busca determinar:
+El objetivo es el de caracterizar el funcionamiento de los motores. Con dicho fin se busca determinar:
 
 \begin{itemize}
 \item Relación entre velocidad angular y fuerza
@@ -55,19 +55,20 @@ Los algoritmos de control se centraran o bien en la velocidad angular o bien en 
 \item Motores del cuadricóptero Turbo Ace X720	
 \item LED IR TSAL6200
 \item Detector IR TSOP38256
+\item Resistencia de $20 \Omega$
+\item Generador de onda
+\item Fuente de alimentación de $5V_{DC}$
+\item Osciloscopio digital
 \item Balanza 
 \item Beagleboard XM rev C
-\item Osciloscopio digital
-\item Generador de onda
 \item Analizador lógico ChronoVu
+\item Buffer Octal 74HC245
 \end{itemize}
 
-%TODO canetti 13 feb
+
 % agregar modelo de la balanza, apreciación, caracterización del error, etc
 %Agregar modelo del osciloscopio y generador de onda
-% tiene que poderse reproducir!
-% agregar croquis del plan
-% ref rota en la sección obtención de la la curva
+
 
 \section{Procedimiento}
 
@@ -99,7 +100,7 @@ El dispositivo se trata de un cuerpo en forma de ``U", donde de un lado se tiene
 
 Como explicamos anteriormente la LED debe ser conmutada con una frecuencia de 56kHz por lo tanto se la alimentará con un generador de señales funcionando como generador de onda cuadrada a dicha frecuencia. Para lograr un correcto funcionamiento de la misma se requiere una corriente superior a los $100mA$. La amplitud de la onda cuadrada se regulará a $5V$ y se trabajará con una resistencia de $20\Omega$ en serie. Midiendo la tensión en la resistencia se puede comprobar que dichos valores son adecuados para el propósito.\\
 
-La salida del receptor IR se conecta directamente a un frecuencímetro.\\
+La salida del receptor IR se conecta directamente al osciloscopio digital.\\
 
 \subsection{Relación entre comando I2C, velocidad angular y empuje}
 
@@ -124,14 +125,19 @@ Es claro que si no se envía ningún comando i2c los motores no giran. También es 
 	\item Modelo cúbico $T=a\prime \omega^3+b\prime \omega^2+c\prime$
 	\end{itemize}
 
-\item Para la relación entre comando I2C y la velocidad angular se propone un ajuste en base a los siguientes modelos:
+\item Esta relación es interesante si el control se centra en determinar los valores de la velocidad angular de los motores para realizar una acción de control concreta. En este caso se determinará el valor de dicha velocidad angular y a partir del mismo se busca determinar el comando I2C correspondiente, por lo tanto para la relación entre comando I2C y la velocidad angular se propone un ajuste en base a los siguientes modelos:
 	\begin{itemize}
-	\item Modelo cuadrático $\omega=ax^2+bx$
-	\item Modelo cúbico $\omega =a\prime x^3+b\prime x^2+cx$	
-	\item Modelo de Monod $\omega = \frac{a\prime\prime x}{b\prime \prime x+c\prime\prime}$
+	\item Modelo cuadrático $x=a\omega^2+b\omega$
+	\item Modelo cúbico $x =a\prime \omega^3+b\prime \omega^2+c\omega$	
+	
 	\end{itemize}
 
-\item Para la relación entre comando I2C  y fuerza se propone un ajuste en base a los modelos: %TODO
+\item Para la relación entre comando I2C  y fuerza se propone un ajuste en base a los modelos:
+	\begin{itemize}
+	\item Modelo lineal $T=a\omega$
+	\item Modelo cuadrático $T=a\prime \omega^2+b\prime\omega$
+	\item Modelo cúbico $T=a\prime \prime \omega^3+b\prime\prime\omega^2+c\prime\omega$
+	\end{itemize}
 
 \end{itemize}
 
@@ -143,7 +149,7 @@ Se solidariza el cuadricóptero a una base de madera. Sobre esta última se añade 
 $$
 \sum F_{ext}=0
 $$
-En este caso las fuerzas presentes son el peso del sistema ($M_total$) la normal de la balanza sobre el sistema($N$) y el empuje de los motores($T_total$). Por lo tanto
+En este caso las fuerzas presentes son el peso del sistema ($M_{total}$) la normal de la balanza sobre el sistema($N$) y el empuje de los motores($T_{total}$). Por lo tanto
 
 $$
 T_{total}-M_{total}g+N=0
@@ -178,6 +184,55 @@ $$
 Se mide la velocidad angular de los cuatro motores y se trabaja con el promedio. En la sección \ref{sec:motores} se verá porqué es adecuado considerar el promedio.
 
 \subsection{Relación entre velocidad I2C, velocidad angular y torque}
+
+\subsubsection*{Objetivos específicos}
+Los objetivos de este experimento son:
+
+\begin{itemize}
+\item Obtener la relación entre velocidad angular y torque
+\item Obtener la relación entre comando i2c y torque.
+\end{itemize}
+
+
+\subsubsection*{Modelos de ajuste}
+Al igual que en el experimento anterior se fuerzan los modelos para que pasen por el cero ya que sin comando i2c no hay velocidad angular y por lo tanto no hay torque. Realizando esta consideración y los modelos estudiados phara las fuerzas y momentos de las hélices se proponen los siguientes modelos de ajuste:
+
+\begin{itemize}
+\item Para la relación entre velocidad angular y torque se propone un modelo cuadrático:
+	\begin{itemize}
+	\item $Q=a\omega^2+b\omega$
+	\end{itemize}
+\item Para la relación entre comando i2c y torque se proponen los siguientes modelos
+%TODO
+\end{itemize}
+
+\subsubsection*{Desarrollo del experimento}
+Se ubica el cuadricóptero sobre la balanza. Se retiran tres de las cuatro hélices del cuadricóptero. La cuarta hélice se rota de forma que el eje en torno al cual rota sea paralelo respecto del plano del plato de la balanza. Se ubica el detector IR de forma de poder medir la velocidad angular de la hélice. El setup de medida puede verse en las figuras \ref{fig:setup2}. De acuerdo a lo estudiado la hélice presenta un torque ($Q$) positivo respecto de su eje central si el motor rota en sentido anti-horario. Nos proponemos calcular el torque total respecto de dicho eje. Las fuerzas presentes en el sistema son: la fuerza de empuje, la normal y las fuerzas reactivas en el plano del plato de la balanza. Estas últimas y el empuje no realizan ningún torque en la dirección de interés. Recordamos que el torque de una fuerza respecto de un eje se calcula como:
+$$
+\tau=\vec{r} \times \vec{F} 
+$$
+Donde $\vec{F}$ es la fuerza considerada y $\vec{r}$ es vector distancia entre el eje y el punto de aplicación de la fuerza.\\
+
+Definimos el largo $l=$ como la distancia entre el eje de la hélice y el centro de masa del cuadricóptero. Asumimos que el peso aplica sobre el centro de masa y la normal sobre la recta que pasa por el centro de masa del cuadricóptero y es perpendicular al plano del plato de la balanza. 
+
+De esta forma se tiene que el torque total vale:
+$$
+\tau=Q+lM_{total}g-lN=Q+l(M_{total}g-N)
+$$
+
+Como se explico anteriormente luego de tarar la balanza la masa medida por la misma corresponde a $M_{medida}=\frac{M_{total}g-N}{g} $. De esta forma se puede escribir el torque total sobre el sistema como:
+$$
+\tau=Q+lM_{medida}g
+$$
+Al igual que en el experimento anterior el sistema se encuentra en equilibrio mecánico y por lo tanto: 
+$$
+\tau=0
+$$  
+
+De esta forma queda claro que el torque que nos interesa caracterizar puede calcularse como:
+$$
+Q=-lM_{medida}g
+$$
 
 \subsection{Respuesta al Escalón}
 \section{Resultados y análisis}
@@ -228,7 +283,7 @@ Para el modelo cúbico se obtiene:
 Como es de esperar el modelo cúbico aproxima mejor los puntos que el modelo cuadrático, sin embargo cualquiera de los dos modelos ajusta adecuadamente los puntos. Esto fue observado gráficamente en una primera instancia y se comprobó realizando el estudio del error promedio y de la desviación estándar. Ya que ambos modelos parecen adecuados a partir de este momento se trabajará con el más sencillo de los dos, es decir con el modelo cuadrático. Por lo tanto:
 
 $$
-T=3.5296\times10^{-5}\omega-4.9293\times10^{-4}
+T=3.5296\times10^{-5}\omega^2-4.9293\times10^{-4}\omega
 $$
 
 
@@ -245,7 +300,7 @@ $$
 
 \subsection{Obtención de la curva $i^2c$ contra velocidad angular}
 
-En la tabla \ref{tab:iw} se presentan los resultados obtenidos de frecuencia para distintos valores del comando I2C.
+En la tabla \ref{tab:iw} se presentan los resultados obtenidos de frecuencia para distintos valores del comando I2C. En la figura \ref{fig:iwi} se muestran además de los datos obtenidos las curvas predichas por los modelos de ajuste por los que se optó.
 \begin{table}[H]
 \centering
 \begin{tabular}{|c|c|c|} 
@@ -268,73 +323,51 @@ En la tabla \ref{tab:iw} se presentan los resultados obtenidos de frecuencia par
 \label{tab:iw}
 \end{table}
 
-En la figura \ref{fig:iwi} se muestran gráficamente los resultados obtenidos de ajustar un modelo cuadrático a la curva \emph{comando $i^2c$ vs. velocidad angular}.
+
 
 \begin{figure} [h!]
-\centering
-  \subfloat[Curva $i^2c$ contra velocidad angular]{\label{fig:iw}
-  		\includegraphics[width=.5\textwidth]{./Pics/iw.png}} 
-  \subfloat[Curva velocidad angular contra $i^2c$]{\label{fig:wi} 
-  		\includegraphics[width=.5\textwidth]{./Pics/wi.png}}
-  \caption{$i^2c$ y velocidad angular}
-  \label{fig:iwi}
+\centering  
+\includegraphics[width=.8\textwidth]{./Pics/wi.png} 
+\caption{Curva $i^2c$ en función de la velocidad angular}
+\label{fig:iwi}
 \end{figure}
 
-Se realiza el ajuste de dos maneras similares. En la primera, mostrada en la figura \ref{fig:iw}, se propone un modelo cuadrático y otro cúbico para la velocidad angular en función del comando $i^2c$. En la segunda, mostrada en la figura \ref{fig:wi}, se proponen los modelos cuadrático y cíºbico para el comando $i^2c$ en función de la velocidad angular.
+A simple vista en la figura ya puede observarse que el modelo cúbico aproxima mejor que el modelo cuadrático.
+Los resultados obtenidos para los modelos de ajuste propuesto vienen a confirmar dicha constatación.
 
-\subsubsection*{Ajuste 1}
-Se ajusta la velocidad angular con el comando $i^2c$ de forma que la velocidad angular siga un modelo cuadrático frente al comando $i^2c$.\\
-
-Los resultados obtenidos son, para el modelo cuadrático:
+Para el modelo cuadrático se obtiene:
 \begin{itemize}
-\item Modelo: $w=-3.380\times 10^{-3}x^2+2.531x-3.493$
-\item Desviación estándar: $\sigma = 2.854$
-\end{itemize}
-Los resultados para el modelo cúbico son:
-\begin{itemize}
-\item Modelo: $w=-3.521\times 10^{-6}x^3-2.064\times 10^{-3}x^2+2.407x-1.602$
-\item Desviación estándar: $\sigma = 2.452$
+\item Parámetros: $a=6.1226\times10^{-4}s^2$, $b=0.3270\times 10^{-4}s$
+\item Error promedio: $e=5.08\times 10 ^{-1}$
+\item Desviación estándar :$\sigma=4.42$
 \end{itemize}
 
-No resulta claro su alguno de los modelos es el indicado. Se obtienen desviaciones no muy chicas. Hay que probar con otro modelo.
-
-\subsubsection*{Ajuste 2}
-Se ajusta la velocidad angular con el comando $i^2c$ de forma que el comando $i^2c$ siga un modelo cuadrático frente a la velocidad angular.\\
-
-Los resultados obtenidos son, para el modelo cuadrático:
+Para el modelo cúbico se obtiene:
 \begin{itemize}
-\item Modelo: $x=6737\times 10^{-4}w^2+2.924\times 10^{-1}w+4.351$
-\item Desviación estándar: $\sigma = 4.171$
-\end{itemize}
-Los resultados para el modelo cúbico son:
-\begin{itemize}
-\item Modelo: $x=2.211\times 10^{-6}w^3-7.115\times 10^{-4}w^2+5.104\times 10^{-1}w+1.999\times 10^{-2}$
-\item Desviación estándar: $\sigma = 4.013\times 10^{-1}$
+\item Parámetros: $a\prime = 2.2118\times 10^{-6}s^3$, $b\prime =-71258\times 10^{-4}s^2$, $c\prime=0.5106s$
+\item Error promedio: $2.04\times10^{-3} $
+\item Desviación estándar: $\sigma=4.01\times 10^{-1}$
 \end{itemize}
 
-En este caso se puede ver que la desviación estándar obtenida con el modelo cúbico es 1 orden menor que la obtenida con el modelo cuadrático. Además al observar la figura \ref{fig:wi} se divisa claramente que la curva del modelo cúbico se ajusta mejor a los datos obtenidos experimentalmente. Se concluye entonces que las magnitudes en cuestión se relacionan de la siguiente forma:
-$$x=2.211\times 10^{-6}w^3-7.115\times 10^{-4}w^2+5.104\times 10^{-1}w+1.999\times 10^{-2}$$
+El error promedio obtenido con el modelo cúbico y la desviación estándar son menores que en el modelo cuadrático. Además se observa claramente que la curva del modelo cúbico ajusta mejor los puntos. Esta es evidencia suficiente para elegir dicho modelo. Tendremos entonces que:
 
+$$
+x=2.2118\times 10^{-6}\omega^3 -71258\times 10^{-4}\omega^2+0.5106\omega
+$$
 \subsection{Obtención de la curva $i^2c$ contra fuerza}
-
-Se enviaron distintos comandos de $i^2c$ y utilizando una balanza electrónica de 5g de apreciación se procedió a medir la fuerza que realizan los 4 motores juntos. Luego, avalados por las conclusiones de la sección \ref{sec:motores}, se obtiene la fuerza de cada motor, simplemente dividiendo la fuerza total entre 4. Los datos se presentan en la tabla \ref{tab:if}.
-
+Se presentan los datos obtenidos para la determinación de la curva de interés en la tabla \ref{tab:if}.
 \begin{table}[H]
 \centering
-\begin{tabular}{|c|c|} 
+\begin{tabular}{|c|c|c|c|} 
 	\hline
 	\cellcolor[gray]{0.8} \textbf{Comando $i^2c$} & 
-	\cellcolor[gray]{0.8} \textbf{Fuerza (N)} \\ \hline \hline
-	  0 &      0 \\ \hline
-	 50 &0.34335 \\ \hline
-	 70 &0.73575 \\ \hline
-	 90 & 1.2263 \\ \hline
-	110 & 1.8762 \\ \hline
-	130 &  2.477 \\ \hline
-	150 & 3.0656 \\ \hline
-	170 & 3.7278 \\ \hline
-	200 & 4.5862 \\ \hline
-	250 &  5.886 \\ \hline
+	\cellcolor[gray]{0.8} \textbf{peso (g)} & \cellcolor[gray]{0.8} \textbf{Comando $i^2c$} & 
+	\cellcolor[gray]{0.8} \textbf{peso (g)}\\ \hline \hline
+	  0 &      0  & 130 &-1010\\ \hline
+	 50 &-140 &150 &-1250\\ \hline
+	 70 &-300 &170 &-1520\\ \hline
+	 90 & -500&200 &-1870 \\ \hline
+	110 & -765 &250&-2400\\ \hline
 \end{tabular}
 \caption{Comando $i^2c$ enviado y fuerza obtenida}
 \label{tab:if}
