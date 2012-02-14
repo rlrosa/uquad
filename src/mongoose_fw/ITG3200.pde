@@ -82,4 +82,3 @@ void Read_Gyro()
   else
     Serial.println("!ERR: Error reading Gyro info!");
 }
-

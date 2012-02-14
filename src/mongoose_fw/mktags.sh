@@ -11,7 +11,7 @@ if [ "$1" == "-a" ]; then
 fi
 
 
-ETAGS_DIR=/home/rrosa/sketchbook/ckdevices_Mongoose9DOF_Base_AHRS_1_1/
+ETAGS_DIR=/home/rrosa/sketchbook/mongoose_fw/
 
 SCAN_DIRS=(.
            /usr/share/arduino/libraries)
