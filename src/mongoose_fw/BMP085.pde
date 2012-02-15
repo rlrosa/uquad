@@ -205,5 +205,3 @@ unsigned long bmp085ReadUP()
   
   return up;
 }
-
-

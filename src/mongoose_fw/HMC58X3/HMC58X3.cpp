@@ -50,12 +50,20 @@ void HMC58X3::init(bool setmode) {
     setMode(0);
   }
   
-  writeReg(HMC58X3_R_CONFA, 0x70);
-  writeReg(HMC58X3_R_CONFB, 0xA0);
+  writeReg(HMC58X3_R_CONFA, 0x70); // Set data output rate to 15Hz
+  writeReg(HMC58X3_R_CONFB, 0xA0); // Set gain
   writeReg(HMC58X3_R_MODE, 0x00);
 }
 
-
+/** 
+ * Options are:
+ *   - 00: Continuous mode.
+ *   - 01: Single measurement mode.
+ *   - 10: Idle mode.
+ *   - 10: Idle mode.
+ * 
+ * @param mode 
+ */
 void HMC58X3::setMode(unsigned char mode) { 
   if (mode > 2) {
     return;
@@ -139,6 +147,15 @@ void HMC58X3::getValues(float *x,float *y,float *z) {
 }
 
 
+/** 
+ * Reads raw values.
+ * 
+ * @param x 
+ * @param y 
+ * @param z 
+ * 
+ * @return 0 if ok, else bitwise overflow indicator
+ */
 void HMC58X3::getRaw(int *x,int *y,int *z) {
   Wire.beginTransmission(HMC58X3_ADDR);
   Wire.send(HMC58X3_R_XM); // will start from DATA X MSB and fetch all the others
@@ -159,6 +176,10 @@ void HMC58X3::getRaw(int *x,int *y,int *z) {
     // the HMC58X3 will automatically wrap around on the next request
   }
   Wire.endTransmission();
+  // check [over|under]flow
+  // return (((*x & 0x1000) != 0) | 
+  // 	  (((*y & 0x1000) != 0) << 1)| 
+  // 	  (((*z & 0x1000) != 0) << 2))
 }
 
 

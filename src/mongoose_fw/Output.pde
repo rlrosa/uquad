@@ -1,6 +1,44 @@
+#if ATOMIC_IMU_FORMAT
+#define ATOMIC_IMU_SEPARATOR "\t"
+#define ATOMIC_IMU_INIT "A"
+#define ATOMIC_IMU_END "Z"
+#endif
 
 void printdata(void)
 {    
+#if ATOMIC_IMU_FORMAT
+
+      Serial.print(ATOMIC_IMU_INIT);
+      Serial.print(ATOMIC_IMU_SEPARATOR);
+      Serial.print(G_Dt_ms);
+      Serial.print(ATOMIC_IMU_SEPARATOR);
+      Serial.print(sen_data.accel_x_raw);
+      Serial.print(ATOMIC_IMU_SEPARATOR);
+      Serial.print(sen_data.accel_y_raw);
+      Serial.print(ATOMIC_IMU_SEPARATOR);
+      Serial.print(sen_data.accel_z_raw);
+      Serial.print(ATOMIC_IMU_SEPARATOR);
+      Serial.print(sen_data.gyro_x_raw);
+      Serial.print(ATOMIC_IMU_SEPARATOR);
+      Serial.print(sen_data.gyro_y_raw);
+      Serial.print(ATOMIC_IMU_SEPARATOR);
+      Serial.print(sen_data.gyro_z_raw);  
+      Serial.print(ATOMIC_IMU_SEPARATOR);
+      Serial.print((int)sen_data.magnetom_x_raw);
+      Serial.print(ATOMIC_IMU_SEPARATOR);
+      Serial.print((int)sen_data.magnetom_y_raw);
+      Serial.print(ATOMIC_IMU_SEPARATOR);
+      Serial.print((int)sen_data.magnetom_z_raw);    
+      Serial.print(ATOMIC_IMU_SEPARATOR);
+      Serial.print(sen_data.baro_temp); 
+      Serial.print(ATOMIC_IMU_SEPARATOR);
+      Serial.print(sen_data.baro_pres); 
+      Serial.print(ATOMIC_IMU_SEPARATOR);
+      Serial.print(ATOMIC_IMU_END);
+      Serial.println();
+
+#else
+    // use ckdevices format
       Serial.print("!");
 
       
@@ -87,6 +125,7 @@ void printdata(void)
       
       
       Serial.println();    
+#endif
 }
 
 long convert_to_dec(float x)
