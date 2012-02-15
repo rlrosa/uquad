@@ -6,7 +6,10 @@
 //I2C addresses 
 int AccelAddress = 0x53;     //Write:0xA6  Read:0xA7
 
-
+#define ADXL345_REG_DATA_FORMAT 0x31
+#define ADXL345_REG_DATA_FORMAT_SELF_TEST 0x80
+#define ADXL345_REG_DATA_FORMAT_SPI 0x40
+#define ADXL345_REG_DATA_FORMAT_SPI 0x40
 
 //============================================
 // Accelerometer
@@ -20,12 +23,13 @@ void Init_Accel()
   delay(20);
   Wire.beginTransmission(AccelAddress);
   Wire.send(0x31);  // Data format register
-  Wire.send(0x08);  // set to full resolution
+  //  Wire.send(0x08);  // set to full resolution
+  Wire.send(0x0B);  // set to full resolution
   Wire.endTransmission();
   delay(20);	
   // Because our main loop runs at 50Hz we adjust the output data rate to 50Hz (25Hz bandwith)
   //Wire.beginTransmission(AccelAddress);
-  //Wire.send(0x2C);  // Rate
+  //Wire.send(0x2C);  // Rate -> Default is 100Hz
   //Wire.send(0x09);  // set to 50Hz, normal operation
   //Wire.endTransmission();
 }
@@ -75,4 +79,3 @@ void Read_Accel()
   else
     Serial.println("!ERR: Error reading accelerometer info!");
 }
-

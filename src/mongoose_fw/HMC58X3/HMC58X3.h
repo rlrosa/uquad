@@ -41,8 +41,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define HMC_NEG_BIAS 2
 
 // HMC58X3 register map. For details see HMC58X3 datasheet
-#define HMC58X3_R_CONFA 0
-#define HMC58X3_R_CONFB 1
+#define HMC58X3_R_CONFA 0 // gral config
+#define HMC58X3_R_CONFB 1 // gain (3 MSB, rest to 0: XXX0 0000)
 #define HMC58X3_R_MODE 2
 #define HMC58X3_R_XM 3
 #define HMC58X3_R_XL 4
