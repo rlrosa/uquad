@@ -108,12 +108,26 @@ int SENSOR_SIGN[9] = { 1,1,1,1,1,1,1,1,1};  //Correct directions x,y,z - gyros, 
 #define Start_SensorOffsets    0        //offset data at start of EEPROM
 #define Size_SensorOffsets     36       //the offset data is 12 bytes long 
 
+// sensors
+#define ALL 1
+struct sensors_enabled{
+    bool acc;
+    bool gyro;
+    bool compass;
+    bool temp;
+    bool pressure;
+};
+sensors_enabled sensors = {1 || ALL,1 || ALL,1 || ALL,1 || ALL,1 || ALL};
+
+int incomingByte = 0; // for incoming serial data
+bool running = true;
 
 float G_Dt=0.005;    // Integration time (DCM algorithm)  We will run the integration loop at 50Hz if possible
-float G_Dt_ms=G_Dt;
+//float G_Dt_ms=G_Dt;
+float G_Dt_us = G_Dt*1000;
 
-long timer=0;   //general purpuse timer
-long timer_old;
+long time_us = 0;
+long time_us_old;
 long timer24=0; //Second timer used to print values 
 float AN[9]; //array that store the 3 ADC filtered data
 
@@ -249,7 +263,7 @@ void setup()
   digitalWrite(STATUS_LED,HIGH);
     
 
-  timer=millis();
+  time_us = micros();
   delay(20);
   
   //init some counters
@@ -259,98 +273,177 @@ void setup()
   Print_counter=0; 
 }
 
+void print_menu(void){
+    Serial.println();
+    Serial.println("uQuad!");
+    Serial.println();
+    Serial.println("Commands will enable/disable sensor reading:");
 
+    Serial.println("\t1:\t Exit and run.:");
 
+    Serial.print("\t2:\t Acc.:\t");
+    Serial.print(sensors.acc);
+    Serial.println();
+
+    Serial.print("\t3:\t Gyro.:\t");
+    Serial.print(sensors.gyro);
+    Serial.println();
+
+    Serial.print("\t4:\t Compass.:\t");
+    Serial.print(sensors.compass);
+    Serial.println();
+
+    Serial.print("\t5:\t Temp.:\t");
+    Serial.print(sensors.temp);
+    Serial.println();
+
+    Serial.print("\t6:\t Press.:\t");
+    Serial.print(sensors.pressure);
+    Serial.println();
+
+    Serial.print("\tCommand:");
+}
+
+int menu_execute(int command){
+    switch (command)
+    {
+    case '1':
+	running = true;
+	break;
+    case '2':
+	sensors.acc = !sensors.acc;
+	break;
+    case '3':
+	sensors.gyro = !sensors.gyro;
+	break;
+    case '4':
+	sensors.compass = !sensors.compass;
+	break;
+    case '5':
+	sensors.temp = !sensors.temp;
+	break;
+    case '6':
+	sensors.pressure = !sensors.pressure;
+	break;
+    default:
+	return -1;
+    }
+    return 0;
+}
 
 void loop() //Main Loop
 {
-  if((DIYmillis()-timer)>=5)  // Main loop runs at 50Hz
-  {
-        // We enter here every 5ms
-        digitalWrite(debugPin,HIGH);
-        
-        
-        timer_old = timer;
-        timer=DIYmillis();
-	G_Dt_ms = timer-timer_old;
-        G_Dt = G_Dt_ms/1000.0;    // Real time of loop run. We use this on the DCM algorithm (gyro integration time)
-        if(G_Dt > 1)
-            G_Dt = 0;  //keeps dt from blowing up, goes to zero to keep gyros from departing
+    read_part:
+    if (Serial.available() > 0)
+    {
+	// read the incoming byte:
+	incomingByte = Serial.read();
+	if (incomingByte < 0)
+	    // error reading
+	    goto sensor_reading;
+	if(running)
+	{
+	    if(incomingByte == '0')
+		// stop!
+		running = false;
+	}
+	else // not running
+	{
+	    if(menu_execute(incomingByte) < 0)
+		Serial.println("Invalid command!");
+	}
+	if(!running)
+	    print_menu();
+    }
+
+    sensor_reading:
+    if(running)
+    {
+	if((micros()-time_us)>=5000)  // Main loop runs at 50Hz
+	{
+	    // We enter here every 5ms
+	    digitalWrite(debugPin,HIGH);
+
+	    time_us_old = time_us;
+	    time_us = micros();
+	    G_Dt_us = time_us-time_us_old;
+	    G_Dt = G_Dt_us/1000000.0;    // Real time of loop run. We use this on the DCM algorithm (gyro integration time)
+	    if(G_Dt > 1)
+		G_Dt = 0;  //keeps dt from blowing up, goes to zero to keep gyros from departing
         
    
-        Compass_counter++;
-        Baro_counter++;
-        GPS_counter++;
-        Print_counter++;
+	    Compass_counter++;
+	    Baro_counter++;
+	    GPS_counter++;
+	    Print_counter++;
         
         
-        //=================================================================================//
-        //=======================  Data adquisition of all sensors ========================//
+	    //=================================================================================//
+	    //=======================  Data adquisition of all sensors ========================//
         
         
-        //======================= Read the Gyro and Accelerometer =======================//
-        Read_Gyro();      // Read the data from the I2C Gyro
-        Read_Accel();     // Read I2C accelerometer
+	    //======================= Read the Gyro and Accelerometer =======================//
+	    if(sensors.gyro)
+		Read_Gyro();      // Read the data from the I2C Gyro
+	    if(sensors.acc)
+		Read_Accel();     // Read I2C accelero#endif
       
-      
-        //=============================== Read the Compass ===============================//
-        if (Compass_counter > 20)  // Read compass data at 10Hz... (5 loop runs)
-        {
-          Compass_counter=0;
-          
-          Read_Compass();    // Read I2C magnetometer     
-          
-        }
-        
-        
-        //===================== Read the Temp and Pressure from Baro =====================//
-        if (Baro_counter > 200)  // Read baro data at 1Hz... (50 loop runs)
-        {
-          Baro_counter=0; 
-          
-          sen_data.baro_temp = Read_Temperature();
-          sen_data.baro_pres = Read_Pressure();  
-        }
-        
-        
-        //=============================== Read the GPS data ==============================//
-        if (GPS_counter > 50)  // Read GPS data at 1Hz... (50 loop runs)
-        {
-          GPS_counter=0;
+	    //=============================== Read the Compass ===============================//
+	    if(sensors.compass)
+		if (Compass_counter > 20)  // Read compass data at 10Hz... (5 loop runs)
+		{
+		    Compass_counter=0;
+		    Read_Compass();    // Read I2C magnetometer     
+		}
+
+	    //===================== Read the Temp and Pressure from Baro =====================//
+	    if (Baro_counter > 200)  // Read baro data at 1Hz... (50 loop runs)
+	    {
+		Baro_counter=0; 
+
+		if(sensors.temp)
+		    sen_data.baro_temp = Read_Temperature();
+		if(sensors.pressure)
+		    sen_data.baro_pres = Read_Pressure();  
+	    }
+	    //=============================== Read the GPS data ==============================//
+	    if (GPS_counter > 50)  // Read GPS data at 1Hz... (50 loop runs)
+	    {
+		GPS_counter=0;
          
-          //this is were it would go...  
-        }
+		//this is were it would go...  
+	    }
         
         
         
         
         
-        //=================================================================================//
-        //=======================  Calculations for DCM Algorithm  ========================//
-        Matrix_update(); 
-        Normalize();
-        Drift_correction();
-        Euler_angles();
+	    //=================================================================================//
+	    //=======================  Calculations for DCM Algorithm  ========================//
+	    /* Matrix_update();  */
+	    /* Normalize(); */
+	    /* Drift_correction(); */
+	    /* Euler_angles(); */
         
        
        
        
        
-        //=================================================================================//
-        //============================= Data Display/User Code ============================//
-        // Make sure you don't take too long here!
+	    //=================================================================================//
+	    //============================= Data Display/User Code ============================//
+	    // Make sure you don't take too long here!
      
-        //=============================== Read the GPS data ==============================//
-        if (Print_counter > 4)  // 
-        {
-          Print_counter=0;
+	    //=============================== Read the GPS data ==============================//
+	    if (Print_counter > 4)  // 
+	    {
+		Print_counter=0;
          
-           printdata(); 
-        }
-        StatusLEDToggle();
+		printdata(); 
+	    }
+	    StatusLEDToggle();
         
-        digitalWrite(debugPin,LOW);
+	    digitalWrite(debugPin,LOW);
  
-  }
-   
+	}
+    } // running
 }
