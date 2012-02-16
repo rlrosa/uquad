@@ -78,7 +78,11 @@ void HMC58X3::calibrate(unsigned char gain) {
   x_scale=1; // get actual values
   y_scale=1;
   z_scale=1;
-  writeReg(HMC58X3_R_CONFA, 0x010 + HMC_POS_BIAS); // Reg A DOR=0x010 + MS1,MS0 set to pos bias
+  // Set to self-test mode, modifying reg A
+  //   - 15Hz (0x010) data output rate
+  //   - Positive bias (HMC_POS_BIAS)
+  writeReg(HMC58X3_R_CONFA, 0x010 + HMC_POS_BIAS);
+
   setGain(gain);
   float x, y, z, mx=0, my=0, mz=0, t=10;
   

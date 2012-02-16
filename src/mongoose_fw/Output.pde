@@ -30,9 +30,9 @@ void printdata(void)
       Serial.print(ATOMIC_IMU_SEPARATOR);
       Serial.print((int)sen_data.magnetom_z_raw);    
       Serial.print(ATOMIC_IMU_SEPARATOR);
-      Serial.print(sen_data.baro_temp); 
+      Serial.print(sen_data.baro_temp_raw);
       Serial.print(ATOMIC_IMU_SEPARATOR);
-      Serial.print(sen_data.baro_pres); 
+      Serial.print(sen_data.baro_pres_raw);
       Serial.print(ATOMIC_IMU_SEPARATOR);
       Serial.print(ATOMIC_IMU_END);
       Serial.println();

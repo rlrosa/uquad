@@ -148,6 +148,8 @@ struct s_sensor_data
     int magnetom_x_raw;
     int magnetom_y_raw;
     int magnetom_z_raw;
+    unsigned long baro_pres_raw;
+    unsigned int baro_temp_raw;
   
     //This data has been corrected based on the calibration values
     float gyro_x;
