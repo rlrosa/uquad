@@ -32,7 +32,42 @@ int md;
 // so ...Temperature(...) must be called before ...Pressure(...).
 long b5; 
 
+static bool calibration_loaded = false;
+void bmp085Display_Calibration(){
+    if(calibration_loaded)
+    {
+	Serial.println("BMP085 Calibration:");
+	Serial.print("\tac1 =\t");
+	Serial.println(ac1);
+	Serial.print("\tac2 =\t");
+	Serial.println(ac2);
+	Serial.print("\tac3 =\t");
+	Serial.println(ac3);
+	Serial.print("\tac4 =\t");
+	Serial.println(ac4);
+	Serial.print("\tac5 =\t");
+	Serial.println(ac5);
+	Serial.print("\tac6 =\t");
+	Serial.println(ac6);
 
+	Serial.print("\tb1 =\t");
+	Serial.println(b1);
+	Serial.print("\tb2 =\t");
+	Serial.println(b2);
+
+	Serial.print("\tmb =\t");
+	Serial.println(mb);
+	Serial.print("\tmc =\t");
+	Serial.println(mc);
+	Serial.print("\tmd =\t");
+	Serial.println(md);
+    }
+    else
+    {
+	Serial.println("Calibration not loaded from EEPROM...");
+    }
+}
+    
 
 
 // Stores all of the bmp085's calibration values into global variables
@@ -51,6 +86,7 @@ void Init_Baro()
   mb = bmp085ReadInt(0xBA);
   mc = bmp085ReadInt(0xBC);
   md = bmp085ReadInt(0xBE);
+  calibration_loaded = true;
 }
 
 short Read_Temperature()
@@ -169,6 +205,9 @@ unsigned int bmp085ReadUT()
   
   // Read two bytes from registers 0xF6 and 0xF7
   ut = bmp085ReadInt(0xF6);
+
+  sen_data.baro_temp_raw = ut;
+
   return ut;
 }
 
@@ -203,5 +242,7 @@ unsigned long bmp085ReadUP()
   
   up = (((unsigned long) msb << 16) | ((unsigned long) lsb << 8) | (unsigned long) xlsb) >> (8-OSS);
   
+  sen_data.baro_pres_raw = up;
+
   return up;
 }
