@@ -120,11 +120,11 @@ struct sensors_enabled{
     bool temp;
     bool pressure;
 };
-sensors_enabled sensors = {1 || ALL && !ONLY_BMP085,
-			   1 || ALL && !ONLY_BMP085,
-			   1 || ALL && !ONLY_BMP085,
-			   1 || ALL,
-			   1 || ALL};
+sensors_enabled sensors = {ALL && !ONLY_BMP085,
+			   ALL && !ONLY_BMP085,
+			   ALL && !ONLY_BMP085,
+			   ALL,
+			   ALL};
 
 int incomingByte = 0; // for incoming serial data
 bool running = true;
@@ -288,7 +288,7 @@ void print_menu(void){
     Serial.println();
     Serial.println("Commands will enable/disable sensor reading:");
 
-    Serial.println("\t1:\t Exit and run.:");
+    Serial.println("\t#:\t Exit and run.:");
 
     Serial.print("\t2:\t Acc.:\t");
     Serial.print(sensors.acc);
