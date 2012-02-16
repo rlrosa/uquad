@@ -61,7 +61,9 @@ figure()
     %subplot(212)
     %plot(wconv(:,1)); hold on; plot(wconv(:,2),'r'); plot(wconv(:,3),'g'); legend('w_x','w_y','w_z');
     %title('Velocidades angulares en °/s')
-
+figure()
+    plot(t,wconv(:,1)); hold on; plot(t,wconv(:,2),'r'); plot(t,wconv(:,3),'g'); legend('w_x','w_y','w_z'); grid;
+    title('Velocidades angulares en º/s')
 
 %Desplazamiento promediando 10 muestras
 vp=zeros(floor(length(a(:,1))/10),3);
