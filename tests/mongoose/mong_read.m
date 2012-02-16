@@ -1,5 +1,7 @@
-function [a,w] = mong_read(file)
-
+function [a,w,c,b,t] = mong_read(file)
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+% function [a,w,c,b,t] = mong_read(file)
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 F    = fopen(file);
 D    = textscan(F,'%s','delimiter','\t');
 N    = length(D{1});
