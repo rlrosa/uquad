@@ -1,6 +1,6 @@
-function [a,w,c,b,t] = mong_read(file,plotear)
+function [a,w,c,t,b] = mong_read(file,plotear)
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-% function [a,w,c,b,t] = mong_read(file)
+% function [a,w,c,t,b] = mong_read(file)
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 if(nargin < 2)
   plotear = 1;
@@ -15,8 +15,8 @@ Nn   = fix(N/cols); % Cantidad de muestras
 a    = zeros(Nn,3); % Datos del acelerómetro
 w    = zeros(Nn,3); % Datos del giróscopo
 c    = zeros(Nn,3); % Datos del compas
-b    = zeros(Nn,1); % Datos del barómetro
 t    = zeros(Nn,1); % Datos del termómetro
+b    = zeros(Nn,1); % Datos del barómetro
 
 a(:,1)=str2double(D{1}(3:cols:end));
 a(:,2)=str2double(D{1}(4:cols:end));
@@ -27,8 +27,8 @@ w(:,3)=str2double(D{1}(8:cols:end));
 c(:,1)=str2double(D{1}(9:cols:end));
 c(:,2)=str2double(D{1}(10:cols:end));
 c(:,3)=str2double(D{1}(11:cols:end));
-b(:,2)=str2double(D{1}(12:cols:end));
-t(:,3)=str2double(D{1}(13:cols:end));
+t(:,1)=str2double(D{1}(12:cols:end));
+b(:,1)=str2double(D{1}(13:cols:end));
 
 if(plotear)
   figure()
