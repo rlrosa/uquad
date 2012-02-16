@@ -324,18 +324,44 @@ int menu_execute(int command){
 	break;
     case '2':
 	sensors.acc = !sensors.acc;
+	if(!sensors.acc)
+	{
+	    sen_data.accel_x_raw = 0;
+	    sen_data.accel_y_raw = 0;
+	    sen_data.accel_z_raw = 0;
+	}
 	break;
     case '3':
 	sensors.gyro = !sensors.gyro;
+	if(!sensors.gyro)
+	{
+	    sen_data.gyro_x_raw = 0;
+	    sen_data.gyro_y_raw = 0;
+	    sen_data.gyro_z_raw = 0;
+	}
 	break;
     case '4':
 	sensors.compass = !sensors.compass;
+	if(!sensors.compass)
+	{
+	    sen_data.magnetom_x_raw = 0;
+	    sen_data.magnetom_y_raw = 0;
+	    sen_data.magnetom_z_raw = 0;
+	}
 	break;
     case '5':
 	sensors.temp = !sensors.temp;
+	if(!sensors.temp)
+	{
+	    sen_data.baro_temp_raw = 0;
+	}
 	break;
     case '6':
 	sensors.pressure = !sensors.pressure;
+	if(!sensors.pressure)
+	{
+	    sen_data.baro_pres_raw = 0;
+	}
 	break;
     case '7':
 	bmp085Display_Calibration();
