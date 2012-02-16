@@ -108,6 +108,9 @@ int SENSOR_SIGN[9] = { 1,1,1,1,1,1,1,1,1};  //Correct directions x,y,z - gyros, 
 #define Start_SensorOffsets    0        //offset data at start of EEPROM
 #define Size_SensorOffsets     36       //the offset data is 12 bytes long 
 
+// Special modes
+#define ONLY_BMP085 0
+
 // sensors
 #define ALL 1
 struct sensors_enabled{
@@ -117,7 +120,11 @@ struct sensors_enabled{
     bool temp;
     bool pressure;
 };
-sensors_enabled sensors = {1 || ALL,1 || ALL,1 || ALL,1 || ALL,1 || ALL};
+sensors_enabled sensors = {1 || ALL && !ONLY_BMP085,
+			   1 || ALL && !ONLY_BMP085,
+			   1 || ALL && !ONLY_BMP085,
+			   1 || ALL,
+			   1 || ALL};
 
 int incomingByte = 0; // for incoming serial data
 bool running = true;
@@ -303,6 +310,9 @@ void print_menu(void){
     Serial.print(sensors.pressure);
     Serial.println();
 
+    Serial.print("\t7:\t Show barometer calibration.");
+    Serial.println();
+
     Serial.print("\tCommand:");
 }
 
@@ -326,6 +336,9 @@ int menu_execute(int command){
 	break;
     case '6':
 	sensors.pressure = !sensors.pressure;
+	break;
+    case '7':
+	bmp085Display_Calibration();
 	break;
     default:
 	return -1;
@@ -399,7 +412,7 @@ void loop() //Main Loop
 		}
 
 	    //===================== Read the Temp and Pressure from Baro =====================//
-	    if (Baro_counter > 200)  // Read baro data at 1Hz... (50 loop runs)
+	    if (Baro_counter > 200 || ONLY_BMP085)  // Read baro data at 1Hz... (50 loop runs)
 	    {
 		Baro_counter=0; 
 
@@ -436,7 +449,7 @@ void loop() //Main Loop
 	    // Make sure you don't take too long here!
      
 	    //=============================== Read the GPS data ==============================//
-	    if (Print_counter > 4)  // 
+	    if (Print_counter > 4 || ONLY_BMP085)  // 
 	    {
 		Print_counter=0;
          
