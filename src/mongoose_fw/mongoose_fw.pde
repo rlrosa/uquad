@@ -319,7 +319,7 @@ void print_menu(void){
 int menu_execute(int command){
     switch (command)
     {
-    case '1':
+    case '#':
 	running = true;
 	break;
     case '2':
@@ -384,7 +384,7 @@ void loop() //Main Loop
 	    goto sensor_reading;
 	if(running)
 	{
-	    if(incomingByte == '0')
+	    if(incomingByte == '$')
 		// stop!
 		running = false;
 	}
