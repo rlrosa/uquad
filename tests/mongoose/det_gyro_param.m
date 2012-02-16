@@ -39,8 +39,8 @@ for i=1:3
                  k=k+1; 
             end
             str=['gyro/logs/' eje vel otro theta];
-            [a,w]=mong_read(str);
-            wm(:,k)=[mean(w(:,1)); mean(w(:,2));mean(w(:,3))];
+            [a,w]=mong_read(str,0);
+            wm(:,k)=pi/180*[mean(w(:,1)); mean(w(:,2));mean(w(:,3))];
             if strcmp(vel,'v1');
                 veloc=num2str(2*pi*2.2433);
             elseif strcmp(vel,'v2');

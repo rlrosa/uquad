@@ -3,7 +3,7 @@ function w=gyro_teo(eje,vel,otro,theta)
 vel=str2num(vel);
 syms ang1 ang2 ang3 Rx Ry Rz
 t=str2num(theta)*pi/180;
-p=0*pi/180;
+p=0.5*pi/180;
 
 Rx=[1 0 0;
     0 cos(ang1) sin(ang1);
