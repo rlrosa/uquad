@@ -1,7 +1,11 @@
-function [a,w,c,b,t] = mong_read(file)
+function [a,w,c,b,t] = mong_read(file,plotear)
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 % function [a,w,c,b,t] = mong_read(file)
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+if(nargin < 2)
+  plotear = 1;
+end
+
 F    = fopen(file);
 D    = textscan(F,'%s','delimiter','\t');
 N    = length(D{1});
@@ -26,7 +30,8 @@ c(:,3)=str2double(D{1}(11:cols:end));
 b(:,2)=str2double(D{1}(12:cols:end));
 t(:,3)=str2double(D{1}(13:cols:end));
 
-figure()
+if(plotear)
+  figure()
     subplot(311)
     plot(a(:,1)); hold on; plot(a(:,2),'r'); plot(a(:,3),'g'); legend('a_x','a_y','a_z');
     title('Salida del acelerómetro')
@@ -36,3 +41,4 @@ figure()
     subplot(313)
     plot(c(:,1)); hold on; plot(c(:,2),'r'); plot(c(:,3),'g'); legend('w_x','w_y','w_z');
     title('Salida del magnetómetro')
+end
