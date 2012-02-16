@@ -23,6 +23,17 @@ figure
     ylabel('\fontsize{13}Velocidad angular (rad/s)')
     legend('\fontsize{14}{\color{blue}D0}','\fontsize{14}{\color{red}D2}','\fontsize{14}{\color{green}D4}','\fontsize{14}D6','location','southeast')
 
+    
+ figure
+    plot(i2c,x(:,4)-mean(x(:,3:6)')','s-'); hold on; 
+    plot(i2c,x(:,5)-mean(x(:,3:6)')','r+-');
+    plot(i2c,x(:,6)-mean(x(:,3:6)')','g*-');
+    plot(i2c,x(:,3)-mean(x(:,3:6)')','k^-');
+    title('\fontsize{16}Comando i^2c vs Error relativo en la velocidad angular')
+    xlabel('\fontsize{13}Comando i^2c')
+    ylabel('\fontsize{13}Error relativo en la velocidad angular (rad/s)')
+    legend('\fontsize{14}{\color{blue}D0}','\fontsize{14}{\color{red}D2}','\fontsize{14}{\color{green}D4}','\fontsize{14}D6','location','northwest')
+    
 %% Fuerza vs. velocidad angular    
 
 wtest = 0:450;
@@ -52,14 +63,14 @@ i2ctest = 0:250;
 fprintf('\ni2c vs. Fuerza\n')
 [p_quad_FI,Ftest_cuad_FI,e_cuad_FI,sigma_cuad_FI,p_cub_FI,Ftest_cub_FI,e_cub_FI,sigma_cub_FI] = curv_fit(i2c,Fm,i2ctest);
 
-B_lin      = [i2c ones(size(i2c,1),1)];
-p_lin      = (B_lin'*B_lin)\(B_lin'*Fm);           % parametros del modelo cuadratico
-Ftest_lin  = p_lin(1)*i2ctest+p_lin(2)*ones(size(i2ctest,1),1);
+%B_lin      = [i2c];
+%p_lin      = (B_lin'*B_lin)\(B_lin'*Fm);           % parametros del modelo cuadratico
+%Ftest_lin  = p_lin(1)*i2ctest;
 
-e_lin      = Fm-(p_lin(1)*w+p_lin(2)*ones(size(w,1),1));
-e_lin_prom = mean(e_lin);
-sigma_lin  = std(e_lin);
-fprintf('\nModelo Lineal\n\tError: %d\n\tSigma: %d',e_lin_prom,sigma_lin)
+%e_lin      = Fm-(p_lin(1)*w);
+%e_lin_prom = mean(e_lin);
+%sigma_lin  = std(e_lin);
+%fprintf('\nModelo Lineal\n\tError: %d\n\tSigma: %d',e_lin_prom,sigma_lin)
 
 % PLOT i2c vs. FUERZA
 figure
@@ -68,10 +79,10 @@ figure
     xlabel('\fontsize{13}Comando i^2c')
     ylabel('\fontsize{13}Fuerza (N)')
     hold on
-    plot(i2ctest,Ftest_lin,'k')
+    %plot(i2ctest,Ftest_lin,'k')
     plot(i2ctest,Ftest_cuad_FI,'r')
-    plot(i2ctest,Ftest_cub_FI,'g')
-    legend('\fontsize{13}Medias experimentales','\fontsize{13}Curva modelo lineal','\fontsize{13}Curva modelo cuadrático',...
+    plot(i2ctest,Ftest_cub_FI)
+    legend('\fontsize{13}Medias experimentales','\fontsize{13}Curva modelo cuadrático',...
         '\fontsize{13}Curva modelo cúbico','location','northwest')
 
 %% i2c vs. Velocidad Angular

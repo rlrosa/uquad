@@ -2,7 +2,7 @@ function sim_lazo_abierto
 global ti tf t x0 y0 z0 psi0 phi0 theta0 vq10 vq20 vq30 wq10 wq20 wq30 X0 w1 w2 w3 w4 
 
 %%%%%%%%Constantes del sistema%%%%%%%%%%%%%%%%%%%%%%
-assignin('base','g',-9.81); %Constante gravitacional
+assignin('base','g',9.81); %Constante gravitacional
 assignin('base','L',1); %Largo de los brazos del quadcopter en metros
 assignin('base','M',1); %Masa del quadcopter en kilogramos
 %Elementos relevantes del tensor de inercia en kilogramos metros cuadrados

@@ -64,6 +64,27 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define HMC58X3_R_IDB 11
 #define HMC58X3_R_IDC 12
 
+// Data output rate (Configuration reg A)
+#define HMC58X3_RA_DATA_RATE_POS 2
+enum hmc568x3_data_rates{
+    hz_0_75 = 0, /* 0.75 Hz */
+    hz_1_5,      /* 1.5 Hz  */
+    hz_3,        /* 3.0 Hz  */
+    hz_7_5,      /* 7.5 Hz  */
+    hz_15_0,     /* 15 Hz   */
+    hz_30_0,     /* 30 Hz   */
+    hz_75_0      /* 75 Hz   */
+};
+
+#define HMC58X3_RA_DATA_RATE_DEFAULT hz_15_0 // 15 Hz
+
+// Number of samples to average before outputting data
+// (Configuration reg A)
+#define HMC58X3_RA_AVG_POS 5
+#define HMC58X3_RA_AVG_1 (0x0 << HMC58X3_RA_AVG_POS)
+#define HMC58X3_RA_AVG_2 (0x1 << HMC58X3_RA_AVG_POS)
+#define HMC58X3_RA_AVG_4 (0x2 << HMC58X3_RA_AVG_POS)
+#define HMC58X3_RA_AVG_8 (0x3 << HMC58X3_RA_AVG_POS)
 
 class HMC58X3
 {
