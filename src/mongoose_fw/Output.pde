@@ -10,7 +10,7 @@ void printdata(void)
 
       Serial.print(ATOMIC_IMU_INIT);
       Serial.print(ATOMIC_IMU_SEPARATOR);
-      Serial.print(G_Dt_ms);
+      Serial.print(G_Dt_us);
       Serial.print(ATOMIC_IMU_SEPARATOR);
       Serial.print(sen_data.accel_x_raw);
       Serial.print(ATOMIC_IMU_SEPARATOR);
