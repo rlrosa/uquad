@@ -4,53 +4,24 @@ close all
 clear all
 % clc
 
-wm=zeros(3,13);
-wt=zeros(3,13);
-
-k=1;
-str=['gyro/logs/x00y00'];
-[a,w]=mong_read(str);
-wm(:,k)=[mean(w(:,1)); mean(w(:,2));mean(w(:,3))];
-wt(:,k)=gyro_teo('x','00','y','00');  
-
-for i=1:3
-    if i==1
-        eje='x';
-        otro='y';
-    elseif i==2
-        eje='y';
-        otro='z';
+[archivos,N]=cargo_nombres_gyro();
+wm=zeros(3,N);
+wt=zeros(3,N);
+for i=1:N
+    [a,w]=mong_read(archivos{i},0);
+    wm(:,i)=pi/180*[mean(w(:,1)); mean(w(:,2));mean(w(:,3))];
+    if strcmp(archivos{i}(12:13),'v1');
+        veloc=num2str(2*pi*2.2433);
+    elseif strcmp(archivos{i}(12:13),'v2');            
+        veloc=num2str(2*pi*4.5383);
+    elseif strcmp(archivos{i}(12:13),'v3');            
+        veloc=num2str(2*pi*0.556);
+    elseif strcmp(archivos{i}(12:13),'00');            
+        veloc=num2str(0);    
     else
-        eje='z';
-        otro='x';
+        fprintf('\nBad name: det_gyro param - linea 22\n');
     end
-    for j=1:2
-        if j==1
-           vel='v1';
-        elseif j==2
-            vel='v2';
-        end        
-        for z=1:2
-            if z==1
-                theta='00';
-                k=k+1;
-            else
-                theta='30';
-                 k=k+1; 
-            end
-            str=['gyro/logs/' eje vel otro theta];
-            [a,w]=mong_read(str,0);
-            wm(:,k)=pi/180*[mean(w(:,1)); mean(w(:,2));mean(w(:,3))];
-            if strcmp(vel,'v1');
-                veloc=num2str(2*pi*2.2433);
-            elseif strcmp(vel,'v2');
-                veloc=num2str(2*pi*4.5383);
-            else
-                fprintf('\nBad name: det_gyro param - linea 49\n');
-            end
-            wt(:,k)=gyro_teo(eje,veloc,otro,theta);  
-        end
-    end
+    wt(:,i)=gyro_teo(archivos{i}(11),veloc,strcmp(archivos{i}(12:13),'v2'),archivos{i}(15:16),~strcmp(archivos{i}(12:13),'v3'));  
 end
 
 
