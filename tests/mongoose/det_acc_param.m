@@ -43,7 +43,7 @@ for i=1:3
                  k=k+1; 
             end
             str=['acc/logs/' eje theta otro phi '.txt'];
-            [a,w]=mong_read(str);
+            [a,w,c,b,t]=mong_read(str,0);
             am(:,k)=[mean(a(:,1)); mean(a(:,2));mean(a(:,3))];
             at(:,k)=acc_teo(eje,theta,phi);  
         end
@@ -66,7 +66,7 @@ am(:,21)=[];
 
 x0=[1/(3.9e-3*g) 1/(3.9e-3*g) 1/(3.9e-3*g) 0 0 0 0 0 0 0 0 0];
 
-[X,RESNORM,RESIDUAL,EXITFLAG]=lsqnonlin(@cost,x0,[],[],optimset('MaxFunEvals',10000));
+[X,RESNORM,RESIDUAL,EXITFLAG]=lsqnonlin(@acc_cost,x0,[],[],optimset('MaxFunEvals',10000));
 
 u=mean(RESIDUAL)
 %sigma=sqrt(RESNORM/(length(a(1,:))-1));
