@@ -110,6 +110,12 @@ int SENSOR_SIGN[9] = { 1,1,1,1,1,1,1,1,1};  //Correct directions x,y,z - gyros, 
 
 // Special modes
 #define ONLY_BMP085 0
+#define DEBUG 0
+
+// Debug data
+#if DEBUG
+static bool print_raw_bmp085 = false;
+#endif
 
 // sensors
 #define ALL 1
@@ -313,6 +319,12 @@ void print_menu(void){
     Serial.print("\t7:\t Show barometer calibration.");
     Serial.println();
 
+#if DEBUG
+    Serial.print("\tq:\t Print BMP085 raw.");
+    Serial.print(print_raw_bmp085);
+    Serial.println();
+#endif
+
     Serial.print("\tCommand:");
 }
 
@@ -366,6 +378,11 @@ int menu_execute(int command){
     case '7':
 	bmp085Display_Calibration();
 	break;
+#if DEBUG
+    case 'q':
+	print_raw_bmp085 = !print_raw_bmp085;
+	break;
+#endif
     default:
 	return -1;
     }

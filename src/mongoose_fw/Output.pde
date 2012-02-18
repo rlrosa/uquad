@@ -34,6 +34,15 @@ void printdata(void)
       Serial.print(ATOMIC_IMU_SEPARATOR);
       Serial.print(sen_data.baro_pres);
       Serial.print(ATOMIC_IMU_SEPARATOR);
+#if DEBUG
+      if(print_raw_bmp085)
+      {
+	  Serial.print(sen_data.baro_temp_raw);
+	  Serial.print(ATOMIC_IMU_SEPARATOR);
+	  Serial.print(sen_data.baro_pres_raw);
+	  Serial.print(ATOMIC_IMU_SEPARATOR);
+      }
+#endif
       Serial.print(ATOMIC_IMU_END);
       Serial.println();
 
