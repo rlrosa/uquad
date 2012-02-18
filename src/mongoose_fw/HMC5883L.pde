@@ -18,7 +18,7 @@ void Init_Compass()
   magn.init(false); // Dont set mode yet, we'll do that later on.
   // Calibrate HMC using self test, not recommended to change the gain after calibration.
   // Will apply a ~1.1Ga field to the sensor, so gain>1 to avoid clipping.
-  magn.calibrate(1); // valid: 0-7, 7 not recommended.
+  magn.calibrate(0); // valid: 0-7, 7 not recommended.
   // Single mode conversion was used in calibration, now set continuous mode
   magn.setMode(0);
 }
