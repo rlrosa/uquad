@@ -35,7 +35,7 @@ En la presente sección se utilizarán las herramientas de la mecánica clásica a f
 
 \section{Hipótesis de trabajo}
 
-Previo al desarrollo del modelo es muy importante esclarecer las hipótesis en las cuales opera el cuadricóptero. Una vez definidas las mismas se puede tener presente que aproximaciones son factibles de realizar.
+Previo al desarrollo del modelo es muy importante esclarecer las hipótesis en las cuales opera el cuadricóptero. Una vez definidas las mismas seremos capaces de realizar las simplificaciones pertinentes.
 
 
 
@@ -44,25 +44,59 @@ No debe perderse de vista que el cuadricóptero con el que se trabaja fue diseñad
 %TODO
 
 \subsection{La Tierra como sistema de referencia inercial}
-Evidentemente la Tierra {\bf no} es un sistema de referencia inercial ya que la misma se encuentra sometida a la traslación en torno al Sol y a una rotación en sobre su eje. El radio promedio de la órbita Heliocéntrica($R_H$) es de $1.5\times10^8Km$, dicha órbita se recorre en 365 días lo que nos da una velocidad promedio de:
+Evidentemente la Tierra {\bf no} es un sistema de referencia inercial ya que la misma se encuentra sometida a la traslación en torno al Sol y a una rotación en sobre su eje. Supongamos una partícula que se encuentra en movimiento relativo a la Tierra. Su aceleración respecto de un sistema verdaderamente inercial puede escribirse como:
+\begin{equation}
+\vec{a}=\vec{a\prime}+\vec{a_T} +\vec{a_C}
+\end{equation}.
+
+\begin{equation}
+\vec{a_T}=\vec{a_{O\prime}}+\dot{\vec{\omega}}\times\vec{r\prime}+\vec{\omega}\times (\vec{\omega}\times\vec{r\prime})
+\end{equation}
+
+\begin{equation}
+\vec{a_C}=2\vec{\omega}\times\vec{v\prime}
+\end{equation}
+En las ecuaciones anteriores $\vec{a\prime}$ es la aceleración de la partícula en el sistema relativo, $\vec{v\prime}$ es la velocidad relativa de la partícula, $\vec{r\prime}$ la posición relativa, $\vec{\omega}$ es la velocidad angular de la Tierra y $\vec{a_{O\prime}}$ es la aceleración del centro de masa de la Tierra.
+
+El objetivo es ahora analizar si es posible considerar que $\vec{a}\approx\vec{a\prime}$. Si esto último se cumple se puede aproximar a la Tierra como un sistema inercial. El radio promedio de la órbita Heliocéntrica($R_H$) es de $1.5\times10^8Km$, dicha órbita se recorre en 365 días lo que nos da una velocidad promedio de:
 
 $$V_T=\frac{1.5\times10^{11}m}{365\times24\times60\times60s}\approx4.8\times10^3ms^{-1}$$
-Esta velocidad implica que la aceleración de transporte de la Tierra es de aproximadamente:
+Esta velocidad implica que la aceleración del centro de masa de la Tierra($\vec{a_{O\prime}}$) es de aproximadamente:
 
-$a_T=\frac{V_T^2}{R_H}\approx15.36\times10^{-5}ms^{-2}$
+$$a_{O\prime}=\frac{V_T^2}{R_H}\approx15.36\times10^{-5}ms^{-2}$$
+
+Por otra parte sabemos que la Tierra rota sobre su eje una vez cada 24 horas con velocidad angular constante, tenemos así que:
+
+$$
+\omega=\frac{2\pi}{24\times60\times60s}\approx7.3\times10^{-5}rad s^{-1}
+$$
+
+Finalmente debemos considerar el radio promedio de la Tierra($R_T=$), ya que las alturas que alcanzará nuestro sistema son despreciables respecto del radio de la Tierra. 
+%TODO Radio de la Tierra y terminar
 \subsection{Curvatura de la Tierra}
-
+%TODO
 
 \subsection{Atracción gravitacional}
+Todos los objetos se encuentran relacionados entre sí por medio de la Fuerza de atracción gravitacional. Sin embargo en las cercanías de la Tierra la atracción gravitacional con el resto de los objetos es completamente despreciable. Dicha fuerza vale:
 
-\subsection{Presión atmosférica}
+$$
+F_G=G\frac{M_Tm}{d^2}=G\frac{M_Tm}{(R_T+h)^2} 
+$$ 
+Donde $G$ es la constante gravitacional y h la altura a la cual se encuentra una partícula. 
+Como ya se analizo anteriormente las alturas a las cuales se desenvolverá el cuadricóptero son despreciables respecto del radio de la Tierra. Por lo tanto la ecuación anterior queda:
+
+$$
+F_G\approx\frac{M_Tm}{R_T^2}=gm
+$$
+
+donde g es la constante gravitacional de la Tierra, su valor es aproximadamente $9.81m^{s-2}$
 
 \subsection{Fuerzas aerodinámicas}
-
+Debido a las bajas velocidades que logrará el cuadricóptero se decidió despreciar las fuerzas de tipo aerodinámicas, salvo aquellas responsables de las fuerzas y momentos de las hélices. Estas fuerzas serán analizadas con mayor profundidad en la sección \ref{FYT}.
 \section{Sistema de referencia}
 
 Como ya se mencionó, a lo largo del presente desarrollo se trabajará constantemente con dos sistemas de referencia: uno inercial\footnote{En esta sección se consideran sistemas inerciales en el sentido clásico} solidario a la tierra ($S_I$) y otro solidario al cuadcóptero ($S_q$) como se muestra en la figura \ref{fig:quad}. El sistema $S_I$ es un sistema local donde la dirección $\vec{i}$, $\vec{j}$ y $\vec{k}$ corresponden a las direcciones Este, Norte y hacia arriba.
-El sistema $S_q$ se puede obtener realizando tres rotaciones compuestas del sistema $S_I$, dichas rotaciones se muestran en la figura \ref{fig:rotaciones}. Los ángulos $\theta, \phi$ y $\psi$ son conocidos como ángulos de Euler.
+El sistema $S_q$ se puede obtener realizando tres rotaciones compuestas del sistema $S_I$, dichas rotaciones se muestran en la figura \ref{fig:rotaciones}. Los ángulos $\theta, \varphi$ y $\psi$ son conocidos como ángulos de Euler.
 
 \begin{figure} [h!]
   \centering
@@ -89,9 +123,9 @@ H_I^1=\left(\begin{array}{ccc}
   -\sin\theta&\cos\theta&0\\
   0&0&1\\
   \end{array}\right)   H_1^2=\left(\begin{array}{ccc}
-  \cos\phi&0& -\sin\phi\\
+  \cos\varphi&0& -\sin\varphi\\
   0&1&0\\
-  \sin\phi&0&\cos\phi\\
+  \sin\varphi&0&\cos\varphi\\
   
   \end{array}\right)  H_2^q=\left(\begin{array}{ccc}
    1&0&0\\  
@@ -108,9 +142,9 @@ La transformación de las coordenadas del sistema inercial al sistema solidario a
 \begin{footnotesize}
 $$
 H_I^q=H_2^q.H_1^2.H_I^1=\left(\begin{array}{ccc}
-\cos\phi\cos\theta& \cos\phi\sin\theta& -\sin\phi\\
- \cos\theta\sin\phi\sin\psi -\cos\psi\sin\theta &\cos \psi \cos \theta+ \sin\phi\sin\psi\sin\theta& \cos\phi\sin\psi\\
-\sin\psi\sin\theta + \cos\psi\cos\theta\sin\phi&  \cos\psi\sin\phi\sin\theta- \cos\theta\sin\psi & \cos\phi\cos\psi\\
+\cos\varphi\cos\theta& \cos\varphi\sin\theta& -\sin\varphi\\
+ \cos\theta\sin\varphi\sin\psi -\cos\psi\sin\theta &\cos \psi \cos \theta+ \sin\varphi\sin\psi\sin\theta& \cos\varphi\sin\psi\\
+\sin\psi\sin\theta + \cos\psi\cos\theta\sin\varphi&  \cos\psi\sin\varphi\sin\theta- \cos\theta\sin\psi & \cos\varphi\cos\psi\\
 \end{array} \right)
 $$
 \end{footnotesize}
@@ -121,13 +155,13 @@ $$
 \section{Cinemática}
 Además de la relación entre las coordenadas de un sistema y del otro, es interesante conocer la relación que existe entre la velocidad angular del sistema y las derivadas de los ángulos de Euler. Sea $\vec{\omega}$ la velocidad angular del cuadricóptero(y por ende la del sistema $S_q$). La expresión de la velocidad angular en el sistema de referencia del cuadricóptero es la siguiente:
 $$
-\vec{\omega}=w_{q1}\vec{i_q}+w_{q2}\vec{j_q}+w_{q3}\vec{k_q}
+\vec{\omega}=w_{q_x\prime}\vec{i_q}+w_{q_y\prime}\vec{j_q}+w_{q_z\prime}\vec{k_q}
 $$ 
-Donde $w_{q1}$, $w_{q2}$ y $w_{q3}$ son las proyecciones ortogonales de la velocidad angular en el sistema $S_q$.
+Donde $w_{q_x\prime}$, $w_{q_y\prime}$ y $w_{q_z\prime}$ son las proyecciones ortogonales de la velocidad angular en el sistema $S_q$.
 Por como fue construido el sistema de referencia solidario al cuadricóptero y utilizando el teorema de adición de velocidades angulares, se deduce trivialmente que la velocidad angular del cuadricóptero puede escribirse como:
 
 $$
-\vec{\omega}=\dot{\theta}\vec{k}+\dot{\phi}\vec{j_1}+\dot{\psi}\vec{i_2}
+\vec{\omega}=\dot{\theta}\vec{k}+\dot{\varphi}\vec{j_1}+\dot{\psi}\vec{i_2}
 $$
 
 El vector $\vec{i_2}$ es invariante respecto de la tercer rotación, es decir que $\vec{i_2}=\vec{i_q}$. Por otra parte, multiplicando los vectores $\vec{k}$ y $\vec{j_1}$ por las matrices $H_1^2.H_2^q$ y $H_2^q$ respectivamente se puede obtener la velocidad angular del cuadricóptero en el sistema de coordenadas referido a el. Operando se obtiene:
@@ -135,7 +169,7 @@ El vector $\vec{i_2}$ es invariante respecto de la tercer rotación, es decir que
 \begin{footnotesize}
 
 $$
-w_{q1}\vec{i_q}+w_{q2}\vec{j_q}+w_{q3}\vec{k_q}= (\dot{\psi}  +    \dot{\theta}\sin\phi)\vec{i_q}+(\dot{\phi}\cos\psi + \dot{\theta}\cos\phi \sin\psi)\vec{j_q}+(\dot{\theta}\cos\phi \cos\psi -  \dot{\phi}\sin\psi)\vec{k_q}
+w_{q_x\prime}\vec{i_q}+w_{q_y\prime}\vec{j_q}+w_{q_z\prime}\vec{k_q}= (\dot{\psi}  +    \dot{\theta}\sin\varphi)\vec{i_q}+(\dot{\varphi}\cos\psi + \dot{\theta}\cos\varphi \sin\psi)\vec{j_q}+(\dot{\theta}\cos\varphi \cos\psi -  \dot{\varphi}\sin\psi)\vec{k_q}
 $$
 
 
@@ -146,12 +180,12 @@ De esta ecuación se obtienen tres relaciones entre las velocidades angulares res
 $$
 \left(\begin{array}{c}
 \dot{\psi}\\
-\dot{\phi}\\
+\dot{\varphi}\\
 \dot{\theta}\\
 \end{array}\right)=\left(\begin{array}{c}
-\omega_{q1} + \omega_{q3}\tan\phi \cos\psi + \omega_{q2}\tan\phi \sin\psi\\
-\omega_{q2}\cos \psi - \omega_{q3}\sin\psi\\
-\omega_{q3} \frac{\cos\psi}{\cos\phi}  + \omega_{q2}\frac{\sin\psi}{\cos\phi} \\
+\omega_{q_x\prime} + \omega_{q_z\prime}\tan\varphi \cos\psi + \omega_{q_y\prime}\tan\varphi \sin\psi\\
+\omega_{q_y\prime}\cos \psi - \omega_{q_z\prime}\sin\psi\\
+\omega_{q_z\prime} \frac{\cos\psi}{\cos\varphi}  + \omega_{q_y\prime}\frac{\sin\psi}{\cos\varphi} \\
 \end{array}\right)
 $$
 
@@ -159,7 +193,7 @@ Realizando un razonamiento similar se deduce la relación que existe entre la vel
 $$
 \vec{v}=\dot{\vec{r}}=(x\vec{i}+y\vec{j}+z\vec{k})\prime
 $$
-Al igual que con la velocidad angular se puede escribir la velocidad absoluta del cuadricóptero en el sistema $S_q$. Lo que se tiene es que $v=v_{q1}\vec{iq}+v_{q2}\vec{jq}+v_{q3}\vec{kq}$. Donde $v_{q1}$,$v_{q2}$ y $v_{q3}$ son las proyecciones ortogonales de la velocidad absoluta en el sistema solidario al cuadricóptero. Igualando ambas expresiones de la velocidad se obtiene: 
+Al igual que con la velocidad angular se puede escribir la velocidad absoluta del cuadricóptero en el sistema $S_q$. Lo que se tiene es que $v=v_{q_z\prime}\vec{iq}+v_{q_y\prime}\vec{jq}+v_{q_z\prime}\vec{kq}$. Donde $v_{q_z\prime}$,$v_{q_y\prime}$ y $v_{q_z\prime}$ son las proyecciones ortogonales de la velocidad absoluta en el sistema solidario al cuadricóptero. Igualando ambas expresiones de la velocidad se obtiene: 
 
 $$
 \dot{x}\vec{i}+\dot{y}\vec{j}+\dot{z}\vec{k} = v1\vec{i_q}+v2\vec{j_q}+v3\vec{k_q}
@@ -175,9 +209,9 @@ $$\left( \begin{array}{c}
 \dot{y}\\
 \dot{z}
 \end{array}  \right) = \left( \begin{array}{c}
-v_{q1} \cos \phi \cos \theta + v_{q2} ( \cos \theta \sin \phi \sin \psi-\cos \phi \sin \theta ) + v_{q3}(\sin \psi \sin \theta + \cos \psi \cos \theta \sin \phi)  \\
-v_{q1} \cos \phi \sin \theta + v_{q2} (\cos \psi \cos \theta + \sin \theta \sin \phi \sin \psi) + v_{q3}( \cos \psi \sin \theta \sin \phi-\cos \theta \sin \psi ) \\
--v_{q1} \sin \phi  + v_{q2} \cos \phi \sin \psi  + v_{q3}\cos \phi \cos \psi \\
+v_{q_z\prime} \cos \varphi \cos \theta + v_{q_y\prime} ( \cos \theta \sin \varphi \sin \psi-\cos \varphi \sin \theta ) + v_{q_z\prime}(\sin \psi \sin \theta + \cos \psi \cos \theta \sin \varphi)  \\
+v_{q_z\prime} \cos \varphi \sin \theta + v_{q_y\prime} (\cos \psi \cos \theta + \sin \theta \sin \varphi \sin \psi) + v_{q_z\prime}( \cos \psi \sin \theta \sin \varphi-\cos \theta \sin \psi ) \\
+-v_{q_z\prime} \sin \varphi  + v_{q_y\prime} \cos \varphi \sin \psi  + v_{q_z\prime}\cos \varphi \cos \psi \\
 \end{array} \right)  $$
 \end{footnotesize} 
 
@@ -197,20 +231,20 @@ $$\frac{d\vec{A}}{dt} =\frac{d\prime\vec{A}}{dt}+\vec{\Omega}\times\vec{A} $$
 
 En la ecuación anterior $\frac{d}{dt}$ representa la derivada temporal, mientras que $\frac{d\prime}{dt}$ representa la derivada temporal respecto del sistema móvil. Por otra parte $\vec{\Omega}$ es la velocidad angular del sistema móvil respecto al inercial. Operando se obtiene: 
 
-$$\vec{a} = (\dot{v_{q1}}+v_{q3} \omega_{q2} - v_{q2} \omega_{q3} )\vec{i_q} + (\dot{v_{q2}}+v_{q1} \omega_{q3} - v_{q3} \omega_{q1} )\vec{j_q}+(\dot{v_{q3}}+v_{q2} \omega_{q1} - v_{q1} \omega_{q2} )\vec{k_q} $$
+$$\vec{a} = (\dot{v_{q_z\prime}}+v_{q_z\prime} \omega_{q_y\prime} - v_{q_y\prime} \omega_{q_z\prime} )\vec{i_q} + (\dot{v_{q_y\prime}}+v_{q_z\prime} \omega_{q_z\prime} - v_{q_z\prime} \omega_{q_x\prime} )\vec{j_q}+(\dot{v_{q_z\prime}}+v_{q_y\prime} \omega_{q_x\prime} - v_{q_z\prime} \omega_{q_y\prime} )\vec{k_q} $$
 
 
 
 Operando se puede reescribir la primer cardinal de la siguiente forma:
 
 $$
-\left(\begin{array}{c}\dot{v_{q1}}\\
-\dot{v_{q2}}\\
-\dot{v_{q3}}\\
+\left(\begin{array}{c}\dot{v_{q_z\prime}}\\
+\dot{v_{q_y\prime}}\\
+\dot{v_{q_z\prime}}\\
 \end{array} \right) = \left(\begin{array}{c}
-v_{q2} \omega_{q3} - v_{q3} \omega_{q2}	\\
-v_{q3} \omega_{q1} - v_{q1} \omega_{q3}\\
-v_{q1} \omega_{q2} - v_{q2} \omega_{q1}\\
+v_{q_y\prime} \omega_{q_z\prime} - v_{q_z\prime} \omega_{q_y\prime}	\\
+v_{q_z\prime} \omega_{q_x\prime} - v_{q_z\prime} \omega_{q_z\prime}\\
+v_{q_z\prime} \omega_{q_y\prime} - v_{q_y\prime} \omega_{q_x\prime}\\
 \end{array}\right) + \sum_{i=1}^4 F_{ext} 
 $$
 
@@ -255,27 +289,28 @@ Tanto las velocidades angulares como los tensores de inercia que componen la ecu
 $$\frac{d\vec{A}}{dt} =\frac{d\prime\vec{A}}{dt}+\vec{\Omega}\times\vec{A} $$
 
 Lo que se obtiene de dicha derivada es:
+$$
+\frac{d\vec{L_Q}}{dt} = \Pi_{O\prime}^{\left\lbrace\vec{i_q}, \vec{j_q}, \vec{k_q}\right\rbrace}\dot{\omega_q}+\Pi_{O\prime_{Mx}}^{\left\lbrace\vec{i_q}, \vec{j_q}, \vec{k_q}\right\rbrace} (\dot{\omega_1} +\dot{\omega_3})\vec{k\prime}-\Pi_{O\prime_{My}}^{\left\lbrace\vec{i_q}, \vec{j_q}, \vec{k_q}\right\rbrace}(\dot{\omega_2}+\dot{\omega_4})\vec{k\prime}+$$
+$$+\vec{\omega_q}\times(\Pi_{O\prime}^{\left\lbrace \vec{i_q}, \vec{j_q}, \vec{k_q} \right\rbrace}\vec{\omega_q}+\Pi_{O\prime_{Mx}}^{\left\lbrace\vec{i_q}, \vec{j_q}, \vec{k_q}\right\rbrace}(\omega_1+\omega_3)\vec{k\prime}-\Pi_{O\prime_{My}}(\omega_2+\omega_4)\vec{k\prime})$$
 
-$$\frac{d\vec{L_Q}}{dt} = \Pi_{O\prime}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}\dot{\vec{\omega_q}}+\Pi_{O\prime_{Mx}}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}} (\dot{\omega_1} +\dot{\omega_3})\vec{k\prime}-\Pi_{O\prime_{My}}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}(\dot{\omega_2}+\dot{\omega_2})\vec{k\prime}+ $$
-$$+\vec{\omega_q}\times(\Pi_{O\prime}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}\vec{\omega_q}+\Pi_{O\prime_{Mx}}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}(\omega_1+\omega_3)\vec{k\prime}-\Pi_{O\prime_{My}}(\omega_2+\omega_4)\vec{k\prime})$$ \\
-
-A partir del cálculo de esta derivada y de los momentos externos hallados anteriormente, podemos escribir la segunda cardinal. Teniendo en cuenta que  $I_{zz_mx}=I_{zz_my}$ y que $I_{xx}=I_{yy}$ y operando con dicha ecuación se la puede llevar a la forma:
+A partir del cálculo de esta derivada podemos reescribir la segunda cardinal. Teniendo en cuenta que  $I_{zz_mx}=I_{zz_my}$ y que $I_{xx}=I_{yy}$ y operando con dicha ecuación se la puede llevar a la forma:
 
 $$ \Pi_{O\prime}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}\left(\begin{array}{c}
-\dot{\omega_{q1}}\\
-\dot{\omega_{q2}}\\
-\dot{\omega_{q3}}\\
+\dot{\omega_{q_x\prime}}\\
+\dot{\omega_{q_y\prime}}\\
+\dot{\omega_{q_z\prime}}\\
 \end{array}\right) = \left(\begin{array}{c}
-\omega_{q2}\omega_{q3}(I_{yy}-I_{zz})+\omega_{q2}I_{zz_m}(\omega_1-\omega_2+\omega_3-\omega_4)\\
+\omega_{q_y\prime}\omega_{q_z\prime}(I_{yy}-I_{zz})+\omega_{q_y\prime}I_{zz_m}(\omega_1-\omega_2+\omega_3-\omega_4)\\
 
-\omega_{q1}\omega_{q3}(-I_{xx}+I_{zz})+\omega_{q1}I_{zz_m}(\omega_1-\omega_2+\omega_3-\omega_4)\\
+\omega_{q_x\prime}\omega_{q_z\prime}(-I_{xx}+I_{zz})+\omega_{q_x\prime}I_{zz_m}(\omega_1-\omega_2+\omega_3-\omega_4)\\
 
--I_{zz_m}(\dot{w_1}-\dot{w_2}+\dot{w_3}-\dot{w_4})\\
+-I_{zz_m}(\dot{\omega_1}-\dot{\omega_2}+\dot{\omega_3}-\dot{\omega_4})\\
 
 \end{array}\right) + M_G^{ext}$$
 
 
 \section{Fuerzas y momentos involucradas}
+\label{FYT}
 
 Para completar el análisis del sistema es fundamental conocer las expresiones de las fuerzas y los momentos involucrados. Por un lado se debe considerar la acción del peso en el sistema. Además debemos conocer con precisión las fuerzas y momentos que introducen las hélices del cuadricóptero ya que son estos los elementos sobre los cuales se pueden realizar las acciones de control. Finalmente consideraremos también el efecto del viento. Esta última es una fuerza que no puede conocerse a priori y será considerada como una perturbación en el sistema. Recordamos que las bajas velocidades a las que el sistema se mueve nos permiten despreciar las fuerzas aerodinámicas, a excepción de aquellas que tienen como origen el giro de las hélices.
 \subsection{Peso}
@@ -291,9 +326,9 @@ Insistimos en el hecho que nos interesa conocer las fuerzas en el sistema solida
 
 $$
 \vec{P}=\left(\begin{array}{c}
-\sin\phi\\
--\cos\phi\sin\psi\\
--\cos\phi\cos\psi\\
+\sin\varphi\\
+-\cos\varphi\sin\psi\\
+-\cos\varphi\cos\psi\\
 \end{array}\right)Mg
 $$
 \subsection{Fuerzas y momentos de las hélices}
@@ -325,9 +360,9 @@ Donde $\rho_A$ es la densidad del aire, $\omega_p$ la velocidad angular de la hé
 
 La fuerza infinitesimal de empuje ($dT$) puede escribirse en función de las fuerzas de \emph{lift} y de \emph{drag} de la siguiente forma:
 
-$$dT=dL\cos\phi_I-dD\sin\phi$$
+$$dT=dL\cos\varphi_I-dD\sin\varphi$$
 
-Realizando la aproximación que $\phi$ es un ángulo pequeño y que la fuerza de \emph{lift} es al menos un orden mayor que la de \emph{drag} se puede afirmar que:
+Realizando la aproximación que $\varphi$ es un ángulo pequeño y que la fuerza de \emph{lift} es al menos un orden mayor que la de \emph{drag} se puede afirmar que:
 
 $$dT=dL
 $$
@@ -345,7 +380,7 @@ Donde $R_P$ es el radio radio de la hélice. En todo momento tenemos dos fuerzas 
 Intentaremos ahora obtener la resultante de las fuerzas horizontales sobre la hélice y el torque de dichas fuerzas. Comenzaremos por analizar que sucede con las sumas de las fuerzas, para luego proceder a calcular el momento de las mismas. Consideremos ahora la fuerza $dF$ como la que se muestra en la figura \ref{fig:fuerza-helice}. Como se observa en la figura dicha fuerza es hacia la derecha. Si consideramos la fuerza horizontal sobre la otra hoja de la hélice, se obtiene una fuerza hacia la izquierda. Por lo tanto la suma de las fuerzas horizontales es nula. Sin embargo los momentos de las fuerzas en una y otra hoja de la hélice no se anulan, el momento que producen ambas es en la dirección de $k_q$. Por lo tanto el momento total será la suma de los momentos infinitesimales en toda la superficie de una hoja de la hélice multiplicado por la cantidad de hojas, es decir 2. 
 
 En primer lugar escribimos la fuerza horizontal como una composición de la fuerza de \emph{lift} y la fuerza de \emph{drag}. 
-$$dF=dD\cos\phi+dL\sin\phi \approx dD +dL\left(\frac{V}{\omega_p}\right)$$
+$$dF=dD\cos\varphi+dL\sin\varphi \approx dD +dL\left(\frac{V}{\omega_p}\right)$$
 
 En esta ecuación $V$ y $\omega_p r$ representan la velocidad del flujo de aire en las direcciones vertical y horizontal respectivamente. Operando se obtiene el momento total de la hélice en la dirección entrante:
 
@@ -379,12 +414,7 @@ L(T3-T1)\\
 Q_1-Q2+Q3-Q_4\\
 \end{array} \right)$$
 
-\section{Consideraciones adicionales sobre el modelado}
-
-Previo a construir el modelo en variables de estado es importante realizar algunas consideraciones adicionales. 
-
-\subsection{Fuerzas y momentos de los motores}
-Resulta importante conocer conocer la relación que existe entre la velocidad angular de los motores y las fuerzas y torques aerodinámicos presentes. En base al estudio realizado se podrían conocer dichas relaciones calculando los parámetros que dependen de la geometría de la hélice, sin embargo este estudio resulta tedioso y la mayor parte de los métodos existentes para determinar dichos parámetros con buena precisión son destructivos. Por lo tanto se optó por obtener dichas respuestas en forma experimental. El proceso detallado puede consultarse en el anexo \ref{anexo motores}. En dichos experimentos se obtuvo que:
+En base al estudio realizado se podrían conocer dichas relaciones calculando los parámetros que dependen de la geometría de la hélice, sin embargo este estudio resulta tedioso y la mayor parte de los métodos existentes para determinar dichos parámetros con buena precisión son destructivos. Por lo tanto se optó por obtener dichas respuestas en forma experimental. El proceso detallado puede consultarse en el anexo \ref{anexo motores}. En dichos experimentos se obtuvo que:
 
 $$
 T=3.7646\times 10^{-5}\omega^2-9.0535\times 10^{-4}\omega +0.0170
@@ -392,15 +422,12 @@ $$\\$$Q= 5.4746\times 10^{-7}\omega^2+7.4924\times 10^{-5}\omega -5.7275\times10
 
 Estos resultados parecen adecuados respecto de lo desarrollado teóricamente ya que ambas respuestas son cuadráticas. 
 
-\subsection{Aproximaciones finales}
-%Todo: Hay que ver la respuesta al escalón para tener una estimación de cuanto puede valer como máximo la derivada de las velocidades angulares del motor para ver si es despreciable respecto a los momentos.
-
 \section{Modelo en variables de Estado}
 
 Luego de realizados los estudios sobre la cinemática y dinámica del sistema y luego de comprender cabalmente las fuerzas y momentos involucrados se procede a construir el modelo en variables de estado.\\ 
 
 Se debe aclarar que la elección realizada del vector de estados se debe exclusivamente a la conveniencia práctica que se encuentra al trabajar con las variables expresadas en el sistema del cuadricóptero. Esta conveniencia se ve reflejada en dos aspectos, en primer lugar las simplificaciones que introduce trabajar con estas variables en el marco de un desarrollo teórico de las ecuaciones que gobiernan al sistema, por otra parte, al disponer de sensores montados sobre el cuadricóptero, los mismos medirán las velocidades angulares y lineales en el sistema $S_q$. Bajo esta elección parece razonable escoger el vector de estados de la siguiente manera:
-$$X=\left\lbrace  x,y,z, v_{q1},v_{q2},v_{q3},\theta,\phi,\psi,\omega_{q1},\omega_{q2},\omega_{q3} \right\rbrace$$
+$$X=\left\lbrace  x,y,z, v_{q_z\prime},v_{q_y\prime},v_{q_z\prime},\theta,\varphi,\psi,\omega_{q_x\prime},\omega_{q_y\prime},\omega_{q_z\prime} \right\rbrace$$
 
 Las fuerzas y momentos dependen todos de las velocidades angulares de las hélices, luego de las simplificaciones realizadas el vector entrada se compone simplemente de las velocidades de las hélices es decir que:
 
@@ -409,18 +436,18 @@ $$u=\left\lbrace\omega_1, \omega_2, \omega_3, \omega_4\right\rbrace$$
 El modelo en variables de estado es por lo tanto:
 
 \begin{equation}
-\boxed{\begin{aligned}&\dot{x}=v_{q1} \cos \phi \cos \theta + v_{q2} ( \cos \theta \sin \phi \sin \psi-\cos \phi \sin \theta ) + v_{q3}(\sin \psi \sin \theta + \cos \psi \cos \theta \sin \phi)\\
-&\dot{y}=v_{q1} \cos \phi \sin \theta + v_{q2} (\cos \psi \cos \theta + \sin \theta \sin \phi \sin \psi) + v_{q3}( \cos \psi \sin \theta \sin \phi-\cos \theta \sin \psi )\\
-&\dot{z}= -v_{q1} \sin \phi  + v_{q2} \cos \phi \sin \psi  + v_{q3}\cos \phi \cos \psi\\
-&\dot{\psi}=\omega_{q1} + \omega_{q3}\tan\phi \cos\psi + \omega_{q2}\tan\phi \sin\psi\\
-&\dot{\phi}=\omega_{q2}\cos \psi - \omega_{q3}\sin\psi\\
-&\dot{\theta}=\omega_{q3} \frac{\cos\psi}{\cos\phi}  + \omega_{q2}\frac{\sin\psi}{\cos\phi}\\
-&\dot{v_{q1}}=v_{q2} \omega_{q3} - v_{q3} \omega_{q2}+Mg\sin\phi\\
-&\dot{v_{q2}}=v_{q3} \omega_{q1} - v_{q1} \omega_{q3}-Mg\cos\phi\sin\psi\\
-&\dot{v_{q3}}=v_{q1} \omega_{q2} - v_{q2} \omega_{q1}-Mg\cos\phi\cos\psi+\sum_{i=1}^4T_i\\
-&\dot{\omega_{q1}}=\frac{\omega_{q2}\omega_{q3}(I_{yy}-I_{zz})+\omega_{q2}I_{zz_m}(\omega_1-\omega_2+\omega_3-\omega_4)}{I_{xx}}+\frac{L(T_2-T_4)}{I_{xx}}\\
-&\dot{\omega_{q2}}=\frac{\omega_{q1}\omega_{q3}(-I_{xx}+I_{zz})+\omega_{q1}I_{zz_m}(\omega_1-\omega_2+\omega_3-\omega_4)}{{I_yy}}+\frac{L(T_3-T_1)}{I_{yy}}\\
-&\dot{\omega_{q3}}=\frac{-I_{zz_m}(\dot{w_1}-\dot{w_2}+\dot{w_3}-\dot{w_4})}{I_{zz}}+\frac{Q_1-Q_2+Q_3-Q_4}{I_{zz}}\\
+\boxed{\begin{aligned}&\dot{x}=v_{q_z\prime} \cos \varphi \cos \theta + v_{q_y\prime} ( \cos \theta \sin \varphi \sin \psi-\cos \varphi \sin \theta ) + v_{q_z\prime}(\sin \psi \sin \theta + \cos \psi \cos \theta \sin \varphi)\\
+&\dot{y}=v_{q_z\prime} \cos \varphi \sin \theta + v_{q_y\prime} (\cos \psi \cos \theta + \sin \theta \sin \varphi \sin \psi) + v_{q_z\prime}( \cos \psi \sin \theta \sin \varphi-\cos \theta \sin \psi )\\
+&\dot{z}= -v_{q_z\prime} \sin \varphi  + v_{q_y\prime} \cos \varphi \sin \psi  + v_{q_z\prime}\cos \varphi \cos \psi\\
+&\dot{\psi}=\omega_{q_x\prime} + \omega_{q_z\prime}\tan\varphi \cos\psi + \omega_{q_y\prime}\tan\varphi \sin\psi\\
+&\dot{\varphi}=\omega_{q_y\prime}\cos \psi - \omega_{q_z\prime}\sin\psi\\
+&\dot{\theta}=\omega_{q_z\prime} \frac{\cos\psi}{\cos\varphi}  + \omega_{q_y\prime}\frac{\sin\psi}{\cos\varphi}\\
+&\dot{v_{q_z\prime}}=v_{q_y\prime} \omega_{q_z\prime} - v_{q_z\prime} \omega_{q_y\prime}+Mg\sin\varphi\\
+&\dot{v_{q_y\prime}}=v_{q_z\prime} \omega_{q_x\prime} - v_{q_z\prime} \omega_{q_z\prime}-Mg\cos\varphi\sin\psi\\
+&\dot{v_{q_z\prime}}=v_{q_z\prime} \omega_{q_y\prime} - v_{q_y\prime} \omega_{q_x\prime}-Mg\cos\varphi\cos\psi+\sum_{i=1}^4T_i\\
+&\dot{\omega_{q_x\prime}}=\frac{\omega_{q_y\prime}\omega_{q_z\prime}(I_{yy}-I_{zz})+\omega_{q_y\prime}I_{zz_m}(\omega_1-\omega_2+\omega_3-\omega_4)}{I_{xx}}+\frac{L(T_2-T_4)}{I_{xx}}\\
+&\dot{\omega_{q_y\prime}}=\frac{\omega_{q_x\prime}\omega_{q_z\prime}(-I_{xx}+I_{zz})+\omega_{q_x\prime}I_{zz_m}(\omega_1-\omega_2+\omega_3-\omega_4)}{{I_yy}}+\frac{L(T_3-T_1)}{I_{yy}}\\
+&\dot{\omega_{q_z\prime}}=\frac{-I_{zz_m}(\dot{w_1}-\dot{w_2}+\dot{w_3}-\dot{w_4})}{I_{zz}}+\frac{Q_1-Q_2+Q_3-Q_4}{I_{zz}}\\
 \end{aligned}}
 \end{equation}
 
