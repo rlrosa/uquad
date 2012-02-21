@@ -1,0 +1,75 @@
+\documentclass[spanish,12pt,a4paper,titlepage]{report}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{subfig}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage{multirow}
+\usepackage{caption}
+\usepackage[spanish]{babel}
+\usepackage[dvips]{hyperref}
+\usepackage{amssymb}
+\usepackage{listings}
+\usepackage{epsfig}
+\usepackage{amsmath}
+\usepackage{array}
+\usepackage[table]{xcolor}
+\usepackage{multirow}
+%\usepackage[Sonny]{fncychap}
+\usepackage[Lenny]{fncychap}
+%\usepackage[Glenn]{fncychap}
+%\usepackage[Conny]{fncychap}
+%\usepackage[Rejne]{fncychap}
+%\usepackage[Bjarne]{fncychap}
+%\usepackage[Bjornstrup]{fncychap}
+
+%\usepackage{subfiles}
+%\usepackage{framed}
+
+\setlength{\topmargin}{-1.5cm}
+\setlength{\textheight}{25cm}
+\setlength{\oddsidemargin}{0.3cm} 
+\setlength{\textwidth}{15cm}
+\setlength{\columnsep}{0cm}
+
+\begin{document}
+
+\chapter{Magnetómetro}
+\label{chap:magnetometro}
+
+\section{Objetivos}
+%\ref{} agregar refs
+%TODO esta ref es trucha! cambiar por la posta!!
+
+El objetivo de estas pruebas es comprender y caracterizar el magnetómetro de 3 ejes Honeywell HMC5583, incorporado para asistir en la determinación de la orientación absoluta del cuadricóptero.
+
+\section{Materiales}
+\label{sec:materiales}
+
+\begin{itemize}
+\item Mesa de madera de 1.5m de largo.
+\item Laptop.
+\item Hilo y clavos.
+\item Mesa nivelable.
+\item IMU ``Mongoose'' de CKDevices, con un HMC5583.
+\item Foto satelital, con información sobre coordenadas.
+\item Mesa nivelable, con una superficie que se pueda inclinar en ángulos conocidos.
+\end{itemize}
+
+\newpage
+\section{Procedimiento}
+\label{sec:procedimiento}
+
+\begin{enumerate}
+\item Utilizar un punto lejano, y conocido, para alinear la mesa de 1.5m a una dirección conocida:
+  \begin{itemize}
+  \item Colocar un clavo en cada extremo de la mesa, de manera que la punto del clavo quede apuntando hacia el cielo.
+  \item Atar un hilo entre los dos clavos (esto se utilizará más adelante).
+  \item Colocarse cerca de uno de los clavos, y usar el otro para alinearse a un objeto conocido y distante, que sea posible de ubicar en una foto satelital.
+%TODO cual se elijió?
+  \end{itemize}
+
+\end{enumerate}
+
+
+\end{document}
