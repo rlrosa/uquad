@@ -142,3 +142,30 @@ long convert_to_dec(float x)
   return x*10000000;
 }
 
+#if DEBUG
+void PrintCompassCalibration(void)
+{
+    float xyz_scale[3];
+    float xyz_max[3];
+
+    GetMagnCalibration(xyz_scale, xyz_max);
+
+    Serial.println("HMC58X3 scale (x,y,z):");
+    Serial.print("\t");
+    Serial.print(xyz_scale[0]);
+    Serial.print("\t");
+    Serial.print(xyz_scale[1]);
+    Serial.print("\t");
+    Serial.println(xyz_scale[2]);
+
+    Serial.println("HMC58X3 max (x,y,z):");
+    Serial.print("\t");
+    Serial.print(xyz_max[0]);
+    Serial.print("\t");
+    Serial.print(xyz_max[1]);
+    Serial.print("\t");
+    Serial.println(xyz_max[2]);
+
+    Serial.println();
+}
+#endif

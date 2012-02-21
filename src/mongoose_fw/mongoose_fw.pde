@@ -323,6 +323,9 @@ void print_menu(void){
     Serial.print("\tq:\t Print BMP085 raw.");
     Serial.print(print_raw_bmp085);
     Serial.println();
+
+    Serial.print("\tw:\t Print Compass calibration.");
+    Serial.println();
 #endif
 
     Serial.print("\tCommand:");
@@ -381,6 +384,9 @@ int menu_execute(int command){
 #if DEBUG
     case 'q':
 	print_raw_bmp085 = !print_raw_bmp085;
+	break;
+    case 'w':
+	PrintCompassCalibration();
 	break;
 #endif
     default:
