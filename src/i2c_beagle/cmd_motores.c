@@ -180,15 +180,17 @@ int uquad_mot_set_speed_all(int i2c_dev, __u8 val, int swap_order){
     return OK;
 }
 
+#define STARTUPS 1 // send startup command repeatedly
 int uquad_mot_startup_all(int i2c_file){
-    int i, watchdog = 0;
+    int i, watchdog = 0, enable_counts = 0;
     if(uquad_mot_set_speed_all(i2c_file, 0,1) < 0)
     {
 	backtrace();
 	return NOT_OK;
     }
-    while(uquad_mot_enable_all(i2c_file) < 0)
+    while(uquad_mot_enable_all(i2c_file) < 0 || ++enable_counts < STARTUPS)
     {
+	usleep(400);
 	// wait for start
 	if(++watchdog == UQUAD_STARTUP_RETRIES)
 	{
@@ -196,6 +198,7 @@ int uquad_mot_startup_all(int i2c_file){
 	    return NOT_OK;
 	}
     }	    
+    sleep_ms(420);
     return OK;
 }
 
@@ -249,8 +252,11 @@ int uquad_read_stdin(void){
     retval = select(STDIN_FILENO + 1, &rfds, NULL, NULL, &tv);
     // Don't rely on the value of tv now!
 
-    if (retval == -1)
+    if (retval < 0)
+    {
 	perror("select()");
+	exit(retval);
+    }
     else if (retval && FD_ISSET(STDIN_FILENO, &rfds))
     {
 	scanf("%d", &vel);
@@ -367,7 +373,8 @@ int main(int argc, char *argv[])
 	    // continue
 	    curr_vel = (__u8) new_vel;
 	    printf("Speed changed to %c\n",curr_vel);
-	}	    
+	}
+	usleep(1500);
     }
  
     fclose(log_file);
