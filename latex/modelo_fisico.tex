@@ -442,9 +442,9 @@ El modelo en variables de estado es por lo tanto:
 &\dot{\psi}=\omega_{q_x\prime} + \omega_{q_z\prime}\tan\varphi \cos\psi + \omega_{q_y\prime}\tan\varphi \sin\psi\\
 &\dot{\varphi}=\omega_{q_y\prime}\cos \psi - \omega_{q_z\prime}\sin\psi\\
 &\dot{\theta}=\omega_{q_z\prime} \frac{\cos\psi}{\cos\varphi}  + \omega_{q_y\prime}\frac{\sin\psi}{\cos\varphi}\\
-&\dot{v_{q_z\prime}}=v_{q_y\prime} \omega_{q_z\prime} - v_{q_z\prime} \omega_{q_y\prime}+Mg\sin\varphi\\
-&\dot{v_{q_y\prime}}=v_{q_z\prime} \omega_{q_x\prime} - v_{q_z\prime} \omega_{q_z\prime}-Mg\cos\varphi\sin\psi\\
-&\dot{v_{q_z\prime}}=v_{q_z\prime} \omega_{q_y\prime} - v_{q_y\prime} \omega_{q_x\prime}-Mg\cos\varphi\cos\psi+\sum_{i=1}^4T_i\\
+&\dot{v_{q_z\prime}}=v_{q_y\prime} \omega_{q_z\prime} - v_{q_z\prime} \omega_{q_y\prime}+g\sin\varphi\\
+&\dot{v_{q_y\prime}}=v_{q_z\prime} \omega_{q_x\prime} - v_{q_z\prime} \omega_{q_z\prime}-g\cos\varphi\sin\psi\\
+&\dot{v_{q_z\prime}}=v_{q_z\prime} \omega_{q_y\prime} - v_{q_y\prime} \omega_{q_x\prime}-g\cos\varphi\cos\psi+\frac{1}{M}\sum_{i=1}^4T_i\\
 &\dot{\omega_{q_x\prime}}=\frac{\omega_{q_y\prime}\omega_{q_z\prime}(I_{yy}-I_{zz})+\omega_{q_y\prime}I_{zz_m}(\omega_1-\omega_2+\omega_3-\omega_4)}{I_{xx}}+\frac{L(T_2-T_4)}{I_{xx}}\\
 &\dot{\omega_{q_y\prime}}=\frac{\omega_{q_x\prime}\omega_{q_z\prime}(-I_{xx}+I_{zz})+\omega_{q_x\prime}I_{zz_m}(\omega_1-\omega_2+\omega_3-\omega_4)}{{I_yy}}+\frac{L(T_3-T_1)}{I_{yy}}\\
 &\dot{\omega_{q_z\prime}}=\frac{-I_{zz_m}(\dot{w_1}-\dot{w_2}+\dot{w_3}-\dot{w_4})}{I_{zz}}+\frac{Q_1-Q_2+Q_3-Q_4}{I_{zz}}\\

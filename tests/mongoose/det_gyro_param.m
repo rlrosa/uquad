@@ -46,4 +46,4 @@ u=mean(RESIDUAL)
 %sigma=sqrt(RESNORM/(length(a(1,:))-1));
 sigma=std(RESIDUAL)
 
-save X
+save('gyro','X','sigma');
