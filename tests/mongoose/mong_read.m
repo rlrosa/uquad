@@ -11,6 +11,9 @@ Daux = textscan(F,'%s','delimiter','\t');
 
 cols = 14;          % Cantidad de columnas que despliega la Mongoose
 
+fecha = [];
+ind = [];
+
 j=1;
 k=1;
 for i=1:length(Daux{1})
