@@ -1,4 +1,10 @@
-function [aconv,wconv] = mong_conv(a,w)
+function [aconv,wconv] = mong_conv(a,w,plotear)
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+% function [aconv,wconv] = mong_conv(a,w,plotear)
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+if(nargin < 3)
+  plotear = 1;
+end
 
 fs=50;
 
@@ -71,13 +77,15 @@ end
 T=1/fs;
 t=0:T:T*(length(a(:,1))-1);
 tp=0:10*T:T*(length(a(:,1))-1);
-figure()
-    subplot(211)
-    plot(t,aconv(:,1)); hold on; plot(t,aconv(:,2),'r'); plot(t,aconv(:,3),'g'); legend('a_x','a_y','a_z'); grid;
-    title('Aceleraciones lineales en m/(s^2)')
-    subplot(212)
-    plot(t,wconv(:,1)); hold on; plot(t,wconv(:,2),'r'); plot(t,wconv(:,3),'g'); legend('w_x','w_y','w_z'); grid;
-    title('Velocidades angulares en °/s')
+if plotear
+    figure()
+        subplot(211)
+        plot(t,aconv(:,1)); hold on; plot(t,aconv(:,2),'r'); plot(t,aconv(:,3),'g'); legend('a_x','a_y','a_z'); grid;
+        title('Aceleraciones lineales en m/(s^2)')
+        subplot(212)
+        plot(t,wconv(:,1)); hold on; plot(t,wconv(:,2),'r'); plot(t,wconv(:,3),'g'); legend('w_x','w_y','w_z'); grid;
+        title('Velocidades angulares en °/s')
+end
 
 
 % %% Desplazamientos
