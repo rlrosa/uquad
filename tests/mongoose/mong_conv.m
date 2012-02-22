@@ -1,4 +1,11 @@
-function [aconv,wconv,mconv] = mong_conv(a,w,m)
+
+function [aconv,wconv,mconv] = mong_conv(a,w,m,plotear)
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+% function [aconv,wconv,mconv] = mong_conv(a,w,m,plotear)
+% - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+if(nargin < 4)
+  plotear = 1;
+end
 
 fs=50;
 

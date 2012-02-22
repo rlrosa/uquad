@@ -1,4 +1,4 @@
-function barom_plot(alt, avg_size, indexes)
+function barom_plot(alt, avg_size, indexes, temp)
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 %function barom_plot(alt, avg_size, indexes)
 %
@@ -16,7 +16,15 @@ hold on;
 alt_moving_avg = moving_avg(alt,avg_size);
 % plot avg
 plot(alt_moving_avg(avg_size:end),'g--');
-legend('Raw data',sprintf('Avg. over %d samples',avg_size))
+legend('Datos crudos',sprintf('Promedio en %d muestras',avg_size))
+
+if(exist('temp','var'))
+    plot(temp,'r')
+    legend('Datos crudos', ...
+      sprintf('Promedio. en %d muestras',avg_size), ...
+      'Perfil de temperatura')
+end
+
 ylabel('Altura respecto al nivel del mar (m)')
 xlabel('# de muestra')
 

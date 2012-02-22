@@ -1,6 +1,6 @@
 function [a,w,c,t,b] = mong_read(file,plotear)
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-% function [a,w,c,t,b] = mong_read(file)
+% function [a,w,c,t,b] = mong_read(file,plotear)
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 if(nargin < 2)
   plotear = 1;
