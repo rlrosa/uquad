@@ -196,10 +196,10 @@ Los objetivos de este experimento son:
 
 
 \subsubsection*{Modelos de ajuste}
-Al igual que en el experimento anterior se fuerzan los modelos para que pasen por el cero ya que sin comando $I^2C$ no hay velocidad angular y por lo tanto no hay torque. Realizando esta consideración y los modelos estudiados phara las fuerzas y momentos de las hélices se proponen los siguientes modelos de ajuste:
+Al igual que en el experimento anterior se fuerzan los modelos para que pasen por el cero ya que sin comando $I^2C$ no hay velocidad angular y por lo tanto no hay torque. Realizando esta consideración y los modelos estudiados para las fuerzas y momentos de las hélices se proponen los siguientes modelos de ajuste:
 
 \begin{itemize}
-\item Para la relación entre velocidad angular y torque se propone un modelo cuadrático:
+\item Para la relación entre velocidad angular y torque se proponen un modelo cuadrático:
 	\begin{itemize}
 	\item $Q=a\omega^2+b\omega$
 	\end{itemize}
@@ -208,6 +208,7 @@ Al igual que en el experimento anterior se fuerzan los modelos para que pasen po
 \end{itemize}
 
 \subsubsection*{Desarrollo del experimento}
+\label{sub:torque}
 Se ubica el cuadricóptero sobre la balanza. Se retiran tres de las cuatro hélices del cuadricóptero. La cuarta hélice se rota de forma que el eje en torno al cual rota sea paralelo respecto del plano del plato de la balanza. Se ubica el detector IR de forma de poder medir la velocidad angular de la hélice. El setup de medida puede verse en las figuras \ref{fig:setup2}. De acuerdo a lo estudiado la hélice presenta un torque ($Q$) positivo respecto de su eje central si el motor rota en sentido anti-horario. Nos proponemos calcular el torque total respecto de dicho eje. Las fuerzas presentes en el sistema son: la fuerza de empuje, la normal y las fuerzas reactivas en el plano del plato de la balanza. Estas últimas y el empuje no realizan ningún torque en la dirección de interés. Recordamos que el torque de una fuerza respecto de un eje se calcula como:
 $$
 \tau=\vec{r} \times \vec{F} 
@@ -463,6 +464,49 @@ Los parámetros obtenidos para el modelo cúbico:
 	\end{itemize}		
 
 
+\subsection{Obtención de la curva velocidad angular contra torque}
+
+De acuerdo al procedimiento detallado en \ref{sub:torque} se obtuvieron las siguientes medidas de velocidad angular y peso.
+
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|c|c|} 
+	\hline
+	\cellcolor[gray]{0.8} \textbf{Comando $i^2c$} & 
+	\cellcolor[gray]{0.8} \textbf{Frecuencia (Hz)} & \cellcolor[gray]{0.8} \textbf{peso (g)} \\ \hline \hline
+	  0 & 0    & 0 \\ \hline
+	 50 & 35.4 & 10 \\ \hline
+	 55 & 39.6 & 13 \\ \hline
+	 60 & 43.3 & 16  \\ \hline
+     65 & 47.1 & 19\\ \hline
+     70 & 50.7 & 24 \\ \hline
+	 75 & 54.8 & 28 \\ \hline
+	 80 & 58.3 & 32  \\ \hline
+	 85 & 62.1 & 37\\ \hline     
+     90 & 65.7 & 42\\ \hline          
+\end{tabular}
+\caption{Comando $i^2c$ enviado, frecuencia y peso}
+\label{tab:torque}
+\end{table}
+
+Recordamos que para la caracterización de la respuesta velocidad angular - torque se propuso un modelo cuadrático. Los resultados obtenidos fueron:
+
+\begin{itemize}
+\item Parámetros: $a=1.69\times10^{-6}Nms^2$; $b=-6.42\times 10 ^{-5} Nms$
+\item Error promedio: $\mu = 8.69\times 10^{-7}Nm$
+\item Desviación estándar: $\sigma = 4.51\times 10^{-4}$ 
+\end{itemize}
+
+En la figura \ref{fig:torque} pueden observarse las medidas experimentales obtenidas y la curva que corresponde al modelo elegido para realizar el ajuste. La observación gráfica de dicha curva confirma que el modelo elegido es un buen ajuste para los datos experimentales obtenidos.
+
+\begin{figure}
+  \begin{center}
+	\includegraphics[width=0.7\textwidth]{./Pics/torque.png}
+  \end{center}
+  \caption{Curva torque contra velocidad angular}
+  \label{fig:torque}
+\end{figure}
 
 \subsection{Respuesta al escalón}
 
