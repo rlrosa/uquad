@@ -1,4 +1,4 @@
-function [a,w,c,t,b] = mong_read(file,plotear)
+function [a,w,c,t,b,fecha,ind] = mong_read(file,plotear)
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 % function [a,w,c,t,b] = mong_read(file,plotear)
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -7,9 +7,24 @@ if(nargin < 2)
 end
 
 F    = fopen(file);
-D    = textscan(F,'%s','delimiter','\t');
-N    = length(D{1});
+Daux = textscan(F,'%s','delimiter','\t');
+
 cols = 14;          % Cantidad de columnas que despliega la Mongoose
+
+j=1;
+k=1;
+for i=1:length(Daux{1})
+    if Daux{1}{i}(1)~='%'
+        D{1}{j,1}=Daux{1}{i};
+        j=j+1;
+    else
+        fecha{k}=Daux{1}{i};
+        ind(k)=ceil(i/cols);
+        k=k+1;
+    end
+end    
+
+N    = length(D{1});
 Nn   = fix(N/cols); % Cantidad de muestras
 
 a    = zeros(Nn,3); % Datos del acelerómetro

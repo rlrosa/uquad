@@ -31,7 +31,9 @@ xlabel('# de muestra')
 if(indexes ~= -1)
   % plot segment borders
   max_val = max(alt);
-  stem(indexes,ones(length(indexes),1)*max_val,'k.');
+  for i=1:length(indexes)
+      line([indexes(i) indexes(i)],[min(alt) max(alt)],'color','black')
+  end
 %stem(indexes)
 end
 

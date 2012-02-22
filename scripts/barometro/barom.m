@@ -1,4 +1,4 @@
-function [alt,temp] = barom(file,do_plot,raw_file)
+function [alt,temp,ind] = barom(file,do_plot,raw_file)
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 %function [alt,temp] = barom(file,do_plot,raw_file)
 %
@@ -14,7 +14,8 @@ if (~exist('raw_file','var'))
 end
 
 if(~raw_file)
-  [~,~,~,~,b] = mong_read(file,0);
+  [~,~,~,temp,b,~,ind] = mong_read(file,0);
+  temp=temp/10;
 else
   b = load(file);
   temp = b(:,end-1)/10;
@@ -28,7 +29,7 @@ t = [1:length(b)]*Ts;
 
 avg_size = 20;
 if(do_plot)
-  barom_plot(alt,20,0,temp);
+  barom_plot(alt,20,ind,temp);
 end
 
 % ac1 =	7073;
