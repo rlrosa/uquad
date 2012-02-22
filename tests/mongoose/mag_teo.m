@@ -23,7 +23,7 @@ if eje=='x'
     ang1=p;
     R1=eval(Rz);
     R2=eval(Rx);
-    C = [-0.1477579 -0.0504510 0.1697052];
+    C = [0.1477579 -0.0504510 0.1697052];
     
     
 elseif eje=='y'
@@ -32,14 +32,14 @@ elseif eje=='y'
     ang2=p;
     R1=eval(Rx);
     R2=eval(Ry);
-    C = [-0.1697052 -0.1477579 0.0504510];
+    C = [-0.1697052 0.1477579 0.0504510];
        
 elseif eje=='z'
     ang2=t;
     ang3=-p;
     R1=eval(Ry);
     R2=eval(Rz);
-    C = [0.0504510 0.1697052 0.1477579];
+    C = [0.0504510 0.1697052 -0.1477579];
 else
     fprintf('\nTe equivocaste vieja, tenés que pasar com eje "x", "y", o "z"\n')
 end

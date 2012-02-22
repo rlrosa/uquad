@@ -1,4 +1,4 @@
-function [aconv,wconv] = mong_conv(a,w)
+function [aconv,wconv,mconv] = mong_conv(a,w,m)
 
 fs=50;
 
@@ -32,6 +32,19 @@ gazxa=G.X(10);
 gaxya=G.X(11);
 gayxa=G.X(12);
 
+M=load('mag','X');
+kmx=M.X(1);
+kmy=M.X(2);
+kmz=M.X(3);
+bmx=M.X(4);
+bmy=M.X(5);
+bmz=M.X(6);
+mayza=M.X(7);
+mazya=M.X(8);
+maxza=M.X(9);
+mazxa=M.X(10);
+maxya=M.X(11);
+mayxa=M.X(12);
 %% Conversion
 
 % ACELEROMETRO
@@ -68,17 +81,36 @@ for i=1:length(w(:,1))
     wconv(i,:)=auxg';
 end
 
+
+% MAGNETOMETRO
+Km=[kmx 0 0;        
+    0 kmy 0;
+    0 0 kmz];
+
+bm=[bmx; bmy; bmz];
+
+Tm=[1    -mayza mazya;
+    maxza 1    -mazxa;
+   -maxya mayxa 1];
+
+mconv=zeros(size(m));
+for i=1:length(m(:,1))
+    auxm=Tm*(Km^(-1))*(m(i,:)'-bm);
+    mconv(i,:)=auxm';
+end
 T=1/fs;
 t=0:T:T*(length(a(:,1))-1);
 tp=0:10*T:T*(length(a(:,1))-1);
 figure()
-    subplot(211)
+    subplot(311)
     plot(t,aconv(:,1)); hold on; plot(t,aconv(:,2),'r'); plot(t,aconv(:,3),'g'); legend('a_x','a_y','a_z'); grid;
     title('Aceleraciones lineales en m/(s^2)')
-    subplot(212)
+    subplot(312)
     plot(t,wconv(:,1)); hold on; plot(t,wconv(:,2),'r'); plot(t,wconv(:,3),'g'); legend('w_x','w_y','w_z'); grid;
     title('Velocidades angulares en °/s')
-
+    subplot(313)
+    plot(t,mconv(:,1)); hold on; plot(t,mconv(:,2),'r'); plot(t,mconv(:,3),'g'); legend('m_x','m_y','m_z'); grid;
+    title('Campo magnético en gauss')
 
 % %% Desplazamientos
 %     
