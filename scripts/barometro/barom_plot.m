@@ -1,4 +1,4 @@
-function barom_plot(alt, avg_size, indexes, temp)
+function ax_plot = barom_plot(alt, avg_size, indexes, temp)
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 %function barom_plot(alt, avg_size, indexes)
 %
@@ -23,9 +23,18 @@ ylabel('Altura respecto al nivel del mar (m)')
 xlabel('# de muestra')
 axis([1 length(alt) min(alt) max(alt)])
 
+if(indexes ~= -1)
+  % plot segment borders
+  for i=1:length(indexes)
+      line([indexes(i) indexes(i)],[min(alt) max(alt)],'color','black')
+  end
+end
+
+ax1 = gca;
+ax_plot = ax1;
+
 if(exist('temp','var'))
   % http://www.mathworks.com/help/techdoc/creating_plots/f1-11215.html
-  ax1 = gca;
   set(ax1,'XColor','k','YColor','k')
   ax2 = axes('Position',get(ax1,'Position'),...
              'XAxisLocation','top',...
@@ -60,14 +69,6 @@ if(exist('temp','var'))
 %     set(ax2,'XTick',[xlimits(1):xinc:xlimits(2)],...
 %             'YTick',[ylimits(1):yinc:ylimits(2)])
 %   end
-end
-
-
-if(indexes ~= -1)
-  % plot segment borders
-  for i=1:length(indexes)
-      line([indexes(i) indexes(i)],[min(alt) max(alt)],'color','black')
-  end
 end
 
 % rompe el multi eje
