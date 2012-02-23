@@ -32,8 +32,13 @@ end
 
 ax1 = gca;
 ax_plot = ax1;
+grid on
 
 if(exist('temp','var'))
+  if(length(temp) ~= length(alt))
+    fprintf('Hay %d muestras de alt y %d muestras temp...\nDeberian ser la misma cantidad!', ...
+      length(alt), length(temp));
+  end
   % http://www.mathworks.com/help/techdoc/creating_plots/f1-11215.html
   set(ax1,'XColor','k','YColor','k')
   ax2 = axes('Position',get(ax1,'Position'),...
@@ -70,6 +75,9 @@ if(exist('temp','var'))
 %             'YTick',[ylimits(1):yinc:ylimits(2)])
 %   end
 end
+
+axis(ax1,'tight')
+axis(ax2,'tight')
 
 % rompe el multi eje
 %axis([1 length(alt) min(alt) max(alt)])

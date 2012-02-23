@@ -1,4 +1,4 @@
-function [alt, indexes] = barom_multi_log(path, ind_plots, do_plot, raw)
+function [alt, indexes, temp] = barom_multi_log(path, ind_plots, do_plot, raw)
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 % function [alt, indexes] = barom_multi_log(path, ind_plots, do_plot, raw)
 %
