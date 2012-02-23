@@ -1,6 +1,8 @@
-function [alt, indexes, temp] = barom_multi_log(path, ind_plots, do_plot, raw)
+function [alt, indexes, temp] = barom_multi_log(path, ind_plots, ...
+  do_plot, raw, plot_temp, avg_size)
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-% function [alt, indexes] = barom_multi_log(path, ind_plots, do_plot, raw)
+% function [alt, indexes] = barom_multi_log(path, ind_plots, do_plot, ...
+%   raw,plot_temp, avg_size)
 %
 % Loads *.log files in PATH into memory.
 % 
@@ -8,7 +10,9 @@ function [alt, indexes, temp] = barom_multi_log(path, ind_plots, do_plot, raw)
 %   - path: Path to dir.
 %   - ind_plots: Do individual plots.
 %   - do_plot:  Plot concatenation of all logs.
-%   - raw: logs contain raw data, only numbers.
+%   - raw: logs Contain raw data, only numbers.
+%   - plot_temp: Add temperature to plot.
+%   - avg_size: Number of samples to average
 %
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -31,6 +35,14 @@ end
 
 if(~exist('raw','var'))
   raw = 0;
+end
+
+if(~exist('plot_temp','var'))
+  plot_temp = 1;
+end
+
+if(~exist('avg_size','var'))
+  avg_size = 20;
 end
 
 if(isunix)
@@ -69,5 +81,9 @@ indexes = cumsum(indexes);
 
 %% Plot
 if(do_plot)
-  barom_plot(alt,20,indexes,temp);
+  if (plot_temp)
+    barom_plot(alt,avg_size,indexes,temp);
+  else
+    barom_plot(alt,avg_size,indexes);
+  end
 end
