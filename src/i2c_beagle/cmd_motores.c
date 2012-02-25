@@ -290,7 +290,7 @@ int main(int argc, char *argv[])
 	if(argc == 1)
 	{
 	    printf("Input speed and press RET to set.\n");
-	    for(i=1;i<MOT_COUNT;++i)
+	    for(i=0;i<MOT_COUNT;++i)
 		mot_selected[i] = 1;
 	}
 	else

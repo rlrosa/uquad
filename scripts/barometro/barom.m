@@ -1,4 +1,4 @@
-function [alt,temp,ind] = barom(file,do_plot,raw_file)
+function [alt,temp,ind,ax_b,ax_t] = barom(file,do_plot,raw_file)
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 %function [alt,temp] = barom(file,do_plot,raw_file)
 %
@@ -28,8 +28,9 @@ Ts = 15e-3;
 t = [1:length(b)]*Ts;
 
 avg_size = 20;
+% ax_plot = 0;
 if(do_plot)
-  barom_plot(alt,20,ind,temp);
+  [ax_b ax_t] = barom_plot(alt,20,ind,temp);
 end
 
 % ac1 =	7073;

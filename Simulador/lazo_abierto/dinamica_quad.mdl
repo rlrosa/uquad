@@ -82,7 +82,7 @@ Model {
       Name		      "wq3"
     }
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.90"
+    ComputedModelVersion    "1.96"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -102,9 +102,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "pater"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Tue Feb  7 22:52:02 2012"
-  RTWModifiedTimeStamp	  250555919
-  ModelVersionFormat	  "1.%<AutoIncrement:90>"
+  LastModifiedDate	  "Tue Feb 21 18:18:43 2012"
+  RTWModifiedTimeStamp	  251749113
+  ModelVersionFormat	  "1.%<AutoIncrement:96>"
   ConfigurationManager	  "None"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -871,7 +871,7 @@ Model {
     ShowPageBoundaries	    off
     ZoomFactor		    "77"
     ReportName		    "simulink-default.rpt"
-    SIDHighWatermark	    "1773"
+    SIDHighWatermark	    "1842"
     Block {
       BlockType		      Inport
       Name		      "w1"
@@ -4166,7 +4166,7 @@ Model {
 	      System {
 		Name			"Subsystem11"
 		Location		[0, 53, 1366, 768]
-		Open			on
+		Open			off
 		ModelBrowserVisibility	off
 		ModelBrowserWidth	200
 		ScreenColor		"white"
@@ -4338,7 +4338,7 @@ Model {
 		  Name			  "Sum of\nElements1"
 		  SID			  "1765"
 		  Ports			  [4, 1]
-		  Position		  [195, 346, 255, 469]
+		  Position		  [195, 366, 255, 499]
 		  Inputs		  "+|-|+|-|"
 		  InputSameDT		  off
 		  OutDataTypeStr	  "Inherit: Inherit via internal rule"
@@ -4506,7 +4506,7 @@ Model {
 	      MaskHideContents	      off
 	      System {
 		Name			"Subsystem9"
-		Location		[183, 192, 820, 601]
+		Location		[0, 53, 1366, 768]
 		Open			off
 		ModelBrowserVisibility	off
 		ModelBrowserWidth	200
@@ -4584,16 +4584,6 @@ Model {
 		}
 		Block {
 		  BlockType		  Gain
-		  Name			  "-Izzm"
-		  SID			  "1576"
-		  Position		  [675, 820, 705, 850]
-		  Gain			  "-Izzm"
-		  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
-		  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-		  SaturateOnIntegerOverflow off
-		}
-		Block {
-		  BlockType		  Gain
 		  Name			  "1/Ixx"
 		  SID			  "1577"
 		  Position		  [940, 550, 970, 580]
@@ -4616,6 +4606,16 @@ Model {
 		  SID			  "1579"
 		  Position		  [690, 555, 720, 585]
 		  Gain			  "Iyy-Izz"
+		  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
+		  OutDataTypeStr	  "Inherit: Inherit via internal rule"
+		  SaturateOnIntegerOverflow off
+		}
+		Block {
+		  BlockType		  Gain
+		  Name			  "Izzm"
+		  SID			  "1576"
+		  Position		  [675, 820, 705, 850]
+		  Gain			  "Izzm"
 		  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
 		  OutDataTypeStr	  "Inherit: Inherit via internal rule"
 		  SaturateOnIntegerOverflow off
@@ -4770,11 +4770,11 @@ Model {
 		Line {
 		  SrcBlock		  "Product2"
 		  SrcPort		  1
-		  DstBlock		  "-Izzm"
+		  DstBlock		  "Izzm"
 		  DstPort		  1
 		}
 		Line {
-		  SrcBlock		  "-Izzm"
+		  SrcBlock		  "Izzm"
 		  SrcPort		  1
 		  Points		  [65, 0; 0, -260]
 		  DstBlock		  "Sum of\nElements1"
@@ -5297,7 +5297,7 @@ Model {
 		  Name			  "gravedad"
 		  SID			  "1613"
 		  Position		  [350, 215, 380, 245]
-		  Gain			  "-g"
+		  Gain			  "g"
 		  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
 		  OutDataTypeStr	  "Inherit: Inherit via internal rule"
 		  SaturateOnIntegerOverflow off
@@ -5616,7 +5616,7 @@ Model {
 		  Name			  "gravedad"
 		  SID			  "1637"
 		  Position		  [350, 240, 380, 270]
-		  Gain			  "g"
+		  Gain			  "-g"
 		  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
 		  OutDataTypeStr	  "Inherit: Inherit via internal rule"
 		  SaturateOnIntegerOverflow off
@@ -5941,7 +5941,7 @@ Model {
 		  Name			  "gravedad"
 		  SID			  "1655"
 		  Position		  [350, 215, 380, 245]
-		  Gain			  "g"
+		  Gain			  "-g"
 		  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
 		  OutDataTypeStr	  "Inherit: Inherit via internal rule"
 		  SaturateOnIntegerOverflow off
@@ -6502,9 +6502,9 @@ Model {
     Block {
       BlockType		      SubSystem
       Name		      "Fuerzas y Torques"
-      SID		      "1711"
+      SID		      "1774"
       Ports		      [4, 8]
-      Position		      [170, 125, 270, 250]
+      Position		      [170, 120, 270, 245]
       MinAlgLoopOccurrences   off
       PropExecContextOutsideSubsystem off
       RTWSystemCode	      "Auto"
@@ -6530,14 +6530,14 @@ Model {
 	Block {
 	  BlockType		  Inport
 	  Name			  "w1"
-	  SID			  "1712"
+	  SID			  "1775"
 	  Position		  [25, 53, 55, 67]
 	  IconDisplay		  "Port number"
 	}
 	Block {
 	  BlockType		  Inport
 	  Name			  "w2"
-	  SID			  "1714"
+	  SID			  "1776"
 	  Position		  [15, 148, 45, 162]
 	  Port			  "2"
 	  IconDisplay		  "Port number"
@@ -6545,7 +6545,7 @@ Model {
 	Block {
 	  BlockType		  Inport
 	  Name			  "w3"
-	  SID			  "1716"
+	  SID			  "1777"
 	  Position		  [15, 238, 45, 252]
 	  Port			  "3"
 	  IconDisplay		  "Port number"
@@ -6553,7 +6553,7 @@ Model {
 	Block {
 	  BlockType		  Inport
 	  Name			  "w4"
-	  SID			  "1718"
+	  SID			  "1778"
 	  Position		  [15, 343, 45, 357]
 	  Port			  "4"
 	  IconDisplay		  "Port number"
@@ -6561,7 +6561,7 @@ Model {
 	Block {
 	  BlockType		  SubSystem
 	  Name			  "Fuerza Motor1"
-	  SID			  "1667"
+	  SID			  "1779"
 	  Ports			  [1, 1]
 	  Position		  [90, 22, 205, 98]
 	  MinAlgLoopOccurrences	  off
@@ -6589,34 +6589,26 @@ Model {
 	    Block {
 	      BlockType		      Inport
 	      Name		      "w"
-	      SID		      "1668"
+	      SID		      "1780"
 	      Position		      [170, 168, 200, 182]
 	      IconDisplay	      "Port number"
 	    }
 	    Block {
 	      BlockType		      Sum
 	      Name		      "Add"
-	      SID		      "1669"
-	      Ports		      [3, 1]
-	      Position		      [525, 204, 555, 236]
-	      Inputs		      "+++"
+	      SID		      "1781"
+	      Ports		      [2, 1]
+	      Position		      [525, 206, 555, 239]
 	      InputSameDT	      off
 	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
 	      SaturateOnIntegerOverflow	off
 	    }
 	    Block {
-	      BlockType		      Constant
-	      Name		      "Constant"
-	      SID		      "1670"
-	      Position		      [405, 245, 435, 275]
-	      Value		      "0.0170"
-	    }
-	    Block {
 	      BlockType		      Gain
 	      Name		      "Gain"
-	      SID		      "1671"
+	      SID		      "1782"
 	      Position		      [410, 152, 460, 188]
-	      Gain		      "3.7646e-5"
+	      Gain		      "3.52966e-5"
 	      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
 	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
 	      SaturateOnIntegerOverflow	off
@@ -6624,9 +6616,9 @@ Model {
 	    Block {
 	      BlockType		      Gain
 	      Name		      "Gain1"
-	      SID		      "1672"
+	      SID		      "1783"
 	      Position		      [420, 205, 450, 235]
-	      Gain		      "-9.0535e-4"
+	      Gain		      "-4.9293e-4"
 	      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
 	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
 	      SaturateOnIntegerOverflow	off
@@ -6634,7 +6626,7 @@ Model {
 	    Block {
 	      BlockType		      Product
 	      Name		      "Product"
-	      SID		      "1673"
+	      SID		      "1784"
 	      Ports		      [2, 1]
 	      Position		      [330, 152, 360, 183]
 	      InputSameDT	      off
@@ -6644,19 +6636,21 @@ Model {
 	    Block {
 	      BlockType		      Outport
 	      Name		      "T"
-	      SID		      "1674"
+	      SID		      "1785"
 	      Position		      [590, 213, 620, 227]
 	      IconDisplay	      "Port number"
 	    }
 	    Line {
 	      SrcBlock		      "Add"
 	      SrcPort		      1
+	      Points		      [0, -5]
 	      DstBlock		      "T"
 	      DstPort		      1
 	    }
 	    Line {
 	      SrcBlock		      "Gain1"
 	      SrcPort		      1
+	      Points		      [55, 0]
 	      DstBlock		      "Add"
 	      DstPort		      2
 	    }
@@ -6669,16 +6663,9 @@ Model {
 	    Line {
 	      SrcBlock		      "Gain"
 	      SrcPort		      1
-	      Points		      [20, 0; 0, 40]
+	      Points		      [20, 0; 0, 45]
 	      DstBlock		      "Add"
 	      DstPort		      1
-	    }
-	    Line {
-	      SrcBlock		      "Constant"
-	      SrcPort		      1
-	      Points		      [70, 0]
-	      DstBlock		      "Add"
-	      DstPort		      3
 	    }
 	    Line {
 	      SrcBlock		      "w"
@@ -6704,7 +6691,7 @@ Model {
 	Block {
 	  BlockType		  SubSystem
 	  Name			  "Fuerza Motor2"
-	  SID			  "1675"
+	  SID			  "1786"
 	  Ports			  [1, 1]
 	  Position		  [90, 117, 205, 193]
 	  MinAlgLoopOccurrences	  off
@@ -6732,34 +6719,26 @@ Model {
 	    Block {
 	      BlockType		      Inport
 	      Name		      "w"
-	      SID		      "1676"
+	      SID		      "1787"
 	      Position		      [170, 168, 200, 182]
 	      IconDisplay	      "Port number"
 	    }
 	    Block {
 	      BlockType		      Sum
 	      Name		      "Add"
-	      SID		      "1677"
-	      Ports		      [3, 1]
-	      Position		      [525, 204, 555, 236]
-	      Inputs		      "+++"
+	      SID		      "1788"
+	      Ports		      [2, 1]
+	      Position		      [525, 206, 555, 239]
 	      InputSameDT	      off
 	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
 	      SaturateOnIntegerOverflow	off
 	    }
 	    Block {
-	      BlockType		      Constant
-	      Name		      "Constant"
-	      SID		      "1678"
-	      Position		      [405, 245, 435, 275]
-	      Value		      "0.0170"
-	    }
-	    Block {
 	      BlockType		      Gain
 	      Name		      "Gain"
-	      SID		      "1679"
+	      SID		      "1789"
 	      Position		      [410, 152, 460, 188]
-	      Gain		      "3.7646e-5"
+	      Gain		      "3.52966e-5"
 	      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
 	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
 	      SaturateOnIntegerOverflow	off
@@ -6767,9 +6746,9 @@ Model {
 	    Block {
 	      BlockType		      Gain
 	      Name		      "Gain1"
-	      SID		      "1680"
+	      SID		      "1790"
 	      Position		      [420, 205, 450, 235]
-	      Gain		      "-9.0535e-4"
+	      Gain		      "-4.9293e-4"
 	      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
 	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
 	      SaturateOnIntegerOverflow	off
@@ -6777,7 +6756,7 @@ Model {
 	    Block {
 	      BlockType		      Product
 	      Name		      "Product"
-	      SID		      "1681"
+	      SID		      "1791"
 	      Ports		      [2, 1]
 	      Position		      [330, 152, 360, 183]
 	      InputSameDT	      off
@@ -6787,19 +6766,21 @@ Model {
 	    Block {
 	      BlockType		      Outport
 	      Name		      "T"
-	      SID		      "1682"
+	      SID		      "1792"
 	      Position		      [590, 213, 620, 227]
 	      IconDisplay	      "Port number"
 	    }
 	    Line {
 	      SrcBlock		      "Add"
 	      SrcPort		      1
+	      Points		      [0, -5]
 	      DstBlock		      "T"
 	      DstPort		      1
 	    }
 	    Line {
 	      SrcBlock		      "Gain1"
 	      SrcPort		      1
+	      Points		      [55, 0]
 	      DstBlock		      "Add"
 	      DstPort		      2
 	    }
@@ -6812,16 +6793,9 @@ Model {
 	    Line {
 	      SrcBlock		      "Gain"
 	      SrcPort		      1
-	      Points		      [20, 0; 0, 40]
+	      Points		      [20, 0; 0, 45]
 	      DstBlock		      "Add"
 	      DstPort		      1
-	    }
-	    Line {
-	      SrcBlock		      "Constant"
-	      SrcPort		      1
-	      Points		      [70, 0]
-	      DstBlock		      "Add"
-	      DstPort		      3
 	    }
 	    Line {
 	      SrcBlock		      "w"
@@ -6847,7 +6821,7 @@ Model {
 	Block {
 	  BlockType		  SubSystem
 	  Name			  "Fuerza Motor3"
-	  SID			  "1683"
+	  SID			  "1793"
 	  Ports			  [1, 1]
 	  Position		  [90, 207, 205, 283]
 	  MinAlgLoopOccurrences	  off
@@ -6875,34 +6849,26 @@ Model {
 	    Block {
 	      BlockType		      Inport
 	      Name		      "w"
-	      SID		      "1684"
+	      SID		      "1794"
 	      Position		      [170, 168, 200, 182]
 	      IconDisplay	      "Port number"
 	    }
 	    Block {
 	      BlockType		      Sum
 	      Name		      "Add"
-	      SID		      "1685"
-	      Ports		      [3, 1]
-	      Position		      [525, 204, 555, 236]
-	      Inputs		      "+++"
+	      SID		      "1795"
+	      Ports		      [2, 1]
+	      Position		      [525, 206, 555, 239]
 	      InputSameDT	      off
 	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
 	      SaturateOnIntegerOverflow	off
 	    }
 	    Block {
-	      BlockType		      Constant
-	      Name		      "Constant"
-	      SID		      "1686"
-	      Position		      [405, 245, 435, 275]
-	      Value		      "0.0170"
-	    }
-	    Block {
 	      BlockType		      Gain
 	      Name		      "Gain"
-	      SID		      "1687"
+	      SID		      "1796"
 	      Position		      [410, 152, 460, 188]
-	      Gain		      "3.7646e-5"
+	      Gain		      "3.52966e-5"
 	      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
 	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
 	      SaturateOnIntegerOverflow	off
@@ -6910,9 +6876,9 @@ Model {
 	    Block {
 	      BlockType		      Gain
 	      Name		      "Gain1"
-	      SID		      "1688"
+	      SID		      "1797"
 	      Position		      [420, 205, 450, 235]
-	      Gain		      "-9.0535e-4"
+	      Gain		      "-4.9293e-4"
 	      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
 	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
 	      SaturateOnIntegerOverflow	off
@@ -6920,7 +6886,7 @@ Model {
 	    Block {
 	      BlockType		      Product
 	      Name		      "Product"
-	      SID		      "1689"
+	      SID		      "1798"
 	      Ports		      [2, 1]
 	      Position		      [330, 152, 360, 183]
 	      InputSameDT	      off
@@ -6930,19 +6896,21 @@ Model {
 	    Block {
 	      BlockType		      Outport
 	      Name		      "T"
-	      SID		      "1690"
+	      SID		      "1799"
 	      Position		      [590, 213, 620, 227]
 	      IconDisplay	      "Port number"
 	    }
 	    Line {
 	      SrcBlock		      "Add"
 	      SrcPort		      1
+	      Points		      [0, -5]
 	      DstBlock		      "T"
 	      DstPort		      1
 	    }
 	    Line {
 	      SrcBlock		      "Gain1"
 	      SrcPort		      1
+	      Points		      [55, 0]
 	      DstBlock		      "Add"
 	      DstPort		      2
 	    }
@@ -6955,16 +6923,9 @@ Model {
 	    Line {
 	      SrcBlock		      "Gain"
 	      SrcPort		      1
-	      Points		      [20, 0; 0, 40]
+	      Points		      [20, 0; 0, 45]
 	      DstBlock		      "Add"
 	      DstPort		      1
-	    }
-	    Line {
-	      SrcBlock		      "Constant"
-	      SrcPort		      1
-	      Points		      [70, 0]
-	      DstBlock		      "Add"
-	      DstPort		      3
 	    }
 	    Line {
 	      SrcBlock		      "w"
@@ -6990,9 +6951,9 @@ Model {
 	Block {
 	  BlockType		  SubSystem
 	  Name			  "Fuerza Motor4"
-	  SID			  "1691"
+	  SID			  "1800"
 	  Ports			  [1, 1]
-	  Position		  [90, 312, 205, 388]
+	  Position		  [95, 312, 210, 388]
 	  MinAlgLoopOccurrences	  off
 	  PropExecContextOutsideSubsystem off
 	  RTWSystemCode		  "Auto"
@@ -7018,34 +6979,26 @@ Model {
 	    Block {
 	      BlockType		      Inport
 	      Name		      "w"
-	      SID		      "1692"
+	      SID		      "1801"
 	      Position		      [170, 168, 200, 182]
 	      IconDisplay	      "Port number"
 	    }
 	    Block {
 	      BlockType		      Sum
 	      Name		      "Add"
-	      SID		      "1693"
-	      Ports		      [3, 1]
-	      Position		      [525, 204, 555, 236]
-	      Inputs		      "+++"
+	      SID		      "1802"
+	      Ports		      [2, 1]
+	      Position		      [525, 206, 555, 239]
 	      InputSameDT	      off
 	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
 	      SaturateOnIntegerOverflow	off
 	    }
 	    Block {
-	      BlockType		      Constant
-	      Name		      "Constant"
-	      SID		      "1694"
-	      Position		      [405, 245, 435, 275]
-	      Value		      "0.0170"
-	    }
-	    Block {
 	      BlockType		      Gain
 	      Name		      "Gain"
-	      SID		      "1695"
+	      SID		      "1803"
 	      Position		      [410, 152, 460, 188]
-	      Gain		      "3.7646e-5"
+	      Gain		      "3.52966e-5"
 	      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
 	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
 	      SaturateOnIntegerOverflow	off
@@ -7053,9 +7006,9 @@ Model {
 	    Block {
 	      BlockType		      Gain
 	      Name		      "Gain1"
-	      SID		      "1696"
+	      SID		      "1804"
 	      Position		      [420, 205, 450, 235]
-	      Gain		      "-9.0535e-4"
+	      Gain		      "-4.9293e-4"
 	      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
 	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
 	      SaturateOnIntegerOverflow	off
@@ -7063,7 +7016,7 @@ Model {
 	    Block {
 	      BlockType		      Product
 	      Name		      "Product"
-	      SID		      "1697"
+	      SID		      "1805"
 	      Ports		      [2, 1]
 	      Position		      [330, 152, 360, 183]
 	      InputSameDT	      off
@@ -7073,19 +7026,21 @@ Model {
 	    Block {
 	      BlockType		      Outport
 	      Name		      "T"
-	      SID		      "1698"
+	      SID		      "1806"
 	      Position		      [590, 213, 620, 227]
 	      IconDisplay	      "Port number"
 	    }
 	    Line {
 	      SrcBlock		      "Add"
 	      SrcPort		      1
+	      Points		      [0, -5]
 	      DstBlock		      "T"
 	      DstPort		      1
 	    }
 	    Line {
 	      SrcBlock		      "Gain1"
 	      SrcPort		      1
+	      Points		      [55, 0]
 	      DstBlock		      "Add"
 	      DstPort		      2
 	    }
@@ -7098,16 +7053,9 @@ Model {
 	    Line {
 	      SrcBlock		      "Gain"
 	      SrcPort		      1
-	      Points		      [20, 0; 0, 40]
+	      Points		      [20, 0; 0, 45]
 	      DstBlock		      "Add"
 	      DstPort		      1
-	    }
-	    Line {
-	      SrcBlock		      "Constant"
-	      SrcPort		      1
-	      Points		      [70, 0]
-	      DstBlock		      "Add"
-	      DstPort		      3
 	    }
 	    Line {
 	      SrcBlock		      "w"
@@ -7133,7 +7081,7 @@ Model {
 	Block {
 	  BlockType		  SubSystem
 	  Name			  "Torque Motor1"
-	  SID			  "1727"
+	  SID			  "1807"
 	  Ports			  [1, 1]
 	  Position		  [90, 401, 205, 479]
 	  MinAlgLoopOccurrences	  off
@@ -7161,34 +7109,26 @@ Model {
 	    Block {
 	      BlockType		      Inport
 	      Name		      "w"
-	      SID		      "1728"
+	      SID		      "1808"
 	      Position		      [25, 43, 55, 57]
 	      IconDisplay	      "Port number"
 	    }
 	    Block {
 	      BlockType		      Sum
 	      Name		      "Add"
-	      SID		      "1721"
-	      Ports		      [3, 1]
-	      Position		      [380, 79, 410, 111]
-	      Inputs		      "+++"
+	      SID		      "1809"
+	      Ports		      [2, 1]
+	      Position		      [380, 81, 410, 114]
 	      InputSameDT	      off
 	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
 	      SaturateOnIntegerOverflow	off
 	    }
 	    Block {
-	      BlockType		      Constant
-	      Name		      "Constant"
-	      SID		      "1722"
-	      Position		      [260, 120, 290, 150]
-	      Value		      "-5.73e-04"
-	    }
-	    Block {
 	      BlockType		      Gain
 	      Name		      "Gain"
-	      SID		      "1723"
+	      SID		      "1810"
 	      Position		      [265, 27, 315, 63]
-	      Gain		      "5.47e-07"
+	      Gain		      "1.69e-6"
 	      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
 	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
 	      SaturateOnIntegerOverflow	off
@@ -7196,9 +7136,9 @@ Model {
 	    Block {
 	      BlockType		      Gain
 	      Name		      "Gain1"
-	      SID		      "1724"
+	      SID		      "1811"
 	      Position		      [275, 80, 305, 110]
-	      Gain		      "7.49e-05"
+	      Gain		      "-6.42e-5"
 	      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
 	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
 	      SaturateOnIntegerOverflow	off
@@ -7206,7 +7146,7 @@ Model {
 	    Block {
 	      BlockType		      Product
 	      Name		      "Product"
-	      SID		      "1725"
+	      SID		      "1812"
 	      Ports		      [2, 1]
 	      Position		      [185, 27, 215, 58]
 	      InputSameDT	      off
@@ -7216,19 +7156,21 @@ Model {
 	    Block {
 	      BlockType		      Outport
 	      Name		      "M"
-	      SID		      "1729"
+	      SID		      "1813"
 	      Position		      [445, 88, 475, 102]
 	      IconDisplay	      "Port number"
 	    }
 	    Line {
 	      SrcBlock		      "Add"
 	      SrcPort		      1
+	      Points		      [0, -5]
 	      DstBlock		      "M"
 	      DstPort		      1
 	    }
 	    Line {
 	      SrcBlock		      "Gain1"
 	      SrcPort		      1
+	      Points		      [55, 0]
 	      DstBlock		      "Add"
 	      DstPort		      2
 	    }
@@ -7241,16 +7183,9 @@ Model {
 	    Line {
 	      SrcBlock		      "Gain"
 	      SrcPort		      1
-	      Points		      [20, 0; 0, 40]
+	      Points		      [20, 0; 0, 45]
 	      DstBlock		      "Add"
 	      DstPort		      1
-	    }
-	    Line {
-	      SrcBlock		      "Constant"
-	      SrcPort		      1
-	      Points		      [70, 0]
-	      DstBlock		      "Add"
-	      DstPort		      3
 	    }
 	    Line {
 	      SrcBlock		      "w"
@@ -7276,7 +7211,7 @@ Model {
 	Block {
 	  BlockType		  SubSystem
 	  Name			  "Torque Motor2"
-	  SID			  "1730"
+	  SID			  "1814"
 	  Ports			  [1, 1]
 	  Position		  [90, 511, 205, 589]
 	  MinAlgLoopOccurrences	  off
@@ -7304,34 +7239,26 @@ Model {
 	    Block {
 	      BlockType		      Inport
 	      Name		      "w"
-	      SID		      "1731"
+	      SID		      "1815"
 	      Position		      [25, 43, 55, 57]
 	      IconDisplay	      "Port number"
 	    }
 	    Block {
 	      BlockType		      Sum
 	      Name		      "Add"
-	      SID		      "1732"
-	      Ports		      [3, 1]
-	      Position		      [380, 79, 410, 111]
-	      Inputs		      "+++"
+	      SID		      "1816"
+	      Ports		      [2, 1]
+	      Position		      [380, 81, 410, 114]
 	      InputSameDT	      off
 	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
 	      SaturateOnIntegerOverflow	off
 	    }
 	    Block {
-	      BlockType		      Constant
-	      Name		      "Constant"
-	      SID		      "1733"
-	      Position		      [260, 120, 290, 150]
-	      Value		      "-5.73e-04"
-	    }
-	    Block {
 	      BlockType		      Gain
 	      Name		      "Gain"
-	      SID		      "1734"
+	      SID		      "1817"
 	      Position		      [265, 27, 315, 63]
-	      Gain		      "5.47e-07"
+	      Gain		      "1.69e-6"
 	      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
 	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
 	      SaturateOnIntegerOverflow	off
@@ -7339,9 +7266,9 @@ Model {
 	    Block {
 	      BlockType		      Gain
 	      Name		      "Gain1"
-	      SID		      "1735"
+	      SID		      "1818"
 	      Position		      [275, 80, 305, 110]
-	      Gain		      "7.49e-05"
+	      Gain		      "-6.42e-5"
 	      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
 	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
 	      SaturateOnIntegerOverflow	off
@@ -7349,7 +7276,7 @@ Model {
 	    Block {
 	      BlockType		      Product
 	      Name		      "Product"
-	      SID		      "1736"
+	      SID		      "1819"
 	      Ports		      [2, 1]
 	      Position		      [185, 27, 215, 58]
 	      InputSameDT	      off
@@ -7359,19 +7286,21 @@ Model {
 	    Block {
 	      BlockType		      Outport
 	      Name		      "M"
-	      SID		      "1737"
+	      SID		      "1820"
 	      Position		      [445, 88, 475, 102]
 	      IconDisplay	      "Port number"
 	    }
 	    Line {
 	      SrcBlock		      "Add"
 	      SrcPort		      1
+	      Points		      [0, -5]
 	      DstBlock		      "M"
 	      DstPort		      1
 	    }
 	    Line {
 	      SrcBlock		      "Gain1"
 	      SrcPort		      1
+	      Points		      [55, 0]
 	      DstBlock		      "Add"
 	      DstPort		      2
 	    }
@@ -7384,16 +7313,9 @@ Model {
 	    Line {
 	      SrcBlock		      "Gain"
 	      SrcPort		      1
-	      Points		      [20, 0; 0, 40]
+	      Points		      [20, 0; 0, 45]
 	      DstBlock		      "Add"
 	      DstPort		      1
-	    }
-	    Line {
-	      SrcBlock		      "Constant"
-	      SrcPort		      1
-	      Points		      [70, 0]
-	      DstBlock		      "Add"
-	      DstPort		      3
 	    }
 	    Line {
 	      SrcBlock		      "w"
@@ -7419,7 +7341,7 @@ Model {
 	Block {
 	  BlockType		  SubSystem
 	  Name			  "Torque Motor3"
-	  SID			  "1739"
+	  SID			  "1821"
 	  Ports			  [1, 1]
 	  Position		  [90, 606, 205, 684]
 	  MinAlgLoopOccurrences	  off
@@ -7447,34 +7369,26 @@ Model {
 	    Block {
 	      BlockType		      Inport
 	      Name		      "w"
-	      SID		      "1740"
+	      SID		      "1822"
 	      Position		      [25, 43, 55, 57]
 	      IconDisplay	      "Port number"
 	    }
 	    Block {
 	      BlockType		      Sum
 	      Name		      "Add"
-	      SID		      "1741"
-	      Ports		      [3, 1]
-	      Position		      [380, 79, 410, 111]
-	      Inputs		      "+++"
+	      SID		      "1823"
+	      Ports		      [2, 1]
+	      Position		      [380, 81, 410, 114]
 	      InputSameDT	      off
 	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
 	      SaturateOnIntegerOverflow	off
 	    }
 	    Block {
-	      BlockType		      Constant
-	      Name		      "Constant"
-	      SID		      "1742"
-	      Position		      [260, 120, 290, 150]
-	      Value		      "-5.73e-04"
-	    }
-	    Block {
 	      BlockType		      Gain
 	      Name		      "Gain"
-	      SID		      "1743"
+	      SID		      "1824"
 	      Position		      [265, 27, 315, 63]
-	      Gain		      "5.47e-07"
+	      Gain		      "1.69e-6"
 	      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
 	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
 	      SaturateOnIntegerOverflow	off
@@ -7482,9 +7396,9 @@ Model {
 	    Block {
 	      BlockType		      Gain
 	      Name		      "Gain1"
-	      SID		      "1744"
+	      SID		      "1825"
 	      Position		      [275, 80, 305, 110]
-	      Gain		      "7.49e-05"
+	      Gain		      "-6.42e-5"
 	      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
 	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
 	      SaturateOnIntegerOverflow	off
@@ -7492,7 +7406,7 @@ Model {
 	    Block {
 	      BlockType		      Product
 	      Name		      "Product"
-	      SID		      "1745"
+	      SID		      "1826"
 	      Ports		      [2, 1]
 	      Position		      [185, 27, 215, 58]
 	      InputSameDT	      off
@@ -7502,19 +7416,21 @@ Model {
 	    Block {
 	      BlockType		      Outport
 	      Name		      "M"
-	      SID		      "1746"
+	      SID		      "1827"
 	      Position		      [445, 88, 475, 102]
 	      IconDisplay	      "Port number"
 	    }
 	    Line {
 	      SrcBlock		      "Add"
 	      SrcPort		      1
+	      Points		      [0, -5]
 	      DstBlock		      "M"
 	      DstPort		      1
 	    }
 	    Line {
 	      SrcBlock		      "Gain1"
 	      SrcPort		      1
+	      Points		      [55, 0]
 	      DstBlock		      "Add"
 	      DstPort		      2
 	    }
@@ -7527,16 +7443,9 @@ Model {
 	    Line {
 	      SrcBlock		      "Gain"
 	      SrcPort		      1
-	      Points		      [20, 0; 0, 40]
+	      Points		      [20, 0; 0, 45]
 	      DstBlock		      "Add"
 	      DstPort		      1
-	    }
-	    Line {
-	      SrcBlock		      "Constant"
-	      SrcPort		      1
-	      Points		      [70, 0]
-	      DstBlock		      "Add"
-	      DstPort		      3
 	    }
 	    Line {
 	      SrcBlock		      "w"
@@ -7562,9 +7471,9 @@ Model {
 	Block {
 	  BlockType		  SubSystem
 	  Name			  "Torque Motor4"
-	  SID			  "1748"
+	  SID			  "1828"
 	  Ports			  [1, 1]
-	  Position		  [90, 696, 205, 774]
+	  Position		  [95, 696, 210, 774]
 	  MinAlgLoopOccurrences	  off
 	  PropExecContextOutsideSubsystem off
 	  RTWSystemCode		  "Auto"
@@ -7590,34 +7499,26 @@ Model {
 	    Block {
 	      BlockType		      Inport
 	      Name		      "w"
-	      SID		      "1749"
+	      SID		      "1829"
 	      Position		      [25, 43, 55, 57]
 	      IconDisplay	      "Port number"
 	    }
 	    Block {
 	      BlockType		      Sum
 	      Name		      "Add"
-	      SID		      "1750"
-	      Ports		      [3, 1]
-	      Position		      [380, 79, 410, 111]
-	      Inputs		      "+++"
+	      SID		      "1830"
+	      Ports		      [2, 1]
+	      Position		      [380, 81, 410, 114]
 	      InputSameDT	      off
 	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
 	      SaturateOnIntegerOverflow	off
 	    }
 	    Block {
-	      BlockType		      Constant
-	      Name		      "Constant"
-	      SID		      "1751"
-	      Position		      [260, 120, 290, 150]
-	      Value		      "-5.73e-04"
-	    }
-	    Block {
 	      BlockType		      Gain
 	      Name		      "Gain"
-	      SID		      "1752"
+	      SID		      "1831"
 	      Position		      [265, 27, 315, 63]
-	      Gain		      "5.47e-07"
+	      Gain		      "1.69e-6"
 	      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
 	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
 	      SaturateOnIntegerOverflow	off
@@ -7625,9 +7526,9 @@ Model {
 	    Block {
 	      BlockType		      Gain
 	      Name		      "Gain1"
-	      SID		      "1753"
+	      SID		      "1832"
 	      Position		      [275, 80, 305, 110]
-	      Gain		      "7.49e-05"
+	      Gain		      "-6.42e-5"
 	      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
 	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
 	      SaturateOnIntegerOverflow	off
@@ -7635,7 +7536,7 @@ Model {
 	    Block {
 	      BlockType		      Product
 	      Name		      "Product"
-	      SID		      "1754"
+	      SID		      "1833"
 	      Ports		      [2, 1]
 	      Position		      [185, 27, 215, 58]
 	      InputSameDT	      off
@@ -7645,19 +7546,21 @@ Model {
 	    Block {
 	      BlockType		      Outport
 	      Name		      "M"
-	      SID		      "1755"
+	      SID		      "1834"
 	      Position		      [445, 88, 475, 102]
 	      IconDisplay	      "Port number"
 	    }
 	    Line {
 	      SrcBlock		      "Add"
 	      SrcPort		      1
+	      Points		      [0, -5]
 	      DstBlock		      "M"
 	      DstPort		      1
 	    }
 	    Line {
 	      SrcBlock		      "Gain1"
 	      SrcPort		      1
+	      Points		      [55, 0]
 	      DstBlock		      "Add"
 	      DstPort		      2
 	    }
@@ -7670,16 +7573,9 @@ Model {
 	    Line {
 	      SrcBlock		      "Gain"
 	      SrcPort		      1
-	      Points		      [20, 0; 0, 40]
+	      Points		      [20, 0; 0, 45]
 	      DstBlock		      "Add"
 	      DstPort		      1
-	    }
-	    Line {
-	      SrcBlock		      "Constant"
-	      SrcPort		      1
-	      Points		      [70, 0]
-	      DstBlock		      "Add"
-	      DstPort		      3
 	    }
 	    Line {
 	      SrcBlock		      "w"
@@ -7705,14 +7601,14 @@ Model {
 	Block {
 	  BlockType		  Outport
 	  Name			  "T1"
-	  SID			  "1713"
+	  SID			  "1835"
 	  Position		  [230, 53, 260, 67]
 	  IconDisplay		  "Port number"
 	}
 	Block {
 	  BlockType		  Outport
 	  Name			  "T2"
-	  SID			  "1715"
+	  SID			  "1836"
 	  Position		  [230, 148, 260, 162]
 	  Port			  "2"
 	  IconDisplay		  "Port number"
@@ -7720,7 +7616,7 @@ Model {
 	Block {
 	  BlockType		  Outport
 	  Name			  "T3"
-	  SID			  "1717"
+	  SID			  "1837"
 	  Position		  [230, 238, 260, 252]
 	  Port			  "3"
 	  IconDisplay		  "Port number"
@@ -7728,7 +7624,7 @@ Model {
 	Block {
 	  BlockType		  Outport
 	  Name			  "T4"
-	  SID			  "1719"
+	  SID			  "1838"
 	  Position		  [230, 343, 260, 357]
 	  Port			  "4"
 	  IconDisplay		  "Port number"
@@ -7736,7 +7632,7 @@ Model {
 	Block {
 	  BlockType		  Outport
 	  Name			  "M1"
-	  SID			  "1726"
+	  SID			  "1839"
 	  Position		  [230, 433, 260, 447]
 	  Port			  "5"
 	  IconDisplay		  "Port number"
@@ -7744,7 +7640,7 @@ Model {
 	Block {
 	  BlockType		  Outport
 	  Name			  "M2"
-	  SID			  "1738"
+	  SID			  "1840"
 	  Position		  [230, 543, 260, 557]
 	  Port			  "6"
 	  IconDisplay		  "Port number"
@@ -7752,7 +7648,7 @@ Model {
 	Block {
 	  BlockType		  Outport
 	  Name			  "M3"
-	  SID			  "1747"
+	  SID			  "1841"
 	  Position		  [230, 638, 260, 652]
 	  Port			  "7"
 	  IconDisplay		  "Port number"
@@ -7760,7 +7656,7 @@ Model {
 	Block {
 	  BlockType		  Outport
 	  Name			  "M4"
-	  SID			  "1756"
+	  SID			  "1842"
 	  Position		  [230, 728, 260, 742]
 	  Port			  "8"
 	  IconDisplay		  "Port number"
@@ -8029,7 +7925,7 @@ Model {
       }
       Branch {
 	Labels			[0, 0]
-	Points			[0, -265]
+	Points			[0, -270]
 	DstBlock		"Fuerzas y Torques"
 	DstPort			1
       }
@@ -8045,7 +7941,7 @@ Model {
       }
       Branch {
 	Labels			[0, 0]
-	Points			[0, -270]
+	Points			[0, -275]
 	DstBlock		"Fuerzas y Torques"
 	DstPort			2
       }
@@ -8061,7 +7957,7 @@ Model {
       }
       Branch {
 	Labels			[0, 0]
-	Points			[0, -275]
+	Points			[0, -280]
 	DstBlock		"Fuerzas y Torques"
 	DstPort			3
       }
@@ -8077,7 +7973,7 @@ Model {
       }
       Branch {
 	Labels			[0, 0]
-	Points			[0, -280]
+	Points			[0, -285]
 	DstBlock		"Fuerzas y Torques"
 	DstPort			4
       }
@@ -8173,56 +8069,56 @@ Model {
     Line {
       SrcBlock		      "Fuerzas y Torques"
       SrcPort		      1
-      Points		      [130, 0; 0, 115]
+      Points		      [130, 0; 0, 120]
       DstBlock		      "Dinámica"
       DstPort		      3
     }
     Line {
       SrcBlock		      "Fuerzas y Torques"
       SrcPort		      2
-      Points		      [110, 0; 0, 125]
+      Points		      [110, 0; 0, 130]
       DstBlock		      "Dinámica"
       DstPort		      4
     }
     Line {
       SrcBlock		      "Fuerzas y Torques"
       SrcPort		      3
-      Points		      [100, 0; 0, 135]
+      Points		      [100, 0; 0, 140]
       DstBlock		      "Dinámica"
       DstPort		      5
     }
     Line {
       SrcBlock		      "Fuerzas y Torques"
       SrcPort		      4
-      Points		      [90, 0; 0, 145]
+      Points		      [90, 0; 0, 150]
       DstBlock		      "Dinámica"
       DstPort		      6
     }
     Line {
       SrcBlock		      "Fuerzas y Torques"
       SrcPort		      5
-      Points		      [45, 0; 0, 255]
+      Points		      [45, 0; 0, 260]
       DstBlock		      "Dinámica"
       DstPort		      11
     }
     Line {
       SrcBlock		      "Fuerzas y Torques"
       SrcPort		      6
-      Points		      [35, 0; 0, 265]
+      Points		      [35, 0; 0, 270]
       DstBlock		      "Dinámica"
       DstPort		      12
     }
     Line {
       SrcBlock		      "Fuerzas y Torques"
       SrcPort		      7
-      Points		      [20, 0; 0, 275]
+      Points		      [20, 0; 0, 280]
       DstBlock		      "Dinámica"
       DstPort		      13
     }
     Line {
       SrcBlock		      "Fuerzas y Torques"
       SrcPort		      8
-      Points		      [5, 0; 0, 285]
+      Points		      [5, 0; 0, 290]
       DstBlock		      "Dinámica"
       DstPort		      14
     }
