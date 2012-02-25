@@ -1,0 +1,104 @@
+#.
+armar carpeta con
+	- proovedores
+	- hojas de datos
+
+#.
+darle trabajo al matute
+
+#.
+antes de arrancar dar un ratito para calibrar:
+      - determinar offsets de acc y del gyro.
+      - usar las ganancias de las calibraciones.
+      - anotar presión que corresponde a la altura inicial.
+      - origen de coordenadas.
+# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+#. generador de trayectorias
+# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+#. usar tiempo
+- el tiempo va a determinar el huevo que tiene que meter el controlador.
+- interpolador, nos va a dar una consigna, un criterio para el control.
+  	- que velocidad?
+- tenemos 4 cosas con las que podemos hacer acciones de control
+  - lo que queremos es determinar una fuerza y un par.
+  - tengo limitaciones, no puedo exceder las corrientes max de los motores
+  - ejemplo: quiero moverme en línea recta a velocidad constante con un cierto grado de torcedura
+    - NO es posible. hay trayectorias que no se pueden seguir. jodete. copiale a alguno por ahí.
+  - empezemos por un movimiento cuasiestático, dsp la podemos complicar.
+  - la dinámica no puede seguir cualquier trayectoria, pero puedo hacer todo lo que se puede hacer manipulando una fuerza y un par.
+
+# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+#. Calibraciones
+# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+#. formato/contenido
+mucho al estilo matute. sacar texto, y meter fotitos, dibujitos, etc.
+
+#. error en MC
+tener una idea de cual es el error en nuestra calibración. si cometemos un error de 0.01 al aplicar MC y algo que tendría que dar 1 nos da 1.02, entonces no hay motivo para suponer que no era 1. podemos tener una idea usando el número de condición de la matriz que usamos en el problema Ax=C, pero no parece valer la pena meterse mucho en esto, ya que es medio complicado. igual re pinta hablarles sobre esto durante media hora, introducir un montón de cosas que capazq pueden llegar a ser, y pensar q estamos resolviendo un misterio que le va a cambiar la vida a toda la humanidad, en serio! no va a haber nadie a quien no le cambie la vida, excepto si no es humano. al matute por ejemplo, le va a cambiar la vida (se esperaban un "no" ahí, yo se q si, q mala gente q son. aunque use caparazón, sigue siendo una persona. nunca se olviden, atrás de cada gran monitor, hay un matute.). fua, sigo escribiendo cosas porque no hay otra cosa para hacer mientras la charla sobre un tema que quedamos en ignorar sigue, y sigue, xq ta, cuando pinta, hay q repetir "seguí, seguí, etc" y ahí uno sigue, por lo menos eso es lo que dice el osito yo-gui, q si lo lees en nerd es "yo interfaz gráfica" (yo-G.U.I., aclaro xa aquellos que "tienen vida" y no saben estas cosas). otra cosa que podés hacer cuando no te importa algo, es agregar modelos adentro de modelos, onda "embarazar" modelos. eso sería excelente. las modelos en gral están re buenas, aunque seguro tienen terribles problemas con pila de cosas. ta, se acabó.
+
+#. tocadiscos
+	que es el ruido de 45 rpm?
+		- motor?
+
+#. acc
+	el error típico en reposo es la res del instrumento (sigma = 0.04)
+
+#. gyro
+	casteo pierde precision. capaz el batido nos salvó la calibración.
+
+#. magnet
+	comparar las calibraciones apuntando al "coso de pesca" contra la de la bola.
+	nota para el pater: no se dice "por cuanto ángulo"
+	ver desviación estándar en la esfera calibrada respecto a radio constante.
+	ver cuando difiere la serie de datos que tomamos de lo que pensamos q es, usando cada una de las calibraciones.
+	usar la calibración que hicimos nosotros xa generar una bola, para comparar las bolas, a ver cual es más bola.
+
+#. barómetro
+	hay algo raro en las lecturas de presión. debería tener res de 1 Pa, y tiene, pero la distribución no es uniforme.
+
+#. temp
+	- temp:
+		la temp que registra la imu difiera de la que registra el termómetro, principalmente debido a que el sensor de temp está metido adentro del barómetro, y el termómetro no entra en el barómetro.
+	- acc:
+		la ganancia del acc parece tener una dep lineal con la temp, de la forma:
+		K = K_0*(1-a*(T-T_0))
+		usar la temp a la que calibramos como T_0. pueden ser distintos si hicimos las calibraciones a distintas temp ambientes.
+		x más que no tengamos la dep de los otros ejes, parece razonable suponer que el comportamiento va a ser similar, y no es una mejora que valga la pena.
+
+# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+#. Switcheo
+# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+otra vez será.
+
+# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+#. Kalman
+# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+- fuerte dependencia con la std, si "... no la conocemos bien da un resultado sesgado, y se va al carajo ..."
+	- encarar con cosas ya hechas
+	- separar KALMAN en dos partes
+	- sistema acoplado, ver como la información de largo plazo (GPS) afecta no solo la posición, sino la actitud.
+	- fua, misiles!
+	- tenemos dos medidas indirectas de la velocidad, una que tenemos que derivar (GPS) y otra que tenemos integrar.
+	- pater ahora dice cosas anecdóticas.
+	- ver de hacer una predicción lineal, sin usar el modelo físico.
+	- usar el kalman sin el modelo, con otro modelo, usando las medidas de la escalera fing xa ver si podemos regenerar la trayectoria.
+	-si te vas preso podés usar una columna para escuchar "Laura" en océano FM.
+	-usar el modelo en el simulador del pater, agregarle ruído y meter eso como input al kalman del mati.
+# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+#. Compras
+# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+- helices
+	+?
+- esc
+	+2 arriba
+	+1 abajo
+- beaglejuice
+	+1
+- batería
+	+1 chica
+	+1 grande
+- cargador
+	+1
+
+
