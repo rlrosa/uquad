@@ -41,7 +41,6 @@ Previo al desarrollo del modelo es muy importante esclarecer las hipótesis en la
 
 No debe perderse de vista que el cuadricóptero con el que se trabaja fue diseñado para ser comandado a través de un control remoto. Por dicho motivo es razonable que sus características sean tales que le permitan a una persona volarlo desde el suelo. Parece perfectamente razonable que se haya diseñado el sistema para volar por tiempos limitados, distancias relativamente cortas y a bajas velocidades, para permitirle al operador un control manual más sencillo. Asimismo, estas consideraciones permiten introducir diversas simplificaciones en el modelado.
 
-%TODO
 
 \subsection{La Tierra como sistema de referencia inercial}
 Evidentemente la Tierra {\bf no} es un sistema de referencia inercial ya que la misma se encuentra sometida a la traslación en torno al Sol y a una rotación en sobre su eje. Supongamos una partícula que se encuentra en movimiento relativo a la Tierra. Su aceleración respecto de un sistema verdaderamente inercial puede escribirse como:
@@ -71,18 +70,35 @@ $$
 \omega=\frac{2\pi}{24\times60\times60s}\approx7.3\times10^{-5}rad s^{-1}
 $$
 
-Finalmente debemos considerar el radio promedio de la Tierra($R_T=$), ya que las alturas que alcanzará nuestro sistema son despreciables respecto del radio de la Tierra. 
-%TODO Radio de la Tierra y terminar
-\subsection{Curvatura de la Tierra}
-%TODO
+Finalmente debemos considerar el radio promedio de la Tierra($R_T=6,731\times10^{6}m$), ya que las alturas que alcanzará nuestro sistema son despreciables respecto del radio de la Tierra. 
 
+Por lo tanto 
+$$
+a_T \approx 3.6\times10^{-2}m^{s-2}
+$$
+
+Para que el término de la aceleración de Coreolis sea comparable con la aceleración de transporte las velocidades del cuadricóptero relativas a la Tierra deberían ser del orden de cientos de metros por segundo. Las velocidades evidentemente serán inferiores, por lo tanto este término puede ser despreciado. 
+
+La aceleración relativa al sistema de la Tierra difiere de  aproximadamente $3.6\times10^{-2}ms^{-2}$ de la aceleración medida en un sistema verdaderamente inercial. Por otra parte la resolución del acelerómetro utilizado es de $4mg\approx 4.81\times10^{-2}ms^{-2}$. Es imposible de detectar el término de la aceleración de transporte, por dicho motivo parece razonable despreciarlo. \\
+
+En resumen tenemos que:
+$$\sum \vec{F_{ext}}=m\vec{a}\approx m\vec{a\prime}$$
+
+Esto nos permite afirmar que la Tierra puede aproximarse como un sistema de referencia inercial.
+
+
+\subsection{Curvatura de la Tierra}
+El cuadricóptero no se desplazara una distancia superior a una centena de metros paralelo a la superficie de la Tierra. Supongamos entonces que el cuadricóptero se desplaza $1km$ en una dirección. Esto corresponde a recorrer un arco de círculo de $\theta = \frac{1km}{6,731\times10^{3}km}\approx 1.5\times 10^{-4}rad$. Si consideramos la superficie terrestre como un plano, la distancia recorrida es: 
+$$d=R_T\sin(\theta) \approx 0.999999996km$$
+
+Como era de esperar, la diferencia entre la distancia recorrida como arco de círculo y asumiendo una aproximación local de la Tierra por un plano es despreciable. Por lo tanto trabajaremos con un sistema de coordenadas cartesiano.
 \subsection{Atracción gravitacional}
 Todos los objetos se encuentran relacionados entre sí por medio de la Fuerza de atracción gravitacional. Sin embargo en las cercanías de la Tierra la atracción gravitacional con el resto de los objetos es completamente despreciable. Dicha fuerza vale:
 
 $$
 F_G=G\frac{M_Tm}{d^2}=G\frac{M_Tm}{(R_T+h)^2} 
 $$ 
-Donde $G$ es la constante gravitacional y h la altura a la cual se encuentra una partícula. 
+Donde $G$ es la constante gravitacional y h la altura a la cual se encuentra una partícula.  
 Como ya se analizo anteriormente las alturas a las cuales se desenvolverá el cuadricóptero son despreciables respecto del radio de la Tierra. Por lo tanto la ecuación anterior queda:
 
 $$
@@ -353,7 +369,7 @@ $$
 dL=\frac{1}{2}\rho_A \omega_p^2 C_L c r^2dr$$\\
 
 $$
-dL=\frac{1}{2}\rho_A \omega_p^2 C_D c r?^2dr
+dD=\frac{1}{2}\rho_A \omega_p^2 C_D c r^2dr
 $$
 
 Donde $\rho_A$ es la densidad del aire, $\omega_p$ la velocidad angular de la hélice, $r$ la distancia del elemento de hélice al eje de la hélice, c es la longitud promedio de la cuerda de la hélice \footnote{segmento imaginario que une el borde de ataque con el borde de fuga },$ C_L$ y $C_D$ son coeficientes adimensionados.
@@ -364,7 +380,7 @@ $$dT=dL\cos\varphi_I-dD\sin\varphi$$
 
 Realizando la aproximación que $\varphi$ es un ángulo pequeño y que la fuerza de \emph{lift} es al menos un orden mayor que la de \emph{drag} se puede afirmar que:
 
-$$dT=dL
+$$dT\approx dL
 $$
 
 El empuje por lo tanto puede calcularse como la integral de $dT$ respecto de $r$. Considerando que la hélice consta de dos hojas, se obtiene que:
