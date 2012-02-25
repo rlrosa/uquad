@@ -1,4 +1,4 @@
-function ax_plot = barom_plot(alt, avg_size, indexes, temp)
+function [ax1 ax2] = barom_plot(alt, avg_size, indexes, temp)
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 %function barom_plot(alt, avg_size, indexes)
 %
