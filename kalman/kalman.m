@@ -65,7 +65,7 @@ n2      = sigma_g*ones(N,1);
 
 Q       = 10*eye(3);         % TODO OJO DUDOSO
 % R       = sigma_g^2*eye(3);
-R       = 10000*eye(3);
+R       = 1000*eye(3);
 
 % Q=cov(sigma_g*randn(N,3));
 % R=Q/20;
@@ -96,14 +96,18 @@ for i=2:N
     K(:,:,i)=K;
 end
 
+
+% TODO ojo al plotear con los retardos. Capaz q hay q agregar un 0 al
+% principio
+
 figure()
     plot(z(:,1),'k')
     hold on
     plot(z(:,2),'k')
     plot(z(:,3),'k')    
-    plot([0;x_est(2:end,1)])
-    plot([0;x_est(2:end,2)],'r')
-    plot([0;x_est(2:end,3)],'g')
+    plot([x_est(2:end,1)])
+    plot([x_est(2:end,2)],'r')
+    plot([x_est(2:end,3)],'g')
     legend('w_x','w_y','w_z','w_x','w_y','w_z')
 %     legend('posta','kalman')
     hold off
