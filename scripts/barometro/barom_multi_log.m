@@ -1,4 +1,4 @@
-function [alt, indexes, temp] = barom_multi_log(path, ind_plots, ...
+function [alt, indexes, temp, pres] = barom_multi_log(path, ind_plots, ...
   do_plot, raw, plot_temp, avg_size)
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 % function [alt, indexes] = barom_multi_log(path, ind_plots, do_plot, ...
@@ -58,6 +58,7 @@ fprintf('Loading %d log files...\n',length(files));
 
 alt = [];
 temp = [];
+pres = [];
 indexes = zeros(length(files),1);
 
 if(isempty(files))
@@ -68,9 +69,10 @@ end
 for i=1:length(files)
   log_name = files(i).name;
   fprintf('Loading %s...\n',log_name);
-  [alt_tmp,temp_tmp,~] = barom(sprintf('%s%c%s',path_to_load,slash,log_name),ind_plots,raw);
+  [alt_tmp,temp_tmp,~,~,pres_tmp] = barom(sprintf('%s%c%s',path_to_load,slash,log_name),ind_plots,raw);
   alt  = [alt; alt_tmp];
   temp = [temp; temp_tmp];
+  pres = [pres; pres_tmp];
   indexes(i) = length(alt_tmp);
   fprintf('%s loaded. %d files remaining...\n', ...
     log_name, ...

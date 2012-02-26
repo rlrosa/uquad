@@ -27,10 +27,15 @@ for k = 1:3
   hp_tmp=hp+mean(alt(ind(1):ind(2)))-hp(1);
   j=1;
   for i=1:2:length(ind)
-      line([ind(i) ind(i+1)],[hp_tmp(j) hp_tmp(j)],'color','red','Parent',ax_plot)
+      line([ind(i) ind(i+1)],[hp_tmp(j) hp_tmp(j)], ...
+        'color','red','LineWidth',2,'Parent',ax_plot)
       hm_tmp(j,1)=mean(alt(ind(i):ind(i+1)));
       j=j+1;
   end
+  
+  legend(ax_plot,'Datos crudos', ...
+    sprintf('Promedio de %d muestras',avg_size), ...
+    'Cinta metrica')
 
   eval(sprintf('hp%d=hp_tmp;',k));
   eval(sprintf('hm%d=hm_tmp;',k));
@@ -43,10 +48,29 @@ disp(hm2-hp2)
 fprintf('\nBajada\n')
 disp(hm3-hp3)
 
+%% Error absoluto
 figure()
-plot(abs(hm1-hp1))
+plot(abs(hm1-hp1),'b.-')
 hold on
-plot(abs(hm2-hp2),'r')
-plot(abs(hm3-hp3),'g')
-legend('Subida 1','Subida 2','Bajada')
-title('Error en valor absoluto de la altura')
+plot(abs(hm2-hp2),'r.-')
+plot(abs(hm3-hp3),'g.-')
+legend('Subida 1','Subida 2','Bajada','Fontsize',16,'Location','NorthWest')
+title('Error en respecto a la cinta metrica','Fontsize',16)
+set(gca,'Fontsize',16)
+xlabel('# de piso','Fontsize',16)
+ylabel('Error respecto a la cinta metrica (m)','Fontsize',16)
+grid on
+
+%% Error relativo
+% figure()
+% plot(abs(hm1-hp1)./hp1*100,'b.-')
+% hold on
+% plot(abs(hm2-hp2)./hp2*100,'r.-')
+% plot(abs(hm3-hp3)./hp3*100,'g.-')
+% legend('Subida 1','Subida 2','Bajada','Fontsize',16,'Location','NorthWest')
+% title('Error relativo','Fontsize',16)
+% set(gca,'Fontsize',16)
+% xlabel('# de piso','Fontsize',16)
+% ylabel('Error/Altura\_cinta*100','Fontsize',16)
+% grid on
+
