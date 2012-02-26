@@ -120,9 +120,24 @@ Es de interés caracterizar el ruido en los datos provenientes del barómetro. S
 
 Se analizan datos tomados durante diversos períodos de tiempo: 5 minutos, 2 minutos, 20 segundos y 15 segundos.
 
-Se analiza la autocorrelación de las muestras, y se compara el ruído con los valores dados por la hoja de datos. La hoja de datos especifica ruído RMS típico para los distintos modos de funcionamiento
+Se analiza la autocorrelación de las muestras, y se compara el ruído con los valores dados por la hoja de datos. La hoja de datos especifica ruído RMS típico para los distintos modos de funcionamiento.
 
 \subsection{Medidas de altura absoluta}
+
+\begin{wrapfigure}{r}{0.5\textwidth}
+\vspace{-70pt}
+  \begin{center}
+	\subfloat[Toma de datos.]{\label{fig:escalera_compu.jpg}
+	\includegraphics[width=0.25\textwidth]
+		{./pics/escalera_compu.jpg}}\\
+	\subfloat[Vacío de la escalera.]{\label{fig:escalera_pater.jpg}
+	\includegraphics[width=0.25\textwidth]
+		{./pics/escalera_pater.jpg}}
+  \end{center}
+  \caption{Experimento: Distancias de varios metros.}
+\label{fig:escalera-fing}
+\vspace{-40pt}
+\end{wrapfigure}
 
 Para analizar la performance del barómetro como instrumento para determinar la elevación absoluta, se toman puntos de altura conocida, y se comparan las lecturas contra los datos conocidos.
 
@@ -130,22 +145,7 @@ Para analizar la performance del barómetro como instrumento para determinar la 
 
 Se deja despliega una cinta métrica en el vacío del centro de una escalera de 4 tramos en la Facultad de Ingeniería de la Universidad de la República. La cinta extendida cubre aproximadamente 25 metros. Se comparan las medidas dadas por el barómetro con las que se obtienen de la cinta.
 
-Se utiliza una cinta de agrimensor, graduada cada 10 centímetros.
-
-\vspace{-20pt}
-\begin{figure}[H]
-  \begin{center}
-	\subfloat[Toma de datos.]{\label{fig:escalera_compu.jpg}
-	\includegraphics[width=0.35\textwidth]
-		{./pics/escalera_compu.jpg}}
-	\subfloat[Vacío de la escalera.]{\label{fig:escalera_pater.jpg}
-	\includegraphics[width=0.35\textwidth]
-		{./pics/escalera_pater.jpg}}
-  \end{center}
-\vspace{-20pt}
-  \caption{Experimento: Distancias de varios metros.}
-\label{fig:escalera-fing}
-\end{figure}
+Se utiliza una cinta de agrimensor, graduada cada 10 centímetros, para medir la distancia de un piso a otro. Luego toman 1 minuto de datos en cada piso, recorriendo la escalera de un extremo a otro. Se repite este experimento 3 veces (se sube, se baja y se vuelve a subir) y luego se realiza un experimento similar, pero en lugar de detenerse a tomar muestras durante 1 minuto en cada piso, se apoya la IMU, se toma anota el tiempo, y se sigue. La pausa en cada punto es menor a 2 segundos.
 
 \subsection{Distancias de un metro}
 
@@ -251,8 +251,9 @@ La resolución más atractiva parece ser la número 2, en la cual se promedian 4
 \subsubsection{Resolución del instrumento}
 En la figura \ref{fig:barom_hist_exp4.pdf} se observa un histograma de las diferencias entre muestras sucesivas de los datos del barómetro. Se observa que la mayor parte de los datos saltan de a 25cm. Se esperaba una discretización en niveles de  aproximadamente 8cm, correspondientes a variaciones de presión de 1Pa (la resolución del instrumento).
 
-Puede resultar dificil ver que hay muestras en todos los bins, pero mirando con detalle se puede. Se descarta un problema de software en la adquisición de datos, y se atribuye el comportamiento al sensor en sí. Este problem no parece ser significativo.
-\vspace{-15pt}
+Puede resultar dificil ver que hay muestras en todos los bins, pero mirando con detalle se puede. Puede deberse a un problema de software, o la construcción del sensor en sí. Este problem no parece ser significativo.
+%TODO averiguar q onda con esto.
+\vspace{-14pt}
 \begin{figure}[h!]
 \centering
   \includegraphics[width=.75\textwidth]{./pics/barom_hist_exp4.pdf}
@@ -272,8 +273,64 @@ Se descartó la posibilidad de utilizar el barómetro para determinar la altura 
 
 \subsection{Distancias de varios metros}
 
+En las siguientes figuras se observan los resultados del experimento. Las líneas verticales (en negro) respresentan el comienzo y el fin de la toma de datos en cada piso. No se hizo una medida de la altura absoluta, sino que se tienen las distancias entre piso y piso, y se usó como origen la altura dad por el promedio de algunas muestras al comienzo del experimento, ya sea en el piso de más arriba, o en el piso de más abajo (bajadas y subidas respectivamente). Los segmentos en rojo que unen las rectas verticales representan la distancia entre el ``origen'' y el piso actual, medida con la cinta métrica.
 
+\vspace{-14pt}
+\begin{figure}[h!]
+\centering
+  \includegraphics[width=.95\textwidth]{./pics/metros-s1.pdf}
+\vspace{-15pt}
+  \caption{Subida \#1.}
+  \label{fig:metros-s1.pdf}
+\end{figure}
+\vspace{-40pt}
 
+\newpage
+\vspace{-20pt}
+\begin{figure}[h!]
+\centering
+  \includegraphics[width=.85\textwidth]{./pics/metros-b1.pdf}
+\vspace{-25pt}
+  \caption{Bajada \#1.}
+  \label{fig:metros-b1.pdf}
+\end{figure}
+\vspace{-20pt}
+\begin{figure}[h!]
+\centering
+  \includegraphics[width=.85\textwidth]{./pics/metros-rapido.pdf}
+\vspace{-15pt}
+  \caption{Bajada rápido.}
+  \label{fig:metros-rapido.pdf}
+\vspace{-15pt}
+\end{figure}
+\vspace{-15pt}
+
+Se observa que en la figura \ref{fig:metros-s1.pdf} el error acumulado se vuelve importante, del orden de los 3 metros, para cuando se termina de recorrer la escalera.
+
+En la figura \ref{fig:metros-metros-err-accum.pdf} se observa la evolución del error acumluado para 2 subidas, 1 bajada y una bajada rápida\footnote{No se incluyó una gráfica de la segundo subida, es muy similar al la de la primera bajada, pero con un eror del orden del de la primer banjada.}.
+
+\begin{figure}[h!]
+\centering
+  \includegraphics[width=.85\textwidth]{./pics/metros-err-accum.pdf}
+\vspace{-15pt}
+  \caption{Error acuulado.}
+  \label{fig:metros-err-accum.pdf}
+\vspace{-15pt}
+\end{figure}
+
+El error en la determinación de la distancia entre un piso y el siguiente se observa en la figura \ref{fig:metro-err-piso-a-piso.pdf}.
+
+\begin{figure}[h!]
+\centering
+  \includegraphics[width=.85\textwidth]{./pics/metros-err-piso-a-piso.pdf}
+\vspace{-15pt}
+  \caption{Error en la estimación de la distancia del piso anterior al actual.}
+  \label{fig:metros-err-piso-a-piso.pdf}
+\vspace{-15pt}
+\end{figure}
+\vspace{-15pt}
+
+\newpage
 \subsection{Distancias de un metro}
 
 Las figuras \ref{fig:esc1.pdf} y \ref{fig:esc2.pdf} presentan las medidas obtenidas al realizar las medidas estáticas a alturas que difieren de un metro. La figura \ref{fig:variando} muestra las medidas obtenidas durante el proceso de subir y bajar el barómetro. En las tres figuras se observan los datos obtenidos y la media móvil considerando 20 muestras.
@@ -383,7 +440,12 @@ La conclusiones más importante de las pruebas hechas con el barómetro fueron l
 \item \textbf{Tiempo de \textit{warm-up}}: El circuito tiene un tiempo de \textit{warm-up} de aproximadamente 45 minutos, durante el cual la temperatura sube aproximadamente 1.5\degc. De las especificaciones de los sensores se deduce que una variación de temperatura tan pequeña no debería afectar la performance. De cualquier forma, es de interés analizar analizar, experimentalmente, el efecto de la variación de la temperatura sobre las lecturas de la IMU.
 \item \textbf{Altura absoluta}: El drift y la sensibilidad a factores externos (clima, etc) hacen que el barómetro \textbf{no} sea adecuado para determinar la altura absoluta.
 \item \textbf{Altura relativa}: La performance en períodos cortos de tiempo fue buena, es posible conocer variaciones de altura con una error menor a TODO, durante tiempo menores a TODO segundos/minutos.
-\item \textbf{Rol del barómetro}: Se concluye que el barómetro servirá para determinar variaciones de altura, suavizando la trayectoria, mientras se espera una altura absoluta proveniente del GPS. El barómetro y el GPS se complementan.
+\item \textbf{Rol del barómetro}: Se concluye que el barómetro servirá para determinar variaciones de altura, suavizando la trayectoria, mientras se espera una altura absoluta proveniente del GPS. El barómetro y el GPS se complementan. El barómetro se utilizará con los siguiente parámetros:
+  \begin{itemize}
+%TODO determinar y completar.
+  \item Error promedio: 
+  \item Desviación estándar:
+  \end{itemize}
 \end{itemize}
 
 
