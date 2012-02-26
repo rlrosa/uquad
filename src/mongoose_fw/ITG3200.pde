@@ -64,14 +64,14 @@ void Read_Gyro()
   if (i==8)  // All bytes received?
     {
       //get the raw data
-      sen_data.gyro_x_raw = ((((int)buff[2]) << 8) | buff[3])/Gyro_Gain_X;    // X axis 
-      sen_data.gyro_y_raw = ((((int)buff[4]) << 8) | buff[5])/Gyro_Gain_Y;    // Y axis 
-      sen_data.gyro_z_raw = ((((int)buff[6]) << 8) | buff[7])/Gyro_Gain_Z;    // Z axis
+      sen_data.gyro_x_raw = ((((int)buff[2]) << 8) | buff[3]);    // X axis 
+      sen_data.gyro_y_raw = ((((int)buff[4]) << 8) | buff[5]);    // Y axis 
+      sen_data.gyro_z_raw = ((((int)buff[6]) << 8) | buff[7]);    // Z axis
       
-      //subtract the offset
-      sen_data.gyro_x = sen_data.gyro_x_raw - sen_offset.gyro_offset[0];    // X axis 
-      sen_data.gyro_y = sen_data.gyro_y_raw - sen_offset.gyro_offset[1];    // Y axis 
-      sen_data.gyro_z = sen_data.gyro_z_raw - sen_offset.gyro_offset[2];    // Z axis
+      //apply gain and subtract the offset 
+      sen_data.gyro_x = sen_data.gyro_x_raw/Gyro_Gain_X - sen_offset.gyro_offset[0];    // X axis 
+      sen_data.gyro_y = sen_data.gyro_y_raw/Gyro_Gain_Y - sen_offset.gyro_offset[1];    // Y axis 
+      sen_data.gyro_z = sen_data.gyro_z_raw/Gyro_Gain_Z - sen_offset.gyro_offset[2];    // Z axis
       
       //change the sign if needed
       sen_data.gyro_x *= SENSOR_SIGN[0];    // X axis 
