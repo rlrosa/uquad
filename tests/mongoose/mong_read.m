@@ -8,6 +8,7 @@ end
 
 F    = fopen(file);
 Daux = textscan(F,'%s','delimiter','\t');
+fclose(F);
 
 cols = 14;          % Cantidad de columnas que despliega la Mongoose
 
@@ -51,12 +52,12 @@ b(:,1)=str2double(D{1}(13:cols:end));
 if(plotear)
   figure()
     subplot(311)
-    plot(a(:,1)); hold on; plot(a(:,2),'r'); plot(a(:,3),'g'); legend('a_x','a_y','a_z');
-    title('Salida del acelerómetro')
+    plot(a(:,1)); hold on; plot(a(:,2),'r'); plot(a(:,3),'g'); legend('\fontsize{14}a_x','\fontsize{14}a_y','\fontsize{14}a_z');
+    title('\fontsize{16}Salida del acelerómetro')
     subplot(312)
-    plot(w(:,1)); hold on; plot(w(:,2),'r'); plot(w(:,3),'g'); legend('w_x','w_y','w_z');
-    title('Salida del giróscopo')
+    plot(w(:,1)); hold on; plot(w(:,2),'r'); plot(w(:,3),'g'); legend('\fontsize{14}w_x','\fontsize{14}w_y','\fontsize{14}w_z');
+    title('\fontsize{16}Salida del giróscopo')
     subplot(313)
-    plot(c(:,1)); hold on; plot(c(:,2),'r'); plot(c(:,3),'g'); legend('w_x','w_y','w_z');
-    title('Salida del magnetómetro')
+    plot(c(:,1)); hold on; plot(c(:,2),'r'); plot(c(:,3),'g'); legend('\fontsize{14}w_x','\fontsize{14}w_y','\fontsize{14}w_z');
+    title('\fontsize{16}Salida del magnetómetro')
 end
