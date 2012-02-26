@@ -6,6 +6,7 @@ function [alt,temp,ind,ax_b,ax_t,pres] = barom(file,do_plot,raw_file)
 % RAW_FILE if no text in log file (A, Z removed).
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+
 if (nargin < 2)
 	do_plot = 1;
 end
