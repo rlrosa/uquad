@@ -4,7 +4,7 @@
 
 
 \chapter{Modelo Físico}
-
+\label{chap:modelo}
 Resulta imprescindible para controlar el cuadricóptero comprender cabalmente su comportamiento. Con esta óptica, lo que se busca es obtener el modelo más sencillo que sea capaz de representar adecuadamente al sistema. El objetivo de esta sección es el de realizar el desarrollo de dicho modelo. La forma de modelar el sistema elegida es un Modelo de Variables de Estado, de ahora en más MVE. Lo que se busca es obtener una representación del sistema de la forma $\dot{\overrightarrow{x}}=f\left(\overrightarrow{x},\overrightarrow{u},t\right)$, donde $\overrightarrow{x}$ es el vector de estados del sistema, $\overrightarrow{u}$ es el vector que representa las entradas del sistema y $t$ es el tiempo. \\
 
 Al tratarse de una plataforma comercial no se dispone de todos los parámetros fundamentales para el desarrollo de dicho modelo. Por ejemplo, no se conoce como es la respuesta de los motores (tanto velocidad como empuje), el tensor de inercia del sistema,etc. Sí bien algunos parámetros como las masas de las distintas partes que componen el sistema y las distancias involucradas en el desarrollo que se hará a continuación son sencillas de obtener, se tuvieron que realizar experimentos y cálculos más sofisticados para la completa caracterización del sistema. Estos aspectos no serán desarrollados en profundidad a lo largo de este trabajo, pero pueden consultarse los valores de las constantes obtenidas   en el anexo \ref{anexo_tensores}
@@ -279,7 +279,7 @@ $$\frac{d\vec{L_G}}{dt} =M_G^{ext}$$
 
 Por otra parte el momento angular del sistema se compone del momento angular del cuadricóptero y el momento angular de cada motor. Consideraremos el cuadricóptero sin los motores como un primer rígido y los motores como cuatro rígidos independientes.
 
-El momento angular de un rígido respecto a un punto Q puede calcularse como:
+El momento angular de un rígido respecto a un punto Q del mismo puede calcularse como:
 
 $$\vec{L_Q} = M_i(\vec{G_i-Q})\times\vec{V_Q}+\Pi_{Q}\vec{\Omega_i}$$
 
@@ -289,15 +289,46 @@ Como se propuso anteriormente, se elije calcular el momento angular en el centro
 
 $$\vec{L_{O\prime}} = (M-4 M_m)(\vec{O\prime-O\prime})\times\vec{V_O\prime}+\Pi_{O\prime_q}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}\vec{w_q}=\Pi_{O\prime_q}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}\vec{\omega_q}$$
 
-Del mismo modo el momento angular del primer motor queda:
+La velocidad angular de cada motor es la suma de la velocidad angular del cuadricóptero y de la velocidad de rotación según su eje principal. El cálculo del momento angular de los motores difiere en que no se realizará respecto de un punto del motor. En este caso se debe considerar al motor como un rígido rotando en torno a su eje y realizando un movimiento de traslación respecto del centro de masa del cuadricóptero. Para el cálculo del momento angular debido a la propia rotación del motor se debe considerar una base móvil solidaria a cada motor$(\vec{i_m}, \vec{j_m}, \vec{k_m})$, El origen de dicha base es el centro de masa del motor, se cumple además que $\vec{k_m}=\vec{k_q}$. El momento angular del primer motor es entonces:
 
-$$\vec{L_{O\prime_q}} = M_m L\vec{x\prime}\times\vec{V_O\prime} + \Pi_{O\prime_{Mx}}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}\vec{\Omega_i} $$
+$$\vec{L_{O\prime_{m1}}} = \Pi_{G_m}^{\{\vec{i_m}, \vec{j_m}, \vec{k_m}\}}(\vec{\omega_q}+\vec{\omega_1})+M_md_m\vec{i_q}\times \vec{v_{m1}} $$
 
 
-Se observa que al sumar el primer término de cada momento angular de los motores el resultado es cero. La simetría asumida del sistema es la que nos permite simplificar nuevamente las ecuaciones. Por otra parte aplicando el teorema de adición de las velocidades angulares se deduce que la velocidad angular de cada motor es $\vec{\Omega_i} = \vec{\omega_q}+\omega_i\vec{k\prime}$, donde $\omega_i$ es la velocidad con la que gira cada motor respecto de su eje principal. Nuevamente asumiendo que todos los motores son idénticos se tiene:
+En la ecuación anterior $v_{m1}$ corresponde a la velocidad del centro de masa del primer motor. Por el teorema de distribución de velocidades podemos afirmar que: $\vec{v_{m1}}=\vec{v_{O\prime}}+\omega_1\vec{k_q}$. Operando se obtiene que:
 
-$$\vec{L_{O\prime}} =\Pi_{O\prime_q}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}\vec{\omega_q}+\Pi_{O\prime_{Mx}}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}(2\vec{\omega_q}+\omega_1\vec{k\prime}+\omega_3\vec{k\prime})+\Pi_{O\prime_{My}}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}(2\vec{\omega_q}-\omega_2\vec{k\prime}-\omega_4\vec{k\prime})=$$
-$$=\Pi_{O\prime}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}\vec{\omega_q}+\Pi_{O\prime_{Mx}}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}(\omega_1+\omega_3)\vec{k\prime}-\Pi_{O\prime_{My}}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}(\omega_2+\omega_4)\vec{k\prime}$$\\
+$$
+\vec{L_{O\prime_{m1}}}= \Pi_{G_m}^{\{\vec{i_m}, \vec{j_m}, \vec{k_m}\}}(\vec{\omega_q}+\vec{\omega_1})+M_md_m\vec{i_q}\times \vec{v_{O\prime}}+J_{O\prime}^{M_{m1}G}\omega_q
+$$
+
+Donde: 
+\begin{equation}
+\label{eq:cambiotensor}
+J_{O\prime}^{M_{m1}G}=\left(\begin{array}{ccc}
+0 &0 &0 \\
+0 &M_md_v^2 &0\\
+0 & 0 &M_md_v^2\
+
+\end{array}\right)
+\end{equation}
+Para realizar el producto:
+$
+\Pi_{G_m}^{\{\vec{i_m}, \vec{j_m}, \vec{k_m}\}}(\vec{\omega_q}+\vec{\omega_1})
+$ se debe transformar $\vec{\omega_q}$ al sistema solidario a los motores.  
+Sin embargo al ser la matriz diagonal y al haber modelado el motor como un cilindro, es decir un objeto que posee simetría de revolución se tiene que:  $\Pi_{G_m}^{\{\vec{i_m}, \vec{j_m}, \vec{k_m}\}} = \Pi_{G_m}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}$
+
+Por lo tanto se puede afirmar que:
+$\Pi_{G_m}^{\{\vec{i_m}, \vec{j_m}, \vec{k_m}\}}(\vec{\omega_q}+\vec{\omega_1})=\Pi_{G_m}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}(\vec{\omega_q}+\vec{\omega_1})$
+La matriz de la ecuación\ref{eq:cambiotensor} no otra cosa que el término asociado al cálculo del tensor de inercia en un eje paralelo (Teorema de Steiner). Por lo tanto podemos reducir la expresión del momento angular para un motor a la siguiente forma:
+
+
+
+
+$$\vec{L_{O\prime_{m1}}}= \Pi_{O\prime_{M_{m1}}}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}\vec{\omega_q}+\Pi_{G_{M_{m1}}}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}\vec{\omega_1}+M_md_m\vec{i_q}\times \vec{v_{O\prime}}
+$$
+Se observa que al sumar el último término de cada momento angular de los motores el resultado es cero. La simetría asumida del sistema es la que nos permite simplificar nuevamente las ecuaciones. El momento angular toma la forma:
+
+$$\vec{L_{O\prime}} =\Pi_{O\prime_q}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}\vec{\omega_q}+2\Pi_{O\prime_{Mx}}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}\vec{\omega_q}+2\Pi_{O\prime_{My}}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}\vec{\omega_q}+\Pi_{G_{M_{m}}}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}(\vec{\omega_1}-\vec{\omega_2}+\vec{\omega_3}-\vec{\omega_4})=$$
+$$=\Pi_{O\prime}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}\vec{\omega_q}+\Pi_{G_{M_{m}}}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}(\vec{\omega_1}-\vec{\omega_2}+\vec{\omega_3}-\vec{\omega_4})$$\\
 
 
 Tanto las velocidades angulares como los tensores de inercia que componen la ecuación anterior se encuentran expresados en la base solidaria al cuadricóptero. Para realizar dicha derivada se utiliza nuevamente la fórmula de la derivada de un vector:
@@ -306,17 +337,17 @@ $$\frac{d\vec{A}}{dt} =\frac{d\prime\vec{A}}{dt}+\vec{\Omega}\times\vec{A} $$
 
 Lo que se obtiene de dicha derivada es:
 $$
-\frac{d\vec{L_Q}}{dt} = \Pi_{O\prime}^{\left\lbrace\vec{i_q}, \vec{j_q}, \vec{k_q}\right\rbrace}\dot{\omega_q}+\Pi_{O\prime_{Mx}}^{\left\lbrace\vec{i_q}, \vec{j_q}, \vec{k_q}\right\rbrace} (\dot{\omega_1} +\dot{\omega_3})\vec{k\prime}-\Pi_{O\prime_{My}}^{\left\lbrace\vec{i_q}, \vec{j_q}, \vec{k_q}\right\rbrace}(\dot{\omega_2}+\dot{\omega_4})\vec{k\prime}+$$
-$$+\vec{\omega_q}\times(\Pi_{O\prime}^{\left\lbrace \vec{i_q}, \vec{j_q}, \vec{k_q} \right\rbrace}\vec{\omega_q}+\Pi_{O\prime_{Mx}}^{\left\lbrace\vec{i_q}, \vec{j_q}, \vec{k_q}\right\rbrace}(\omega_1+\omega_3)\vec{k\prime}-\Pi_{O\prime_{My}}(\omega_2+\omega_4)\vec{k\prime})$$
+\frac{d\vec{L_Q}}{dt} = \Pi_{O\prime}^{\left\lbrace\vec{i_q}, \vec{j_q}, \vec{k_q}\right\rbrace}\vec{\dot{\omega_q}}+\Pi_{G_{M_{m}}}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}(\dot{\vec{\omega_1}}-\dot{\vec{\omega_2}}+\dot{\vec{\omega_3}}-\dot{\vec{\omega_4}})$$$$
++\vec{\omega_q}\times(\Pi_{O\prime}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}\vec{\omega_q}+\Pi_{G_{M_{m}}}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}(\vec{\omega_1}-\vec{\omega_2}+\vec{\omega_3}-\vec{\omega_4}))$$
 
-A partir del cálculo de esta derivada podemos reescribir la segunda cardinal. Teniendo en cuenta que  $I_{zz_mx}=I_{zz_my}$ y que $I_{xx}=I_{yy}$ y operando con dicha ecuación se la puede llevar a la forma:
+A partir del cálculo de esta derivada podemos reescribir la segunda cardinal:
 
 $$ \Pi_{O\prime}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}\left(\begin{array}{c}
 \dot{\omega_{q_x\prime}}\\
 \dot{\omega_{q_y\prime}}\\
 \dot{\omega_{q_z\prime}}\\
 \end{array}\right) = \left(\begin{array}{c}
-\omega_{q_y\prime}\omega_{q_z\prime}(I_{yy}-I_{zz})+\omega_{q_y\prime}I_{zz_m}(\omega_1-\omega_2+\omega_3-\omega_4)\\
+\omega_{q_y\prime}\omega_{q_z\prime}(I_{yy}-I_{zz})-\omega_{q_y\prime}I_{zz_m}(\omega_1-\omega_2+\omega_3-\omega_4)\\
 
 \omega_{q_x\prime}\omega_{q_z\prime}(-I_{xx}+I_{zz})+\omega_{q_x\prime}I_{zz_m}(\omega_1-\omega_2+\omega_3-\omega_4)\\
 
@@ -363,7 +394,7 @@ La teoría de fluidos que explica el comportamiento de las hélices es compleja y 
   \label{fig:helice}
 \end{figure}
 
-La \emph{Blade Element Theory}(BET) intenta explicar las fuerzas presentes en la hélice considerando en primer lugar las fuerzas en un elemento de área infinitesimal de la hélice. Una vez halladas estas fuerzas se integra sobre el total de la superficie obteniendo así las fuerzas y momentos totales. Como se explica en \ref{bib:fuerzas-motores}, las fuerzas presentes sobre un elemento de área de la hélice son la fuerza de \emph{lift} y la fuerza de \emph{drag}, dichas fuerzas se encuentran representadas en la figura \ref{fig:helice} como $dL$ y $dD$ respectivamente. La forma que tienen dichas fuerzas es:
+La \emph{Blade Element Theory}(BET) intenta explicar las fuerzas presentes en la hélice considerando en primer lugar las fuerzas en un elemento de área infinitesimal de la hélice. Una vez halladas estas fuerzas se integra sobre el total de la superficie obteniendo así las fuerzas y momentos totales. Como se explica en \ref{bib:fuerzas-helices}, las fuerzas presentes sobre un elemento de área de la hélice son la fuerza de \emph{lift} y la fuerza de \emph{drag}, dichas fuerzas se encuentran representadas en la figura \ref{fig:helice} como $dL$ y $dD$ respectivamente. La forma que tienen dichas fuerzas es:
 
 $$
 dL=\frac{1}{2}\rho_A \omega_p^2 C_L c r^2dr$$\\
