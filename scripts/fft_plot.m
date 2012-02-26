@@ -1,6 +1,6 @@
-function [ Y,f ] = fft_plot( y, Fs )
+function [ Y,f ] = fft_plot( y, Fs, plot_color )
 %--------------------------------------------------------------------------
-%   function [ Y,f ] = fft_plot( y, Fs )
+%   function [ Y,f ] = fft_plot( y, Fs, plot_color  )
 %
 %   Calculates the FFT of the secuence 'y', assumed to have been sampled at
 %   'Fs'.
@@ -9,6 +9,7 @@ function [ Y,f ] = fft_plot( y, Fs )
 %   Output:
 %       - Y: single-sided FFT(y)
 %       - f: Frequency vector corresponding to Y.
+%       - plot_color: Color to use in plot.
 %
 %--------------------------------------------------------------------------
 
@@ -18,10 +19,13 @@ Y = fft(y,NFFT);
 Y=Y(1:NFFT/2+1); % single-sided spectrum
 f = Fs/2*linspace(0,1,NFFT/2+1);
 
+if(~exist('plot_color','var'))
+  plot_color = 'b';
+end
 
 if (nargout < 1)
     % Plot single-sided amplitude spectrum.
-    plot(f,abs(Y)) 
+    plot(f,abs(Y),plot_color) 
     title('Single-Sided Amplitude Spectrum of y(t)')
     xlabel('Frequency (Hz)')
     ylabel('|Y(f)|')

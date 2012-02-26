@@ -95,7 +95,7 @@ Los pasos a seguir son los siguientes:
   \begin{itemize}
   \item Se utilizó pintura para marcar los vértices del triángulo.
   \item Para trazar uno de los lados de 12 metros (puntos 1,2 y 3), se fijó una cuerda de 12 metros (con el punto medio marcado) a un punto, y se extendió (sin estirarla). El principio (\verb+1+) y el final (\verb+3+) de la cuerda son vértices del polígono, y el punto medio (\verb+2+) es otro de los puntos de interés.
-  \item Para construir perpendículares se utilizó una cuerda de 6m, y otra de 8.5m\footnote{Pitágoras: $8.5 \approx \sqrt{6^2 + 6^2} = 8.4852...$}. Uno de los extremos de la cuerda de 6 metros se fijó al \verb+1+, y uno de los extremos de la cuerda de 8.5m se fijó a \verb+2+. El punto donde ambas se intersectan corresponde a \verb+4+. Un procedimiento similar se siguió para determinar la ubicación de \verb+5+ y \verb+6+.
+  \item Para construir rectas perpendiculares se utilizó una cuerda de 6m, y otra de 8.5m\footnote{Pitágoras: $8.5 \approx \sqrt{6^2 + 6^2} = 8.4852...$}. Uno de los extremos de la cuerda de 6 metros se fijó al \verb+1+, y uno de los extremos de la cuerda de 8.5m se fijó a \verb+2+. El punto donde ambas se intersectan corresponde a \verb+4+. Un procedimiento similar se siguió para determinar la ubicación de \verb+5+ y \verb+6+.
   \end{itemize}
 \item Medir, con un metro, las distancias entre todos los puntos.
 \item Utilizar mínimos cuadrados para minimizar el error entre las distancias esperadas, y las experimentales. Esto puede llevar a trabajar con un polígono que \textbf{no} sea un rectángulo, pero el error será menor que el que resultaría de usar los valores teóricos.
@@ -125,9 +125,9 @@ El GPS emite sentencias NMEA a través de USB serie, a 38400bps. Trabaja con sen
 \begin{itemize}
 \item GPGGA - \textit{Global Positioning System Fix Data}: Información sobre la fecha, posición y datos relevantes sobre el \textit{fix}.
 \item GPGSV - \textit{Satellites in view}: Información sobre la cantidad de satélites detectados, y la calidad de la señal proveniente de cada uno.
-\item GPGSA - \textit{DOP and active satelites}: Información sobre DOP\footnote{\textit{Dilution of precision}.} y satélites activos.
+\item GPGSA - \textit{DOP and active satellites}: Información sobre DOP\footnote{\textit{Dilution of precision}.} y satélites activos.
 \item GPRMC - \textit{Recommended minimum specific GPS/Transit data}: Sentencia mínima recomendada, trae suficiente información como para poder trabajar con el GPS.
-item GPVTG - \textit{Track Made Good and Ground Speed}: Información sobre la dirección y la velocidad (\textbf{no} sobre la posición absoluta).
+\item GPVTG - \textit{Track Made Good and Ground Speed}: Información sobre la dirección y la velocidad (\textbf{no} sobre la posición absoluta).
 \end{itemize}
 
 \section{Geometría: DOP - \textit{Dilution of precision}}
@@ -144,7 +144,7 @@ item GPVTG - \textit{Track Made Good and Ground Speed}: Información sobre la di
 \label{fig:dop.png}
 \end{wrapfigure}
 
-El método que utiliza el GPS para determinar su ubicación consiste basicamente en:
+El método que utiliza el GPS para determinar su ubicación consiste básicamente en:
 \begin{enumerate}
 \item Determinar la distancia $r_i$ a cada satélite $S_i$, cuya posición es $P_i$.
 \item Repetir el paso anterior para cada satélite disponible.
@@ -164,7 +164,7 @@ donde
 \item $\sigma_o$: Exactitud de la posición. 
 \end{itemize}
 
- Basicamente, el DOP representa la sensibilidad de localización frente a errores en las medidas, o sea, cuanto te vas a perder si te llego una medida equivocada. Cuanto más bajo sea el DOP, mejor. En la tabla \ref{tab:dop} se muestra como interpretar valores típicos\cite{bib:sat-dop-values}.
+ Básicamente, el DOP representa la sensibilidad de localización frente a errores en las medidas, o sea, cuanto te vas a perder si te llego una medida equivocada. Cuanto más bajo sea el DOP, mejor. En la tabla \ref{tab:dop} se muestra como interpretar valores típicos\cite{bib:sat-dop-values}.
 
 \begin{table}[H]
 \begin{center}
@@ -181,7 +181,7 @@ donde
 \rowcolor[gray]{0.9}
 10-20 & Regular & Solo se deben usar los datos para estimaciones de muy poca precisión. \\
 \rowcolor[gray]{0.95}
-$>$20 & Malo & A este nivel, las exactitud de las medidas puede tener un error de hastsa 300m, deben descartarse. \\
+$>$20 & Malo & A este nivel, las exactitud de las medidas puede tener un error de hasta 300m, deben descartarse. \\
 \hline
 \end{tabular}
 \caption{Interpretación de los valores de DOP.}
@@ -208,13 +208,13 @@ El GPS envía información sobre:
   \end{equation}
 \end{itemize}
 
-Esta información se puede utilizar en el algortimo de control, para ponderar los datos provenientes del GPS.
+Esta información se puede utilizar en el algoritmo de control, para ponderar los datos provenientes del GPS.
 
 \newpage
 \subsection{Verificación del polígono}
 \label{sec:verificacion-del-poligono}
 
-Una vez construído el polígono, es de interés medir todas las diagonales (con la cinta métrica) por dos motivos:
+Una vez construido el polígono, es de interés medir todas las diagonales (con la cinta métrica) por dos motivos:
 \begin{itemize}
 \item Verificar que no se cometieron errores.
 \item Hacer mínimos cuadrados con las medidas, de manera de obtener un polígono, que no tiene porqué ser (y en general no será) un rectángulo, sino algo similar a un rectángulo, más ajustado a la realidad.
@@ -280,7 +280,7 @@ En la figura \ref{fig:10min_grid.png} se muestran los datos luego de restar el p
   \label{fig:10min_grid.png}
 \end{figure}
 
-Cabe destacar que en la figura \ref{fig:10min_grid.png} no parece haber la misma cantidad de muestras por punto, pese a que en el log habían aproximadamente la misma cantidad de datos por punto. Esto se debe a que a veces en el log se genera información repetida, es decir, el GPS envia sucesivamente la misma información, y la etiqueta como \textit{información válida}. Esto se analiza con más detalle en la sección \ref{sec:tasa-de-muestreo}.
+Cabe destacar que en la figura \ref{fig:10min_grid.png} no parece haber la misma cantidad de muestras por punto, pese a que en el log habían aproximadamente la misma cantidad de datos por punto. Esto se debe a que a veces en el log se genera información repetida, es decir, el GPS envía sucesivamente la misma información, y la etiqueta como \textit{información válida}. Esto se analiza con más detalle en la sección \ref{sec:tasa-de-muestreo}.
 
 \newpage
 En la figura \ref{fig:10m_todos.png} se observan todas las gráficas de la figura \ref{fig:10min_grid.png}, pero superpuestas.
@@ -397,7 +397,7 @@ Los resultados del experimento se observan en la figura.
 \label{sec:orientacion-conclusiones}
 
 No se encontró una correlación entre la orientación del GPS y el error en las medidas.
-El experimento se realizó con cielo abierto, con una buena geometría, en términos de distribución de satélites. Tal vez en situaciones de visibilidad limitada se podría observar una correlación, ya que si la dirección en la que la antena recibe mejor conincide con el lugar donde hay pocos satélites, entonces la cantidad de información sería menor/peor que en otras orientaciones.
+El experimento se realizó con cielo abierto, con una buena geometría, en términos de distribución de satélites. Tal vez en situaciones de visibilidad limitada se podría observar una correlación, ya que si la dirección en la que la antena recibe mejor coincide con el lugar donde hay pocos satélites, entonces la cantidad de información sería menor/peor que en otras orientaciones.
 
 Tener visibilidad limitada por obstáculos, o tener una mala geometría deteriora la performance del GPS. No es el objetivo de este informe evaluar la performance en ambientes complicados.
 
@@ -407,7 +407,7 @@ Tener visibilidad limitada por obstáculos, o tener una mala geometría deterior
 \subsection{Polígono}
 \label{sec:gps2-poligono}
 
-En la figura \ref{fig:10min_pol.png}, la línea en roja representa el polígono resultante de unir el promedio, en cada vértica, de las muestras tomadas durante de 10 minutos. En la figura \ref{fig:10m_mapa.png} se dicho polígono, proyectado sobre una foto satelital\footnote{El mapa y las fotos se obtuvieron de:\\ \url{http://sig.montevideo.gub.uy/mapas/mapa-principal}}.
+En la figura \ref{fig:10min_pol.png}, la línea en roja representa el polígono resultante de unir el promedio, en cada vértice, de las muestras tomadas durante de 10 minutos. En la figura \ref{fig:10m_mapa.png} se dicho polígono, proyectado sobre una foto satelital\footnote{El mapa y las fotos se obtuvieron de:\\ \url{http://sig.montevideo.gub.uy/mapas/mapa-principal}}.
 
 \begin{figure}[h!]
   \centering
@@ -423,7 +423,7 @@ En la figura \ref{fig:10min_pol.png}, la línea en roja representa el polígono 
   \label{fig:10m_mapa.png}
 \end{figure}
 
-En las siguientes figuras se observan los polígonos formados por los promedios de varias sequencias de 2 minutos por punto. 
+En las siguientes figuras se observan los polígonos formados por los promedios de varias secuencias de 2 minutos por punto. 
 
 \newpage
 \begin{figure}[h!]
@@ -473,7 +473,7 @@ El error relativo para cada recta resulta:
 
 Donde:
 \begin{itemize}
-\item $\hat{P}_i$ es la dupla \verb+{x,y}+, coordenas experimentales del i-ésimo vértice del polígono.
+\item $\hat{P}_i$ es la dupla \verb+{x,y}+, coordenadas experimentales del i-ésimo vértice del polígono.
 \item $D_{ij}$ es la distancia entre el i-ésimo y el j-ésimo vértice, resultado de la aplicación de MC en la sección \ref{sec:verificacion-del-poligono}.
 \end{itemize}
 
@@ -542,7 +542,7 @@ En las figuras siguientes se observan los datos tomados durante 3 caminatas sigu
 \subsection{Caminata - Análisis}
 \label{sec:caminata-analisis}
 
-Las graficas de las caminatas a primera vista son muy desalentadoras. Se observa un error que parece ser muy significativo, la trayectoria no se parece en nada a un rectángulo. Un análisis más detallado de los resultados revela que la performance del GPS es acorde a los esperado según las pruebas de las secciones anteriores.
+Las gráficas de las caminatas a primera vista son muy desalentadoras. Se observa un error que parece ser muy significativo, la trayectoria no se parece en nada a un rectángulo. Un análisis más detallado de los resultados revela que la performance del GPS es acorde a los esperado según las pruebas de las secciones anteriores.
 
 La posición parece tender a estabilizarse una vez que se llega al destino final, el punto 1. Ahí se continuó logueando datos por unos 20 segundos. En la figura \ref{fig:caminata2.png} la posición final parece tener un drift que se aleja de la posición inicial, en lugar de acercarse. No se encontró una justificación para este comportamiento, pero es similar al observado para puntos fijos, por lo que no se le prestó especial atención.
 
@@ -572,9 +572,9 @@ Los resultados de este experimento llevan a pensar que el GPS da información es
 \section{Tiempo de \textit{warmup}}
 \label{sec:tiempo-de-warmup}
 
-El tiempo que demora el GPS en adquirir un \textit{fix} depende de si estaba frio, o si estaba andando previamente.
+El tiempo que demora el GPS en adquirir un \textit{fix} depende de si estaba frío, o si estaba andando previamente.
 \begin{itemize}
-\item \textbf{Frio}: Aproximadamente 40 segundos.
+\item \textbf{Frío}: Aproximadamente 40 segundos.
 \item \textbf{Caliente}: Entre 3 y 5 segundos.
 \end{itemize}
 
@@ -611,7 +611,7 @@ No se cuenta con fuente de información que nos permite saber exactamente donde 
 
 Se realizaron varios experimentos para analizar si la ubicación que daba el GPS se correspondía con la realidad, ya que algunos GPSs a veces dan un error constante de varios metros, y de ser el caso, se podría compensar este problema una vez detectado.
 
-Sobre un mapa de montevideo, se graficaron trayectorias conocidas, con el objetivo de verificar que los datos provenientes del GPS eran ``razonables''.
+Sobre un mapa de Montevideo, se graficaron trayectorias conocidas, con el objetivo de verificar que los datos provenientes del GPS eran ``razonables''.
 
 No se observo un offset evidente y constante, por lo que se asume el GPS \textbf{no} introduce un offset, o por lo menos no una constante, que se pueda compensar corriendo todos los datos por una cantidad fija.
 
@@ -621,18 +621,18 @@ En la figura \ref{fig:ponce.png} se observa una trayectoria realizada en bicicle
 \section{Conclusiones}
 \label{sec:conclusion}
 
-Los siguientes items servirán de guia para la utilización del GPS como instrumento de navegación:
+Los siguientes items servirán de guía para la utilización del GPS como instrumento de navegación:
 
 \begin{itemize}
-\item \textbf{Error en las medidas}: Bajo las condiciones anteriores, se concluye que es razonable asumir que las medidas del GPS tienen un \textbf{error menor a 5m}. Esto es un poco menor a las especificaciones dadas por el fabricante del GPS, 5m \emph{CEP}\footnote{\textit{CEP} de Xm: Garantiza que el 50\% de la muestras caerán en un círculo de radio X y centro el promedio de las muestras.}. Es de esperarse que la perfomance se reduzca al utilizar el GPS en un entorno más agresivo, como el que resultará al colocar el GPS sobre el cuadricóptero, donde estará sujeto a  interferencia electromagnética de los motores, vibraciones, etc.
+\item \textbf{Error en las medidas}: Bajo las condiciones anteriores, se concluye que es razonable asumir que las medidas del GPS tienen un \textbf{error menor a 5m}. Esto es un poco menor a las especificaciones dadas por el fabricante del GPS, 5m \emph{CEP}\footnote{\textit{CEP} de Xm: Garantiza que el 50\% de la muestras caerán en un círculo de radio X y centro el promedio de las muestras.}. Es de esperarse que la performance se reduzca al utilizar el GPS en un entorno más agresivo, como el que resultará al colocar el GPS sobre el cuadricóptero, donde estará sujeto a  interferencia electromagnética de los motores, vibraciones, etc.
 \item \textbf{Visibilidad}: Es importante asegurar buena visibilidad, la performance del GPS se reduce drásticamente si pierde satélites.
 \item \textbf{Promedios}: Promedios de 2 minutos son suficientes para reducir el error a 2.5m, con una probabilidad del 75\%.
 \item \textbf{Resolución}: El GPS \textbf{no} es adecuado para tareas de navegación con restricciones del orden del metro, pero sí para distancias del orden de decenas de metros.
 \item \textbf{Tasa de muestreo}: El GPS normalmente muestrea a \textbf{1Hz}. Cabe destacar que debe ignorarse información repetida (muestras sucesivas que sea idénticas).
 \item \textbf{Error en altura}: El GPS \textbf{no} es adecuado para determinar la elevación durante el aterrizaje/despegue, ya que a menos de 2m del piso, la estimación de la elevación es muy mala. Será necesario otro sensor (sensor de presión, IR, etc) para asistir durante el despegue/aterrizaje.
-\item \textbf{Tiempo de \textit{fix}}: En frio demora alrededor de 40 segundos, en caliente entre 3 y 5 segundos.
+\item \textbf{Tiempo de \textit{fix}}: En frío demora alrededor de 40 segundos, en caliente entre 3 y 5 segundos.
 \end{itemize}
 
-Por último, cabe destacar que los resultados de este informe dan una idea de la performance del GPS en condiciones ``ideales''. Será importante analizar el efecto de las vibraciones y la interferencia electromagética que introducirá la presencia del cuadricóptero, de manera de ajustar los márgenes de error al contexto en el que se utilizará el GPS.
+Por último, cabe destacar que los resultados de este informe dan una idea de la performance del GPS en condiciones ``ideales''. Será importante analizar el efecto de las vibraciones y la interferencia electromagnética que introducirá la presencia del cuadricóptero, de manera de ajustar los márgenes de error al contexto en el que se utilizará el GPS.
 
 \end{document}

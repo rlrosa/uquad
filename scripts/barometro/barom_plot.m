@@ -26,7 +26,8 @@ axis([1 length(alt) min(alt) max(alt)])
 if(indexes ~= -1)
   % plot segment borders
   for i=1:length(indexes)
-      line([indexes(i) indexes(i)],[min(alt) max(alt)],'color','black')
+      line([indexes(i) indexes(i)],[min(alt) max(alt)],'color','black', ...
+        'HandleVisibility','off');
   end
 end
 

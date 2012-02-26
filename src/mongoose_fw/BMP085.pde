@@ -12,7 +12,7 @@
 
 #define BMP085_ADDRESS 0x77  // I2C address of BMP085
 
-const unsigned char OSS = 0;  // Oversampling Setting
+static unsigned char OSS = 0;  // Oversampling Setting
 
 
 // Calibration values for Barometric Pressure sensor
@@ -246,3 +246,23 @@ unsigned long bmp085ReadUP()
 
   return up;
 }
+
+#if DEBUG
+// Set oversampling (OSS)
+// Returns success or failure.
+bool bmp085SetOSS(unsigned char OSS_new)
+{
+    if(OSS_new < 4)
+	OSS = OSS_new;
+    else
+	// invalid input
+	return false;
+    return true;
+}
+
+unsigned char bmp085GetOSS(void)
+{
+    return OSS;
+}
+
+#endif
