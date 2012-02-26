@@ -8,6 +8,7 @@ end
 
 F    = fopen(file);
 Daux = textscan(F,'%s','delimiter','\t');
+fclose(F);
 
 cols = 14;          % Cantidad de columnas que despliega la Mongoose
 

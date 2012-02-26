@@ -110,7 +110,8 @@ int SENSOR_SIGN[9] = { 1,1,1,1,1,1,1,1,1};  //Correct directions x,y,z - gyros, 
 
 // Special modes
 #define ONLY_BMP085 0
-#define DEBUG 0
+#define MAGNETON_FULL_FS 1
+#define DEBUG 1
 
 // Debug data
 #if DEBUG
@@ -326,6 +327,10 @@ void print_menu(void){
 
     Serial.print("\tw:\t Print Compass calibration.");
     Serial.println();
+
+    Serial.print("\te:\t Set BMP085 OSS:\t");
+    Serial.print(bmp085GetOSS(),DEC);
+    Serial.println();
 #endif
 
     Serial.print("\tCommand:");
@@ -387,6 +392,13 @@ int menu_execute(int command){
 	break;
     case 'w':
 	PrintCompassCalibration();
+	break;
+    case 'e':
+	Serial.println("\nIncrementing OSS.");
+	if(bmp085SetOSS((bmp085GetOSS()+1)%4))
+	    Serial.println("\nSuccess!");
+	else
+	    Serial.println("\nFAILED!");
 	break;
 #endif
     default:
@@ -454,7 +466,7 @@ void loop() //Main Loop
       
 	    //=============================== Read the Compass ===============================//
 	    if(sensors.compass)
-		if (Compass_counter > 20)  // Read compass data at 10Hz... (5 loop runs)
+		if (MAGNETON_FULL_FS || Compass_counter > 20)  // Read compass data at 10Hz... (5 loop runs)
 		{
 		    Compass_counter=0;
 		    Read_Compass();    // Read I2C magnetometer     
