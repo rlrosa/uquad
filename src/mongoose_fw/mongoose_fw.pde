@@ -110,6 +110,7 @@ int SENSOR_SIGN[9] = { 1,1,1,1,1,1,1,1,1};  //Correct directions x,y,z - gyros, 
 
 // Special modes
 #define ONLY_BMP085 0
+#define MAGNETON_FULL_FS 1
 #define DEBUG 1
 
 // Debug data
@@ -465,14 +466,14 @@ void loop() //Main Loop
       
 	    //=============================== Read the Compass ===============================//
 	    if(sensors.compass)
-		if (1 || Compass_counter > 20)  // Read compass data at 10Hz... (5 loop runs)
+		if (MAGNETON_FULL_FS || Compass_counter > 20)  // Read compass data at 10Hz... (5 loop runs)
 		{
 		    Compass_counter=0;
 		    Read_Compass();    // Read I2C magnetometer     
 		}
 
 	    //===================== Read the Temp and Pressure from Baro =====================//
-	    if (1 || Baro_counter > 200 || ONLY_BMP085)  // Read baro data at 1Hz... (50 loop runs)
+	    if (Baro_counter > 200 || ONLY_BMP085)  // Read baro data at 1Hz... (50 loop runs)
 	    {
 		Baro_counter=0; 
 
