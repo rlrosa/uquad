@@ -1,4 +1,5 @@
 \documentclass[main]{subfiles}
+
 \begin{document}
 
 \chapter{Elección de Hardware}
@@ -484,8 +485,10 @@ Los motores, tal como se explicó anteriormente, son comandados mediante señales 
 Para poder controlar el sistema es importante poder conocer los valores que toman las variables del mismo. Como se verá en el capítulo sobre el desarrollo del modelo físico del cuadricóptero, las variables que es necesario conocer son:
 
 \begin{itemize}
+\item La orientación del sistema en el sistema de coordenadas utilizado
+\item La altura del sistema en el sistema de coordenadas utilizado
 \item La aceleración en las tres coordenadas
-\item La velocidad angular del sistema
+\item La velocidad angular del sistema según tres ejes de rotación
 \end{itemize}
 
 Por dicho motivo parece imprescindible dotar al sistema de sensores capaces de medir dichas magnitudes.
@@ -548,6 +551,18 @@ Se optó por utilizar un GPS \textit{Canmore GT-730F}.
 	\label{fig:gps}
 \end{figure}
 
+\subsection{Sensor de presión}
+\vspace*{15pt}
+Si bien un dispositivo GPS provee una estimación de la altura a la que se encuentra, la misma resulta ser poco exacta y confiable, por depender fuertemente de la cantidad de satélites vistos por el GPS así como por el efecto del rebote de las ondas en estructuras cercanas (resulta particularmente crítico el efecto de los rebotes en el piso, los cuales dan poca precisión a la medida de altura al estar muy cerca del suelo). Por este motivo es necesario contar con un sensor de presión absoluta que nos permita determinar la altura del cuadricóptero en forma independiente al resto de los sensores. La medida de presión debe ser absoluta pues es este tipo de medidas las que pueden ser traducidas a altura en forma rápida y confiable.
+
+\subsection{Magnetómetro}
+\vspace*{15pt}
+Si bien el sistema contará con giróscopos que permitirán, a través de integración, estimar la orientación del cuadricóptero, dicha estimación está sujeta a los errores asociados a este tipo de sensores (errores de drift e integración, entre otros), siendo además dicha medida una medida diferencial, teniendo como única referencia la orientación inicial del cuadricóptero. Eso por ello que resulta conveniente contar con un magnetómetro que permita tener una medida absoulta y confiable de la orientación del sistema, la cual puede ser entonces complementada y corregida mediante la información obtenida mediante la integración de la información generada por el giróscopo.
+
+\subsection{Sensor de temperatura}
+\vspace*{15pt}
+Si bien el control del sistema no depende directamente de la temperatura, los instrumentos a utilizarse están construidos con cierta tecnología que presenta dependencia con (y por ende tendrá errores asociados a) la temperatura. El contar con un sensor de temperatura permitirá sensar la misma y realizar correcciones en tiempo real que permitan minimizar dicho errores.
+
 \subsection{Definición de instrumentación}
 \vspace*{15pt}
 
@@ -581,7 +596,7 @@ Lo que se observa es que todos los acelerómetros y giroscopos de las placas de e
 
 
 \begin{table}[H]
-\begin{tabular}{p{115pt}|p{55pt}|p{65pt}|p{55pt}|p{90pt}|} 
+\begin{tabular}{p{130pt}|p{70pt}|p{65pt}|p{55pt}|p{90pt}|} 
 \cline{2-5} 
 & \multicolumn{2}{|c|}{\cellcolor[gray]{0.7}\textbf{Acelerómetro}} 
 & \multicolumn{2}{|c|}{\cellcolor[gray]{0.7}\textbf{Giróscopo}}  \\ \cline{2-5}
@@ -591,14 +606,16 @@ Lo que se observa es que todos los acelerómetros y giroscopos de las placas de e
 & \cellcolor[gray]{0.8} \textbf{Sensibilidad} \\ \cline{2-5} \hline
 \multicolumn{1}{|c|}{\cellcolor[gray]{0.8}\textbf{CHR-6d}}
 & 3g & 300mV/g &  400°/s ó 100°/s &  2.5mV/(°/s) ó 2.5mV/(°/s) \\ \hline
-\multicolumn{1}{|p{115pt}|}{\cellcolor[gray]{0.8}\textbf{Atomic IMU}}
+\multicolumn{1}{|p{130pt}|}{\cellcolor[gray]{0.8}\textbf{Atomic IMU}}
 &  1.5g  ;  6g &  800mV/g   200mV/g &  300°/s  &  3.3mV/(°/s)\\ \hline
-\multicolumn{1}{|p{115pt}|}{\cellcolor[gray]{0.8}\textbf{IMU Digital Combo Board}}
+\multicolumn{1}{|p{130pt}|}{\cellcolor[gray]{0.8}\textbf{IMU Digital Combo Board}}
 &  2g  ;  16g &  356LSB/g   321LSB/g &  2000°/s  &  14.375 LSB/(°/s)\\ \hline
-\multicolumn{1}{|p{115pt}|}{\cellcolor[gray]{0.8}\textbf{IMU Analgo Combo Board Razor}}
+\multicolumn{1}{|p{130pt}|}{\cellcolor[gray]{0.8}\textbf{IMU Analgo Combo Board Razor}}
 &  3g &  300mV/g  &  300°/s  1200°/s &  3.3mV/(°/s)  0.83mV/(°/s)\\ \hline
-\multicolumn{1}{|p{115pt}|}{\cellcolor[gray]{0.8}\textbf{IMU Fusion Board}}
-&  2g &  256 LSB/g  &  250°/s  2000°/s &  131 LSB/(°/s)     16.4 LSB/(°/s)\\
+\multicolumn{1}{|p{130pt}|}{\cellcolor[gray]{0.8}\textbf{IMU Fusion Board}}
+&  2g &  256 LSB/g  &  250°/s  2000°/s &  131 LSB/(°/s)     16.4 LSB/(°/s)\\ \hline
+\multicolumn{1}{|p{130pt}|}{\cellcolor[gray]{0.8}\textbf{Mongoose 9DoF IMU}}
+&  2g; 4g; 8g; 16g &  256 LSB/g 128 LSB/g 64 LSB/g \emph{} 32 LSB/g  & 2000°/s & 14.375 LSB/(°/s)\\
 \hline 
 \end{tabular}
 \caption{Sensores}
@@ -621,6 +638,8 @@ Resulta sumamente interesante que no sea el procesador principal quien se encarg
 & \cellcolor[gray]{0.8} \textbf{Largo de palabra}
 & \cellcolor[gray]{0.8} \textbf{RAM} 
 & \cellcolor[gray]{0.8} \textbf{Flash}\\ \cline{2-5} \hline
+\multicolumn{1}{|p{110pt}|}{\cellcolor[gray]{0.8}\textbf{Mongoose 9DoF IMU}}
+&  20MHz &  8 bits &  2Kb &  32Kb \\ \hline
 \multicolumn{1}{|p{110pt}|}{\cellcolor[gray]{0.8}\textbf{CHR-6d}}
 &  72MHz &  32 bits &  20Kb &  64Kb \\ \hline
 \multicolumn{1}{|p{110pt}|}{\cellcolor[gray]{0.8}\textbf{Atomic IMU}}
@@ -644,7 +663,7 @@ La comunicación no resultó un factor crítico ya que todos los candidatos a proce
 \\
 En lo que respecta a compatibilidad con el sistema, se buscó que la alimentación de la placa fuera la misma que la del procesador principal. Por dicha razón lo ideal sería que la placa pueda ser alimentada a 5V.\\
 \\
-A partir de las consideraciones anteriores, se considera que la solución más adecuada para el objetivo que se plantea en esta sección es la placa \emph{Razor Atomic IMU}.\\
+A partir de las consideraciones anteriores, se consideró inicialmente que la solución más adecuada para el objetivo que se plantea en esta sección es la placa \emph{Razor Atomic IMU}.\\
 Dicha placa cumple con los rangos de medida especificados anteriormente y posee un procesador de 8 bits con un reloj de 10MHz.\\
 Existen ya scripts en C disponibles para programar el dispositivo. Los mismos pueden ser modificados en caso de no cumplir con todos los requerimientos necesarios.\\
 La placa dispone de un puerto JTAG para programación.\\
@@ -652,7 +671,7 @@ La forma que tiene la placa de presentar los datos obtenidos de los sensores es 
 Cabe aclarar que la Atomic IMU es la única de las soluciones consideradas que puede ser alimentada con una fuente de tensión de 5V.\\
 Finalmente, el costo de la misma es de los más bajos dentro de las posibilidades consideradas.
 
-En la figura \ref{fig:IMU} se puede observar la placa de instrumentación escogida:
+En la figura \ref{fig:IMU} se puede observar dicha placa de instrumentación:
 
 \begin{figure}[H]
 	\centering
@@ -660,6 +679,199 @@ En la figura \ref{fig:IMU} se puede observar la placa de instrumentación escogid
 	\caption{Atomic IMU}
 	\label{fig:IMU}
 \end{figure}
+
+Luego de seleccionada y adquirida la placa, y a partir de varias pruebas realizadas y conocimientos adquiridos a lo largo del desarrollo del proyecto resulto claro que la misma no poseía suficiente cantidad de sensores para la aplicación deseada.\\
+\\
+A partir de este punto se procedió a estudiar los nuevos requierimientos en cuanto a sensores y resulto evidente que además de los sensores ya existentes en la placa seleccionada sería necesario añadir un magnetómetro y un sensor de presión.\\
+\\
+Nuevamente se planteó la disyuntiva entre comprar otra placa que contenga todos los sensores ya integrados o añadir los nuevos sensores en forma independiente. Con argumentos similares a los que motivaron la primer compra se optó por adquirir una nueva placa.\\
+\\
+Analizando las diversas opciones se optó por adquirir la Mongoose 9DoF IMU. La misma no sólo cuenta con un magnetómetro y un sensor de presión adecuados a los requerimientos de la aplicación, sino que resulta ser considerablemente similar a la Atomic IMU, presentando mejores rangos y sensibilidades en sus sensores y mayor capacidad de almacenamiento y procesamiento de datos.\\
+Adicionalmente, la Mongoose 9DoF IMU posee un sensor de temperatura que permitirá llevar a cabo compensación por temperatura y corregir las medidas obtenidas a partir de los otros sensores.\\
+\\
+En la figura \ref{fig:Mongoose} se puede observar dicha placa de instrumentación:
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.3\textwidth]{./pics_eleccion_hardware/Mongoose.png}
+	\caption{Atomic IMU}
+	\label{fig:Mongoose}
+\end{figure}
+
+\newpage
+\subsection{Especificaciones técnicas de la placa de instrumentación seleccionada (Mongoose 9DoF IMU)}
+\vspace*{15pt}
+
+\subsubsection{Acelerómetro}
+
+\begin{table}[H]
+\begin{center}
+\rowcolors{1}{gray!20}{}
+\begin{tabular}{|p{3cm}|p{6.5cm}|}
+\hline
+Rango & $\pm$16g \\
+\hline
+Resolución & 10-13 bits (siempre 4mg/LSB) \\
+\hline
+Datos nuevos &  0.1 a 800 Hz\\
+\hline
+Ruído XY & 0.75@100Hz - 3@3200Hz LSB-rms\\
+\hline
+Ruído Z & 1.1@100Hz - 4.5@3200Hz LSB-rms\\
+\hline
+Cross Axis & $\pm$ 1\% \\
+\hline
+\end{tabular}
+\label{tab:acc}
+\end{center}
+\end{table}
+
+\textbf{NOTAS}:
+\begin{itemize}
+\item Output data rate puede llegar a 3200Hz, pero usando SPI. Con I$^2$C a 400kHz solamente se puede llegar a 800Hz.
+\item Ancho de banda = $Datos\_nuevos/2$
+\end{itemize}
+
+\subsubsection{Giróscopo}
+
+\begin{table}[H]
+\begin{center}
+\rowcolors{1}{gray!20}{}
+\begin{tabular}{|p{3cm}|p{6.5cm}|}
+\hline
+Rango & $\pm$2000$^\circ/s$ \\
+\hline
+Resolución & 14.475 LSB/($^\circ/s$) \\
+\hline
+Datos nuevos &  3.9Hz a 8kHz\\
+\hline
+Ancho de banda & 256Hz \\
+\hline
+Cross Axis & $\pm$ 2\% \\
+\hline
+Ruído & 0.38 $^\circ/s$-rms \\
+\hline
+\end{tabular}
+\label{tab:gyro}
+\end{center}
+\end{table}
+
+\textbf{NOTAS}:
+\begin{itemize}
+\item Datos nuevos: La muestras pasan por un LPF digital de 256 a 5Hz, esto limita el ancho de banda.
+\end{itemize}
+
+\subsubsection{Magnetómetro}
+
+\begin{table}[H]
+\begin{center}
+\rowcolors{1}{gray!20}{}
+\begin{tabular}{|p{3cm}|p{6.5cm}|}
+\hline
+Rango & $\pm$8 Ga\\
+\hline
+Resolución &  5mGa@GN=2\\
+\hline
+Datos nuevos &  0.75 - 75Hz\\
+\hline
+Ancho de banda &  37Hz\\
+\hline
+Cross Axis & $\pm$0.2\% FS/Ga \\
+\hline
+Ruído & - \\
+\hline
+\end{tabular}
+\label{tab:magn}
+\end{center}
+\end{table}
+
+\newpage
+\textbf{NOTAS}:
+\begin{itemize}
+\item El rango queda determinado por la ganancia, que se configura con 3 bits:
+\begin{table}[H]
+\begin{center}
+\rowcolors{1}{gray!20}{}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+\hline
+\textbf{GN} & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 \\
+\textbf{Rango} (Ga)& $\pm$0.88 & $\pm$1.3 & $\pm$1.9 & $\pm$2.5 & $\pm$4.0 & $\pm$4.7 & $\pm$5.6 & $\pm$8.1 \\
+\hline
+\end{tabular}
+\label{tab:magn-gain}
+\end{center}
+\end{table}
+\item Se puede configurar para que el dato que muestre sea el promedio de hasta 8 muestras.
+\end{itemize}
+
+\subsubsection{Sensor de presión}
+
+\begin{table}[H]
+\begin{center}
+\rowcolors{1}{gray!20}{}
+\begin{tabular}{|p{3cm}|p{6.5cm}|}
+\hline
+Rango & 300 a 1100 hPa (9000 a -500m)\\
+\hline
+Resolución &  1Pa\\
+\hline
+Precisión. Abs. & typ/max $\pm$1.0/$\pm$3.0 hPa \\
+\hline
+Precisión Rel. & $\pm$0.5 hPa \\
+\hline
+Datos nuevos &  typ/max: 3/4.5ms - 17/25ms\\
+\hline
+Ancho de banda &  333/40Hz\\
+\hline
+Ruído (hPa) &  0.06 - 0.03\\
+\hline
+Ruído (m) & 0.5 - 0.25 \\
+\hline
+\end{tabular}
+\label{tab:barometro}
+\end{center}
+\end{table}
+
+\textbf{NOTAS}:
+\begin{itemize}
+\item El rango, en altura, se refiere a la altura sobre el nivel del mar.
+\item El modo de operación (cantidad de muestras promediadas) afecta:
+  \begin{itemize}
+  \item El tiempo de conversión.
+  \item El ancho de banda.
+  \item La resolución.
+  \item El ruído.
+  \end{itemize}
+\item Es necesario hacer una medida de temperatura de vez en cuando (1Hz) para mejorar la lectura del sensor de presión.
+\end{itemize}
+
+\subsubsection{Sensor de temperatura}
+
+\begin{table}[H]
+\begin{center}
+\rowcolors{1}{gray!20}{}
+\begin{tabular}{|p{3cm}|p{6.5cm}|}
+\hline
+Rango & 0 a 65 $^\circ$C\\
+\hline
+Resolución &  0.1 $^\circ$C\\
+\hline
+Precisión Abs. & typ/max $\pm$1.0/$\pm$2.0 $^\circ$C\\
+\hline
+Datos nuevos &  typ/max: 3/4.5ms\\
+\hline
+Ruído & - \\
+\hline
+\end{tabular}
+\label{tab:temp}
+\end{center}
+\end{table}
+
+\textbf{NOTAS}:
+\begin{itemize}
+\item El sensor de temperatura está incorporado al sensor de presión.
+\end{itemize}
+
 
 \end{document}
 
