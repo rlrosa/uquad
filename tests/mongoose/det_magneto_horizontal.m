@@ -52,27 +52,9 @@ sigma=std(RESIDUAL)
 
 save('mag','X','sigma')
 
-%% Otra calibración
-Q0=[1 0 0    0 1 0    0 0 1];
-b0=[0 0 0];
-x0=[Q0 b0];
-[X,RESNORM,RESIDUAL,EXITFLAG]=lsqnonlin(@mag_cost2,x0,[],[],optimset('MaxFunEvals',10000,'MaxIter',1000));
-
-Q=[X(1) X(2) X(3);
-    X(4) X(5) X(6);
-    X(7) X(8) X(9)];
-b=[X(10); X(11); X(12)];
 
 
-Hm=0.2306004;
-[V,D]=eig(Q*Q');
-u=-2*Q'*b;
-k=b'*Q*b-Hm^2;
-a=4*Hm^2/(4*k-(V'*u)'*D^(-1)*(V'*u));
-
-save('mag','V','D','b','a')
-
-%% La posta?
+%% Resultado calibración bola y conversión
 
 U = [0.00473160006403247     -2.18916898319836e-05      0.000309423482503981;
                          0       0.00455025410014059      7.83170752308679e-05;
@@ -81,7 +63,7 @@ U = [0.00473160006403247     -2.18916898319836e-05      0.000309423482503981;
 c=  [23.3152609806586;
     -126.624459617958;
     19.0429011162953];
-%% Convertir con la calibración de la bola
+
 
 for i=1:length(mm(1,:));
 mc(:,i)=(U*(mm(:,i)-c));
@@ -119,7 +101,23 @@ for i=1:length(mm(1,:))
 end
 
 %% Diferencias de ángulos
+x1=6039;
+y1=5625;
+x2=2118;
+y2=6415;
+giro=atan((y2-y1)/(x2-x1));
+
+orientacion=zeros(18,3);
+dec = 99.78*pi/180;
+inc = 39.85*pi/180;
+
+Norte = [cos(inc)*cos(dec) cos(inc)*sin(dec) sin(inc)];
 angulos=zeros(18,1);
+
+
+orientacion= [90-giro*180/pi 0  ]
+[theta,phi,psi]=calcu_ang(mc(:,1),Norte)
+
 
 for i=1:6
     angulos(i)=180/pi*atan2(mc(2,i),mc(3,i))+10;
