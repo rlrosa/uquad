@@ -82,7 +82,7 @@ Model {
       Name		      "wq3"
     }
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.96"
+    ComputedModelVersion    "1.97"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -102,9 +102,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "pater"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Tue Feb 21 18:18:43 2012"
-  RTWModifiedTimeStamp	  251749113
-  ModelVersionFormat	  "1.%<AutoIncrement:96>"
+  LastModifiedDate	  "Mon Feb 27 01:01:51 2012"
+  RTWModifiedTimeStamp	  252205282
+  ModelVersionFormat	  "1.%<AutoIncrement:97>"
   ConfigurationManager	  "None"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -871,7 +871,7 @@ Model {
     ShowPageBoundaries	    off
     ZoomFactor		    "77"
     ReportName		    "simulink-default.rpt"
-    SIDHighWatermark	    "1842"
+    SIDHighWatermark	    "1863"
     Block {
       BlockType		      Inport
       Name		      "w1"
@@ -4259,6 +4259,16 @@ Model {
 		}
 		Block {
 		  BlockType		  Gain
+		  Name			  "-Izzm"
+		  SID			  "1561"
+		  Position		  [675, 815, 705, 845]
+		  Gain			  "-Izzm"
+		  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
+		  OutDataTypeStr	  "Inherit: Inherit via internal rule"
+		  SaturateOnIntegerOverflow off
+		}
+		Block {
+		  BlockType		  Gain
 		  Name			  "1/Izz"
 		  SID			  "1557"
 		  Position		  [940, 550, 970, 580]
@@ -4287,16 +4297,6 @@ Model {
 		  SID			  "1560"
 		  Position		  [690, 550, 720, 580]
 		  Gain			  "Ixx-Iyy"
-		  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
-		  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-		  SaturateOnIntegerOverflow off
-		}
-		Block {
-		  BlockType		  Gain
-		  Name			  "Izzm"
-		  SID			  "1561"
-		  Position		  [675, 815, 705, 845]
-		  Gain			  "Izzm"
 		  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
 		  OutDataTypeStr	  "Inherit: Inherit via internal rule"
 		  SaturateOnIntegerOverflow off
@@ -4388,7 +4388,7 @@ Model {
 		Line {
 		  SrcBlock		  "Derivative"
 		  SrcPort		  1
-		  DstBlock		  "Izzm"
+		  DstBlock		  "-Izzm"
 		  DstPort		  1
 		}
 		Line {
@@ -4477,7 +4477,7 @@ Model {
 		  DstPort		  1
 		}
 		Line {
-		  SrcBlock		  "Izzm"
+		  SrcBlock		  "-Izzm"
 		  SrcPort		  1
 		  Points		  [60, 0; 0, -255]
 		  DstBlock		  "Subtract"
@@ -7128,7 +7128,7 @@ Model {
 	      Name		      "Gain"
 	      SID		      "1810"
 	      Position		      [265, 27, 315, 63]
-	      Gain		      "1.69e-6"
+	      Gain		      "3.4734e-6"
 	      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
 	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
 	      SaturateOnIntegerOverflow	off
@@ -7138,7 +7138,7 @@ Model {
 	      Name		      "Gain1"
 	      SID		      "1811"
 	      Position		      [275, 80, 305, 110]
-	      Gain		      "-6.42e-5"
+	      Gain		      "-1.3205e-4"
 	      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
 	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
 	      SaturateOnIntegerOverflow	off
@@ -7211,7 +7211,7 @@ Model {
 	Block {
 	  BlockType		  SubSystem
 	  Name			  "Torque Motor2"
-	  SID			  "1814"
+	  SID			  "1843"
 	  Ports			  [1, 1]
 	  Position		  [90, 511, 205, 589]
 	  MinAlgLoopOccurrences	  off
@@ -7239,14 +7239,14 @@ Model {
 	    Block {
 	      BlockType		      Inport
 	      Name		      "w"
-	      SID		      "1815"
+	      SID		      "1844"
 	      Position		      [25, 43, 55, 57]
 	      IconDisplay	      "Port number"
 	    }
 	    Block {
 	      BlockType		      Sum
 	      Name		      "Add"
-	      SID		      "1816"
+	      SID		      "1845"
 	      Ports		      [2, 1]
 	      Position		      [380, 81, 410, 114]
 	      InputSameDT	      off
@@ -7256,9 +7256,9 @@ Model {
 	    Block {
 	      BlockType		      Gain
 	      Name		      "Gain"
-	      SID		      "1817"
+	      SID		      "1846"
 	      Position		      [265, 27, 315, 63]
-	      Gain		      "1.69e-6"
+	      Gain		      "3.4734e-6"
 	      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
 	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
 	      SaturateOnIntegerOverflow	off
@@ -7266,9 +7266,9 @@ Model {
 	    Block {
 	      BlockType		      Gain
 	      Name		      "Gain1"
-	      SID		      "1818"
+	      SID		      "1847"
 	      Position		      [275, 80, 305, 110]
-	      Gain		      "-6.42e-5"
+	      Gain		      "-1.3205e-4"
 	      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
 	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
 	      SaturateOnIntegerOverflow	off
@@ -7276,7 +7276,7 @@ Model {
 	    Block {
 	      BlockType		      Product
 	      Name		      "Product"
-	      SID		      "1819"
+	      SID		      "1848"
 	      Ports		      [2, 1]
 	      Position		      [185, 27, 215, 58]
 	      InputSameDT	      off
@@ -7286,7 +7286,7 @@ Model {
 	    Block {
 	      BlockType		      Outport
 	      Name		      "M"
-	      SID		      "1820"
+	      SID		      "1849"
 	      Position		      [445, 88, 475, 102]
 	      IconDisplay	      "Port number"
 	    }
@@ -7341,7 +7341,7 @@ Model {
 	Block {
 	  BlockType		  SubSystem
 	  Name			  "Torque Motor3"
-	  SID			  "1821"
+	  SID			  "1850"
 	  Ports			  [1, 1]
 	  Position		  [90, 606, 205, 684]
 	  MinAlgLoopOccurrences	  off
@@ -7369,14 +7369,14 @@ Model {
 	    Block {
 	      BlockType		      Inport
 	      Name		      "w"
-	      SID		      "1822"
+	      SID		      "1851"
 	      Position		      [25, 43, 55, 57]
 	      IconDisplay	      "Port number"
 	    }
 	    Block {
 	      BlockType		      Sum
 	      Name		      "Add"
-	      SID		      "1823"
+	      SID		      "1852"
 	      Ports		      [2, 1]
 	      Position		      [380, 81, 410, 114]
 	      InputSameDT	      off
@@ -7386,9 +7386,9 @@ Model {
 	    Block {
 	      BlockType		      Gain
 	      Name		      "Gain"
-	      SID		      "1824"
+	      SID		      "1853"
 	      Position		      [265, 27, 315, 63]
-	      Gain		      "1.69e-6"
+	      Gain		      "3.4734e-6"
 	      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
 	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
 	      SaturateOnIntegerOverflow	off
@@ -7396,9 +7396,9 @@ Model {
 	    Block {
 	      BlockType		      Gain
 	      Name		      "Gain1"
-	      SID		      "1825"
+	      SID		      "1854"
 	      Position		      [275, 80, 305, 110]
-	      Gain		      "-6.42e-5"
+	      Gain		      "-1.3205e-4"
 	      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
 	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
 	      SaturateOnIntegerOverflow	off
@@ -7406,7 +7406,7 @@ Model {
 	    Block {
 	      BlockType		      Product
 	      Name		      "Product"
-	      SID		      "1826"
+	      SID		      "1855"
 	      Ports		      [2, 1]
 	      Position		      [185, 27, 215, 58]
 	      InputSameDT	      off
@@ -7416,7 +7416,7 @@ Model {
 	    Block {
 	      BlockType		      Outport
 	      Name		      "M"
-	      SID		      "1827"
+	      SID		      "1856"
 	      Position		      [445, 88, 475, 102]
 	      IconDisplay	      "Port number"
 	    }
@@ -7471,9 +7471,9 @@ Model {
 	Block {
 	  BlockType		  SubSystem
 	  Name			  "Torque Motor4"
-	  SID			  "1828"
+	  SID			  "1857"
 	  Ports			  [1, 1]
-	  Position		  [95, 696, 210, 774]
+	  Position		  [90, 696, 205, 774]
 	  MinAlgLoopOccurrences	  off
 	  PropExecContextOutsideSubsystem off
 	  RTWSystemCode		  "Auto"
@@ -7499,14 +7499,14 @@ Model {
 	    Block {
 	      BlockType		      Inport
 	      Name		      "w"
-	      SID		      "1829"
+	      SID		      "1858"
 	      Position		      [25, 43, 55, 57]
 	      IconDisplay	      "Port number"
 	    }
 	    Block {
 	      BlockType		      Sum
 	      Name		      "Add"
-	      SID		      "1830"
+	      SID		      "1859"
 	      Ports		      [2, 1]
 	      Position		      [380, 81, 410, 114]
 	      InputSameDT	      off
@@ -7516,9 +7516,9 @@ Model {
 	    Block {
 	      BlockType		      Gain
 	      Name		      "Gain"
-	      SID		      "1831"
+	      SID		      "1860"
 	      Position		      [265, 27, 315, 63]
-	      Gain		      "1.69e-6"
+	      Gain		      "3.4734e-6"
 	      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
 	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
 	      SaturateOnIntegerOverflow	off
@@ -7526,9 +7526,9 @@ Model {
 	    Block {
 	      BlockType		      Gain
 	      Name		      "Gain1"
-	      SID		      "1832"
+	      SID		      "1861"
 	      Position		      [275, 80, 305, 110]
-	      Gain		      "-6.42e-5"
+	      Gain		      "-1.3205e-4"
 	      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
 	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
 	      SaturateOnIntegerOverflow	off
@@ -7536,7 +7536,7 @@ Model {
 	    Block {
 	      BlockType		      Product
 	      Name		      "Product"
-	      SID		      "1833"
+	      SID		      "1862"
 	      Ports		      [2, 1]
 	      Position		      [185, 27, 215, 58]
 	      InputSameDT	      off
@@ -7546,7 +7546,7 @@ Model {
 	    Block {
 	      BlockType		      Outport
 	      Name		      "M"
-	      SID		      "1834"
+	      SID		      "1863"
 	      Position		      [445, 88, 475, 102]
 	      IconDisplay	      "Port number"
 	    }
