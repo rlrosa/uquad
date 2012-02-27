@@ -3,13 +3,13 @@ global ti tf t x0 y0 z0 psi0 phi0 theta0 vq10 vq20 vq30 wq10 wq20 wq30 X0 w1 w2 
 
 %%%%%%%%Constantes del sistema%%%%%%%%%%%%%%%%%%%%%%
 assignin('base','g',9.81); %Constante gravitacional
-assignin('base','L',1); %Largo de los brazos del quadcopter en metros
-assignin('base','M',1); %Masa del quadcopter en kilogramos
+assignin('base','L',0.29); %Largo de los brazos del quadcopter en metros
+assignin('base','M',1.541); %Masa del quadcopter en kilogramos
 %Elementos relevantes del tensor de inercia en kilogramos metros cuadrados
-assignin('base','Ixx',1);
-assignin('base','Iyy',1);
-assignin('base','Izz',1);
-assignin('base','Izzm',1);
+assignin('base','Ixx',2.32e-2);
+assignin('base','Iyy',2.32e-2);
+assignin('base','Izz',4.37e-2);
+assignin('base','Izzm',1.54e-5);
 
 x0=evalin('base','x0');
 y0=evalin('base','y0');

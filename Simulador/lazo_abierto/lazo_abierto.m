@@ -439,7 +439,7 @@ function pushbutton1_Callback(hObject, eventdata, handles)
     syms x
     if (ind~=1) && (ind~=9)
         fuerza_hov=9.81*m/4;
-         val=solve(3.7646e-5*x^2-9.0535e-4*x+0.0170-fuerza_hov);
+         val=solve(3.5296e-5*x^2-4.9293e-4*x-fuerza_hov);
          val_hov=eval(val);
         
          if (val_hov(1)>=0)
@@ -470,11 +470,11 @@ function pushbutton1_Callback(hObject, eventdata, handles)
         case 8  
             
          fuerza_mas=fuerza_hov+1;
-         val=solve(3.7646e-5*x^2-9.0535e-4*x+0.0170-fuerza_mas);
+         val=solve(3.5296e-5*x^2-4.9293e-4*x-fuerza_mas);
          val_mas=eval(val);
         
          fuerza_menos=fuerza_hov-1;
-         val=solve(3.7646e-5*x^2-9.0535e-4*x+0.0170-fuerza_menos);
+         val=solve(3.5296e-5*x^2-4.9293e-4*x-fuerza_menos);
          val_menos=eval(val);
          
           if (val_mas(1)>=0)
@@ -492,7 +492,7 @@ function pushbutton1_Callback(hObject, eventdata, handles)
             wang4(time>tf/2) = val_mas;
         case 9   
             fuerza_rec=9.81*m/(4*cos(psio)*cos(phio));
-            val=solve(3.7646e-5*x^2-9.0535e-4*x+0.0170-fuerza_rec);
+            val=solve(3.5296e-5*x^2-4.9293e-4*x-fuerza_rec);
             val_rec=eval(val);
         
             if (val_rec(1)>=0)
