@@ -1,6 +1,6 @@
 function [ax1 ax2] = barom_plot(alt, avg_size, indexes, temp)
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-%function barom_plot(alt, avg_size, indexes)
+% [ax1 ax2] = function barom_plot(alt, avg_size, indexes, temp)
 %
 % Plot altitud, raw and averaged.
 % Multiple segments can be marked by providing indexing in INDEXES.
