@@ -217,7 +217,7 @@ Cabe destacar que el ruído se puede considerar estacionario si se usan interval
 	\includegraphics[width=.4\textwidth]
 		{./pics/autocorr.pdf}}
   \end{center}
-  \caption{Autocorrelación de las muestras del barómetros.}
+  \caption{Autocorrelación de las muestras del barómetro.}
 \label{fig:autocorr}
 \end{figure}
 
@@ -229,8 +229,8 @@ El barómetro permite trabajar en varios modos. Basicamente, permite que se le e
 \centering
 \begin{tabular}{c|c|c|c|} 
 \cline{2-4}
-	& \multicolumn{3}{|c|}{\cellcolor[gray]{0.8} Ruído RMS  (hPa)}      \\ \hline
-\multicolumn{1}{|c|}{\cellcolor[gray]{0.8} {Modo}} & \cellcolor[gray]{0.8} {Computado} &\cellcolor[gray]{0.8} {Interno} &\cellcolor[gray]{0.8} {Specs}\\ \hline
+	& \multicolumn{3}{|c|}{\cellcolor[gray]{0.8} Ruído RMS  (m)}      \\ \hline
+\multicolumn{1}{|c|}{\cellcolor[gray]{0.8} {Modo}} & \cellcolor[gray]{0.8} {Microprocesador} &\cellcolor[gray]{0.8} {Sensor} &\cellcolor[gray]{0.8} {Especificaciones}\\ \hline
 
 \multicolumn{1}{|c|}{0}	&	0.52	&	0.52	&	0.50\\
 \hline
@@ -273,62 +273,72 @@ Se descartó la posibilidad de utilizar el barómetro para determinar la altura 
 
 \subsection{Distancias de varios metros}
 
-En las siguientes figuras se observan los resultados del experimento. Las líneas verticales (en negro) respresentan el comienzo y el fin de la toma de datos en cada piso. No se hizo una medida de la altura absoluta, sino que se tienen las distancias entre piso y piso, y se usó como origen la altura dad por el promedio de algunas muestras al comienzo del experimento, ya sea en el piso de más arriba, o en el piso de más abajo (bajadas y subidas respectivamente). Los segmentos en rojo que unen las rectas verticales representan la distancia entre el ``origen'' y el piso actual, medida con la cinta métrica.
+En las siguientes figuras se observan los resultados del experimento. Las líneas verticales (en negro) respresentan el comienzo y el fin de la toma de datos en cada piso. No se hizo una medida de la altura absoluta, se midieron las distancias entre piso y piso (con la cinta métrica), y se usó como ``origen'' de coordenadas la altura dada por el promedio de algunas muestras al comienzo del experimento, ya sea en el piso de más arriba, o en el piso de más abajo (bajadas y subidas respectivamente). Los segmentos en rojo que unen las rectas verticales representan la distancia entre el ``origen'' y el piso actual, medida con la cinta métrica.
 
-\vspace{-14pt}
+\vspace{-12pt}
 \begin{figure}[h!]
 \centering
-  \includegraphics[width=.95\textwidth]{./pics/metros-s1.pdf}
+  \includegraphics[width=.90\textwidth]{./pics/metros-s1.pdf}
 \vspace{-15pt}
   \caption{Subida \#1.}
   \label{fig:metros-s1.pdf}
 \end{figure}
-\vspace{-40pt}
+\vspace{-15pt}
+
+En la figura \ref{fig:metros-s1.pdf} se observa que para cuando se termina de recorrer la escalera, el error acumulado se llega a los 3 metros.
 
 \newpage
-\vspace{-20pt}
+\vspace{-40pt}
 \begin{figure}[h!]
 \centering
-  \includegraphics[width=.85\textwidth]{./pics/metros-b1.pdf}
+  \includegraphics[width=.95\textwidth]{./pics/metros-b1.pdf}
 \vspace{-25pt}
   \caption{Bajada \#1.}
   \label{fig:metros-b1.pdf}
 \end{figure}
-\vspace{-20pt}
+
+En la figura \ref{fig:metros-b1.pdf} se observan resultados mejores que en la figura \ref{fig:metros-s1.pdf}. Se realizó repitió la subida, y se obtuvieron resultados similares a los de la figura \ref{fig:metros-b1.pdf}, por este motivo no se incluye una figura de este último experimento.
+
+Los errores en las medidas se analizan más adelante.
+
+\newpage
+\vspace{-40pt}
 \begin{figure}[h!]
 \centering
-  \includegraphics[width=.85\textwidth]{./pics/metros-rapido.pdf}
+  \includegraphics[width=.95\textwidth]{./pics/metros-rapido.pdf}
 \vspace{-15pt}
-  \caption{Bajada rápido.}
+  \caption{Bajada sin detenerse en cada piso.}
   \label{fig:metros-rapido.pdf}
 \vspace{-15pt}
 \end{figure}
-\vspace{-15pt}
 
-Se observa que en la figura \ref{fig:metros-s1.pdf} el error acumulado se vuelve importante, del orden de los 3 metros, para cuando se termina de recorrer la escalera.
+Cabe destacar que la performance en la figura \ref{fig:metros-rapido.pdf} es muy similar a la que se obtuvo tomando muestras durante 1 minutos. Esto resulta alentador, ya que se pretende utilizar el barómetro para obtener medidas con una frecuencia mucho mayor 1Hz.
 
-En la figura \ref{fig:metros-metros-err-accum.pdf} se observa la evolución del error acumluado para 2 subidas, 1 bajada y una bajada rápida\footnote{No se incluyó una gráfica de la segundo subida, es muy similar al la de la primera bajada, pero con un eror del orden del de la primer banjada.}.
+En la figura \ref{fig:metros-err-accum.pdf} se observa la evolución del error acumulado para 2 subidas\footnote{No se incluye una gráfica de la segundo subida, ya es muy similar, en cuanto al error, a la de la primera bajada, pero con un eror del orden del de la primer bajada.}, 1 bajada y una bajada rápida.
 
 \begin{figure}[h!]
 \centering
-  \includegraphics[width=.85\textwidth]{./pics/metros-err-accum.pdf}
+  \includegraphics[width=.65\textwidth]{./pics/metros-err-accum.pdf}
 \vspace{-15pt}
-  \caption{Error acuulado.}
+  \caption{Error acumulado.}
   \label{fig:metros-err-accum.pdf}
 \vspace{-15pt}
 \end{figure}
 
-El error en la determinación de la distancia entre un piso y el siguiente se observa en la figura \ref{fig:metro-err-piso-a-piso.pdf}.
+\newpage
+El error en la determinación de la distancia entre un piso y el siguiente se observa en la figura \ref{fig:metros-err-piso-a-piso.pdf}.
 
 \begin{figure}[h!]
 \centering
-  \includegraphics[width=.85\textwidth]{./pics/metros-err-piso-a-piso.pdf}
+  \includegraphics[width=.65\textwidth]{./pics/metros-err-piso-a-piso.pdf}
 \vspace{-15pt}
   \caption{Error en la estimación de la distancia del piso anterior al actual.}
   \label{fig:metros-err-piso-a-piso.pdf}
-\vspace{-15pt}
 \end{figure}
-\vspace{-15pt}
+
+El error de la figura \ref{fig:metros-err-piso-a-piso.pdf} es relativo a la altura de cada piso, que son de aproximadamente 4.3m. Analizando los número con cuidado, se llega a que el error es siempre menor al 10\%.
+
+De las figuras \ref{fig:metros-rapido.pdf} y \ref{fig:metros-err-accum.pdf} se desprende que utilizando promedios de 20 muestras\footnote{Esta es la cantidad de muestras que se promediaron para determinar la altura cada vez en cada piso en el experimento ``rápido''.}, se obtiene un error de aproximadamente 0.5m. El comportamiento del barómetro es aceptable, y se corresponde con las especificaciones de la hoja de datos.
 
 \newpage
 \subsection{Distancias de un metro}
@@ -354,7 +364,7 @@ Se aprecia que el comportamiento es acorde a lo esperado, corresponde a las acci
 %   \label{fig:esc2}
 % \end{figure}
 
-En la tabla \ref{tab:alturasm} se muestran los valores de altura obtenidos en las distintas posiciones en las dos series de datos tomadas. El valor absoluta de la altura no tiene sentido, ya que no se conoce la presión a nivel del mar en el momento de tomar las muestras.
+En la tabla \ref{tab:alturasm} se muestran los valores de altura obtenidos en las distintas posiciones en las dos series de datos tomadas. La altura absoluta no tiene sentido, ya que no se conoce la presión a nivel del mar en el momento de tomar las muestras, por lo tanto la ecuación \ref{eq:press-alt} no dará el resultado correcto.
 
 \begin{table}[H]
 \centering
@@ -376,7 +386,50 @@ En la tabla \ref{tab:alturasm} se muestran los valores de altura obtenidos en la
 
 Se observa inmediatamente en las medidas de altura realizadas que la altura absoluta registrada por el barómetro cambia considerablemente de una serie a la otra. En la segunda se observa que las medidas se encuentran en promedio un metro más arriba. Los puntos que se consideraron fueron los mismos, sin embargo las medidas fueron realizadas un día de tormenta. La presión atmosférica es muy cambiante en esos días. Eso puede explicar dicha diferencia. Otra explicación puede ser el drift observado en secciones previas.
 
-El error RMS esperado es de 0.5m. En la figura \ref{fig:variando} se observa la variación en la altura absoluta. Si bien cada tramo comienza y termina a una altura que cae dentro del error esperado, el hay tramos del principio y el final del experimento, cuando el barómetro estaba en el suelo, en los que se observa una diferencia en altura de 1.5m, que no cae dentro del error esperado. El problema se ve luego de transcurridos varios minutos, tiempo mucho mayor al sugerido en la sección \ref{sec:caract-ruido}, por lo que no parece ser un problema relevante.
+En la figura \ref{fig:1-metro-err} se muestra la evolución de los errores relativo y acumulado.
+
+\begin{figure}[H]
+\hspace{-50pt}
+	\subfloat[Error acumulado.]
+        {\label{fig:1-metro-error-accum.pdf}
+	\includegraphics[width=.6\textwidth]
+        {./pics/1-metro-error-accum.pdf}}
+	\subfloat[Error en la estimación de la distancia del piso anterior al actual.]
+        {\label{fig:1-metro-err-piso-a-piso.pdf}
+	\includegraphics[width=0.6\textwidth]
+        {./pics/1-metro-err-punto-a-punto.pdf}}
+  \caption{Errores en las medidas a 1 metro entre sí.}
+\label{fig:1-metro-err}
+\end{figure}
+
+Del análisis de cada serie de manera indepenediente:
+\begin{itemize}
+\item Serie 1:
+		\begin{itemize}
+		\item Error promedio: $0.20m$
+		\item Desviación estándar: $0.20m$
+		\end{itemize}
+\item Serie 2:
+		\begin{itemize}
+		\item Error promedio: $-0.07m$
+		\item Desviación estándar: $0.49m$
+		\end{itemize}
+\end{itemize}
+
+Al tener pocas muestras en cada una de las series es imposible considerarlas para armar estadísticas, de hecho ambas difieren mucho en cuanto al error promedio que presentan y la desviación estándar. 
+
+Si trabajamos con las dos series de datos lo que obtenemos es:
+
+\begin{itemize}
+\item Error promedio: $0.07m$
+\item Desviación estándar: $0.38m$
+\end{itemize}
+
+A partir de los datos anteriores se puede concluir que el $95.5 \%$ de las veces se tiene errores inferiores a $0.76m$ en diferencias de un metro. El error se mantiene por debajo de $1m$ al usar pocas (4,8,10, etc) muestras para cada punto. Esto es prometedor, ya que se piensa utilizar 
+
+Este error depende del drift del barómetro, y se puede reducir incorporando, de manera periódica, información externa (GPS) sobre la altura absoluta.
+
+En la figura \ref{fig:variando} se observa la variación en la altura absoluta. Si bien cada tramo comienza y termina a una altura que cae dentro del error esperado, hay tramos del principio y del final del experimento (barómetro apoyado en el suelo) entre los que se observa una diferencia en altura de 1.5m. Esto no cae dentro del error esperado. El problema se ve luego de transcurridos varios minutos, tiempo mucho mayor al sugerido en la sección \ref{sec:caract-ruido}, por lo que no parece ser un problema relevante, ya que puede ser causado por el drift y/o por cambios en las condiciones atmosféricas.
 
 \begin{figure}[H]
 \centering
@@ -385,49 +438,22 @@ El error RMS esperado es de 0.5m. En la figura \ref{fig:variando} se observa la 
   \label{fig:variando}
 \end{figure}
 
-En cuanto al error promedio y a la desviación estándar se obtuvo para las dos series:
+% \newpage
+% \subsection{Distancias de decenas de centímetros}
 
-\begin{itemize}
-\item Serie 1:
-		\begin{itemize}
-		\item Error promedio: $-0.20m$
-		\item Desviación estándar: $0.20m$
-		\end{itemize}
-\item Serie 2:
-		\begin{itemize}
-		\item Error promedio: $0.06m$
-		\item Desviación estándar: $0.49m$
-		\end{itemize}
-\end{itemize}
-
-Al tener pocas muestras en cada una de las series es imposible considerarlas como buenas muestras estadísticas, de hecho ambas difieren mucho en cuanto al error promedio que presentan y la desviación estándar. 
-
-Si trabajamos con las dos series de datos lo que obtenemos es:
-
-\begin{itemize}
-\item Error promedio: $-0.07m$
-\item Desviación estándar: $0.38m$
-\end{itemize}
+% En la tabla \ref{tab:alturascm}
 
 
+% \begin{table}[H]
+% \centering
+% \begin{tabular}{|c|c|} 
 
-A partir de los datos anteriores se puede concluir que el $95.5 \%$ de las veces tendremos errores inferiores a $0.76m$ en diferencias de un metro. Este error depende del drift del barómetro, y se puede reducir incorporando, de manera periódica, información externa (GPS) sobre la altura absoluta.
-
-\subsection{Distancias de decenas de centímetros}
-
-En la tabla \ref{tab:alturascm}
-
-
-\begin{table}[H]
-\centering
-\begin{tabular}{|c|c|} 
-
-	\cellcolor[gray]{0.8} {Altura medida con el barómetro(cm)} &
-	\cellcolor[gray]{0.8} Altura medida con el metro (cm) \\ \hline
-\end{tabular}
-\caption{Alturas obtenidas con el metro y con el barómetro}
-\label{tab:alturascm}
-\end{table}
+% 	\cellcolor[gray]{0.8} {Altura medida con el barómetro(cm)} &
+% 	\cellcolor[gray]{0.8} Altura medida con el metro (cm) \\ \hline
+% \end{tabular}
+% \caption{Alturas obtenidas con el metro y con el barómetro}
+% \label{tab:alturascm}
+% \end{table}
 
 
 \newpage
@@ -438,13 +464,14 @@ La conclusiones más importante de las pruebas hechas con el barómetro fueron l
 
 \begin{itemize}
 \item \textbf{Tiempo de \textit{warm-up}}: El circuito tiene un tiempo de \textit{warm-up} de aproximadamente 45 minutos, durante el cual la temperatura sube aproximadamente 1.5\degc. De las especificaciones de los sensores se deduce que una variación de temperatura tan pequeña no debería afectar la performance. De cualquier forma, es de interés analizar analizar, experimentalmente, el efecto de la variación de la temperatura sobre las lecturas de la IMU.
-\item \textbf{Altura absoluta}: El drift y la sensibilidad a factores externos (clima, etc) hacen que el barómetro \textbf{no} sea adecuado para determinar la altura absoluta.
-\item \textbf{Altura relativa}: La performance en períodos cortos de tiempo fue buena, es posible conocer variaciones de altura con una error menor a TODO, durante tiempo menores a TODO segundos/minutos.
+\item \textbf{Drift y Altura absoluta}: El drift y la sensibilidad a factores externos (clima, etc) hacen que el barómetro \textbf{no} sea adecuado para determinar la altura absoluta. No es posible obtener una mejor estimación de la altura tomando promedios durante períodos de tiempo mayores, ya que el drift introduciría errores en dicho estimador. Se observó un drift de hasta 0.5m en 1 minuto.
+\item \textbf{Altura relativa}: La performance en períodos de tiempo cortos fue buena, es posible conocer variaciones de altura con una error menor a 0.5m, durante tiempo menores a TODO segundos/minutos.
 \item \textbf{Rol del barómetro}: Se concluye que el barómetro servirá para determinar variaciones de altura, suavizando la trayectoria, mientras se espera una altura absoluta proveniente del GPS. El barómetro y el GPS se complementan. El barómetro se utilizará con los siguiente parámetros:
   \begin{itemize}
-%TODO determinar y completar.
-  \item Error promedio: 
-  \item Desviación estándar:
+  \item Error promedio: 0.5m
+  \item Desviación estándar: 0.25m
+  \item Modo: 0, promediando 4 muestras en la IMU.
+  \item Se observó un drift de hasta 0.5m por minuto. Se debe utilizar el GPS para correjirlo.
   \end{itemize}
 \end{itemize}
 
