@@ -136,7 +136,7 @@ Con un total de 9 configuraciones diferentes, donde cada una de ellas aporta 3 m
 
 \subsubsection*{Preparación}
 
-Las medidas consisten básicamente en dejar la IMU girar a la velocidad del tocadiscos en las posiciones listadas en la tabla \ref{tab:gyros}. La dirección de giro principal es la dirección de giro del tocadiscos cuando no hay giro en la dirección secundaria. Con el cubo de madera se resuelven las rotaciones de 90 grados para alinear los diferentes ejes de la IMU con el eje de giro del tocadiscos. Los giros en el eje secundario se realizan utilizando las escuadras y la madera de 4 cm de ancho y lados paralelos, como se muestra en la figura \ref{fig:escuadras}. Apoyando el cubo sobre la escuadra se logran los ángulos de $30º$ y $45º$ deseados en las direcciones de giro secundarias.
+Las medidas consisten básicamente en dejar la IMU girar a la velocidad del tocadiscos en las posiciones listadas en la tabla \ref{tab:gyros}. 
 
 \begin{wrapfigure}{l}{0.6\textwidth}
   \vspace{-20pt}
@@ -150,28 +150,23 @@ Las medidas consisten básicamente en dejar la IMU girar a la velocidad del toca
   \vspace{-10pt}
 \end{wrapfigure}
 
+La dirección de giro principal es la dirección de giro del tocadiscos cuando no hay giro en la dirección secundaria. Con el cubo de madera se resuelven las rotaciones de 90 grados para alinear los diferentes ejes de la IMU con el eje de giro del tocadiscos. Los giros en el eje secundario se realizan utilizando las escuadras y la madera de 4 cm de ancho y lados paralelos, como se muestra en la figura \ref{fig:escuadras}. Apoyando el cubo sobre la escuadra se logran los ángulos de $30º$ y $45º$ deseados en las direcciones de giro secundarias.\\
 
+Si bien la velocidad de giro estándard del tocadiscos es 33.3 rpm, resulta conveniente medir la velocidad del tocadiscos para corroborarla. Se mide la velocidad con el dispositivo IR y se verifica el buen funcionamiento del tocadiscos.\\
 
+Un esquema completo de la configuración utilizada para la calibración del girósopo se puede ver en la figura \ref{fig:tocadiscos}.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=.9\textwidth]{./pics/tocadiscos.jpg}
+	\caption{Tocadiscos}
+	\label{fig:tocadiscos}
+\end{figure}
 
 
 \section{Procedimiento}
 
-\subsection{Parte I: Calibración}
+
 
 \subsubsection*{Medidas a Velocidad angular constante}
 En primer lugar se debe obtener la velocidad angular del tocadiscos. Se toma el tiempo que demora el tocadiscos en dar 10 vueltas completas. Se ubica el sistema exactamente en el centro del disco con el eje \textbf{z} perpendicular al mismo. Se toman medidas durante un minuto con una frecuencia de 100 muestras por segundo. Se repite el experimento una vez con el eje \textbf{y} perpendicular al disco y otra con el eje \textbf{x} perpendicular al disco. Se contrasta la velocidad angular en las 3 direcciones con la velocidad de giro del tocadiscos.
