@@ -82,11 +82,22 @@ Model {
       Name		      "wq3"
     }
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.97"
+    ComputedModelVersion    "1.103"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
   SavedCharacterEncoding  "UTF-8"
+  slprops.hdlmdlprops {
+    $PropName		    "HDLParams"
+    $ObjectID		    1
+    Array {
+      Type		      "Cell"
+      Dimension		      2
+      Cell		      "HDLSubsystem"
+      Cell		      "dinamica_quad"
+      PropName		      "mdlProps"
+    }
+  }
   SaveDefaultBlockParams  on
   ScopeRefreshTime	  0.035000
   OverrideScopeRefreshTime on
@@ -102,9 +113,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "pater"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Mon Feb 27 01:01:51 2012"
-  RTWModifiedTimeStamp	  252205282
-  ModelVersionFormat	  "1.%<AutoIncrement:97>"
+  LastModifiedDate	  "Mon Feb 27 21:22:05 2012"
+  RTWModifiedTimeStamp	  252276079
+  ModelVersionFormat	  "1.%<AutoIncrement:103>"
   ConfigurationManager	  "None"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -178,13 +189,13 @@ Model {
     Type		    "Handle"
     Dimension		    1
     Simulink.ConfigSet {
-      $ObjectID		      1
+      $ObjectID		      2
       Version		      "1.10.0"
       Array {
 	Type			"Handle"
 	Dimension		9
 	Simulink.SolverCC {
-	  $ObjectID		  2
+	  $ObjectID		  3
 	  Version		  "1.10.0"
 	  StartTime		  "0.0"
 	  StopTime		  "10.0"
@@ -198,7 +209,7 @@ Model {
 	  MaxConsecutiveZCs	  "1000"
 	  ExtrapolationOrder	  4
 	  NumberNewtonIterations  1
-	  MaxStep		  "auto"
+	  MaxStep		  "0.1"
 	  MinStep		  "auto"
 	  MaxConsecutiveMinStep	  "1"
 	  RelTol		  "1e-3"
@@ -218,7 +229,7 @@ Model {
 	  InsertRTBMode		  "Whenever possible"
 	}
 	Simulink.DataIOCC {
-	  $ObjectID		  3
+	  $ObjectID		  4
 	  Version		  "1.10.0"
 	  Decimation		  "1"
 	  ExternalInput		  "[t, u]"
@@ -249,7 +260,7 @@ Model {
 	  Refine		  "1"
 	}
 	Simulink.OptimizationCC {
-	  $ObjectID		  4
+	  $ObjectID		  5
 	  Version		  "1.10.0"
 	  Array {
 	    Type		    "Cell"
@@ -303,7 +314,7 @@ Model {
 	  AccelVerboseBuild	  off
 	}
 	Simulink.DebuggingCC {
-	  $ObjectID		  5
+	  $ObjectID		  6
 	  Version		  "1.10.0"
 	  RTPrefix		  "error"
 	  ConsistencyChecking	  "none"
@@ -388,7 +399,7 @@ Model {
 	  SFTransitionOutsideNaturalParentDiag "warning"
 	}
 	Simulink.HardwareCC {
-	  $ObjectID		  6
+	  $ObjectID		  7
 	  Version		  "1.10.0"
 	  ProdBitPerChar	  8
 	  ProdBitPerShort	  16
@@ -425,7 +436,7 @@ Model {
 	  ProdEqTarget		  on
 	}
 	Simulink.ModelReferenceCC {
-	  $ObjectID		  7
+	  $ObjectID		  8
 	  Version		  "1.10.0"
 	  UpdateModelReferenceTargets "IfOutOfDateOrStructuralChange"
 	  CheckModelReferenceTargetMessage "error"
@@ -440,7 +451,7 @@ Model {
 	  SupportModelReferenceSimTargetCustomCode off
 	}
 	Simulink.SFSimCC {
-	  $ObjectID		  8
+	  $ObjectID		  9
 	  Version		  "1.10.0"
 	  SFSimEnableDebug	  on
 	  SFSimOverflowDetection  on
@@ -455,7 +466,7 @@ Model {
 	}
 	Simulink.RTWCC {
 	  $BackupClass		  "Simulink.RTWCC"
-	  $ObjectID		  9
+	  $ObjectID		  10
 	  Version		  "1.10.0"
 	  Array {
 	    Type		    "Cell"
@@ -506,7 +517,7 @@ Model {
 	    Type		    "Handle"
 	    Dimension		    2
 	    Simulink.CodeAppCC {
-	      $ObjectID		      10
+	      $ObjectID		      11
 	      Version		      "1.10.0"
 	      Array {
 		Type			"Cell"
@@ -571,7 +582,7 @@ Model {
 	    }
 	    Simulink.GRTTargetCC {
 	      $BackupClass	      "Simulink.TargetCC"
-	      $ObjectID		      11
+	      $ObjectID		      12
 	      Version		      "1.10.0"
 	      Array {
 		Type			"Cell"
@@ -651,7 +662,7 @@ Model {
 	  }
 	}
 	hdlcoderui.hdlcc {
-	  $ObjectID		  12
+	  $ObjectID		  13
 	  Version		  "1.10.0"
 	  Description		  "HDL Coder custom configuration component"
 	  Name			  "HDL Coder"
@@ -667,13 +678,13 @@ Model {
       }
       Name		      "Configuration"
       CurrentDlgPage	      "Solver"
-      ConfigPrmDlgPosition    " [ 243, 69, 1123, 699 ] "
+      ConfigPrmDlgPosition    " [ 237, 40, 1129, 705 ] "
     }
     PropName		    "ConfigurationSets"
   }
   Simulink.ConfigSet {
     $PropName		    "ActiveConfigurationSet"
-    $ObjectID		    1
+    $ObjectID		    2
   }
   BlockDefaults {
     ForegroundColor	    "black"
@@ -869,21 +880,21 @@ Model {
     TiledPaperMargins	    [1.270000, 1.270000, 1.270000, 1.270000]
     TiledPageScale	    1
     ShowPageBoundaries	    off
-    ZoomFactor		    "77"
+    ZoomFactor		    "80"
     ReportName		    "simulink-default.rpt"
-    SIDHighWatermark	    "1863"
+    SIDHighWatermark	    "1867"
     Block {
       BlockType		      Inport
       Name		      "w1"
       SID		      "1361"
-      Position		      [20, 403, 50, 417]
+      Position		      [35, 448, 65, 462]
       IconDisplay	      "Port number"
     }
     Block {
       BlockType		      Inport
       Name		      "w2"
       SID		      "1362"
-      Position		      [20, 438, 50, 452]
+      Position		      [35, 473, 65, 487]
       Port		      "2"
       IconDisplay	      "Port number"
     }
@@ -891,7 +902,7 @@ Model {
       BlockType		      Inport
       Name		      "w3"
       SID		      "1363"
-      Position		      [20, 473, 50, 487]
+      Position		      [35, 503, 65, 517]
       Port		      "3"
       IconDisplay	      "Port number"
     }
@@ -899,7 +910,7 @@ Model {
       BlockType		      Inport
       Name		      "w4"
       SID		      "1364"
-      Position		      [20, 508, 50, 522]
+      Position		      [35, 528, 65, 542]
       Port		      "4"
       IconDisplay	      "Port number"
     }
@@ -908,7 +919,7 @@ Model {
       Name		      "Cinemática"
       SID		      "1365"
       Ports		      [6, 6]
-      Position		      [920, 176, 1190, 544]
+      Position		      [920, 187, 1185, 563]
       MinAlgLoopOccurrences   off
       PropExecContextOutsideSubsystem off
       RTWSystemCode	      "Auto"
@@ -3551,7 +3562,7 @@ Model {
       Name		      "Dinámica"
       SID		      "1509"
       Ports		      [14, 6]
-      Position		      [450, 184, 710, 541]
+      Position		      [445, 192, 710, 553]
       MinAlgLoopOccurrences   off
       PropExecContextOutsideSubsystem off
       RTWSystemCode	      "Auto"
@@ -3623,42 +3634,10 @@ Model {
 	}
 	Block {
 	  BlockType		  Inport
-	  Name			  "w1"
-	  SID			  "1516"
-	  Position		  [70, 568, 100, 582]
-	  Port			  "7"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "w2"
-	  SID			  "1517"
-	  Position		  [70, 593, 100, 607]
-	  Port			  "8"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "w3"
-	  SID			  "1518"
-	  Position		  [70, 618, 100, 632]
-	  Port			  "9"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
-	  Name			  "w4"
-	  SID			  "1519"
-	  Position		  [70, 643, 100, 657]
-	  Port			  "10"
-	  IconDisplay		  "Port number"
-	}
-	Block {
-	  BlockType		  Inport
 	  Name			  "M1"
 	  SID			  "1770"
 	  Position		  [70, 668, 100, 682]
-	  Port			  "11"
+	  Port			  "7"
 	  IconDisplay		  "Port number"
 	}
 	Block {
@@ -3666,7 +3645,7 @@ Model {
 	  Name			  "M2"
 	  SID			  "1771"
 	  Position		  [70, 693, 100, 707]
-	  Port			  "12"
+	  Port			  "8"
 	  IconDisplay		  "Port number"
 	}
 	Block {
@@ -3674,7 +3653,7 @@ Model {
 	  Name			  "M3"
 	  SID			  "1772"
 	  Position		  [70, 718, 100, 732]
-	  Port			  "13"
+	  Port			  "9"
 	  IconDisplay		  "Port number"
 	}
 	Block {
@@ -3682,6 +3661,38 @@ Model {
 	  Name			  "M4"
 	  SID			  "1773"
 	  Position		  [70, 743, 100, 757]
+	  Port			  "10"
+	  IconDisplay		  "Port number"
+	}
+	Block {
+	  BlockType		  Inport
+	  Name			  "w1"
+	  SID			  "1864"
+	  Position		  [70, 568, 100, 582]
+	  Port			  "11"
+	  IconDisplay		  "Port number"
+	}
+	Block {
+	  BlockType		  Inport
+	  Name			  "w2"
+	  SID			  "1865"
+	  Position		  [70, 593, 100, 607]
+	  Port			  "12"
+	  IconDisplay		  "Port number"
+	}
+	Block {
+	  BlockType		  Inport
+	  Name			  "w3"
+	  SID			  "1866"
+	  Position		  [70, 618, 100, 632]
+	  Port			  "13"
+	  IconDisplay		  "Port number"
+	}
+	Block {
+	  BlockType		  Inport
+	  Name			  "w4"
+	  SID			  "1867"
+	  Position		  [70, 643, 100, 657]
 	  Port			  "14"
 	  IconDisplay		  "Port number"
 	}
@@ -5184,7 +5195,7 @@ Model {
 	      MaskHideContents	      off
 	      System {
 		Name			"Subsystem6"
-		Location		[110, 146, 862, 647]
+		Location		[0, 53, 1366, 768]
 		Open			off
 		ModelBrowserVisibility	off
 		ModelBrowserWidth	200
@@ -6406,42 +6417,18 @@ Model {
 	  }
 	}
 	Line {
-	  SrcBlock		  "w1"
-	  SrcPort		  1
-	  DstBlock		  "Velocidades angulares en el sistema del cuadricoptero"
-	  DstPort		  5
-	}
-	Line {
-	  SrcBlock		  "w2"
-	  SrcPort		  1
-	  DstBlock		  "Velocidades angulares en el sistema del cuadricoptero"
-	  DstPort		  6
-	}
-	Line {
-	  SrcBlock		  "w3"
-	  SrcPort		  1
-	  DstBlock		  "Velocidades angulares en el sistema del cuadricoptero"
-	  DstPort		  7
-	}
-	Line {
 	  SrcBlock		  "Velocidades angulares en el sistema del cuadricoptero"
 	  SrcPort		  3
-	  Points		  [0, -30; 80, 0]
+	  Points		  [0, -30; 80, 0; 0, -5]
+	  Branch {
+	    Points		    [0, -660; -325, 0; 0, 150]
+	    DstBlock		    "Velocidades en el sistema del cuadricóptero"
+	    DstPort		    3
+	  }
 	  Branch {
 	    DstBlock		    "wq3"
 	    DstPort		    1
 	  }
-	  Branch {
-	    Points		    [0, -665; -325, 0; 0, 150]
-	    DstBlock		    "Velocidades en el sistema del cuadricóptero"
-	    DstPort		    3
-	  }
-	}
-	Line {
-	  SrcBlock		  "w4"
-	  SrcPort		  1
-	  DstBlock		  "Velocidades angulares en el sistema del cuadricoptero"
-	  DstPort		  8
 	}
 	Line {
 	  SrcBlock		  "phi"
@@ -6474,12 +6461,6 @@ Model {
 	  DstPort		  1
 	}
 	Line {
-	  SrcBlock		  "M1"
-	  SrcPort		  1
-	  DstBlock		  "Velocidades angulares en el sistema del cuadricoptero"
-	  DstPort		  9
-	}
-	Line {
 	  SrcBlock		  "M2"
 	  SrcPort		  1
 	  DstBlock		  "Velocidades angulares en el sistema del cuadricoptero"
@@ -6497,6 +6478,36 @@ Model {
 	  DstBlock		  "Velocidades angulares en el sistema del cuadricoptero"
 	  DstPort		  12
 	}
+	Line {
+	  SrcBlock		  "M1"
+	  SrcPort		  1
+	  DstBlock		  "Velocidades angulares en el sistema del cuadricoptero"
+	  DstPort		  9
+	}
+	Line {
+	  SrcBlock		  "w1"
+	  SrcPort		  1
+	  DstBlock		  "Velocidades angulares en el sistema del cuadricoptero"
+	  DstPort		  5
+	}
+	Line {
+	  SrcBlock		  "w2"
+	  SrcPort		  1
+	  DstBlock		  "Velocidades angulares en el sistema del cuadricoptero"
+	  DstPort		  6
+	}
+	Line {
+	  SrcBlock		  "w3"
+	  SrcPort		  1
+	  DstBlock		  "Velocidades angulares en el sistema del cuadricoptero"
+	  DstPort		  7
+	}
+	Line {
+	  SrcBlock		  "w4"
+	  SrcPort		  1
+	  DstBlock		  "Velocidades angulares en el sistema del cuadricoptero"
+	  DstPort		  8
+	}
       }
     }
     Block {
@@ -6504,7 +6515,7 @@ Model {
       Name		      "Fuerzas y Torques"
       SID		      "1774"
       Ports		      [4, 8]
-      Position		      [170, 120, 270, 245]
+      Position		      [150, 122, 270, 313]
       MinAlgLoopOccurrences   off
       PropExecContextOutsideSubsystem off
       RTWSystemCode	      "Auto"
@@ -6608,7 +6619,7 @@ Model {
 	      Name		      "Gain"
 	      SID		      "1782"
 	      Position		      [410, 152, 460, 188]
-	      Gain		      "3.52966e-5"
+	      Gain		      "3.5296e-5"
 	      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
 	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
 	      SaturateOnIntegerOverflow	off
@@ -6738,7 +6749,7 @@ Model {
 	      Name		      "Gain"
 	      SID		      "1789"
 	      Position		      [410, 152, 460, 188]
-	      Gain		      "3.52966e-5"
+	      Gain		      "3.5296e-5"
 	      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
 	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
 	      SaturateOnIntegerOverflow	off
@@ -6868,7 +6879,7 @@ Model {
 	      Name		      "Gain"
 	      SID		      "1796"
 	      Position		      [410, 152, 460, 188]
-	      Gain		      "3.52966e-5"
+	      Gain		      "3.5296e-5"
 	      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
 	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
 	      SaturateOnIntegerOverflow	off
@@ -6998,7 +7009,7 @@ Model {
 	      Name		      "Gain"
 	      SID		      "1803"
 	      Position		      [410, 152, 460, 188]
-	      Gain		      "3.52966e-5"
+	      Gain		      "3.5296e-5"
 	      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
 	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
 	      SaturateOnIntegerOverflow	off
@@ -7771,14 +7782,14 @@ Model {
       BlockType		      Outport
       Name		      "x"
       SID		      "1699"
-      Position		      [1405, 203, 1435, 217]
+      Position		      [1405, 218, 1435, 232]
       IconDisplay	      "Port number"
     }
     Block {
       BlockType		      Outport
       Name		      "y"
       SID		      "1700"
-      Position		      [1405, 263, 1435, 277]
+      Position		      [1405, 278, 1435, 292]
       Port		      "2"
       IconDisplay	      "Port number"
     }
@@ -7786,7 +7797,7 @@ Model {
       BlockType		      Outport
       Name		      "z"
       SID		      "1701"
-      Position		      [1405, 323, 1435, 337]
+      Position		      [1405, 338, 1435, 352]
       Port		      "3"
       IconDisplay	      "Port number"
     }
@@ -7794,7 +7805,7 @@ Model {
       BlockType		      Outport
       Name		      "psi"
       SID		      "1702"
-      Position		      [1405, 383, 1435, 397]
+      Position		      [1405, 398, 1435, 412]
       Port		      "4"
       IconDisplay	      "Port number"
     }
@@ -7802,7 +7813,7 @@ Model {
       BlockType		      Outport
       Name		      "phi"
       SID		      "1703"
-      Position		      [1405, 443, 1435, 457]
+      Position		      [1405, 458, 1435, 472]
       Port		      "5"
       IconDisplay	      "Port number"
     }
@@ -7810,7 +7821,7 @@ Model {
       BlockType		      Outport
       Name		      "theta"
       SID		      "1704"
-      Position		      [1405, 503, 1435, 517]
+      Position		      [1405, 518, 1435, 532]
       Port		      "6"
       IconDisplay	      "Port number"
     }
@@ -7818,7 +7829,7 @@ Model {
       BlockType		      Outport
       Name		      "vq1"
       SID		      "1705"
-      Position		      [1405, 558, 1435, 572]
+      Position		      [1405, 578, 1435, 592]
       Port		      "7"
       IconDisplay	      "Port number"
     }
@@ -7826,7 +7837,7 @@ Model {
       BlockType		      Outport
       Name		      "vq2"
       SID		      "1706"
-      Position		      [1405, 608, 1435, 622]
+      Position		      [1405, 618, 1435, 632]
       Port		      "8"
       IconDisplay	      "Port number"
     }
@@ -7850,7 +7861,7 @@ Model {
       BlockType		      Outport
       Name		      "wq2"
       SID		      "1709"
-      Position		      [1405, 788, 1435, 802]
+      Position		      [1405, 783, 1435, 797]
       Port		      "11"
       IconDisplay	      "Port number"
     }
@@ -7883,13 +7894,13 @@ Model {
     Line {
       SrcBlock		      "Cinemática"
       SrcPort		      4
-      Points		      [60, 0]
+      Points		      [65, 0]
       Branch {
 	DstBlock		"psi"
 	DstPort			1
       }
       Branch {
-	Points			[0, -235; -820, 0]
+	Points			[0, -250; -825, 0]
 	DstBlock		"Dinámica"
 	DstPort			1
       }
@@ -7897,13 +7908,13 @@ Model {
     Line {
       SrcBlock		      "Cinemática"
       SrcPort		      5
-      Points		      [95, 0]
+      Points		      [100, 0]
       Branch {
 	DstBlock		"phi"
 	DstPort			1
       }
       Branch {
-	Points			[0, -315; -875, 0; 0, 90]
+	Points			[0, -335; -875, 0; 0, 105]
 	DstBlock		"Dinámica"
 	DstPort			2
       }
@@ -7915,35 +7926,18 @@ Model {
       DstPort		      1
     }
     Line {
-      SrcBlock		      "w1"
-      SrcPort		      1
-      Points		      [5, 0]
-      Branch {
-	Points			[375, 0]
-	DstBlock		"Dinámica"
-	DstPort			7
-      }
-      Branch {
-	Labels			[0, 0]
-	Points			[0, -270]
-	DstBlock		"Fuerzas y Torques"
-	DstPort			1
-      }
-    }
-    Line {
       SrcBlock		      "w2"
       SrcPort		      1
       Points		      [25, 0]
       Branch {
-	Points			[355, 0]
-	DstBlock		"Dinámica"
-	DstPort			8
-      }
-      Branch {
-	Labels			[0, 0]
-	Points			[0, -275]
+	Points			[0, -285]
 	DstBlock		"Fuerzas y Torques"
 	DstPort			2
+      }
+      Branch {
+	Points			[335, 0]
+	DstBlock		"Dinámica"
+	DstPort			12
       }
     }
     Line {
@@ -7951,125 +7945,48 @@ Model {
       SrcPort		      1
       Points		      [50, 0]
       Branch {
-	Points			[330, 0]
-	DstBlock		"Dinámica"
-	DstPort			9
-      }
-      Branch {
-	Labels			[0, 0]
-	Points			[0, -280]
+	Points			[0, -270]
 	DstBlock		"Fuerzas y Torques"
 	DstPort			3
+      }
+      Branch {
+	DstBlock		"Dinámica"
+	DstPort			13
       }
     }
     Line {
       SrcBlock		      "w4"
       SrcPort		      1
-      Points		      [75, 0]
+      Points		      [75, 0; 0, -10]
       Branch {
-	Points			[305, 0]
-	DstBlock		"Dinámica"
-	DstPort			10
-      }
-      Branch {
-	Labels			[0, 0]
-	Points			[0, -285]
+	Points			[0, -240]
 	DstBlock		"Fuerzas y Torques"
 	DstPort			4
       }
-    }
-    Line {
-      SrcBlock		      "Dinámica"
-      SrcPort		      3
-      Points		      [0, -5; 100, 0]
       Branch {
-	Points			[0, 345]
-	DstBlock		"vq3"
-	DstPort			1
-      }
-      Branch {
-	DstBlock		"Cinemática"
-	DstPort			3
-      }
-    }
-    Line {
-      SrcBlock		      "Dinámica"
-      SrcPort		      4
-      Points		      [0, -5; 81, 0]
-      Branch {
-	Points			[-1, -5; 0, 350]
-	DstBlock		"wq1"
-	DstPort			1
-      }
-      Branch {
-	DstBlock		"Cinemática"
-	DstPort			4
-      }
-    }
-    Line {
-      SrcBlock		      "Dinámica"
-      SrcPort		      5
-      Points		      [60, 0]
-      Branch {
-	Points			[0, 340]
-	DstBlock		"wq2"
-	DstPort			1
-      }
-      Branch {
-	Points			[0, -5]
-	DstBlock		"Cinemática"
-	DstPort			5
+	Points			[0, 10]
+	DstBlock		"Dinámica"
+	DstPort			14
       }
     }
     Line {
       SrcBlock		      "Dinámica"
       SrcPort		      6
-      Points		      [0, -5; 30, 0]
+      Points		      [5, 0]
       Branch {
-	Points			[0, 320]
+	Points			[0, 325]
+	DstBlock		"wq3"
+	DstPort			1
       }
       Branch {
 	DstBlock		"Cinemática"
 	DstPort			6
       }
-      Branch {
-	Points			[0, 340]
-	DstBlock		"wq3"
-	DstPort			1
-      }
-    }
-    Line {
-      SrcBlock		      "Dinámica"
-      SrcPort		      2
-      Points		      [0, -5; 115, 0]
-      Branch {
-	DstBlock		"Cinemática"
-	DstPort			2
-      }
-      Branch {
-	Points			[0, 345]
-	DstBlock		"vq2"
-	DstPort			1
-      }
-    }
-    Line {
-      SrcBlock		      "Dinámica"
-      SrcPort		      1
-      Points		      [0, -5; 145, 0]
-      Branch {
-	DstBlock		"Cinemática"
-	DstPort			1
-      }
-      Branch {
-	Points			[0, 355]
-	DstBlock		"vq1"
-	DstPort			1
-      }
     }
     Line {
       SrcBlock		      "Fuerzas y Torques"
       SrcPort		      1
-      Points		      [130, 0; 0, 120]
+      Points		      [130, 0; 0, 130]
       DstBlock		      "Dinámica"
       DstPort		      3
     }
@@ -8083,44 +8000,129 @@ Model {
     Line {
       SrcBlock		      "Fuerzas y Torques"
       SrcPort		      3
-      Points		      [100, 0; 0, 140]
+      Points		      [100, 0; 0, 130]
       DstBlock		      "Dinámica"
       DstPort		      5
     }
     Line {
       SrcBlock		      "Fuerzas y Torques"
       SrcPort		      4
-      Points		      [90, 0; 0, 150]
+      Points		      [90, 0; 0, 130]
       DstBlock		      "Dinámica"
       DstPort		      6
     }
     Line {
       SrcBlock		      "Fuerzas y Torques"
       SrcPort		      5
-      Points		      [45, 0; 0, 260]
+      Points		      [45, 0; 0, 130]
       DstBlock		      "Dinámica"
-      DstPort		      11
+      DstPort		      7
     }
     Line {
       SrcBlock		      "Fuerzas y Torques"
       SrcPort		      6
-      Points		      [35, 0; 0, 270]
+      Points		      [35, 0; 0, 130]
       DstBlock		      "Dinámica"
-      DstPort		      12
+      DstPort		      8
     }
     Line {
       SrcBlock		      "Fuerzas y Torques"
       SrcPort		      7
-      Points		      [20, 0; 0, 280]
+      Points		      [20, 0; 0, 130]
       DstBlock		      "Dinámica"
-      DstPort		      13
+      DstPort		      9
     }
     Line {
       SrcBlock		      "Fuerzas y Torques"
       SrcPort		      8
-      Points		      [5, 0; 0, 290]
+      Points		      [5, 0; 0, 130]
       DstBlock		      "Dinámica"
-      DstPort		      14
+      DstPort		      10
+    }
+    Line {
+      SrcBlock		      "w1"
+      SrcPort		      1
+      Points		      [15, 0]
+      Branch {
+	Points			[0, -305]
+	DstBlock		"Fuerzas y Torques"
+	DstPort			1
+      }
+      Branch {
+	Points			[345, 0]
+	DstBlock		"Dinámica"
+	DstPort			11
+      }
+    }
+    Line {
+      SrcBlock		      "Dinámica"
+      SrcPort		      1
+      Points		      [160, 0]
+      Branch {
+	DstBlock		"Cinemática"
+	DstPort			1
+      }
+      Branch {
+	Points			[0, 360]
+	DstBlock		"vq1"
+	DstPort			1
+      }
+    }
+    Line {
+      SrcBlock		      "Dinámica"
+      SrcPort		      2
+      Points		      [135, 0]
+      Branch {
+	DstBlock		"Cinemática"
+	DstPort			2
+      }
+      Branch {
+	Points			[0, 340]
+	DstBlock		"vq2"
+	DstPort			1
+      }
+    }
+    Line {
+      SrcBlock		      "Dinámica"
+      SrcPort		      3
+      Points		      [100, 0]
+      Branch {
+	DstBlock		"Cinemática"
+	DstPort			3
+      }
+      Branch {
+	Points			[0, 330]
+	DstBlock		"vq3"
+	DstPort			1
+      }
+    }
+    Line {
+      SrcBlock		      "Dinámica"
+      SrcPort		      4
+      Points		      [50, 0]
+      Branch {
+	DstBlock		"Cinemática"
+	DstPort			4
+      }
+      Branch {
+	Points			[0, 330]
+	DstBlock		"wq1"
+	DstPort			1
+      }
+    }
+    Line {
+      SrcBlock		      "Dinámica"
+      SrcPort		      5
+      Points		      [30, 0]
+      Branch {
+	DstBlock		"Cinemática"
+	DstPort			5
+      }
+      Branch {
+	Points			[0, 325]
+	DstBlock		"wq2"
+	DstPort			1
+      }
     }
     Annotation {
       Position		      [419, 552]
