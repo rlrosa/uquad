@@ -5,8 +5,9 @@ clear all
 clc
 
 g=9.81;
-am=zeros(3,27);
-at=zeros(3,27);
+am = zeros(3,27);
+at = zeros(3,27);
+te = zeros(27,1);
 
 k=0;
 for i=1:3
@@ -43,13 +44,16 @@ for i=1:3
                  k=k+1; 
             end
             str=['acc/logs/' eje theta otro phi '.txt'];            
-            [a,w,c,b,t]=mong_read(str,0);
+            [a,w,c,t,b]=mong_read(str,0);
+            t/10
+            te(k,1) = mean(t);
             am(:,k)=[mean(a(:,1)); mean(a(:,2));mean(a(:,3))];
             at(:,k)=acc_teo(eje,theta,phi);  
         end
     end
 end
 
+T_0 = mean(te/10);
 
 %% Verificaciones
 
@@ -72,4 +76,4 @@ u=mean(RESIDUAL)
 %sigma=sqrt(RESNORM/(length(a(1,:))-1));
 sigma=std(RESIDUAL)
 
-save('acc','X','sigma')
+save('acc','X','sigma','T_0')

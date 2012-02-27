@@ -81,14 +81,44 @@ U = [0.00473160006403247     -2.18916898319836e-05      0.000309423482503981;
 c=  [23.3152609806586;
     -126.624459617958;
     19.0429011162953];
-
+%% Convertir con la calibración de la bola
 
 for i=1:length(mm(1,:));
 mc(:,i)=(U*(mm(:,i)-c));
 end
 
+%% Convertir con nuestra calibración
+M=load('mag','X');
+kmx=M.X(1);
+kmy=M.X(2);
+kmz=M.X(3);
+bmx=M.X(4);
+bmy=M.X(5);
+bmz=M.X(6);
+mayza=M.X(7);
+mazya=M.X(8);
+maxza=M.X(9);
+mazxa=M.X(10);
+maxya=M.X(11);
+mayxa=M.X(12);
+%MAGNETOMETRO
+Km=[kmx 0 0;        
+    0 kmy 0;
+    0 0 kmz];
 
+bm=[bmx; bmy; bmz];
 
+Tm=[1    -mayza mazya;
+    maxza 1    -mazxa;
+   -maxya mayxa 1];
+
+mc=zeros(size(mm));
+for i=1:length(mm(1,:))
+    auxm=Tm*(Km^(-1))*(mm(:,i)-bm);
+    mc(:,i)=auxm';
+end
+
+%% Diferencias de ángulos
 angulos=zeros(18,1);
 
 for i=1:6
