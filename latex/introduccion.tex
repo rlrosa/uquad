@@ -1,0 +1,29 @@
+\documentclass[main]{subfiles}
+\begin{document}
+
+\chapter{Introducción}
+
+La presente monografía presenta el trabajo llevado a cabo y los resultados obtenidos a lo largo del desarrollo del  proyecto de fin de carrera ''uQuad!''. El objetivo del mismo es diseñar e implementar un vehículo aéreo no tripulado (UAV, por sus siglas en inglés) a partir de un cuadricóptero radiocontrolado.\\
+\\
+Para ello será necesario estudiar el comportamiento físico del sistema y modelar el mismo. En base a dicho modelo se podrá entonces diseñar e integrar un sistema de control que permita el vuelo autónomo del sistema.\\
+\\
+El sistema necesitará obtener información acerca de su estado y el de su entorno para poder llevar a cabo sus funciones. Dicha información será obtenida a través de un conjunto de sensores, los cuales deberán ser adaptados e integrados al sistema en forma adecuada. Se deberá, entonces, integrar la instrumentación adecuada para obtener medidas de variables físicas fundamentales para realizar el control.\\
+\\
+A fin de definir el alcance del proyecto, debe aclararse que se entiende por vuelo autónomo la capacidad de mantener una posición y altitud determinada o la de seguir una ruta programable.El dispositivo deberá contar con algoritmos de control lo suficientemente robustos como para poder realizar maniobras simples en forma autónoma en diversas condiciones, tanto en espacios interiores como exteriores.\\
+\\
+Si bien no se ha definido una aplicación específica para el sistema diseñado, es claro que mediante modificaciones no demasiado grandes el mismo puede ser adaptado a múltiples usos.\\
+\\
+El desarrollo del proyecto implicará, entonces:
+
+\begin{itemize}
+\item Analizar el dispositivo comercial con el fin de comprender el sistema a controlar
+\item Analizar el comportamiento físico del sistema y modelar el mismo en forma adecuada
+\item Realizar ingeniería inversa al cuadricóptero, su electrónica y su sistema de control. En particular, se prestará especial detalle a los protocolos utilizados para el control de motores.
+\item Poner a punto la instrumentación necesaria
+\item Diseñar el sistema de procesamiento de datos de los sensores
+\item Implementar las vias de comunicación necesarias para obtener datos a partir de los sensores, realizar el comando remoto del sistema, dar instrucciones e indicar la ruta a seguir al mismo, etc.
+\item Diseñar e integrar el sistema de control
+\item Lograr que el cuadricoptero sea capaz de realizar el seguimiento de una ruta en forma autónoma
+\end{itemize}
+
+\end{document}
