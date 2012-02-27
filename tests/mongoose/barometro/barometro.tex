@@ -39,17 +39,19 @@
 \chapter{Barómetro}
 \label{chap:barometro}
 
-Al analizar la performance del GPS como medio para determinar la elevación del cuadricóptero, se determinó que sería problemático, principalemente por la baja frecuencia de muestreo del GPS, y por la baja precisión de los datos obtenidos.
+Como instrumento para determinar la altura del cuadricóptero se pensaba utilizar un GPS. La frecuencia de muestreo del GPS y el error en los datos provenientes del mismo lo hacen insuficiente como medio para estimar la elevación del cuadricóptero. Esta fue la motivación para la incorporación de un barómetro.
+
+Las características principales del GPS son:
 \begin{itemize}
-\item Se obtiene un valor para la altura absoluta, libre de bias, pero hace falta promediar muestras durante varios minutos antes de llegar a un datos confiable.
+\item Permite obtener un valor para la altura absoluta, libre de bias, pero hace falta promediar muestras durante varios minutos antes de llegar a un datos confiable.
 \item  La precisión del GPS es mala muy cerca del suelo, lo cual representa un problema al intentar despegar y/o aterrizar.
 \end{itemize}
 
 Se optó por incorporar un barómetro, ya que aparentemente dichos senores padecen de \textit{otros} problemas, y pueden complementar al GPS.
 
-Se trata de un barómetro digital BOSCH BMP085. Permite medir presión absoluta, y, conociendo la presión y la temperatura a nivel del mar, permite calcular la altura absoluta.
+El sensor adquirido es un barómetro digital BOSCH BMP085. Permite medir presión absoluta, y, conociendo la presión y la temperatura a nivel del mar, permite calcular la altura absoluta.
 
-Puede trabajar en varios modos. Existe un compromiso entre el consumo, la tasa de actualización, y la resolución, y dicho compromiso se especifica al elegir el modo de funcionamiento.
+Tiene varios modos de funcionamiento, habiendo un compromiso entre el consumo, la tasa de actualización, y la resolución.
 
 \section{Objetivos}
 %\ref{} agregar refs
@@ -59,17 +61,12 @@ El objetivo de estas pruebas es determinar como se usará el barómetro BOSCH BM
 Se analizan las siguientes situaciones:
 
 \begin{itemize}
-\item Reposo: Se analizaron períodos del orden de:
+\item Reposo: Se analizaron períodos de distinta duración, para cumplir con distintos objetivos:
   \begin{itemize}
   \item Decenas de minutos: Caracterizar el drift y el tiempo de \textit{warm-up}.
   \item Decenas de segundos: Caracterización del ruido de las medidas.
   \end{itemize}
-\item Altura relativa: 3 experimentos variando el rango a analizar.
-  \begin{itemize}
-  \item Puntos que distan decenas de centímetros entre sí.
-  \item Puntos que distan 1m entre sí.
-  \item Puntos que distan aproximadamente 5m entre sí.
-  \end{itemize}
+\item Altura relativa: 3 experimentos variando el rango a analizar: Puntos que distan decenas de centímetros entre sí, 1m entre sí, y aproximadamente 5m entre sí.
 \end{itemize}
 
 \newpage
@@ -81,11 +78,13 @@ Se analizan las siguientes situaciones:
 \item Tanza.
 \item Cinta métrica.
 \item Cubo de lapacho.
-\item IMU ``Mongoose'' de CKDevices, con un BMP085.
+\item IMU ``Mongoose'' de CKDevices (cuenta con un BMP085).
 \end{itemize}
 
 \section{Consideraciones previas}
 \label{consideraciones}
+
+El sensor de presión devuelve la presión absoluta. Si se conoce la presión y la temperatura a nivel del mar, es posible calcular la elevación.
 
 A nivel de la tropósfera, la capa más baja de la atmósfera, se puede calcular la altura a partir de la presión atmosférica mediante la siguiente fórmula\cite{bib:alt-press}:
 
@@ -112,11 +111,11 @@ Donde:
 \subsection{Drift y \textit{warm-up}}
 \label{sec:drift-y-warm-up}
 
-Observando datos, se notó lo que parecería ser un drift en las medidas obtenidas del barómetros. Se tomarán muestras durante 1 hora, con el barómetro quieto, comenzando con el circuito en frío\footnote{Habiendo estado apagado durante, por lo menos, los 30 minutos previos a la prueba.}.
+Observando datos tomados durante varios minutos, se notó lo que parecería ser un drift en las medidas obtenidas del barómetro. Se toman muestras durante 1 hora, con el barómetro quieto, comenzando con el circuito en frío\footnote{Habiendo estado apagado durante, por lo menos, los 30 minutos previos a la prueba.}.
 
 \subsection{Caracterización del ruido}
 
-Es de interés caracterizar el ruido en los datos provenientes del barómetro. Si se trata de un proceso estacionario, y de ruido blanco, entonces, promediando se pueden obtener datos más exactos.
+Es de interés caracterizar el ruido en los datos provenientes del barómetro. Si se trata de un proceso estacionario, y de ruido blanco, entonces, promediando se puede reducir el error.
 
 Se analizan datos tomados durante diversos períodos de tiempo: 5 minutos, 2 minutos, 20 segundos y 15 segundos.
 
@@ -145,11 +144,11 @@ Para analizar la performance del barómetro como instrumento para determinar la 
 
 Se deja despliega una cinta métrica en el vacío del centro de una escalera de 4 tramos en la Facultad de Ingeniería de la Universidad de la República. La cinta extendida cubre aproximadamente 25 metros. Se comparan las medidas dadas por el barómetro con las que se obtienen de la cinta.
 
-Se utiliza una cinta de agrimensor, graduada cada 10 centímetros, para medir la distancia de un piso a otro. Luego toman 1 minuto de datos en cada piso, recorriendo la escalera de un extremo a otro. Se repite este experimento 3 veces (se sube, se baja y se vuelve a subir) y luego se realiza un experimento similar, pero en lugar de detenerse a tomar muestras durante 1 minuto en cada piso, se apoya la IMU, se toma anota el tiempo, y se sigue. La pausa en cada punto es menor a 2 segundos.
+Se utiliza una cinta de agrimensor, graduada cada 10 centímetros, para medir la distancia de un piso a otro. Luego se toman 1 minuto de datos en cada piso, recorriendo la escalera de un extremo a otro. Se repite este experimento 3 veces (se sube, se baja y se vuelve a subir) y luego se realiza un experimento similar, pero en lugar de detenerse a tomar muestras durante 1 minuto en cada piso, se apoya la IMU, se anota el tiempo (mediante software), y se sigue. La pausa en cada punto es menor a 2 segundos.
 
 \subsection{Distancias de un metro}
 
-Se toma una tanza de algunos metros de longitud. Se realizan marcas cada un metro, en seis puntos distintos de la tanza. En un extremo de la tanza se ata el cubo de lapacho, con la \emph{Mongoose} atornillada a el. Se lo deja bajar desde la escalera del \emph{IMERL}\footnote{Instituto de Matemática y Estadística Rafael Laguarda}. Se suelta tanza hasta que el cubo se apoye contra el piso, de forma que la primer marca en la cuerda se encuentre junto a quien está realizando las medidas. Se hace una pequeña marca sobre la baranda, en el punto que coincide con la primer marca de la cuerda. Se toma la medida de presión durante un minuto. Luego se sube el cubo hasta que la marca en la baranda coincida con la segunda marca de la cuerda (1 metro más arriba). Se vuelve a tomar la medida de presión. Se repite el procedimiento hasta tener la medida de presión en 5 alturas distintas. 
+Se toma una tanza de varios metros de longitud. Se realizan marcas cada un metro, en seis puntos distintos de la tanza. En un extremo de la tanza se ata el cubo de lapacho, con la \emph{Mongoose} atornillada a él. Se lo deja descender desde la escalera del \emph{IMERL}\footnote{Instituto de Matemática y Estadística Rafael Laguarda}. Se suelta tanza hasta que el cubo se apoye contra el piso, de forma que la primer marca en la cuerda se encuentre junto a quien está realizando las medidas. Se hace una pequeña marca sobre la baranda, en el punto que coincide con la primer marca de la cuerda. Se toma la medida de presión durante un minuto. Luego se sube el cubo hasta que la marca en la baranda coincida con la segunda marca de la cuerda (y por lo tanto el cubo subió 1 metro). Se vuelve a tomar la medida de presión. Se repite el procedimiento hasta tener la medida de presión a 5 alturas distintas. 
 Se repite el experimento dos veces. Luego se toma la medida de presión a nivel del suelo. Se toman medidas mientras se sube y se baja el barómetro dos veces, se vuelven a tomar medidas a nivel del suelo.
 \subsection{Distancias de decenas de centímetros}
 
