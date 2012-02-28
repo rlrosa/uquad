@@ -1,6 +1,6 @@
 \documentclass[spanish,12pt,a4paper,titlepage]{report}
-\usepackage[latin1]{inputenc}
-%\usepackage[utf8]{inputenc}
+%\usepackage[latin1]{inputenc}
+\usepackage[utf8]{inputenc}
 \usepackage{graphicx}
 \usepackage{subfig}
 \usepackage{float}
@@ -16,6 +16,8 @@
 \usepackage{array}
 \usepackage[table]{xcolor}
 \usepackage{multirow}
+\usepackage{hhline}
+\usepackage{cancel}
 %\usepackage[Sonny]{fncychap}
 %\usepackage[Glenn]{fncychap}
 \usepackage[Conny]{fncychap}
@@ -33,9 +35,19 @@
 \begin{document}
 \subfile{introduccion}
 \subfile{eleccion_hardware}
+\part{Modelado del sistema}
 \subfile{modelo_fisico}
 \subfile{simulador}
-%\subfile{testing_imu_beagle}
+\part{Calibración de los sensores}
+\subfile{acc_mongoose}
+\subfile{gyro_mongoose}
+\subfile{barometro}
+\subfile{magnetometro}
+\subfile{gps}
+\part{Ingeniería Inversa}
+\subfile{sniffer}
+\subfile{test_motores}
+
 \subfile{anexo_tensores}
 \bibliographystyle{plain} 
 \bibliography{biblio}

@@ -1,0 +1,238 @@
+\documentclass[main]{subfiles}
+
+
+\newcommand{\grad}{\hspace{-2mm}$\phantom{a}^{\circ}$}
+\newcommand{\degc}{$^\circ$C}
+\begin{document}
+
+
+\chapter{Magnetómetro}
+\label{chap:magnetometro}
+
+\section{Objetivos}
+
+El objetivo de estas pruebas es comprender y caracterizar el magnetómetro de 3 ejes Honeywell HMC5583, incorporado para asistir en la determinación de la orientación absoluta del cuadricóptero.
+
+\section{Materiales}
+\label{sec:materiales}
+
+\begin{itemize}
+\item Mesa de madera de 1.5m de largo.
+\item Laptop.
+\item Hilo y clavos.
+\item Mesa nivelable.
+\item Cubo de lapacho
+\item IMU ``Mongoose'' de CKDevices, con un HMC5583.
+\item Foto satelital, con información sobre coordenadas.
+\item Mesa nivelable, con una superficie que se pueda inclinar en ángulos conocidos.
+\item Escuadra
+\end{itemize}
+
+\newpage
+
+\section{Procedimiento}
+\label{sec:procedimiento}
+
+El modelo adoptado para relacionar las medidas de campo magnético sin calibrar con las medidas calibradas es idéntico al utilizado a la hora de calibrar el acelerómetro y el giróscopo. Se trata de realizar una transformación lineal de las medidas obtenidas para trasnformarlas en los valores de campo magnético. Se propone un modelo de la forma:
+$$
+\mathbf{C^p} =K_m (\mathbf{\tilde{C^m}} -  \mathbf{b_m})
+$$
+
+Se proponen dos métodos de calibración. En primer lugar se toman medidas de campo magnético con la plataforma alineada en una dirección conocida, sobre una mesa nivelada (de forma que se encuentre paralela a la superficie de la Tierra). Se toman las medidas del campo magnético variando el ángulo de la mesa y rotando la plataforma ángulos conocidos. Finalmente realizando una minimización por mínimos cuadrados se determinan los parámetros de interés.  
+
+Por otra parte, se toma una serie de medidas de campo magnético terrestre en la mayor cantidad de  orientaciones posibles. Para asegurar la calidad de los datos es recomendable tomar medidas distribuidas uniformemente en todas las direcciones. Dado que el campo es constante, la gráfica de las medidas anteriores debería resultar en una esfera con centro en el origen de radio igual al módulo del campo magnético de la Tierra. Al no tener un sensor calibrado el resultado será un elipsoide. Se utilizó un algoritmo desarrollado por \emph{Alain Barraud} para realizar la calibración, dicho algoritmo no es otra cosa que la implementación de la minimización presente en el método propuesto por \ref{bib:Merayo}. El resultado que se obtiene es la matriz y el vector que hacen que las medidas tomadas aproximen una esfera de centro el origen.\\
+
+Una vez calibrado el sensor se procede a verificar la exactitud que ofrece el mismo para determinar la orientación de la plataforma. Con dicho objetivo 
+Cabe aclarar que el Norte magn\'etico no se corresponde con el Norte geogr\'afico en toda la Tierra, sino que por el contrario (dependiendo de la regi\'on del mundo) presenta una declinaci\'on. Es decir que tenemos una componente del campo magn\'etico en la dirección Oeste-Este adem\'as de la componente Sur-Norte. La declinaci\'on es diferente en cada punto de la 
+Tierra. En particular en Uruguay la misma es de $-9.74^{\circ}$ seg\'un la convenci\'on mundial, es decir que el Norte magn\'etico se encuentra $9.74^{\circ}$ al Oeste del Norte geogr\'afico. 
+
+\section{Resultados y Análisis}
+
+\subsection{Calibración con el primer método}
+
+Con el primer método propuesto se obtuvieron los siguientes resultados:
+
+\begin{itemize}
+\item $K_m=\left(\begin{array}{ccc}
+      7.24\times10^{-4}   &  -2.79\times10^{-5}  &   -2.63\times10^{-5}\\
+      8.03\times10^{-5}   &  7.23\times10^{-4}   &   1.89\times10^{-5}\\
+      6.19\times10^{-5}   &  -5.07\times10^{-5}  &    7.80\times10^{-4}\\
+	
+\end{array}  \right)$
+\item $\mathbf{b_m}= \left( \begin{array}{c}
+  32.990198627287\\
+           -120.1211527671\\
+           4.6285537022096\\
+\end{array}\right)
+$
+\item Error promedio: $ \mu = -1.07\times10^{8} G$\\
+\item Desviación estándar: $\sigma =0.014 G$
+\end{itemize}
+
+Si bien el error promedio parece aceptable la desviación estándar no lo es. El valor del campo magnético en Uruguay en la dirección Norte es de $0.175 G$. La desviación estándar corresponde al $8\%$ del valor del campo magnético. En las demás direcciones el error cometido será aún mayor.\\
+
+
+\subsection{Calibración con el segundo método}
+Con el segundo método de calibración se obtienen los siguientes parámetros:
+\begin{itemize}
+
+
+\item $K_m=\left( \begin{array}{ccc}
+ 4.73\times10^{-3}   &  -2.19\times10^{-5}    &  3.09\times10^{-4} \\
+                         0      & 4.55\times10^{-3}   &   7.83\times10^{-5} \\
+                         0     &                    0   &    5.35\times10^{-3} \\
+\end{array}
+\right)
+$
+
+\item $
+\mathbf{b_m}=\left(\begin{array}{c}
+	23.32\\
+	-126.62\\
+    19.04
+\end{array}\right)
+$
+\end{itemize}
+
+\subsection{Primera Comparación entre los métodos}
+En la figura \ref{fig:bola} se observan graficadas las medidas de campo magnético con el sensor descalibrado en los ejes solidarios a la plataforma. Como era de esperarse en la medida con el sensor descalibrado no se obtiene una esfera, esto se debe a que las ganancias en cada eje no son las adecuadas. Por otra parte los ejes principales tampoco son colineales con $X_q, Y_q $ y $ Z_q$. Debido a los \emph{offset} en cada dirección el centro del elipsoide no concuerda con el origen. En la figura \ref{fig:bolacalib} tenemos las medidas de campo magnético con el sensor calibrado con el segundo método de calibración propuesto. En primer lugar es interesante destacar que se tiene una esfera centrada en el origen, por lo tanto la calibración puede calificarse de exitosa. La magnitud que medimos luego del proceso de calibración se encuentra normalizada. Dado que utilizaremos dicho sensor para determinar una orientación, nos interesan simplemente las relaciones entre las componentes medidas en cada eje del sensor, por lo tanto trabajar con las medidas normalizadas arroja el mismo resultado que trabajar con las medidas de campo en Teslas o Gauss.\\
+
+En la figura \ref{fig:bolanuestra} se transformaron las medidas utilizadas para realizar el segundo método de calibración utilizando los parámetros obtenidos gracias al primer método. Luego se normalizó el resultado obtenido a fin de poder compararlo con el resultado obtenido gracias al segundo método de calibración. Gráficamente no resulta evidente extraer una conclusión sobre cual de las dos medidas es más adecuada. 
+
+
+\begin{figure}
+  \begin{center}
+	\subfloat[Con el sensor descalibrado]{\label{fig:bola}
+	\includegraphics[width=0.35\textwidth]
+		{./pics_magneto/bola.png}}
+	\subfloat[Con el sensor calibrado]{\label{fig:bolacalib}
+	\includegraphics[width=0.35\textwidth]
+		{./pics_magneto/bolacalib.png}}
+	\subfloat[Con el sensor calibrado]{\label{fig:bolanuestra}
+	\includegraphics[width=0.35\textwidth]
+		{./pics_magneto/bolanuestra.png}}
+  \end{center}
+  \caption{Medias de campo magnético Terrestre}
+\end{figure}
+
+
+Con los datos convertidos se procede a realizar una minimización gracias a los mínimos cuadrados para obtener las coordenadas del centro de cada esfera y su radio.
+
+Para el primer método de calibración utilizado se encuentra que:
+\begin{itemize}
+\item Centro de la esfera: $C=(-3.86\times10^{-2};-6.53\times10^{-3};-5.99\times10^{-2})$
+\item Radio de la esfera: $R=0.9389$
+\item Error promedio: $\mu = -6.85\times10^{-4}$
+\item Desviación estándar de la medida del radio: $\sigma = 3.55\times10^{-2}$
+\end{itemize}
+
+Para el segundo método de calibración utilizado se encuentra que:
+\begin{itemize}
+\item Centro de la esfera: $(2.39\times10^{-3};-2.63\times10^{-3};-5.38\times10^{-4})$
+\item Radio de la esfera: $0.9979$
+\item Error promedio: $\mu =-3.00\times 10^{-4}$
+\item Desviación estándar de la medida del radio:$\sigma = 2.42\times 10^{-2}$
+\end{itemize}
+
+
+Si bien la diferencia obtenida entre ambas calibraciones no es significativa en cuanto a los errores cometidos en el radio de las esferas, sí aparece una diferencia de un orden de magnitud en una de las coordenadas del centro de la esfera y de dos ordenes de magnitud en otro. 
+
+
+\subsection{Segunda comparación entre los métodos}
+Luego de calibrado el sensor se quiere determinar la capacidad que tiene el mismo de proporcionar una adecuada orientación. Con dicho fin se utiliza la tabla larga para alinear el sensor en una dirección en particular. La ubicación donde fue realizado el experimento se encuentra marcada aproximadamente con la marca roja en la figura \ref{fig:mapa}. El objeto elegido para realizar la alineación es el que se muestra en la parte superior de la figura \ref{fig:mapa}, su ubicación es la indicada por el ``muñeco'' en la figura \ref{fig:mapa}.
+\begin{figure}
+  \begin{center}
+	\includegraphics[width=0.8\textwidth]
+		{./pics_magneto/mapa.png}
+	
+  \end{center}
+  \caption{Mapa de la costa de Montevideo}
+  \label{fig:mapa}
+\end{figure}
+
+Del mapa de la Intendencia de Montevideo \footnote{http://sig.montevideo.gub.uy/mapas/mapa-principal} se obtienen las coordenadas de los puntos seleccionados. El punto en que fue realizado el experimento es el (576039,6135625) y el punto con el cual se alineo es el (572118,6136415). El ángulo de la recta que une los dos puntos medido respecto del eje Sur-Norte es de $78.6^\circ$ al Oeste.
+
+Se trabajó con tres \emph{sets} de orientaciones. 
+\begin{itemize}
+\item Orientación z. Se ubico el eje $Z_q$ (la orientación estará definida por el ángulo entre la dirección Norte y este vector) perpendicular a la superficie de la Tierra y perpendicular a la dirección definida. $X_q$ se ubica perpendicular a la superficie de la Tierra.  Luego se rotó la plataforma en sentido anti-horario 30,45,60,90,180 grados. 
+\item Orientación x. En este caso el eje $-X_q$ ocupa el lugar que  tenía el eje $Z_q$. El eje que se ubica perpendicular a la superficie de la Tierra es $Y_q$. Se rotan los mismos ángulos que en el experimento anterior.
+\item Orientación y. El eje $Y_q$ es el vector de orientación y el eje $-Z_q$ se ubica perpendicular a la superficie de la Tierra. 
+\end{itemize} 
+
+
+En la tabla \ref{tab:angulos} se presentan los resultados obtenidos para cada orientación y para cada método de calibración. 
+
+
+
+\begin{table}
+\begin{tabular}{|p{50pt}|p{50pt}|p{50pt}|p{50pt}|p{51pt}|p{50pt}|p{50pt}|}
+\hline
+ {\cellcolor[gray]{0.6} \textbf{Rotación}}  
+& \multicolumn{2}{|p{113pt}|}{\cellcolor[gray]{0.6} \textbf{Orientación z}}  
+& \multicolumn{2}{|p{114pt}|}{\cellcolor[gray]{0.6} \textbf{Orientación x}}
+& \multicolumn{2}{|p{113pt}|}{\cellcolor[gray]{0.6} \textbf{Orientación y}} 
+\\ \hline 
+   
+& \multicolumn{1}{|p{50pt}|}{\cellcolor[gray]{0.7} \textbf{ángulo medido }} 
+& \multicolumn{1}{|p{50pt}|}{\cellcolor[gray]{0.8} \textbf{ángulo teórico}}
+& \multicolumn{1}{|p{50pt}|}{\cellcolor[gray]{0.7} \textbf{ángulo medido}} 
+& \multicolumn{1}{|p{51pt}|}{\cellcolor[gray]{0.8} \textbf{ángulo teórico}}
+& \multicolumn{1}{|p{50pt}|}{\cellcolor[gray]{0.7} \textbf{ángulo medido}} 
+& \multicolumn{1}{|p{50pt}|}{\cellcolor[gray]{0.8} \textbf{ángulo teórico}}
+\\ \hline
+
+ 0    &    -12.43  & -11.39& 171.44& 168.61&-15.14 & -11.39\\ \hline
+ 30   &   17.43    & 18.61& 196.39& 198.61 & 14.09 & 18.61 \\ \hline
+ 45   &   31.62 	  &	33.61 & 209.14 & 213.61 & 30.28 & 33.61 \\ \hline
+ 60   &   45.58 	  & 48.61 & 221.64 & 228.61 & 45.07 & 48.61 \\ \hline
+ 90   &   74.89 	  & 78.61 & 249.47 & 258.61 & 77.77 & 78.61 \\ \hline
+ 180  &   155.35	  &	168.61& 338.64 & 348.61 & 164.121 & 168.61 \\ \hline
+ 
+\end{tabular}
+\caption{Ángulos medidos con la primer calibración y teóricos en las distintas posiciones}
+
+
+
+\begin{tabular}{|p{50pt}|p{50pt}|p{50pt}|p{50pt}|p{51pt}|p{50pt}|p{50pt}|}
+\hline
+ {\cellcolor[gray]{0.6} \textbf{Rotación}}  
+& \multicolumn{2}{|p{113pt}|}{\cellcolor[gray]{0.6} \textbf{Orientación z}}  
+& \multicolumn{2}{|p{114pt}|}{\cellcolor[gray]{0.6} \textbf{Orientación x}}
+& \multicolumn{2}{|p{113pt}|}{\cellcolor[gray]{0.6} \textbf{Orientación y}} 
+\\ \hline 
+   
+& \multicolumn{1}{|p{50pt}|}{\cellcolor[gray]{0.7} \textbf{ángulo medido }} 
+& \multicolumn{1}{|p{50pt}|}{\cellcolor[gray]{0.8} \textbf{ángulo teórico}}
+& \multicolumn{1}{|p{50pt}|}{\cellcolor[gray]{0.7} \textbf{ángulo medido}} 
+& \multicolumn{1}{|p{51pt}|}{\cellcolor[gray]{0.8} \textbf{ángulo teórico}}
+& \multicolumn{1}{|p{50pt}|}{\cellcolor[gray]{0.7} \textbf{ángulo medido}} 
+& \multicolumn{1}{|p{50pt}|}{\cellcolor[gray]{0.8} \textbf{ángulo teórico}}
+\\ \hline
+
+ 0    &    -20.25  & -11.39& 162.77& 168.61&-15.33 & -11.39\\ \hline
+ 30   &   12.69    & 18.61& 191.38& 198.61&14.54 & 18.61 \\ \hline
+ 45   &   27.93 	  &	33.61 & 205.84 & 213.61 & 29.97 & 33.61 \\ \hline
+ 60   &   42.93 	  & 48.61 & 219.68 & 228.61 & 43.42 & 48.61 \\ \hline
+ 90   &   75.56 	  & 78.61 & 248.96 & 258.61 & 72.14 & 78.61 \\ \hline
+ 180  &   163.57	  &	168.61& 334.25 & 348.61 & 156.95 & 168.61 \\ \hline
+ 
+\end{tabular}
+\caption{Ángulos medidos con la segunda calibración y teóricos en las distintas posiciones}
+\label{tab:angulos}
+\end{table} 
+
+
+El error promedio obtenido con el primer método de calibración es 
+El error promedio obtenido es $\mu_1=4.14^\circ$, la desviación estándar obtenida es $\sigma_1
+=3.75^\circ$, mientras que para el segundo método de calibración tenemos que $\mu_2=6.83^\circ$, la desviación estándar obtenida es $\sigma_2
+=2.95^\circ$
+
+En ambos casos se obtiene un error promedio distinto de cero. Con cualquier método de ajuste que se elija se deberá restar a la medida realizada el error promedio. Lo más adecuado parece ser elegir el método que tiene una desviación estándar menor. Por dicho motivo volvemos a escoger el segundo método. 
+
+
+
+
+
+\end{document}
+
+
