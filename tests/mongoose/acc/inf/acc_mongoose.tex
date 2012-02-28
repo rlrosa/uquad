@@ -56,6 +56,7 @@
 
 
 \chapter{Caracterización del acelerómetro}
+\label{chap:calibracion_acelerometro}
 
 \section{Objetivos}
 
@@ -168,7 +169,7 @@ Se construyo una plataforma de madera en forma de mesa con la tapa superior móv
 
 \begin{figure}[h!]
 	\begin{center}
-		\includegraphics[width=0.5\textwidth]{./pics/mesa-flotando.jpg}
+		\includegraphics[width=0.7\textwidth]{./pics/mesa-flotando.jpg}
 	\end{center}
 	\vspace{-20pt}
 	\caption{Mesa - Plano inclinado regulable}
@@ -315,7 +316,7 @@ Si bien estos valores no son una buena muestra estadística, sirven como verific
 
 \subsection{Variación con la temperatura}
 
-\begin{figure}[h!]
+\begin{figure}[H]
   \begin{center}
     \includegraphics[width=0.8\textwidth]{./pics/bajada.pdf}
   \end{center}
@@ -324,4 +325,21 @@ Si bien estos valores no son una buena muestra estadística, sirven como verific
   \label{fig:bajada}
 \end{figure}
 
+\subsection{Análisis de variación}
+A partir del análisis de los experimentos realizados es claro que la mínima variación existente en las señales procedentes de los acelerómetros es del orden de $0.04 m/s^2$, tal como puede observarse en la siguiente gráfica:
+
+\begin{figure}[H]
+  \begin{center}
+    \includegraphics[width=0.8\textwidth]{./pics/variacion.png}
+  \end{center}
+  \vspace{-20pt}
+  \caption{Variación de la medida del acelerómetro con la temperatura }
+  \label{fig:variacion}
+\end{figure}
+
+Por otro lado, de los parámetros obtenidos de la calibración, se determina que $\sigma= 0.0396798455378608$, lo cual resulta coherente con el resultado anterior.\\
+\\
+Finalmente, de la hoja de datos del acelerómetro se obtiene que el factor de escala para la señal es de $3.9 mg/LSB$, lo cual nuevamente es coherente con los resultados obtenidos anteriormente.\\
+\\
+De lo anterior puede concluirse que el procedimiento de calibración parecería ser correcto, obteniéndose valores similares para $\sigma$ tanto en la teoría como en la realidad.
 \end{document}
