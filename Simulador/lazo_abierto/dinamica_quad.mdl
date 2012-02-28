@@ -82,7 +82,7 @@ Model {
       Name		      "wq3"
     }
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.103"
+    ComputedModelVersion    "1.109"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -113,9 +113,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "pater"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Mon Feb 27 21:22:05 2012"
-  RTWModifiedTimeStamp	  252276079
-  ModelVersionFormat	  "1.%<AutoIncrement:103>"
+  LastModifiedDate	  "Tue Feb 28 12:52:28 2012"
+  RTWModifiedTimeStamp	  252334342
+  ModelVersionFormat	  "1.%<AutoIncrement:109>"
   ConfigurationManager	  "None"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -678,7 +678,7 @@ Model {
       }
       Name		      "Configuration"
       CurrentDlgPage	      "Solver"
-      ConfigPrmDlgPosition    " [ 237, 40, 1129, 705 ] "
+      ConfigPrmDlgPosition    " [ 231, 24, 1135, 724 ] "
     }
     PropName		    "ConfigurationSets"
   }
@@ -882,7 +882,7 @@ Model {
     ShowPageBoundaries	    off
     ZoomFactor		    "80"
     ReportName		    "simulink-default.rpt"
-    SIDHighWatermark	    "1867"
+    SIDHighWatermark	    "1872"
     Block {
       BlockType		      Inport
       Name		      "w1"
@@ -4270,16 +4270,6 @@ Model {
 		}
 		Block {
 		  BlockType		  Gain
-		  Name			  "-Izzm"
-		  SID			  "1561"
-		  Position		  [675, 815, 705, 845]
-		  Gain			  "-Izzm"
-		  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
-		  OutDataTypeStr	  "Inherit: Inherit via internal rule"
-		  SaturateOnIntegerOverflow off
-		}
-		Block {
-		  BlockType		  Gain
 		  Name			  "1/Izz"
 		  SID			  "1557"
 		  Position		  [940, 550, 970, 580]
@@ -4308,6 +4298,16 @@ Model {
 		  SID			  "1560"
 		  Position		  [690, 550, 720, 580]
 		  Gain			  "Ixx-Iyy"
+		  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
+		  OutDataTypeStr	  "Inherit: Inherit via internal rule"
+		  SaturateOnIntegerOverflow off
+		}
+		Block {
+		  BlockType		  Gain
+		  Name			  "Izzm"
+		  SID			  "1561"
+		  Position		  [675, 815, 705, 845]
+		  Gain			  "Izzm"
 		  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
 		  OutDataTypeStr	  "Inherit: Inherit via internal rule"
 		  SaturateOnIntegerOverflow off
@@ -4399,7 +4399,7 @@ Model {
 		Line {
 		  SrcBlock		  "Derivative"
 		  SrcPort		  1
-		  DstBlock		  "-Izzm"
+		  DstBlock		  "Izzm"
 		  DstPort		  1
 		}
 		Line {
@@ -4488,7 +4488,7 @@ Model {
 		  DstPort		  1
 		}
 		Line {
-		  SrcBlock		  "-Izzm"
+		  SrcBlock		  "Izzm"
 		  SrcPort		  1
 		  Points		  [60, 0; 0, -255]
 		  DstBlock		  "Subtract"
@@ -5433,7 +5433,7 @@ Model {
 	      MaskHideContents	      off
 	      System {
 		Name			"Subsystem7"
-		Location		[216, 194, 922, 628]
+		Location		[0, 53, 1366, 768]
 		Open			off
 		ModelBrowserVisibility	off
 		ModelBrowserWidth	200
@@ -6507,6 +6507,9 @@ Model {
 	  SrcPort		  1
 	  DstBlock		  "Velocidades angulares en el sistema del cuadricoptero"
 	  DstPort		  8
+	}
+	Line {
+	  Points		  [705, 330; 295, 0; 0, 25; 15, 0]
 	}
       }
     }

@@ -415,7 +415,7 @@ function pushbutton1_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
     
-    assignin('base','M',1);
+    assignin('base','M',1.541);
     %A partir de los tiempos establecidos armo la linea de tiempo
     ti=evalin('base','ti');
     tf=evalin('base','tf');

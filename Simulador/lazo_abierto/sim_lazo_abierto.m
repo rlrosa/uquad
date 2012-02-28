@@ -36,7 +36,7 @@ assignin('base','X0',X0);
 
 
 %%Simulación del modelo Simulink
-[t,X]=sim('dinamica_quad',[ti tf], [],[t',w1',w2',w3',w4']);
+[t,X,Y]=sim('dinamica_quad',[ti tf], [],[t',w1',w2',w3',w4']);
 
 %Simulación por Ode45
 %[t,X]=ode45(@f,[ti,tf],X0,[w1,w2,w3,w4]);
