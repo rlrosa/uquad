@@ -1,74 +1,38 @@
-\documentclass[spanish,12pt,a4paper,titlepage]{report}
-\usepackage[latin1]{inputenc}
-\usepackage{graphicx}
-\usepackage{subfig}
-\usepackage{float}
-\usepackage{wrapfig}
-\usepackage{multirow}
-\usepackage{caption}
-\usepackage[spanish]{babel}
-\usepackage[dvips]{hyperref}
-\usepackage{amssymb}
-\usepackage{listings}
-\usepackage{epsfig}
-\usepackage{amsmath}
-\usepackage{array}
-\usepackage[table]{xcolor}
-\usepackage{multirow}
-%\usepackage[Sonny]{fncychap}
-\usepackage[Lenny]{fncychap}
-%\usepackage[Glenn]{fncychap}
-%\usepackage[Conny]{fncychap}
-%\usepackage[Rejne]{fncychap}
-%\usepackage[Bjarne]{fncychap}
-%\usepackage[Bjornstrup]{fncychap}
-
-%\usepackage{subfiles}
-%\usepackage{framed}
-
-\setlength{\topmargin}{-1.5cm}
-\setlength{\textheight}{25cm}
-\setlength{\oddsidemargin}{0.3cm} 
-\setlength{\textwidth}{15cm}
-\setlength{\columnsep}{0cm}
+\documentclass[main]{subfiles}
 
 
 \begin{document}
 
-\chapter{Caracterización de los motores}
+\chapter{Caracterizaci\'on de los motores}
 \section{Objetivo}
-El objetivo es el de caracterizar el funcionamiento de los motores. Con dicho fin se busca determinar:
+El objetivo es el de caracterizar los motores del caudric\'optero Turbo Ace X720 . Con dicho fin se busca:
 
 \begin{itemize}
 \item Analizar el comportamiento de los cuatro motores individualmente
-\item Relación entre velocidad angular y fuerza
-\item Relación entre comando $I^2C$ y la velocidad angular.
-\item Relación entre comando $I^2C$ y la fuerza.
-\item Relación entre velocidad angular y torque.
-\item Relación entre comando $I^2C$ y torque.
-\item Respuesta al escalón
+\item Determinar la relaci\'on entre velocidad angular y fuerza
+\item Determinar la relaci\'on entre comando $I^2C$ y la velocidad angular.
+\item Determinar la relaci\'on entre comando $I^2C$ y la fuerza.
+\item Determinar la relaci\'on entre velocidad angular y torque.
+\item Determinar la relaci\'on entre comando $I^2C$ y torque.
+\item Determinar la respuesta al escal\'on
 \end{itemize}
 
-Los algoritmos de control se centraran o bien en la velocidad angular o bien en los comandos $I^2C$. Por dicho motivo es fundamental como se relacionan dichas magnitudes con la fuerza y el torque. Asimismo, si se decidiera que el control estuviera centrado en la velocidad angular se debe conocer la relación entre esta última y el comando $I^2C$ ya que es sobre los comandos $I^2C$ que se tiene real poder de actuar.
+Los algoritmos de control se centraran o bien en la velocidad angular o bien en los comandos $I^2C$. Por dicho motivo es fundamental como se relacionan dichas magnitudes con la fuerza y el torque. Asimismo, si se decidiera que el control estuviera centrado en la velocidad angular se debe conocer la relaci\'on entre esta \'ultima y el comando $I^2C$ ya que es sobre los comandos $I^2C$ que se tiene real poder de actuar.
 
 \section{Materiales}
 \begin{itemize}
-\item Motores del cuadricóptero Turbo Ace X720	
+\item Cuadric\'optero Turbo Ace X720	
 \item LED IR TSAL6200
 \item Detector IR TSOP38256
 \item Resistencia de $20 \Omega$
-\item Generador de onda
-\item Fuente de alimentación de $5V_{DC}$
-\item Osciloscopio digital
-\item Balanza 
+\item Generador de onda Tektronix CFG250
+\item Fuente de alimentaci\'on de $5V_{DC}$
+\item Osciloscopio digital GwINSTEC GDS2062
+\item Balanza Presiser LK-15P presici\'on media III
 \item Beagleboard XM rev C
-\item Analizador lógico ChronoVu
+\item Analizador l\'ogico ChronoVu
 \item Buffer Octal 74HC245
 \end{itemize}
-
-%TODO
-% agregar modelo de la balanza, apreciación, caracterización del error, etc
-%Agregar modelo del osciloscopio y generador de onda
 
 
 \section{Procedimiento}
@@ -76,20 +40,18 @@ Los algoritmos de control se centraran o bien en la velocidad angular o bien en 
 
 \subsection{Consideraciones previas}
 \subsubsection*{Funcionamiento del dispositivo IR}
-Es necesario entender el funcionamiento del \emph{detector IR} para poder realizar un experimento adecuado. Dicho dispositivo es sensible a las \emph{radiaciones infrarrojas}. Si se lo expone a una luz infrarroja constante la salida del dispositivo es un ``1" lógico. Del mismo modo, si se quita dicha fuente de luz la salida continúa siendo un ``1''. \\
+Es necesario entender el funcionamiento del \emph{detector IR} para poder realizar un experimento adecuado. Dicho dispositivo es sensible a las \emph{radiaciones infrarrojas} moduladas a una frecuencia de $56KHz$. Si se lo expone a una onda cuadrada de dicha frecuencia la salida del mismo es un ``0'' l\'ogico. Si no recibe dicha radiaci\'on la salida es un ``1'' l\'ogico
 
-En la hoja de datos del dispositivo se explica que mientras se recibe una onda cuadrada de frecuencia 56kHz la salida del mismo es un ``0". Por lo tanto para poder distinguir cuando llega la radiación emitida por la LED de cuando no llega se debe hacer que esta última conmute entre ON y OFF con una frecuencia de 56kHz. Dicho de otro modo, el detector IR debe recibir la información modulada en una frecuencia de 56kHz para luego decodificarla.
+\subsubsection*{Dise\~no del circuito de medida de velocidad angular}
 
-\subsubsection*{Diseño del circuito de medida de velocidad angular}
+La idea del dispositivo de medida es sencilla. Se trata de hacer ``pasar" la radiaci\'on infrarroja emitida por el LED a trav\'es de la h\'elice en funcionamiento de uno de los motores. Esta radiaci\'on es recogida del otro lado por el receptor IR.\\
 
-La idea del dispositivo de medida es sencilla. Se trata de hacer ``pasar" la radiación infrarroja emitida por el LED a través de la hélice en funcionamiento de uno de los motores. Esta radiación es recogida del otro lado por el receptor IR.\\
-
-De este modo tendremos a la salida del detector, pulsos de frecuencia correspondientes a la velocidad con la que la hélice obstruye el camino entre el sensor y la LED. \textbf{La velocidad angular será entonces la mitad de dicha frecuencia}.\\ 
+De este modo tendremos a la salida del detector, pulsos de frecuencia correspondientes a la velocidad con la que la h\'elice obstruye el camino entre el sensor y la LED. \textbf{La velocidad angular ser\'a entonces la mitad de dicha frecuencia}.\\ 
 
 \begin{wrapfigure}{l}{0.55\textwidth}
   \vspace{-35pt}
   \begin{center}
-    \includegraphics[width=0.25\textwidth]{./Pics/u.jpg}
+    \includegraphics[width=0.25\textwidth]{./pics_motores/u.jpg}
   \end{center}
   \vspace{-20pt}
   \caption{Dispositivo en forma de U}
@@ -99,56 +61,65 @@ De este modo tendremos a la salida del detector, pulsos de frecuencia correspond
 
 El dispositivo se trata de un cuerpo en forma de ``U", donde de un lado se tiene la LED infrarroja y del otro el detector, tal como se puede ver en la figura \ref{fig:u}.\\
 
-Como explicamos anteriormente la LED debe ser conmutada con una frecuencia de 56kHz por lo tanto se la alimentará con un generador de señales funcionando como generador de onda cuadrada a dicha frecuencia. Para lograr un correcto funcionamiento de la misma se requiere una corriente superior a los $100mA$. La amplitud de la onda cuadrada se regulará a $5V$ y se trabajará con una resistencia de $20\Omega$ en serie. Midiendo la tensión en la resistencia se puede comprobar que dichos valores son adecuados para el propósito. La salida del receptor IR se conecta directamente al osciloscopio digital.\\
+Como explicamos anteriormente la LED debe ser conmutada con una frecuencia de 56kHz por lo tanto se la alimentar\'a con un generador de se\~nales funcionando como generador de onda cuadrada a dicha frecuencia. Para lograr un correcto funcionamiento de la LED se requiere una corriente superior a los $100mA$. La amplitud de la onda cuadrada se regular\'a a $5V$ y se trabajar\'a con una resistencia de $20\Omega$ en serie. Midiendo la tensi\'on en la resistencia se puede comprobar que dichos valores son adecuados para el prop\'osito. La salida del receptor IR se conecta directamente al osciloscopio digital.\\
 
-\subsection{Relación entre comando $I^2C$, velocidad angular y empuje}
+\subsection{Relaci\'on entre comando $I^2C$, velocidad angular y empuje}
 
 \subsubsection*{Obetivos particulares}
-Este experimento serivrá para obtener las curvas:
+Este experimento serivr\'a para obtener las curvas:
 \begin{itemize}
 \item Diferencias en el comportamiento de los motores
-\item Relación entre velocidad angular y fuerza
-\item Relación entre comando $I^2C$ y la velocidad angular.
-\item Relación entre comando $I^2C$ y la fuerza.
+\item Relaci\'on entre velocidad angular y fuerza
+\item Relaci\'on entre comando $I^2C$ y la velocidad angular.
+\item Relaci\'on entre comando $I^2C$ y la fuerza.
 \end{itemize}
 
 \subsubsection*{Modelos de ajuste}
 
-Es claro que si no se envía ningún comando $I^2C$ los motores no giran. También es evidente que si los motores no giran las hélices no realizan ningún empuje. Por lo tanto los modelos deben estar ajustados al cero. 
+Es claro que si no se env\'ia ning\'un comando $I^2C$ los motores no giran. Tambi\'en es evidente que si los motores no giran las h\'elices no realizan ning\'un empuje. Por lo tanto los modelos deben estar ajustados al cero. 
 \begin{itemize}
 
 
-\item Para la relación entre velocidad angular y fuerza en base a la bibliografía consultada sobre el tema se proponen dos modelos de ajuste siguientes:
+\item Para la relaci\'on entre velocidad angular y fuerza en base a la bibliograf\'ia consultada sobre el tema se proponen dos modelos de ajuste siguientes:
 
 	\begin{itemize}
-	\item Modelo cuadrático $T=a\omega^2+b\omega$
-	\item Modelo cúbico $T=a\prime \omega^3+b\prime \omega^2+c\prime$
+	\item Modelo cuadr\'atico $T=a\omega^2+b\omega$
+	\item Modelo c\'ubico $T=a\prime \omega^3+b\prime \omega^2+c\prime$
 	\end{itemize}
 
-\item Esta relación es interesante si el control se centra en determinar los valores de la velocidad angular de los motores para realizar una acción de control concreta. En este caso se determinará el valor de dicha velocidad angular y a partir del mismo se busca determinar el comando $I^2C$ correspondiente, por lo tanto para la relación entre comando $I^2C$ y la velocidad angular se propone un ajuste en base a los siguientes modelos:
+\item Esta relaci\'on es interesante si el control se centra en determinar los valores de la velocidad angular de los motores para realizar una acci\'on de control concreta. En este caso se determinar\'a el valor de dicha velocidad angular y a partir del mismo se busca determinar el comando $I^2C$ correspondiente, por lo tanto para la relaci\'on entre comando $I^2C$ y la velocidad angular se propone un ajuste en base a los siguientes modelos:
 	\begin{itemize}
-	\item Modelo cuadrático $x=a\omega^2+b\omega$
-	\item Modelo cúbico $x =a\prime \omega^3+b\prime \omega^2+c\omega$	
+	\item Modelo cuadr\'atico $x=a\omega^2+b\omega$
+	\item Modelo c\'ubico $x =a\prime \omega^3+b\prime \omega^2+c\omega$	
 	
 	\end{itemize}
 
-\item Para la relación entre comando $I^2C$  y fuerza se propone un ajuste en base a los modelos:
+\item Para la relaci\'on entre comando $I^2C$  y fuerza se propone un ajuste en base a los modelos:
 	\begin{itemize}
-	\item Modelo cuadrático $T=a \omega^2+b\omega$
-	\item Modelo cúbico $T=a\prime \omega^3+b\prime\omega^2+c\prime\omega$
+	\item Modelo cuadr\'atico $T=a \omega^2+b\omega$
+	\item Modelo c\'ubico $T=a\prime \omega^3+b\prime\omega^2+c\prime\omega$
 	\end{itemize}
 
 \end{itemize}
 
 \subsubsection*{Desarrollo del experimento}
-El procedimiento consiste en enviar distintos comandos $I^2C$ al cuadricóptero y registrar las diferentes lecturas de masa en la balanza para determinar el empuje de los motores y en registrar las diferentes medidas de frecuencia en el osciloscopio para determinar la velocidad angular de los cuatro motores.
+El procedimiento consiste en enviar distintos comandos $I^2C$ al cuadric\'optero y registrar las diferentes lecturas de masa en la balanza para determinar el empuje de los motores y en registrar las diferentes medidas de frecuencia en el osciloscopio para determinar la velocidad angular de los cuatro motores.
 El setup experimental puede observarse en la figura \ref{fig:setup1}
-Se solidariza el cuadricóptero a una base de madera. Sobre esta última se añade peso suficiente para asegurar que el cuadricóptero no se eleve, se agregaron 3Kg de sobrepeso para asegurar completamente dicha condición. Al estar el sistema en equilibrio mecánico se cumple que:
-%TODO agregar croquis
+Se solidariza el cuadric\'optero a una base de madera. Sobre esta \'ultima se a\~nade peso suficiente para asegurar que el cuadric\'optero no se eleve, se agregaron 3Kg de sobrepeso para asegurar completamente dicha condici\'on. Al estar el sistema en equilibrio mec\'anico se cumple que:
+\begin{wrapfigure}{l}{0.55\textwidth}
+  \vspace{0pt}
+  \begin{center}
+    \includegraphics[width=0.5\textwidth]{./pics_motores/set1.png}
+  \end{center}
+  \vspace{-20pt}
+  \caption{Primer set-up experimental}
+  \label{fig:setup1}
+  \vspace{15pt}
+\end{wrapfigure}
 $$
 \sum F_{ext}=0
 $$
-En este caso las fuerzas presentes son el peso del sistema ($M_{total}$) la normal de la balanza sobre el sistema($N$) y el empuje de los motores($T_{total}$). Por lo tanto
+En este caso las fuerzas presentes son el peso del sistema ($M_{total}$) la normal de la balanza sobre el sistema($N=N_1+N_2$) y el empuje de los motores($T_{total}=T_1+T_2+T_3+T_4$). Por lo tanto
 
 $$
 T_{total}-M_{total}g+N=0
@@ -159,7 +130,7 @@ T_{total}=M_{total}g-N
 $$
 
 La lectura de la balanza no es otra cosa que $\frac{N}{g}$.
-Una vez ubicado el cuadricóptero con el sobrepeso sobre la balanza se tara la balanza. Por lo tanto la lectura que indica la balanza($M_{medida}$) luego de realizada esta acción es:
+Una vez ubicado el cuadric\'optero con el sobrepeso sobre la balanza se tara la balanza. Por lo tanto la lectura que indica la balanza($M_{medida}$) luego de realizada esta acci\'on es:
 $$
 M_{medida}=\frac{N-M_{total}g}{g}
 $$
@@ -175,75 +146,83 @@ $$
 T=-\frac{M_{medida}g}{4}
 $$
 
-La medida de frecuencia se realiza con el dispositivo IR descrito en la sección anterior. La frecuencia medida ($f_{medida}$) corresponde al inverso del tiempo que transcurre entre el pasaje de una hoja de la hélice y la otra. El período de la rotación de la hélice es el doble y por ende la frecuencia de la rotación es la mitad de la frecuencia medida. Por lo tanto se tiene que:
+La medida de frecuencia se realiza con el dispositivo IR descrito en la secci\'on anterior. La frecuencia medida ($f_{medida}$) corresponde al inverso del tiempo que transcurre entre el pasaje de una hoja de la h\'elice y la otra. El per\'iodo de la rotaci\'on de la h\'elice es el doble y por ende la frecuencia de la rotaci\'on es la mitad de la frecuencia medida. Por lo tanto se tiene que:
 $$
 \omega=2\pi f=\pi f_{medida}
 $$
 
-Se mide la velocidad angular de los cuatro motores y se trabaja con el promedio. En la sección \ref{sec:motores} se verá porqué es adecuado considerar el promedio.
+Se mide la velocidad angular de los cuatro motores y se trabaja con el promedio. En la secci\'on \ref{sec:motores} se ver\'a porqu\'e es adecuado considerar el promedio.
 
-\subsection{Relación entre velocidad $I^2C$, velocidad angular y torque}
+\subsection{Relaci\'on entre velocidad $I^2C$, velocidad angular y torque}
 
-\subsubsection*{Objetivos específicos}
+\subsubsection*{Objetivos espec\'ificos}
 Los objetivos de este experimento son:
 
 \begin{itemize}
-\item Obtener la relación entre velocidad angular y torque
-\item Obtener la relación entre comando $I^2C$ y torque.
+\item Obtener la relaci\'on entre velocidad angular y torque
+\item Obtener la relaci\'on entre comando $I^2C$ y torque.
 \end{itemize}
 
 
 \subsubsection*{Modelos de ajuste}
-Al igual que en el experimento anterior se fuerzan los modelos para que pasen por el cero ya que sin comando $I^2C$ no hay velocidad angular y por lo tanto no hay torque. Realizando esta consideración y los modelos estudiados para las fuerzas y momentos de las hélices se proponen los siguientes modelos de ajuste:
+Al igual que en el experimento anterior se fuerzan los modelos para que pasen por el cero ya que sin comando $I^2C$ no hay velocidad angular y por lo tanto no hay torque. Realizando esta consideraci\'on y los modelos estudiados para las fuerzas y momentos de las h\'elices se proponen los siguientes modelos de ajuste:
 
 \begin{itemize}
-\item Para la relación entre velocidad angular y torque se proponen un modelo cuadrático:
+\item Para la relaci\'on entre velocidad angular y torque se proponen un modelo cuadr\'atico:
 	\begin{itemize}
 	\item $Q=a\omega^2+b\omega$
 	\end{itemize}
-\item Para la relación entre comando $I^2C$ y torque se proponen los siguientes modelos
-%TODO
 \end{itemize}
 
 \subsubsection*{Desarrollo del experimento}
 \label{sub:torque}
-Se ubica el cuadricóptero sobre la balanza. Se retiran tres de las cuatro hélices del cuadricóptero. La cuarta hélice se rota de forma que el eje en torno al cual rota sea paralelo respecto del plano del plato de la balanza. Se ubica el detector IR de forma de poder medir la velocidad angular de la hélice. El setup de medida puede verse en las figuras \ref{fig:setup2}. De acuerdo a lo estudiado la hélice presenta un torque ($Q$) positivo respecto de su eje central si el motor rota en sentido anti-horario. Nos proponemos calcular el torque total respecto de dicho eje. Las fuerzas presentes en el sistema son: la fuerza de empuje, la normal y las fuerzas reactivas en el plano del plato de la balanza. Estas últimas y el empuje no realizan ningún torque en la dirección de interés. Recordamos que el torque de una fuerza respecto de un eje se calcula como:
+Se ubica el cuadric\'optero sobre la balanza. Se retiran tres de las cuatro h\'elices del cuadric\'optero. La cuarta h\'elice se rota de forma que el eje en torno al cual rota sea paralelo respecto del plano del plato de la balanza. Se ubica el detector IR de forma de poder medir la velocidad angular de la h\'elice. El setup de medida puede verse en las figuras \ref{fig:setup2}. De acuerdo a lo estudiado la h\'elice presenta un torque ($Q$) positivo respecto de su eje central si el motor rota en sentido anti-horario. Nos proponemos calcular el torque total respecto de dicho eje. Las fuerzas presentes en el sistema son: la fuerza de empuje, la normal y las fuerzas reactivas en el plano del plato de la balanza. Estas \'ultimas y el empuje no realizan ning\'un torque en la direcci\'on de inter\'es. Recordamos que el torque de una fuerza respecto de un eje se calcula como:
+\begin{wrapfigure}{l}{0.55\textwidth}
+  \vspace{0pt}
+  \begin{center}
+    \includegraphics[width=0.45\textwidth]{./pics_motores/set2.png}
+  \end{center}
+  \vspace{-15pt}
+  \caption{Segundo set-up experimental}
+  \label{fig:setup2}
+  \vspace{10pt}
+\end{wrapfigure}
 $$
 \tau=\vec{r} \times \vec{F} 
 $$
-Donde $\vec{F}$ es la fuerza considerada y $\vec{r}$ es vector distancia entre el eje y el punto de aplicación de la fuerza.\\
+Donde $\vec{F}$ es la fuerza considerada y $\vec{r}$ es vector distancia entre el eje y el punto de aplicaci\'on de la fuerza.\\
 
-Definimos el largo $l=29.3cm$ como la distancia entre el eje de la hélice y el centro de masa del cuadricóptero. Asumimos que el peso aplica sobre el centro de masa y la normal sobre la recta que pasa por el centro de masa del cuadricóptero y es perpendicular al plano del plato de la balanza. 
+Definimos el largo $L=29.3cm$ como la distancia entre el eje de la h\'elice y el centro de masa del cuadric\'optero. Asumimos que el peso aplica sobre el centro de masa y la normal sobre la recta que pasa por el centro de masa del cuadric\'optero y es perpendicular al plano del plato de la balanza. 
 
 De esta forma se tiene que el torque total vale:
 $$
-\tau=Q+lM_{total}g-lN=Q+l(M_{total}g-N)
+\tau=Q+LM_{total}g-LN=Q+L(M_{total}g-N)
 $$
 
-Como se explico anteriormente luego de tarar la balanza la masa medida por la misma corresponde a $M_{medida}=\frac{M_{total}g-N}{g} $. De esta forma se puede escribir el torque total sobre el sistema como:
+Como se explico anteriormente luego de tarar la balanza la masa medida por la misma corresponde a $M_{medida}=\frac{N-M_{total}g}{g} $. De esta forma se puede escribir el torque total sobre el sistema como:
 $$
-\tau=Q+lM_{medida}g
+\tau=Q-LM_{medida}g
 $$
-Al igual que en el experimento anterior el sistema se encuentra en equilibrio mecánico y por lo tanto: 
+Al igual que en el experimento anterior el sistema se encuentra en equilibrio mec\'anico y por lo tanto: 
 $$
 \tau=0
 $$  
 
 De esta forma queda claro que el torque que nos interesa caracterizar puede calcularse como:
 $$
-Q=-lM_{medida}g
+Q=LM_{medida}g
 $$
 
-\subsection{Respuesta al Escalón}
-Se caracterizará al motor en lo que respecta a su respuesta al escalón. Se verá cuanto demora un motor en pasar de la velocidad angular en régimen correspondiente al valor de comando $i^2c$ 50 a la velocidad angular en régimen correspondiente al valor de comando $i^2c$ 150. El osciloscopio no resulta adecuado para observar las diferencias de velocidad angular obtenida. Se procede a conectar la salida del sensor IR a un \emph{buffer} octal y la salida de este último al analizador lógico\footnote{ Esto fue necesario ya que la tensión de la salida del IR disminuía drásticamente al conectarlo directamente al analizador lógico a valores que este último no es capaz de identificar como ``1'' lógicos}. El analizador lógico registrará la salida del sensor R durante 5 segundos a una tasa de muestreo de 2kHz. Se obtendrán las diferencias de tiempos entre flancos de subida sucesivos($t_f$). Cada flanco de subida corresponde a una hoja de la hélice siendo detectada por el sensor IR. La velocidad angular de la hélice puede calcularse como:
-%TODO esquema
+\subsection{Respuesta al Escal\'on}
+Se caracterizar\'a al motor en lo que respecta a su respuesta al escal\'on. Se ver\'a cuanto demora un motor en pasar de la velocidad angular en r\'egimen correspondiente al valor de comando $i^2c$ 50 a la velocidad angular en r\'egimen correspondiente al valor de comando $i^2c$ 150. El osciloscopio no resulta adecuado para observar las diferencias de velocidad angular obtenida. Se procede a conectar la salida del sensor IR a un \emph{buffer} octal y la salida de este \'ultimo al analizador l\'ogico\footnote{ Esto fue necesario ya que la tensi\'on de la salida del IR disminu\'ia dr\'asticamente al conectarlo directamente al analizador l\'ogico a valores que este \'ultimo no es capaz de identificar como ``1'' l\'ogicos}. El analizador l\'ogico registrar\'a la salida del sensor R durante 5 segundos a una tasa de muestreo de 2kHz. Se obtendr\'an las diferencias de tiempos entre flancos de subida sucesivos($t_f$). Cada flanco de subida corresponde a una hoja de la h\'elice siendo detectada por el sensor IR. La velocidad angular de la h\'elice puede calcularse como:
+
 $$
 \omega = 2 \pi \frac{2}{t_f}
 $$ 
  
-\section{Resultados y análisis}
+\section{Resultados y an\'alisis}
 
-\subsection{Comparación entre motores}
+\subsection{Comparaci\'on entre motores}
 \label{sec:motores} 
 
 En la tabla \ref{tab:motores} todos los valores obtenidos experimentalmente de acuerdo al procedimiento descrito. 
@@ -276,34 +255,34 @@ En la tabla \ref{tab:motores} todos los valores obtenidos experimentalmente de a
 \end{table}
 
 En la figura \ref{fig:motores} se presentan las velocidades angulares de los cuatro motores contra el comando $i^2c$, mientras que en la figura \ref{fig:difmotores} se muestra la diferencia entre la velocidad angular de cada motor y el promedio de las mismas para cada comando $i^2c$ enviado.\\
-En la figura \ref{fig:motores} se observa que el comportamiento de los motores es en todos los casos similar. Para velocidades angulares bajas los motores se comportan en forma idéntica, mientras que a medida que aumenta la misma se ve afectada esta característica\\
+En la figura \ref{fig:motores} se observa que el comportamiento de los motores es en todos los casos similar. Para velocidades angulares bajas los motores se comportan en forma id\'entica, mientras que a medida que aumenta la misma se ve afectada esta caracter\'istica\\
  
 
 \begin{figure}[h!]
   \begin{center}
 	\subfloat[Velocidad angular de los cuatro motores]{\label{fig:motores}
 	\includegraphics[width=0.5\textwidth]
-		{./Pics/motores.png}}
+		{./pics_motores/motores.png}}
 	\subfloat[Error en la velocidad angular de los cuatro motores]{\label{fig:difmotores}
 	\includegraphics[width=0.5\textwidth]
-		{./Pics/difmotores.png}}
+		{./pics_motores/difmotores.png}}
 		
   \end{center}
   \caption{Curva $i^2c$ vs. velocidad angular para los 4 motores}
 
 \end{figure}
 
-En la figura \ref{fig:difmotores} puede observarse que la máxima diferencia entre las velocidades angulares de dos motores es de aproximadamente $6.5 rad/s$. Dicha diferencia se obtiene para un valor de comando $i^2c$ igual a 200. Si observamos la velocidad angular a dicho valor de comando $i^2c$ en la tabla \ref{tab:motores} se observa que el menor valor corresponde a $113.4 rad/s$. El error relativo que se obtiene es inferior al $6\%$
+En la figura \ref{fig:difmotores} puede observarse que la m\'axima diferencia entre las velocidades angulares de dos motores es de aproximadamente $6.5 rad/s$. Dicha diferencia se obtiene para un valor de comando $i^2c$ igual a 200. Si observamos la velocidad angular a dicho valor de comando $i^2c$ en la tabla \ref{tab:motores} se observa que el menor valor corresponde a $113.4 rad/s$. El error relativo que se obtiene es inferior al $6\%$
 
 
 Se puede afirmar que:
 \begin{itemize}
-\item Es válido promediar las velocidades angulares de los 4 motores y trabajar con esos promedios como un motor tí­pico. Además de este modo se reducen los posibles errores que se pueden haber causado a la hora de realizar las medidas.
-\item Por lo tanto la fuerza medida (de los 4 motores juntos) corresponde con el cuádruple de la fuerza ejercida por cada uno de ellos
+\item Es v\'alido promediar las velocidades angulares de los 4 motores y trabajar con esos promedios como un motor tÃ­pico. Adem\'as de este modo se reducen los posibles errores que se pueden haber causado a la hora de realizar las medidas.
+\item Por lo tanto la fuerza medida (de los 4 motores juntos) corresponde con el cu\'adruple de la fuerza ejercida por cada uno de ellos
 \end{itemize}
 
 
-\subsection{Obtención de la curva fuerza contra velocidad angular}
+\subsection{Obtenci\'on de la curva fuerza contra velocidad angular}
 
 Los resultados obtenidos de frecuencia y medida en la balanza se presentan la tabla \ref{tab:fuerza-vel}.
 
@@ -311,18 +290,18 @@ Los resultados obtenidos de frecuencia y medida en la balanza se presentan la ta
 En la figura \ref{fig:fvel} se observan los puntos obtenidos experimentalmente ya las curvas obtenidas con los modelos de ajuste propuesto. En dicha figura se observa que cualqueira de los dos modelos aproxima adecuadamente los puntos obtenidos experimentalmente.
 
 
-Para el modelo cuadrático se obtiene:
+Para el modelo cuadr\'atico se obtiene:
 \begin{itemize}
-\item Parámetros: $a=3.5296\times10^{-5}Ns^2$, $b=-4.9293\times 10^{-4}Ns$
+\item Par\'ametros: $a=3.5296\times10^{-5}Ns^2$, $b=-4.9293\times 10^{-4}Ns$
 \item Error promedio: $e=-2.76\times 10 ^{-3}N$
-\item Desviación estándar :$\sigma=4.03\times10^{-2}N$
+\item Desviaci\'on est\'andar :$\sigma=4.03\times10^{-2}N$
 \end{itemize}
 
-Para el modelo cúbico se obtiene:
+Para el modelo c\'ubico se obtiene:
 \begin{itemize}
-\item Parámetros: $a\prime = -1.5197\times 10^{-8}Ns^3$, $b\prime =4.4399\times10^{-5}Ns^2$, $c\prime -0.0018Ns$
+\item Par\'ametros: $a\prime = -1.5197\times 10^{-8}Ns^3$, $b\prime =4.4399\times10^{-5}Ns^2$, $c\prime -0.0018Ns$
 \item Error: $7.17\times10^{-4}N$
-\item Desviación estándar: $\sigma=2.66\times 10^{-2}N$
+\item Desviaci\'on est\'andar: $\sigma=2.66\times 10^{-2}N$
 \end{itemize}
 
 \begin{table}[H]
@@ -346,7 +325,7 @@ Para el modelo cúbico se obtiene:
 \label{tab:fuerza-vel}
 \end{table}
 
-Como es de esperar el modelo cúbico aproxima mejor los puntos que el modelo cuadrático, sin embargo cualquiera de los dos modelos ajusta adecuadamente los puntos. Esto fue observado gráficamente en una primera instancia y se comprobó realizando el estudio del error promedio y de la desviación estándar. Ya que ambos modelos parecen adecuados a partir de este momento se trabajará con el más sencillo de los dos, es decir con el modelo cuadrático. Por lo tanto:
+Como es de esperar el modelo c\'ubico aproxima mejor los puntos que el modelo cuadr\'atico, sin embargo cualquiera de los dos modelos ajusta adecuadamente los puntos. Esto fue observado gr\'aficamente en una primera instancia y se comprob\'o realizando el estudio del error promedio y de la desviaci\'on est\'andar. Ya que ambos modelos parecen adecuados a partir de este momento se trabajar\'a con el m\'as sencillo de los dos, es decir con el modelo cuadr\'atico. Por lo tanto:
 
 $$
 T=3.5296\times10^{-5}\omega^2-4.9293\times10^{-4}\omega
@@ -356,7 +335,7 @@ $$
 \begin{figure}[H]
   \vspace{-20pt}
   \begin{center}
-    \includegraphics[width=0.8\textwidth]{./Pics/fvel.jpg}
+    \includegraphics[width=0.8\textwidth]{./pics_motores/fvel.jpg}
   \end{center}
   \vspace{-20pt}
   \caption{Curva experimental de Fuerza-Velocidad angular}
@@ -364,9 +343,9 @@ $$
   \vspace{-10pt}
 \end{figure}
 
-\subsection{Obtención de la curva $i^2c$ contra velocidad angular}
+\subsection{Obtenci\'on de la curva $i^2c$ contra velocidad angular}
 
-En la tabla \ref{tab:iw} se presentan los resultados obtenidos de frecuencia para distintos valores del comando $I^2C$. En la figura \ref{fig:iwi} se muestran además de los datos obtenidos las curvas predichas por los modelos de ajuste por los que se optó.
+En la tabla \ref{tab:iw} se presentan los resultados obtenidos de frecuencia para distintos valores del comando $I^2C$. En la figura \ref{fig:iwi} se muestran adem\'as de los datos obtenidos las curvas predichas por los modelos de ajuste por los que se opt\'o.
 \begin{table}[H]
 \centering
 \begin{tabular}{|c|c|c|} 
@@ -393,35 +372,35 @@ En la tabla \ref{tab:iw} se presentan los resultados obtenidos de frecuencia par
 
 \begin{figure} [h!]
 \centering  
-\includegraphics[width=.8\textwidth]{./Pics/wi.png} 
-\caption{Curva $i^2c$ en función de la velocidad angular}
+\includegraphics[width=.8\textwidth]{./pics_motores/wi.png} 
+\caption{Curva $i^2c$ en funci\'on de la velocidad angular}
 \label{fig:iwi}
 \end{figure}
 
-A simple vista en la figura ya puede observarse que el modelo cúbico aproxima mejor que el modelo cuadrático.
-Los resultados obtenidos para los modelos de ajuste propuesto vienen a confirmar dicha constatación.
+A simple vista en la figura ya puede observarse que el modelo c\'ubico aproxima mejor que el modelo cuadr\'atico.
+Los resultados obtenidos para los modelos de ajuste propuesto vienen a confirmar dicha constataci\'on.
 
-Para el modelo cuadrático se obtiene:
+Para el modelo cuadr\'atico se obtiene:
 \begin{itemize}
-\item Parámetros: $a=6.1226\times10^{-4}s^2$, $b=0.3270\times 10^{-4}s$
+\item Par\'ametros: $a=6.1226\times10^{-4}s^2$, $b=0.3270\times 10^{-4}s$
 \item Error promedio: $e=5.08\times 10 ^{-1}$
-\item Desviación estándar :$\sigma=4.42$
+\item Desviaci\'on est\'andar :$\sigma=4.42$
 \end{itemize}
 
-Para el modelo cúbico se obtiene:
+Para el modelo c\'ubico se obtiene:
 \begin{itemize}
-\item Parámetros: $a\prime = 2.2118\times 10^{-6}s^3$, $b\prime =-71258\times 10^{-4}s^2$, $c\prime=0.5106s$
+\item Par\'ametros: $a\prime = 2.2118\times 10^{-6}s^3$, $b\prime =-71258\times 10^{-4}s^2$, $c\prime=0.5106s$
 \item Error promedio: $2.04\times10^{-3} $
-\item Desviación estándar: $\sigma=4.01\times 10^{-1}$
+\item Desviaci\'on est\'andar: $\sigma=4.01\times 10^{-1}$
 \end{itemize}
 
-El error promedio obtenido con el modelo cúbico y la desviación estándar son menores que en el modelo cuadrático. Además se observa claramente que la curva del modelo cúbico ajusta mejor los puntos. Esta es evidencia suficiente para elegir dicho modelo. Tendremos entonces que:
+El error promedio obtenido con el modelo c\'ubico y la desviaci\'on est\'andar son menores que en el modelo cuadr\'atico. Adem\'as se observa claramente que la curva del modelo c\'ubico ajusta mejor los puntos. Esta es evidencia suficiente para elegir dicho modelo. Tendremos entonces que:
 
 $$
 x=2.2118\times 10^{-6}\omega^3 -71258\times 10^{-4}\omega^2+0.5106\omega
 $$
-\subsection{Obtención de la curva $i^2c$ contra fuerza}
-Se presentan los datos obtenidos para la determinación de la curva de interés en la tabla \ref{tab:if}.
+\subsection{Obtenci\'on de la curva $i^2c$ contra fuerza}
+Se presentan los datos obtenidos para la determinaci\'on de la curva de inter\'es en la tabla \ref{tab:if}.
 \begin{table}[H]
 \centering
 \begin{tabular}{|c|c|c|c|} 
@@ -439,30 +418,30 @@ Se presentan los datos obtenidos para la determinación de la curva de interés en
 \label{tab:if}
 \end{table}
 
-Se desea ajustar la fuerza que realizan los motores con modelos cuadrático y cúbico, en función del comando $i^2c$. Los resultados experimentales y las curvas obtenidas con cada modelo se presentan en la figura \ref{fig:if}.
+Se desea ajustar la fuerza que realizan los motores con modelos cuadr\'atico y c\'ubico, en funci\'on del comando $i^2c$. Los resultados experimentales y las curvas obtenidas con cada modelo se presentan en la figura \ref{fig:if}.
 
 \begin{figure}[h!]
   \begin{center}
-	\includegraphics[width=0.7\textwidth]{./Pics/if.png}
+	\includegraphics[width=0.7\textwidth]{./pics_motores/if.png}
   \end{center}
   \caption{Curva $i^2c$ contra fuerza}
   \label{fig:if}
 \end{figure}
-Los parámetros obtenidos para el modelo cuadrático son:
+Los par\'ametros obtenidos para el modelo cuadr\'atico son:
 	\begin{itemize}
-	\item Parámetros $a=5.4588\times 10^{-5}N$,$b=0.0110N$
+	\item Par\'ametros $a=5.4588\times 10^{-5}N$,$b=0.0110N$
 	\item Error promedio: $e= -3.712158\times ^{-2}N$
-	\item Desviación estándar: $2.087\times 10^{-1}N$
+	\item Desviaci\'on est\'andar: $2.087\times 10^{-1}N$
 	\end{itemize}
-Los parámetros obtenidos para el modelo cúbico:
+Los par\'ametros obtenidos para el modelo c\'ubico:
 	\begin{itemize}
-	\item Parámetros $a\prime=-5.0.166\times 10^{-7}N$,$b\prime=2.3031\times 10^{-4}N$,$c\prime=-0.0028N$
+	\item Par\'ametros $a\prime=-5.0.166\times 10^{-7}N$,$b\prime=2.3031\times 10^{-4}N$,$c\prime=-0.0028N$
 	\item Error promedio: $e=-1.78\times10^{-3}N$	
-	\item Desviación estándar: $3.71\times 10^{-2}N$
+	\item Desviaci\'on est\'andar: $3.71\times 10^{-2}N$
 	\end{itemize}		
 
 
-\subsection{Obtención de la curva velocidad angular contra torque}
+\subsection{Obtenci\'on de la curva velocidad angular contra torque}
 
 De acuerdo al procedimiento detallado en \ref{sub:torque} se obtuvieron las siguientes medidas de velocidad angular y peso.
 
@@ -488,32 +467,32 @@ De acuerdo al procedimiento detallado en \ref{sub:torque} se obtuvieron las sigu
 \label{tab:torque}
 \end{table}
 
-Recordamos que para la caracterización de la respuesta velocidad angular - torque se propuso un modelo cuadrático. Los resultados obtenidos fueron:
+Recordamos que para la caracterizaci\'on de la respuesta velocidad angular - torque se propuso un modelo cuadr\'atico. Los resultados obtenidos fueron:
 
 \begin{itemize}
-\item Parámetros: $a=3.4734\times10^{-6}Nms^2$; $b=-1.3205\times 10 ^{-4} Nms$
+\item Par\'ametros: $a=3.4734\times10^{-6}Nms^2$; $b=-1.3205\times 10 ^{-4} Nms$
 \item Error promedio: $\mu = 1.7824\times 10^{-6}Nm$
-\item Desviación estándar: $\sigma = 9.2686\times 10^{-4}$ 
+\item Desviaci\'on est\'andar: $\sigma = 9.2686\times 10^{-4}$ 
 \end{itemize}
 
-En la figura \ref{fig:torque} pueden observarse las medidas experimentales obtenidas y la curva que corresponde al modelo elegido para realizar el ajuste. La observación gráfica de dicha curva confirma que el modelo elegido es un buen ajuste para los datos experimentales obtenidos.
+En la figura \ref{fig:torque} pueden observarse las medidas experimentales obtenidas y la curva que corresponde al modelo elegido para realizar el ajuste. La observaci\'on gr\'afica de dicha curva confirma que el modelo elegido es un buen ajuste para los datos experimentales obtenidos.
 
 \begin{figure}
   \begin{center}
-	\includegraphics[width=0.7\textwidth]{./Pics/torque.png}
+	\includegraphics[width=0.7\textwidth]{./pics_motores/torque.png}
   \end{center}
   \caption{Curva torque contra velocidad angular}
   \label{fig:torque}
 \end{figure}
 
-\subsection{Respuesta al escalón}
+\subsection{Respuesta al escal\'on}
 
-En la figura \ref{fig:resp_esc} se muestran las velocidades angulares obtenidas. El tiempo de rise obtenido es de $0.19s$ y la respuesta al escalón no presenta prácticamente sobretiro.
+En la figura \ref{fig:resp_esc} se muestran las velocidades angulares obtenidas. El tiempo de rise obtenido es de $0.19s$ y la respuesta al escal\'on no presenta pr\'acticamente sobretiro.
 
 
 \begin{figure}
   \begin{center}
-	\includegraphics[width=0.7\textwidth]{./Pics/resp_esc.png}
+	\includegraphics[width=0.7\textwidth]{./pics_motores/resp_esc.png}
   \end{center}
   \caption{Curva $i^2c$ contra fuerza}
   \label{fig:resp_esc}

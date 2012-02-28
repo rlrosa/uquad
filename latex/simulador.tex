@@ -6,7 +6,7 @@
 \chapter{Simulaciones del modelo f\'isico}
 \label{chap:simulador}
 
-Luego de desarrollado un modelo f\'isico resulta fundamental disponer de un entorno para realizar simulaciones. Las razones para construir un simulador son evidentes. En primer lugar resulta fundamental para comprobar que el modelo realizado se comporta acorde a lo que uno espera a priori del sistema. Para este tipo de pruebas se trabajar\a' con las situaciones m\a's sencillas en las cuales se puede calcular la trayectoria trivialmente. El segundo objetivo del simulador es poder conocer el comportamiento de nuestro sistema frente a algunas acciones de control determinadas. Por ejemplo conocer la trayectoria que desarrolla el cuadric\'optero si accionamos solamente uno de los motores o cualquier combinaci\'on que sea pertinente de estudio. El simulador es utilizado tambi\'en para verificar el funcionamiento del Filtro de Kalman Extendido realizado para la integraci\'on de los sensores (Ver capo \'tulo \ref{kalman}). Se puede generar una trayectoria a la cual se le agrega ruido que simule el ruido de medida de los sensores. Luego se puede comparar la trayectoria obtenida con el filtrado de Kalman con la generada inicialmente. Por 	ltimo y fundamentalmente el simulador ser\a' clave para testear y mejorar los algoritmos de control desarrollados. Previo a testear con el sistema real y a fin de evitar da\~nos sobre el mismo, se deben verificar dichos algoritmos en el simulador. Por los motivos expresados es necesario que el simulador represente fielmente el modelo f\'isico y se comporte acorde a la realidad. \\
+Luego de desarrollado un modelo f\'isico resulta fundamental disponer de un entorno para realizar simulaciones. Las razones para construir un simulador son evidentes. En primer lugar resulta fundamental para comprobar que el modelo realizado se comporta acorde a lo que uno espera a priori del sistema. Para este tipo de pruebas se trabajar\'a con las situaciones m\'as sencillas en las cuales se puede calcular la trayectoria trivialmente. El segundo objetivo del simulador es poder conocer el comportamiento de nuestro sistema frente a algunas acciones de control determinadas. Por ejemplo conocer la trayectoria que desarrolla el cuadric\'optero si accionamos solamente uno de los motores o cualquier combinaci\'on que sea pertinente de estudio. El simulador es utilizado tambi\'en para verificar el funcionamiento del Filtro de Kalman Extendido realizado para la integraci\'on de los sensores (Ver capo \'tulo \ref{kalman}). Se puede generar una trayectoria a la cual se le agrega ruido que simule el ruido de medida de los sensores. Luego se puede comparar la trayectoria obtenida con el filtrado de Kalman con la generada inicialmente. Por 	ltimo y fundamentalmente el simulador ser\'a clave para testear y mejorar los algoritmos de control desarrollados. Previo a testear con el sistema real y a fin de evitar da\~nos sobre el mismo, se deben verificar dichos algoritmos en el simulador. Por los motivos expresados es necesario que el simulador represente fielmente el modelo f\'isico y se comporte acorde a la realidad. \\
 
 El dise\~no del simulador se realiza utilizando Simulink. Dado que se debe trabajar con funciones que no dependen exclusivamente del tiempo, no fue posible desarrollar un simulador que resolviera directamente las ecuaciones diferenciales que gobiernan al sistema utilizando un m\'etodo m\'as directo, como por ejemplo \emph{ODE45}. 
 
@@ -37,10 +37,10 @@ La estructura que se eligi\'o para desarrollar esta secci\'on se corresponde en 
 En la figura \ref{fig:cinematica} se puede observar un diagrama de bloques de la parte del sistema que transforma las velocidades lineales y angulares en posiciones y ángulos de Euler. Se distinguen dos sub-bloques principales, uno encargado de devolver la  posici\'on y otro encargado de devolver los \'angulos de Euler
 \begin{figure} [h!]
   \centering
-  \subfloat[Bloque cinem\'atica]{\label{fig:fig:cinematica}
+  \subfloat[Bloque cinem\'atica]{\label{fig:cinematica}
   		\includegraphics[width=0.6\textwidth]
   			{./pics_simulador/cinematica.png}}
-  \subfloat[Bloque din\'amica]{\label{fig:fig:dinamica}
+  \subfloat[Bloque din\'amica]{\label{fig:dinamica}
   		\includegraphics[width=0.5\textwidth]
   			{./pics_simulador/dinamica.png}}
   \caption{Bloques en mayor detalle}

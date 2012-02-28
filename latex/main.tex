@@ -17,6 +17,7 @@
 \usepackage[table]{xcolor}
 \usepackage{multirow}
 \usepackage{hhline}
+\usepackage{cancel}
 %\usepackage[Sonny]{fncychap}
 %\usepackage[Glenn]{fncychap}
 \usepackage[Conny]{fncychap}
@@ -34,16 +35,19 @@
 \begin{document}
 \subfile{introduccion}
 \subfile{eleccion_hardware}
+\part{Modelado del sistema}
 \subfile{modelo_fisico}
 \subfile{simulador}
+\part{Calibración de los sensores}
 \subfile{acc_mongoose}
 \subfile{gyro_mongoose}
 \subfile{barometro}
 \subfile{magnetometro}
+\subfile{gps}
+\part{Ingeniería Inversa}
+\subfile{sniffer}
+\subfile{test_motores}
 
-
-
-%\subfile{testing_imu_beagle}
 \subfile{anexo_tensores}
 \bibliographystyle{plain} 
 \bibliography{biblio}
