@@ -21,9 +21,9 @@ R=I*cos(r(4))+kx*sin(r(4))+(1-cos(r(4)))*k*k';
 
 
 %Verifico que no haya gimbal lock
-
-if (abs(R(1,3))~=1)
-
+%if (abs(R(1,3))~=1)Esta es la forma de hacerlo bien pero no anda siempre
+%porque puede haber gimbal lock y por error en la medición no te das cuenta
+if (abs(R(1,3))<0.99)
     phi=asin(-R(1,3))*180/pi;
     psi=atan2(R(2,3),R(3,3))*180/pi;
  
@@ -34,6 +34,7 @@ else
     theta=180/pi*atan2(R(3,1),R(3,2));
 end
     
+
 
 
 
