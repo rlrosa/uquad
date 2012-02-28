@@ -1,0 +1,127 @@
+Reunión Canetti - 14/01/2012
+(Punta Colorada)
+
+## -- -- --
+## GPS
+## -- -- --
+
+resolución del GPS?
+
+agregar legend a los plots de altura informe GPS. fig 1.12
+
+ver xq se tranca el logger, comparar con el mio.
+tomar medidas durante 10 min, puntos fijo.
+      - correlación del error? blanco...?
+
+# experimento: polígono
+rectángulo de 10/6 metros entre punto y punto.
+donde?
+	- atrás de la facultad?
+	- techo de la facultad?
+línea recta:
+      - cuerda de 20m
+      - punta con punta, queda una de 10m (doble).
+      - clavamos una punta
+      - la estiramos, tonce queda recta con tres punto: x---.---x (la marca del medio)
+      - usar cuerdas de compás gigante.
+      - dsp los de agrimensura vienen con el GPS y nos dan la posición absoluta.
+      - nosotros medimos todas las distancias, de una punta a todas las puntas.
+metro:
+	- compara nuestro metro con el metro de ellos (agrimensura)
+medidas:
+	- quedarse en c/punto, tomar datos durante 10min.
+	  	   objetivos: estimar la forma/componente espectral del error.
+		   	      proceso ergódico?
+			      satétiles?
+			      es posible tomar promedios temporales como estimadores de la posición?
+	- repetir 6 veces: series, tomando 1.5min en cada punto.
+	  - tiramos un rato antes yun rato dsp
+	  - nos quedamos con el punto medio como estimador, quedan + muestras como estimador.
+	    - podemos tomar como series:
+	      - dato a los 20 seg
+	      - datos a los 1/2 seg
+	      - promedio de 10 datos alrededor de cierto tiempo.
+
+procediemiento:
+	- trazar polígono
+	- tomar todas las medidas
+	- MC
+	  - coordenadas como incógnitas, llevar a un problema lineal.
+
+# experimento: respuesta escalón, correr de un punto a otro y ver q onda.
+
+# experimento: respuesta escalón + serie, recorriendo con la compu.
+
+# experimento: tomar 10 min en el piso + 10 min a la altura que se van a hacer el resto de los experimentos.
+  - usar trípode
+    - dos patas determinan dirección
+    - centro marca el centro
+    - poner el GPS xa que coincida con una de las patas, tonce clavás la pata en el punto. o usar el cartón del mati.
+
+# dudas/problemas
+	- hora del GPS difiere de la de la computadora... xq?
+	- series pares del GPS coinciden 2da y 3er serie... latitud/longitud tmb?
+
+## -- -- --
+## sniffer i2c
+## -- -- --
+
+todo rico, eh!
+mirar en el osc lo que sale del IR. ver si es una señal prolijo, o si hace locuras.
+
+## -- -- --
+## motores
+## -- -- --
+balanza? tiene tara?
+	- FING
+	- comprar?
+como medir:
+     - sujetarlo a la balanza y medir el peso.
+       - morza:
+       	 - tio
+	 - fing
+       - morzita + cinta aisladora xa evitar que gire/salte
+       - evitar q meta par!
+     - tener un punto de apoyo y medir con palanca...?
+
+medidas:
+	- 7 u 8 posiciones -> medir velocidad angular y fuerza
+	- probar en subida+bajada+subida -> no debería afectar
+	- *no* hacer con todos los motores, solo con 2 (si sale todo bien)
+	- registar la medida, no la diferencia
+	  - frequencia
+	  - peso medido por la balanza
+
+## -- -- --
+## acc
+## -- -- --
+
+posición de los ejes y calibración de la medida tienen que hacerse al mismo tiempo.
+	 - como están lo ejes?
+	 - que significa 1v en el acc?
+
+montaje: cubo?
+	- perfil de aluminio -> aluminios del uruguay? 10x5cm
+	  - se tiene q poder medir con una escuadra xa verificar el 90deg
+	- madera dura, usar sierra circular xa acomodarlo.
+	- tabla horizontal: sale tabla "verticaul" con gira-cosos en las puntas, de ahí cuelga otra tabla, que va a ir cambiando de ángulos.
+medidas:
+	- elegir bien xa evitar q se repitan.
+
+## -- -- --
+## gyro
+## -- -- --
+
+pruebas dinámicas:
+	- ver con los del taller -> usar el torno
+	- se puede usar un disco de cartón, cortarle muescas xa que el IR vaya + rápida.
+	- taladro de pie gigante del taller
+medidas:
+	- poner la IMU inclinada, así tenemos + info q la de 1 solo sensor.
+	- medir velocidad contando vueltas o con disco dentado e IR.
+
+## -- -- --
+## UART2
+## -- -- --
+
+usar el ftdi en lugar de la uart xa no romper todo.
