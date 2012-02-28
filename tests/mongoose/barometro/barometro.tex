@@ -47,7 +47,7 @@ Las características principales del GPS son:
 \item  La precisión del GPS es mala muy cerca del suelo, lo cual representa un problema al intentar despegar y/o aterrizar.
 \end{itemize}
 
-Se opta por incorporar un barómetro, ya que aparentemente dichos senores padecen de \textit{otros} problemas, y pueden complementar al GPS.
+Se opta por incorporar un barómetro, ya que aparentemente dichos sensores padecen de \textit{otros} problemas, y pueden complementar al GPS.
 
 El sensor adquirido es un barómetro digital BOSCH BMP085. Permite medir presión absoluta, y, conociendo la presión y la temperatura a nivel del mar, permite calcular la altura absoluta.
 
@@ -95,7 +95,7 @@ A nivel de la tropósfera, la capa más baja de la atmósfera, se puede calcular
 
 Donde:
 \begin{itemize}
-\item p0: 	Presión atmosférica estándar a nivel del mar -	101325 Pa
+\item p0: 	Presión atmosférica estándar a nivel del mar -	101325 Pa.
 \item L :	Gradiente de temperatura\footnote{Tasa de incremento de la temperatura con la altura (es negativa).} -	0.0065 K/m
 \item T0:	Temperatura estándar a nivel del mar -	288.15 K
 \item g :	Constante de gravitación universal -	9.80665 m/s2
@@ -119,7 +119,7 @@ Es de interés caracterizar el ruido en los datos provenientes del barómetro. S
 
 Se analizan datos tomados durante diversos períodos de tiempo: 5 minutos, 2 minutos, 20 segundos y 15 segundos.
 
-Se analiza la autocorrelación de las muestras, y se compara el ruído con los valores dados por la hoja de datos. La hoja de datos especifica ruído RMS típico para los distintos modos de funcionamiento.
+Se analiza la autocorrelación de las muestras, y se compara el ruido con los valores dados por la hoja de datos. La hoja de datos especifica ruido RMS típico para los distintos modos de funcionamiento.
 
 \subsection{Medidas de altura absoluta}
 
@@ -155,7 +155,7 @@ Se utiliza una cinta de agrimensor, graduada cada 10 centímetros, para medir la
   \label{fig:imerl.png}
 \end{wrapfigure}
 
-Se toma una tanza de pesca resistente. Se realizan marcas cada un metro, en seis puntos distintos de la tanza. En un extremo de la tanza se ata el cubo de lapacho, con la \emph{Mongoose} atornillada a él. Se lo deja descender desde la escalera del \emph{IMERL}\footnote{Instituto de Matemática y Estadística Rafael Laguarda}. Se suelta tanza hasta que el cubo se apoya contra el piso, de forma que la primer marca en la cuerda se encuentre junto a quien está realizando las medidas. Se hace una pequeña marca sobre la baranda, en el punto que coincide con la primer marca de la cuerda. Se mide la presión durante un minuto. Luego se sube el cubo hasta que la marca en la baranda coincida con la segunda marca de la cuerda (y por lo tanto el cubo subió 1 metro). Se vuelve a tomar la medida de presión. Se repite el procedimiento hasta tener la medida de presión a 5 alturas distintas. 
+Se toma una tanza de pesca resistente. Se realizan marcas cada un metro, en seis puntos distintos de la tanza. En un extremo de la tanza se ata el cubo de lapacho, con la \emph{Mongoose} atornillada a él. Se lo deja descender desde la escalera del \emph{IMERL}\footnote{Instituto de Matemática y Estadística Rafael Laguardia}. Se suelta tanza hasta que el cubo se apoya contra el piso, de forma que la primer marca en la cuerda se encuentre junto a quien está realizando las medidas. Se hace una pequeña marca sobre la baranda, en el punto que coincide con la primer marca de la cuerda. Se mide la presión durante un minuto. Luego se sube el cubo hasta que la marca en la baranda coincida con la segunda marca de la cuerda (y por lo tanto el cubo subió 1 metro). Se vuelve a tomar la medida de presión. Se repite el procedimiento hasta tener la medida de presión a 5 alturas distintas. 
 Se repite el experimento dos veces. Luego se toma la medida de presión a nivel del suelo. Se toman medidas mientras se sube y se baja el barómetro dos veces, se vuelven a tomar medidas a nivel del suelo.
 
 \subsection{Distancias de decenas de centímetros}
@@ -168,7 +168,7 @@ Se ubica el cubo de lapacho siempre en la misma orientación sobre cada uno de l
 \subsection{Drift y \textit{warm-up}}
 \label{sec:drift-y-warm-up}
 
-Para observar si hay un drift y/o tiempo de \textit{warm-up} significativo, se procede a tomar muestras durante 1 hora, habiendo estado el dispositivo desenchufado durante por lo menos media hora (el circuito arranca en frio).
+Para observar si hay un drift y/o tiempo de \textit{warm-up} significativo, se procede a tomar muestras durante 1 hora, habiendo estado el dispositivo desenchufado durante por lo menos media hora (el circuito arranca en frío).
 
 Se repite este experimento varias veces. En las figuras \ref{fig:1hora_04.pdf} y \ref{fig:1hora_01.pdf} se observan los resultados característicos.
 
@@ -195,22 +195,22 @@ Se observa que existe un tiempo de \textit{warm-up} bastante extenso, pero con u
 El barómetro no parece ser adecuado para medir la elevación absoluta. En los datos de las figuras \ref{fig:1hora_01.pdf} y \ref{fig:1hora_04.pdf} se observan variaciones de hasta 3 metros en la estimación de la altura en un período de 1 hora. Sin embargo, el error en el corto plazo es significativamente menor que en el largo plazo, parece viable el uso del barómetro como estimador de la altura en el corto plazo. Esto se analiza más adelante.
 
 \newpage
-\subsection{Caracterización del ruído}
+\subsection{Caracterización del ruido}
 \label{sec:caract-ruido}
 
 En los logs de la sección \ref{sec:drift-y-warm-up}, se observa que:
 \begin{itemize}
-\item El comportamiento del ruído en intervalos extensos no es estacionario.
+\item El comportamiento del ruido en intervalos extensos no es estacionario.
 \item La mayoría de los saltos en la medida de la altura son de aproximadamente 25cm. Esto no es coherente con las especificaciones dan una resolución de 1Pa, que corresponden a una variación en altura de aproximadamente 8cm.
 \end{itemize}
 
-\subsubsection{Estacionaridad}
+\subsubsection{Estacionareidad}
 
-Analizando el ruído en intervalos más pequeños, donde el proceso se puede considerar estacionario, el comportamiento del ruído es muy similar al del ruído blanco.
+Analizando el ruido en intervalos más pequeños, donde el proceso se puede considerar estacionario, el comportamiento del ruido es muy similar al del ruido blanco.
 
 En la figura \ref{fig:autocorr} se observa la autocorrelación de la muestras tomadas del barómetro en intervalos de tiempo de 5 minutos, 2 minutos, y 15 segundos.
 
-Cabe destacar que el ruído se puede considerar estacionario si se usan intervalos de tiempo menores a 15 segundos.
+Cabe destacar que el ruido se puede considerar estacionario si se usan intervalos de tiempo menores a 15 segundos.
 
 \begin{figure}[H]
   \begin{center}
@@ -230,13 +230,13 @@ Cabe destacar que el ruído se puede considerar estacionario si se usan interval
 
 \subsubsection{Modos de funcionamiento}
 
-El barómetro permite trabajar en varios modos. Basicamente, permite que se le exija más resolución, menos ruído, y a cambio aumenta el tiempo que tarda en tener un dato nuevo listo, y consume más energía. Esto lo logra promediando datos internamente. En la tabla \ref{tab:ruido-rms} se compara el ruído RMS en los distintos modos, con lo que se lograría usándolo en el modo básico (sin promediar internamente) y promediando en el microprocesador.
+El barómetro permite trabajar en varios modos. Básicamente, permite que se le exija más resolución, menos ruido, y a cambio aumenta el tiempo que tarda en tener un dato nuevo listo, y consume más energía. Esto lo logra promediando datos internamente. En la tabla \ref{tab:ruido-rms} se compara el ruido RMS en los distintos modos, con lo que se lograría usándolo en el modo básico (sin promediar internamente) y promediando en el microprocesador.
 
 \begin{table}[H]
 \centering
 \begin{tabular}{c|c|c|c|} 
 \cline{2-4}
-	& \multicolumn{3}{|c|}{\cellcolor[gray]{0.8} Ruído RMS  (m)}      \\ \hline
+	& \multicolumn{3}{|c|}{\cellcolor[gray]{0.8} Ruido RMS  (m)}      \\ \hline
 \multicolumn{1}{|c|}{\cellcolor[gray]{0.8} {Modo}} & \cellcolor[gray]{0.8} {Microprocesador} &\cellcolor[gray]{0.8} {Sensor} &\cellcolor[gray]{0.8} {Especificaciones}\\ \hline
 
 \multicolumn{1}{|c|}{0}	&	0.52	&	0.52	&	0.50\\
@@ -249,7 +249,7 @@ El barómetro permite trabajar en varios modos. Basicamente, permite que se le e
 \hline
 
 \end{tabular}
-\caption{Ruído RMS, 2 minutos de datos a 14Hz.}
+\caption{Ruido RMS, 2 minutos de datos a 14Hz.}
 \label{tab:ruido-rms}
 \end{table}
 \vspace{-15pt}
@@ -258,7 +258,7 @@ La resolución más atractiva parece ser la número 2, en la cual se promedian 4
 \subsubsection{Resolución del instrumento}
 En la figura \ref{fig:barom_hist_exp4.pdf} se observa un histograma de las diferencias entre muestras sucesivas de los datos del barómetro. Se observa que la mayor parte de los datos saltan de a 25cm. Se esperaba una discretización en niveles de  aproximadamente 8cm, correspondientes a variaciones de presión de 1Pa (la resolución del instrumento).
 
-Puede resultar dificil ver que hay muestras en todos los bins, pero mirando con detalle se puede. Puede deberse a un problema de software, o la construcción del sensor en sí. Este problem no parece ser significativo.
+Puede resultar difícil ver que hay muestras en todos los bins, pero mirando con detalle se puede. Puede deberse a un problema de software, o la construcción del sensor en sí. Este problema no parece ser significativo.
 %TODO averiguar q onda con esto.
 \vspace{-14pt}
 \begin{figure}[h!]
@@ -276,11 +276,11 @@ Puede resultar dificil ver que hay muestras en todos los bins, pero mirando con 
 
 Las figuras \ref{fig:1hora_01.pdf} y \ref{fig:1hora_04.pdf} se corresponden a datos tomados a la misma altura, pero en dias distintos. Cabe destacar que la diferencia entre ambas curvas llega es de aproximadamente 25 metros.
 
-Se descarta la posibilidad de utilizar el barómetro para determinar la altura absoluta, ya que estando el barómetro a una altura fija, la elevación varía mucho de un dia a otro, lo cual refleja una fuerte dependencia con factores externos, probablemente climáticos, que no interesa considerar.
+Se descarta la posibilidad de utilizar el barómetro para determinar la altura absoluta, ya que estando el barómetro a una altura fija, la elevación varía mucho de un día a otro, lo cual refleja una fuerte dependencia con factores externos, probablemente climáticos, que no interesa considerar.
 
 \subsection{Distancias de varios metros}
 
-En las siguientes figuras se observan los resultados del experimento. Las líneas verticales (en negro) respresentan el comienzo y el fin de la toma de datos en cada piso. No se hace una medida de la altura absoluta, se miden las distancias entre piso y piso (con la cinta métrica), y se usa como origen de coordenadas la altura dada por el promedio de algunas muestras al comienzo del experimento, ya sea en el piso de más arriba, o en el piso de más abajo (bajadas y subidas respectivamente). La coordenada Y de los segmentos en rojo que unen las rectas verticales representan la distancia entre el origen y el piso actual. Dicha distancia se mide con la cinta métrica.
+En las siguientes figuras se observan los resultados del experimento. Las líneas verticales (en negro) representan el comienzo y el fin de la toma de datos en cada piso. No se hace una medida de la altura absoluta, se miden las distancias entre piso y piso (con la cinta métrica), y se usa como origen de coordenadas la altura dada por el promedio de algunas muestras al comienzo del experimento, ya sea en el piso de más arriba, o en el piso de más abajo (bajadas y subidas respectivamente). La coordenada Y de los segmentos en rojo que unen las rectas verticales representan la distancia entre el origen y el piso actual. Dicha distancia se mide con la cinta métrica.
 
 \vspace{-12pt}
 \begin{figure}[h!]
@@ -310,7 +310,7 @@ Los errores en las medidas se analizan más adelante.
 
 Cabe destacar que la performance en la figura \ref{fig:metros-rapido.pdf} es muy similar a la que se obtuvo tomando muestras durante 1 minutos. Esto resulta alentador, ya que se pretende utilizar el barómetro para obtener medidas con una frecuencia mucho mayor 1Hz.
 
-En la figura \ref{fig:metros-err-accum.pdf} se observa la evolución del error acumulado para 2 subidas\footnote{No se incluye una gráfica de la segundo subida, ya es muy similar, en cuanto al error, a la de la primera bajada, pero con un eror del orden del de la primer bajada.}, 1 bajada y una bajada rápida.
+En la figura \ref{fig:metros-err-accum.pdf} se observa la evolución del error acumulado para 2 subidas\footnote{No se incluye una gráfica de la segundo subida, ya es muy similar, en cuanto al error, a la de la primera bajada, pero con un error del orden del de la primer bajada.}, 1 bajada y una bajada rápida.
 
 El error en la determinación de la distancia entre un piso y el siguiente se observa en la figura \ref{fig:metros-err-piso-a-piso.pdf}.
 
@@ -402,7 +402,7 @@ En la figura \ref{fig:1-metro-err} se muestra la evolución de los errores relat
 \label{fig:1-metro-err}
 \end{figure}
 
-Del análisis de cada serie de manera indepenediente:
+Del análisis de cada serie de manera independiente:
 \begin{itemize}
 \item Serie 1:
 		\begin{itemize}
@@ -446,7 +446,7 @@ En la figura \ref{fig:variando} se observa la variación en la altura absoluta. 
 Se toman datos durante 5 segundos en casa escalón. Repitiendo el análisis realizado en secciones anteriores, se obtiene:
 \begin{itemize}
 \item Error promedio: 2.0 cm
-\item Deviación estándar: 24.4 cm
+\item Desviación estándar: 24.4 cm
 \end{itemize}
 
 \begin{figure}[H]
@@ -465,7 +465,7 @@ Se toman datos durante 5 segundos en casa escalón. Repitiendo el análisis real
 
 \subsubsection{8 minutos por estante}
 
-En la figura \ref{fig:cm-8min-por-estante.pdf} se observan los datos capturados durante este experimento. El experimento se realiza un dia de tormenta. Se toman 8 minutos de datos en cada estante, el experimento en su totalidad dura 40 minutos. El cambio de presión durante una tormenta es significativo. Se considera que esta fue la causa del drift observado en la figura \ref{fig:cm-8min-por-estante.pdf}. No se analiza el error en las medidas, ya que claramente está lejos de ser algo utilizable. Cabe destacar que no sirve tomar medidas durante tanto mucho tiempo con el barómetro, ya que el drift y/o factores externos introducen errores importantes.
+En la figura \ref{fig:cm-8min-por-estante.pdf} se observan los datos capturados durante este experimento. El experimento se realiza un día de tormenta. Se toman 8 minutos de datos en cada estante, el experimento en su totalidad dura 40 minutos. El cambio de presión durante una tormenta es significativo. Se considera que esta fue la causa del drift observado en la figura \ref{fig:cm-8min-por-estante.pdf}. No se analiza el error en las medidas, ya que claramente está lejos de ser algo utilizable. Cabe destacar que no sirve tomar medidas durante tanto mucho tiempo con el barómetro, ya que el drift y/o factores externos introducen errores importantes.
 
 \begin{figure}[H]
 \centering
@@ -483,7 +483,7 @@ Como prueba extra, se recorre 4 veces la estantería sin detenerse cada estante,
 \centering
 \begin{tabular}{c|c|c|} 
 \cline{2-3}
-  & Error promedio (cm) & Deviación estándar (cm)\\ \hline
+  & Error promedio (cm) & Desviación estándar (cm)\\ \hline
 \multicolumn{1}{|c|}{Bajada} & 15.1 & 25.9 \\ \hline
 \multicolumn{1}{|c|}{Subida} & 4.4 &  58.9 \\ \hline
 \multicolumn{1}{|c|}{Bajada+Subida} & 10.7 & 49.0 \\ \hline
@@ -494,7 +494,7 @@ Como prueba extra, se recorre 4 veces la estantería sin detenerse cada estante,
 
 Cabe destacar que el error se mantiene por debajo de los 1.2m en el peor caso.
 
-La figura \ref{fig:estante_veloz.pdf} muestra graficamente los resultados del experimento.
+La figura \ref{fig:estante_veloz.pdf} muestra gráficamente los resultados del experimento.
 
 \begin{figure}[H]
 \hspace{-90pt}
@@ -518,7 +518,7 @@ Conclusiones más importante de las pruebas hechas con el barómetro:
   \item Error promedio: 0.5m
   \item Desviación estándar: 0.25m
   \item Modo: 0, promediando 4 muestras en la IMU.
-  \item Se observa un drift de hasta 0.5m por minuto. Se debe utilizar el GPS para correjirlo.
+  \item Se observa un drift de hasta 0.5m por minuto. Se debe utilizar el GPS para corregirlo.
   \end{itemize}
 \end{itemize}
 
