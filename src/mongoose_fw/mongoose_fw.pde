@@ -21,9 +21,6 @@
 
 // The calibration values for the sensors need to be set in the function "mongooseCalibrate" which
 // is in the file "ApplicationRoutines.pde"
-// The Mongoose Visualizer PC software can be used to determine the offset values by looking at the Avg value 
-// for each sensor axis.
-
 
 /* Mongoose Hardware version - v1.0
 	
@@ -149,6 +146,7 @@ float G_Dt_us = G_Dt*1000;
 
 long time_us = 0;
 long time_us_old;
+long time_tmp = 0;
 long timer24=0; //Second timer used to print values 
 float AN[9]; //array that store the 3 ADC filtered data
 
@@ -442,10 +440,13 @@ void loop() //Main Loop
     sensor_reading:
     if(running)
     {
+	// update barom reading state machine
+	barom_update_state_machine();
+
 	if( (micros()-time_us) >= 
 	    SAMP_T_INTR - SAMP_JITTER )
 	{
-	    // We enter here every 5ms
+	    // We enter here every SAMP_T_INTR +- SAMP_JITTER
 	    digitalWrite(debugPin,HIGH);
 
 	    time_us_old = time_us;
@@ -485,11 +486,18 @@ void loop() //Main Loop
 	    if ((Baro_counter > SAMP_DIV_BAROM) || ONLY_BMP085)  // Read baro data at 1Hz... (50 loop runs)
 	    {
 		Baro_counter=0; 
-
-		if(sensors.temp)
-		    sen_data.baro_temp = Read_Temperature();
-		if(sensors.pressure)
-		    sen_data.baro_pres = Read_Pressure();  
+		Req_Read_Barom();
+		/* if(sensors.temp) */
+		/* { */
+		/*     barom_temp_ready = false; */
+		/*     sen_data.baro_temp = Read_Temperature(); */
+		/* }    */
+		/* if(sensors.pressure) */
+		/* { */
+		/*     if( */
+		/*     barom_press_ready = false; */
+		/*     sen_data.baro_pres = Read_Pressure(); */
+		/* } */
 	    }
 	    //=============================== Read the GPS data ==============================//
 	    if (GPS_counter > 50)  // Read GPS data at 1Hz... (50 loop runs)

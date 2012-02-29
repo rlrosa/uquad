@@ -1,16 +1,22 @@
-/* BMP085 Extended Example Code
-  by: Jim Lindblom
-  SparkFun Electronics
-  date: 1/18/11
-  license: CC BY-SA v3.0 - http://creativecommons.org/licenses/by-sa/3.0/
-  
-  Get pressure and temperature from the BMP085 and calculate altitude.
-  Serial.print it out at 9600 baud to serial monitor.
-*/
-
+// uQuad!
+//
+// Based on:
+//    BMP085 Extended Example Code
+//    by: Jim Lindblom
+//    SparkFun Electronics
+//    date: 1/18/11
+//    license: CC BY-SA v3.0 - http://creativecommons.org/licenses/by-sa/3.0/
+//    
+//    Get pressure and temperature from the BMP085 and calculate altitude.
+//    Serial.print it out at 9600 baud to serial monitor.
+//
+//
 #include <Wire.h>
+#include <assert.h>
 
 #define BMP085_ADDRESS 0x77  // I2C address of BMP085
+
+#define BMP085_TEMP_WAIT_US 4500 // time between temp request and data ready
 
 static unsigned char OSS = 0;  // Oversampling Setting
 
@@ -31,6 +37,14 @@ int md;
 // b5 is calculated in bmp085GetTemperature(...), this variable is also used in bmp085GetPressure(...)
 // so ...Temperature(...) must be called before ...Pressure(...).
 long b5; 
+
+
+enum barom_state {
+    BAROM_IDLE = 0,
+    BAROM_WAITING,
+    BAROM_DONE
+};
+barom_state barom_press, barom_temp;
 
 static bool calibration_loaded = false;
 void bmp085Display_Calibration(){
@@ -89,31 +103,97 @@ void Init_Baro()
   calibration_loaded = true;
 }
 
-short Read_Temperature()
+static long barom_req_time_us;
+int barom_update_state_machine()
 {
-  return(bmp085GetTemperature(bmp085ReadUT()));
+    if((barom_press == BAROM_WAITING) &&
+       (micros() - barom_req_time_us > bmp085GetUPWaitUS()))
+    {
+	Read_Pressure(true);
+	// at this poing press has been updated
+    }
+    else if((barom_temp == BAROM_WAITING) &&
+	    (micros() - barom_req_time_us > BMP085_TEMP_WAIT_US))
+    {
+	Read_Temperature(true);
+	Read_Pressure(false);
+	barom_req_time_us = micros();
+    }
+    if((barom_press == BAROM_IDLE) &&
+       (barom_temp == BAROM_IDLE))
+	return BAROM_IDLE;
+    return BAROM_WAITING;
 }
-  
 
-long Read_Pressure()
+void Baro_req_update()
 {
-  return(bmp085GetPressure(bmp085ReadUP()));
+#if DEBUG
+    // check for unread data
+    if((barom_press != BAROM_IDLE) ||
+	   (barom_temp != BAROM_IDLE))
+	Serial.println("\n\n-- -- -- -- --\nMissed barom data!!\n-- -- -- -- --\n\n");
+#else
+    assert((barom_press != BAROM_IDLE) &&
+	   (barom_temp != BAROM_IDLE))
+#endif
+    // start state machine
+    Read_Temperature(false);
+    barom_req_time_us = micros();
 }
-  
 
+int Read_Temperature(bool req_done)
+{
+    if(req_done)
+    {
+	// Get temp reading
+	sen_data.baro_temp = bmp085GetTemperature(bmp085ReadUT(true));
+    }
+    else
+    {
+	// request temp reading
+	bmp085ReadUT(false);
+	barom_temp = BAROM_WAITING;
+    }
+    return barom_temp;
+}
 
+int Read_Pressure(bool req_done)
+{
+    long ret;
+    if(req_done)
+    {
+	// Get pressure reading
+	sen_data.baro_pres = bmp085GetPressure(bmp085ReadUP(true));
+    }
+    else
+    {
+	// request pressure reading
+	bmp085ReadUP(false);
+	barom_press = BAROM_WAITING;
+    }
+    return barom_press;
+} 
 
 // Calculate temperature given ut.
 // Value returned will be in units of 0.1 deg C
 short bmp085GetTemperature(unsigned int ut)
 {
-  long x1, x2;
-  
-  x1 = (((long)ut - (long)ac6)*(long)ac5) >> 15;
-  x2 = ((long)mc << 11)/(x1 + md);
-  b5 = x1 + x2;
+    // verify updated data
+#if DEBUG
+    if(barom_temp != BAROM_DONE)
+	Serial.println("WARN:Old temp!");
+#else
+    assert(barom_temp == BAROM_DONE);
+#endif
+    barom_temp = BAROM_IDLE; // mark as read
 
-  return ((b5 + 8)>>4);  
+    long x1, x2;
+  
+    x1 = (((long)ut - (long)ac6)*(long)ac5) >> 15;
+    x2 = ((long)mc << 11)/(x1 + md);
+    b5 = x1 + x2;
+
+    return ((b5 + 8)>>4);  
 }
 
 // Calculate pressure given up
@@ -122,34 +202,43 @@ short bmp085GetTemperature(unsigned int ut)
 // Value returned will be pressure in units of Pa.
 long bmp085GetPressure(unsigned long up)
 {
-  long x1, x2, x3, b3, b6, p;
-  unsigned long b4, b7;
+    // verify updated data
+#if DEBUG
+    if(barom_press != BAROM_DONE)
+	Serial.println("WARN:Old pres!");
+#else
+    assert(barom_press == BAROM_DONE);
+#endif
+    barom_press = BAROM_IDLE; // mark as read
+
+    long x1, x2, x3, b3, b6, p;
+    unsigned long b4, b7;
   
-  b6 = b5 - 4000;
-  // Calculate B3
-  x1 = (b2 * (b6 * b6)>>12)>>11;
-  x2 = (ac2 * b6)>>11;
-  x3 = x1 + x2;
-  b3 = (((((long)ac1)*4 + x3)<<OSS) + 2)>>2;
+    b6 = b5 - 4000;
+    // Calculate B3
+    x1 = (b2 * (b6 * b6)>>12)>>11;
+    x2 = (ac2 * b6)>>11;
+    x3 = x1 + x2;
+    b3 = (((((long)ac1)*4 + x3)<<OSS) + 2)>>2;
   
-  // Calculate B4
-  x1 = (ac3 * b6)>>13;
-  x2 = (b1 * ((b6 * b6)>>12))>>16;
-  x3 = ((x1 + x2) + 2)>>2;
-  b4 = (ac4 * (unsigned long)(x3 + 32768))>>15;
+    // Calculate B4
+    x1 = (ac3 * b6)>>13;
+    x2 = (b1 * ((b6 * b6)>>12))>>16;
+    x3 = ((x1 + x2) + 2)>>2;
+    b4 = (ac4 * (unsigned long)(x3 + 32768))>>15;
   
-  b7 = ((unsigned long)(up - b3) * (50000>>OSS));
-  if (b7 < 0x80000000)
-    p = (b7<<1)/b4;
-  else
-    p = (b7/b4)<<1;
+    b7 = ((unsigned long)(up - b3) * (50000>>OSS));
+    if (b7 < 0x80000000)
+	p = (b7<<1)/b4;
+    else
+	p = (b7/b4)<<1;
     
-  x1 = (p>>8) * (p>>8);
-  x1 = (x1 * 3038)>>16;
-  x2 = (-7357 * p)>>16;
-  p += (x1 + x2 + 3791)>>4;
+    x1 = (p>>8) * (p>>8);
+    x1 = (x1 * 3038)>>16;
+    x2 = (-7357 * p)>>16;
+    p += (x1 + x2 + 3791)>>4;
   
-  return p;
+    return p;
 }
 
 // Read 1 byte from the BMP085 at 'address'
@@ -189,61 +278,80 @@ int bmp085ReadInt(unsigned char address)
 }
 
 // Read the uncompensated temperature value
-unsigned int bmp085ReadUT()
+unsigned int bmp085ReadUT(bool req_done)
 {
   unsigned int ut;
-  
-  // Write 0x2E into Register 0xF4
-  // This requests a temperature reading
-  Wire.beginTransmission(BMP085_ADDRESS);
-  Wire.send(0xF4);
-  Wire.send(0x2E);
-  Wire.endTransmission();
-  
-  // Wait at least 4.5ms
-  delay(5);
-  
-  // Read two bytes from registers 0xF6 and 0xF7
-  ut = bmp085ReadInt(0xF6);
 
-  sen_data.baro_temp_raw = ut;
 
+  if(req_done)
+  {
+      // Read temperature
+      // Read two bytes from registers 0xF6 and 0xF7
+      ut = bmp085ReadInt(0xF6);
+      sen_data.baro_temp_raw = ut;
+      barom_temp = BAROM_DONE;
+  }
+  else
+  {
+      // Request a temperature reading
+      // Write 0x2E into Register 0xF4
+      // This requests a temperature reading
+      Wire.beginTransmission(BMP085_ADDRESS);
+      Wire.send(0xF4);
+      Wire.send(0x2E);
+      Wire.endTransmission();
+      ut = 0;
+      // Now wait 4500us for conversion.
+      // State machine will take care of this.
+  }
   return ut;
 }
 
+long bmp085GetUPWaitUS()
+{
+    return 1500 + 1000*(3<<OSS);
+}
+
 // Read the uncompensated pressure value
-unsigned long bmp085ReadUP()
+unsigned long bmp085ReadUP(bool req_done)
 {
   unsigned char msb, lsb, xlsb;
   unsigned long up = 0;
-  
-  // Write 0x34+(OSS<<6) into register 0xF4
-  // Request a pressure reading w/ oversampling setting
-  Wire.beginTransmission(BMP085_ADDRESS);
-  Wire.send(0xF4);
-  Wire.send(0x34 + (OSS<<6));
-  Wire.endTransmission();
-  
-  // Wait for conversion, delay time dependent on OSS
-  delay(2 + (3<<OSS));
-  
-  // Read register 0xF6 (MSB), 0xF7 (LSB), and 0xF8 (XLSB)
-  Wire.beginTransmission(BMP085_ADDRESS);
-  Wire.send(0xF6);
-  Wire.endTransmission();
-  Wire.requestFrom(BMP085_ADDRESS, 3);
-  
-  // Wait for data to become available
-  while(Wire.available() < 3)
-    ;
-  msb = Wire.receive();
-  lsb = Wire.receive();
-  xlsb = Wire.receive();
-  
-  up = (((unsigned long) msb << 16) | ((unsigned long) lsb << 8) | (unsigned long) xlsb) >> (8-OSS);
-  
-  sen_data.baro_pres_raw = up;
 
+  if(req_done)
+  {  
+      // Read register 0xF6 (MSB), 0xF7 (LSB), and 0xF8 (XLSB)
+      Wire.beginTransmission(BMP085_ADDRESS);
+      Wire.send(0xF6);
+      Wire.endTransmission();
+      Wire.requestFrom(BMP085_ADDRESS, 3);
+  
+      // Wait for data to become available
+      while(Wire.available() < 3)
+	  ;
+      msb = Wire.receive();
+      lsb = Wire.receive();
+      xlsb = Wire.receive();
+  
+      up = (((unsigned long) msb << 16)  |
+	    ((unsigned long) lsb << 8)   |
+	    (unsigned long) xlsb) >> (8-OSS);
+  
+      sen_data.baro_pres_raw = up;
+      barom_press = BAROM_DONE;
+  }
+  else
+  {
+      // Write 0x34+(OSS<<6) into register 0xF4
+      // Request a pressure reading w/ oversampling setting
+      Wire.beginTransmission(BMP085_ADDRESS);
+      Wire.send(0xF4);
+      Wire.send(0x34 + (OSS<<6));
+      Wire.endTransmission();
+      up = 0;
+      // Now wait for conversion, delay time dependent on OSS.
+      // State machine takes care of this.
+  }
   return up;
 }
 
