@@ -20,7 +20,6 @@
 
 static unsigned char OSS = 0;  // Oversampling Setting
 
-
 // Calibration values for Barometric Pressure sensor
 int ac1;
 int ac2; 
@@ -38,7 +37,7 @@ int md;
 // so ...Temperature(...) must be called before ...Pressure(...).
 long b5; 
 
-
+/// State machine support structs.
 enum barom_state {
     BAROM_IDLE = 0,
     BAROM_WAITING,
@@ -47,6 +46,13 @@ enum barom_state {
 barom_state barom_press, barom_temp;
 
 static bool calibration_loaded = false;
+/** 
+ * Prints calibration parameters loaded from EEPROM to
+ * serial.
+ * These parameters are used to convert compensate temp/press
+ * data. Raw data is uncompensated.
+ * 
+ */
 void bmp085Display_Calibration(){
     if(calibration_loaded)
     {
@@ -81,8 +87,6 @@ void bmp085Display_Calibration(){
 	Serial.println("Calibration not loaded from EEPROM...");
     }
 }
-    
-
 
 // Stores all of the bmp085's calibration values into global variables
 // Calibration values are required to calculate temp and pressure
@@ -104,6 +108,19 @@ void Init_Baro()
 }
 
 static long barom_req_time_us;
+/** 
+ * Guides through a state machine that will perform the following tasks:
+ *   - Request a new temp reading.
+ *   - Read new temp data, update struct data.
+ *   - Request a new pressure reading.
+ *   - Read new pressure data, update struct data.
+ *
+ * NOTE: If the state machine is idle, then calling this function will
+ *       only return the current state, idle. New data should only be
+ *       be requested if the state machine is in idle mode.
+ * 
+ * @return Current state of the machine.
+ */
 int barom_update_state_machine()
 {
     if((barom_press == BAROM_WAITING) &&
@@ -125,13 +142,28 @@ int barom_update_state_machine()
     return BAROM_WAITING;
 }
 
+/** 
+ * Starts state machine, will result in new data after
+ * a complete loop (temp+press reading).
+ * This function will request new data, which will be ready in:
+ *   - Temperature: 4.5ms
+ *   - Pressure: 4.5-25.5ms + Temp conversion time.
+ *
+ * NOTE: Should only be called if state machine is idle. This
+ *       can be checked with barom_update_state_machine()
+ * 
+ */
 void Baro_req_update()
 {
 #if DEBUG
     // check for unread data
     if((barom_press != BAROM_IDLE) ||
 	   (barom_temp != BAROM_IDLE))
-	Serial.println("\n\n-- -- -- -- --\nMissed barom data!!\n-- -- -- -- --\n\n");
+    {
+	Serial.println("\n\n-- -- -- -- --");
+	Serial.println("Missed barom data!!");
+	Serial.println("-- -- -- -- --\n\n");
+    }
 #else
     assert((barom_press != BAROM_IDLE) &&
 	   (barom_temp != BAROM_IDLE))
@@ -277,7 +309,19 @@ int bmp085ReadInt(unsigned char address)
   return (int) msb<<8 | lsb;
 }
 
-// Read the uncompensated temperature value
+/** 
+ * Read/request the uncompensated temperature value.
+ * The BMP085 takes up to 4.5ms between temp request and data
+ * available.
+ *
+ * @param req_done If(false):
+ *                   requests a new temperature reading.
+ *                 else
+ *                   reads temperature. Asumes new temperature
+ *                   had been previously requested.
+ * 
+ * @return If new data was read, returnes the value, else 0.
+ */
 unsigned int bmp085ReadUT(bool req_done)
 {
   unsigned int ut;
@@ -301,18 +345,42 @@ unsigned int bmp085ReadUT(bool req_done)
       Wire.send(0x2E);
       Wire.endTransmission();
       ut = 0;
-      // Now wait 4500us for conversion.
+      // Now wait BMP085_TEMP_WAIT_US us for conversion.
       // State machine will take care of this.
   }
   return ut;
 }
 
+/** 
+ * Give the max time that the BMP085 will take to have a 
+ * new pressure sample ready.
+ * Pressure conversion time is not fixed, it's OSS dependant.
+ * 
+ * @return Max pressure conversion time in us.
+ */
 long bmp085GetUPWaitUS()
 {
     return 1500 + 1000*(3<<OSS);
 }
 
-// Read the uncompensated pressure value
+
+/** 
+ * Read/Request the uncompensated pressure value
+ * The BMP085 takes [4.5 7.5 13.5 25.5]ms between new pressure
+ * is requested and data is ready. Time depends on OSS setting.
+ *
+ * @param req_done If(false):
+ *                   requests a new uncompensated pressure reading.
+ *                 else
+ *                   reads pressure. Asumes new pressure
+ *                   had been previously requested.
+ * 
+ * @return If new data was read, returnes the value, else 0.
+ *         Data needs to be compensated using the algorithm
+ *         described in the datasheet, with the constants
+ *         flashed into each specific unit. The algorithm is
+ *         implemented in bmp085GetPressure().
+ */
 unsigned long bmp085ReadUP(bool req_done)
 {
   unsigned char msb, lsb, xlsb;
@@ -356,8 +424,13 @@ unsigned long bmp085ReadUP(bool req_done)
 }
 
 #if DEBUG
-// Set oversampling (OSS)
-// Returns success or failure.
+/** 
+ * Set oversampling settings (OSS).
+ * 
+ * @param OSS_new New value for OSS.
+ * 
+ * @return false if argument was invalid, else true.
+ */
 bool bmp085SetOSS(unsigned char OSS_new)
 {
     if(OSS_new < 4)
@@ -368,6 +441,12 @@ bool bmp085SetOSS(unsigned char OSS_new)
     return true;
 }
 
+/** 
+ * Get current value of OSS.
+ * 
+ * 
+ * @return 
+ */
 unsigned char bmp085GetOSS(void)
 {
     return OSS;

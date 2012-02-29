@@ -485,19 +485,12 @@ void loop() //Main Loop
 	    //===================== Read the Temp and Pressure from Baro =====================//
 	    if ((Baro_counter > SAMP_DIV_BAROM) || ONLY_BMP085)  // Read baro data at 1Hz... (50 loop runs)
 	    {
-		Baro_counter=0; 
-		Req_Read_Barom();
-		/* if(sensors.temp) */
-		/* { */
-		/*     barom_temp_ready = false; */
-		/*     sen_data.baro_temp = Read_Temperature(); */
-		/* }    */
-		/* if(sensors.pressure) */
-		/* { */
-		/*     if( */
-		/*     barom_press_ready = false; */
-		/*     sen_data.baro_pres = Read_Pressure(); */
-		/* } */
+		Baro_counter=0;
+		// The following will trigger the barom update.
+		// Temperature takes 4.5ms, and pressure takes from 4.5 to 25.5, depending on
+		// OSS settings.
+		// If OSS==0, new data should be ready approximately 9ms after calling Baro_req_update()
+		Baro_req_update();
 	    }
 	    //=============================== Read the GPS data ==============================//
 	    if (GPS_counter > 50)  // Read GPS data at 1Hz... (50 loop runs)
