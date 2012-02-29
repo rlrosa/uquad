@@ -166,7 +166,7 @@ void Baro_req_update()
     }
 #else
     assert((barom_press != BAROM_IDLE) &&
-	   (barom_temp != BAROM_IDLE))
+	   (barom_temp != BAROM_IDLE));
 #endif
     // start state machine
     Read_Temperature(false);
