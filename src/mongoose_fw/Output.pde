@@ -44,43 +44,50 @@ void printdata(void)
 
 #if PRINT_DATA
 #if ATOMIC_IMU_FORMAT
-      Serial.print(ATOMIC_IMU_INIT);
-      Serial.print(ATOMIC_IMU_SEPARATOR);
-      Serial.print(tx_Dt_us);
-      Serial.print(ATOMIC_IMU_SEPARATOR);
-      Serial.print(sen_data.accel_x_raw);
-      Serial.print(ATOMIC_IMU_SEPARATOR);
-      Serial.print(sen_data.accel_y_raw);
-      Serial.print(ATOMIC_IMU_SEPARATOR);
-      Serial.print(sen_data.accel_z_raw);
-      Serial.print(ATOMIC_IMU_SEPARATOR);
-      Serial.print(sen_data.gyro_x_raw);
-      Serial.print(ATOMIC_IMU_SEPARATOR);
-      Serial.print(sen_data.gyro_y_raw);
-      Serial.print(ATOMIC_IMU_SEPARATOR);
-      Serial.print(sen_data.gyro_z_raw);  
-      Serial.print(ATOMIC_IMU_SEPARATOR);
-      Serial.print(sen_data.magnetom_x_raw);
-      Serial.print(ATOMIC_IMU_SEPARATOR);
-      Serial.print(sen_data.magnetom_y_raw);
-      Serial.print(ATOMIC_IMU_SEPARATOR);
-      Serial.print(sen_data.magnetom_z_raw);
-      Serial.print(ATOMIC_IMU_SEPARATOR);
-      Serial.print(sen_data.baro_temp);
-      Serial.print(ATOMIC_IMU_SEPARATOR);
-      Serial.print(sen_data.baro_pres);
-      Serial.print(ATOMIC_IMU_SEPARATOR);
+    if(!print_binary)
+    {
+	Serial.print(ATOMIC_IMU_INIT);
+	Serial.print(ATOMIC_IMU_SEPARATOR);
+	Serial.print(tx_Dt_us);
+	Serial.print(ATOMIC_IMU_SEPARATOR);
+	Serial.print(sen_data.accel_x_raw);
+	Serial.print(ATOMIC_IMU_SEPARATOR);
+	Serial.print(sen_data.accel_y_raw);
+	Serial.print(ATOMIC_IMU_SEPARATOR);
+	Serial.print(sen_data.accel_z_raw);
+	Serial.print(ATOMIC_IMU_SEPARATOR);
+	Serial.print(sen_data.gyro_x_raw);
+	Serial.print(ATOMIC_IMU_SEPARATOR);
+	Serial.print(sen_data.gyro_y_raw);
+	Serial.print(ATOMIC_IMU_SEPARATOR);
+	Serial.print(sen_data.gyro_z_raw);
+	Serial.print(ATOMIC_IMU_SEPARATOR);
+	Serial.print(sen_data.magnetom_x_raw);
+	Serial.print(ATOMIC_IMU_SEPARATOR);
+	Serial.print(sen_data.magnetom_y_raw);
+	Serial.print(ATOMIC_IMU_SEPARATOR);
+	Serial.print(sen_data.magnetom_z_raw);
+	Serial.print(ATOMIC_IMU_SEPARATOR);
+	Serial.print(sen_data.baro_temp);
+	Serial.print(ATOMIC_IMU_SEPARATOR);
+	Serial.print(sen_data.baro_pres);
+	Serial.print(ATOMIC_IMU_SEPARATOR);
 #if DEBUG
-      if(print_raw_bmp085)
-      {
-	  Serial.print(sen_data.baro_temp_raw);
-	  Serial.print(ATOMIC_IMU_SEPARATOR);
-	  Serial.print(sen_data.baro_pres_raw);
-	  Serial.print(ATOMIC_IMU_SEPARATOR);
-      }
+	if(print_raw_bmp085)
+	{
+	    Serial.print(sen_data.baro_temp_raw);
+	    Serial.print(ATOMIC_IMU_SEPARATOR);
+	    Serial.print(sen_data.baro_pres_raw);
+	    Serial.print(ATOMIC_IMU_SEPARATOR);
+	}
 #endif // DEBUG
-      Serial.print(ATOMIC_IMU_END);
-      Serial.println();
+	Serial.print(ATOMIC_IMU_END);
+	Serial.println();
+    }
+    else // !print_binary
+    {
+	Serial.println("Not implemented.");
+    }
 
 #else // ATOMIC_IMU_FORMAT
     // use ckdevices format

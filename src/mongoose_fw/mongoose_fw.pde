@@ -145,6 +145,7 @@ sensors_enabled sensors = {ALL && !ONLY_BMP085,
 
 int incomingByte = 0; // for incoming serial data
 bool running = true;
+bool print_binary = false;
 
 float G_Dt=0.005;    // Integration time (DCM algorithm)  We will run the integration loop at 50Hz if possible
 //float G_Dt_ms=G_Dt;
@@ -346,6 +347,10 @@ void print_menu(void){
     Serial.print("\te:\t Set BMP085 OSS:\t");
     Serial.print(bmp085GetOSS());
     Serial.println();
+
+    Serial.print("\tb:\t Print binary data:\t");
+    Serial.print(print_binary);
+    Serial.println();
 #endif
 
     Serial.print("\tCommand:");
@@ -414,6 +419,9 @@ int menu_execute(int command){
 	    Serial.println("\nSuccess!");
 	else
 	    Serial.println("\nFAILED!");
+	break;
+    case 'b':
+	print_binary = !print_binary;
 	break;
 #endif
     default:
