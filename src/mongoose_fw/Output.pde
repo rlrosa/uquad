@@ -150,6 +150,7 @@ void PrintCompassCalibration(void)
 
     GetMagnCalibration(xyz_scale, xyz_max);
 
+    Serial.println();
     Serial.println("HMC58X3 scale (x,y,z):");
     Serial.print("\t");
     Serial.print(xyz_scale[0]);

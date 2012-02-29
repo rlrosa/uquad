@@ -1,6 +1,6 @@
 function [ax1 ax2] = barom_plot(alt, avg_size, indexes, temp)
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-%function barom_plot(alt, avg_size, indexes)
+% [ax1 ax2] = function barom_plot(alt, avg_size, indexes, temp)
 %
 % Plot altitud, raw and averaged.
 % Multiple segments can be marked by providing indexing in INDEXES.
@@ -26,12 +26,16 @@ axis([1 length(alt) min(alt) max(alt)])
 if(indexes ~= -1)
   % plot segment borders
   for i=1:length(indexes)
-      line([indexes(i) indexes(i)],[min(alt) max(alt)],'color','black')
+      line([indexes(i) indexes(i)],[min(alt) max(alt)],'color','black', ...
+        'HandleVisibility','off');
   end
 end
 
 ax1 = gca;
 ax_plot = ax1;
+set(ax1,'XColor','k','YColor','k')
+set(ax1,'FontSize',font_size);
+
 grid on
 
 if(exist('temp','var'))
@@ -40,8 +44,6 @@ if(exist('temp','var'))
       length(alt), length(temp));
   end
   % http://www.mathworks.com/help/techdoc/creating_plots/f1-11215.html
-  set(ax1,'XColor','k','YColor','k')
-  set(ax1,'FontSize',font_size);
   ax2 = axes('Position',get(ax1,'Position'),...
              'XAxisLocation','top',...
              'YAxisLocation','right',...
