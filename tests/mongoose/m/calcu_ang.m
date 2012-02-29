@@ -1,13 +1,13 @@
  function [theta,phi,psi]=calcu_ang(a,b)
-%%--------------------------------------
+%%-------------------------------------------------------------------------
 % Devuelve los tres angulos de euler para a->b
 % El orden de las rotaciones es: -theta según k
 %                                -phi según j
-%                                -psi según k
-% ------------------------------------------
-
-%El vector r es perpendicular a los otros dos. El ángulo se saca haciendo
-%el producto escalar. 
+%                                -psi según i
+% -------------------------------------------------------------------------
+% El vector r es perpendicular a los otros dos. El ángulo se saca haciendo
+% el producto escalar. 
+% -------------------------------------------------------------------------
 r=vrrotvec(b/norm(b),a/norm(a));
 
 %Rodrigues
