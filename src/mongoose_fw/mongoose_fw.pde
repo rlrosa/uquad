@@ -532,7 +532,7 @@ void loop() //Main Loop
 	    // Make sure you don't take too long here!
      
 	    //=============================== Read the GPS data ==============================//
-	    if (Print_counter > SAMP_INTRS_EXTR || ONLY_BMP085)  //
+	    if (Print_counter == SAMP_INTRS_EXTR || ONLY_BMP085)  //
 	    {
 		Print_counter=0;
          
