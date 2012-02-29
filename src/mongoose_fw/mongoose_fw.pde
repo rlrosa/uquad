@@ -85,7 +85,7 @@ int SENSOR_SIGN[9] = { 1,1,1,1,1,1,1,1,1};  //Correct directions x,y,z - gyros, 
 
 #define PRINT_DATA 1 // if 0 no data will be printed
 //#define PRINT_GPS 0     //Will print GPS data
-#define PRINT_BINARY 1  //Will print binary message and suppress ASCII messages (above)
+#define PRINT_BINARY 0  //Will print binary message and suppress ASCII messages (above)
 #if PRINT_BINARY
 #define print(a) write(a)
 #endif
@@ -120,7 +120,7 @@ int SENSOR_SIGN[9] = { 1,1,1,1,1,1,1,1,1};  //Correct directions x,y,z - gyros, 
 // Special modes
 #define ONLY_BMP085 0
 #define MAGNETON_FULL_FS 1
-#define DEBUG 1
+#define DEBUG 0
 
 // Debug data
 #if DEBUG
@@ -462,7 +462,10 @@ void loop() //Main Loop
 	    time_us_old = time_us;
 	    time_us = micros();
 	    G_Dt_us = time_us-time_us_old;
+#if DEBUG_TX_TIMING
 	    dt_tmp[Print_counter] = G_Dt_us;
+	    dt_tmp_index++;
+#endif
 	    G_Dt = G_Dt_us/1000000.0;    // Real time of loop run. We use this on the DCM algorithm (gyro integration time)
 	    if(G_Dt > 1)
 		G_Dt = 0;  //keeps dt from blowing up, goes to zero to keep gyros from departing
@@ -472,7 +475,6 @@ void loop() //Main Loop
 	    Baro_counter++;
 	    GPS_counter++;
 	    Print_counter++;
-	    dt_tmp_index++;
         
         
 	    //=================================================================================//
