@@ -108,6 +108,13 @@ int SENSOR_SIGN[9] = { 1,1,1,1,1,1,1,1,1};  //Correct directions x,y,z - gyros, 
 #define Start_SensorOffsets    0        //offset data at start of EEPROM
 #define Size_SensorOffsets     36       //the offset data is 12 bytes long 
 
+// Sampling setting
+#define SAMP_T_INTR 5000 // us - internal sampling rate
+#define SAMP_JITTER 12 // us - timer misses by this amount
+#define SAMP_INTRS_EXTR 4 //  Main loop runs at SAMP_T_INTR*SAMP_INTRS_EXTR (50Hz)
+#define SAMP_DIV_COMPASS 20 // sampled at SAMP_INTRS_EXTR/SAMP_DIV_COMPASS
+#define SAMP_DIV_BAROM 200 // sampled at SAMP_INTRS_EXTR/SAMP_DIV_BAROM
+
 // Special modes
 #define ONLY_BMP085 0
 #define MAGNETON_FULL_FS 1
@@ -435,7 +442,8 @@ void loop() //Main Loop
     sensor_reading:
     if(running)
     {
-	if((micros()-time_us)>=5000)  // Main loop runs at 50Hz
+	if( (micros()-time_us) >= 
+	    SAMP_T_INTR - SAMP_JITTER )
 	{
 	    // We enter here every 5ms
 	    digitalWrite(debugPin,HIGH);
@@ -466,14 +474,15 @@ void loop() //Main Loop
       
 	    //=============================== Read the Compass ===============================//
 	    if(sensors.compass)
-		if (MAGNETON_FULL_FS || Compass_counter > 20)  // Read compass data at 10Hz... (5 loop runs)
+		if (MAGNETON_FULL_FS ||
+		    (Compass_counter > SAMP_DIV_COMPASS))  // Read compass data at 10Hz... (5 loop runs)
 		{
 		    Compass_counter=0;
 		    Read_Compass();    // Read I2C magnetometer     
 		}
 
 	    //===================== Read the Temp and Pressure from Baro =====================//
-	    if (Baro_counter > 200 || ONLY_BMP085)  // Read baro data at 1Hz... (50 loop runs)
+	    if ((Baro_counter > SAMP_DIV_BAROM) || ONLY_BMP085)  // Read baro data at 1Hz... (50 loop runs)
 	    {
 		Baro_counter=0; 
 
@@ -510,7 +519,7 @@ void loop() //Main Loop
 	    // Make sure you don't take too long here!
      
 	    //=============================== Read the GPS data ==============================//
-	    if (Print_counter > 4 || ONLY_BMP085)  // 
+	    if (Print_counter > SAMP_INTRS_EXTR || ONLY_BMP085)  // 
 	    {
 		Print_counter=0;
          
