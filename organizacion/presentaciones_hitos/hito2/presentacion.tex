@@ -1,9 +1,9 @@
 \documentclass[slidestop,compress,mathserif,xcolor=svgnames,table]{beamer}
 
 \usepackage[spanish]{babel}
-\usepackage[latin1]{inputenc} % Ambos para solución de asuntos de idioma.
-\usepackage{amsmath, amsfonts, amssymb} % Matemáticas varias.
-\usepackage{longtable} % Tabla larga necesaria para el apéndice de simbología.
+\usepackage[latin1]{inputenc} % Ambos para soluci\'on de asuntos de idioma.
+\usepackage{amsmath, amsfonts, amssymb} % Matem\'aticas varias.
+\usepackage{longtable} % Tabla larga necesaria para el ap\'endice de simbolog\'ia.
 %\usepackage{multimedia}
 \usepackage{movie15}
 \usepackage{enumitem}
@@ -15,11 +15,11 @@
 \setitemize[2]{label=\tiny$\bullet$}
 \setitemize[3]{label=\tiny$\bullet$}
 
-% --- Arreglos varios para la inclusion de imágenes
+% --- Arreglos varios para la inclusion de im\'agenes
 \usepackage{subfigure}
 \DeclareGraphicsExtensions{.png,.jpg,.pdf,.mps,.gif,.bmp}
 
-% ================= CONFIGURACIÓN DEL BEAMER ====================
+% ================= CONFIGURACIN DEL BEAMER ====================
 % ===============================================================
 \mode<presentation>{
 % \usepackage{beamerthemeclassic}
@@ -70,9 +70,9 @@
 
 % =================== DATOS DEL DOCUMENTO =======================
 % ===============================================================
-\author{Manuel López, Santiago Paternain, Rodrigo Rosa, Matías Tailanián}
+\author{Manuel L\'opez, Santiago Paternain, Rodrigo Rosa, Mat\'ias Tailani\'an}
 \date{28 de Febrero de 2012}
-\title{\textit{Implementación de un UAV con arquitectura de Quadcopter}}
+\title{\textit{Implementaci\'on de un UAV con arquitectura de Cuadric\'optero}}
 \subtitle{Segundo Hito}
 
 
@@ -97,7 +97,7 @@
 \begin{frame}
 \frametitle{Panorama Global}
 
-Diseñar e integrar un \textbf{sistema de control} que permita el vuelo \emph{autónomo} de un Cuadricópetro comercial.
+Dise\~nar e integrar un \textbf{sistema de control} que permita el vuelo \emph{aut\'onomo} de un Cuadric\'opetro comercial.
 \pause
 
 \begin{columns}
@@ -114,45 +114,45 @@ Diseñar e integrar un \textbf{sistema de control} que permita el vuelo \emph{aut
 
 \begin{itemize}
 	\item Generador de rutas\pause
-	\item Instrumentación: obtener variables del sistema \pause
+	\item Instrumentaci\'on: obtener variables del sistema \pause
 	\item Actuador sobre motores
 \end{itemize}
 
 \end{columns}
 \pause
 \vspace{15pt}
-No se diseñará ni la mecánica ni la electrónica del sistema.\\
-Se integrarán los componentes.\\
-Se conservará la posibilidad del manejo manual
+No se disear\'a ni la mec\'anica ni la electr\'onica del sistema.\\
+Se integrar\'an los componentes.\\
+Se conservar\'a la posibilidad del manejo manual
 
 \end{frame}
 
-\section{Planificación Original}
+\section{Planificaci\'on Original}
 % ========================= FRAME ===============================
 % ===============================================================
 \begin{frame}
-\frametitle{Planificación Original}
+\frametitle{Planificaci\'on Original}
 
-Al día de la fecha los objetivos planteados son:\pause
+Al d\'ia de la fecha los objetivos planteados son:\pause
 
 \begin{itemize}
-\item \textcolor{green}{Realizar ingeniería inversa al protocolo I2C utilizado para el control de motores} \pause
-\item \textcolor{green}{Terminar modelo físico}\pause
-\item \textcolor{green}{Caracterización de los motores}\pause
-\item \textcolor{green}{Diseño de los algoritmos de control de los motores}\pause
-\item \textcolor{green}{Comunicación del microprocesador}
-	\begin{itemize}
-		\item \textcolor{green}{Comunicación Wifi mediante red (Ad-Hoc)}\pause
-	\end{itemize} 
-\item \textcolor{green}{Instrumentación}
-	\begin{itemize}
-		\item \textcolor{green}{Comunicación con el microprocesador}
-		\item \textcolor{green}{Calibración}\pause
-	\end{itemize}
-\item \textcolor{green}{Comenzar a definir integración de sensores}\pause
+\item \textcolor{green}{Terminar modelo f\'isico}\pause
 \item \textcolor{green}{Implementar simulador}\pause
-\item \textcolor{green}{Comenzar a definir esquema de control}
 \item \textcolor{yellow}{Resultados del estudio de vuelo}
+\item \textcolor{green}{Realizar ingenier\'ia inversa al protocolo I2C utilizado para el control de motores} \pause
+\item \textcolor{green}{Domesticar el cuadric\'optero}\pause
+	\begin{itemize}
+	\item \textcolor{green}{Caracterizaci\'on de los motores}\pause
+	\item \textcolor{green}{Control de motores}\pause
+	\end{itemize}
+\item \textcolor{green}{Comunicaci\'on Wifi mediante red (Ad-Hoc)}\pause
+\item \textcolor{green}{Instrumentaci\'on}
+	\begin{itemize}
+		\item \textcolor{green}{Comunicaci\'on con el microprocesador}
+		\item \textcolor{green}{Calibraci\'on}\pause
+	\end{itemize}
+\item \textcolor{green}{Comenzar a definir integraci\'on de sensores}\pause
+\item \textcolor{green}{Comenzar a definir esquema y t\'ecnica de control}
 \item \textcolor{red}{Generador de rutas}
 \end{itemize}
 
@@ -165,23 +165,23 @@ Al día de la fecha los objetivos planteados son:\pause
 \frametitle{Dificultades}
 
 \begin{itemize}
-	\item Dificultad para conseguir los medios necesarios para realizar la ingeniería inversa del control de motores \pause
+	\item Dificultad para conseguir los medios necesarios para realizar la ingenier\'ia inversa del control de motores \pause
 	\item Falta de sensores en la placa adquirida\pause
-	\item Dificultad para conseguir los medios necesarios para realizar la calibración de sensores
+	\item Aver\'ia del microprocesador
 \end{itemize}
 \pause
 El presupuesto para imprevistos no consideraba como probable tener que adquirir una segunda placa de sensores ni un sniffer I2C.\\
 \end{frame}
 
-\section{Replanificación}
+\section{Replanificaci\'on}
 % ========================= FRAME ===============================
 % ===============================================================
 \begin{frame}
-\frametitle{Replanificación}
+\frametitle{Replanificaci\'on}
 
 Se han logrado la mayor parte de los objetivos planteados, por lo cual no se considera necesario replanificar el trabajo futuro. \pause
 
-\vspace{20pt}
+\vspace{8pt}
 
 \begin{Large}
 Plan de contingencia
@@ -196,12 +196,16 @@ Plan de contingencia
 Dado el avance del proyecto, los objetivos para el final del proyecto son:
 \pause
 \begin{itemize}
-	\item Resultados del estudio del vuelo \pause
 	\item Simulador \pause
-	\item Generador de Rutas \pause
-	\item Completar la integración de los sensores \pause
-	\item Diseñar e implementar los algoritmos de control \pause
-	\item Lograr el vuelo no tripulado del cuadricóptero
+	\item Completar la integraci\'on de los sensores \pause
+	\item Dise\~nar e implementar los algoritmos de vuelo \pause
+	\begin{itemize}
+		\item Autocalibraci\'on
+		\item Generador de Rutas
+		\item Adquisici\'on de datos y estimaci\'on de estado
+		\item T\'ecnica de control
+	\end{itemize}
+	\item Switcheo manual - autom\'atico
 \end{itemize}
 \end{frame}
 
@@ -209,7 +213,7 @@ Dado el avance del proyecto, los objetivos para el final del proyecto son:
 \vspace{100pt}
 \begin{center}
 \begin{huge}
-¿Preguntas?
+Preguntas?
 \end{huge}
 \end{center}
 \end{frame}
@@ -220,11 +224,11 @@ Dado el avance del proyecto, los objetivos para el final del proyecto son:
 
 
 
-% ================ FRAME TÍPICO CON FIGURA ======================
+% ================ FRAME TPICO CON FIGURA ======================
 % ===============================================================
 
 \begin{frame}
-\frametitle{¿Qué es un Parcial?}
+\frametitle{Qu\'e es un Parcial?}
 
 \begin{columns}
 

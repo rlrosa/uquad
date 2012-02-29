@@ -171,9 +171,9 @@ $$
 \section{Cinem\'atica}
 Adem\'as de la relaci\'on entre las coordenadas de un sistema y del otro, es interesante conocer la relaci\'on que existe entre la velocidad angular del sistema y las derivadas de los \'angulos de Euler. Sea $\vec{\omega}$ la velocidad angular del cuadric\'optero(y por ende la del sistema $S_q$). La expresi\'on de la velocidad angular en el sistema de referencia del cuadric\'optero es la siguiente:
 $$
-\vec{\omega}=w_{q_x\prime}\vec{i_q}+w_{q_y\prime}\vec{j_q}+w_{q_z\prime}\vec{k_q}
+\vec{\omega}=w_{q_x}\vec{i_q}+w_{q_y}\vec{j_q}+w_{q_z}\vec{k_q}
 $$ 
-Donde $w_{q_x\prime}$, $w_{q_y\prime}$ y $w_{q_z\prime}$ son las proyecciones ortogonales de la velocidad angular en el sistema $S_q$.
+Donde $w_{q_x}$, $w_{q_y}$ y $w_{q_z}$ son las proyecciones ortogonales de la velocidad angular en el sistema $S_q$.
 Por como fue construido el sistema de referencia solidario al cuadric\'optero y utilizando el teorema de adici\'on de velocidades angulares, se deduce trivialmente que la velocidad angular del cuadric\'optero puede escribirse como:
 
 $$
@@ -185,7 +185,7 @@ El vector $\vec{i_2}$ es invariante respecto de la tercer rotaci\'on, es decir q
 \begin{footnotesize}
 
 $$
-w_{q_x\prime}\vec{i_q}+w_{q_y\prime}\vec{j_q}+w_{q_z\prime}\vec{k_q}= (\dot{\psi}  +    \dot{\theta}\sin\varphi)\vec{i_q}+(\dot{\varphi}\cos\psi + \dot{\theta}\cos\varphi \sin\psi)\vec{j_q}+(\dot{\theta}\cos\varphi \cos\psi -  \dot{\varphi}\sin\psi)\vec{k_q}
+w_{q_x}\vec{i_q}+w_{q_y}\vec{j_q}+w_{q_z}\vec{k_q}= (\dot{\psi}  +    \dot{\theta}\sin\varphi)\vec{i_q}+(\dot{\varphi}\cos\psi + \dot{\theta}\cos\varphi \sin\psi)\vec{j_q}+(\dot{\theta}\cos\varphi \cos\psi -  \dot{\varphi}\sin\psi)\vec{k_q}
 $$
 
 
@@ -199,9 +199,9 @@ $$
 \dot{\varphi}\\
 \dot{\theta}\\
 \end{array}\right)=\left(\begin{array}{c}
-\omega_{q_x\prime} + \omega_{q_z\prime}\tan\varphi \cos\psi + \omega_{q_y\prime}\tan\varphi \sin\psi\\
-\omega_{q_y\prime}\cos \psi - \omega_{q_z\prime}\sin\psi\\
-\omega_{q_z\prime} \frac{\cos\psi}{\cos\varphi}  + \omega_{q_y\prime}\frac{\sin\psi}{\cos\varphi} \\
+\omega_{q_x} + \omega_{q_z}\tan\varphi \cos\psi + \omega_{q_y}\tan\varphi \sin\psi\\
+\omega_{q_y}\cos \psi - \omega_{q_z}\sin\psi\\
+\omega_{q_z} \frac{\cos\psi}{\cos\varphi}  + \omega_{q_y}\frac{\sin\psi}{\cos\varphi} \\
 \end{array}\right)
 $$
 
@@ -209,10 +209,10 @@ Realizando un razonamiento similar se deduce la relaci\'on que existe entre la v
 $$
 \vec{v}=\dot{\vec{r}}=(x\vec{i}+y\vec{j}+z\vec{k})\prime
 $$
-Al igual que con la velocidad angular se puede escribir la velocidad absoluta del cuadric\'optero en el sistema $S_q$. Lo que se tiene es que $v=v_{q_z\prime}\vec{iq}+v_{q_y\prime}\vec{jq}+v_{q_z\prime}\vec{kq}$. Donde $v_{q_z\prime}$,$v_{q_y\prime}$ y $v_{q_z\prime}$ son las proyecciones ortogonales de la velocidad absoluta en el sistema solidario al cuadric\'optero. Igualando ambas expresiones de la velocidad se obtiene: 
+Al igual que con la velocidad angular se puede escribir la velocidad absoluta del cuadric\'optero en el sistema $S_q$. Lo que se tiene es que $\vec{v} =v_{q_x}\vec{iq}+v_{q_y}\vec{jq}+v_{q_z}\vec{kq}$. Donde $v_{q_x}$,$v_{q_y}$ y $v_{q_z}$ son las proyecciones ortogonales de la velocidad absoluta en el sistema solidario al cuadric\'optero. Igualando ambas expresiones de la velocidad se obtiene: 
 
 $$
-\dot{x}\vec{i}+\dot{y}\vec{j}+\dot{z}\vec{k} = v1\vec{i_q}+v2\vec{j_q}+v3\vec{k_q}
+\dot{x}\vec{i}+\dot{y}\vec{j}+\dot{z}\vec{k} = v_{q_x} \vec{i_q}+v_{q_y} \vec{j_q}+v_{q_z} \vec{k_q}
 $$
 
 Para transformar las coordenadas de un sistema de referencia al otro alcanza con multiplicar por una de las matrices de cambio de base definidas previamente. En particular nos interesa tener una expresi\'on para las derivadas de la posici\'on en el sistema $S_I$, por esta raz\'on se multiplica la expresi\'on de la velocidad en el sistema $S_q$ por la matriz $H_q^I$. Operando se obtiene:
@@ -225,9 +225,9 @@ $$\left( \begin{array}{c}
 \dot{y}\\
 \dot{z}
 \end{array}  \right) = \left( \begin{array}{c}
-v_{q_z\prime} \cos \varphi \cos \theta + v_{q_y\prime} ( \cos \theta \sin \varphi \sin \psi-\cos \varphi \sin \theta ) + v_{q_z\prime}(\sin \psi \sin \theta + \cos \psi \cos \theta \sin \varphi)  \\
-v_{q_z\prime} \cos \varphi \sin \theta + v_{q_y\prime} (\cos \psi \cos \theta + \sin \theta \sin \varphi \sin \psi) + v_{q_z\prime}( \cos \psi \sin \theta \sin \varphi-\cos \theta \sin \psi ) \\
--v_{q_z\prime} \sin \varphi  + v_{q_y\prime} \cos \varphi \sin \psi  + v_{q_z\prime}\cos \varphi \cos \psi \\
+v_{q_x} \cos \varphi \cos \theta + v_{q_y} ( \cos \theta \sin \varphi \sin \psi-\cos \varphi \sin \theta ) + v_{q_z}(\sin \psi \sin \theta + \cos \psi \cos \theta \sin \varphi)  \\
+v_{q_x} \cos \varphi \sin \theta + v_{q_y} (\cos \psi \cos \theta + \sin \theta \sin \varphi \sin \psi) + v_{q_z}( \cos \psi \sin \theta \sin \varphi-\cos \theta \sin \psi ) \\
+-v_{q_x} \sin \varphi  + v_{q_y} \cos \varphi \sin \psi  + v_{q_z}\cos \varphi \cos \psi \\
 \end{array} \right)  $$
 \end{footnotesize} 
 
@@ -247,20 +247,20 @@ $$\frac{d\vec{A}}{dt} =\frac{d\prime\vec{A}}{dt}+\vec{\Omega}\times\vec{A} $$
 
 En la ecuaci\'on anterior $\frac{d}{dt}$ representa la derivada temporal, mientras que $\frac{d\prime}{dt}$ representa la derivada temporal respecto del sistema m\'ovil. Por otra parte $\vec{\Omega}$ es la velocidad angular del sistema m\'ovil respecto al inercial. Operando se obtiene: 
 
-$$\vec{a} = (\dot{v_{q_z\prime}}+v_{q_z\prime} \omega_{q_y\prime} - v_{q_y\prime} \omega_{q_z\prime} )\vec{i_q} + (\dot{v_{q_y\prime}}+v_{q_z\prime} \omega_{q_z\prime} - v_{q_z\prime} \omega_{q_x\prime} )\vec{j_q}+(\dot{v_{q_z\prime}}+v_{q_y\prime} \omega_{q_x\prime} - v_{q_z\prime} \omega_{q_y\prime} )\vec{k_q} $$
+$$\vec{a} = (\dot{v_{q_x}}+v_{q_z} \omega_{q_y} - v_{q_y} \omega_{q_z} )\vec{i_q} + (\dot{v_{q_y}}+v_{q_x} \omega_{q_z} - v_{q_z} \omega_{q_x} )\vec{j_q}+(\dot{v_{q_z}}+v_{q_y} \omega_{q_x} - v_{q_x} \omega_{q_y} )\vec{k_q} $$
 
 
 
 Operando se puede reescribir la primer cardinal de la siguiente forma:
 
 $$
-\left(\begin{array}{c}\dot{v_{q_z\prime}}\\
-\dot{v_{q_y\prime}}\\
-\dot{v_{q_z\prime}}\\
+\left(\begin{array}{c}\dot{v_{q_x}}\\
+\dot{v_{q_y}}\\
+\dot{v_{q_z}}\\
 \end{array} \right) = \left(\begin{array}{c}
-v_{q_y\prime} \omega_{q_z\prime} - v_{q_z\prime} \omega_{q_y\prime}	\\
-v_{q_z\prime} \omega_{q_x\prime} - v_{q_z\prime} \omega_{q_z\prime}\\
-v_{q_z\prime} \omega_{q_y\prime} - v_{q_y\prime} \omega_{q_x\prime}\\
+v_{q_y} \omega_{q_z} - v_{q_z} \omega_{q_y}	\\
+v_{q_z} \omega_{q_x} - v_{q_z} \omega_{q_z}\\
+v_{q_x} \omega_{q_y} - v_{q_y} \omega_{q_x}\\
 \end{array}\right) + \sum_{i=1}^4 F_{ext} 
 $$
 
@@ -343,13 +343,13 @@ $$
 A partir del c\'alculo de esta derivada podemos reescribir la segunda cardinal:
 
 $$ \Pi_{O\prime}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}\left(\begin{array}{c}
-\dot{\omega_{q_x\prime}}\\
-\dot{\omega_{q_y\prime}}\\
-\dot{\omega_{q_z\prime}}\\
+\dot{\omega_{q_x}}\\
+\dot{\omega_{q_y}}\\
+\dot{\omega_{q_z}}\\
 \end{array}\right) = \left(\begin{array}{c}
-\omega_{q_y\prime}\omega_{q_z\prime}(I_{yy}-I_{zz})-\omega_{q_y\prime}I_{zz_m}(\omega_1-\omega_2+\omega_3-\omega_4)\\
+\omega_{q_y}\omega_{q_z}(I_{yy}-I_{zz})-\omega_{q_y}I_{zz_m}(\omega_1-\omega_2+\omega_3-\omega_4)\\
 
-\omega_{q_x\prime}\omega_{q_z\prime}(-I_{xx}+I_{zz})+\omega_{q_x\prime}I_{zz_m}(\omega_1-\omega_2+\omega_3-\omega_4)\\
+\omega_{q_x}\omega_{q_z}(-I_{xx}+I_{zz})+\omega_{q_x}I_{zz_m}(\omega_1-\omega_2+\omega_3-\omega_4)\\
 
 -I_{zz_m}(\dot{\omega_1}-\dot{\omega_2}+\dot{\omega_3}-\dot{\omega_4})\\
 
@@ -474,7 +474,7 @@ Estos resultados parecen adecuados respecto de lo desarrollado te\'oricamente ya
 Luego de realizados los estudios sobre la cinem\'atica y din\'amica del sistema y luego de comprender cabalmente las fuerzas y momentos involucrados se procede a construir el modelo en variables de estado.\\ 
 
 Se debe aclarar que la elecci\'on realizada del vector de estados se debe exclusivamente a la conveniencia pr\'actica que se encuentra al trabajar con las variables expresadas en el sistema del cuadric\'optero. Esta conveniencia se ve reflejada en dos aspectos, en primer lugar las simplificaciones que introduce trabajar con estas variables en el marco de un desarrollo te\'orico de las ecuaciones que gobiernan al sistema, por otra parte, al disponer de sensores montados sobre el cuadric\'optero, los mismos medir\'an las velocidades angulares y lineales en el sistema $S_q$. Bajo esta elecci\'on parece razonable escoger el vector de estados de la siguiente manera:
-$$X=\left\lbrace  x,y,z, v_{q_z\prime},v_{q_y\prime},v_{q_z\prime},\theta,\varphi,\psi,\omega_{q_x\prime},\omega_{q_y\prime},\omega_{q_z\prime} \right\rbrace$$
+$$X=\left\lbrace  x,y,z, v_{q_z},v_{q_y},v_{q_z},\theta,\varphi,\psi,\omega_{q_x},\omega_{q_y},\omega_{q_z} \right\rbrace$$
 
 Las fuerzas y momentos dependen todos de las velocidades angulares de las h\'elices, luego de las simplificaciones realizadas el vector entrada se compone simplemente de las velocidades de las h\'elices es decir que:
 
@@ -483,18 +483,18 @@ $$u=\left\lbrace\omega_1, \omega_2, \omega_3, \omega_4\right\rbrace$$
 El modelo en variables de estado es por lo tanto:
 
 \begin{equation}
-\boxed{\begin{aligned}&\dot{x}=v_{q_z\prime} \cos \varphi \cos \theta + v_{q_y\prime} ( \cos \theta \sin \varphi \sin \psi-\cos \varphi \sin \theta ) + v_{q_z\prime}(\sin \psi \sin \theta + \cos \psi \cos \theta \sin \varphi)\\
-&\dot{y}=v_{q_z\prime} \cos \varphi \sin \theta + v_{q_y\prime} (\cos \psi \cos \theta + \sin \theta \sin \varphi \sin \psi) + v_{q_z\prime}( \cos \psi \sin \theta \sin \varphi-\cos \theta \sin \psi )\\
-&\dot{z}= -v_{q_z\prime} \sin \varphi  + v_{q_y\prime} \cos \varphi \sin \psi  + v_{q_z\prime}\cos \varphi \cos \psi\\
-&\dot{\psi}=\omega_{q_x\prime} + \omega_{q_z\prime}\tan\varphi \cos\psi + \omega_{q_y\prime}\tan\varphi \sin\psi\\
-&\dot{\varphi}=\omega_{q_y\prime}\cos \psi - \omega_{q_z\prime}\sin\psi\\
-&\dot{\theta}=\omega_{q_z\prime} \frac{\cos\psi}{\cos\varphi}  + \omega_{q_y\prime}\frac{\sin\psi}{\cos\varphi}\\
-&\dot{v_{q_z\prime}}=v_{q_y\prime} \omega_{q_z\prime} - v_{q_z\prime} \omega_{q_y\prime}+g\sin\varphi\\
-&\dot{v_{q_y\prime}}=v_{q_z\prime} \omega_{q_x\prime} - v_{q_z\prime} \omega_{q_z\prime}-g\cos\varphi\sin\psi\\
-&\dot{v_{q_z\prime}}=v_{q_z\prime} \omega_{q_y\prime} - v_{q_y\prime} \omega_{q_x\prime}-g\cos\varphi\cos\psi+\frac{1}{M}\sum_{i=1}^4T_i\\
-&\dot{\omega_{q_x\prime}}=\frac{\omega_{q_y\prime}\omega_{q_z\prime}(I_{yy}-I_{zz})+\omega_{q_y\prime}I_{zz_m}(\omega_1-\omega_2+\omega_3-\omega_4)}{I_{xx}}+\frac{L(T_2-T_4)}{I_{xx}}\\
-&\dot{\omega_{q_y\prime}}=\frac{\omega_{q_x\prime}\omega_{q_z\prime}(-I_{xx}+I_{zz})+\omega_{q_x\prime}I_{zz_m}(\omega_1-\omega_2+\omega_3-\omega_4)}{{I_yy}}+\frac{L(T_3-T_1)}{I_{yy}}\\
-&\dot{\omega_{q_z\prime}}=\frac{-I_{zz_m}(\dot{w_1}-\dot{w_2}+\dot{w_3}-\dot{w_4})}{I_{zz}}+\frac{Q_1-Q_2+Q_3-Q_4}{I_{zz}}\\
+\boxed{\begin{aligned}&\dot{x}=v_{q_x} \cos \varphi \cos \theta + v_{q_y} ( \cos \theta \sin \varphi \sin \psi-\cos \varphi \sin \theta ) + v_{q_z}(\sin \psi \sin \theta + \cos \psi \cos \theta \sin \varphi)\\
+&\dot{y}=v_{q_x} \cos \varphi \sin \theta + v_{q_y} (\cos \psi \cos \theta + \sin \theta \sin \varphi \sin \psi) + v_{q_z}( \cos \psi \sin \theta \sin \varphi-\cos \theta \sin \psi )\\
+&\dot{z}= -v_{q_x} \sin \varphi  + v_{q_y} \cos \varphi \sin \psi  + v_{q_z}\cos \varphi \cos \psi\\
+&\dot{\psi}=\omega_{q_x} + \omega_{q_z}\tan\varphi \cos\psi + \omega_{q_y}\tan\varphi \sin\psi\\
+&\dot{\varphi}=\omega_{q_y}\cos \psi - \omega_{q_z}\sin\psi\\
+&\dot{\theta}=\omega_{q_z} \frac{\cos\psi}{\cos\varphi}  + \omega_{q_y}\frac{\sin\psi}{\cos\varphi}\\
+&\dot{v_{q_x}}=v_{q_y} \omega_{q_z} - v_{q_z} \omega_{q_y}+g\sin\varphi\\
+&\dot{v_{q_y}}=v_{q_z} \omega_{q_x} - v_{q_z} \omega_{q_z}-g\cos\varphi\sin\psi\\
+&\dot{v_{q_z}}=v_{q_x} \omega_{q_y} - v_{q_y} \omega_{q_x}-g\cos\varphi\cos\psi+\frac{1}{M}\sum_{i=1}^4T_i\\
+&\dot{\omega_{q_x}}=\frac{\omega_{q_y}\omega_{q_z}(I_{yy}-I_{zz})+\omega_{q_y}I_{zz_m}(\omega_1-\omega_2+\omega_3-\omega_4)}{I_{xx}}+\frac{L(T_2-T_4)}{I_{xx}}\\
+&\dot{\omega_{q_y}}=\frac{\omega_{q_x}\omega_{q_z}(-I_{xx}+I_{zz})+\omega_{q_x}I_{zz_m}(\omega_1-\omega_2+\omega_3-\omega_4)}{{I_{yy}}}+\frac{L(T_3-T_1)}{I_{yy}}\\
+&\dot{\omega_{q_z}}=\frac{-I_{zz_m}(\dot{w_1}-\dot{w_2}+\dot{w_3}-\dot{w_4})}{I_{zz}}+\frac{Q_1-Q_2+Q_3-Q_4}{I_{zz}}\\
 \end{aligned}}
 \end{equation}
 
