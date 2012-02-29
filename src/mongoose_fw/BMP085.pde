@@ -12,6 +12,7 @@
 //
 //
 #include <Wire.h>
+#include <assert.h>
 
 #define BMP085_ADDRESS 0x77  // I2C address of BMP085
 
@@ -154,6 +155,7 @@ int barom_update_state_machine()
  */
 void Baro_req_update()
 {
+#if DEBUG
     // check for unread data
     if((barom_press != BAROM_IDLE) ||
 	   (barom_temp != BAROM_IDLE))
@@ -162,6 +164,10 @@ void Baro_req_update()
 	Serial.println("Missed barom data!!");
 	Serial.println("-- -- -- -- --\n\n");
     }
+#else
+    assert((barom_press == BAROM_IDLE) &&
+	   (barom_temp == BAROM_IDLE));
+#endif
     // start state machine
     Read_Temperature(false);
     barom_req_time_us = micros();
@@ -205,8 +211,12 @@ int Read_Pressure(bool req_done)
 short bmp085GetTemperature(unsigned int ut)
 {
     // verify updated data
+#if DEBUG
     if(barom_temp != BAROM_DONE)
 	Serial.println("WARN:Old temp!");
+#else
+    assert(barom_temp == BAROM_DONE);
+#endif
     barom_temp = BAROM_IDLE; // mark as read
 
     long x1, x2;
@@ -225,8 +235,12 @@ short bmp085GetTemperature(unsigned int ut)
 long bmp085GetPressure(unsigned long up)
 {
     // verify updated data
+#if DEBUG
     if(barom_press != BAROM_DONE)
 	Serial.println("WARN:Old pres!");
+#else
+    assert(barom_press == BAROM_DONE);
+#endif
     barom_press = BAROM_IDLE; // mark as read
 
     long x1, x2, x3, b3, b6, p;
