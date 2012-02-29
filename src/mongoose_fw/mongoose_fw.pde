@@ -83,8 +83,12 @@ int SENSOR_SIGN[9] = { 1,1,1,1,1,1,1,1,1};  //Correct directions x,y,z - gyros, 
 #define PRINT_DCM               0   //Will print the whole direction cosine matrix
 #define PRINT_MagCal            0
 
+#define PRINT_DATA 1 // if 0 no data will be printed
 //#define PRINT_GPS 0     //Will print GPS data
-//#define PRINT_BINARY 0  //Will print binary message and suppress ASCII messages (above)
+#define PRINT_BINARY 1  //Will print binary message and suppress ASCII messages (above)
+#if PRINT_BINARY
+#define print(a) write(a)
+#endif
 
 #define ATOMIC_IMU_FORMAT 1
 #if ATOMIC_IMU_FORMAT
@@ -93,9 +97,6 @@ int SENSOR_SIGN[9] = { 1,1,1,1,1,1,1,1,1};  //Correct directions x,y,z - gyros, 
 #define PRINT_SENSOR_DATA_RAW   1   //Will print the raw uncorrected Sensor Data
 #define PRINT_DCM               0   //Will print the whole direction cosine matrix
 #define PRINT_MagCal            0
-
-//#define PRINT_GPS 0     //Will print GPS data
-#define PRINT_BINARY 1  //Will print binary message and suppress ASCII messages (above)
 #endif
 
 #define debugPin 6
@@ -111,6 +112,10 @@ int SENSOR_SIGN[9] = { 1,1,1,1,1,1,1,1,1};  //Correct directions x,y,z - gyros, 
 #define SAMP_INTRS_EXTR 4 //  Main loop runs at SAMP_T_INTR*SAMP_INTRS_EXTR (50Hz)
 #define SAMP_DIV_COMPASS 20 // sampled at SAMP_INTRS_EXTR/SAMP_DIV_COMPASS
 #define SAMP_DIV_BAROM 200 // sampled at SAMP_INTRS_EXTR/SAMP_DIV_BAROM
+#define SAMP_TX_T SAMP_T_INTR*SAMP_INTRS_EXTR // rate at which data is sent to UART
+#define SAMP_TX_JITTER_TOLERANCE SAMP_TX_T*.1 // 10% tolerance
+#define SAMP_TX_T_MAX (SAMP_TX_T+SAMP_TX_JITTER_TOLERANCE)
+#define SAMP_TX_T_MIN (SAMP_TX_T-SAMP_TX_JITTER_TOLERANCE)
 
 // Special modes
 #define ONLY_BMP085 0
@@ -119,6 +124,7 @@ int SENSOR_SIGN[9] = { 1,1,1,1,1,1,1,1,1};  //Correct directions x,y,z - gyros, 
 
 // Debug data
 #if DEBUG
+#define DEBUG_TX_TIMING 0
 static bool print_raw_bmp085 = false;
 #endif
 
@@ -143,6 +149,10 @@ bool running = true;
 float G_Dt=0.005;    // Integration time (DCM algorithm)  We will run the integration loop at 50Hz if possible
 //float G_Dt_ms=G_Dt;
 float G_Dt_us = G_Dt*1000;
+#if DEBUG_TX_TIMING
+float dt_tmp[SAMP_INTRS_EXTR];
+int dt_tmp_index = 0;
+#endif
 
 long time_us = 0;
 long time_us_old;
@@ -334,7 +344,7 @@ void print_menu(void){
     Serial.println();
 
     Serial.print("\te:\t Set BMP085 OSS:\t");
-    Serial.print(bmp085GetOSS(),DEC);
+    Serial.print(bmp085GetOSS());
     Serial.println();
 #endif
 
@@ -452,6 +462,7 @@ void loop() //Main Loop
 	    time_us_old = time_us;
 	    time_us = micros();
 	    G_Dt_us = time_us-time_us_old;
+	    dt_tmp[Print_counter] = G_Dt_us;
 	    G_Dt = G_Dt_us/1000000.0;    // Real time of loop run. We use this on the DCM algorithm (gyro integration time)
 	    if(G_Dt > 1)
 		G_Dt = 0;  //keeps dt from blowing up, goes to zero to keep gyros from departing
@@ -461,6 +472,7 @@ void loop() //Main Loop
 	    Baro_counter++;
 	    GPS_counter++;
 	    Print_counter++;
+	    dt_tmp_index++;
         
         
 	    //=================================================================================//
@@ -520,7 +532,7 @@ void loop() //Main Loop
 	    // Make sure you don't take too long here!
      
 	    //=============================== Read the GPS data ==============================//
-	    if (Print_counter > SAMP_INTRS_EXTR || ONLY_BMP085)  // 
+	    if (Print_counter > SAMP_INTRS_EXTR || ONLY_BMP085)  //
 	    {
 		Print_counter=0;
          
@@ -530,6 +542,6 @@ void loop() //Main Loop
         
 	    digitalWrite(debugPin,LOW);
  
-	}
+	} // internal sampling loop
     } // running
 }

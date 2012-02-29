@@ -4,13 +4,49 @@
 #define ATOMIC_IMU_END "Z"
 #endif
 
-void printdata(void)
-{    
-#if ATOMIC_IMU_FORMAT
+static unsigned long sampling_T_us = SAMP_TX_T; // Time at which last sample was sent (us)
+static unsigned long tx_Dt_us = 0; // Time since last sample was sent (us)
+#if DEBUG_TX_TIMING
+#define LOOPS 100
+int cnt_loops = 0;
+int cnt_fails = 0;
+#endif // DEBUG_TX_TIMING
 
+void printdata(void)
+{
+    unsigned long t_curr_us = micros();
+    tx_Dt_us = t_curr_us - sampling_T_us;
+    sampling_T_us = t_curr_us;
+
+#if DEBUG_TX_TIMING
+    if((tx_Dt_us > SAMP_TX_T_MAX) ||
+       (tx_Dt_us < SAMP_TX_T_MIN))
+	cnt_fails++;
+    if(cnt_loops++ > LOOPS)
+    {
+	if(cnt_fails > 0)
+	{
+	    Serial.print("!");
+	    Serial.print(cnt_fails);
+	    Serial.print("Dt:");
+	    Serial.print(tx_Dt_us);
+	    for(cnt_fails=0;cnt_fails < SAMP_INTRS_EXTR;cnt_fails++)
+	    {
+		Serial.print("\t");
+		Serial.print(dt_tmp[cnt_fails]);
+	    }
+	    Serial.println();
+	}
+	cnt_loops = 0;
+	cnt_fails = 0;
+    }
+#endif // DEBUG_TX_TIMING
+
+#if PRINT_DATA
+#if ATOMIC_IMU_FORMAT
       Serial.print(ATOMIC_IMU_INIT);
       Serial.print(ATOMIC_IMU_SEPARATOR);
-      Serial.print(G_Dt_us);
+      Serial.print(tx_Dt_us);
       Serial.print(ATOMIC_IMU_SEPARATOR);
       Serial.print(sen_data.accel_x_raw);
       Serial.print(ATOMIC_IMU_SEPARATOR);
@@ -24,11 +60,11 @@ void printdata(void)
       Serial.print(ATOMIC_IMU_SEPARATOR);
       Serial.print(sen_data.gyro_z_raw);  
       Serial.print(ATOMIC_IMU_SEPARATOR);
-      Serial.print((int)sen_data.magnetom_x_raw);
+      Serial.print(sen_data.magnetom_x_raw);
       Serial.print(ATOMIC_IMU_SEPARATOR);
-      Serial.print((int)sen_data.magnetom_y_raw);
+      Serial.print(sen_data.magnetom_y_raw);
       Serial.print(ATOMIC_IMU_SEPARATOR);
-      Serial.print((int)sen_data.magnetom_z_raw);    
+      Serial.print(sen_data.magnetom_z_raw);
       Serial.print(ATOMIC_IMU_SEPARATOR);
       Serial.print(sen_data.baro_temp);
       Serial.print(ATOMIC_IMU_SEPARATOR);
@@ -42,11 +78,11 @@ void printdata(void)
 	  Serial.print(sen_data.baro_pres_raw);
 	  Serial.print(ATOMIC_IMU_SEPARATOR);
       }
-#endif
+#endif // DEBUG
       Serial.print(ATOMIC_IMU_END);
       Serial.println();
 
-#else
+#else // ATOMIC_IMU_FORMAT
     // use ckdevices format
       Serial.print("!");
 
@@ -135,6 +171,7 @@ void printdata(void)
       
       Serial.println();    
 #endif
+#endif // PRINT_DATA
 }
 
 long convert_to_dec(float x)
