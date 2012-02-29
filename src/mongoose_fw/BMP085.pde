@@ -165,8 +165,8 @@ void Baro_req_update()
 	Serial.println("-- -- -- -- --\n\n");
     }
 #else
-    assert((barom_press != BAROM_IDLE) &&
-	   (barom_temp != BAROM_IDLE));
+    assert((barom_press == BAROM_IDLE) &&
+	   (barom_temp == BAROM_IDLE));
 #endif
     // start state machine
     Read_Temperature(false);
