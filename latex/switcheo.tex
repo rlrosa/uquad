@@ -103,4 +103,9 @@ También es posible observar la variación de la señal GEAR en el mismo control
 \end{center}
 \end{figure}
 
+\section{Detección de la posición de la llave}
+
+Para poder implementar el switcheo manual/automático será necesario poder detectar la posición de la llave. Esto es, deberá ser posible medir el ciclo de trabajo de la señal y, en función de éste, sabremos la posición en que se encuentra la llave.\\
+\\
+Para medir el ciclo de trabajo de la señal será necesario implementar detectores de nivel y timers que me permitan saber cuando la señal ``sube'' o ``baja'' y medir el tiempo que permanece en nivel alto o bajo.
 \end{document}
