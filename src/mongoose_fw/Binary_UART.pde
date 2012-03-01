@@ -16,7 +16,9 @@ void serialize16(int16_t a)
     s[point++]  = a>>8&0xff;
       if(point >= TX_BUFF_LEN)
       {
-	  Serial.print("!O");
+#if WARNINGS
+	  Serial.print("%%OO");
+#endif
 	  point--; // avoid breaking stuff
       }
 }
@@ -26,7 +28,9 @@ void serialize8(uint8_t a)
     s[point++]  = a;
     if(point >= TX_BUFF_LEN)
     {
-	Serial.print("!O");
+#if WARNINGS
+	Serial.print("%%OO");
+#endif
 	point--; // avoid breaking stuff
     }
 }
@@ -74,8 +78,10 @@ void UartSendData() {
     if(tx_busy)
     {
     	// Missed data!
-    	Serial.print("@@");
+#if WARNINGS
+    	Serial.print("%%@@");
     	Serial.println(point-tx_ptr);
+#endif
     }
     cli();
     tx_ptr = 0;

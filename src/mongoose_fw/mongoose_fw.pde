@@ -131,7 +131,8 @@ uquad_timing timing = {SAMP_T_INTR,
 // Special modes
 #define ONLY_BMP085 0
 #define MAGNETON_FULL_FS 1
-#define DEBUG 1
+#define DEBUG 0
+#define WARNINGS 0
 
 // Debug data
 #if DEBUG

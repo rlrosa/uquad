@@ -41,8 +41,10 @@ void printdata(void)
     if((tx_Dt_us > timing.T_extr_max) ||
        (tx_Dt_us < timing.T_extr_min))
     {
-	Serial.print("!!");
+#if WARNINGS
+	Serial.print("%%!!");
 	Serial.println(tx_Dt_us);
+#endif
     }
 
 #if DEBUG_TX_TIMING
