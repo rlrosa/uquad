@@ -64,7 +64,7 @@ x0=[2048/1.1 2048/1.1 2048/1.1 0 0 0 0 0 0 0 0 0];
 u=mean(RESIDUAL);
 sigma=std(RESIDUAL);
 
-save('mag1','X','sigma','T_0')
+save('mag','X','sigma','T_0')
 
 [am,~,mc]=mong_conv(am,w,mm,0);
 
