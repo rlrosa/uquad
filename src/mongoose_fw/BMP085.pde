@@ -107,7 +107,7 @@ void Init_Baro()
   calibration_loaded = true;
 }
 
-static long barom_req_time_us;
+static unsigned long barom_req_time_us;
 /** 
  * Guides through a state machine that will perform the following tasks:
  *   - Request a new temp reading.
@@ -191,7 +191,6 @@ int Read_Temperature(bool req_done)
 
 int Read_Pressure(bool req_done)
 {
-    long ret;
     if(req_done)
     {
 	// Get pressure reading
@@ -276,7 +275,6 @@ long bmp085GetPressure(unsigned long up)
 // Read 1 byte from the BMP085 at 'address'
 char bmp085Read(unsigned char address)
 {
-  unsigned char data;
   
   Wire.beginTransmission(BMP085_ADDRESS);
   Wire.send(address);
@@ -358,7 +356,7 @@ unsigned int bmp085ReadUT(bool req_done)
  * 
  * @return Max pressure conversion time in us.
  */
-long bmp085GetUPWaitUS()
+unsigned long bmp085GetUPWaitUS()
 {
     return 1500 + 1000*(3<<OSS);
 }

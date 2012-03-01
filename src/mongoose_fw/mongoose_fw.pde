@@ -73,15 +73,6 @@ int SENSOR_SIGN[9] = { 1,1,1,1,1,1,1,1,1};  //Correct directions x,y,z - gyros, 
 
 //========================================
 // Output Data Configuration
-// Turn on/off the different data outputs
-// For the Mongoose Visualization Software to work, the first 3 need to be turned on
-// To achieve the max sample rate, you will need to only turn on PRINT_EULER
-
-#define PRINT_EULER             1   //Will print the Euler angles Roll, Pitch and Yaw
-#define PRINT_SENSOR_DATA       1   //Will print the Corrected Sensor Data
-#define PRINT_SENSOR_DATA_RAW   1   //Will print the raw uncorrected Sensor Data
-#define PRINT_DCM               0   //Will print the whole direction cosine matrix
-#define PRINT_MagCal            0
 
 #define PRINT_DATA 1 // if 0 no data will be printed
 //#define PRINT_GPS 0     //Will print GPS data
@@ -91,13 +82,11 @@ int SENSOR_SIGN[9] = { 1,1,1,1,1,1,1,1,1};  //Correct directions x,y,z - gyros, 
 #endif
 
 #define ATOMIC_IMU_FORMAT 1
-#if ATOMIC_IMU_FORMAT
 #define PRINT_EULER             0   //Will print the Euler angles Roll, Pitch and Yaw
 #define PRINT_SENSOR_DATA       0   //Will print the Corrected Sensor Data
 #define PRINT_SENSOR_DATA_RAW   1   //Will print the raw uncorrected Sensor Data
 #define PRINT_DCM               0   //Will print the whole direction cosine matrix
 #define PRINT_MagCal            0
-#endif
 
 #define debugPin 6
 #define STATUS_LED 4  //PD4 on the Atmega328. Red LED
@@ -107,15 +96,15 @@ int SENSOR_SIGN[9] = { 1,1,1,1,1,1,1,1,1};  //Correct directions x,y,z - gyros, 
 #define Size_SensorOffsets     36       //the offset data is 12 bytes long 
 
 // Sampling setting
-#define SAMP_T_INTR 10000UL // us - internal sampling rate
+#define SAMP_T_INTR 5000UL // us - internal sampling rate
 #define SAMP_JITTER_INTR 12UL // us - timer misses by this amount
 #define SAMP_INTRS_EXTR 4 //  Main loop runs at SAMP_T_INTR*SAMP_INTRS_EXTR
 #define SAMP_DIV_COMPASS 20 // sampled at SAMP_INTRS_EXTR/SAMP_DIV_COMPASS
 #define SAMP_DIV_BAROM 200 // sampled at SAMP_INTRS_EXTR/SAMP_DIV_BAROM
 #define SAMP_T_EXTR (SAMP_T_INTR*SAMP_INTRS_EXTR) // rate at which data is sent to UART
 #define SAMP_JITTER_EXTR (SAMP_T_EXTR>>5) // 4% tolerance
-#define SAMP_T_EXTR_MAX 
-#define SAMP_T_EXTR_MIN 
+#define SAMP_T_EXTR_MAX (SAMP_T_EXTR + SAMP_JITTER_EXTR)
+#define SAMP_T_EXTR_MIN (SAMP_T_EXTR - SAMP_JITTER_EXTR)
 
 struct uquad_timing{
     unsigned long T_intr;
@@ -125,6 +114,8 @@ struct uquad_timing{
     unsigned long div_baro;
     unsigned long jitter_intr;
     unsigned long jitter_extr;
+    unsigned long T_extr_max;
+    unsigned long T_extr_min;
 };
 
 uquad_timing timing = {SAMP_T_INTR,
@@ -133,7 +124,9 @@ uquad_timing timing = {SAMP_T_INTR,
 		       SAMP_DIV_COMPASS,
 		       SAMP_DIV_BAROM,
 		       SAMP_JITTER_INTR,
-		       SAMP_JITTER_EXTR};
+		       SAMP_JITTER_EXTR,
+		       SAMP_T_EXTR_MAX,
+		       SAMP_T_EXTR_MIN};
 
 // Special modes
 #define ONLY_BMP085 0
@@ -228,7 +221,7 @@ struct s_sensor_data
     long baro_pres;
 };
 
-s_sensor_offsets sen_offset = {0,0,0,0,0,0,0,0,0};
+s_sensor_offsets sen_offset = {{0,0,0},{0,0,0},{0,0,0},0,0,0,0};
 s_sensor_data sen_data = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
 
@@ -450,7 +443,6 @@ int menu_execute(int command){
 
 void loop() //Main Loop
 {
-    read_part:
     if (Serial.available() > 0)
     {
 	// read the incoming byte:

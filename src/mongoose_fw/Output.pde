@@ -14,8 +14,8 @@ static unsigned long tx_Dt_us; // Time since last sample was sent (us)
 #define LOOPS 100
 int cnt_loops = 0;
 int cnt_fails = 0;
-#endif // DEBUG_TX_TIMING
 unsigned long fail_val = 0;
+#endif // DEBUG_TX_TIMING
 void printdata(void)
 {
     unsigned long t_curr_us = micros();
@@ -26,44 +26,31 @@ void printdata(void)
     tx_Dt_us = t_curr_us - sampling_T_us;
     sampling_T_us = t_curr_us;
 
+    // warn if sampling rate is off
+    if((tx_Dt_us > timing.T_extr_max) ||
+       (tx_Dt_us < timing.T_extr_min))
+    {
+	Serial.print("!");
+	Serial.println(tx_Dt_us);
+    }
+
 #if DEBUG_TX_TIMING
-    if((tx_Dt_us > (timing.T_extr + timing.jitter_extr)) ||
-       (tx_Dt_us < (timing.T_extr - timing.jitter_extr)))
-    /* if((tx_Dt_us > (SAMP_T_EXTR_MAX)) || */
-    /*    (tx_Dt_us < (SAMP_T_EXTR_MIN))) */
+    if((tx_Dt_us > timing.T_extr_max) ||
+       (tx_Dt_us < timing.T_extr_min))
     {
 	cnt_fails++;
-	Serial.print(timing.T_extr);
-	Serial.print('|');
-	Serial.print(timing.jitter_extr);
-	Serial.print('|');
-	Serial.print('|');
-	Serial.print(timing.T_extr - timing.jitter_extr);
-	Serial.print('|');
-	Serial.print(tx_Dt_us);
-	Serial.print('|');
-	Serial.println(timing.T_extr + timing.jitter_extr);
+	if(tx_Dt_us > fail_val)
+	    fail_val = tx_Dt_us;
     }
 	
     if(cnt_loops++ > LOOPS)
     {
-	if(cnt_fails > 0 || 1)
+	if(cnt_fails > 0)
 	{
 	    Serial.print("!");
 	    Serial.print(cnt_fails);
 	    Serial.print(',');
 	    Serial.print(fail_val);
-	    Serial.print(',');
-	    Serial.print(21250);
-	    Serial.print(',');
-	    Serial.print(SAMP_T_EXTR);
-	    Serial.print("Dt:");
-	    Serial.print(tx_Dt_us);
-	    for(cnt_fails=0;cnt_fails < SAMP_INTRS_EXTR;cnt_fails++)
-	    {
-		Serial.print("\t");
-		Serial.print(dt_tmp[cnt_fails]);
-	    }
 	    Serial.println();
 	}
 	cnt_loops = 0;
@@ -256,9 +243,11 @@ void send_raw_bin_background()
 void send_raw_bin_flush()
 {
     flushed_index = 0;
+#if SHOW_BYTE_COUNT
     Serial.println();
     Serial.print(buff_index,DEC);
     Serial.println();
+#endif
     //    Serial.write((uint8_t*)buff,buff_index);
     //    buff_index = 0;
 }
