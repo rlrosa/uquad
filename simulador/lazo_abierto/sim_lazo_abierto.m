@@ -1,7 +1,9 @@
-function sim_lazo_abierto 
-global ti tf t x0 y0 z0 psi0 phi0 theta0 vq10 vq20 vq30 wq10 wq20 wq30 X0 w1 w2 w3 w4 
+%function sim_lazo_abierto 
+function sim_lazo_abierto(ti,tf,w1,w2,w3,w4)
 
-%%%%%%%%Constantes del sistema%%%%%%%%%%%%%%%%%%%%%%
+
+% Constantes del sistema, hay que guardarlas como globales para que
+% simulink las entienda
 assignin('base','g',9.81); %Constante gravitacional
 assignin('base','L',0.29); %Largo de los brazos del quadcopter en metros
 assignin('base','M',1.541); %Masa del quadcopter en kilogramos
@@ -11,40 +13,16 @@ assignin('base','Iyy',2.32e-2);
 assignin('base','Izz',4.37e-2);
 assignin('base','Izzm',1.54e-5);
 
-x0=evalin('base','x0');
-y0=evalin('base','y0');
-z0=evalin('base','z0');
-psi0=evalin('base','psi0');
-phi0=evalin('base','phi0');
-theta0=evalin('base','theta0');
-vq10=evalin('base','vq10');
-vq20=evalin('base','vq20');
-vq30=evalin('base','vq30');
-wq10=evalin('base','wq10');
-wq20=evalin('base','wq20');
-wq30=evalin('base','wq30');
-ti=evalin('base','ti');
-tf=evalin('base','tf');
+%La linea del tiempo no la pude pasar como parámetro así que la defino como
+%global en la parte de la interfaz y acá me la traigo.
 t=evalin('base','t');
-w1=evalin('base','w1');
-w2=evalin('base','w2');
-w3=evalin('base','w3');
-w4=evalin('base','w4');
-
-X0=[x0,y0,z0,psi0,phi0,theta0,vq10,vq20,vq30,wq10,wq20,wq30];
-assignin('base','X0',X0);
-
 
 %%Simulación del modelo Simulink
-[t,X,Y]=sim('dinamica_quad',[ti tf], [],[t',w1',w2',w3',w4']);
+[t,X]=sim('dinamica_quad',[ti tf], [],[t',w1',w2',w3',w4']);
 
-%Simulación por Ode45
-%[t,X]=ode45(@f,[ti,tf],X0,[w1,w2,w3,w4]);
+assignin('base','X',X);
 
-
-assignin('base','Variables',X);
-
-%Ploteo la trayectoria del sistema
+%Ploteo la trayectoria del cuadricóptero
 plot3(X(:,1),X(:,2),X(:,3));grid on
 hold on;
 plot3(X(1:5:end,1),X(1:5:end,2),X(1:5:end,3),'x');grid on
