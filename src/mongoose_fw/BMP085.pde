@@ -133,8 +133,8 @@ int barom_update_state_machine()
 	    (micros() - barom_req_time_us > BMP085_TEMP_WAIT_US))
     {
 	Read_Temperature(true);
-	Read_Pressure(false);
-	barom_req_time_us = micros();
+	if(sensors.pressure)
+	    Read_Pressure(false);
     }
     if((barom_press == BAROM_IDLE) &&
        (barom_temp == BAROM_IDLE))
@@ -169,8 +169,10 @@ void Baro_req_update()
 	   (barom_temp == BAROM_IDLE));
 #endif
     // start state machine
-    Read_Temperature(false);
-    barom_req_time_us = micros();
+    if(sensors.temp)
+	Read_Temperature(false);
+    else
+	Read_Pressure(false);
 }
 
 int Read_Temperature(bool req_done)
@@ -184,6 +186,7 @@ int Read_Temperature(bool req_done)
     {
 	// request temp reading
 	bmp085ReadUT(false);
+	barom_req_time_us = micros();
 	barom_temp = BAROM_WAITING;
     }
     return barom_temp;
@@ -200,6 +203,7 @@ int Read_Pressure(bool req_done)
     {
 	// request pressure reading
 	bmp085ReadUP(false);
+	barom_req_time_us = micros();
 	barom_press = BAROM_WAITING;
     }
     return barom_press;

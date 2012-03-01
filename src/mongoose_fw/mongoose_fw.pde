@@ -524,7 +524,8 @@ void loop() //Main Loop
 		// Temperature takes 4.5ms, and pressure takes from 4.5 to 25.5, depending on
 		// OSS settings.
 		// If OSS==0, new data should be ready approximately 9ms after calling Baro_req_update()
-		Baro_req_update();
+		if(sensors.pressure || sensors.temp)
+		    Baro_req_update();
 	    }
 	    //=============================== Read the GPS data ==============================//
 	    if (GPS_counter > 50)  // Read GPS data at 1Hz... (50 loop runs)
