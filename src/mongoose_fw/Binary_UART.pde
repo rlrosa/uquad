@@ -1,6 +1,11 @@
-// ***********************************
-// Binary data TX
-// ***********************************
+/**
+ * *************************************
+ * Binary data TX
+ *
+ * Defs from:
+ *    /usr/lib/avr/include/avr/iom328p.h
+ * *************************************
+ */
 #define TX_BUFF_LEN 128
 static uint8_t point = 0;
 static uint8_t s[TX_BUFF_LEN];
@@ -69,8 +74,7 @@ void UartSendData() {
     if(tx_busy)
     {
     	// Missed data!
-    	Serial.print("!@");
-	Serial.println("Conchuda!");
+    	Serial.print("@@");
     	Serial.println(point-tx_ptr);
     }
     cli();
