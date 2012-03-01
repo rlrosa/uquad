@@ -1,12 +1,13 @@
-#if 0 && ATOMIC_IMU_FORMAT
-#define ATOMIC_IMU_SEPARATOR ','
+#if ATOMIC_IMU_FORMAT
+#define ATOMIC_IMU_SEPARATOR_ASCII '\t'
+#define ATOMIC_IMU_SEPARATOR_BIN ','
 #define ATOMIC_IMU_INIT 'A'
 #define ATOMIC_IMU_END 'Z'
 #endif
 
-static char ATOMIC_IMU_SEPARATOR = ',';
-static char ATOMIC_IMU_INIT = 'A';
-static char ATOMIC_IMU_END = 'Z';
+static char atomic_imu_separator = ATOMIC_IMU_SEPARATOR_ASCII;
+static char atomic_imu_init = ATOMIC_IMU_INIT;
+static char atomic_imu_end = ATOMIC_IMU_END;
 
 static unsigned long sampling_T_us;// = SAMP_TX_T; // Time at which last sample was sent (us)
 static unsigned long tx_Dt_us; // Time since last sample was sent (us)
@@ -19,9 +20,19 @@ unsigned long fail_val = 0;
 void printdata(void)
 {
     unsigned long t_curr_us = micros();
-
-    void (*print_method)(void*,int) = (print_binary)?
-	queue_raw_bin:send_raw_ascii;
+    void (*print_method)(void*,int);
+    if(print_binary)
+    {
+	print_method = queue_raw_bin;
+	atomic_imu_init ^= 2; // switch A C por si pierdo una tirada.
+	atomic_imu_separator = ATOMIC_IMU_SEPARATOR_BIN;
+    }
+    else
+    {
+	print_method = send_raw_ascii;
+	atomic_imu_init = ATOMIC_IMU_INIT;
+	atomic_imu_separator = ATOMIC_IMU_SEPARATOR_ASCII;
+    }
 
     tx_Dt_us = t_curr_us - sampling_T_us;
     sampling_T_us = t_curr_us;
@@ -62,42 +73,42 @@ void printdata(void)
 #if ATOMIC_IMU_FORMAT
     if(print_binary)
 	send_raw_bin_clear();
-    (*print_method)((void*)&ATOMIC_IMU_INIT,sizeof(char));
-    (*print_method)((void*)&ATOMIC_IMU_SEPARATOR,sizeof(char));
+    (*print_method)((void*)&atomic_imu_init,sizeof(char));
+    (*print_method)((void*)&atomic_imu_separator,sizeof(char));
     (*print_method)((void*)&tx_Dt_us,sizeof(unsigned long));
-    (*print_method)((void*)&ATOMIC_IMU_SEPARATOR,sizeof(char));
+    (*print_method)((void*)&atomic_imu_separator,sizeof(char));
     (*print_method)((void*)&sen_data.accel_x_raw,sizeof(int));
-    (*print_method)((void*)&ATOMIC_IMU_SEPARATOR,sizeof(char));
+    (*print_method)((void*)&atomic_imu_separator,sizeof(char));
     (*print_method)((void*)&sen_data.accel_y_raw,sizeof(int));
-    (*print_method)((void*)&ATOMIC_IMU_SEPARATOR,sizeof(char));
+    (*print_method)((void*)&atomic_imu_separator,sizeof(char));
     (*print_method)((void*)&sen_data.accel_z_raw,sizeof(int));
-    (*print_method)((void*)&ATOMIC_IMU_SEPARATOR,sizeof(char));
+    (*print_method)((void*)&atomic_imu_separator,sizeof(char));
     (*print_method)((void*)&sen_data.gyro_x_raw,sizeof(int));
-    (*print_method)((void*)&ATOMIC_IMU_SEPARATOR,sizeof(char));
+    (*print_method)((void*)&atomic_imu_separator,sizeof(char));
     (*print_method)((void*)&sen_data.gyro_y_raw,sizeof(int));
-    (*print_method)((void*)&ATOMIC_IMU_SEPARATOR,sizeof(char));
+    (*print_method)((void*)&atomic_imu_separator,sizeof(char));
     (*print_method)((void*)&sen_data.gyro_z_raw,sizeof(int));
-    (*print_method)((void*)&ATOMIC_IMU_SEPARATOR,sizeof(char));
+    (*print_method)((void*)&atomic_imu_separator,sizeof(char));
     (*print_method)((void*)&sen_data.magnetom_x_raw,sizeof(int));
-    (*print_method)((void*)&ATOMIC_IMU_SEPARATOR,sizeof(char));
+    (*print_method)((void*)&atomic_imu_separator,sizeof(char));
     (*print_method)((void*)&sen_data.magnetom_y_raw,sizeof(int));
-    (*print_method)((void*)&ATOMIC_IMU_SEPARATOR,sizeof(char));
+    (*print_method)((void*)&atomic_imu_separator,sizeof(char));
     (*print_method)((void*)&sen_data.magnetom_z_raw,sizeof(int));
-    (*print_method)((void*)&ATOMIC_IMU_SEPARATOR,sizeof(char));
+    (*print_method)((void*)&atomic_imu_separator,sizeof(char));
     (*print_method)((void*)&sen_data.baro_temp,sizeof(short));
-    (*print_method)((void*)&ATOMIC_IMU_SEPARATOR,sizeof(char));
+    (*print_method)((void*)&atomic_imu_separator,sizeof(char));
     (*print_method)((void*)&sen_data.baro_pres,sizeof(unsigned long));
-    (*print_method)((void*)&ATOMIC_IMU_SEPARATOR,sizeof(char));
+    (*print_method)((void*)&atomic_imu_separator,sizeof(char));
 #if DEBUG
     if(print_raw_bmp085)
     {
 	(*print_method)((void*)&sen_data.baro_temp_raw,sizeof(int));
-	(*print_method)((void*)&ATOMIC_IMU_SEPARATOR,sizeof(char));
+	(*print_method)((void*)&atomic_imu_separator,sizeof(char));
 	(*print_method)((void*)&sen_data.baro_pres_raw,sizeof(unsigned long));
-	(*print_method)((void*)&ATOMIC_IMU_SEPARATOR,sizeof(char));
+	(*print_method)((void*)&atomic_imu_separator,sizeof(char));
     }
 #endif // DEBUG
-    (*print_method)((void*)&ATOMIC_IMU_END,sizeof(char));
+    (*print_method)((void*)&atomic_imu_end,sizeof(char));
     if(print_binary)
 	send_raw_bin_flush();
     else
@@ -242,7 +253,7 @@ void send_raw_bin_background()
 {
     int i = 0;
     while(flushed_index < buff_index &&
-	  i++ < ((buff_index>>(SAMP_INTRS_EXTR>>1)) + 1))
+	  (i++ < ((buff_index>>(SAMP_INTRS_EXTR>>1)) + 1)))
 	Serial.write(buff[flushed_index++]);
 }
 
@@ -253,19 +264,14 @@ void send_raw_bin_background()
  *       send_raw_bin_background()
  *   - Will NOT reset output buffer. This is done from:
  *       send_raw_bin_clear()
- *     If output buffer is not reset, this call will overwrite.
+ *   - Assumes data was queud using:
+ *       queue_raw_bin()
  *
  */
 void send_raw_bin_flush()
 {
-    if(flushed_index != buff_index)
-    {
-	// missed data
-	Serial.print("!@");
-	Serial.println(buff_index-flushed_index);
-    }
- 
     flushed_index = 0;
+#define SHOW_BYTE_COUNT 0
 #if SHOW_BYTE_COUNT
     Serial.println();
     Serial.print(buff_index,DEC);
@@ -278,10 +284,19 @@ void send_raw_bin_flush()
 /** 
  * Clear output buffer.
  * Should be called before adding data to new queue.
+ * Will print error if there was pending data in the queue.
  * 
  */
 void send_raw_bin_clear()
 {
+    if(flushed_index != buff_index)
+    {
+	// Missed data!
+	// Assumes we won't miss more than 0xff bytes
+	Serial.print("!@");
+	Serial.println(lowByte(buff_index-flushed_index));
+    }
+    //    assert(flushed_index == buff_index); 
     buff_index = 0;
 }
 
