@@ -470,8 +470,6 @@ void loop() //Main Loop
     {
 	// update barom reading state machine
 	barom_update_state_machine();
-	if(print_binary)
-	    send_raw_bin_background();
 
 	if( (micros()-time_us) >= 
 	    SAMP_T_INTR - SAMP_JITTER_INTR )

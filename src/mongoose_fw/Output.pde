@@ -71,8 +71,8 @@ void printdata(void)
 
 #if PRINT_DATA
 #if ATOMIC_IMU_FORMAT
-    if(print_binary)
-	send_raw_bin_clear();
+    while(print_binary && tx_busy)
+	delayMicroseconds(100); // wait
     (*print_method)((void*)&atomic_imu_init,sizeof(char));
     (*print_method)((void*)&atomic_imu_separator,sizeof(char));
     (*print_method)((void*)&tx_Dt_us,sizeof(unsigned long));
@@ -110,7 +110,7 @@ void printdata(void)
 #endif // DEBUG
     (*print_method)((void*)&atomic_imu_end,sizeof(char));
     if(print_binary)
-	send_raw_bin_flush();
+	UartSendData();
     else
 	Serial.println();
 
@@ -240,87 +240,9 @@ void PrintCompassCalibration(void)
 }
 #endif
 
-#define TX_BUFF_LEN 256
-static char buff[TX_BUFF_LEN];
-static int buff_index = 0;
-static int flushed_index = 0;
-
-/** 
- * This function should be called in loop().
- * Instead of saturating the UART, this will send chunks of data.
- */
-void send_raw_bin_background()
-{
-    int i = 0;
-    while(flushed_index < buff_index &&
-	  (i++ < ((buff_index>>(SAMP_INTRS_EXTR>>1)) + 1)))
-	Serial.write(buff[flushed_index++]);
-}
-
-/** 
- * Will start data TX.
- * NOTES:
- *   - Will NOT TX. TX is done from
- *       send_raw_bin_background()
- *   - Will NOT reset output buffer. This is done from:
- *       send_raw_bin_clear()
- *   - Assumes data was queud using:
- *       queue_raw_bin()
- *
- */
-void send_raw_bin_flush()
-{
-    flushed_index = 0;
-#define SHOW_BYTE_COUNT 0
-#if SHOW_BYTE_COUNT
-    Serial.println();
-    Serial.print(buff_index,DEC);
-    Serial.println();
-#endif
-    //    Serial.write((uint8_t*)buff,buff_index);
-    //    buff_index = 0;
-}
-
-/** 
- * Clear output buffer.
- * Should be called before adding data to new queue.
- * Will print error if there was pending data in the queue.
- * 
- */
-void send_raw_bin_clear()
-{
-    if(flushed_index != buff_index)
-    {
-	// Missed data!
-	// Assumes we won't miss more than 0xff bytes
-	Serial.print("!@");
-	Serial.println(lowByte(buff_index-flushed_index));
-    }
-    //    assert(flushed_index == buff_index); 
-    buff_index = 0;
-}
-
-/** 
- * Adds data to the output buffer.
- * 
- * @param data 
- * @param size_bytes 
- */
-void queue_raw_bin(void *data, int size_bytes)
-{
-  int i;
-  for (i = 0 ; i < size_bytes ; i++)
-  {
-      //      Serial.write(*((char*)data + i));
-      buff[buff_index++] = *((char*)data + i);
-      if(buff_index >= TX_BUFF_LEN)
-      {
-	  Serial.print("!O");
-	  buff_index--;
-      }
-  }
-}
-
+// ***********************************
+// ASCII data TX
+// ***********************************
 void send_raw_ascii(void *data, int size_bytes)
 {
     switch(size_bytes)
