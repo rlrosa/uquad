@@ -107,20 +107,38 @@ int SENSOR_SIGN[9] = { 1,1,1,1,1,1,1,1,1};  //Correct directions x,y,z - gyros, 
 #define Size_SensorOffsets     36       //the offset data is 12 bytes long 
 
 // Sampling setting
-#define SAMP_T_INTR 5000 // us - internal sampling rate
-#define SAMP_JITTER 12 // us - timer misses by this amount
-#define SAMP_INTRS_EXTR 4 //  Main loop runs at SAMP_T_INTR*SAMP_INTRS_EXTR (50Hz)
+#define SAMP_T_INTR 10000UL // us - internal sampling rate
+#define SAMP_JITTER_INTR 12UL // us - timer misses by this amount
+#define SAMP_INTRS_EXTR 4 //  Main loop runs at SAMP_T_INTR*SAMP_INTRS_EXTR
 #define SAMP_DIV_COMPASS 20 // sampled at SAMP_INTRS_EXTR/SAMP_DIV_COMPASS
 #define SAMP_DIV_BAROM 200 // sampled at SAMP_INTRS_EXTR/SAMP_DIV_BAROM
-#define SAMP_TX_T SAMP_T_INTR*SAMP_INTRS_EXTR // rate at which data is sent to UART
-#define SAMP_TX_JITTER_TOLERANCE SAMP_TX_T*.1 // 10% tolerance
-#define SAMP_TX_T_MAX (SAMP_TX_T+SAMP_TX_JITTER_TOLERANCE)
-#define SAMP_TX_T_MIN (SAMP_TX_T-SAMP_TX_JITTER_TOLERANCE)
+#define SAMP_T_EXTR (SAMP_T_INTR*SAMP_INTRS_EXTR) // rate at which data is sent to UART
+#define SAMP_JITTER_EXTR (SAMP_T_EXTR>>5) // 4% tolerance
+#define SAMP_T_EXTR_MAX 
+#define SAMP_T_EXTR_MIN 
+
+struct uquad_timing{
+    unsigned long T_intr;
+    unsigned long T_ie_ratio;
+    unsigned long T_extr;
+    unsigned long div_magn;
+    unsigned long div_baro;
+    unsigned long jitter_intr;
+    unsigned long jitter_extr;
+};
+
+uquad_timing timing = {SAMP_T_INTR,
+		       SAMP_INTRS_EXTR,
+		       SAMP_T_EXTR,
+		       SAMP_DIV_COMPASS,
+		       SAMP_DIV_BAROM,
+		       SAMP_JITTER_INTR,
+		       SAMP_JITTER_EXTR};
 
 // Special modes
 #define ONLY_BMP085 0
 #define MAGNETON_FULL_FS 1
-#define DEBUG 0
+#define DEBUG 1
 
 // Debug data
 #if DEBUG
@@ -460,9 +478,11 @@ void loop() //Main Loop
     {
 	// update barom reading state machine
 	barom_update_state_machine();
+	if(print_binary)
+	    send_raw_bin_background();
 
 	if( (micros()-time_us) >= 
-	    SAMP_T_INTR - SAMP_JITTER )
+	    SAMP_T_INTR - SAMP_JITTER_INTR )
 	{
 	    // We enter here every SAMP_T_INTR +- SAMP_JITTER
 	    digitalWrite(debugPin,HIGH);
