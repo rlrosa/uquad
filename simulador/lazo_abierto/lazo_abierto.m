@@ -447,20 +447,12 @@ function pushbutton1_Callback(hObject, eventdata, handles)
     %recta(9) la fuerza tiene que ser, en la situación inicial,
     %igual al peso (hovering)
     %Se calcula la velocidad angular necesaria para lograr el hovering
-    syms x
     if (ind~=1) && (ind~=9)
-        fuerza_hov=9.81*m/4;
-         val=solve(3.5296e-5*x^2-4.9293e-4*x-fuerza_hov);
-         val_hov=eval(val);
-        
-         if (val_hov(1)>=0)
-                 val_hov=val_hov(1);
-         else val_hov=val_hov(2);
-         end
-            w1(time>(ti-1)) = val_hov; 
-            w2(time>(ti-1)) = val_hov;
-            w3(time>(ti-1)) = val_hov;
-            w4(time>(ti-1)) = val_hov;
+        val_hov=calc_omega(fuerza_hov);
+        w1(time>(ti-1)) = val_hov; 
+        w2(time>(ti-1)) = val_hov;
+        w3(time>(ti-1)) = val_hov;
+        w4(time>(ti-1)) = val_hov;
     end
     
     switch ind  % Con esto se termina de calcular la velocidad angular de 
@@ -485,32 +477,20 @@ function pushbutton1_Callback(hObject, eventdata, handles)
             %Tengo que subir la veocidad angular de dos motores y bajar la de 
             %los otros dos. La fuerza total tiene que ser constante.
          
-            fuerza_mas=fuerza_hov+1; %Fuerza de los motores que empujan más
-         
-             %Calculo la velocidad angular necesaria para tener esta fuerza
-            val=solve(3.5296e-5*x^2-4.9293e-4*x-fuerza_mas);
-            val_mas=eval(val);
-            if (val_mas(1)>=0)
-                   val_mas=val_mas(1);
-            else val_mas=val_mas(2);
-            end
-         
-             %Le asigno esa velocidad angular a los motores 2 y 4
+            %Velocidad angular necesaria para tener 1N más de fuerza que en
+            %hovering
+            val_mas=calcu_omega(val_hov+1);
+                     
+            %Le asigno esa velocidad angular a los motores 2 y 4
             w2(time>tf/2) = val_mas;
             w4(time>tf/2) = val_mas;
          
          
-            fuerza_menos=fuerza_hov-1; %Fuerza de los motores que empujan menos
-         
-            %Calculo la velocidad angular necesaria para tener esta fuerza
-            val=solve(3.5296e-5*x^2-4.9293e-4*x-fuerza_menos);
-            val_menos=eval(val);
-            if (val_menos(1)>=0)
-                  val_menos=val_menos(1);
-            else val_menos=val_menos(2);
-            end
-         
-            %Le asigno esa velocidad angular a los motores 2 y 4
+            %Velocidad angular necesaria para tener 1N menos de fuerza que
+            %en hovering
+            val_menos=calcu_omega(val_hov-1)
+            
+            %Le asigno esa velocidad angular a los motores 1 y 3
             w1(time>tf/2) = val_menos;
             w3(time>tf/2) = val_menos;
             
@@ -521,13 +501,7 @@ function pushbutton1_Callback(hObject, eventdata, handles)
             fuerza_rec=9.81*m/(4*cos(psio)*cos(phio));
             
             %Calculo la velocidad angular necesaria para tener esa fuerza
-            val=solve(3.5296e-5*x^2-4.9293e-4*x-fuerza_rec);
-            val_rec=eval(val);
-        
-            if (val_rec(1)>=0)
-                     val_rec=val_rec(1);
-            else val_rec=val_rec(2);
-            end 
+            val_rec=calcu_omega(fuerza_rec);
             
              %Le asigno esa velocidad angular a los cuatro motores 
              w1(time>(ti-1)) = val_rec;
@@ -536,8 +510,7 @@ function pushbutton1_Callback(hObject, eventdata, handles)
              w4(time>(ti-1)) = val_rec;         
     
     end
-    
-    
+        
     %Calculo las velocidades iniciales en el sistema del quadricoptero
     determinar_vel;
     
