@@ -21,7 +21,7 @@ void printdata(void)
     unsigned long t_curr_us = micros();
 
     void (*print_method)(void*,int) = (print_binary)?
-	send_raw_bin:send_raw_ascii;
+	queue_raw_bin:send_raw_ascii;
 
     tx_Dt_us = t_curr_us - sampling_T_us;
     sampling_T_us = t_curr_us;
@@ -229,19 +229,42 @@ void PrintCompassCalibration(void)
 }
 #endif
 
-static char buff[256];
+#define TX_BUFF_LEN 256
+static char buff[TX_BUFF_LEN];
 static int buff_index = 0;
 static int flushed_index = 0;
 
+/** 
+ * This function should be called in loop().
+ * Instead of saturating the UART, this will send chunks of data.
+ */
 void send_raw_bin_background()
 {
     int i = 0;
-    while(flushed_index < buff_index && i++ < 32)
+    while(flushed_index < buff_index &&
+	  i++ < ((buff_index>>(SAMP_INTRS_EXTR>>1)) + 1))
 	Serial.write(buff[flushed_index++]);
-}   
+}
 
+/** 
+ * Will start data TX.
+ * NOTES:
+ *   - Will NOT TX. TX is done from
+ *       send_raw_bin_background()
+ *   - Will NOT reset output buffer. This is done from:
+ *       send_raw_bin_clear()
+ *     If output buffer is not reset, this call will overwrite.
+ *
+ */
 void send_raw_bin_flush()
 {
+    if(flushed_index != buff_index)
+    {
+	// missed data
+	Serial.print("!@");
+	Serial.println(buff_index-flushed_index);
+    }
+ 
     flushed_index = 0;
 #if SHOW_BYTE_COUNT
     Serial.println();
@@ -252,17 +275,35 @@ void send_raw_bin_flush()
     //    buff_index = 0;
 }
 
+/** 
+ * Clear output buffer.
+ * Should be called before adding data to new queue.
+ * 
+ */
 void send_raw_bin_clear()
 {
     buff_index = 0;
 }
 
-void send_raw_bin(void *data, int size_bytes)
+/** 
+ * Adds data to the output buffer.
+ * 
+ * @param data 
+ * @param size_bytes 
+ */
+void queue_raw_bin(void *data, int size_bytes)
 {
   int i;
   for (i = 0 ; i < size_bytes ; i++)
+  {
       //      Serial.write(*((char*)data + i));
       buff[buff_index++] = *((char*)data + i);
+      if(buff_index >= TX_BUFF_LEN)
+      {
+	  Serial.print("!O");
+	  buff_index--;
+      }
+  }
 }
 
 void send_raw_ascii(void *data, int size_bytes)
