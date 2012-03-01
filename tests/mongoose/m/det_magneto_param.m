@@ -1,8 +1,10 @@
 clear all
 clc
 
+global mm mt
+
 mm = zeros(18,3);
-mt = zeros(3,18);
+mt = zeros(18,3);
 am = zeros(18,3);
 at = zeros(3,18);
 te = zeros(18,1);
@@ -38,7 +40,7 @@ for i=1:3
             te(k,1) = mean(t);
             mm(k,:) =[mean(c(:,1)); mean(c(:,2));mean(c(:,3))];
             am(k,:) =[mean(a(:,1)); mean(a(:,2));mean(a(:,3))];
-            mt(:,k) =mag_teo(eje,'00',theta);  
+            mt(k,:) =mag_teo(eje,'00',theta);  
             if eje =='x'
                 at(:,k)=[9.81;0;0];
             elseif eje =='y'
@@ -96,7 +98,7 @@ Norte = [cos(inc)*cos(dec) cos(inc)*sin(dec) sin(inc)];
 angulos=zeros(18,3);
 
 for i=1:length(mc(:,1))
-    [orientacion(i,1), orientacion(i,2), orientacion(i,3)] = calcu_ang(Norte,mt(:,i)); 
+    [orientacion(i,1), orientacion(i,2), orientacion(i,3)] = calcu_ang(Norte,mt(i,:)); 
     [angulos(i,1),angulos(i,2),angulos(i,3)]=calcu_ang(Norte,mc(i,:));
 end
 
