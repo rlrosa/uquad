@@ -129,6 +129,7 @@ uquad_timing timing = {SAMP_T_INTR,
 #define MAGNETON_FULL_FS 1
 #define DEBUG 0
 #define WARNINGS 0
+#define RELEASE 1
 
 // Debug data
 #if DEBUG
@@ -263,6 +264,7 @@ void setup()
  
   pinMode (STATUS_LED,OUTPUT);  // Status LED
   pinMode (debugPin,OUTPUT);  // debug LED
+#if !RELEASE
   Serial.println();
 #if ATOMIC_IMU_FORMAT
   Serial.println("uQuad!");
@@ -274,7 +276,7 @@ void setup()
   Serial.println("9 Degree of Freedom Attitude and Heading Reference System with barometric pressure");
   Serial.println("www.ckdevices.com");
 #endif
-
+#endif
   delay(300);
 
   Wire.begin();    //Init the I2C

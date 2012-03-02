@@ -85,7 +85,8 @@ void HMC58X3::calibrate(unsigned char gain) {
 
   setGain(gain);
   float x, y, z, mx=0, my=0, mz=0, t=10;
-  
+
+#if 0
   Serial.println("Compass calibration:");
   for (int i=0; i<(int)t; i++) { 
     setMode(1);
@@ -100,6 +101,7 @@ void HMC58X3::calibrate(unsigned char gain) {
     Serial.print("\t");
     Serial.println(z);
   }
+#endif
   
   float max=0;
   if (mx>max) max=mx;
