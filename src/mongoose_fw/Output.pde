@@ -263,3 +263,159 @@ void send_raw_ascii(void *data, int size_bytes)
 	break;
     }
 }
+
+
+// ***********************************
+// User interface
+// ***********************************
+void set_work_mode()
+{
+    sensors_enabled_set_defaults();
+    print_binary = true;
+    running = true;
+}
+
+void print_menu(void){
+    Serial.println();
+    Serial.println("uQuad!");
+    Serial.println();
+    Serial.println("Commands will enable/disable sensor reading:");
+
+    Serial.println("\t#:\t Exit and run.");
+
+    Serial.print("\t2:\t Acc.:\t");
+    Serial.print(sensors.acc);
+    Serial.println();
+
+    Serial.print("\t3:\t Gyro.:\t");
+    Serial.print(sensors.gyro);
+    Serial.println();
+
+    Serial.print("\t4:\t Compass.:\t");
+    Serial.print(sensors.compass);
+    Serial.println();
+
+    Serial.print("\t5:\t Temp.:\t");
+    Serial.print(sensors.temp);
+    Serial.println();
+
+    Serial.print("\t6:\t Press.:\t");
+    Serial.print(sensors.pressure);
+    Serial.println();
+
+    Serial.print("\t7:\t Show barometer calibration.");
+    Serial.println();
+
+#if DEBUG
+    Serial.print("\tq:\t Print BMP085 raw.");
+    Serial.print(print_raw_bmp085);
+    Serial.println();
+
+    Serial.print("\tw:\t Print Compass calibration.");
+    Serial.println();
+
+    Serial.print("\te:\t Set BMP085 OSS:\t");
+    Serial.print(bmp085GetOSS());
+    Serial.println();
+
+    Serial.print("\tb:\t Print binary data:\t");
+    Serial.print(print_binary);
+    Serial.println();
+#endif
+
+    Serial.print("\tCommand:");
+}
+
+int menu_execute(int command){
+    if(command == '!')
+    {
+	// set to normal mode
+	set_work_mode();
+	return 0;
+    }
+    if(running)
+    {
+	if(command == '$')
+	{
+	    // stop!
+	    running = false;
+	}
+    }
+    else // not running
+    {
+	switch (command)
+	{
+	case '#':
+	    running = true;
+	    break;
+	case '2':
+	    sensors.acc = !sensors.acc;
+	    if(!sensors.acc)
+	    {
+		sen_data.accel_x_raw = 0;
+		sen_data.accel_y_raw = 0;
+		sen_data.accel_z_raw = 0;
+	    }
+	    break;
+	case '3':
+	    sensors.gyro = !sensors.gyro;
+	    if(!sensors.gyro)
+	    {
+		sen_data.gyro_x_raw = 0;
+		sen_data.gyro_y_raw = 0;
+		sen_data.gyro_z_raw = 0;
+	    }
+	    break;
+	case '4':
+	    sensors.compass = !sensors.compass;
+	    if(!sensors.compass)
+	    {
+		sen_data.magnetom_x_raw = 0;
+		sen_data.magnetom_y_raw = 0;
+		sen_data.magnetom_z_raw = 0;
+	    }
+	    break;
+	case '5':
+	    sensors.temp = !sensors.temp;
+	    if(!sensors.temp)
+	    {
+		sen_data.baro_temp_raw = 0;
+	    }
+	    break;
+	case '6':
+	    sensors.pressure = !sensors.pressure;
+	    if(!sensors.pressure)
+	    {
+		sen_data.baro_pres_raw = 0;
+	    }
+	    break;
+	case '7':
+	    bmp085Display_Calibration();
+	    break;
+#if DEBUG
+	case 'q':
+	    print_raw_bmp085 = !print_raw_bmp085;
+	    break;
+	case 'w':
+	    PrintCompassCalibration();
+	    break;
+	case 'e':
+	    Serial.println("\nIncrementing OSS.");
+	    if(bmp085SetOSS((bmp085GetOSS()+1)%4))
+		Serial.println("\nSuccess!");
+	    else
+		Serial.println("\nFAILED!");
+	    break;
+	case 'b':
+	    print_binary = !print_binary;
+	    break;
+#endif
+	default:
+	    // invalid command
+	    return -1;
+	}
+    }
+    if(!running)
+	print_menu();
+    return 0;
+}
