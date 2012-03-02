@@ -82,7 +82,7 @@ void Drift_correction(void)
   float Accel_magnitude;
   float Accel_weight;
   float Integrator_magnitude;
-  float mag_projection;
+  //  float mag_projection;
   
   //*****Roll and Pitch***************
 

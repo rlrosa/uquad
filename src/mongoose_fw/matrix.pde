@@ -14,9 +14,8 @@ void Matrix_Multiply(float a[3][3], float b[3][3],float mat[3][3])
       mat[x][y]=0;
       mat[x][y]=op[0]+op[1]+op[2];
       
-      float test=mat[x][y];
+      //      float test=mat[x][y];
     }
   }
 }
-
 
