@@ -1,40 +1,69 @@
 #if ATOMIC_IMU_FORMAT
-#define ATOMIC_IMU_SEPARATOR "\t"
-#define ATOMIC_IMU_INIT "A"
-#define ATOMIC_IMU_END "Z"
+#define ATOMIC_IMU_SEPARATOR_ASCII '\t'
+#define ATOMIC_IMU_SEPARATOR_BIN ','
+#define ATOMIC_IMU_INIT 'A'
+#define ATOMIC_IMU_END 'Z'
 #endif
 
-static unsigned long sampling_T_us = SAMP_TX_T; // Time at which last sample was sent (us)
-static unsigned long tx_Dt_us = 0; // Time since last sample was sent (us)
+static char atomic_imu_separator = ATOMIC_IMU_SEPARATOR_ASCII;
+static char atomic_imu_init = ATOMIC_IMU_INIT;
+static char atomic_imu_end = ATOMIC_IMU_END;
+
+static unsigned long sampling_T_us;// = SAMP_TX_T; // Time at which last sample was sent (us)
+static unsigned long tx_Dt_us; // Time since last sample was sent (us)
 #if DEBUG_TX_TIMING
 #define LOOPS 100
 int cnt_loops = 0;
 int cnt_fails = 0;
+unsigned long fail_val = 0;
 #endif // DEBUG_TX_TIMING
-
 void printdata(void)
 {
     unsigned long t_curr_us = micros();
+    void (*print_method)(void*,int);
+    if(print_binary)
+    {
+	print_method = queue_raw_bin;
+	atomic_imu_init ^= 2; // switch A C por si pierdo una tirada.
+	atomic_imu_separator = ATOMIC_IMU_SEPARATOR_BIN;
+    }
+    else
+    {
+	print_method = send_raw_ascii;
+	atomic_imu_init = ATOMIC_IMU_INIT;
+	atomic_imu_separator = ATOMIC_IMU_SEPARATOR_ASCII;
+    }
+
     tx_Dt_us = t_curr_us - sampling_T_us;
     sampling_T_us = t_curr_us;
 
+    // warn if sampling rate is off
+    if((tx_Dt_us > timing.T_extr_max) ||
+       (tx_Dt_us < timing.T_extr_min))
+    {
+#if WARNINGS
+	Serial.print("%%!!");
+	Serial.println(tx_Dt_us);
+#endif
+    }
+
 #if DEBUG_TX_TIMING
-    if((tx_Dt_us > SAMP_TX_T_MAX) ||
-       (tx_Dt_us < SAMP_TX_T_MIN))
+    if((tx_Dt_us > timing.T_extr_max) ||
+       (tx_Dt_us < timing.T_extr_min))
+    {
 	cnt_fails++;
+	if(tx_Dt_us > fail_val)
+	    fail_val = tx_Dt_us;
+    }
+	
     if(cnt_loops++ > LOOPS)
     {
 	if(cnt_fails > 0)
 	{
 	    Serial.print("!");
 	    Serial.print(cnt_fails);
-	    Serial.print("Dt:");
-	    Serial.print(tx_Dt_us);
-	    for(cnt_fails=0;cnt_fails < SAMP_INTRS_EXTR;cnt_fails++)
-	    {
-		Serial.print("\t");
-		Serial.print(dt_tmp[cnt_fails]);
-	    }
+	    Serial.print(',');
+	    Serial.print(fail_val);
 	    Serial.println();
 	}
 	cnt_loops = 0;
@@ -44,43 +73,48 @@ void printdata(void)
 
 #if PRINT_DATA
 #if ATOMIC_IMU_FORMAT
-      Serial.print(ATOMIC_IMU_INIT);
-      Serial.print(ATOMIC_IMU_SEPARATOR);
-      Serial.print(tx_Dt_us);
-      Serial.print(ATOMIC_IMU_SEPARATOR);
-      Serial.print(sen_data.accel_x_raw);
-      Serial.print(ATOMIC_IMU_SEPARATOR);
-      Serial.print(sen_data.accel_y_raw);
-      Serial.print(ATOMIC_IMU_SEPARATOR);
-      Serial.print(sen_data.accel_z_raw);
-      Serial.print(ATOMIC_IMU_SEPARATOR);
-      Serial.print(sen_data.gyro_x_raw);
-      Serial.print(ATOMIC_IMU_SEPARATOR);
-      Serial.print(sen_data.gyro_y_raw);
-      Serial.print(ATOMIC_IMU_SEPARATOR);
-      Serial.print(sen_data.gyro_z_raw);  
-      Serial.print(ATOMIC_IMU_SEPARATOR);
-      Serial.print(sen_data.magnetom_x_raw);
-      Serial.print(ATOMIC_IMU_SEPARATOR);
-      Serial.print(sen_data.magnetom_y_raw);
-      Serial.print(ATOMIC_IMU_SEPARATOR);
-      Serial.print(sen_data.magnetom_z_raw);
-      Serial.print(ATOMIC_IMU_SEPARATOR);
-      Serial.print(sen_data.baro_temp);
-      Serial.print(ATOMIC_IMU_SEPARATOR);
-      Serial.print(sen_data.baro_pres);
-      Serial.print(ATOMIC_IMU_SEPARATOR);
+    while(print_binary && tx_busy)
+	delayMicroseconds(100); // wait
+    (*print_method)((void*)&atomic_imu_init,sizeof(char));
+    (*print_method)((void*)&atomic_imu_separator,sizeof(char));
+    (*print_method)((void*)&tx_Dt_us,sizeof(unsigned long));
+    (*print_method)((void*)&atomic_imu_separator,sizeof(char));
+    (*print_method)((void*)&sen_data.accel_x_raw,sizeof(int));
+    (*print_method)((void*)&atomic_imu_separator,sizeof(char));
+    (*print_method)((void*)&sen_data.accel_y_raw,sizeof(int));
+    (*print_method)((void*)&atomic_imu_separator,sizeof(char));
+    (*print_method)((void*)&sen_data.accel_z_raw,sizeof(int));
+    (*print_method)((void*)&atomic_imu_separator,sizeof(char));
+    (*print_method)((void*)&sen_data.gyro_x_raw,sizeof(int));
+    (*print_method)((void*)&atomic_imu_separator,sizeof(char));
+    (*print_method)((void*)&sen_data.gyro_y_raw,sizeof(int));
+    (*print_method)((void*)&atomic_imu_separator,sizeof(char));
+    (*print_method)((void*)&sen_data.gyro_z_raw,sizeof(int));
+    (*print_method)((void*)&atomic_imu_separator,sizeof(char));
+    (*print_method)((void*)&sen_data.magnetom_x_raw,sizeof(int));
+    (*print_method)((void*)&atomic_imu_separator,sizeof(char));
+    (*print_method)((void*)&sen_data.magnetom_y_raw,sizeof(int));
+    (*print_method)((void*)&atomic_imu_separator,sizeof(char));
+    (*print_method)((void*)&sen_data.magnetom_z_raw,sizeof(int));
+    (*print_method)((void*)&atomic_imu_separator,sizeof(char));
+    (*print_method)((void*)&sen_data.baro_temp,sizeof(short));
+    (*print_method)((void*)&atomic_imu_separator,sizeof(char));
+    (*print_method)((void*)&sen_data.baro_pres,sizeof(unsigned long));
+    (*print_method)((void*)&atomic_imu_separator,sizeof(char));
 #if DEBUG
-      if(print_raw_bmp085)
-      {
-	  Serial.print(sen_data.baro_temp_raw);
-	  Serial.print(ATOMIC_IMU_SEPARATOR);
-	  Serial.print(sen_data.baro_pres_raw);
-	  Serial.print(ATOMIC_IMU_SEPARATOR);
-      }
+    if(print_raw_bmp085)
+    {
+	(*print_method)((void*)&sen_data.baro_temp_raw,sizeof(int));
+	(*print_method)((void*)&atomic_imu_separator,sizeof(char));
+	(*print_method)((void*)&sen_data.baro_pres_raw,sizeof(unsigned long));
+	(*print_method)((void*)&atomic_imu_separator,sizeof(char));
+    }
 #endif // DEBUG
-      Serial.print(ATOMIC_IMU_END);
-      Serial.println();
+    (*print_method)((void*)&atomic_imu_end,sizeof(char));
+    if(print_binary)
+	UartSendData();
+    else
+	Serial.println();
 
 #else // ATOMIC_IMU_FORMAT
     // use ckdevices format
@@ -207,3 +241,25 @@ void PrintCompassCalibration(void)
     Serial.println();
 }
 #endif
+
+// ***********************************
+// ASCII data TX
+// ***********************************
+void send_raw_ascii(void *data, int size_bytes)
+{
+    switch(size_bytes)
+    {
+    case sizeof(char):
+	Serial.print(*(char*)data);
+	break;
+    case sizeof(int):
+	Serial.print(*(int*)data);
+	break;
+    case sizeof(unsigned long):
+	Serial.print(*(unsigned long*)data);
+	break;
+    default:
+	Serial.println("Invalid data!");
+	break;
+    }
+}
