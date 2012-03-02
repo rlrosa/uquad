@@ -107,5 +107,16 @@ También es posible observar la variación de la señal GEAR en el mismo control
 
 Para poder implementar el switcheo manual/automático será necesario poder detectar la posición de la llave. Esto es, deberá ser posible medir el ciclo de trabajo de la señal y, en función de éste, sabremos la posición en que se encuentra la llave.\\
 \\
-Para medir el ciclo de trabajo de la señal será necesario implementar detectores de nivel y timers que me permitan saber cuando la señal ``sube'' o ``baja'' y medir el tiempo que permanece en nivel alto o bajo.
+Para medir el ciclo de trabajo de la señal será necesario implementar detectores de nivel y timers que me permitan saber cuando la señal ``sube'' o ``baja'' y medir el tiempo que permanece en nivel alto o bajo.\\
+\\
+Dado que la señal que utilizamos para detectar la posición de la llave varía en el rango 0V-4.8V, y considerando que las entradas de las que disponemos en la Beagleboard para realizar la detección solamente soportan señales en el rango 0V-1.8V, será necesario realizar una conversión de nivel.\\
+\\
+Para realizar la conversión puede utilizarse un transistor MOSFET y una resistencia, tal como puede observarse en el esquema de la figura \ref{fig:conversion}.\\
+\\
+TODO: Esquemático con circuito de conversión.\\
+\\
+Con el esquema anterior (esto es, con $Vcc=1.8V$ y $GND=0V$) los niveles 0V-4.8V de la señal detectada serán convertidos a 0V-1.8V. A partir de la señal convertida, y mediante alguna de las entradas GPIO disponibles en el expansion connector de la Beagleboard, podremos sensar la señal y ejecutar un algoritmo de detección mediante timers y detección de flancos.\\
+\\
+Se utilizará, entonces, la entrada GPIO139 de la Beagleboard, la misma se encuentra disponible en el pin 3 del expansion connector (si se realiza el multiplexado del expansion connector en coherente a esto).
+
 \end{document}
