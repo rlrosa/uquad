@@ -1,7 +1,6 @@
 #ifndef IMU_COMM_H
 #define IMU_COMM_H
 
-#include <sys/socket.h>
 #include <sys/time.h>
 #include <sys/select.h>
 #include <uquad_error_codes.h>
@@ -17,8 +16,9 @@
 #define IMU_FRAME_INIT_DIFF 0x2
 #define IMU_FRAME_END_CHAR 'Z'
 #define IMU_INIT_END_SIZE 1
-#define IMU_DEFAULT_FRAME_SIZE_BYTES 29
+#define IMU_DEFAULT_FRAME_SIZE_BYTES 30
 #define IMU_DEFAULT_FRAME_SIZE_DATA_BYTES IMU_DEFAULT_FRAME_SIZE_BYTES - 6 // init,end,time
+#define IMU_FRAME_BUFF_SIZE 16
 #define IMU_FRAME_SAMPLE_AVG_COUNT 8 // Reduce variance my taking avg
 #define IMU_COMM_CALIBRATION_NULL_SIZE 256 // Tune!
 #define IMU_DEFAULT_FS 5 // this is an index
@@ -126,11 +126,12 @@ struct imu{
     int calibration_counter;
     uquad_bool_t is_calibrated;
     // data
-    imu_raw_t frame_buffer[IMU_FRAME_SAMPLE_AVG_COUNT];
+    imu_raw_t frame_buff[IMU_FRAME_BUFF_SIZE];
+    int frame_buff_latest; // last sample is here
+    int frame_buff_next; // new data will go here
     struct timeval frame_avg_init,frame_avg_end;
     int frames_sampled;
     int unread_data;
-    int frame_next;
     uquad_bool_t avg_ready;
     imu_data_t avg;
 };

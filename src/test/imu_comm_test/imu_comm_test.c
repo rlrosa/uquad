@@ -12,7 +12,7 @@
 #define WAIT_COUNTER_MAX 10
 #define IMU_COMM_TEST_EOL_LIM 128
 
-#define wait_for_enter while(fread(tmp,1,1,stdin) == 0)
+#define wait_for_enter printf("ERROR!\n") //while(fread(tmp,1,1,stdin) == 0)
 
 static int fix_end_of_time_string(char * string, int lim){
     int i;
@@ -178,22 +178,36 @@ int main(int argc, char *argv[]){
 			    wait_for_enter;
 			}
 		    }		    
-		    if(output_frames != NULL){
-			// Printing to stdout is unreadable
+		    // Printing to stdout is unreadable
+		    retval = imu_comm_get_raw_latest_unread(imu,&raw);
+		    if(retval == ERROR_OK)
+		    {
+			retval = imu_comm_print_raw(&raw,stdout);
+			err_propagate(retval);
+		    }
+#if 0
+			//TODO data is not ready
+		    if(output_frames != NULL)
+		    {
 			retval = imu_comm_get_data_latest_unread(imu,&data);
-			if(retval == ERROR_OK){
+			if(retval == ERROR_OK)
+			{
 			    retval = imu_comm_print_data(&data,output_frames);
 			    err_propagate(retval);
 			}
 		    }
+#endif
 		    
 		    // Get avg
+#if 0
+		    //TODO avg is KO!
 		    if(imu_comm_avg_ready(imu)){
 			retval = imu_comm_get_avg(imu,&data);
 			err_propagate(retval);
 			retval = imu_comm_print_data(&data,output_avg);
 			err_propagate(retval);
 		    }
+#endif
 		    if(output_frames == NULL || output_avg == NULL)
 			fflush(stdout);
 		}
