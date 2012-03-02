@@ -1,6 +1,5 @@
 #if ATOMIC_IMU_FORMAT
 #define ATOMIC_IMU_SEPARATOR_ASCII '\t'
-#define ATOMIC_IMU_SEPARATOR_BIN ','
 #define ATOMIC_IMU_INIT 'A'
 #define ATOMIC_IMU_END 'Z'
 #endif
@@ -25,13 +24,11 @@ void printdata(void)
     {
 	print_method = queue_raw_bin;
 	atomic_imu_init ^= 2; // switch A C por si pierdo una tirada.
-	atomic_imu_separator = ATOMIC_IMU_SEPARATOR_BIN;
     }
     else
     {
 	print_method = send_raw_ascii;
 	atomic_imu_init = ATOMIC_IMU_INIT;
-	atomic_imu_separator = ATOMIC_IMU_SEPARATOR_ASCII;
     }
 
     tx_Dt_us = t_curr_us - sampling_T_us;
@@ -76,38 +73,53 @@ void printdata(void)
     while(print_binary && tx_busy)
 	delayMicroseconds(100); // wait
     (*print_method)((void*)&atomic_imu_init,sizeof(char));
-    (*print_method)((void*)&atomic_imu_separator,sizeof(char));
+    if(!print_binary)
+	(*print_method)((void*)&atomic_imu_separator,sizeof(char));
     (*print_method)((void*)&tx_Dt_us,sizeof(unsigned long));
-    (*print_method)((void*)&atomic_imu_separator,sizeof(char));
+    if(!print_binary)
+	(*print_method)((void*)&atomic_imu_separator,sizeof(char));
     (*print_method)((void*)&sen_data.accel_x_raw,sizeof(int));
-    (*print_method)((void*)&atomic_imu_separator,sizeof(char));
+    if(!print_binary)
+	(*print_method)((void*)&atomic_imu_separator,sizeof(char));
     (*print_method)((void*)&sen_data.accel_y_raw,sizeof(int));
-    (*print_method)((void*)&atomic_imu_separator,sizeof(char));
+    if(!print_binary)
+	(*print_method)((void*)&atomic_imu_separator,sizeof(char));
     (*print_method)((void*)&sen_data.accel_z_raw,sizeof(int));
-    (*print_method)((void*)&atomic_imu_separator,sizeof(char));
+    if(!print_binary)
+	(*print_method)((void*)&atomic_imu_separator,sizeof(char));
     (*print_method)((void*)&sen_data.gyro_x_raw,sizeof(int));
-    (*print_method)((void*)&atomic_imu_separator,sizeof(char));
+    if(!print_binary)
+	(*print_method)((void*)&atomic_imu_separator,sizeof(char));
     (*print_method)((void*)&sen_data.gyro_y_raw,sizeof(int));
-    (*print_method)((void*)&atomic_imu_separator,sizeof(char));
+    if(!print_binary)
+	(*print_method)((void*)&atomic_imu_separator,sizeof(char));
     (*print_method)((void*)&sen_data.gyro_z_raw,sizeof(int));
-    (*print_method)((void*)&atomic_imu_separator,sizeof(char));
+    if(!print_binary)
+	(*print_method)((void*)&atomic_imu_separator,sizeof(char));
     (*print_method)((void*)&sen_data.magnetom_x_raw,sizeof(int));
-    (*print_method)((void*)&atomic_imu_separator,sizeof(char));
+    if(!print_binary)
+	(*print_method)((void*)&atomic_imu_separator,sizeof(char));
     (*print_method)((void*)&sen_data.magnetom_y_raw,sizeof(int));
-    (*print_method)((void*)&atomic_imu_separator,sizeof(char));
+    if(!print_binary)
+	(*print_method)((void*)&atomic_imu_separator,sizeof(char));
     (*print_method)((void*)&sen_data.magnetom_z_raw,sizeof(int));
-    (*print_method)((void*)&atomic_imu_separator,sizeof(char));
+    if(!print_binary)
+	(*print_method)((void*)&atomic_imu_separator,sizeof(char));
     (*print_method)((void*)&sen_data.baro_temp,sizeof(short));
-    (*print_method)((void*)&atomic_imu_separator,sizeof(char));
+    if(!print_binary)
+	(*print_method)((void*)&atomic_imu_separator,sizeof(char));
     (*print_method)((void*)&sen_data.baro_pres,sizeof(unsigned long));
-    (*print_method)((void*)&atomic_imu_separator,sizeof(char));
+    if(!print_binary)
+	(*print_method)((void*)&atomic_imu_separator,sizeof(char));
 #if DEBUG
     if(print_raw_bmp085)
     {
 	(*print_method)((void*)&sen_data.baro_temp_raw,sizeof(int));
-	(*print_method)((void*)&atomic_imu_separator,sizeof(char));
+	if(!print_binary)
+	    (*print_method)((void*)&atomic_imu_separator,sizeof(char));
 	(*print_method)((void*)&sen_data.baro_pres_raw,sizeof(unsigned long));
-	(*print_method)((void*)&atomic_imu_separator,sizeof(char));
+	if(!print_binary)
+	    (*print_method)((void*)&atomic_imu_separator,sizeof(char));
     }
 #endif // DEBUG
     (*print_method)((void*)&atomic_imu_end,sizeof(char));
