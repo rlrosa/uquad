@@ -10,18 +10,18 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
+#include <stdint.h>
 
 #define IMU_FRAME_INIT_CHAR 'A'
+#define IMU_FRAME_INIT_CHAR_ALT 'C'
+#define IMU_FRAME_INIT_DIFF 0x2
 #define IMU_FRAME_END_CHAR 'Z'
 #define IMU_INIT_END_SIZE 1
-#define IMU_DEFAULT_FRAME_SIZE_BYTES 16 // 4 bytes init/end chars, 2 bytes per sensor reading
+#define IMU_DEFAULT_FRAME_SIZE_BYTES 43
 #define IMU_FRAME_SAMPLE_AVG_COUNT 8 // Reduce variance my taking avg
 #define IMU_COMM_CALIBRATION_NULL_SIZE 256 // Tune!
 #define IMU_DEFAULT_FS 5 // this is an index
 #define IMU_DEFAULT_ACC_SENS 0 // this is an index
-#define IMU_ADC_BITS 10
-#define IMU_ADC_VREF 3.3
-#define IMU_ADC_COUNTS_2_VOLTS 0.00322265625 // IMU_ADC_VREF/(1<<IMU_ADC_BITS)
 
 #define IMU_SAMPLE_COUNT_SIZE 2
 #define IMU_BYTES_PER_SENSOR 2
@@ -30,54 +30,20 @@
 #define IMU_ACCS 3
 #define IMU_GYROS 3
 #define IMU_SENS_OPT_COUNT 4
-#define IMU_FS_OPT_COUNT 5
+#define IMU_FS_OPT_COUNT 1
 #define IMU_GRAVITY 9.81
 
 #define IMU_COMM_AVG_MAX_INTERVAL 2*IMU_FRAME_SAMPLE_AVG_COUNT //Too much...?
 
-/// ASCII 35, starts the unit running in binary mode with all channels active
+/// ASCII 35, exits from menu and runs unit
 #define IMU_COMMAND_RUN '#'
-/// ASCII 32, stops the unit and returns it to the idle state.
-#define IMU_COMMAND_IDLE ' '
-/**
- * Issuing another ' ' displays cfg menu, which is bad, since then we would have to
- * read out all the crap.
- * AVOID two succesive ' '
- * 
- */
+/// ASCII 36, stops sampling and shows menu
+#define IMU_COMMAND_STOP '$'
 
-/// ASCII 37, sets the accelerometer sensitivity to 1.5g
-#define IMU_COMMAND_ACC_1G '%'
-/// ASCII 38, sets the accelerometer sensitivity to 2g
-#define IMU_COMMAND_ACC_2G '&'
-/// ASCII 39, sets the accelerometer sensitivity to 4g
-#define IMU_COMMAND_ACC_4G '\''
-/// ASCII 40, sets the accelerometer sensitivity to 6g
-#define IMU_COMMAND_ACC_6G '('
-
-/// ASCII 41, sets the sample frequency to 50Hz
-#define IMU_COMMAND_FS_50 ')' 
-/// ASCII 42, sets the sample frequency to 100Hz
-#define IMU_COMMAND_FS_100 '*'
-/// ASCII 43, sets the sample frequency to 150Hz
-#define IMU_COMMAND_FS_150 '+'
-/// ASCII 44, sets the sample frequency to 200Hz
-#define IMU_COMMAND_FS_200 ','
-/// ASCII 45, sets the sample frequency to 250Hz
-#define IMU_COMMAND_FS_250 '-'
-
-/// ASCII 49, select option #1 in some IMU menus
-#define IMU_COMMAND_ONE '1'
-/// ASCII 57, exit main IMU menu
-#define IMU_COMMAND_EXIT '9'
-/// ASCII 120, select option in some IMU menus
-#define IMU_COMMAND_X 'x'
+/// ASCII 33, sets the unit in default mode
+#define IMU_COMMAND_DEF '!'
 
 #define READ_RETRIES 16
-
-#if (IMU_BUTES_PER_SENSOR > 2)
-#define short int
-#endif
 
 struct imu_frame{
     unsigned short raw[IMU_SENSOR_COUNT];
@@ -107,7 +73,11 @@ struct imu_settings{
     int frame_width_bytes;
 };
 
-enum imu_status{IMU_COMM_STATE_RUNNING,IMU_COMM_STATE_IDLE,IMU_COMM_STATE_CALIBRATING,IMU_COMM_STATE_UNKNOWN};
+enum imu_status{
+    IMU_COMM_STATE_RUNNING,
+    IMU_COMM_STATE_STOPPED,
+    IMU_COMM_STATE_CALIBRATING,
+    IMU_COMM_STATE_UNKNOWN};
 typedef enum imu_status imu_status_t;
 
 struct imu{

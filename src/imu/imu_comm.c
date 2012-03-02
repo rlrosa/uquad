@@ -30,19 +30,16 @@ static int imu_comm_send_cmd(imu_t * imu, unsigned char cmd){
     return ERROR_OK;
 }
 
-static int imu_comm_go_idle(imu_t * imu){
+static int imu_comm_stop(imu_t * imu){
     int retval;
-    if(imu->status == IMU_COMM_STATE_IDLE){
-	printf("IMU already idle.\n");
+    if(imu->status == IMU_COMM_STATE_STOPPED){
+	err_log("IMU already stopped.");
 	return ERROR_OK;
     }
     // Stop IMU
-    retval = imu_comm_send_cmd(imu,IMU_COMMAND_IDLE);
+    retval = imu_comm_send_cmd(imu,IMU_COMMAND_STOP);
     err_propagate(retval);
-    // Get out of menu
-    retval = imu_comm_send_cmd(imu,IMU_COMMAND_EXIT);
-    err_propagate(retval);
-    imu->status = IMU_COMM_STATE_IDLE;
+    imu->status = IMU_COMM_STATE_STOPPED;
     return ERROR_OK;
 }
 
@@ -59,48 +56,6 @@ static int imu_comm_resume(imu_t * imu){
     return ERROR_OK;
 }
 
-// IMU options
-// sens options
-unsigned char imu_sens_opt[IMU_SENS_OPT_COUNT] = {IMU_COMMAND_ACC_1G, \
-						  IMU_COMMAND_ACC_2G, \
-						  IMU_COMMAND_ACC_4G, \
-						  IMU_COMMAND_ACC_6G};
-// sampling freq options
-unsigned char imu_fs_opt[IMU_FS_OPT_COUNT] = {IMU_COMMAND_FS_50,	\
-					      IMU_COMMAND_FS_100,	\
-					      IMU_COMMAND_FS_150,	\
-					      IMU_COMMAND_FS_200,	\
-					      IMU_COMMAND_FS_250};
-// sampling freq values
-unsigned char imu_fs_values[IMU_FS_OPT_COUNT] = {50,100,150,200,250};
-
-/** 
- * Set accelerometer sensitivity.
- * IMU must be idle, and will be left idle.
- * 
- * @param imu 
- * @param new_value 
- * 
- * @return error code
- */
-int imu_comm_set_acc_sens(imu_t * imu, int new_value){
-    int retval;
-    if((new_value<0) || (new_value > IMU_SENS_OPT_COUNT)){
-	err_check(ERROR_INVALID_ARG,"Invalid value for acc sensitivity");
-    }
-    // IMU should be idle
-    if(imu->status != IMU_COMM_STATE_IDLE){
-	err_check(ERROR_IMU_STATUS,"IMU must be idle to set acc sens");
-    }
-
-    // Set new acc sens
-    retval = imu_comm_send_cmd(imu,imu_sens_opt[new_value]);
-    err_propagate(retval);
-    // Update struct value
-    imu->settings.acc_sens = new_value;
-    return retval;
-}
-
 int imu_comm_get_acc_sens(imu_t * imu, int * acc_index){
     if(acc_index == NULL){
 	err_check(ERROR_NULL_POINTER,"Cannot return value, null pointer as argument.");
@@ -109,27 +64,29 @@ int imu_comm_get_acc_sens(imu_t * imu, int * acc_index){
     return ERROR_OK;
 }
 
+// sampling freq values
+uint8_t imu_fs_values[IMU_FS_OPT_COUNT] = {50 /* Hz */};
 /** 
  * Set sampling frequency (fs)
  * IMU must be idle, and will be left idle.
  * 
  * @param imu 
- * @param new_value 
+ * @param new_value index for imu_fs_values[]
  * 
  * @return error code
  */
 int imu_comm_set_fs(imu_t * imu, int new_value){
     int retval;
-    if((new_value<0) || (new_value > IMU_FS_OPT_COUNT)){
+    if(new_value > IMU_FS_OPT_COUNT){
 	err_check(ERROR_INVALID_ARG,"Invalid value for sampling frequency");
     }
     // IMU should be idle
-    if(imu->status != IMU_COMM_STATE_IDLE){
+    if(imu->status != IMU_COMM_STATE_STOPPED){
 	err_check(ERROR_IMU_STATUS,"IMU must be idle to set fs");
     }
 
     // Set new fs
-    retval = imu_comm_send_cmd(imu,imu_fs_opt[new_value]);
+    retval = imu_comm_send_cmd(imu,imu_fs_values[new_value]);
     err_propagate(retval);
     // Update struct value
     imu->settings.fs = new_value;
@@ -145,17 +102,6 @@ int imu_comm_get_fs(imu_t * imu, int * fs_index){
     return ERROR_OK;
 }
 
-static int imu_comm_send_defaults(imu_t * imu){
-    int retval;
-    // Set sampling frequency
-    retval = imu_comm_set_fs(imu,IMU_DEFAULT_FS);
-    err_propagate(retval);
-    // Set acc sensitivity
-    retval = imu_comm_set_acc_sens(imu,IMU_DEFAULT_ACC_SENS);
-    err_propagate(retval);
-    return retval;
-}
-
 static void imu_comm_calibration_clear(imu_t * imu){
     imu->is_calibrated = false;
     imu->calibration_counter = -1;
@@ -168,10 +114,24 @@ static void imu_comm_calibration_clear(imu_t * imu){
 }
 
 /** 
+ * Configures IMU to use default params and start sampling.
+ * Depends on set_work_mode() in Output.pde (firmware)
+ * 
+ * @param imu 
+ * 
+ * @return error code
+ */
+static int imu_comm_run_default(imu_t * imu){
+    int retval;
+    // Set run
+    retval = imu_comm_send_cmd(imu,IMU_COMMAND_DEF);
+    err_propagate(retval);
+    return retval;
+}
+
+/** 
  * Configure IMU to respond as expected, specifically, to answer to macros
  * in imu_comm.h
- * - Set binary mode.
- * - Disable auto run
  * 
  * @param imu 
  * 
@@ -179,41 +139,17 @@ static void imu_comm_calibration_clear(imu_t * imu){
  */
 static int imu_comm_configure(imu_t * imu){
     int retval;
-    // The following sequence of commands should get to the main IMU menu, from
-    //from any initial state. If the unit was running then it will ignore all of
-    //this, no damage done.
-
-    // Get out of channel select menu or freq select menu
-    retval = imu_comm_send_cmd(imu,IMU_COMMAND_X);
+    // Stop IMU
+    retval = imu_comm_stop(imu);
     err_propagate(retval);
-
-    // Get out of acc sens menu
-    retval = imu_comm_send_cmd(imu,IMU_COMMAND_ONE);
-    err_propagate(retval);
-
-    // If started from main menu, then previous command would have ended in channel
-    //select menu, so get out of it
-    retval = imu_comm_send_cmd(imu,IMU_COMMAND_X);
-    err_propagate(retval);
-
-    // Assuming binary mode on && autorun off, i don't want to parse...
-    printf("Assuming binary mode and autorun off (will fail if this is false)\n");
-    //TODO parse to avoid assuming stuff! or modify imu code to be easier...
-
-    // Get out of menu
-    retval = imu_comm_send_cmd(imu,IMU_COMMAND_EXIT);
-    err_propagate(retval);
-
-    // Now IMU should be in idle state, where it will recieve commands
+    
+    // Now IMU should be stopped
     // This is open loop, so let's set assume everything went ok.
-    imu->status = IMU_COMM_STATE_IDLE;
-    retval = imu_comm_send_defaults(imu);
-    err_propagate(retval);
+    imu->status = IMU_COMM_STATE_STOPPED;
 
-    // Mark IMU as not calibrated
-    imu_comm_calibration_clear(imu);
+    //TODO send stuff?
 
-    // Start running in binary mode with all channels ON
+    // Set run
     retval = imu_comm_resume(imu);
     err_propagate(retval);
     return retval;
@@ -262,17 +198,18 @@ imu_t * imu_comm_init(const char * device){
 	return imu;
     }
     // Set default values
-    imu_comm_restart_sampling(imu);
-    imu->status = IMU_COMM_STATE_UNKNOWN;
-    imu->settings.fs = IMU_DEFAULT_FS;
-    imu->settings.T = (double)1/imu_fs_values[IMU_DEFAULT_FS];
-    imu->settings.acc_sens = IMU_DEFAULT_ACC_SENS;
-    imu->settings.frame_width_bytes = IMU_DEFAULT_FRAME_SIZE_BYTES;
-    for(i=0;i<IMU_SENSOR_COUNT;++i){
-	imu->null_estimates.xyzrpy[i] = (1<< (IMU_ADC_BITS - 1)); // Set to mid scale
-    }
-    imu->null_estimates.timestamp.tv_sec = 0;
-    imu->null_estimates.timestamp.tv_usec = 0;
+    //TODO
+//    imu_comm_restart_sampling(imu);
+//    imu->status = IMU_COMM_STATE_UNKNOWN;
+//    imu->settings.fs = IMU_DEFAULT_FS;
+//    imu->settings.T = (double)1/imu_fs_values[IMU_DEFAULT_FS];
+//    imu->settings.acc_sens = IMU_DEFAULT_ACC_SENS;
+//    imu->settings.frame_width_bytes = IMU_DEFAULT_FRAME_SIZE_BYTES;
+//    for(i=0;i<IMU_SENSOR_COUNT;++i){
+//	imu->null_estimates.xyzrpy[i] = (1<< (IMU_ADC_BITS - 1)); // Set to mid scale
+//    }
+//    imu->null_estimates.timestamp.tv_sec = 0;
+//    imu->null_estimates.timestamp.tv_usec = 0;
 
     // now connect to the imu
     retval = imu_comm_connect(imu,device);
@@ -283,6 +220,14 @@ imu_t * imu_comm_init(const char * device){
     retval = imu_comm_configure(imu);
     if(retval != ERROR_OK)
 	return NULL;
+
+    retval = imu_comm_run_default(imu);
+    if(retval != ERROR_OK)
+	return NULL;
+
+    // Mark IMU as not calibrated
+    imu_comm_calibration_clear(imu);
+
     return imu;
 }
 
@@ -306,13 +251,6 @@ static double rad2grad(double radians){
     return radians*57.29577951308232;
 }
 #endif
-
-static double counts2volts(imu_t * imu, double * acc){
-    // Convert from count to m/s^2
-    // m/s^2 = counts*vref/counts_full_scale
-    *acc = (*acc)*IMU_ADC_COUNTS_2_VOLTS;
-    return ERROR_OK;
-}
 
 static int gyro_scale_adjust(imu_t * imu, double * gyro_reading){
     //TODO Implement scale calibration,
@@ -413,6 +351,7 @@ static int imu_comm_avg(imu_t * imu){
     return ERROR_OK;
 }
 
+static uint8_t previous_sync_char = IMU_FRAME_INIT_CHAR;
 /** 
  * Reads 1 byte, expecting it to be IMU_FRAME_INIT_CHAR.
  * NOTE: Assumes device can be read without blocking.
@@ -424,19 +363,27 @@ static int imu_comm_avg(imu_t * imu){
 static int imu_comm_get_sync(imu_t * imu, uquad_bool_t * in_sync){
     int retval,i;
     *in_sync = false;
-    unsigned char tmp = '@';// Anything diff from IMU_FRAME_INIT_CHAR
+    unsigned char tmp = 'X';// Anything diff from IMU_FRAME_INIT_CHAR
     for(i=0;i<IMU_DEFAULT_FRAME_SIZE_BYTES;++i){
 	retval = fread(&tmp,IMU_INIT_END_SIZE,1,imu->device);
 	if(retval < 0){	
 	    err_check(ERROR_IO,"Read error: failed to get sync char...");
 	}else{
-	    if(retval > 0){
-		if(tmp == IMU_FRAME_INIT_CHAR){
-		    // No error printing, leave that for upper level
-		    *in_sync = true;
-		    return ERROR_OK;
+	    if(retval > 0)
+	    {
+		// Match either of the init chars
+		if((tmp|IMU_FRAME_INIT_DIFF) == IMU_FRAME_INIT_CHAR_ALT)
+		{
+		    // Check if skipped frame
+		    if((tmp ^ previous_sync_char) == IMU_FRAME_INIT_DIFF)
+		    {
+			*in_sync = true;
+			return ERROR_OK;
+		    }
+		    else
+			return ERROR_READ_SKIP;
+
 		}
-	    }else{
 		// retval == 0
 		*in_sync = false;
 		return ERROR_READ_SYNC;
@@ -597,7 +544,9 @@ int imu_comm_read_frame(imu_t * imu){
  * 
  * @return error code
  */
-static int imu_comm_gyro_read(imu_t * imu, imu_data_t * data, double * gyro_reading){
+static int imu_comm_gyro_read(imu_t * imu, imu_data_t * data, double * gyro_reading)
+{
+    //TODO
     int retval = ERROR_OK, i;
     for(i = 0; i<IMU_GYROS; ++i){
 	gyro_reading[i] = data->xyzrpy[IMU_ACCS + i] - imu->null_estimates.xyzrpy[IMU_ACCS + i];
@@ -617,12 +566,12 @@ static int imu_comm_gyro_read(imu_t * imu, imu_data_t * data, double * gyro_read
  * 
  * @return error code
  */
-static int imu_comm_acc_read(imu_t * imu, imu_data_t * data, double * acc_reading){
+static int imu_comm_acc_read(imu_t * imu, imu_data_t * data, double * acc_reading)
+{
+    //TODO
     int retval = ERROR_OK, i;
     for(i = 0; i<IMU_ACCS; ++i){
 	acc_reading[i] = data->xyzrpy[i] - imu->null_estimates.xyzrpy[i];
-	retval = counts2volts(imu,acc_reading+i);
-	err_propagate(retval);
 	retval = volts2g(imu->settings.acc_sens,acc_reading+i);
 	err_propagate(retval);
 	retval = acc_scale_adjust(imu,acc_reading+i);
