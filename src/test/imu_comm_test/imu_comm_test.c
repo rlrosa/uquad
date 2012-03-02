@@ -106,8 +106,9 @@ int main(int argc, char *argv[]){
     }
 
     // do stuff...
-    imu_measurements_t measurements;
-    imu_null_estimates_t imu_calib;
+    imu_data_t data;
+    imu_raw_t raw;
+    imu_calib_t imu_calib;
     uquad_bool_t do_sleep = false;
     int read_will_not_lock;
     uquad_bool_t data_ready = false;
@@ -168,7 +169,7 @@ int main(int argc, char *argv[]){
 			    else{
 				// print a comment char to make it easy for matlab to parse the rest
 				fprintf(output_avg,"%%");
-				retval = imu_comm_calibration_print(&imu_calib,output_avg);
+				retval = imu_comm_print_data(&imu_calib,output_avg);
 				if(retval != ERROR_OK)
 				    printf("Failed to print calibration!");
 			    }
@@ -179,18 +180,18 @@ int main(int argc, char *argv[]){
 		    }		    
 		    if(output_frames != NULL){
 			// Printing to stdout is unreadable
-			retval = imu_comm_get_measurements_latest_unread(imu,&measurements);
+			retval = imu_comm_get_data_latest_unread(imu,&data);
 			if(retval == ERROR_OK){
-			    retval = imu_comm_print_measurements(&measurements,output_frames);
+			    retval = imu_comm_print_data(&data,output_frames);
 			    err_propagate(retval);
 			}
 		    }
 		    
 		    // Get avg
 		    if(imu_comm_avg_ready(imu)){
-			retval = imu_comm_get_avg(imu,&measurements);
+			retval = imu_comm_get_avg(imu,&data);
 			err_propagate(retval);
-			retval = imu_comm_print_measurements(&measurements,output_avg);
+			retval = imu_comm_print_data(&data,output_avg);
 			err_propagate(retval);
 		    }
 		    if(output_frames == NULL || output_avg == NULL)
@@ -222,10 +223,10 @@ int main(int argc, char *argv[]){
 		    if(!imu_comm_calibration_is_calibrated(imu)){
 			printf("Calibration not ready.\n");
 		    }else{
-			retval = imu_comm_calibration_get(imu,(imu_null_estimates_t *)&imu_calib);
+			retval = imu_comm_calibration_get(imu,&imu_calib);
 			err_propagate(retval);
 			printf("Current calibration:\n");
-			retval = imu_comm_calibration_print((imu_null_estimates_t *)&imu_calib,stdout);
+			retval = imu_comm_print_calib(&imu_calib,stdout);
 			err_propagate(retval);
 		    }
 		}
