@@ -21,9 +21,6 @@
 
 // The calibration values for the sensors need to be set in the function "mongooseCalibrate" which
 // is in the file "ApplicationRoutines.pde"
-// The Mongoose Visualizer PC software can be used to determine the offset values by looking at the Avg value 
-// for each sensor axis.
-
 
 /* Mongoose Hardware version - v1.0
 	
@@ -76,30 +73,20 @@ int SENSOR_SIGN[9] = { 1,1,1,1,1,1,1,1,1};  //Correct directions x,y,z - gyros, 
 
 //========================================
 // Output Data Configuration
-// Turn on/off the different data outputs
-// For the Mongoose Visualization Software to work, the first 3 need to be turned on
-// To achieve the max sample rate, you will need to only turn on PRINT_EULER
 
-#define PRINT_EULER             1   //Will print the Euler angles Roll, Pitch and Yaw
-#define PRINT_SENSOR_DATA       1   //Will print the Corrected Sensor Data
-#define PRINT_SENSOR_DATA_RAW   1   //Will print the raw uncorrected Sensor Data
-#define PRINT_DCM               0   //Will print the whole direction cosine matrix
-#define PRINT_MagCal            0
-
+#define PRINT_DATA 1 // if 0 no data will be printed
 //#define PRINT_GPS 0     //Will print GPS data
-//#define PRINT_BINARY 0  //Will print binary message and suppress ASCII messages (above)
+#define PRINT_BINARY 0  //Will print binary message and suppress ASCII messages (above)
+#if PRINT_BINARY
+#define print(a) write(a)
+#endif
 
 #define ATOMIC_IMU_FORMAT 1
-#if ATOMIC_IMU_FORMAT
 #define PRINT_EULER             0   //Will print the Euler angles Roll, Pitch and Yaw
 #define PRINT_SENSOR_DATA       0   //Will print the Corrected Sensor Data
 #define PRINT_SENSOR_DATA_RAW   1   //Will print the raw uncorrected Sensor Data
 #define PRINT_DCM               0   //Will print the whole direction cosine matrix
 #define PRINT_MagCal            0
-
-//#define PRINT_GPS 0     //Will print GPS data
-#define PRINT_BINARY 1  //Will print binary message and suppress ASCII messages (above)
-#endif
 
 #define debugPin 6
 #define STATUS_LED 4  //PD4 on the Atmega328. Red LED
@@ -108,13 +95,48 @@ int SENSOR_SIGN[9] = { 1,1,1,1,1,1,1,1,1};  //Correct directions x,y,z - gyros, 
 #define Start_SensorOffsets    0        //offset data at start of EEPROM
 #define Size_SensorOffsets     36       //the offset data is 12 bytes long 
 
+// Sampling setting
+#define SAMP_T_INTR 5000UL // us - internal sampling rate
+#define SAMP_JITTER_INTR 12UL // us - timer misses by this amount
+#define SAMP_INTRS_EXTR 4 //  Main loop runs at SAMP_T_INTR*SAMP_INTRS_EXTR
+#define SAMP_DIV_COMPASS 20 // sampled at SAMP_INTRS_EXTR/SAMP_DIV_COMPASS
+#define SAMP_DIV_BAROM 200 // sampled at SAMP_INTRS_EXTR/SAMP_DIV_BAROM
+#define SAMP_T_EXTR (SAMP_T_INTR*SAMP_INTRS_EXTR) // rate at which data is sent to UART
+#define SAMP_JITTER_EXTR (SAMP_T_EXTR>>5) // 4% tolerance
+#define SAMP_T_EXTR_MAX (SAMP_T_EXTR + SAMP_JITTER_EXTR)
+#define SAMP_T_EXTR_MIN (SAMP_T_EXTR - SAMP_JITTER_EXTR)
+
+struct uquad_timing{
+    unsigned long T_intr;
+    unsigned long T_ie_ratio;
+    unsigned long T_extr;
+    unsigned long div_magn;
+    unsigned long div_baro;
+    unsigned long jitter_intr;
+    unsigned long jitter_extr;
+    unsigned long T_extr_max;
+    unsigned long T_extr_min;
+};
+
+uquad_timing timing = {SAMP_T_INTR,
+		       SAMP_INTRS_EXTR,
+		       SAMP_T_EXTR,
+		       SAMP_DIV_COMPASS,
+		       SAMP_DIV_BAROM,
+		       SAMP_JITTER_INTR,
+		       SAMP_JITTER_EXTR,
+		       SAMP_T_EXTR_MAX,
+		       SAMP_T_EXTR_MIN};
+
 // Special modes
 #define ONLY_BMP085 0
 #define MAGNETON_FULL_FS 1
-#define DEBUG 1
+#define DEBUG 0
+#define WARNINGS 0
 
 // Debug data
 #if DEBUG
+#define DEBUG_TX_TIMING 0
 static bool print_raw_bmp085 = false;
 #endif
 
@@ -135,13 +157,19 @@ sensors_enabled sensors = {ALL && !ONLY_BMP085,
 
 int incomingByte = 0; // for incoming serial data
 bool running = true;
+bool print_binary = false;
 
 float G_Dt=0.005;    // Integration time (DCM algorithm)  We will run the integration loop at 50Hz if possible
 //float G_Dt_ms=G_Dt;
 float G_Dt_us = G_Dt*1000;
+#if DEBUG_TX_TIMING
+float dt_tmp[SAMP_INTRS_EXTR];
+int dt_tmp_index = 0;
+#endif
 
 long time_us = 0;
 long time_us_old;
+long time_tmp = 0;
 long timer24=0; //Second timer used to print values 
 float AN[9]; //array that store the 3 ADC filtered data
 
@@ -194,7 +222,7 @@ struct s_sensor_data
     long baro_pres;
 };
 
-s_sensor_offsets sen_offset = {0,0,0,0,0,0,0,0,0};
+s_sensor_offsets sen_offset = {{0,0,0},{0,0,0},{0,0,0},0,0,0,0};
 s_sensor_data sen_data = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
 
@@ -329,7 +357,11 @@ void print_menu(void){
     Serial.println();
 
     Serial.print("\te:\t Set BMP085 OSS:\t");
-    Serial.print(bmp085GetOSS(),DEC);
+    Serial.print(bmp085GetOSS());
+    Serial.println();
+
+    Serial.print("\tb:\t Print binary data:\t");
+    Serial.print(print_binary);
     Serial.println();
 #endif
 
@@ -400,6 +432,9 @@ int menu_execute(int command){
 	else
 	    Serial.println("\nFAILED!");
 	break;
+    case 'b':
+	print_binary = !print_binary;
+	break;
 #endif
     default:
 	return -1;
@@ -409,7 +444,6 @@ int menu_execute(int command){
 
 void loop() //Main Loop
 {
-    read_part:
     if (Serial.available() > 0)
     {
 	// read the incoming byte:
@@ -435,14 +469,22 @@ void loop() //Main Loop
     sensor_reading:
     if(running)
     {
-	if((micros()-time_us)>=5000)  // Main loop runs at 50Hz
+	// update barom reading state machine
+	barom_update_state_machine();
+
+	if( (micros()-time_us) >= 
+	    SAMP_T_INTR - SAMP_JITTER_INTR )
 	{
-	    // We enter here every 5ms
+	    // We enter here every SAMP_T_INTR +- SAMP_JITTER
 	    digitalWrite(debugPin,HIGH);
 
 	    time_us_old = time_us;
 	    time_us = micros();
 	    G_Dt_us = time_us-time_us_old;
+#if DEBUG_TX_TIMING
+	    dt_tmp[Print_counter] = G_Dt_us;
+	    dt_tmp_index++;
+#endif
 	    G_Dt = G_Dt_us/1000000.0;    // Real time of loop run. We use this on the DCM algorithm (gyro integration time)
 	    if(G_Dt > 1)
 		G_Dt = 0;  //keeps dt from blowing up, goes to zero to keep gyros from departing
@@ -466,21 +508,23 @@ void loop() //Main Loop
       
 	    //=============================== Read the Compass ===============================//
 	    if(sensors.compass)
-		if (MAGNETON_FULL_FS || Compass_counter > 20)  // Read compass data at 10Hz... (5 loop runs)
+		if (MAGNETON_FULL_FS ||
+		    (Compass_counter > SAMP_DIV_COMPASS))  // Read compass data at 10Hz... (5 loop runs)
 		{
 		    Compass_counter=0;
 		    Read_Compass();    // Read I2C magnetometer     
 		}
 
 	    //===================== Read the Temp and Pressure from Baro =====================//
-	    if (Baro_counter > 200 || ONLY_BMP085)  // Read baro data at 1Hz... (50 loop runs)
+	    if ((Baro_counter > SAMP_DIV_BAROM) || ONLY_BMP085)  // Read baro data at 1Hz... (50 loop runs)
 	    {
-		Baro_counter=0; 
-
-		if(sensors.temp)
-		    sen_data.baro_temp = Read_Temperature();
-		if(sensors.pressure)
-		    sen_data.baro_pres = Read_Pressure();  
+		Baro_counter=0;
+		// The following will trigger the barom update.
+		// Temperature takes 4.5ms, and pressure takes from 4.5 to 25.5, depending on
+		// OSS settings.
+		// If OSS==0, new data should be ready approximately 9ms after calling Baro_req_update()
+		if(sensors.pressure || sensors.temp)
+		    Baro_req_update();
 	    }
 	    //=============================== Read the GPS data ==============================//
 	    if (GPS_counter > 50)  // Read GPS data at 1Hz... (50 loop runs)
@@ -510,7 +554,7 @@ void loop() //Main Loop
 	    // Make sure you don't take too long here!
      
 	    //=============================== Read the GPS data ==============================//
-	    if (Print_counter > 4 || ONLY_BMP085)  // 
+	    if (Print_counter == SAMP_INTRS_EXTR || ONLY_BMP085)  //
 	    {
 		Print_counter=0;
          
@@ -520,6 +564,6 @@ void loop() //Main Loop
         
 	    digitalWrite(debugPin,LOW);
  
-	}
+	} // internal sampling loop
     } // running
 }

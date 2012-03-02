@@ -1,5 +1,5 @@
 function varargout = lazo_abierto(varargin)
-%global t ti tf x0 y0 z0 psi0 phi0 theta0 vq10 vq20 vq30 wq10 wq20 wq30 Variables indice w1 w2 w3 w4 dw1 dw2 dw3 dw4
+
 % LAZO_ABIERTO MATLAB code for lazo_abierto.fig
 %      LAZO_ABIERTO, by itself, creates a new LAZO_ABIERTO or raises the existing
 %      singleton*.
@@ -415,7 +415,7 @@ function pushbutton1_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
     
-    assignin('base','M',1.541);
+    
     %A partir de los tiempos establecidos armo la linea de tiempo
     ti=evalin('base','ti');
     tf=evalin('base','tf');
@@ -423,100 +423,99 @@ function pushbutton1_Callback(hObject, eventdata, handles)
     time=linspace(ti,tf,(tf-ti)*5);
     assignin('base','t',time);
 
-    %A partir de la situación de vuelo definida establezco las Acciones a tomar
-    %%%%Entradas%%%%%
-    wang1=zeros(size(time));
-    wang2=zeros(size(time));
-    wang3=zeros(size(time));
-    wang4=zeros(size(time));
+    %A partir de la situación de vuelo definida establezco las Acciones a 
+    %realizar
+    
+    
+    %Entradas
+    w1=zeros(size(time));
+    w2=zeros(size(time));
+    w3=zeros(size(time));
+    w4=zeros(size(time));
 
-    ind=evalin('base','indice');
+        
+    ind=evalin('base','indice');%ind corresponde a la situación de vuelo 
+                                %elegida en el simulador
     val=0;
+    m=1.541; % Masa del quad
+     
+    psio=evalin('base','psi0'); %Ángulo de Roll
+    phio=evalin('base','phi0'); %Aangulo de pitch
     
-    m=evalin('base','M');
-    psio=evalin('base','psi0');
-    phio=evalin('base','phi0');
-    syms x
+    
+    %En todas las situaciones menos caida libre (1) y vuelo en linea
+    %recta(9) la fuerza tiene que ser, en la situación inicial,
+    %igual al peso (hovering)
+    %Se calcula la velocidad angular necesaria para lograr el hovering
     if (ind~=1) && (ind~=9)
-        fuerza_hov=9.81*m/4;
-         val=solve(3.5296e-5*x^2-4.9293e-4*x-fuerza_hov);
-         val_hov=eval(val);
-        
-         if (val_hov(1)>=0)
-                 val_hov=val_hov(1);
-         else val_hov=val_hov(2);
-         end
-            wang1(time>(ti-1)) = val_hov; 
-            wang2(time>(ti-1)) = val_hov;
-            wang3(time>(ti-1)) = val_hov;
-            wang4(time>(ti-1)) = val_hov;
+        val_hov=calc_omega(fuerza_hov);
+        w1(time>(ti-1)) = val_hov; 
+        w2(time>(ti-1)) = val_hov;
+        w3(time>(ti-1)) = val_hov;
+        w4(time>(ti-1)) = val_hov;
     end
     
-    switch ind
+    switch ind  % Con esto se termina de calcular la velocidad angular de 
+                % cada motor en cada caso particular
         
-        case 3
-            wang1(time>tf/2) = val_hov+100;            
-        case 4                    
-            wang2(time>tf/2) = val_hov+100;            
-        case 5                       
-            wang3(time>tf/2) = val_hov+100;         
-        case 6
-             wang4(time>tf/2) = val_hov+100;
-        case 7
-            wang1(time>tf/2) = val_hov+100;
-            wang2(time>tf/2) = val_hov+100;
-            wang3(time>tf/2) = val_hov+100;
-            wang4(time>tf/2) = val_hov+100;
-        case 8  
+        case 3 %Escalón en el motor 1
+            w1(time>tf/2) = val_hov+100;            
+        case 4 %Escalón en el motor 2                   
+            w2(time>tf/2) = val_hov+100;            
+        case 5 %Escalón en el motor 3                     
+            w3(time>tf/2) = val_hov+100;         
+        case 6 %Escalón en el motor 4 
+             w4(time>tf/2) = val_hov+100;
+        case 7 %Escalón en los cuatro motores
+            w1(time>tf/2) = val_hov+100;
+            w2(time>tf/2) = val_hov+100;
+            w3(time>tf/2) = val_hov+100;
+            w4(time>tf/2) = val_hov+100;
+        
+        case 8  %Giro según K
+         
+            %Tengo que subir la veocidad angular de dos motores y bajar la de 
+            %los otros dos. La fuerza total tiene que ser constante.
+         
+            %Velocidad angular necesaria para tener 1N más de fuerza que en
+            %hovering
+            val_mas=calcu_omega(val_hov+1);
+                     
+            %Le asigno esa velocidad angular a los motores 2 y 4
+            w2(time>tf/2) = val_mas;
+            w4(time>tf/2) = val_mas;
+         
+         
+            %Velocidad angular necesaria para tener 1N menos de fuerza que
+            %en hovering
+            val_menos=calcu_omega(val_hov-1)
             
-         fuerza_mas=fuerza_hov+1;
-         val=solve(3.5296e-5*x^2-4.9293e-4*x-fuerza_mas);
-         val_mas=eval(val);
-        
-         fuerza_menos=fuerza_hov-1;
-         val=solve(3.5296e-5*x^2-4.9293e-4*x-fuerza_menos);
-         val_menos=eval(val);
-         
-          if (val_mas(1)>=0)
-                 val_mas=val_mas(1);
-         else val_mas=val_mas(2);
-         end
-         
-         if (val_menos(1)>=0)
-                 val_menos=val_menos(1);
-         else val_menos=val_menos(2);
-         end
-            wang1(time>tf/2) = val_menos;
-            wang2(time>tf/2) = val_mas;
-            wang3(time>tf/2) = val_menos;
-            wang4(time>tf/2) = val_mas;
-        case 9   
+            %Le asigno esa velocidad angular a los motores 1 y 3
+            w1(time>tf/2) = val_menos;
+            w3(time>tf/2) = val_menos;
+            
+        case 9 %Caso vuelo en linea recta  
+            
+            %La fuerza para mantener la altura depende de los ángulos de
+            %pitch y roll. Calculo esa fuerza
             fuerza_rec=9.81*m/(4*cos(psio)*cos(phio));
-            val=solve(3.5296e-5*x^2-4.9293e-4*x-fuerza_rec);
-            val_rec=eval(val);
-        
-            if (val_rec(1)>=0)
-                     val_rec=val_rec(1);
-            else val_rec=val_rec(2);
-            end 
             
-       
-             wang1(time>(ti-1)) = val_rec;
-             wang2(time>(ti-1)) = val_rec;
-             wang3(time>(ti-1)) = val_rec;
-             wang4(time>(ti-1)) = val_rec;         
+            %Calculo la velocidad angular necesaria para tener esa fuerza
+            val_rec=calcu_omega(fuerza_rec);
+            
+             %Le asigno esa velocidad angular a los cuatro motores 
+             w1(time>(ti-1)) = val_rec;
+             w2(time>(ti-1)) = val_rec;
+             w3(time>(ti-1)) = val_rec;
+             w4(time>(ti-1)) = val_rec;         
     
     end
-    assignin('base','w1',wang1);
-    assignin('base','w2',wang2);
-    assignin('base','w3',wang3);
-    assignin('base','w4',wang4);
-   
+        
     %Calculo las velocidades iniciales en el sistema del quadricoptero
     determinar_vel;
     
     %Simulo el sistema en lazo abierto
-    sim_lazo_abierto
+    sim_lazo_abierto(ti,tf,w1,w2,w3,w4)
     
     
     
