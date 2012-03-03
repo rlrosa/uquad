@@ -181,10 +181,7 @@ imu_t *imu_comm_init(const char *device){
     imu_t *imu;
     int i,retval;
     imu = (imu_t *)malloc(sizeof(struct imu));
-    if(imu == NULL){
-	fprintf(stderr,"Failed to allocate mem. \n");
-	return imu;
-    }
+    mem_alloc_check(imu);
     // Set default values
     //TODO
     imu_comm_restart_sampling(imu);

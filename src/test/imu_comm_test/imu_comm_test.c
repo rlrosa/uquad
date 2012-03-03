@@ -108,7 +108,7 @@ int main(int argc, char *argv[]){
     // do stuff...
     imu_data_t data;
     imu_raw_t raw;
-    imu_calib_t imu_calib;
+    imu_calib_t *imu_calib;
     uquad_bool_t do_sleep = false;
     int read_will_not_lock;
     uquad_bool_t data_ready = false;
@@ -157,7 +157,9 @@ int main(int argc, char *argv[]){
 		    continue;
 		}
 
-		if(imu_comm_get_status(imu) == IMU_COMM_STATE_RUNNING){
+		if(imu_comm_get_status(imu) == IMU_COMM_STATE_RUNNING)
+		{
+#if 0
 		    if(calibrating){
 			// finished calibration
 			calibrating = false;
@@ -177,7 +179,8 @@ int main(int argc, char *argv[]){
 			    printf("Calibration FAILED...\n");
 			    wait_for_enter;
 			}
-		    }		    
+		    }
+#endif	    
 		    // Printing to stdout is unreadable
 		    retval = imu_comm_get_raw_latest_unread(imu,&raw);
 		    if(retval == ERROR_OK)
@@ -223,7 +226,7 @@ int main(int argc, char *argv[]){
 		// exit
 		if(tmp[0] == IMU_COMM_TEST_EXIT_CHAR)
 		    break;
-
+#if 0
 		// do calibration
 		if(tmp[0] == IMU_COMM_TEST_CALIB_CHAR){
 		    printf("Starting calibration...\n");
@@ -244,6 +247,7 @@ int main(int argc, char *argv[]){
 			err_propagate(retval);
 		    }
 		}
+#endif
 		printf("\nPress enter to continue...\n");
 		fflush(stdout);
 		wait_for_enter;
