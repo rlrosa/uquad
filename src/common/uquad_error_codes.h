@@ -47,7 +47,7 @@ ERROR_MATH_MAT_DIM
  * Verifies that malloc succeeded.
  * 
  */
-#define mem_alloc_check(pointer) if(pointer==NULL){fprintf(stderr,"%s:%d: malloc failed\n",__FILE__,__LINE__);return pointer;}
+#define mem_alloc_check(pointer) if(pointer==NULL){fprintf(stderr,"%s:%d: malloc failed\n",__FILE__,__LINE__);return NULL;}
 
 /// No functions
 

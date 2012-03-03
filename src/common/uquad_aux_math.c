@@ -46,13 +46,11 @@ uquad_mat_t *uquad_mat_alloc(int r, int c)
     m->r = r;
     m->c = c;
     m->m = (float **)malloc(sizeof(float *)*m->r);
-    //TODO fix!
-    //    mem_alloc_check(m->m);
+    mem_alloc_check(m->m);
     for (i=0; i<m->r; ++i)
     {
 	m->m[i] = (float *)malloc(sizeof(float)*m->c);
-	//TODO fix!
-	//	mem_alloc_check(m-m[i]);
+	mem_alloc_check(m->m[i]);
     }
     return m;
 }
