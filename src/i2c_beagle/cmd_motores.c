@@ -13,7 +13,7 @@
 
 #include <time.h>
 
-#define USAGE_STR "Necesito mas argumentos!\nPara ejecutar el programa correr:\n\t./cmd v1 v2 v3 v4\ndonde vX es la velocidad (en decimal) que se le manda al motor numero X\n\n"
+#define USAGE_STR "Incorrect arguments! Use no arguments (all enabled), or 4, enabling each motor.\n\n\t./cmd ena9 enaA enaB ena8\nwhere enaX enables motor X, valid is 0 or 1\n\n"
 
 #define MAX_SPEED 255
 #define MIN_SPEED 0
@@ -49,6 +49,12 @@ static int mot_i2c_addr[MOT_COUNT] = {0x69,
 				       0x6a,
 				       0x6b,
 				       0x68};
+#define MOT_SELECTED 1
+#define MOT_NOT_SELECTED 0
+static unsigned short mot_selected[MOT_COUNT] = {MOT_NOT_SELECTED,
+						 MOT_NOT_SELECTED,
+						 MOT_NOT_SELECTED,
+						 MOT_NOT_SELECTED};
 
 // Forwards defs
 int uquad_mot_i2c_addr_open(int i2c_dev, int addr);
@@ -112,6 +118,8 @@ int uquad_mot_enable_all(int i2c_dev){
     int i;
     for(i=0;i<MOT_COUNT;++i)
     {
+	if(!mot_selected[i])
+	   continue;
 	if(uquad_mot_enable(i2c_dev,mot_i2c_addr[i]))
 	{
 	    backtrace();
@@ -138,6 +146,8 @@ int uquad_mot_disable_all(int i2c_dev){
     int i;
     for(i=0;i<MOT_COUNT;++i)
     {
+	if(!mot_selected[i])
+	    continue;
 	if(uquad_mot_disable(i2c_dev,mot_i2c_addr[i]))
 	{
 	    backtrace();
@@ -164,6 +174,8 @@ int uquad_mot_set_speed_all(int i2c_dev, __u8 val, int swap_order){
     int i;
     for(i=0;i<MOT_COUNT;++i)
     {
+	if(!mot_selected[i])
+	    continue;
 	if(uquad_mot_set_speed(i2c_dev,
 			       mot_i2c_addr[swap_order?(3+i)%4:i],
 			       val))
@@ -180,15 +192,17 @@ int uquad_mot_set_speed_all(int i2c_dev, __u8 val, int swap_order){
     return OK;
 }
 
+#define STARTUPS 1 // send startup command repeatedly
 int uquad_mot_startup_all(int i2c_file){
-    int i, watchdog = 0;
+    int i, watchdog = 0, enable_counts = 0;
     if(uquad_mot_set_speed_all(i2c_file, 0,1) < 0)
     {
 	backtrace();
 	return NOT_OK;
     }
-    while(uquad_mot_enable_all(i2c_file) < 0)
+    while(uquad_mot_enable_all(i2c_file) < 0 || ++enable_counts < STARTUPS)
     {
+	usleep(400);
 	// wait for start
 	if(++watchdog == UQUAD_STARTUP_RETRIES)
 	{
@@ -196,6 +210,7 @@ int uquad_mot_startup_all(int i2c_file){
 	    return NOT_OK;
 	}
     }	    
+    sleep_ms(420);
     return OK;
 }
 
@@ -249,8 +264,11 @@ int uquad_read_stdin(void){
     retval = select(STDIN_FILENO + 1, &rfds, NULL, NULL, &tv);
     // Don't rely on the value of tv now!
 
-    if (retval == -1)
+    if (retval < 0)
+    {
 	perror("select()");
+	exit(retval);
+    }
     else if (retval && FD_ISSET(STDIN_FILENO, &rfds))
     {
 	scanf("%d", &vel);
@@ -266,11 +284,15 @@ int main(int argc, char *argv[])
     int watchdog = 0, success_count = 0;
     FILE * log_file;
     char filename[20];
-    __u8 vel[4];
+    //    __u8 vel[4];
     if(argc != 5) // vel de los 4 motores + el nombre del programa (argv[0]).
     {
 	if(argc == 1)
+	{
 	    printf("Input speed and press RET to set.\n");
+	    for(i=0;i<MOT_COUNT;++i)
+		mot_selected[i] = 1;
+	}
 	else
 	{
 	    printf(USAGE_STR);
@@ -280,24 +302,25 @@ int main(int argc, char *argv[])
 	for(i=0;i<4;++i)
 	{
 	    tmp = atoi(argv[i+1]);
-	    if((tmp > MAX_SPEED) || (tmp < MIN_SPEED))
+	    if((tmp != MOT_NOT_SELECTED) && (tmp != MOT_SELECTED))
 	    {
-		printf("Velocidades deben ser 0 < Velocidad < 255\n");
+		printf("Valid arguments are:\n\tSelected:\t%d\n\tNot selected:\t%d\n",
+		       MOT_NOT_SELECTED);
 		return -1;
 	    }
-	    vel[i] = (__u8)tmp;
+	    mot_selected[i] = (unsigned short) tmp;
 #if DEBUG
-	    printf("V%d:\t%d\n",i,vel[i]);
+	    printf("Mot %d:\t%s\n",i,mot_selected[i]?"Enabled.":"Not enabled");
 #endif
 	}
     }
     
     sprintf(filename,"/dev/i2c-%d",adapter_nr);
-    printf("Intentare abrir %s...\n",filename);
+    printf("Opening %s...\n",filename);
     
     // Abrir i2c
     if ((i2c_file = open(filename,O_RDWR)) < 0) {
-	printf("ERROR! No pude abrir %s!\nAbortando...\n",filename);
+	printf("ERROR! Failed to open %s!\nAborting...\n",filename);
 	printf("errno info:\t %s\n",strerror(errno));
 	/* ERROR HANDLING; you can check errno to see what went wrong */
 	return -1;
@@ -314,7 +337,7 @@ int main(int argc, char *argv[])
     signal(SIGINT, uquad_sigint_handler);
     signal(SIGQUIT, uquad_sigint_handler);
     
-    printf("%s abierto con exito!\n\nEntrando al loop, salir con Ctrl+C...\n\n",filename);
+    printf("%s successfully opened!\n\nEntering loop, Ctrl+C to quit...\n\n",filename);
     fflush(stdout);
 
     // -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
@@ -334,8 +357,6 @@ int main(int argc, char *argv[])
     { 
 	// all
       	ret = uquad_mot_set_speed_all(i2c_file, curr_vel,0);
-	// only 1
-	//ret = uquad_mot_set_speed(i2c_file, 0x6a, curr_vel);
 	if(ret<0)
 	{
 	    backtrace();
@@ -367,7 +388,8 @@ int main(int argc, char *argv[])
 	    // continue
 	    curr_vel = (__u8) new_vel;
 	    printf("Speed changed to %c\n",curr_vel);
-	}	    
+	}
+	usleep(1500);
     }
  
     fclose(log_file);

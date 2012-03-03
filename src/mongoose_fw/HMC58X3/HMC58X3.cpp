@@ -85,14 +85,23 @@ void HMC58X3::calibrate(unsigned char gain) {
 
   setGain(gain);
   float x, y, z, mx=0, my=0, mz=0, t=10;
-  
+
+#if 0
+  Serial.println("Compass calibration:");
   for (int i=0; i<(int)t; i++) { 
     setMode(1);
     getValues(&x,&y,&z);
     if (x>mx) mx=x;
     if (y>my) my=y;
     if (z>mz) mz=z;
+    Serial.print("\t");
+    Serial.print(x);
+    Serial.print("\t");
+    Serial.print(y);
+    Serial.print("\t");
+    Serial.println(z);
   }
+#endif
   
   float max=0;
   if (mx>max) max=mx;
@@ -191,3 +200,12 @@ void HMC58X3::getValues(float *xyz) {
   getValues(&xyz[0], &xyz[1], &xyz[2]);
 }
 
+void HMC58X3::getCalibration(float *xyz_scale, float *xyz_max ) {
+    xyz_scale[0] = x_scale;
+    xyz_scale[1] = y_scale;
+    xyz_scale[2] = z_scale;
+
+    xyz_max[0] = x_max;
+    xyz_max[1] = y_max;
+    xyz_max[2] = z_max;
+}

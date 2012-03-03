@@ -125,14 +125,8 @@ void Compass_Heading()
  
 }
 
-
-
-
-
-
-
-
-
-
-
-
+#if DEBUG
+void GetMagnCalibration(float *xyz_scale, float *xyz_max) {
+    magn.getCalibration(xyz_scale, xyz_max);
+}
+#endif

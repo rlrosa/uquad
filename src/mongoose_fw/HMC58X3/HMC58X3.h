@@ -100,6 +100,7 @@ class HMC58X3
     void setMode(unsigned char mode);
     void setDOR(unsigned char DOR);
     void setGain(unsigned char gain);
+    void getCalibration(float *xyz_scale, float *xyz_max );
   private:
     void writeReg(unsigned char reg, unsigned char val);
     float x_scale,y_scale,z_scale,x_max,y_max,z_max;
