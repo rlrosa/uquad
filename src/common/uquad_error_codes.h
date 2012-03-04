@@ -1,6 +1,8 @@
 #ifndef UQUAD_ERROR_CODES_H
 #define UQUAD_ERROR_CODES_H
 
+#include <stdio.h>
+
 enum UQUAD_ERROR_CODES{
 ERROR_OK = 0,
 ERROR_FAIL,
@@ -18,7 +20,11 @@ ERROR_NULL_POINTER,
 ERROR_IMU_STATUS,
 ERROR_IO_DEV_NOT_FOUND,
 ERROR_GPS_OPEN,
-ERROR_GPS_STREAM
+ERROR_GPS_STREAM,
+ERROR_MATH_MAX_DIM,
+ERROR_MATH_MAT_DIM,
+ERROR_MATH_VEC_LEN,
+ERROR_MATH_MAT_SING
 };
 
 /**
@@ -44,7 +50,7 @@ ERROR_GPS_STREAM
  * Verifies that malloc succeeded.
  * 
  */
-#define mem_alloc_check(pointer) if(pointer==NULL){fprintf(stderr,"%s:%d: malloc failed\n",__FILE__,__LINE__);return pointer;}
+#define mem_alloc_check(pointer) if(pointer==NULL){fprintf(stderr,"%s:%d: malloc failed\n",__FILE__,__LINE__);return NULL;}
 
 /// No functions
 
