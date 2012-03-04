@@ -23,7 +23,7 @@ int uquad_vec_dot(uquad_vec_t *v1, uquad_vec_t *v2, uquad_vec_t *vr);
 int uquad_vec_cross(uquad_vec_t *v1, uquad_vec_t *v2, uquad_vec_t *vr);
 
 uquad_vec_t *uquad_vec_alloc(int l);
-int uquad_vec_free(uquad_vec_t *v);
+void uquad_vec_free(uquad_vec_t *v);
 
 /**
  * -- -- -- -- -- -- -- -- -- -- -- --
@@ -42,9 +42,13 @@ int uquad_mat_prod(uquad_mat_t *m1,uquad_mat_t *m2,uquad_mat_t *mr);
 
 int uquad_mat_det(uquad_mat_t *m, double *res);
 
-int uquad_mat_inv(uquad_mat_t *m1, uquad_mat_t *mr);
+int uquad_solve_lin(uquad_mat_t *A, uquad_mat_t *B, uquad_mat_t *x, uquad_mat_t *maux);
+
+int uquad_mat_inv(uquad_mat_t *m1, uquad_mat_t *mr, uquad_mat_t *maux);
+
+void uquad_mat_dump(uquad_mat_t *m, FILE *output);
 
 uquad_mat_t *uquad_mat_alloc(int r, int c);
-int uquad_mat_free(uquad_mat_t *m);
+void uquad_mat_free(uquad_mat_t *m);
 
 #endif //UQUAD_AUX_MATH_H
