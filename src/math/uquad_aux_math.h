@@ -42,6 +42,12 @@ int uquad_mat_prod(uquad_mat_t *m1,uquad_mat_t *m2,uquad_mat_t *mr);
 
 int uquad_mat_det(uquad_mat_t *m, double *res);
 
+int uquad_mat_scalar_div(uquad_mat_t *m, double k);
+int uquad_mat_scalar_mul(uquad_mat_t *m, double k);
+
+int uquad_mat_sub(uquad_mat_t *C, uquad_mat_t *A, uquad_mat_t *B);
+int uquad_mat_add(uquad_mat_t *C, uquad_mat_t *A, uquad_mat_t *B);
+
 int uquad_solve_lin(uquad_mat_t *A, uquad_mat_t *B, uquad_mat_t *x, uquad_mat_t *maux);
 
 int uquad_mat_inv(uquad_mat_t *m1, uquad_mat_t *mr, uquad_mat_t *maux);

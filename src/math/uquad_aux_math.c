@@ -15,14 +15,20 @@
 #include "identity_matrix.c"
 #include "get_submatrix.c"
 #include "set_submatrix.c"
+#include "div_matrix_by_scalar.c"
+#include "div_3x3_matrix_by_scalar.h"
+#include "mul_matrix_by_scalar.c"
+#include "mul_3x3_matrix_by_scalar.h"
+#include "add_matrices.c"
+#include "add_matrices_3x3.h"
+#include "subtract_matrices.c"
+#include "subtract_matrices_3x3.h"
 #include "multiply_matrices.c"
 #include "multiply_matrices_3x3.c"
 #include "gauss_elimination.c"
 #include "gauss_aux_elimination.c"
 //#include "doolittle.c"
 //#include "doolittle_pivot.c"
-
-#define uquad_cp_mat_A2B(A,B) Copy_Matrix(A->m_full,B->m_full,A->r,A->c)
 
 /**
  * -- -- -- -- -- -- -- -- -- -- -- --
@@ -118,8 +124,98 @@ int uquad_mat_prod(uquad_mat_t *m1,uquad_mat_t *m2,uquad_mat_t *mr)
 
 int uquad_mat_det(uquad_mat_t *m, double *res)
 {
-    //TODO
+    //TODO use LU
     err_check(ERROR_FAIL,"Not implemented!");
+}
+
+int uquad_mat_scalar_div(uquad_mat_t *m, double k)
+{
+    if(k == 0.0)
+    {
+	err_check(ERROR_MATH_DIV_0,"Cannot divide by 0!");
+    }
+    if(m == NULL)
+    {
+	err_check(ERROR_NULL_POINTER,"NULL pointer is invalid arg.");
+    }
+
+    if((m->r == 3) && (m->c == 3))
+    {
+	Divide_3x3_Matrix_by_Scalar(m->m_full,k);
+    }
+    else
+    {
+	Divide_Matrix_by_Scalar(m->m_full,k,m->r,m->c);
+    }
+    return ERROR_OK;
+}
+
+int uquad_mat_scalar_mul(uquad_mat_t *m, double k)
+{
+    if(m == NULL)
+    {
+	err_check(ERROR_NULL_POINTER,"NULL pointer is invalid arg.");
+    }
+
+    if((m->r == 3) && (m->c == 3))
+    {
+	Multiply_3x3_Matrix_by_Scalar(m->m_full,k);
+    }
+    else
+    {
+	Multiply_Matrix_by_Scalar(m->m_full,k,m->r,m->c);
+    }
+    return ERROR_OK;
+}
+
+/// C = A - B
+int uquad_mat_sub(uquad_mat_t *C, uquad_mat_t *A, uquad_mat_t *B)
+{
+    if(C == NULL || A == NULL || B == NULL)
+    {
+	err_check(ERROR_NULL_POINTER,"NULL pointer is invalid arg.");
+    }
+    if((C->r != B->r) ||
+       (C->c != B->c) ||
+       (C->r != A->r) ||
+       (C->c != A->c))
+    {
+	err_check(ERROR_MATH_MAT_DIM,"Dimension mismatch, cannot sub");
+    }
+    if((C->r == 3) && (C->c == 3))
+    {
+	Subtract_Matrices_3x3(C->m_full,A->m_full,B->m_full);
+    }
+    else
+    {
+	Subtract_Matrices(C->m_full,A->m_full,B->m_full,A->r,A->c);
+    }
+    return ERROR_OK;
+}
+
+/// C = A + B
+int uquad_mat_add(uquad_mat_t *C, uquad_mat_t *A, uquad_mat_t *B)
+{
+    if(C == NULL || A == NULL || B == NULL)
+    {
+	err_check(ERROR_NULL_POINTER,"NULL pointer is invalid arg.");
+    }
+    if((C->r != B->r) ||
+       (C->c != B->c) ||
+       (C->r != A->r) ||
+       (C->c != A->c))
+    {
+	err_check(ERROR_MATH_MAT_DIM,"Dimension mismatch, cannot add");
+    }
+    if((C->r == 3) && (C->c == 3))
+    {
+	Add_Matrices_3x3(C->m_full,A->m_full,B->m_full);
+    }
+    else
+    {
+	Add_Matrices(C->m_full,A->m_full,B->m_full,A->r,A->c);
+    }
+    return ERROR_OK;
 }
 
 int uquad_solve_lin(uquad_mat_t *A, uquad_mat_t *B, uquad_mat_t *x, uquad_mat_t *maux)
