@@ -106,9 +106,6 @@ static void imu_comm_calibration_clear(imu_t *imu){
     imu->is_calibrated = false;
     imu->calibration_counter = -1;
     int i;
-//    for(i=0;i<IMU_SENSOR_COUNT;++i){
-//	imu->null_estimates.xyzrpy[i] = 0;
-//    }
     imu->calib.timestamp.tv_sec = 0;
     imu->calib.timestamp.tv_usec = 0;
 }
@@ -211,7 +208,9 @@ imu_t *imu_comm_init(const char *device){
 	return NULL;
 
     // Mark IMU as not calibrated
-    imu_comm_calibration_clear(imu);
+    retval = imu_comm_init_calibration(imu);
+    if(retval != ERROR_OK)
+	return NULL;
 
     // Wait 300ms + a bit more for IMU to reset
     sleep_ms(350);
@@ -940,6 +939,115 @@ int imu_comm_check_io_locks(FILE *device, uquad_bool_t *read_ok, uquad_bool_t *w
 uquad_bool_t imu_comm_calibration_is_calibrated(imu_t *imu){
     return imu->is_calibrated;
 }	
+
+int imu_comm_alloc_calib_lin(imu_t *imu)
+{
+    int i;
+    for (i = 0; i < 3; ++i)
+    {
+	// K_inv
+	imu->calib.m_lin[i].K_inv = uquad_mat_alloc(3,3);
+	if (imu->calib.m_lin[i].K_inv == NULL)
+	{
+	    err_check(ERROR_MALLOC, "Failed to allocate K");
+	}
+	// T	    
+	imu->calib.m_lin[i].T = uquad_mat_alloc(3,3);
+	if (imu->calib.m_lin[i].T == NULL)
+	{
+	    err_check(ERROR_MALLOC, "Failed to allocate K");
+	}
+	// b
+	imu->calib.m_lin[i].b = uquad_mat_alloc(3,1);
+	if (imu->calib.m_lin[i].b == NULL)
+	{
+	    err_check(ERROR_MALLOC, "Failed to allocate K");
+	}
+    }
+    return ERROR_OK;
+}
+
+int imu_comm_load_calib(imu_t *imu, const char *path)
+{
+    int i,j,retval;
+    uquad_mat_t *mtmp, *ktmp, *maux3x6, *meye3x3;
+    float ftmp;
+    FILE *calib_file = fopen(path,"r+");
+    if(calib_file == NULL)
+    {
+	err_check(ERROR_OPEN,"Failed to open calib file!");
+    }
+
+    ktmp = uquad_mat_alloc(3,3);
+    meye3x3 = uquad_mat_alloc(3,3);
+    maux3x6 = uquad_mat_alloc(3,6);
+    if(ktmp == NULL || meye3x3 == NULL || maux3x6 == NULL)
+    {
+	err_log("Failed to allocate K");
+    }
+    else
+    {	
+	retval = uquad_mat_eye(meye3x3);
+	if(retval != ERROR_OK)
+	{
+	    err_log("Failed to generate eye matrix");
+	}
+	else
+	{
+	    for (i = 0; i < 3; ++i)
+	    {
+		// K
+		for(j=0; j<9; ++j)
+		{
+		    fscanf(calib_file,"%f",&ftmp);
+		    ktmp->m_full[j] = (double) ftmp;
+		}
+		// K_inv
+		retval = uquad_mat_inv(ktmp,
+				       imu->calib.m_lin[i].K_inv,
+				       meye3x3,
+				       maux3x6);
+		if(retval != ERROR_OK)
+		{
+		    // Cannot quit here, need to
+		    // free mem and close file, so just log.
+		    err_log("Failed to invert gain matrix!");
+		    break;
+		}
+
+		// T
+		for(j=0; j<9; ++j)
+		{
+		    fscanf(calib_file,"%f",&ftmp);
+		    imu->calib.m_lin[i].T->m_full[j] = (double) ftmp;
+		}
+
+		// b
+		for(j=0; j<3; ++j)
+		{
+		    fscanf(calib_file,"%f",&ftmp);
+		    imu->calib.m_lin[i].b->m_full[j] = (double) ftmp;
+		}
+	    }
+	}
+    }
+    uquad_mat_free(ktmp);
+    uquad_mat_free(meye3x3);
+    uquad_mat_free(maux3x6);
+    fclose(calib_file);
+    return retval;
+}
+
+int imu_comm_init_calibration(imu_t *imu)
+{
+    int retval = ERROR_OK;
+    retval = imu_comm_alloc_calib_lin(imu);
+    err_propagate(retval);
+    retval = imu_comm_load_calib(imu, IMU_DEFAULT_CALIB_PATH);
+    err_propagate(retval);
+    imu->is_calibrated = true;
+    return retval;
+}
 
 /** 
  *Get IMU calibration.

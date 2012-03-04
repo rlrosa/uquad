@@ -247,8 +247,7 @@ int uquad_solve_lin(uquad_mat_t *A, uquad_mat_t *B, uquad_mat_t *x, uquad_mat_t 
 
     // we need [A:B]
     Join_Matrices_by_Row(maux->m_full,A->m_full,A->r,A->c,B->m_full,B->c);
-    printf("\n");
-    uquad_mat_dump(maux,stdout);
+
     // find inv
     retval = Gaussian_Elimination_Aux(maux->m_full,maux->r,maux->c);
     if (retval < 0)
@@ -269,31 +268,63 @@ int uquad_solve_lin(uquad_mat_t *A, uquad_mat_t *B, uquad_mat_t *x, uquad_mat_t 
     return ERROR_OK;
 }
 
-int uquad_mat_inv(uquad_mat_t *m1, uquad_mat_t *minv, uquad_mat_t *meye)
+int uquad_mat_eye(uquad_mat_t *m)
 {
     int retval;
-    uquad_bool_t local_mem = false;
+    if(m == NULL)
+    {
+	err_check(ERROR_MALLOC,"Could not allocate aux mem for inv.");
+    }
+    if(m->r != m->c)
+    {
+	err_check(ERROR_MATH_MAT_DIM,"Identity matrix must be square!");
+    }
+    Identity_Matrix(m->m_full,m->r);
+    return ERROR_OK;
+}
+
+int uquad_mat_inv(uquad_mat_t *m1, uquad_mat_t *minv, uquad_mat_t *meye, uquad_mat_t *maux)
+{
+    int retval;
+    uquad_bool_t local_meye = false, local_maux = false;
     if(m1 == NULL || minv == NULL)
     {
 	err_check(ERROR_NULL_POINTER,"NULL pointer is invalid arg.");
     }
 
+    if(m1->r != m1->c)
+    {
+	err_check(ERROR_MATH_MAT_DIM,"Cannot invert non-square matrix!");
+    }
+
     if(meye == NULL)
     {
-	meye = uquad_mat_alloc(m1->r,m1->c);
+	meye= uquad_mat_alloc(m1->r,m1->c);
 	if(meye == NULL)
 	{
 	    err_check(ERROR_MALLOC,"Could not allocate aux mem for inv.");
 	}
-	Identity_Matrix(meye->m_full,meye->r);
-	local_mem = true;
+	uquad_mat_eye(meye);
+	local_meye = true;
     }
 
-    retval = uquad_solve_lin(m1, meye, minv, NULL);
+    if(maux == NULL)
+    {
+	maux = uquad_mat_alloc(m1->r,(m1->c)<<1);
+	if(maux == NULL)
+	{
+	    err_check(ERROR_MALLOC,"Could not allocate aux mem for inv.");
+	}
+	local_maux = true;
+    }
+
+    retval = uquad_solve_lin(m1, meye, minv, maux);
     err_propagate(retval);
 
-    if(local_mem)
+    if(local_meye)
 	uquad_mat_free(meye);
+    if(local_maux)
+	uquad_mat_free(maux);
 
     return ERROR_OK;
 }

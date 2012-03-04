@@ -6,10 +6,13 @@
 #include <uquad_error_codes.h>
 #include <uquad_types.h>
 #include <uquad_aux_time.h>
+#include <uquad_aux_math.h>
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
 #include <stdint.h>
+
+#define IMU_DEFAULT_CALIB_PATH "imu_calib.txt"
 
 #define IMU_FRAME_INIT_CHAR 'A'
 #define IMU_FRAME_INIT_CHAR_ALT 'C'
@@ -89,14 +92,22 @@ struct imu_data{
 
     struct timeval timestamp;
 };
+typedef struct imu_data imu_data_t;
+
+struct imu_calibration_lin_model{
+    // data = T*(K_inv*raw - b)
+    uquad_mat_t *K_inv;
+    uquad_mat_t *T;
+    uquad_mat_t *b;
+};
+typedef struct imu_calibration_lin_model imu_calib_lin_t;
 
 struct imu_calibration{
-    //TODO
+    imu_calib_lin_t m_lin[3];
     struct timeval timestamp;
 };
-
 typedef struct imu_calibration imu_calib_t;
-typedef struct imu_data imu_data_t;
+
 
 struct imu_settings{
     // sampling frequency
@@ -107,6 +118,7 @@ struct imu_settings{
     int acc_sens;
     int frame_width_bytes;
 };
+typedef struct imu_settings imu_settings_t;
 
 enum imu_status{
     IMU_COMM_STATE_RUNNING,
@@ -117,7 +129,7 @@ typedef enum imu_status imu_status_t;
 
 struct imu{
     // config & status
-    struct imu_settings settings;
+    imu_settings_t settings;
     imu_status_t status;
     uquad_bool_t in_cfg_mode;
     FILE * device;
@@ -137,7 +149,7 @@ struct imu{
 };
 typedef struct imu imu_t;
 
-imu_t * imu_comm_init(const char *device);
+imu_t *imu_comm_init(const char *device);
 int imu_comm_deinit(imu_t *imu);
 
 imu_status_t imu_comm_get_status(imu_t *imu);
