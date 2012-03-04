@@ -52,7 +52,7 @@ uquad_vec_t *uquad_vec_alloc(int l)
 
     v->l = l;
 
-    v->v = (float *)malloc(sizeof(float)*v->l);
+    v->v = (double *)malloc(sizeof(double)*v->l);
     mem_alloc_check(v->v);
 
     return ERROR_OK;
@@ -64,6 +64,8 @@ int uquad_vec_free(uquad_vec_t *v)
     free(v);
     return ERROR_OK;
 }
+
+#include "multiply_matrices.c"
 
 /**
  * -- -- -- -- -- -- -- -- -- -- -- --
@@ -85,6 +87,9 @@ int uquad_mat_prod(uquad_mat_t *m1,uquad_mat_t *m2,uquad_mat_t *mr)
 	err_check(ERROR_MATH_MAT_DIM,"Cannot multiply matrices, dims do not match.");
     }
 
+    Multiply_Matrices(mr->m_full,m1->m_full,mr->r,mr->c,m2->m_full,m2->c);
+    return ERROR_OK;
+
     // rows
     for(i_r=0; i_r < mr->r; ++i_r)
     {
@@ -100,7 +105,7 @@ int uquad_mat_prod(uquad_mat_t *m1,uquad_mat_t *m2,uquad_mat_t *mr)
     return ERROR_OK;
 }
 
-int uquad_mat_det(uquad_mat_t *m, float *res)
+int uquad_mat_det(uquad_mat_t *m, double *res)
 {
     //TODO
     err_check(ERROR_FAIL,"Not implemented!");
@@ -115,7 +120,7 @@ int uquad_mat_inv(uquad_mat_t *m1, uquad_mat_t *mr)
 uquad_mat_t *uquad_mat_alloc(int r, int c)
 {
     int i;
-    float *tmp;
+    double *tmp;
     if(!((r < UQUAD_MAT_MAX_DIM) && (c < UQUAD_MAT_MAX_DIM)))
     {
 	err_log("Invalid matrix size!");
@@ -126,10 +131,10 @@ uquad_mat_t *uquad_mat_alloc(int r, int c)
     mem_alloc_check(m);
     m->r = r;
     m->c = c;
-    m->m = (float **)malloc(sizeof(float *)*m->r);
+    m->m = (double **)malloc(sizeof(double *)*m->r);
     mem_alloc_check(m->m);
     // consecutive data
-    m->m_full = (float*)malloc(sizeof(float)*m->r*m->c);        
+    m->m_full = (double*)malloc(sizeof(double)*m->r*m->c);        
     for (i=1, m->m[0] = m->m_full; i < m->r; ++i)
     {
 	m->m[i] = m->m[i-1] + m->c;

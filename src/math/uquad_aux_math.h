@@ -13,7 +13,7 @@
  * -- -- -- -- -- -- -- -- -- -- -- --
  */
 struct uquad_vec {
-    float * v;      // elements
+    double * v;      // elements
     int l;          // len
 };
 typedef struct uquad_vec uquad_vec_t;
@@ -31,8 +31,8 @@ int uquad_vec_free(uquad_vec_t *v);
  * -- -- -- -- -- -- -- -- -- -- -- --
  */
 struct uquad_mat {
-    float ** m;     // elements
-    float * m_full; //
+    double ** m;     // elements
+    double * m_full; //
     int r;          // rows
     int c;          // columns
 };
@@ -40,7 +40,7 @@ typedef struct uquad_mat uquad_mat_t;
 
 int uquad_mat_prod(uquad_mat_t *m1,uquad_mat_t *m2,uquad_mat_t *mr);
 
-int uquad_mat_det(uquad_mat_t *m, float *res);
+int uquad_mat_det(uquad_mat_t *m, double *res);
 
 int uquad_mat_inv(uquad_mat_t *m1, uquad_mat_t *mr);
 
