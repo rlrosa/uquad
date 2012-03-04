@@ -30,35 +30,43 @@ void matrix_stdin(uquad_mat_t *m)
 	}
 }
 
-int alloc_m1_m2(void)
+static int alloc_counter = 1;
+int alloc_m(uquad_mat_t **m)
 {
-    printf("Enter number of rows and columns of first matrix (less than %d)\n",
+    printf("Enter number of rows and columns of matrix %d (less than %d)\n",
+	   alloc_counter++,
 	   UQUAD_MAT_MAX_DIM);
     scanf("%d%d",&r1,&c1);
-    printf("Enter number of rows and columns of second matrix (less than %d)\n",
-	   UQUAD_MAT_MAX_DIM);
-    scanf("%d%d",&r2,&c2);
-
-    m1 = uquad_mat_alloc(r1,c1);
-    m2 = uquad_mat_alloc(r2,c2);
-    if(m1 == NULL || m2 == NULL)
+    *m = uquad_mat_alloc(r1,c1);
+    if(*m == NULL)
 	return ERROR_FAIL;
     else
 	return ERROR_OK;
+}   
+
+int alloc_m1_m2(void)
+{
+    alloc_m(&m1);
+    alloc_m(&m2);
+}
+
+static int counter = 1;
+int load_m(uquad_mat_t *m)
+{
+    printf("Matrix %d\n",counter);
+    matrix_stdin(m);
+    printf("Matrix %d is :\n",counter);
+    uquad_mat_dump(m,NULL);
+    counter++;
+    return ERROR_OK;
 }
 
 int load_m1_m2(void)
 {
-    printf("First matrix \n");
-    matrix_stdin(m1);
-    printf("First Matrix is :\n");
-    uquad_mat_dump(m1,NULL);
-
-    printf("Second matrix \n");
-    matrix_stdin(m2);
-    printf("Second Matrix is:\n");
-    uquad_mat_dump(m2,NULL);
-
+    retval = load_m(m1);
+    err_propagate(retval);
+    retval = load_m(m2);
+    err_propagate(retval);
     return ERROR_OK;
 }
 
@@ -73,7 +81,33 @@ int vector_dot_test(void)
 
 }
 
-int lin_solve(void)
+int mat_inv_test(void)
+{
+    if(alloc_m(&m1) != ERROR_OK)
+    {
+	err_check(ERROR_FAIL,"Could not allocate mem, cannot continue");
+    }
+
+    mr = uquad_mat_alloc(m1->r,m1->c);
+    if(mr == NULL)
+    {
+	err_check(ERROR_FAIL,"Could not allocate mem, cannot continue");
+    }
+
+    printf("Will load A to solve inv(A)\n");
+    if(load_m(m1) != ERROR_OK)
+    {
+	err_check(ERROR_FAIL,"Failed loading data");
+    }
+
+    retval = uquad_mat_inv(m1,mr,NULL);
+    err_propagate(retval);
+
+    printf("inv(A):\n");
+    uquad_mat_dump(mr,NULL);
+}
+
+int lin_solve_test(void)
 {
     if(alloc_m1_m2() != ERROR_OK)
     {
@@ -153,8 +187,11 @@ int main(int argc, char *argv[]){
     case MATRIX_PROD:
 	retval = matrix_prod_test();
 	break;
+    case MATRIX_INV:
+	retval = mat_inv_test();
+	break;
     case LIN_SOLVE:
-	retval = lin_solve();
+	retval = lin_solve_test();
 	break;
     default:
 	err_check(ERROR_FAIL,"This shouldn't happen.");

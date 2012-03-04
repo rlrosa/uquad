@@ -173,24 +173,31 @@ int uquad_solve_lin(uquad_mat_t *A, uquad_mat_t *B, uquad_mat_t *x, uquad_mat_t 
     return ERROR_OK;
 }
 
-int uquad_mat_inv(uquad_mat_t *m1, uquad_mat_t *minv, uquad_mat_t *maux)
+int uquad_mat_inv(uquad_mat_t *m1, uquad_mat_t *minv, uquad_mat_t *meye)
 {
-    uquad_mat_t *meye;
     int retval;
+    uquad_bool_t local_mem = false;
     if(m1 == NULL || minv == NULL)
     {
 	err_check(ERROR_NULL_POINTER,"NULL pointer is invalid arg.");
     }
 
-    meye = uquad_mat_alloc(m1->r,m1->c);
     if(meye == NULL)
     {
-	err_check(ERROR_MALLOC,"Could not allocate aux mem for inv.");
+	meye = uquad_mat_alloc(m1->r,m1->c);
+	if(meye == NULL)
+	{
+	    err_check(ERROR_MALLOC,"Could not allocate aux mem for inv.");
+	}
+	Identity_Matrix(meye->m_full,meye->r);
+	local_mem = true;
     }
-    Identity_Matrix(meye->m_full,meye->r);
 
     retval = uquad_solve_lin(m1, meye, minv, NULL);
     err_propagate(retval);
+
+    if(local_mem)
+	uquad_mat_free(meye);
 
     return ERROR_OK;
 }

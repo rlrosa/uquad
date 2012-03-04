@@ -14,7 +14,7 @@
  */
 struct uquad_vec {
     double * v;      // elements
-    int l;          // len
+    int l;           // len
 };
 typedef struct uquad_vec uquad_vec_t;
 
@@ -31,10 +31,10 @@ void uquad_vec_free(uquad_vec_t *v);
  * -- -- -- -- -- -- -- -- -- -- -- --
  */
 struct uquad_mat {
-    double ** m;     // elements
-    double * m_full; //
-    int r;          // rows
-    int c;          // columns
+    double ** m;     // elements as [er,ec]: m[row][col]
+    double * m_full; // elements as [er,ec]: m[m->c*er + ec]
+    int r;           // rows
+    int c;           // columns
 };
 typedef struct uquad_mat uquad_mat_t;
 
