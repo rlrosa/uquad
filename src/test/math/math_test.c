@@ -3,10 +3,32 @@
 
 #define wait_for_enter printf("ERROR!\n") //while(fread(tmp,1,1,stdin) == 0)
 
-int main(int argc, char *argv[]){
-    int retval;
-    uquad_mat_t *m1, *m2, *mr;
+enum test_type{
+    VECTOR_DOT = 0,
+    VECTOR_CROSS,
+    MATRIX_PROD,
+    MATRIX_DET,
+    MATRIX_INV,
+    TEST_COUNT
+};
 
+int vector_dot_test(void)
+{
+    uquad_vec_t *v1, *v2, *vr;
+    int l,i,j;
+    printf("Enter vector length:(less than %d)\n",
+	   UQUAD_MAT_MAX_DIM);
+    scanf("%d",&l);
+    v1 = uquad_vec_alloc(l);
+    v2 = uquad_vec_alloc(l);
+    vr = uquad_vec_alloc(l);
+
+}
+
+int matrix_prod_test(void)
+{
+    uquad_mat_t *m1, *m2, *mr;
+    int retval;
     int r1,c1,r2,c2,i,j;
     float tmp;
     printf("Enter number of rows and columns of first matrix (less than %d)\n",
@@ -63,7 +85,7 @@ int main(int argc, char *argv[]){
 	    err_log("Failed!");
 	    exit(-1);
 	}
-	    
+
         printf("Multiplication of the Matrices:\n");
         for(i=0;i<mr->r;i++)
         {
@@ -72,5 +94,39 @@ int main(int argc, char *argv[]){
             printf("\n");
         }
     }
-    return ERROR_OK;
+    retval = uquad_mat_free(m1);
+    retval = uquad_mat_free(m2);
+    retval = uquad_mat_free(mr);
+}
+
+int main(int argc, char *argv[]){
+    int retval = ERROR_OK;
+    enum test_type sel_test;
+    int tmp;
+    printf("Select test:\n\t%d:Vector dot\n\t%d:Vector cross\n\t%d:Matrix product\n\t%d:Matrix det\n\t%d:Matrix inv\n",
+	   VECTOR_DOT,
+	   VECTOR_CROSS,
+	   MATRIX_PROD,
+	   MATRIX_DET,
+	   MATRIX_INV,
+	   TEST_COUNT);
+    scanf("%d",&tmp);
+    if(tmp<0 || tmp > TEST_COUNT)
+    {
+	err_check(ERROR_FAIL,"Invalid input.");
+    }
+    sel_test = tmp;
+    switch(sel_test)
+    {
+    case VECTOR_DOT:
+	retval = vector_dot_test();
+	break;
+    case MATRIX_PROD:
+	retval = matrix_prod_test();
+	break;
+    default:
+	err_check(ERROR_FAIL,"This shouldn't happen.");
+	break;
+    }
+    return retval;
 }
