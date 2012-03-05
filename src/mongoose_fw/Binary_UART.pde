@@ -45,7 +45,7 @@ void queue_raw_bin(void *data, int size_bytes)
 {
     int i;
     for (i = 0 ; i < size_bytes ; i++)
-	serialize8(*(uint8_t*)data+i);
+	serialize8(*(((uint8_t*)data)+i));
 }
 
 // ***********************************

@@ -1,0 +1,298 @@
+#include <uquad_aux_math.h>
+#include <stdlib.h>
+
+#define wait_for_enter while(fread(tmp,1,1,stdin) == 0)
+
+enum test_type{
+    VECTOR_DOT = 0,
+    VECTOR_CROSS,
+    MATRIX_PROD,
+    MATRIX_DET,
+    MATRIX_INV,
+    MATRIX_ADD,
+    MATRIX_SUBS,
+    MATRIX_MUL_K,
+    MATRIX_DIV_K,
+    LIN_SOLVE,
+    TEST_COUNT
+};
+
+uquad_mat_t *m1, *m2, *mr;
+uquad_vec_t *v1, *v2, *vr;
+int retval;
+int r1,c1,r2,c2,l,i,j;
+float tmp;
+double k;
+
+void matrix_stdin(uquad_mat_t *m)
+{
+    printf("Enter rows and columns of matrix, row wise:\n");
+    for(i=0; i< m->r; i++)
+	for(j=0; j < m->c; j++)
+	{
+	    scanf("%f",&tmp);
+	    m->m[i][j] = (double)tmp;
+	}
+}
+
+static int alloc_counter = 1;
+int alloc_m(uquad_mat_t **m)
+{
+    printf("Enter number of rows and columns of matrix %d (less than %d)\n",
+	   alloc_counter++,
+	   UQUAD_MAT_MAX_DIM);
+    scanf("%d%d",&r1,&c1);
+    *m = uquad_mat_alloc(r1,c1);
+    if(*m == NULL)
+	return ERROR_FAIL;
+    else
+	return ERROR_OK;
+}   
+
+int alloc_m1_m2(void)
+{
+    alloc_m(&m1);
+    alloc_m(&m2);
+}
+
+static int counter = 1;
+int load_m(uquad_mat_t *m)
+{
+    printf("Matrix %d\n",counter);
+    matrix_stdin(m);
+    printf("Matrix %d is :\n",counter);
+    uquad_mat_dump(m,NULL);
+    counter++;
+    return ERROR_OK;
+}
+
+int load_m1_m2(void)
+{
+    retval = load_m(m1);
+    err_propagate(retval);
+    retval = load_m(m2);
+    err_propagate(retval);
+    return ERROR_OK;
+}
+
+int vector_dot_test(void)
+{
+    printf("Enter vector length:(less than %d)\n",
+	   UQUAD_MAT_MAX_DIM);
+    scanf("%d",&l);
+    v1 = uquad_vec_alloc(l);
+    v2 = uquad_vec_alloc(l);
+    vr = uquad_vec_alloc(l);
+
+}
+
+int mat_inv_test(void)
+{
+    if(alloc_m(&m1) != ERROR_OK)
+    {
+	err_check(ERROR_FAIL,"Could not allocate mem, cannot continue");
+    }
+
+    mr = uquad_mat_alloc(m1->r,m1->c);
+    if(mr == NULL)
+    {
+	err_check(ERROR_FAIL,"Could not allocate mem, cannot continue");
+    }
+
+    printf("Will load A to solve inv(A)\n");
+    if(load_m(m1) != ERROR_OK)
+    {
+	err_check(ERROR_FAIL,"Failed loading data");
+    }
+
+    retval = uquad_mat_inv(m1,mr,NULL);
+    err_propagate(retval);
+
+    printf("inv(A):\n");
+    uquad_mat_dump(mr,NULL);
+}
+
+int matrix_add_sub_test(uquad_bool_t add_notsub)
+{
+    if(alloc_m1_m2() != ERROR_OK)
+    {
+	err_check(ERROR_FAIL,"Could not allocate mem, cannot continue");
+    }
+
+    mr = uquad_mat_alloc(m1->r,m1->c);
+    if(mr == NULL)
+    {
+	err_check(ERROR_FAIL,"Could not allocate mem, cannot continue");
+    }
+
+    if(load_m1_m2() != ERROR_OK)
+    {
+	err_check(ERROR_FAIL,"Failed loading data");
+    }
+
+    if(add_notsub)
+    {
+	printf("Will add matrices\n");
+	retval = uquad_mat_add(mr,m1,m2);
+    }
+    else
+    {
+	printf("Will sub matrices\n");
+	retval = uquad_mat_sub(mr,m1,m2);
+    }
+    err_propagate(retval);
+
+    printf("Result:\n");
+    uquad_mat_dump(mr,NULL);
+}
+
+int mat_scalar_test(uquad_bool_t mul_notdiv)
+{
+    if(alloc_m(&m1) != ERROR_OK)
+    {
+	err_check(ERROR_FAIL,"Could not allocate mem, cannot continue");
+    }
+
+    printf("Will load A to solve inv(A)\n");
+    if(load_m(m1) != ERROR_OK)
+    {
+	err_check(ERROR_FAIL,"Failed loading data");
+    }
+
+    printf("Scalar:\n");
+    scanf("%f",&tmp);
+    k = (double)tmp;
+    if(mul_notdiv)
+    {
+	printf("Will multiply by k=%f\n",k);
+	retval = uquad_mat_scalar_mul(m1,k);
+    }
+    else
+    {
+	printf("Will div by k=%f\n",k);
+	retval = uquad_mat_scalar_div(m1,k);
+    }
+    err_propagate(retval);
+
+    printf("A*k:\n");
+    uquad_mat_dump(m1,NULL);
+    return ERROR_OK;
+}
+
+int lin_solve_test(void)
+{
+    if(alloc_m1_m2() != ERROR_OK)
+    {
+	err_check(ERROR_FAIL,"Could not allocate mem, cannot continue");
+    }
+
+    mr = uquad_mat_alloc(m1->c,m2->c);
+    if(mr == NULL)
+    {
+	err_check(ERROR_FAIL,"Could not allocate mem, cannot continue");
+    }
+
+    printf("Will load A and B to solve Ax=B\n");
+    if(load_m1_m2() != ERROR_OK)
+    {
+	err_check(ERROR_FAIL,"Failed loading data");
+    }
+
+    retval = uquad_solve_lin(m1,m2,mr,NULL);
+    err_propagate(retval);
+
+    printf("Solution x of Ax=B:\n");
+    uquad_mat_dump(mr,NULL);
+}
+
+int matrix_prod_test(void)
+{
+    if(alloc_m1_m2() != ERROR_OK)
+    {
+	err_check(ERROR_FAIL,"Could not allocate mem, cannot continue");
+    }
+
+    mr = uquad_mat_alloc(m1->r,m2->c);
+    if(mr == NULL)
+    {
+	err_check(ERROR_FAIL,"Could not allocate mem, cannot continue");
+    }
+
+    if(m2->r==m1->c)
+    {
+	if(load_m1_m2() != ERROR_OK)
+	{
+	    err_check(ERROR_FAIL,"Failed loading data");
+	}
+
+	retval = uquad_mat_prod(m1,m2,mr);
+	err_propagate(retval);
+
+        printf("Multiplication of the Matrices:\n");
+	uquad_mat_dump(mr,NULL);
+    }
+}
+
+int main(int argc, char *argv[]){
+    int retval = ERROR_OK;
+    enum test_type sel_test;
+    int cmd;
+    printf("Select test:\n\t%d:Vector dot\n\t%d:Vector cross\n\t%d:Matrix product\n\t%d:Matrix det\n\t%d:Matrix inv\n\t%d:Matrix add\n\t%d:Matrix sub\n\t%d:Matrix mul k\n\t%d:Matrix div k\n\t%d:Linear system\n",
+	   VECTOR_DOT,
+	   VECTOR_CROSS,
+	   MATRIX_PROD,
+	   MATRIX_DET,
+	   MATRIX_INV,
+	   MATRIX_ADD,
+	   MATRIX_SUBS,
+	   MATRIX_MUL_K,
+	   MATRIX_DIV_K,
+	   LIN_SOLVE,
+	   TEST_COUNT);
+    scanf("%d",&cmd);
+    if(cmd<0 || cmd > TEST_COUNT)
+    {
+	err_check(ERROR_FAIL,"Invalid input.");
+    }
+    sel_test = cmd;
+    switch(sel_test)
+    {
+    case VECTOR_DOT:
+	retval = vector_dot_test();
+	break;
+    case MATRIX_PROD:
+	retval = matrix_prod_test();
+	break;
+    case MATRIX_INV:
+	retval = mat_inv_test();
+	break;
+    case MATRIX_ADD:
+	retval = matrix_add_sub_test(true);
+	break;
+    case MATRIX_SUBS:
+	retval = matrix_add_sub_test(false);
+	break;
+    case MATRIX_MUL_K:
+	retval = mat_scalar_test(true);
+	break;
+    case MATRIX_DIV_K:
+	retval = mat_scalar_test(false);
+	break;
+    case LIN_SOLVE:
+	retval = lin_solve_test();
+	break;
+    default:
+	err_check(ERROR_FAIL,"This shouldn't happen.");
+	break;
+    }
+
+    uquad_mat_free(m1);
+    uquad_mat_free(m2);
+    uquad_mat_free(mr);
+
+    uquad_vec_free(v1);
+    uquad_vec_free(v2);
+    uquad_vec_free(vr);
+
+    return retval;
+}
