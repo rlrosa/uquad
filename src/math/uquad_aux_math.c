@@ -118,7 +118,7 @@ int uquad_mat_prod(uquad_mat_t *m1,uquad_mat_t *m2,uquad_mat_t *mr)
     if(mr->c == 3 && mr->r == 3)
 	Multiply_Matrices_3x3(mr->m_full,m1->m_full,m2->m_full);
     else
-	Multiply_Matrices(mr->m_full,m1->m_full,mr->r,mr->c,m2->m_full,m2->c);
+	Multiply_Matrices(mr->m_full,m1->m_full,m1->r,m1->c,m2->m_full,m2->c);
     return ERROR_OK;
 }
 
