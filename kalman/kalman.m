@@ -26,9 +26,9 @@ clc
 fs = 30;                % Frecuencia en Hz
 T  = 1/fs;              % Periodo de muestreo en segundos
 N  = size(a,1);         % Cantidad de muestras de las observaciones
-z  = w+0*randn(N,3);    % Observaciones
-% z  = [w m];             % Observaciones
-Ns = 3;                 % N states: cantidad de variables de estado
+% z  = w+0*randn(N,3);    % Observaciones
+z  = [m w];             % Observaciones
+Ns = 6;                 % N states: cantidad de variables de estado
 
 %% Constantes
 
@@ -59,18 +59,18 @@ x_est=zeros(N,Ns);
 x_est(1,:)=z(1,:);
 
 f = @(psi,phi,theta,wqx,wqy,wqz,w,dw,TM,D) [ ...
-%     psi   + T*( wqx+wqz*tan(phi)*cos(psi)+wqy*tan(phi)*sin(psi)); ...
-%     phi   + T*( wqy*cos(psi)-wqz*sin(psi)); ...
-%     theta + T*( wqz*cos(psi)/cos(phi)+wqy*sin(psi)/cos(phi)); ...
+    psi   + T*( wqx+wqz*tan(phi)*cos(psi)+wqy*tan(phi)*sin(psi)); ...
+    phi   + T*( wqy*cos(psi)-wqz*sin(psi)); ...
+    theta + T*( wqz*cos(psi)/cos(phi)+wqy*sin(psi)/cos(phi)); ...
     wqx   + T*( wqy*wqz*(Iyy-Izz)+wqy*Izzm*(w(1)-w(2)+w(3)-w(4))+L*(TM(2)-TM(4)) )/Ixx ; ...
     wqy   + T*( wqx*wqz*(Izz-Ixx)+wqx*Izzm*(w(1)-w(2)+w(3)-w(4))+L*(TM(3)-TM(1)) )/Iyy; ...
     wqz   + T*( -Izzm*(dw(1)-dw(2)+dw(3)-dw(4))+D(1)-D(2)+D(3)-D(4) )/Izz
     ];
 
 h = @(psi,phi,theta,wqx,wqy,wqz) [ ...
-%     0 ; 
-%     0 ; 
-%     0 ; 
+    psi ; 
+    phi ; 
+    theta ; 
     wqx ; 
     wqy ; 
     wqz ...
@@ -88,9 +88,9 @@ F = @(psi,phi,theta,wqx,wqy,wqz,w) ...
 
 H = @() ...
     [ ...
-    0, 0, 0, 0, 0, 0 ;
-    0, 0, 0, 0, 0, 0 ;
-    0, 0, 0, 0, 0, 0 ;
+    1, 0, 0, 0, 0, 0 ;
+    0, 1, 0, 0, 0, 0 ;
+    0, 0, 1, 0, 0, 0 ;
     0, 0, 0, 1, 0, 0 ;
     0, 0, 0, 0, 1, 0 ;
     0, 0, 0, 0, 0, 1 ...
@@ -98,22 +98,22 @@ H = @() ...
 
 for i=2:N
     % Prediction
-    x_ = f(0,0,0,x_est(i-1,1),x_est(i-1,2),x_est(i-1,3),w(i-1,:),dw(i-1,:),TM(i-1,:),D(i-1,:));
-%     x_ = f(x_est(i-1,1),x_est(i-1,2),x_est(i-1,3),x_est(i-1,4),x_est(i-1,5),x_est(i-1,6),w(i-1,:),dw(i-1,:),TM(i-1,:),D(i-1,:));
+%     x_ = f(0,0,0,x_est(i-1,1),x_est(i-1,2),x_est(i-1,3),w(i-1,:),dw(i-1,:),TM(i-1,:),D(i-1,:));
+    x_ = f(x_est(i-1,1),x_est(i-1,2),x_est(i-1,3),x_est(i-1,4),x_est(i-1,5),x_est(i-1,6),w(i-1,:),dw(i-1,:),TM(i-1,:),D(i-1,:));
 
-    Fk_1 = F(0,0,0,x_est(i-1,1),x_est(i-1,2),x_est(i-1,3),w(i-1,:));
-%     Fk_1 = F(x_est(i-1,1),x_est(i-1,2),x_est(i-1,3),x_est(i-1,4),x_est(i-1,5),x_est(i-1,6),w(i-1,:));
-    Fk_1 = Fk_1(4:6,4:6);
+%     Fk_1 = F(0,0,0,x_est(i-1,1),x_est(i-1,2),x_est(i-1,3),w(i-1,:));
+    Fk_1 = F(x_est(i-1,1),x_est(i-1,2),x_est(i-1,3),x_est(i-1,4),x_est(i-1,5),x_est(i-1,6),w(i-1,:));
+%     Fk_1 = Fk_1(4:6,4:6);
     
     P_ = Fk_1 * P * Fk_1'+ Q; 
     
     % Update
-    yk         = z(i,:)' - h(0,0,0,x_(1),x_(2),x_(3));
-%     yk         = z(i,:)' - h(x_(1),x_(2),x_(3),x_(4),x_(5),x_(6));
+%     yk         = z(i,:)' - h(0,0,0,x_(1),x_(2),x_(3));
+    yk         = z(i,:)' - h(x_(1),x_(2),x_(3),x_(4),x_(5),x_(6));
 
+%     Hk         = H();
+%     Hk         = Hk(4:6,4:6);
     Hk         = H();
-    Hk         = Hk(4:6,4:6);
-%     Hk         = H(x_);
 
     Sk         = Hk*P_*Hk' + R; 
     Kk         = P_*Hk'*Sk^-1;
@@ -124,9 +124,19 @@ end
 
 %% Plots
 
-% TODO ojo al plotear con los retardos. Capaz q hay q agregar un 0 al
-% principio
-
+figure()
+    plot(z(:,1),'k')
+    hold on
+    plot(z(:,2),'k')
+    plot(z(:,3),'k')    
+    plot([x_est(1:end,1)])
+    plot([x_est(1:end,2)],'r')
+    plot([x_est(1:end,3)],'g')
+    legend('\psi','\phi','\theta','\psi','\phi','\theta')
+%     legend('posta','kalman')
+    hold off
+    
+    
 figure()
     plot(z(:,1),'k')
     hold on
@@ -138,3 +148,4 @@ figure()
     legend('w_x','w_y','w_z','w_x','w_y','w_z')
 %     legend('posta','kalman')
     hold off
+
