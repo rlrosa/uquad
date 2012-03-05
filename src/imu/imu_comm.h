@@ -84,18 +84,18 @@ typedef struct imu_frame imu_raw_t;
 /// Calibrated data
 struct imu_data{
     double T_us;
-    double acc[3]; // m/s^2
-    double gyro[3]; // °/s
-    double magn[3]; // °
-    double temp; // °C
-    double alt; // m
+    uquad_mat_t *acc;  // m/s^2
+    uquad_mat_t *gyro; // °/s
+    uquad_mat_t *magn; // °
+    double temp;       // °C
+    double alt;        // m
 
     struct timeval timestamp;
 };
 typedef struct imu_data imu_data_t;
 
 struct imu_calibration_lin_model{
-    // data = T*(K_inv*raw - b)
+    // data = T*K_inv*(raw - b)
     uquad_mat_t *K_inv;
     uquad_mat_t *T;
     uquad_mat_t *b;
@@ -103,7 +103,7 @@ struct imu_calibration_lin_model{
 typedef struct imu_calibration_lin_model imu_calib_lin_t;
 
 struct imu_calibration{
-    imu_calib_lin_t m_lin[3];
+    imu_calib_lin_t m_lin[3]; //{acc,gyro,magn}
     struct timeval timestamp;
 };
 typedef struct imu_calibration imu_calib_t;

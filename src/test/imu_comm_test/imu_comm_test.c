@@ -115,6 +115,9 @@ int main(int argc, char *argv[]){
     int wait_counter = WAIT_COUNTER_MAX;
     int imu_fd;
     uquad_bool_t calibrating = false;
+    data.acc = uquad_mat_alloc(3,1);
+    data.gyro = uquad_mat_alloc(3,1);
+    data.magn = uquad_mat_alloc(3,1);
     retval = imu_comm_get_fds(imu, &imu_fd);
     FD_ZERO(&rfds);
     printf("Options:\n'q' to abort,\n'c' to calibrate\n's' to display current calibration\n\n");
@@ -144,9 +147,6 @@ int main(int argc, char *argv[]){
 	    if(FD_ISSET(imu_fd,&rfds)){
 		do_sleep = false;
 		retval = imu_comm_read(imu,&data_ready);
-		// IMU will do ADC conv, send, then next sensor, send, etc
-		// We nead to wait for the ADC and for the comm delays.
-		// See imu_comm.h for more info.
 		if(retval == ERROR_READ_TIMEOUT){
 		    printf("Not enough data available...\n");
 		    do_sleep = true;
@@ -188,6 +188,13 @@ int main(int argc, char *argv[]){
 			retval = imu_comm_print_raw(&raw,stdout);
 			err_propagate(retval);
 		    }
+		    retval = imu_comm_get_data_latest(imu,&data);
+		    if(retval == ERROR_OK)
+		    {
+			retval = imu_comm_print_data(&data,stdout);
+			err_propagate(retval);
+		    }
+		    
 #if 0
 			//TODO data is not ready
 		    if(output_frames != NULL)
