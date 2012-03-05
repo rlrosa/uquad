@@ -103,24 +103,25 @@ void uquad_vec_free(uquad_vec_t *v)
  * Matrix
  * -- -- -- -- -- -- -- -- -- -- -- --
  */
-int uquad_mat_prod(uquad_mat_t *m1,uquad_mat_t *m2,uquad_mat_t *mr)
+// C = A*B
+int uquad_mat_prod(uquad_mat_t *C, uquad_mat_t *A,uquad_mat_t *B)
 {
     int i_r,i_c,i_t, retval = ERROR_OK;
     double tmp;
-    if(m1 == NULL || m2 == NULL || mr == NULL)
+    if(A == NULL || B == NULL || C == NULL)
     {
 	err_check(ERROR_NULL_POINTER,"NULL pointer is invalid arg.");
     }
 
     // check dims
-    if((m1->c != m2->r) || !((mr->r == m1->r) && (mr->c == m2->c)))
+    if((A->c != B->r) || !((C->r == A->r) && (C->c == B->c)))
     {
 	err_check(ERROR_MATH_MAT_DIM,"Cannot multiply matrices, dims do not match.");
     }
-    if(mr->c == 3 && mr->r == 3)
-	Multiply_Matrices_3x3(mr->m_full,m1->m_full,m2->m_full);
+    if(C->c == 3 && C->r == 3)
+	Multiply_Matrices_3x3(C->m_full,A->m_full,B->m_full);
     else
-	Multiply_Matrices(mr->m_full,m1->m_full,m1->r,m1->c,m2->m_full,m2->c);
+	Multiply_Matrices(C->m_full,A->m_full,A->r,A->c,B->m_full,B->c);
     return ERROR_OK;
 }
 

@@ -575,10 +575,10 @@ static int imu_comm_convert_lin(imu_t *imu, int16_t *raw, uquad_mat_t *conv, imu
     retval = uquad_mat_sub(m3x1_1,m3x1_0, calib->b);
     err_propagate(retval);
     /// m3x1_1 has tmp answer
-    retval = uquad_mat_prod(calib->K_inv, m3x1_1, m3x1_0);
+    retval = uquad_mat_prod(m3x1_0, calib->K_inv, m3x1_1);
     err_propagate(retval);
     /// m3x1_0 has tmp answer
-    retval = uquad_mat_prod(calib->T, m3x1_0, conv);
+    retval = uquad_mat_prod(conv, calib->T, m3x1_0);
     err_propagate(retval);
     // conv has final answer
     return retval;
