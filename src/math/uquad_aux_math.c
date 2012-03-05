@@ -13,6 +13,8 @@
 //#include "equilibrate_matrix.c"//TODO use?
 #include "zero_matrix.c"
 #include "identity_matrix.c"
+#include "set_diagonal.c"
+#include "get_diagonal.c"
 #include "get_submatrix.c"
 #include "set_submatrix.c"
 #include "div_matrix_by_scalar.c"
@@ -280,6 +282,19 @@ int uquad_mat_eye(uquad_mat_t *m)
 	err_check(ERROR_MATH_MAT_DIM,"Identity matrix must be square!");
     }
     Identity_Matrix(m->m_full,m->r);
+    return ERROR_OK;
+}
+
+int uquad_mat_diag(uquad_mat_t *m, double *diag)
+{
+    int retval;
+    if(m == NULL)
+    {
+	err_check(ERROR_MALLOC,"Could not allocate aux mem for inv.");
+    }    
+    retval = uquad_mat_eye(m);
+    err_propagate(retval);
+    Set_Diagonal(m->m_full, diag, m->r, m->c);
     return ERROR_OK;
 }
 
