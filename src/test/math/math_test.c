@@ -9,6 +9,10 @@ enum test_type{
     MATRIX_PROD,
     MATRIX_DET,
     MATRIX_INV,
+    MATRIX_ADD,
+    MATRIX_SUBS,
+    MATRIX_MUL_K,
+    MATRIX_DIV_K,
     LIN_SOLVE,
     TEST_COUNT
 };
@@ -18,6 +22,7 @@ uquad_vec_t *v1, *v2, *vr;
 int retval;
 int r1,c1,r2,c2,l,i,j;
 float tmp;
+double k;
 
 void matrix_stdin(uquad_mat_t *m)
 {
@@ -107,6 +112,73 @@ int mat_inv_test(void)
     uquad_mat_dump(mr,NULL);
 }
 
+int matrix_add_sub_test(uquad_bool_t add_notsub)
+{
+    if(alloc_m1_m2() != ERROR_OK)
+    {
+	err_check(ERROR_FAIL,"Could not allocate mem, cannot continue");
+    }
+
+    mr = uquad_mat_alloc(m1->r,m1->c);
+    if(mr == NULL)
+    {
+	err_check(ERROR_FAIL,"Could not allocate mem, cannot continue");
+    }
+
+    if(load_m1_m2() != ERROR_OK)
+    {
+	err_check(ERROR_FAIL,"Failed loading data");
+    }
+
+    if(add_notsub)
+    {
+	printf("Will add matrices\n");
+	retval = uquad_mat_add(mr,m1,m2);
+    }
+    else
+    {
+	printf("Will sub matrices\n");
+	retval = uquad_mat_sub(mr,m1,m2);
+    }
+    err_propagate(retval);
+
+    printf("Result:\n");
+    uquad_mat_dump(mr,NULL);
+}
+
+int mat_scalar_test(uquad_bool_t mul_notdiv)
+{
+    if(alloc_m(&m1) != ERROR_OK)
+    {
+	err_check(ERROR_FAIL,"Could not allocate mem, cannot continue");
+    }
+
+    printf("Will load A to solve inv(A)\n");
+    if(load_m(m1) != ERROR_OK)
+    {
+	err_check(ERROR_FAIL,"Failed loading data");
+    }
+
+    printf("Scalar:\n");
+    scanf("%f",&tmp);
+    k = (double)tmp;
+    if(mul_notdiv)
+    {
+	printf("Will multiply by k=%f\n",k);
+	retval = uquad_mat_scalar_mul(m1,k);
+    }
+    else
+    {
+	printf("Will div by k=%f\n",k);
+	retval = uquad_mat_scalar_div(m1,k);
+    }
+    err_propagate(retval);
+
+    printf("A*k:\n");
+    uquad_mat_dump(m1,NULL);
+    return ERROR_OK;
+}
+
 int lin_solve_test(void)
 {
     if(alloc_m1_m2() != ERROR_OK)
@@ -165,12 +237,16 @@ int main(int argc, char *argv[]){
     int retval = ERROR_OK;
     enum test_type sel_test;
     int cmd;
-    printf("Select test:\n\t%d:Vector dot\n\t%d:Vector cross\n\t%d:Matrix product\n\t%d:Matrix det\n\t%d:Matrix inv\n\t%d:Linear system\n",
+    printf("Select test:\n\t%d:Vector dot\n\t%d:Vector cross\n\t%d:Matrix product\n\t%d:Matrix det\n\t%d:Matrix inv\n\t%d:Matrix add\n\t%d:Matrix sub\n\t%d:Matrix mul k\n\t%d:Matrix div k\n\t%d:Linear system\n",
 	   VECTOR_DOT,
 	   VECTOR_CROSS,
 	   MATRIX_PROD,
 	   MATRIX_DET,
 	   MATRIX_INV,
+	   MATRIX_ADD,
+	   MATRIX_SUBS,
+	   MATRIX_MUL_K,
+	   MATRIX_DIV_K,
 	   LIN_SOLVE,
 	   TEST_COUNT);
     scanf("%d",&cmd);
@@ -189,6 +265,18 @@ int main(int argc, char *argv[]){
 	break;
     case MATRIX_INV:
 	retval = mat_inv_test();
+	break;
+    case MATRIX_ADD:
+	retval = matrix_add_sub_test(true);
+	break;
+    case MATRIX_SUBS:
+	retval = matrix_add_sub_test(false);
+	break;
+    case MATRIX_MUL_K:
+	retval = mat_scalar_test(true);
+	break;
+    case MATRIX_DIV_K:
+	retval = mat_scalar_test(false);
 	break;
     case LIN_SOLVE:
 	retval = lin_solve_test();

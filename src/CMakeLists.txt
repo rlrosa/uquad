@@ -7,6 +7,9 @@ include_directories(common imu math gps submodules/gpsd)
 # List external libs
 link_directories(submodules/gpsd)
 
+# Add libm, for pow()
+link_libraries(m)
+
 # Generate libs
 add_subdirectory(imu)
 add_subdirectory(common)

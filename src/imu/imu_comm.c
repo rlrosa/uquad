@@ -1,4 +1,9 @@
 #include "imu_comm.h"
+#include <math.h> // for pow()
+/// Aux mem
+static uquad_mat_t *m3x3;
+static uquad_mat_t *m3x1_0;
+static uquad_mat_t *m3x1_1;
 
 imu_status_t imu_comm_get_status(imu_t *imu){
     return imu->status;
@@ -106,9 +111,6 @@ static void imu_comm_calibration_clear(imu_t *imu){
     imu->is_calibrated = false;
     imu->calibration_counter = -1;
     int i;
-//    for(i=0;i<IMU_SENSOR_COUNT;++i){
-//	imu->null_estimates.xyzrpy[i] = 0;
-//    }
     imu->calib.timestamp.tv_sec = 0;
     imu->calib.timestamp.tv_usec = 0;
 }
@@ -211,7 +213,15 @@ imu_t *imu_comm_init(const char *device){
 	return NULL;
 
     // Mark IMU as not calibrated
-    imu_comm_calibration_clear(imu);
+    retval = imu_comm_init_calibration(imu);
+    if(retval != ERROR_OK)
+	return NULL;
+
+    m3x3 = uquad_mat_alloc(3,3);
+    m3x1_0 = uquad_mat_alloc(3,1);
+    m3x1_1 = uquad_mat_alloc(3,1);
+    if(m3x3 == NULL || m3x1_0 == NULL || m3x1_1 == NULL)
+	return NULL;
 
     // Wait 300ms + a bit more for IMU to reset
     sleep_ms(350);
@@ -224,6 +234,8 @@ int imu_comm_deinit(imu_t *imu){
     if(imu->device != NULL)
 	retval = imu_comm_disconnect(imu);
     // ignore answer and keep dying, leftovers are not reliable
+    //TODO
+    err_log("TODO:free ALL memory!!");
     free(imu);
     return retval;
 }
@@ -549,6 +561,29 @@ int imu_comm_read_frame(imu_t *imu){
     return ERROR_OK;
 }
 
+static int imu_comm_convert_lin(imu_t *imu, int16_t *raw, uquad_mat_t *conv, imu_calib_lin_t *calib)
+{
+    int i,retval = ERROR_OK;
+    if(!imu->is_calibrated)
+    {
+	err_check(ERROR_IMU_NOT_CALIB,"Cannot convert without calibration!");
+    }
+
+    for(i=0; i < 3; ++i)
+	m3x1_0->m_full[i] = (double) raw[i];
+    /// m3x1_0 has tmp answer
+    retval = uquad_mat_sub(m3x1_1,m3x1_0, calib->b);
+    err_propagate(retval);
+    /// m3x1_1 has tmp answer
+    retval = uquad_mat_prod(calib->K_inv, m3x1_1, m3x1_0);
+    err_propagate(retval);
+    /// m3x1_0 has tmp answer
+    retval = uquad_mat_prod(calib->T, m3x1_0, conv);
+    err_propagate(retval);
+    // conv has final answer
+    return retval;
+}
+
 /** 
  *Converts raw acc data to m/s^2
  *
@@ -558,19 +593,12 @@ int imu_comm_read_frame(imu_t *imu){
  *
  *@return error code
  */
-static int imu_comm_acc_convert(imu_t *imu, int16_t *raw, double *acc)
+static int imu_comm_acc_convert(imu_t *imu, int16_t *raw, uquad_mat_t *acc)
 {
-    //TODO
-    err_check(ERROR_FAIL,"Not implemented.");
-//    int retval = ERROR_OK, i;
-//    for(i = 0; i<IMU_ACCS; ++i){
-//	acc_reading[i] = data->xyzrpy[i] - imu->null_estimates.xyzrpy[i];
-//	retval = volts2g(imu->settings.acc_sens,acc_reading+i);
-//	err_propagate(retval);
-//	retval = acc_scale_adjust(imu,acc_reading+i);
-//	err_propagate(retval);
-//    }
-//    return retval;
+    int i, retval = ERROR_OK;
+    retval = imu_comm_convert_lin(imu, raw, acc, imu->calib.m_lin);
+    err_propagate(retval);
+    return retval;
 }
 
 /**
@@ -583,18 +611,12 @@ static int imu_comm_acc_convert(imu_t *imu, int16_t *raw, double *acc)
  *
  *@return error code
  */
-static int imu_comm_gyro_convert(imu_t *imu, int16_t *data, double *gyro_reading)
+static int imu_comm_gyro_convert(imu_t *imu, int16_t *raw, uquad_mat_t *gyro)
 {
-    //TODO
-    err_check(ERROR_FAIL,"Not implemented.");
-//    int retval = ERROR_OK, i;
-//    for(i = 0; i<IMU_GYROS; ++i){
-//	gyro_reading[i] = data->xyzrpy[IMU_ACCS + i] - imu->null_estimates.xyzrpy[IMU_ACCS + i];
-//	retval = gyro_scale_adjust(imu,gyro_reading+i);
-//	err_propagate(retval);
-//	gyro_reading[i] = grad2rad(gyro_reading[i]);
-//    }
-//    return retval;
+    int retval = ERROR_OK;
+    retval = imu_comm_convert_lin(imu, raw, gyro, imu->calib.m_lin + 1);
+    err_propagate(retval);
+    return retval;
 }
 
 /**
@@ -607,10 +629,12 @@ static int imu_comm_gyro_convert(imu_t *imu, int16_t *data, double *gyro_reading
  *
  *@return error code
  */
-static int imu_comm_magn_convert(imu_t *imu, int16_t *data, double *magn_reading)
+static int imu_comm_magn_convert(imu_t *imu, int16_t *raw, uquad_mat_t *magn)
 {
-    //TODO
-    err_check(ERROR_FAIL,"Not implemented.");
+    int retval = ERROR_OK;
+    retval = imu_comm_convert_lin(imu, raw, magn, imu->calib.m_lin + 2);
+    err_propagate(retval);
+    return retval;
 }
 
 /**
@@ -630,6 +654,7 @@ static int imu_comm_temp_convert(imu_t *imu, uint16_t *data, double *temp)
     return ERROR_OK;
 }
 
+#define PRESS_EXP  0.190294957183635 // 1/5.255 = 0.190294957183635
 /**
  * Convert raw pressure data to altitud.
  *
@@ -642,8 +667,10 @@ static int imu_comm_temp_convert(imu_t *imu, uint16_t *data, double *temp)
  */
 static int imu_comm_pres_convert(imu_t *imu, uint32_t *data, double *alt)
 {
-    //TODO
-    err_check(ERROR_FAIL,"Not implemented.");
+
+    double p0 = 101325;
+    *alt = 44330*(1- pow((((double)(*data))/p0),PRESS_EXP));
+    return ERROR_OK;
 }
 
 /** 
@@ -661,8 +688,8 @@ static int imu_comm_raw2data(imu_t *imu, imu_raw_t *raw, imu_data_t *data){
 	err_check(ERROR_NULL_POINTER,"Non null pointers required as args...");
     }
     // Get timestamp
-    raw->timestamp = data->timestamp;
-    raw->T_us = (double) data->T_us;//TODO check!
+    data->timestamp = raw->timestamp;
+    data->T_us = (double) raw->T_us;//TODO check!
 
     // Convert accelerometer readings    
     retval = imu_comm_acc_convert(imu, raw->acc, data->acc);
@@ -941,6 +968,115 @@ uquad_bool_t imu_comm_calibration_is_calibrated(imu_t *imu){
     return imu->is_calibrated;
 }	
 
+int imu_comm_alloc_calib_lin(imu_t *imu)
+{
+    int i;
+    for (i = 0; i < 3; ++i)
+    {
+	// K_inv
+	imu->calib.m_lin[i].K_inv = uquad_mat_alloc(3,3);
+	if (imu->calib.m_lin[i].K_inv == NULL)
+	{
+	    err_check(ERROR_MALLOC, "Failed to allocate K");
+	}
+	// T	    
+	imu->calib.m_lin[i].T = uquad_mat_alloc(3,3);
+	if (imu->calib.m_lin[i].T == NULL)
+	{
+	    err_check(ERROR_MALLOC, "Failed to allocate K");
+	}
+	// b
+	imu->calib.m_lin[i].b = uquad_mat_alloc(3,1);
+	if (imu->calib.m_lin[i].b == NULL)
+	{
+	    err_check(ERROR_MALLOC, "Failed to allocate K");
+	}
+    }
+    return ERROR_OK;
+}
+
+int imu_comm_load_calib(imu_t *imu, const char *path)
+{
+    int i,j,retval;
+    uquad_mat_t *mtmp, *ktmp, *maux3x6, *meye3x3;
+    float ftmp;
+    FILE *calib_file = fopen(path,"r+");
+    if(calib_file == NULL)
+    {
+	err_check(ERROR_OPEN,"Failed to open calib file!");
+    }
+
+    ktmp = uquad_mat_alloc(3,3);
+    meye3x3 = uquad_mat_alloc(3,3);
+    maux3x6 = uquad_mat_alloc(3,6);
+    if(ktmp == NULL || meye3x3 == NULL || maux3x6 == NULL)
+    {
+	err_log("Failed to allocate K");
+    }
+    else
+    {	
+	retval = uquad_mat_eye(meye3x3);
+	if(retval != ERROR_OK)
+	{
+	    err_log("Failed to generate eye matrix");
+	}
+	else
+	{
+	    for (i = 0; i < 3; ++i)
+	    {
+		// K
+		for(j=0; j<9; ++j)
+		{
+		    fscanf(calib_file,"%f",&ftmp);
+		    ktmp->m_full[j] = (double) ftmp;
+		}
+		// K_inv
+		retval = uquad_mat_inv(ktmp,
+				       imu->calib.m_lin[i].K_inv,
+				       meye3x3,
+				       maux3x6);
+		if(retval != ERROR_OK)
+		{
+		    // Cannot quit here, need to
+		    // free mem and close file, so just log.
+		    err_log("Failed to invert gain matrix!");
+		    break;
+		}
+
+		// T
+		for(j=0; j<9; ++j)
+		{
+		    fscanf(calib_file,"%f",&ftmp);
+		    imu->calib.m_lin[i].T->m_full[j] = (double) ftmp;
+		}
+
+		// b
+		for(j=0; j<3; ++j)
+		{
+		    fscanf(calib_file,"%f",&ftmp);
+		    imu->calib.m_lin[i].b->m_full[j] = (double) ftmp;
+		}
+	    }
+	}
+    }
+    uquad_mat_free(ktmp);
+    uquad_mat_free(meye3x3);
+    uquad_mat_free(maux3x6);
+    fclose(calib_file);
+    return retval;
+}
+
+int imu_comm_init_calibration(imu_t *imu)
+{
+    int retval = ERROR_OK;
+    retval = imu_comm_alloc_calib_lin(imu);
+    err_propagate(retval);
+    retval = imu_comm_load_calib(imu, IMU_DEFAULT_CALIB_PATH);
+    err_propagate(retval);
+    imu->is_calibrated = true;
+    return retval;
+}
+
 /** 
  *Get IMU calibration.
  *Currently only calibration is null estimation.
@@ -1102,19 +1238,20 @@ int imu_comm_print_data(imu_data_t *data, FILE *stream){
     if(stream == NULL){
 	stream = stdout;
     }
-    fprintf(stream,"%d\t%d\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\n",
+    //    fprintf(stream,"%d\t%d\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\n",
+    fprintf(stream,"%d\t%d\t%0.2f\t%0.2f\t%0.2f\t%0.2f\t%0.2f\t%0.2f\t%0.2f\t%0.2f\t%0.2f\t%0.2f\t%0.2f\t%0.2f\n",
 	    (int)data->timestamp.tv_sec,
 	    (int)data->timestamp.tv_usec,
 	    data->T_us,
-	    data->acc[0],
-	    data->acc[1],
-	    data->acc[2],
-	    data->gyro[0],
-	    data->gyro[1],
-	    data->gyro[2],
-	    data->magn[0],
-	    data->magn[1],
-	    data->magn[2],
+	    data->acc->m_full[0],
+	    data->acc->m_full[1],
+	    data->acc->m_full[2],
+	    data->gyro->m_full[0],
+	    data->gyro->m_full[1],
+	    data->gyro->m_full[2],
+	    data->magn->m_full[0],
+	    data->magn->m_full[1],
+	    data->magn->m_full[2],
 	    data->temp,
 	    data->alt);
     return ERROR_OK;
