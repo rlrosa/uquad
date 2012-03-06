@@ -10,7 +10,7 @@ imu_status_t imu_comm_get_status(imu_t *imu){
 }
 
 /** 
- *IMU fw accepts commands while in idle mode.
+ * Sends command to the IMU over serial line.
  *
  *@param imu 
  *@param cmd to send to the imu
@@ -35,6 +35,13 @@ static int imu_comm_send_cmd(imu_t *imu, unsigned char cmd){
     return ERROR_OK;
 }
 
+/** 
+ * Sends serial command to the IMU to make it stop.
+ * 
+ * @param imu 
+ * 
+ * @return 
+ */
 static int imu_comm_stop(imu_t *imu){
     int retval;
     if(imu->status == IMU_COMM_STATE_STOPPED){
@@ -48,6 +55,13 @@ static int imu_comm_stop(imu_t *imu){
     return ERROR_OK;
 }
 
+/** 
+ * Sends serial command to the IMU to make it run.
+ * 
+ * @param imu 
+ * 
+ * @return 
+ */
 static int imu_comm_resume(imu_t *imu){
     int retval;
     if(imu->status == IMU_COMM_STATE_RUNNING){
@@ -61,10 +75,17 @@ static int imu_comm_resume(imu_t *imu){
     return ERROR_OK;
 }
 
+/** 
+ * Marks calibration as NOT ready.
+ * 
+ * @param imu 
+ */
 static void imu_comm_calibration_clear(imu_t *imu){
     imu->is_calibrated = false;
     //    imu->calibration_counter = -1;
     int i;
+    //TODO implement calib_free(), and make load check if mem is available
+    //before allocating mem for calibration.
     imu->calib.timestamp.tv_sec = 0;
     imu->calib.timestamp.tv_usec = 0;
 }
@@ -444,6 +465,18 @@ int imu_comm_read_frame(imu_t *imu){
     return ERROR_OK;
 }
 
+/** 
+ * Uses linear model provided by calib to convert raw into valid
+ * real world data.
+ * Assumes raw is an array of length 3.
+ * 
+ * @param imu 
+ * @param raw input.
+ * @param conv Answer is returned here.
+ * @param calib Calibration to use for conversion.
+ * 
+ * @return 
+ */
 static int imu_comm_convert_lin(imu_t *imu, int16_t *raw, uquad_mat_t *conv, imu_calib_lin_t *calib)
 {
     int i,retval = ERROR_OK;
@@ -822,11 +855,25 @@ int imu_comm_check_io_locks(FILE *device, uquad_bool_t *read_ok, uquad_bool_t *w
 // -- -- -- -- -- -- -- -- -- -- -- --
 // Calibration
 // -- -- -- -- -- -- -- -- -- -- -- --
-
+/** 
+ * Returns true iif calibration data has been loaded.
+ * 
+ * @param imu 
+ * 
+ * @return 
+ */
 uquad_bool_t imu_comm_calibration_is_calibrated(imu_t *imu){
     return imu->is_calibrated;
 }	
 
+/** 
+ * Allocates memory for three linear calibration structures.
+ * Each structure uses 3 matrices.
+ * 
+ * @param imu 
+ * 
+ * @return 
+ */
 int imu_comm_alloc_calib_lin(imu_t *imu)
 {
     int i;
@@ -854,6 +901,27 @@ int imu_comm_alloc_calib_lin(imu_t *imu)
     return ERROR_OK;
 }
 
+/** 
+ * Will load calibration for linear model from text file.
+ * Will ignore spaces, end of lines, tabs, etc.
+ * Expect to find matrices K,b and T (see imu_calib_lin_t)
+ * 
+ * Example of the first 1/3 of a configuration file:
+ * 26.9552751514508        0                       0
+ * 0                       27.1044248763245        0
+ * 0                       0                       25.9160276670631
+ * 
+ * 1                       0.00953542215888624       0.00955723285532017
+ * -0.000376784971686033   1                         -0.00677033632701969
+ * 0.0105047129596497      -0.00456172876850397      1
+ * 
+ * 13.0716873433579         -1.07951072069862          -40.723583688652
+ * 
+ * @param imu 
+ * @param path 
+ * 
+ * @return 
+ */
 int imu_comm_load_calib(imu_t *imu, const char *path)
 {
     int i,j,retval;
@@ -925,6 +993,14 @@ int imu_comm_load_calib(imu_t *imu, const char *path)
     return retval;
 }
 
+/** 
+ * Will alocate memory to store calibration data, and load
+ * calibration data.
+ * 
+ * @param imu 
+ * 
+ * @return 
+ */
 int imu_comm_init_calibration(imu_t *imu)
 {
     int retval = ERROR_OK;
@@ -983,6 +1059,14 @@ int imu_comm_add_frame(imu_t *imu, imu_raw_t *new_frame){
     return ERROR_OK;
 }
 
+/** 
+ * Will output data to stream.
+ * 
+ * @param data 
+ * @param stream 
+ * 
+ * @return 
+ */
 int imu_comm_print_data(imu_data_t *data, FILE *stream){
     int i;
     if(stream == NULL){
@@ -1007,7 +1091,14 @@ int imu_comm_print_data(imu_data_t *data, FILE *stream){
     return ERROR_OK;
 }
 
-static int previous_frame_count = -1;
+/** 
+ * Will output raw data to stream.
+ * 
+ * @param frame 
+ * @param stream 
+ * 
+ * @return 
+ */
 int imu_comm_print_raw(imu_raw_t *frame, FILE *stream){
     int i;
     if(stream == NULL){
