@@ -38,7 +38,7 @@ struct uquad_mat {
 };
 typedef struct uquad_mat uquad_mat_t;
 
-int uquad_mat_prod(uquad_mat_t *m1,uquad_mat_t *m2,uquad_mat_t *mr);
+int uquad_mat_prod(uquad_mat_t *C, uquad_mat_t *A,uquad_mat_t *B);
 
 int uquad_mat_det(uquad_mat_t *m, double *res);
 
