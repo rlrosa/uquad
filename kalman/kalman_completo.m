@@ -51,7 +51,7 @@ sigma_m = load('mag','sigma');sigma_m=sigma_m.sigma;
 w  = 10*ones(N,4);                  % Velocidades angulares de los motores en rad/s. Cada columna corresponde con 1 motor
 dw = zeros(N,4);                    % Derivada de w. Cada columna corresponde a 1 motor
 TM = 3.5296e-5*w.^2-4.9293e-4.*w;   % Fuerzas ejercidas por los motores en N. Cada columna corresponde a 1 motor.
-D  = 0.1*ones(N,4);                 % Torque de Drag ejercido por los motores en N*m. Cada columna corresponde a cada motor
+D  = 3.4734e-6*w.^2-1.3205e-4.*w;   % Torque de Drag ejercido por los motores en N*m. Cada columna corresponde a cada motor
 
 %% Kalman
 

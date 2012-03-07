@@ -5,7 +5,7 @@ clc
 %% Observaciones y constantes
 
 % [acrud,wcrud,mcrud,tcrud,bcrud]=mong_read('/gyro/logs/zv3y00',0);
-[acrud,wcrud,mcrud,tcrud,bcrud]=mong_read('tests/mongoose/magnetometro/data_horizontal/x00z00',0);
+[acrud,wcrud,mcrud,tcrud,bcrud]=mong_read('tests/mongoose/magnetometro/data_horizontal/z00y30',0);
 [a,w,euler] = mong_conv(acrud,wcrud,mcrud,0);
 
 fs = 30;                % Frecuencia en Hz
@@ -36,7 +36,7 @@ sigma_m = load('mag','sigma');sigma_m=sigma_m.sigma;
 w  = 10*ones(N,4);                  % Velocidades angulares de los motores en rad/s. Cada columna corresponde con 1 motor
 dw = zeros(N,4);                    % Derivada de w. Cada columna corresponde a 1 motor
 TM = 3.5296e-5*w.^2-4.9293e-4.*w;   % Fuerzas ejercidas por los motores en N. Cada columna corresponde a 1 motor.
-D  = 0.1*ones(N,4);                 % Torque de Drag ejercido por los motores en N*m. Cada columna corresponde a cada motor
+D  = 3.4734e-6*w.^2-1.3205e-4.*w;   % Torque de Drag ejercido por los motores en N*m. Cada columna corresponde a cada motor
 
 %% Kalman | vector de estados = [psi phi theta vqx vqy vqz wqx wqy wqz dvqx dvqy dvqz]
 
@@ -124,9 +124,11 @@ for i=2:N
 end
 
 
-%% Plots
+% Plots
 
-figure()
+% figure()
+
+subplot(311)
     plot(z(:,1),'b--')
     hold on; grid
     plot(z(:,2),'r--')
@@ -137,7 +139,7 @@ figure()
     legend('\psi','\phi','\theta','\psi','\phi','\theta')
     hold off
     
-figure()
+subplot(312)
     plot([x_hat(1:end,4)],'b')
     hold on; grid
     plot([x_hat(1:end,5)],'r')
@@ -145,7 +147,7 @@ figure()
     legend('vqx','vqy','vqz')
     hold off
     
-figure()
+subplot(313)
     plot(z(:,7),'b--')
     hold on; grid
     plot(z(:,8),'r--')
