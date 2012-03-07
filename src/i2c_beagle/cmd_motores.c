@@ -3,7 +3,7 @@
 #include <stdio.h> 
 #include <signal.h> // for SIGINT, SIGQUIT
 #include <stdlib.h> 
-#include <unistd.h> //#include <linux/i2c-dev.h>
+#include <unistd.h>
 #ifndef PC_TEST
 #include <linux/i2c-dev-user.h>
 #else
@@ -14,6 +14,7 @@
 #include <sys/stat.h>
 #include <stdint.h>
 #include <fcntl.h>
+#include <sys/time.h>
 
 #include <time.h>
 
@@ -70,6 +71,10 @@ static unsigned short mot_selected[MOT_COUNT] = {MOT_NOT_SELECTED,
 static __u8 vels[MOT_COUNT] = {0,0,0,0};
 
 static FILE *ctrl_file, *log_rx, *log_err;
+#ifdef PC_TEST
+static FILE *i2c_fake;
+#define FAKE_I2C_PATH "i2c.dev"
+#endif
 
 // Forwards defs
 int uquad_mot_i2c_addr_open(int i2c_dev, int addr);
@@ -86,6 +91,7 @@ int uquad_mot_set_speed_all(int i2c_dev, __u8 *v, int swap_order);
 void uquad_sigint_handler(int signal_num);
 
 int uquad_mot_i2c_addr_open(int i2c_dev, int addr){
+#ifndef PC_TEST
     if (ioctl(i2c_dev,I2C_SLAVE,addr) < 0)
     {
 	/* ERROR HANDLING; you can check errno to see what went wrong */
@@ -93,17 +99,26 @@ int uquad_mot_i2c_addr_open(int i2c_dev, int addr){
 	printf("errno info:\t %s\n",strerror(errno));
 	return NOT_OK;
     }
+#else
+    fprintf(i2c_fake,"%02X",addr);
+#endif
     return OK;
 }
 
 int uquad_mot_i2c_send_byte(int i2c_dev, __u8 reg, __u8 value){
     int ret;
+#ifndef PC_TEST
     if(i2c_smbus_write_byte_data(i2c_dev,reg,value) < 0)
     {
 	/* ERROR HANDLING: i2c transaction failed */
 	fprintf(stderr,"Failed to send value %d\tto 0x%02X\n",(int)value,(int)reg);
 	printf("errno info:\t %s\n",strerror(errno));
     }
+#else
+    struct timeval t;
+    gettimeofday(&t,NULL);
+    fprintf(i2c_fake,"\t%02X\t%d\t%d\n",(int)reg, (int)value,(int)t.tv_usec);
+#endif
     return OK;
 }
 
@@ -251,8 +266,7 @@ int uquad_mot_stop_all(int i2c_file, __u8 *v){
     return OK;
 }
 	
-
-void uquad_sigint_handler(int signal_num){
+void uquad_sig_handler(int signal_num){
     int ret = OK;
     printf("Caught signal %d.\n",signal_num);
     if( i2c_file>= 0 )
@@ -396,16 +410,25 @@ int main(int argc, char *argv[])
     max_fd_plus_one++;
 
     // Open i2c
+#ifndef PC_TEST
     if ((i2c_file = open(filename,O_RDWR)) < 0) {
 	fprintf(log_err,"ERROR! Failed to open %s!\nAborting...\n",filename);
 	fprintf(log_err,"errno info:\t %s\n",strerror(errno));
 	/* ERROR HANDLING; you can check errno to see what went wrong */
 	return -1;
     }
+#else
+    if ((i2c_fake = fopen(FAKE_I2C_PATH,"w")) < 0) {
+	fprintf(log_err,"ERROR! Failed to open %s!\nAborting...\n",filename);
+	fprintf(log_err,"errno info:\t %s\n",strerror(errno));
+	/* ERROR HANDLING; you can check errno to see what went wrong */
+	return -1;
+    }
+#endif
 
     // Catch signals
-    signal(SIGINT, uquad_sigint_handler);
-    signal(SIGQUIT, uquad_sigint_handler);
+    signal(SIGINT, uquad_sig_handler);
+    signal(SIGQUIT, uquad_sig_handler);
     
     fprintf(log_err,"%s successfully opened!\n\nEntering loop, Ctrl+C to quit...\n\n",filename);
     fflush(log_err);
@@ -434,25 +457,22 @@ int main(int argc, char *argv[])
 	    do_sleep = 0;
 	}
 	// all
-	if(m_status == RUNNING)
+	for(i = 0; i < MOT_COUNT; ++i)
 	{
-	    for(i = 0; i < MOT_COUNT; ++i)
+	    ret = uquad_mot_set_speed(i2c_file,
+				      mot_i2c_addr[i],
+				      vels[i]);	
+	    if(ret != OK)
 	    {
-		ret = uquad_mot_set_speed(i2c_file,
-					  mot_i2c_addr[i],
-					  (__u8)vels[i]);	
-		if(ret != OK)
-		{
-		    backtrace();
-		    do_sleep = 1;
-		    break;
-		}
-	    }
-	    if (ret != OK)
-	    {
+		backtrace();
 		do_sleep = 1;
-		continue;
+		break;
 	    }
+	}
+	if (ret != OK)
+	{
+	    do_sleep = 1;
+	    continue;
 	}
 	ret = uquad_read();
 	if(ret == OK)
