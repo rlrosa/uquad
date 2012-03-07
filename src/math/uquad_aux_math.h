@@ -7,6 +7,8 @@
 #include <uquad_error_codes.h>
 #include <uquad_types.h>
 
+#define uquad_round_double2int(x) ((x)>=0?(int)((x)+0.5):(int)((x)-0.5))
+
 /**
  * -- -- -- -- -- -- -- -- -- -- -- --
  * Dinamically allocated vector
