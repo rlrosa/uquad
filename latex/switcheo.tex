@@ -105,18 +105,31 @@ También es posible observar la variación de la señal GEAR en el mismo control
 
 \section{Detección de la posición de la llave}
 
-Para poder implementar el switcheo manual/automático será necesario poder detectar la posición de la llave. Esto es, deberá ser posible medir el ciclo de trabajo de la señal y, en función de éste, sabremos la posición en que se encuentra la llave.\\
+Para poder implementar el switcheo manual/automático será necesario poder detectar la posición de la llave. Esto es, debemos convertir la señal modulada proveniente del control en una señal binaria ON/OFF.\\
 \\
-Para medir el ciclo de trabajo de la señal será necesario implementar detectores de nivel y timers que me permitan saber cuando la señal ``sube'' o ``baja'' y medir el tiempo que permanece en nivel alto o bajo.\\
+Existen soluciones ya implementadas que se comercializan a muy bajo precio. De ellas, se seleccionó un circuito que se encarga de interpretar la señal y convertirla en una señal ON-OFF.\\
 \\
-Dado que la señal que utilizamos para detectar la posición de la llave varía en el rango 0V-4.8V, y considerando que las entradas de las que disponemos en la Beagleboard para realizar la detección solamente soportan señales en el rango 0V-1.8V, será necesario realizar una conversión de nivel.\\
+A dicho circuito se le pueden conectar directamente las señales provenientes del receptor, ya que el mismo cuenta con la electrónica necesaria para interpretar dichas señales.\\
+De esta forma, la salida del circuito será $Vcc(4.8V)$ si el tiempo en alto de la señal proveniente del receptor es mayor a $1.6ms$ y $GND (OV)$ si dicho tiempo es menor a $1.5ms$, lo cual se adapta perfectamente a nuestras necesidades.\\
 \\
-Para realizar la conversión puede utilizarse un transistor MOSFET y una resistencia, tal como puede observarse en el esquema de la figura \ref{fig:conversion}.\\
+Es interesante, además, destacar que la placa adquirida es considerablemente pequeña, ya que la misma mide $1cm$ de lado y pesa apenas $0.3g$\\
 \\
-TODO: Esquemático con circuito de conversión.\\
+En la figura \ref{fig:circuito} puede apreciarse el circuito elegido.
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=0.7\textwidth]{./pics_switcheo/placa.jpg}
+\caption{Circuito para interpretar la señal DCM}
+\label{fig:circuito}
+\end{center}
+\end{figure}
+
+Finalmente, introduciendo dicha señal a un multiplexor DSPT de dos canales, donde cada canal tiene un contacto normal abierto y otro normal cerrado, es posible realizar el switcheo en forma sencilla.\\
 \\
-Con el esquema anterior (esto es, con $Vcc=1.8V$ y $GND=0V$) los niveles 0V-4.8V de la señal detectada serán convertidos a 0V-1.8V. A partir de la señal convertida, y mediante alguna de las entradas GPIO disponibles en el expansion connector de la Beagleboard, podremos sensar la señal y ejecutar un algoritmo de detección mediante timers y detección de flancos.\\
+En la figura \ref{fig:multiplexor} puede observarse el esquema de conexión de los componentes del sistema de switcheo.\\
 \\
-Se utilizará, entonces, la entrada GPIO139 de la Beagleboard, la misma se encuentra disponible en el pin 3 del expansion connector (si se realiza el multiplexado del expansion connector en coherente a esto).
+TODO: Hacer esquema de conexión.\\
+\\
+El multiplexor elegido es el $DG303AMIL$ de Vishay Electronics.
 
 \end{document}
