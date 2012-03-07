@@ -81,14 +81,14 @@ int mot_rad2i2c(double w, int *i2c)
     return ERROR_OK;
 }
 
-int mot_set_vel_rads(uquad_mot_t *mot, int *v)
+int mot_set_vel_rads(uquad_mot_t *mot, int *w)
 {
     int i,retval;
     int itmp;
     
     for(i=0; i < MOT_C; ++i)
     {
-	retval = mot_rad2i2c(v[i],&itmp);
+	retval = mot_rad2i2c(w[i],&itmp);
 	if(retval != ERROR_OK)
 	{
 	    mot->i2c_target[i] = itmp;
@@ -131,4 +131,3 @@ int mot_deinit(uquad_mot_t *mot)
     };
     return retval;;
 };
-

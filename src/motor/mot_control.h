@@ -23,6 +23,8 @@
 #define MAX_W 422
 
 /**
+ * Structure to hold motor status.
+ * 
  * Motors are defined as:
  *  0: 0x69
  *  1: 0x6a
@@ -38,11 +40,56 @@ typedef struct uquad_mot{
     struct timeval last_set;
 }uquad_mot_t;
 
+/** 
+ * Allocates memory for uquad_mot_t, opens log
+ * files and opens file for interaction will motor controlling
+ * program.
+ * 
+ * @return Instance of uquad_mot_t, or NULL if error.
+ */
 uquad_mot_t *mot_init(void);
 
-int mot_set_vel_rads(uquad_mot_t *mot, int *v);
+/** 
+ * Takes an array of rads/s and sets the corresponding
+ * i2c value as target speed.
+ * 
+ * @param mot 
+ * @param w target speed, in rad/s
+ * 
+ * @return error code
+ */
+int mot_set_vel_rads(uquad_mot_t *mot, int *w);
+
+/** 
+ * Sets idle speed as target speed for all motors.
+ * The motors will be running, but not fast enough
+ * to move the cuadcopter.
+ * 
+ * @param mot 
+ * 
+ * @return error code
+ */
 int mot_set_idle(uquad_mot_t *mot);
+
+/** 
+ * Sets speed to zero for all motors.
+ * 
+ * @param mot 
+ * 
+ * @return error code
+ */
 int mot_stop(uquad_mot_t *mot);
 
+/** 
+ * Cleans up uquad_mot_t, closing all opened files and
+ * freeing memory.
+ * Will only close opened files (will check), and will
+ * check if mem was previously allocated before attemping
+ * to free.
+ * 
+ * @param mot 
+ * 
+ * @return error code
+ */
 int mot_deinit(uquad_mot_t *mot);
 #endif //MOT_CONTROL_H
