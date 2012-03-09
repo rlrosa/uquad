@@ -24,7 +24,7 @@ main()
     int msqid;
     int msgflg = IPC_CREAT | 0666;
     key_t key, key_rx = 50;
-    struct timeval time_tx, time_aux;
+    struct timeval time_tx, time_aux, time_diff;
     message_buf sbuf, rbuf;
     size_t buf_length;
     int i;
@@ -66,9 +66,10 @@ main()
 
 	usleep(SEND_T_US);
 
-	/// wait answer
+	/// wait for ACK
 	while(1)
-	{		
+	{
+	    gettimeofday(&time_aux,NULL);
 	    // key_rx
 	    if ((msqid = msgget(key_rx, 0666)) < 0)
 	    {
