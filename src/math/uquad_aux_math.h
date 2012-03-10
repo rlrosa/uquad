@@ -103,6 +103,9 @@ int uquad_mat_inv(uquad_mat_t *m1, uquad_mat_t *minv, uquad_mat_t *meye, uquad_m
 void uquad_mat_dump(uquad_mat_t *m, FILE *output);
 
 int uquad_mat_eye(uquad_mat_t *m);
+int uquad_mat_zeros(uquad_mat_t *m);
+
+int uquad_mat_get_subm(uquad_mat_t *S, int r, int c, uquad_mat_t *A);
 
 uquad_mat_t *uquad_mat_alloc(int r, int c);
 void uquad_mat_free(uquad_mat_t *m);
