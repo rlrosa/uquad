@@ -8,7 +8,7 @@ uquad_kmsgq_t *uquad_kmsgq_init(int key_s, int key_c)
     server->k_s = key_s;
     server->k_c = key_c;
     server->acks_pend = 0;
-    server->mbuf.mtype = UQUAD_MSGTYPE;
+    server->mbuf.mtype = 1;//UQUAD_MSGTYPE;
     server->msgflg = IPC_CREAT | 0666;
     server->tx_counter = 0;
     server->s_log_data = fopen(UQUAD_KQ_S_LOG_DATA,"w");
@@ -26,23 +26,19 @@ uquad_kmsgq_t *uquad_kmsgq_init(int key_s, int key_c)
     return server;
 }
 
-int uquad_kmsgq_clear(uquad_kmsgq_t *server)
+int uquad_kmsgq_clear(uquad_kmsgq_t *server, key_t key)
 {
     int msqid, i, watchdog = 0;
     struct timeval time_aux;
     while(watchdog++ < UQUAD_KQ_MAX_CLEARS)
     {
-	if ((msqid = msgget(server->k_c, 0666)) < 0)
+	if ((msqid = msgget(key, 0666)) < 0)
 	    break;
-	/// Receive an answer of message type UQUAD_MSGTYPE.
-	if (msgrcv(msqid, &server->mbuf, MSGSZ, UQUAD_MSGTYPE, IPC_NOWAIT) < 0)
-	    break;
-	/// Print the answer.
-	gettimeofday(&time_aux,NULL);
-	fprintf(server->s_log_data,"REMOVED:");
-	for(i = 0; i < MSGSZ; ++i)
-	    fprintf(server->s_log_data,"%d\t",(int)server->mbuf.mtext[i]);
-	fprintf(server->s_log_data,"%d\n",(int)time_aux.tv_usec);
+	if(msgctl(msqid, IPC_RMID, NULL) < 0)
+	{
+	    perror("Failed to remove queue!");
+	    err_log("Failed to remove IPC queue!");
+	}
     }
     return ERROR_OK;
 }
@@ -51,23 +47,21 @@ int uquad_kmsgq_get_ack(uquad_kmsgq_t *server)
 {
     int msqid, i;
     struct timeval time_ack;
+    int ack_msg_flg = IPC_NOWAIT;
     if ((msqid = msgget(server->k_c, 0666)) < 0)
     {
 	return ERROR_KQ_NO_ACKS_AVAIL;
     }
 
     /// Receive an answer of message type UQUAD_MSGTYPE.
-    if (msgrcv(msqid, &server->mbuf, MSGSZ, UQUAD_MSGTYPE, IPC_NOWAIT) < 0)
+    if (msgrcv(msqid, &server->mbuf,
+	       MSGSZ,
+	       0, /* get any message */
+	       IPC_NOWAIT) < 0)
     {
 	return ERROR_KQ_NO_ACKS_AVAIL;
     }
 
-    --server->acks_pend;
-    if(server->acks_pend < 0)
-    {
-	err_log("ACK count lost!");
-	server->acks_pend = 0;
-    }
     /// Print the answer.
     gettimeofday(&time_ack,NULL);
     for(i = 0; i < MSGSZ; ++i)
@@ -78,10 +72,10 @@ int uquad_kmsgq_get_ack(uquad_kmsgq_t *server)
 
 int uquad_kmsgq_check_stat(uquad_kmsgq_t *server)
 {
-    int retval = ERROR_OK, ack_cnt = 0;
+    int retval = ERROR_OK, ack_cnt = 0, watchdog = 0;
     if(server->acks_pend == 0)
 	return ERROR_OK;
-    while(server->acks_pend > 0)
+    while(watchdog++ < 10)
     {
 	retval = uquad_kmsgq_get_ack(server);
 	if(retval == ERROR_KQ_NO_ACKS_AVAIL)
@@ -95,6 +89,13 @@ int uquad_kmsgq_check_stat(uquad_kmsgq_t *server)
 	    err_check(ERROR_KQ_ACK_TOO_MANY,"Received too many acks! Client broken?");
 	}
     }
+    server->acks_pend -= ack_cnt;
+    if(server->acks_pend < 0)
+    {
+	err_log("ACK count lost!");
+	server->acks_pend = 0;
+    }
+
     if(ack_cnt == 1)
     {
 	// ack received correctly
@@ -103,19 +104,22 @@ int uquad_kmsgq_check_stat(uquad_kmsgq_t *server)
     else
     {
 	// clean up
-	retval = uquad_kmsgq_clear(server);
-	server->acks_pend = 0;
-	err_propagate(retval);
 	if (ack_cnt == 0)
 	{
 	    // report data was not received by client
 	    err_log("WARN: client did not ack!");
+	    retval = uquad_kmsgq_clear(server,server->k_s);
+	    err_propagate(retval);
+	    server->acks_pend = 0;
 	    retval = ERROR_KQ_ACK_NONE;
 	}
-	else
+	if (ack_cnt > 1)
 	{
 	    // report weird stuff comming
 	    err_log_num("WARN: recieved too many acks from client! ACKs:",ack_cnt);
+	    retval = uquad_kmsgq_clear(server, server->k_c);
+	    err_propagate(retval);
+	    server->acks_pend = 0;
 	    retval = ERROR_KQ_ACK_TOO_MANY;
 	}
     }
@@ -134,7 +138,7 @@ int uquad_kmsgq_send(uquad_kmsgq_t *server, uint8_t *msg, int msg_len)
 	acks_not_recv = 0;
 	break;
     case ERROR_KQ_ACK_NONE:
-	if(acks_not_recv++ > UQUAD_KQ_MAX_ACKS_MISSED)
+	if(++acks_not_recv > UQUAD_KQ_MAX_ACKS_MISSED)
 	{
 	    err_check(ERROR_KQ_ACK_NONE,"Missed too many acks!");
 	}
@@ -172,10 +176,15 @@ int uquad_kmsgq_send(uquad_kmsgq_t *server, uint8_t *msg, int msg_len)
 void uquad_kmsgq_deinit(uquad_kmsgq_t *server)
 {
     int retval;
-    retval = uquad_kmsgq_clear(server);
+    retval = uquad_kmsgq_clear(server, server->k_s);
     if(retval != ERROR_OK)
     {
-	err_log("WARN: Nothing to clear");
+	err_log("WARN: Failed to clear server queue");
+    }
+    retval = uquad_kmsgq_clear(server, server->k_c);
+    if(retval != ERROR_OK)
+    {
+	err_log("WARN: Failed to clear client queue");
     }
     if(server->s_log_data != stderr)
 	fclose(server->s_log_data);
