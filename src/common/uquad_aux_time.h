@@ -4,13 +4,15 @@
 #include <sys/time.h>
 
 /** 
- * Calculate the difference between two time vals, without loosing precision.
+ * Calculate the difference between two time vals, without losing precision.
  * 
- * @param result 
+ * Source: http://www.cs.utah.edu/dept/old/texinfo/glibc-manual-0.02/library_19.html
+ *
+ * @param result: x-y
  * @param x 
  * @param y 
  * 
- * @return error code.
+ * @return -1 if the diff is negative, 0 if diff is zero, 1 if the diff is positive.
  */
 int uquad_timeval_substract (struct timeval * result, struct timeval x, struct timeval y);
 
