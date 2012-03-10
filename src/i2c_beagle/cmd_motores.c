@@ -16,14 +16,16 @@
 #include <fcntl.h>
 #include <sys/time.h>
 
+// kernel queues
+#include <sys/ipc.h> // for IPC_NOWAIT
+#include <sys/msg.h>
+
 #include <time.h>
 
 #define USAGE_STR "Incorrect arguments! Use no arguments (all enabled), or 4, enabling each motor.\n\n\t./cmd ena9 enaA enaB ena8\nwhere enaX enables motor X, valid is 0 or 1\n\n"
 
-#define MOT_COMM_FILE "mot_control.file" // must match mot_control.h
-
 #define MAX_SPEED 220
-#define MIN_SPEED 0
+#define MIN_SPEED 45
 #define DEBUG 1
 #define LOG_FAILS 2000 // evita saturar la UART o el SSH
 #define MAX_FAILS 20000
@@ -48,15 +50,36 @@
 
 #define backtrace() fprintf(log_err,"%s:%d\n",__FUNCTION__,__LINE__)
 #define log_to_err(msg) fprintf(log_err,"%s: %s:%d\n",msg,__FUNCTION__,__LINE__)
-#define log_vels() fprintf(log_rx,"%d\t%d\t%d\t%d\n",(int)vels[0],(int)vels[1],(int)vels[2],(int)vels[3]);
 
 #define sleep_ms(ms) usleep(1000*ms)
+
+/// Forwards defs
+int uquad_mot_i2c_addr_open(int i2c_dev, int addr);
+int uquad_mot_i2c_send_byte(int i2c_dev, __u8 reg, __u8 value);
+int uquad_mot_i2c_send(int i2c_dev, int i2c_addr, __u8 reg, __u8 val);
+
+int uquad_mot_enable(int i2c_dev, int mot_i2c_addr);
+int uquad_mot_enable_all(int i2c_dev);
+int uquad_mot_disable(int i2c_dev, int mot_i2c_addr);
+int uquad_mot_disable_all(int i2c_dev);
+int uquad_mot_set_speed(int i2c_dev, int mot_i2c_addr, __u8 val);
+int uquad_mot_set_speed_all(int i2c_dev, __u8 *v, int swap_order);
+/// Aux
+void uquad_sigint_handler(int signal_num);
+/// Intercom via kernel msgq
+typedef struct msgbuf {
+    long    mtype;
+    char    mtext[MOT_COUNT];
+} message_buf;
 
 typedef enum {RUNNING,STOPPED}mot_state_t;
 
 // Global vars
+static int msqid; // Set by mot_control.h
+const static key_t key = 69;
+static message_buf rbuf;
+static struct timeval timestamp;
 static int i2c_file = -1;
-static int ctrl_file_fd = -1;
 static int mot_i2c_addr[MOT_COUNT] = {0x69,
 				       0x6a,
 				       0x6b,
@@ -70,25 +93,11 @@ static unsigned short mot_selected[MOT_COUNT] = {MOT_NOT_SELECTED,
 
 static __u8 vels[MOT_COUNT] = {0,0,0,0};
 
-static FILE *ctrl_file, *log_rx, *log_err;
+static FILE *log_rx, *log_err;
 #ifdef PC_TEST
 static FILE *i2c_fake;
 #define FAKE_I2C_PATH "i2c.dev"
 #endif
-
-// Forwards defs
-int uquad_mot_i2c_addr_open(int i2c_dev, int addr);
-int uquad_mot_i2c_send_byte(int i2c_dev, __u8 reg, __u8 value);
-int uquad_mot_i2c_send(int i2c_dev, int i2c_addr, __u8 reg, __u8 val);
-
-int uquad_mot_enable(int i2c_dev, int mot_i2c_addr);
-int uquad_mot_enable_all(int i2c_dev);
-int uquad_mot_disable(int i2c_dev, int mot_i2c_addr);
-int uquad_mot_disable_all(int i2c_dev);
-int uquad_mot_set_speed(int i2c_dev, int mot_i2c_addr, __u8 val);
-int uquad_mot_set_speed_all(int i2c_dev, __u8 *v, int swap_order);
-// Aux
-void uquad_sigint_handler(int signal_num);
 
 int uquad_mot_i2c_addr_open(int i2c_dev, int addr){
 #ifndef PC_TEST
@@ -100,7 +109,7 @@ int uquad_mot_i2c_addr_open(int i2c_dev, int addr){
 	return NOT_OK;
     }
 #else
-    fprintf(i2c_fake,"%02X",addr);
+    fprintf(i2c_fake,"%d",addr);
 #endif
     return OK;
 }
@@ -117,7 +126,7 @@ int uquad_mot_i2c_send_byte(int i2c_dev, __u8 reg, __u8 value){
 #else
     struct timeval t;
     gettimeofday(&t,NULL);
-    fprintf(i2c_fake,"\t%02X\t%d\t%d\n",(int)reg, (int)value,(int)t.tv_usec);
+    fprintf(i2c_fake,"\t%d\t%d\t%ld\n",(int)reg, (int)value,(long int)t.tv_usec);
 #endif
     return OK;
 }
@@ -268,19 +277,33 @@ int uquad_mot_stop_all(int i2c_file, __u8 *v){
 	
 void uquad_sig_handler(int signal_num){
     int ret = OK;
-    printf("Caught signal %d.\n",signal_num);
+    fprintf(log_err,"Caught signal %d.\n",signal_num);
     if( i2c_file>= 0 )
     {
-	printf("Shutting down motors...\n");
+	fprintf(stderr,"Shutting down motors...\n");
 	while(uquad_mot_disable_all(i2c_file) != OK)
 	    fprintf(stderr,"Failed to shutdown motors!... Retrying...\n");
-	printf("Motors successfully stoped!\n");
+	fprintf(stderr,"Motors successfully stoped!\n");
     }
     fclose(log_rx);
     fclose(log_err);
     exit(ret);
 }
 
+unsigned long rx_counter = 0;
+static inline void log_vels(void)
+{
+    gettimeofday(&timestamp,NULL);
+    fprintf(log_rx,"%d\t%d\t%d\t%d\t%d\t%lu\n",
+	    (int)vels[0],
+	    (int)vels[1],
+	    (int)vels[2],
+	    (int)vels[3],
+	    (int)timestamp.tv_usec,
+	    rx_counter++);
+}
+
+#define CHECK_STDIN 0
 static int itmp[MOT_COUNT] = {0,0,0,0};
 static int max_fd_plus_one = -1;
 int uquad_read(void){
@@ -288,16 +311,18 @@ int uquad_read(void){
     FILE *src;
     struct timeval tv;
     int retval = OK, i;
+    __u8 u8tmp;
     
     // Watch stdin and ctrl_file, check for speed updates
     FD_ZERO(&rfds);
     FD_SET(STDIN_FILENO, &rfds);
-    FD_SET(ctrl_file_fd, &rfds);
 
     // Don't wait
     tv.tv_sec = 0;
     tv.tv_usec = 0;
 
+#if CHECK_STDIN
+    /// get speed data from stdin
     retval = select(max_fd_plus_one, &rfds, NULL, NULL, &tv);
     // Don't rely on the value of tv now!
 
@@ -312,14 +337,10 @@ int uquad_read(void){
 	    return NOT_OK;
 	else
 	{
-	    //	    src = FD_ISSET(STDIN_FILENO, &rfds) ? stdin:ctrl_file;
 	    if(FD_ISSET(STDIN_FILENO, &rfds))
 		src = stdin;
 	    else
-		if(FD_ISSET(ctrl_file_fd, &rfds))
-		    src = ctrl_file;
-		else
-		    return NOT_OK;
+		return NOT_OK;
 	    retval = fscanf(src,"%d %d %d %d",
 			 itmp + 0,
 			 itmp + 1,
@@ -342,6 +363,37 @@ int uquad_read(void){
 	    log_vels();
 	}
     }
+#else
+    /// get speed data from kernel msgq
+    if ((msqid = msgget(key, 0666)) < 0) {
+	retval = NOT_OK;
+    }
+    
+    /*
+     * Receive an answer of message type 1.
+     */
+    if ((retval == OK) && msgrcv(msqid, &rbuf, 4, 1, IPC_NOWAIT) < 0) {
+	retval = NOT_OK;
+    }
+
+    /*
+     * Print the answer.
+     */
+    if(retval == OK)
+    {
+	for(i=0; i < MOT_COUNT; ++i)
+	{
+	    u8tmp = 0xff & rbuf.mtext[i];
+	    if(u8tmp < MAX_SPEED)
+		vels[i] = u8tmp;
+	    else
+	    {
+		log_to_err("Refused to set m speed, invalid argument.");
+	    }
+	}
+	log_vels();
+    }
+#endif
     return OK;
 }
 
@@ -398,16 +450,6 @@ int main(int argc, char *argv[])
     fprintf(log_err,"Opening %s...\n",filename);
 
     // Open ctrl interface
-    if ((ctrl_file = fopen(MOT_COMM_FILE,"w+")) < 0) {
-	fprintf(log_err,"ERROR! Failed to open %s!\nAborting...\n",MOT_COMM_FILE);
-	fprintf(log_err,"errno info:\t %s\n",strerror(errno));
-	/* ERROR HANDLING; you can check errno to see what went wrong */
-	return -1;
-    }
-    ctrl_file_fd = fileno(ctrl_file);
-    max_fd_plus_one = (STDIN_FILENO>ctrl_file_fd)?
-	STDIN_FILENO:ctrl_file_fd;
-    max_fd_plus_one++;
 
     // Open i2c
 #ifndef PC_TEST
@@ -418,7 +460,8 @@ int main(int argc, char *argv[])
 	return -1;
     }
 #else
-    if ((i2c_fake = fopen(FAKE_I2C_PATH,"w")) < 0) {
+    i2c_fake = fopen(FAKE_I2C_PATH,"w");
+    if (i2c_fake == NULL) {
 	fprintf(log_err,"ERROR! Failed to open %s!\nAborting...\n",filename);
 	fprintf(log_err,"errno info:\t %s\n",strerror(errno));
 	/* ERROR HANDLING; you can check errno to see what went wrong */
@@ -479,10 +522,10 @@ int main(int argc, char *argv[])
 	{
 	    // startup
 	    if( (m_status == STOPPED) && (
-			     (vels[0] > 0)||
-			     (vels[1] > 0)||
-			     (vels[2] > 0)||
-			     (vels[3] > 0)))
+			     (vels[0] > MIN_SPEED)&&
+			     (vels[1] > MIN_SPEED)&&
+			     (vels[2] > MIN_SPEED)&&
+			     (vels[3] > MIN_SPEED)))
 	    {
 		fprintf(log_err,"Will startup motors...\n");
 		ret = uquad_mot_startup_all(i2c_file);
