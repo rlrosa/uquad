@@ -61,55 +61,9 @@ static int imu_comm_resume(imu_t *imu){
     return ERROR_OK;
 }
 
-int imu_comm_get_acc_sens(imu_t *imu, int *acc_index){
-    if(acc_index == NULL){
-	err_check(ERROR_NULL_POINTER,"Cannot return value, null pointer as argument.");
-    }
-    *acc_index = imu->settings.acc_sens;
-    return ERROR_OK;
-}
-
-// sampling freq values
-uint8_t imu_fs_values[IMU_FS_OPT_COUNT] = {50 /* Hz */};
-/** 
- *Set sampling frequency (fs)
- *IMU must be idle, and will be left idle.
- *
- *@param imu 
- *@param new_value index for imu_fs_values[]
- *
- *@return error code
- */
-int imu_comm_set_fs(imu_t *imu, int new_value){
-    int retval;
-    if(new_value > IMU_FS_OPT_COUNT){
-	err_check(ERROR_INVALID_ARG,"Invalid value for sampling frequency");
-    }
-    // IMU should be idle
-    if(imu->status != IMU_COMM_STATE_STOPPED){
-	err_check(ERROR_IMU_STATUS,"IMU must be idle to set fs");
-    }
-
-    // Set new fs
-    retval = imu_comm_send_cmd(imu,imu_fs_values[new_value]);
-    err_propagate(retval);
-    // Update struct value
-    imu->settings.fs = new_value;
-    imu->settings.T = (double)1/imu_fs_values[new_value];
-    return retval;
-}
-
-int imu_comm_get_fs(imu_t *imu, int *fs_index){
-    if(fs_index == NULL){
-	err_check(ERROR_NULL_POINTER,"Cannot return value, null pointer as argument.");
-    }
-    *fs_index = imu->settings.fs;
-    return ERROR_OK;
-}
-
 static void imu_comm_calibration_clear(imu_t *imu){
     imu->is_calibrated = false;
-    imu->calibration_counter = -1;
+    //    imu->calibration_counter = -1;
     int i;
     imu->calib.timestamp.tv_sec = 0;
     imu->calib.timestamp.tv_usec = 0;
@@ -166,13 +120,6 @@ static int imu_comm_disconnect(imu_t *imu){
     return ERROR_OK;
 }
 
-static void imu_comm_restart_sampling(imu_t *imu){
-    imu->unread_data = 0;
-    imu->frames_sampled = 0;
-    imu->frame_buff_next = 0;
-    imu->avg_ready = false;
-}
-
 /** 
  *Initialize IMU struct and send default value to IMU, this
  *ensures starting from a know state.
@@ -182,16 +129,16 @@ static void imu_comm_restart_sampling(imu_t *imu){
 imu_t *imu_comm_init(const char *device){
     imu_t *imu;
     int i,retval;
-    imu = (imu_t *)malloc(sizeof(struct imu));
+    imu = (imu_t *)malloc(sizeof(imu_t));
     mem_alloc_check(imu);
     // Set default values
     //TODO
-    imu_comm_restart_sampling(imu);
     imu->status = IMU_COMM_STATE_UNKNOWN;
+//    imu_comm_restart_sampling(imu);
 //    imu->settings.fs = IMU_DEFAULT_FS;
 //    imu->settings.T = (double)1/imu_fs_values[IMU_DEFAULT_FS];
 //    imu->settings.acc_sens = IMU_DEFAULT_ACC_SENS;
-    imu->settings.frame_width_bytes = IMU_DEFAULT_FRAME_SIZE_BYTES;
+//    imu->settings.frame_width_bytes = IMU_DEFAULT_FRAME_SIZE_BYTES;
 //    for(i=0;i<IMU_SENSOR_COUNT;++i){
 //	imu->null_estimates.xyzrpy[i] = (1<< (IMU_ADC_BITS - 1)); // Set to mid scale
 //    }
@@ -252,50 +199,6 @@ static double rad2grad(double radians){
 }
 #endif
 
-static int gyro_scale_adjust(imu_t *imu, double *gyro_reading){
-    //TODO Implement scale calibration,
-    // Note: Should be /300, but /450 seems to work better.
-    // Will be sensor specific
-    // Should get a true calibration instead of this.
-    *gyro_reading *= 0.92955;
-    return ERROR_OK;
-}
-
-static int acc_scale_adjust(imu_t *imu, double *acc_reading){
-    //TODO Implement scale calibration,
-    // Will be sensor specific
-    // Should get a true calibration instead of this.
-    return ERROR_OK;
-}
-
-//static double imu_sens_g[IMU_SENS_OPT_COUNT] = {1.5, 2, 4, 6};
-//static int imu_sens_mv_per_g[IMU_SENS_OPT_COUNT] = {800,600,400,300};
-static double imu_sens_mv_per_g[IMU_SENS_OPT_COUNT] = {1.8750,3.3333,13.3333,30};//1000*imu_sens_g/imu_sens_mv_per_g
-int imu_get_sens(int sens){
-    if(!(sens<IMU_SENS_OPT_COUNT))
-	return ERROR_FAIL;
-    return imu_sens_mv_per_g[sens];
-}
-
-static int volts2g(int sens, double *val_to_convert){
-    if(!(sens<IMU_SENS_OPT_COUNT))
-	return ERROR_FAIL;
-    *val_to_convert = (*val_to_convert)*imu_sens_mv_per_g[sens];
-    return ERROR_OK;
-}
-
-static uint16_t swap_LSB_MSB_16(uint16_t a){
-    return (((a&0xFF)<<8)|(a>>8));
-}
-
-static uint32_t swap_LSB_MSB_32(uint32_t a){
-    uint16_t *b = (uint16_t*)&a;
-    return
-	swap_LSB_MSB_16(b[0]) |
-	swap_LSB_MSB_16(b[1]);
-    //TODO check!
-}
-
 /** 
  *Returns index of the last frame that was read.
  *
@@ -308,31 +211,6 @@ int frame_circ_index(imu_t *imu){
 }
 
 /** 
- *Checks if samples used for avg fall withing a certain interval.
- *It makes no sense to average samples from completely diff moments.
- *
- *@param imu 
- *
- *@return true if ok to avg, otherwise false
- */
-static uquad_bool_t imu_comm_avg_validate_time_interval(imu_t *imu){
-    int retval;
-    long double max_interval;
-    struct timeval diff;
-    retval = uquad_timeval_substract(&diff,				\
-				     imu->frame_buff[frame_circ_index(imu)].timestamp, \
-				     imu->frame_buff[imu->frame_buff_next].timestamp);
-    if(retval<=0)
-	return false;
-    max_interval = (long double)imu->settings.T*IMU_COMM_AVG_MAX_INTERVAL;
-    max_interval -= diff.tv_sec;
-    if(max_interval<=0)
-	return false;	
-    max_interval -= diff.tv_usec/1000000;
-    return (max_interval > 0)? true:false;
-}   
-
-/** 
  *Generates an average for each sensor. Uses a fixed buff size.
  *This should only be called when sampling starts, or if data is discarded 
  *or RX is stopped for a while.
@@ -342,21 +220,21 @@ static uquad_bool_t imu_comm_avg_validate_time_interval(imu_t *imu){
  *@return error code
  */
 static int imu_comm_avg(imu_t *imu){
-    int tmp,i,j;
-    time_t sec_oldest, sec_new;
-    suseconds_t usec_oldest, usec_new;
-    
-    imu->avg.timestamp = imu->frame_buff[frame_circ_index(imu)].timestamp;
-// TODO (or not TODO)
+    //TODO
+    err_check(ERROR_FAIL,"Not implemented.");
+//    int tmp,i,j;
+//    time_t sec_oldest, sec_new;
+//    suseconds_t usec_oldest, usec_new;
+//    imu->avg.timestamp = imu->frame_buff[frame_circ_index(imu)].timestamp;
 //    for(i=0;i<IMU_SENSOR_COUNT;++i){// loop sensors
 //	tmp = 0;
 //	for(j=0;j<IMU_FRAME_SAMPLE_AVG_COUNT;++j)// loop sensor data
 //	    tmp += (int)imu->frame_buff[j].raw[i];
 //	imu->avg.xyzrpy[i] = ((double)tmp)/IMU_FRAME_SAMPLE_AVG_COUNT;
 //    }
-
-    imu->avg_ready = 1;
-    return ERROR_OK;
+//
+//    imu->avg_ready = 1;
+//    return ERROR_OK;
 }
 
 static uint8_t previous_sync_char = IMU_FRAME_INIT_CHAR;
@@ -534,6 +412,8 @@ int imu_comm_read_frame(imu_t *imu){
     }
 
     // Everything went ok, pat pat :)
+#if 0
+    /// this is calibration stuff, not used in mongoose
     if(imu->frames_sampled < IMU_FRAME_SAMPLE_AVG_COUNT){
 	++imu->frames_sampled;
     }else{
@@ -549,14 +429,17 @@ int imu_comm_read_frame(imu_t *imu){
 	}
     }
 
-    retval = imu_comm_add_frame(imu,new_frame);
-    err_propagate(retval);
-
     if(imu->status == IMU_COMM_STATE_CALIBRATING){
 	// Lets keep on working on the calibration
 	retval = imu_comm_calibration_add_frame(imu,new_frame);
 	err_propagate(retval);
     }
+
+#endif
+
+    retval = imu_comm_add_frame(imu,new_frame);
+    err_propagate(retval);
+
 
     return ERROR_OK;
 }
@@ -875,30 +758,6 @@ int imu_comm_get_data_raw_latest_unread(imu_t *imu, imu_raw_t *data){
     return retval;
 }
 
-uquad_bool_t imu_comm_avg_ready(imu_t *imu){
-    return imu->avg_ready;
-}
-
-/** 
- * Return averaged data.
- * Mem must be previously allocated for data.
- * 
- * @param imu 
- * @param data Answer is returned here.
- * 
- * @return 
- */
-int imu_comm_get_avg(imu_t *imu, imu_data_t *data){
-    int retval, i;
-    if(imu_comm_avg_ready(imu)){
-	retval =  imu_comm_copy_data(&imu->avg, data);
-	err_propagate(retval);
-	imu->avg_ready = 0;
-	return ERROR_OK;
-    }
-    err_check(ERROR_IMU_AVG_NOT_ENOUGH,"Not enough samples to average");
-}
-
 /** 
  *Return file descriptor corresponding to the IMU.
  *This should be used when polling devices from the main control loop.
@@ -1103,6 +962,234 @@ int imu_comm_calibration_get(imu_t *imu, imu_calib_t **calib){
     return ERROR_OK;
 }
 
+/** 
+ *Add frame to buff
+ *
+ *@param imu 
+ *@param new_frame frame to add
+ *
+ *@return error code
+ */
+int imu_comm_add_frame(imu_t *imu, imu_raw_t *new_frame){
+    int retval;
+
+    retval = imu_comm_copy_frame(new_frame, imu->frame_buff + imu->frame_buff_next);
+    imu->frame_buff_latest = imu->frame_buff_next;
+    imu->frame_buff_next = (imu->frame_buff_next + 1)%IMU_FRAME_BUFF_SIZE;
+    ++imu->unread_data;
+
+    err_propagate(retval);
+
+    return ERROR_OK;
+}
+
+int imu_comm_print_data(imu_data_t *data, FILE *stream){
+    int i;
+    if(stream == NULL){
+	stream = stdout;
+    }
+    //    fprintf(stream,"%d\t%d\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\n",
+    fprintf(stream,"%d\t%d\t%0.2f\t%0.2f\t%0.2f\t%0.2f\t%0.2f\t%0.2f\t%0.2f\t%0.2f\t%0.2f\t%0.2f\t%0.2f\t%0.2f\n",
+	    (int)data->timestamp.tv_sec,
+	    (int)data->timestamp.tv_usec,
+	    data->T_us,
+	    data->acc->m_full[0],
+	    data->acc->m_full[1],
+	    data->acc->m_full[2],
+	    data->gyro->m_full[0],
+	    data->gyro->m_full[1],
+	    data->gyro->m_full[2],
+	    data->magn->m_full[0],
+	    data->magn->m_full[1],
+	    data->magn->m_full[2],
+	    data->temp,
+	    data->alt);
+    return ERROR_OK;
+}
+
+static int previous_frame_count = -1;
+int imu_comm_print_raw(imu_raw_t *frame, FILE *stream){
+    int i;
+    if(stream == NULL){
+	stream = stdout;
+    }
+
+    fprintf(stream,"%d\t%d\t%u\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%u\t%u\n",
+	    (int)frame->timestamp.tv_sec,
+	    (int)frame->timestamp.tv_usec,
+	    frame->T_us,
+	    frame->acc[0],
+	    frame->acc[1],
+	    frame->acc[2],
+	    frame->gyro[0],
+	    frame->gyro[1],
+	    frame->gyro[2],
+	    frame->magn[0],
+	    frame->magn[1],
+	    frame->magn[2],
+	    frame->temp,
+	    frame->pres);
+
+    return ERROR_OK;
+}
+
+int imu_comm_print_calib(imu_calib_t *calib, FILE *stream){
+    //TODO
+    err_check(ERROR_FAIL,"Not implemented.");
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#if 0
+/// unused code
+
+uquad_bool_t imu_comm_avg_ready(imu_t *imu){
+    return imu->avg_ready;
+}
+
+/** 
+ * Return averaged data.
+ * Mem must be previously allocated for data.
+ * 
+ * @param imu 
+ * @param data Answer is returned here.
+ * 
+ * @return 
+ */
+int imu_comm_get_avg(imu_t *imu, imu_data_t *data){
+    int retval, i;
+    if(imu_comm_avg_ready(imu)){
+	retval =  imu_comm_copy_data(&imu->avg, data);
+	err_propagate(retval);
+	imu->avg_ready = 0;
+	return ERROR_OK;
+    }
+    err_check(ERROR_IMU_AVG_NOT_ENOUGH,"Not enough samples to average");
+}
+
+
+/** 
+ *Checks if samples used for avg fall withing a certain interval.
+ *It makes no sense to average samples from completely diff moments.
+ *
+ *@param imu 
+ *
+ *@return true if ok to avg, otherwise false
+ */
+static uquad_bool_t imu_comm_avg_validate_time_interval(imu_t *imu){
+    int retval;
+    long double max_interval;
+    struct timeval diff;
+    retval = uquad_timeval_substract(&diff,				\
+				     imu->frame_buff[frame_circ_index(imu)].timestamp, \
+				     imu->frame_buff[imu->frame_buff_next].timestamp);
+    if(retval<=0)
+	return false;
+    max_interval = (long double)imu->settings.T*IMU_COMM_AVG_MAX_INTERVAL;
+    max_interval -= diff.tv_sec;
+    if(max_interval<=0)
+	return false;	
+    max_interval -= diff.tv_usec/1000000;
+    return (max_interval > 0)? true:false;
+}   
+
+
+static void imu_comm_restart_sampling(imu_t *imu){
+    imu->unread_data = 0;
+    imu->frames_sampled = 0;
+    imu->frame_buff_next = 0;
+    imu->avg_ready = false;
+}
+
+int imu_comm_get_acc_sens(imu_t *imu, int *acc_index){
+    if(acc_index == NULL){
+	err_check(ERROR_NULL_POINTER,"Cannot return value, null pointer as argument.");
+    }
+    *acc_index = imu->settings.acc_sens;
+    return ERROR_OK;
+}
+
+// sampling freq values
+uint8_t imu_fs_values[IMU_FS_OPT_COUNT] = {50 /* Hz */};
+/** 
+ *Set sampling frequency (fs)
+ *IMU must be idle, and will be left idle.
+ *
+ *@param imu 
+ *@param new_value index for imu_fs_values[]
+ *
+ *@return error code
+ */
+int imu_comm_set_fs(imu_t *imu, int new_value){
+    int retval;
+    if(new_value > IMU_FS_OPT_COUNT){
+	err_check(ERROR_INVALID_ARG,"Invalid value for sampling frequency");
+    }
+    // IMU should be idle
+    if(imu->status != IMU_COMM_STATE_STOPPED){
+	err_check(ERROR_IMU_STATUS,"IMU must be idle to set fs");
+    }
+
+    // Set new fs
+    retval = imu_comm_send_cmd(imu,imu_fs_values[new_value]);
+    err_propagate(retval);
+    // Update struct value
+    imu->settings.fs = new_value;
+    imu->settings.T = (double)1/imu_fs_values[new_value];
+    return retval;
+}
+
+int imu_comm_get_fs(imu_t *imu, int *fs_index){
+    if(fs_index == NULL){
+	err_check(ERROR_NULL_POINTER,"Cannot return value, null pointer as argument.");
+    }
+    *fs_index = imu->settings.fs;
+    return ERROR_OK;
+}
+
+
+/** 
+ *Add frame info to build up calibration.
+ *Will divide by frame count after done gathering, to avoid loosing info.
+ *
+ *@param imu 
+ *@param new_frame frame to add to calib 
+ *
+ *@return error code
+ */
+int imu_comm_calibration_add_frame(imu_t *imu, imu_raw_t *new_frame){
+    int retval;
+    if(imu->status != IMU_COMM_STATE_CALIBRATING){
+	err_check(ERROR_IMU_STATUS,"Cannot add frames, IMU is not calibrating!");
+    }
+    if(imu->calibration_counter <= 0){
+	err_check(ERROR_FAIL,"Invalid value for calibration_counter");
+    }
+
+    if(imu->calibration_counter == IMU_COMM_CALIBRATION_NULL_SIZE){
+	//TODO calibration_start_time = new_frame->timestamp;
+    }
+
+    //TODO fix! calibration is external
+    if(--imu->calibration_counter == 0){
+	retval = imu_comm_calibration_finish(imu,new_frame->timestamp);
+	err_propagate(retval);
+    }
+
+    return ERROR_OK;
+}
+
 static struct timeval calibration_start_time;
 /** 
  *Initiate IMU calibration.
@@ -1181,109 +1268,49 @@ int imu_comm_calibration_finish(imu_t *imu, struct timeval calibration_end_time)
     return ERROR_OK;
 }
 
-/** 
- *Add frame to buff
- *
- *@param imu 
- *@param new_frame frame to add
- *
- *@return error code
- */
-int imu_comm_add_frame(imu_t *imu, imu_raw_t *new_frame){
-    int retval;
-
-    retval = imu_comm_copy_frame(new_frame, imu->frame_buff + imu->frame_buff_next);
-    imu->frame_buff_latest = imu->frame_buff_next;
-    imu->frame_buff_next = (imu->frame_buff_next + 1)%IMU_FRAME_BUFF_SIZE;
-    ++imu->unread_data;
-
-    err_propagate(retval);
-
+static int gyro_scale_adjust(imu_t *imu, double *gyro_reading){
+    //TODO Implement scale calibration,
+    // Note: Should be /300, but /450 seems to work better.
+    // Will be sensor specific
+    // Should get a true calibration instead of this.
+    *gyro_reading *= 0.92955;
     return ERROR_OK;
 }
 
-/** 
- *Add frame info to build up calibration.
- *Will divide by frame count after done gathering, to avoid loosing info.
- *
- *@param imu 
- *@param new_frame frame to add to calib 
- *
- *@return error code
- */
-int imu_comm_calibration_add_frame(imu_t *imu, imu_raw_t *new_frame){
-    int retval;
-    if(imu->status != IMU_COMM_STATE_CALIBRATING){
-	err_check(ERROR_IMU_STATUS,"Cannot add frames, IMU is not calibrating!");
-    }
-    if(imu->calibration_counter <= 0){
-	err_check(ERROR_FAIL,"Invalid value for calibration_counter");
-    }
-
-    if(imu->calibration_counter == IMU_COMM_CALIBRATION_NULL_SIZE){
-	//TODO calibration_start_time = new_frame->timestamp;
-    }
-
-    //TODO fix! calibration is external
-    if(--imu->calibration_counter == 0){
-	retval = imu_comm_calibration_finish(imu,new_frame->timestamp);
-	err_propagate(retval);
-    }
-
+static int acc_scale_adjust(imu_t *imu, double *acc_reading){
+    //TODO Implement scale calibration,
+    // Will be sensor specific
+    // Should get a true calibration instead of this.
     return ERROR_OK;
 }
 
-int imu_comm_print_data(imu_data_t *data, FILE *stream){
-    int i;
-    if(stream == NULL){
-	stream = stdout;
-    }
-    //    fprintf(stream,"%d\t%d\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\n",
-    fprintf(stream,"%d\t%d\t%0.2f\t%0.2f\t%0.2f\t%0.2f\t%0.2f\t%0.2f\t%0.2f\t%0.2f\t%0.2f\t%0.2f\t%0.2f\t%0.2f\n",
-	    (int)data->timestamp.tv_sec,
-	    (int)data->timestamp.tv_usec,
-	    data->T_us,
-	    data->acc->m_full[0],
-	    data->acc->m_full[1],
-	    data->acc->m_full[2],
-	    data->gyro->m_full[0],
-	    data->gyro->m_full[1],
-	    data->gyro->m_full[2],
-	    data->magn->m_full[0],
-	    data->magn->m_full[1],
-	    data->magn->m_full[2],
-	    data->temp,
-	    data->alt);
+//static double imu_sens_g[IMU_SENS_OPT_COUNT] = {1.5, 2, 4, 6};
+//static int imu_sens_mv_per_g[IMU_SENS_OPT_COUNT] = {800,600,400,300};
+static double imu_sens_mv_per_g[IMU_SENS_OPT_COUNT] = {1.8750,3.3333,13.3333,30};//1000*imu_sens_g/imu_sens_mv_per_g
+int imu_get_sens(int sens){
+    if(!(sens<IMU_SENS_OPT_COUNT))
+	return ERROR_FAIL;
+    return imu_sens_mv_per_g[sens];
+}
+
+static int volts2g(int sens, double *val_to_convert){
+    if(!(sens<IMU_SENS_OPT_COUNT))
+	return ERROR_FAIL;
+    *val_to_convert = (*val_to_convert)*imu_sens_mv_per_g[sens];
     return ERROR_OK;
 }
 
-static int previous_frame_count = -1;
-int imu_comm_print_raw(imu_raw_t *frame, FILE *stream){
-    int i;
-    if(stream == NULL){
-	stream = stdout;
-    }
-
-    fprintf(stream,"%d\t%d\t%u\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%u\t%u\n",
-	    (int)frame->timestamp.tv_sec,
-	    (int)frame->timestamp.tv_usec,
-	    frame->T_us,
-	    frame->acc[0],
-	    frame->acc[1],
-	    frame->acc[2],
-	    frame->gyro[0],
-	    frame->gyro[1],
-	    frame->gyro[2],
-	    frame->magn[0],
-	    frame->magn[1],
-	    frame->magn[2],
-	    frame->temp,
-	    frame->pres);
-
-    return ERROR_OK;
+static uint16_t swap_LSB_MSB_16(uint16_t a){
+    return (((a&0xFF)<<8)|(a>>8));
 }
 
-int imu_comm_print_calib(imu_calib_t *calib, FILE *stream){
-    //TODO
-    err_check(ERROR_FAIL,"Not implemented.");
+static uint32_t swap_LSB_MSB_32(uint32_t a){
+    uint16_t *b = (uint16_t*)&a;
+    return
+	swap_LSB_MSB_16(b[0]) |
+	swap_LSB_MSB_16(b[1]);
+    //TODO check!
 }
+
+
+#endif

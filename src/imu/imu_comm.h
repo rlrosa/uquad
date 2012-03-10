@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 
+/// Default path for calibration file.
 #define IMU_DEFAULT_CALIB_PATH "imu_calib.txt"
 
 #define IMU_FRAME_INIT_CHAR 'A'
@@ -70,7 +71,7 @@
  * 
  * NOTE: No separation chars.
  */
-struct imu_frame{
+typedef struct imu_frame{
     uint16_t T_us; // Time since previous sample in us
     int16_t acc[3];
     int16_t gyro[3];
@@ -78,12 +79,15 @@ struct imu_frame{
     uint16_t temp;
     uint32_t pres;
     struct timeval timestamp;
-};
-typedef struct imu_frame imu_raw_t;
+}imu_raw_t;
 
-/// Calibrated data
-struct imu_data{
-    double T_us;
+
+/**
+ * imu_data_t: Stores calibrated data. This is the final output of imu_comm,
+ * and should be passed on the the control loop.
+ */
+typedef struct imu_data{
+    double T_us;       // us
     uquad_mat_t *acc;  // m/s^2
     uquad_mat_t *gyro; // °/s
     uquad_mat_t *magn; // °
@@ -91,34 +95,60 @@ struct imu_data{
     double alt;        // m
 
     struct timeval timestamp;
-};
-typedef struct imu_data imu_data_t;
+}imu_data_t;
 
-struct imu_calibration_lin_model{
-    // data = T*K_inv*(raw - b)
+/**
+ * Acc, gyro and magn use a linear model:
+ *   data = T*K_inv*(raw - b)
+ * parameters are:
+ *   - raw  : Raw data from sensor, in bits
+ *   - b    : Offset.
+ *   - K_inv: Inverse of a diagonal gain matrix.
+ *   - T    : Cross axis sensitivity
+ *
+ * K=[kx 0 0;
+ *    0 ky 0;
+ *    0 0 kz];
+ *
+ * b=[bx;
+ *    by;
+ *    bz];
+ *
+ * T= [1  -yz zy;
+ *     xz  1 -zx;
+ *    -xy  yx 1];
+ */
+typedef struct imu_calibration_lin_model{
     uquad_mat_t *K_inv;
     uquad_mat_t *T;
     uquad_mat_t *b;
-};
-typedef struct imu_calibration_lin_model imu_calib_lin_t;
+}imu_calib_lin_t;
 
-struct imu_calibration{
+/**
+ * Stores calibration parameteres for each of the 3 sensors
+ * that use a linear model imu_calib_lin_t(): acc,gyro and  magn
+ */
+typedef struct imu_calibration{
     imu_calib_lin_t m_lin[3]; //{acc,gyro,magn}
     struct timeval timestamp;
-};
-typedef struct imu_calibration imu_calib_t;
+}imu_calib_t;
 
 
-struct imu_settings{
+/**
+ * If IMU setting were to be modified from imu_comm, the 
+ * current setting should be stored here.
+ * //TODO use or remove
+ * 
+ */
+typedef struct imu_settings{
     // sampling frequency
-    int fs;
+    //    int fs;
     // sampling period
-    double T;
+    //    double T;
     // sens index
-    int acc_sens;
-    int frame_width_bytes;
-};
-typedef struct imu_settings imu_settings_t;
+    //    int acc_sens;
+    //    int frame_width_bytes;
+}imu_settings_t;
 
 enum imu_status{
     IMU_COMM_STATE_RUNNING,
@@ -127,27 +157,27 @@ enum imu_status{
     IMU_COMM_STATE_UNKNOWN};
 typedef enum imu_status imu_status_t;
 
-struct imu{
-    // config & status
-    imu_settings_t settings;
-    imu_status_t status;
-    uquad_bool_t in_cfg_mode;
+typedef struct imu{
     FILE * device;
-    // calibration
+    imu_status_t status;
+    /// calibration
     imu_calib_t calib;
-    int calibration_counter;
     uquad_bool_t is_calibrated;
-    // data
+    /// data
     imu_raw_t frame_buff[IMU_FRAME_BUFF_SIZE];
     int frame_buff_latest; // last sample is here
     int frame_buff_next; // new data will go here
-    struct timeval frame_avg_init,frame_avg_end;
-    int frames_sampled;
     int unread_data;
-    uquad_bool_t avg_ready;
-    imu_data_t avg;
-};
-typedef struct imu imu_t;
+
+    /// unused stuff (left from atomic imu)
+    //    uquad_bool_t in_cfg_mode;
+    //    imu_settings_t settings;
+    //    int calibration_counter;
+    //    int frames_sampled;
+    //    uquad_bool_t avg_ready;
+    //    imu_data_t avg;
+    //    struct timeval frame_avg_init,frame_avg_end;
+}imu_t;
 
 imu_t *imu_comm_init(const char *device);
 int imu_comm_deinit(imu_t *imu);
@@ -161,9 +191,6 @@ imu_status_t imu_comm_get_status(imu_t *imu);
 int imu_comm_get_fds(imu_t *imu, int *fds);
 int imu_comm_read(imu_t *imu, uquad_bool_t *success);
 
-uquad_bool_t imu_comm_avg_ready(imu_t *imu);
-int imu_comm_get_avg(imu_t *imu, imu_data_t *data_avg);
-
 int imu_comm_get_data_latest(imu_t *imu, imu_data_t *data);
 int imu_comm_get_data_latest_unread(imu_t *imu, imu_data_t *data);
 int imu_comm_get_raw_latest_unread(imu_t *imu, imu_raw_t *raw);
@@ -171,6 +198,33 @@ int imu_comm_get_raw_latest_unread(imu_t *imu, imu_raw_t *raw);
 int imu_comm_print_data(imu_data_t *data, FILE *stream);
 int imu_comm_print_raw(imu_raw_t *frame, FILE *stream);
 int imu_comm_print_calib(imu_calib_t *calib, FILE *stream);
+
+// -- -- -- -- -- -- -- -- -- -- -- --
+// Calibration
+// -- -- -- -- -- -- -- -- -- -- -- --
+uquad_bool_t imu_comm_calibration_is_calibrated(imu_t *imu);
+
+#endif // IMU_COMM_H
+
+
+
+
+
+
+
+
+
+
+
+
+// -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+// Notes and unused code
+// -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+#if 0
+
+uquad_bool_t imu_comm_avg_ready(imu_t *imu);
+int imu_comm_get_avg(imu_t *imu, imu_data_t *data_avg);
+
 
 // -- -- -- -- -- -- -- -- -- -- -- --
 // Configuring IMU
@@ -182,21 +236,11 @@ int imu_comm_get_acc_sens(imu_t *imu, int *acc_index);
 int imu_comm_set_fs(imu_t *imu, int new_value);
 int imu_comm_get_fs(imu_t *imu, int *fs_index);
 
-// -- -- -- -- -- -- -- -- -- -- -- --
-// Calibration
-// -- -- -- -- -- -- -- -- -- -- -- --
-uquad_bool_t imu_comm_calibration_is_calibrated(imu_t *imu);
 int imu_comm_calibration_get(imu_t *imu, imu_calib_t **calib);
 int imu_comm_calibration_start(imu_t *imu);
 int imu_comm_calibration_abort(imu_t *imu);
 int imu_comm_calibration_print(imu_calib_t *calib, FILE *stream);
 
-#endif // IMU_COMM_H
-
-// -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-// Notes and unused code
-// -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-#if 0
 
 //Example timestamp usage
 struct timeval detail_time;

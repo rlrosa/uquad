@@ -120,7 +120,7 @@ int main(int argc, char *argv[]){
     data.magn = uquad_mat_alloc(3,1);
     retval = imu_comm_get_fds(imu, &imu_fd);
     FD_ZERO(&rfds);
-    printf("Options:\n'q' to abort,\n'c' to calibrate\n's' to display current calibration\n\n");
+    //    printf("Options:\n'q' to abort,\n'c' to calibrate\n's' to display current calibration\n\n");
     while(1){
 	if(do_sleep){
 	    printf("Waiting...\n");

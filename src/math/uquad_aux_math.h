@@ -9,7 +9,23 @@
 
 /**
  * -- -- -- -- -- -- -- -- -- -- -- --
- * Vector
+ * Dinamically allocated vector
+ * 
+ * Documentation in uquad_aux_math.c
+ *
+ * Example of usage:
+ *   int i,retval;
+ *   uquad_vec_t *v = uquad_vec_alloc(3);
+ *   if (v == NULL)
+ *   {
+ *     perror("Failed to allocate vector");
+ *     exit(-1);
+ *   }
+ *   for(i=0; i < v->l ; ++i)
+ *     v->v[i] = 3*i; // some value
+ *   ... (operations) ...
+ *   uquad_vec_free(v);
+ *   exit(0);
  * -- -- -- -- -- -- -- -- -- -- -- --
  */
 struct uquad_vec {
@@ -27,7 +43,35 @@ void uquad_vec_free(uquad_vec_t *v);
 
 /**
  * -- -- -- -- -- -- -- -- -- -- -- --
- * Matrix
+ * Dinamically allocated matrix
+ *
+ * Documentation in uquad_aux_math.c
+ *
+ * Example of usage:
+ *   int i,j,retval;
+ *   uquad_mat_t *A = uquad_mat_alloc(3,1);
+ *   uquad_mat_t *B = uquad_mat_alloc(1,3);
+ *   uquad_mat_t *C = uquad_mat_alloc(3,3);
+ *   if (A == NULL || B == NULL || C == NULL)
+ *   {
+ *     perror("Failed to allocate mem");
+ *     exit(-1);
+ *   }
+ *   for(i=0; i < A->r*A->c; ++i)
+ *     A->m_full[i] = rand();
+ *   for(i=0; i < B->r; ++i)
+ *     for(j=0; j < B->c; ++j)
+ *       B->m[i][j];
+ *   retval = uquad_mat_prod(C,A,B);
+ *   if(retval != ERROR_OK)
+ *   {
+ *     err_propagate(retval);
+ *   }
+ *   uquad_mat_dump(C, stdout);
+ *   uquad_mat_free(A);
+ *   uquad_mat_free(B);
+ *   uquad_mat_free(C);
+ *   exit(0);
  * -- -- -- -- -- -- -- -- -- -- -- --
  */
 struct uquad_mat {
