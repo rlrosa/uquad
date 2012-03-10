@@ -11,6 +11,7 @@
 
 #define CLIENT_LOG_DATA "kq_c_data.log"
 #define CLIENT_LOG_ACK "kq_c_ack.log"
+#define USE_STDOUT 1
 
 /*
  * Declare the message structure.
@@ -23,7 +24,7 @@ typedef struct msgbuf {
 
 main()
 {
-    int msqid, i;
+    int msqid, i, msg_rx;
     key_t key = 1, key_tx = 2;
     int msgflg = IPC_CREAT | 0666;
     message_buf  rbuf, sbuf;
@@ -33,13 +34,17 @@ main()
 
     FILE *kq_c_data, *kq_c_ack;
 
+#if !USE_STDOUT
     kq_c_data = fopen(CLIENT_LOG_DATA,"w");
     kq_c_ack = fopen(CLIENT_LOG_ACK,"w");
     if(kq_c_data == NULL || kq_c_ack == NULL)
     {
 	err_check(ERROR_FAIL,"Failed to open log files.");
     }
-
+#else
+    kq_c_data = stdout;
+    kq_c_ack = stdout;
+#endif
     /*
      * Get the message queue id for the
      * "name" 1234, which was created by
@@ -57,12 +62,15 @@ main()
 	/*
 	 * Receive an answer of message type 1.
 	 */
-	if (msgrcv(msqid, &rbuf, buf_length, 1, IPC_NOWAIT) < 0)
-	{
-	    usleep(LISTEN_T_US);
+	msg_rx = 0;
+	while (msgrcv(msqid, &rbuf, buf_length, 1, IPC_NOWAIT) >= 0)
+	    msg_rx++;
+	/* { */
+	/*     usleep(LISTEN_T_US); */
+	/*     continue; */
+	/* } */
+	if(msg_rx == 0)
 	    continue;
-	}
-
 	/*
 	 * Print the answer.
 	 */

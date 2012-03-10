@@ -554,6 +554,54 @@ int uquad_mat_inv(uquad_mat_t *m1, uquad_mat_t *minv, uquad_mat_t *meye, uquad_m
 }
 
 /** 
+ * Will load matrix from text file.
+ * Will ignore spaces, end of lines, tabs, etc.
+ * Assumes memory has been previously allocated for matrix.
+ * 
+ * Example of a configuration file for a 7x3 matrix:
+ *   26.9552751514508        0                       0
+ *   0                       27.1044248763245        0
+ *   0                       0                       25.9160276670631
+ *   
+ *   1                       0.00953542215888624       0.00955723285532017
+ *   -0.000376784971686033   1                         -0.00677033632701969
+ *   0.0105047129596497      -0.00456172876850397      1
+ *   
+ *   13.0716873433579
+ *
+ *   -1.07951072069862
+ *   -40.723583688652
+ * 
+ * Note that elements are read row-wise (fills row, then next row, etc)
+ *
+ * @param imu 
+ * @param input stream to load from, or NULL for stdin
+ * 
+ * @return 
+ */
+int uquad_mat_load(uquad_mat_t *m, FILE *input)
+{
+    int i;
+    float ftmp;
+    if(m == NULL)
+    {
+	err_check(ERROR_NULL_POINTER, "Cannot load, must allocate memory previously.");
+    }
+    if(input == NULL)
+	input = stdin;
+    for(i=0; i < m->r*m->c; i++)
+    {
+	fscanf(input,"%f",&ftmp);
+	m->m_full[i] = (double) ftmp;
+    }
+    if(i < m->r*m->c)
+    {
+	err_check(ERROR_IO,"Failed to load matrix");
+    }
+    return ERROR_OK;
+}
+
+/** 
  * Prints matrix to any output.
  * 
  * @param m 
