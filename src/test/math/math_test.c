@@ -26,13 +26,12 @@ double k;
 
 void matrix_stdin(uquad_mat_t *m)
 {
-    printf("Enter rows and columns of matrix, row wise:\n");
-    for(i=0; i< m->r; i++)
-	for(j=0; j < m->c; j++)
-	{
-	    scanf("%f",&tmp);
-	    m->m[i][j] = (double)tmp;
-	}
+    printf("Enter rows and columns of matrix, row wise:\n");    
+    retval = uquad_mat_load(m,stdin);
+    if(retval != ERROR_OK)
+    {
+	err_log("WARN:Could not load matrix from stdin");
+    }
 }
 
 static int alloc_counter = 1;
@@ -105,7 +104,7 @@ int mat_inv_test(void)
 	err_check(ERROR_FAIL,"Failed loading data");
     }
 
-    retval = uquad_mat_inv(m1,mr,NULL);
+    retval = uquad_mat_inv(m1,mr,NULL,NULL);
     err_propagate(retval);
 
     printf("inv(A):\n");

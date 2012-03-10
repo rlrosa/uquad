@@ -906,17 +906,6 @@ int imu_comm_alloc_calib_lin(imu_t *imu)
  * Will ignore spaces, end of lines, tabs, etc.
  * Expect to find matrices K,b and T (see imu_calib_lin_t)
  * 
- * Example of the first 1/3 of a configuration file:
- * 26.9552751514508        0                       0
- * 0                       27.1044248763245        0
- * 0                       0                       25.9160276670631
- * 
- * 1                       0.00953542215888624       0.00955723285532017
- * -0.000376784971686033   1                         -0.00677033632701969
- * 0.0105047129596497      -0.00456172876850397      1
- * 
- * 13.0716873433579         -1.07951072069862          -40.723583688652
- * 
  * @param imu 
  * @param path 
  * 
@@ -952,11 +941,13 @@ int imu_comm_load_calib(imu_t *imu, const char *path)
 	    for (i = 0; i < 3; ++i)
 	    {
 		// K
-		for(j=0; j<9; ++j)
+		retval = uquad_mat_load(ktmp, calib_file);
+		if(retval != ERROR_OK)
 		{
-		    fscanf(calib_file,"%f",&ftmp);
-		    ktmp->m_full[j] = (double) ftmp;
-		}
+		    err_log("Failed to load K matrix!");
+		    break;
+		}		    
+		err_propagate(retval);
 		// K_inv
 		retval = uquad_mat_inv(ktmp,
 				       imu->calib.m_lin[i].K_inv,
@@ -971,17 +962,19 @@ int imu_comm_load_calib(imu_t *imu, const char *path)
 		}
 
 		// T
-		for(j=0; j<9; ++j)
+		retval = uquad_mat_load(imu->calib.m_lin[i].T, calib_file);
+		if(retval != ERROR_OK)
 		{
-		    fscanf(calib_file,"%f",&ftmp);
-		    imu->calib.m_lin[i].T->m_full[j] = (double) ftmp;
-		}
+		    err_log("Failed to load T matrix!");
+		    break;
+		}		    
 
 		// b
-		for(j=0; j<3; ++j)
+		retval = uquad_mat_load(imu->calib.m_lin[i].b, calib_file);
+		if(retval != ERROR_OK)
 		{
-		    fscanf(calib_file,"%f",&ftmp);
-		    imu->calib.m_lin[i].b->m_full[j] = (double) ftmp;
+		    err_log("Failed to load b matrix!");
+		    break;
 		}
 	    }
 	}
