@@ -1,28 +1,30 @@
-Este programa está pensado para ser compilado y ejecutado en la beagle.
-Puede que haga falta instalar 10k cosas para poder compilarlo.
+This program is designed to be compiled and ran on a beagleboard.
+On a linux pc, you can run:
+   make pc_test
+to verify syntax.
 
-# Compilar
-Para compilar el programa ejecutar:
-	make
-Eso deberia generar un ejecutable llamado cmd
+# Compiling
+To compile do:
+   make
+That will generate a executable called cmd
 
-# Ejecutar
-SPara ejecutarlo hacer:
-	./cmd v1 v2 v3 v4
-donde v1 es la velocidad que se le impone al motor 1, etc.
+# Running
+To run do
+   ./cmd v0 v1 v2 v3
+If no arguments are given, all motors will be enabled. Else, vi can be either 0/1 to disable/enable each motor.
 
-# Permisos
-Si se queja de que no tiene permiso, hacer
-	chmod +x cmd
-y luego volver a ejecutar el programa.
-
-# Editar el cÃodigo
-En la beagle ahora esta un editor que se llama nano (entre otras 10k cosas que no sirven para nada).
-Para editar un archivo hacer:
-	nano nombre_del_archivo
-En la parte de abajo muestra comandos, el simbolo de ^ significa "apreta control".
-Ejemplo:
-	^x para salir (Ctrl+X)
-	^o para guardar
-Manejate con eso. gil.
-
+To change motor speed, write to mot_control.file or to stdin.
+Examples:
+- Using mot_control.file:
+   ./cmd &
+   # startup motors
+   echo "50 50 50 50" >> mot_control.file
+   # stop motors
+   echo "0 0 0 0" >> mot_control.file
+   # note the >>, if only > is used, then each echo will clear the file, and the program will not work.
+- Using stdin
+   ./cmd
+   # startup motors
+   50 50 50 50
+   # stop motors
+   0 0 0 0

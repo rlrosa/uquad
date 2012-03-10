@@ -26,7 +26,17 @@ ERROR_MATH_MAX_DIM,
 ERROR_MATH_MAT_DIM,
 ERROR_MATH_VEC_LEN,
 ERROR_MATH_MAT_SING,
-ERROR_MATH_DIV_0
+ERROR_MATH_DIV_0,
+ERROR_MOTOR_CMD_START,
+ERROR_MOTOR_CMD_KILL,
+ERROR_MOTOR_SET,
+ERROR_MOTOR_USAGE,
+ERROR_MOTOR_W,
+ERROR_KQ,
+ERROR_KQ_ACK_NONE,
+ERROR_KQ_ACK_TOO_MANY,
+ERROR_KQ_NO_ACKS_AVAIL,
+ERROR_MOT_SATURATE
 };
 
 /**
@@ -34,6 +44,12 @@ ERROR_MATH_DIV_0
  * 
  */
 #define err_log(msg) fprintf(stderr,"%s:%d: %s\n",__FILE__,__LINE__,msg)
+
+/**
+ * Print error message with number to stderr
+ * 
+ */
+#define err_log_num(msg,num) fprintf(stderr,"%s:%d: %s(%d)\n",__FILE__,__LINE__,msg,num)
 
 /**
  * If @retval is an error, then propagate error without printing anything.

@@ -8,8 +8,11 @@ if [ "$1" == "-a" ]; then
 fi
 
 SCAN_DIRS=(imu
+           motor
+	   i2c_beagle
            common
            gps
+           kernel_msgq
 	   math
            submodules/gpsd)
 

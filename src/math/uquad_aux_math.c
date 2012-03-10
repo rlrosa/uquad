@@ -393,13 +393,81 @@ int uquad_mat_eye(uquad_mat_t *m)
     int retval;
     if(m == NULL)
     {
-	err_check(ERROR_MALLOC,"Could not allocate aux mem for inv.");
+	err_check(ERROR_NULL_POINTER,"NULL pointer is invalid arg.");
     }
     if(m->r != m->c)
     {
 	err_check(ERROR_MATH_MAT_DIM,"Identity matrix must be square!");
     }
     Identity_Matrix(m->m_full,m->r);
+    return ERROR_OK;
+}
+
+/** 
+ * Fills a matrix with zeros.
+ * 
+ * @param m 
+ * 
+ * @return error code.
+ */
+int uquad_mat_zeros(uquad_mat_t *m)
+{
+    if(m == NULL)
+    {
+	err_check(ERROR_NULL_POINTER,"NULL pointer is invalid arg.");
+    }
+    Zero_Matrix(m->m_full, m->r, m->c);
+    return ERROR_OK;
+}
+
+/** 
+ * Copies part of a matrix A to a smaller matrix, S.
+ * 
+ * @param S answer is returned here
+ * @param r first row of A that will be copied to S
+ * @param c first column of A that will be copied to S
+ * @param A src matrix
+ * 
+ * @return 
+ */
+int uquad_mat_get_subm(uquad_mat_t *S, int r, int c, uquad_mat_t *A)
+{
+    if(S == NULL || A == NULL)
+    {
+	err_check(ERROR_NULL_POINTER,"NULL pointer is invalid arg.");
+    }
+    if(A->r < r + S->r || A->c < c + S->c)
+    {
+	err_check(ERROR_MATH_MAT_DIM,"Cannot extract submatrix, too big!.");
+    }
+
+    Get_Submatrix(S->m_full, S->r, S->c,
+		  A->m_full, A->c, r, c);
+}
+
+/** 
+ * Sets part of a matrix A to match a smaller matrix, S.
+ * 
+ * @param A answer is returned here.
+ * @param r first row of A where S will be copied to.
+ * @param c first column of A where S will be copied to.
+ * @param S submatrix
+ * 
+ * @return 
+ */
+int uquad_mat_set_subm(uquad_mat_t *A, int r, int c, uquad_mat_t *S)
+{
+    if(A == NULL || S == NULL)
+    {
+	err_check(ERROR_NULL_POINTER,"NULL pointer is invalid arg.");
+    }
+    if(A->r - r < S->r || A->c -c < S->c)
+    {
+	err_check(ERROR_MATH_MAT_DIM,"Cannot set submatrix, too big!.");
+    }
+
+    Set_Submatrix(A->m_full, A->c,
+		  S->m_full, S->r, S->c, r, c);
     return ERROR_OK;
 }
 
