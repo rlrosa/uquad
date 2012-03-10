@@ -1,16 +1,5 @@
 #include <uquad_aux_time.h>
 
-/** 
- * Subtract the `struct timeval' values X and Y, result in RESULT.
- *
- * Source: http://www.cs.utah.edu/dept/old/texinfo/glibc-manual-0.02/library_19.html
- * 
- * @param result 
- * @param x 
- * @param y 
- * 
- * @return -1 if the diff is negative, 0 if diff is zero, 1 if the diff is positive.
- */
 int uquad_timeval_substract (struct timeval * result, struct timeval x, struct timeval y){
     /* Perform the carry for the later subtraction by updating y. */
     if (x.tv_usec < y.tv_usec) {

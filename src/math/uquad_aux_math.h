@@ -7,6 +7,10 @@
 #include <uquad_error_codes.h>
 #include <uquad_types.h>
 
+#define uquad_round_double2int(x) ((x)>=0?(int)((x)+0.5):(int)((x)-0.5))
+#define uquad_max(a,b) (a>b)?a:b
+#define uquad_min(a,b) (a<b)?a:b
+
 /**
  * -- -- -- -- -- -- -- -- -- -- -- --
  * Dinamically allocated vector
