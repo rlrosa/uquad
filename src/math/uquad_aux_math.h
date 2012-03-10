@@ -100,6 +100,7 @@ int uquad_solve_lin(uquad_mat_t *A, uquad_mat_t *B, uquad_mat_t *x, uquad_mat_t 
 
 int uquad_mat_inv(uquad_mat_t *m1, uquad_mat_t *minv, uquad_mat_t *meye, uquad_mat_t *maux);
 
+int uquad_mat_load(uquad_mat_t *m, FILE *input);
 void uquad_mat_dump(uquad_mat_t *m, FILE *output);
 
 int uquad_mat_eye(uquad_mat_t *m);

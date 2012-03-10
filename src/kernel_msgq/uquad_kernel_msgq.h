@@ -11,7 +11,7 @@
 #include <stdint.h>
 
 #define MSGSZ 4
-#define UQUAD_MSGTYPE 1
+#define UQUAD_MSGTYPE 1L
 #define UQUAD_KQ_MAX_ACKS 100
 #define UQUAD_KQ_MAX_ACKS_MISSED 20
 #define UQUAD_KQ_MAX_CLEARS 100
