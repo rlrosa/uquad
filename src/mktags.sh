@@ -14,6 +14,7 @@ ETAGS_DIR=/home/rrosa/work/uquad/src/
 SCAN_DIRS=(imu
            motor
 	   test
+	   main
 	   i2c_beagle
            common
            gps
