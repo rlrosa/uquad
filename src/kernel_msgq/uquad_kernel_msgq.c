@@ -42,7 +42,7 @@ int uquad_kmsgq_clear(uquad_kmsgq_t *server, key_t key)
 	    break;
 	if(msgctl(msqid, IPC_RMID, NULL) < 0)
 	{
-	    err_log("Failed to remove IPC queue!");
+	    err_log_stderr("Failed to remove IPC queue!");
 	}
     }
     return ERROR_OK;
