@@ -19,7 +19,6 @@
 #include "set_submatrix.c"
 #include "div_matrix_by_scalar.c"
 #include "div_3x3_matrix_by_scalar.h"
-#include "mul_matrix_by_scalar.c"
 #include "mul_3x3_matrix_by_scalar.h"
 #include "add_matrices.c"
 #include "add_matrices_3x3.h"
