@@ -1,6 +1,6 @@
-function [a,w,c,t,b,fecha,ind] = mong_read(file,plotear)
+function [a,w,c,t,b,fecha,ind,T] = mong_read(file,plotear)
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-% function [a,w,c,t,b] = mong_read(file,plotear)
+% function [a,w,c,t,b,fecha,ind,T] = mong_read(file,plotear)
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 if(nargin < 2)
   plotear = 1;
@@ -31,12 +31,15 @@ end
 N    = length(D{1});
 Nn   = fix(N/cols); % Cantidad de muestras
 
+T    = zeros(Nn,1); % Período de muestreo
 a    = zeros(Nn,3); % Datos del acelerómetro
 w    = zeros(Nn,3); % Datos del giróscopo
 c    = zeros(Nn,3); % Datos del compas
 t    = zeros(Nn,1); % Datos del termómetro
 b    = zeros(Nn,1); % Datos del barómetro
 
+T(:,1)=str2double(D{1}(2:cols:end));
+T = T * 1e-6; % Paso de microsegundos a segundos
 a(:,1)=str2double(D{1}(3:cols:end));
 a(:,2)=str2double(D{1}(4:cols:end));
 a(:,3)=str2double(D{1}(5:cols:end));
