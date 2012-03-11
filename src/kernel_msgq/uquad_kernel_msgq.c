@@ -23,6 +23,12 @@ uquad_kmsgq_t *uquad_kmsgq_init(int key_s, int key_c)
 	err_log("Failed to open ack log file, using stderr.");
 	server->s_log_ack = stderr;
     }
+    if((uquad_kmsgq_clear(server,server->k_s) != ERROR_OK) ||
+       (uquad_kmsgq_clear(server,server->k_c) != ERROR_OK))
+    {
+	uquad_kmsgq_deinit(server);
+	server = NULL;
+    }
     return server;
 }
 
@@ -36,8 +42,7 @@ int uquad_kmsgq_clear(uquad_kmsgq_t *server, key_t key)
 	    break;
 	if(msgctl(msqid, IPC_RMID, NULL) < 0)
 	{
-	    perror("Failed to remove queue!");
-	    err_log("Failed to remove IPC queue!");
+	    err_log_stderr("Failed to remove IPC queue!");
 	}
     }
     return ERROR_OK;
@@ -144,15 +149,14 @@ int uquad_kmsgq_send(uquad_kmsgq_t *server, uint8_t *msg, int msg_len)
 	}
 	break;
     case ERROR_KQ_ACK_TOO_MANY:
-	err_check(ERROR_KQ_ACK_TOO_MANY,"Client sent too many acks!");
-	break;
+	// propagate it
     default:
 	err_propagate(retval);
     }
     /// if here, then msg should be sent
     if ((msqid = msgget(server->k_s, server->msgflg )) < 0)
     {
-	err_check(ERROR_KQ,"msqid failed!");
+	err_check(ERROR_KQ_SEND,"msqid failed!");
     }
     msg_len = uquad_min(msg_len, MSGSZ);
     for(i = 0; i < msg_len; ++i)
@@ -160,7 +164,7 @@ int uquad_kmsgq_send(uquad_kmsgq_t *server, uint8_t *msg, int msg_len)
     /// send msg
     if (msgsnd(msqid, &server->mbuf, msg_len, IPC_NOWAIT) < 0)
     {
-	err_check(ERROR_KQ,"msgsnd failed!");
+	err_check(ERROR_KQ_SEND,"msgsnd failed!");
     }
     server->acks_pend++;
     /// log sent data
@@ -169,7 +173,7 @@ int uquad_kmsgq_send(uquad_kmsgq_t *server, uint8_t *msg, int msg_len)
     for(i = 0; i < msg_len; ++i)
 	fprintf(server->s_log_data,"%d\t",(int)server->mbuf.mtext[i]);
     fprintf(server->s_log_data,"%d\n",(int)tsent.tv_usec);
-    return ERROR_OK;
+    return retval;
 }
 
 

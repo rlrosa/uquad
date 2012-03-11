@@ -2,6 +2,8 @@
 #define UQUAD_ERROR_CODES_H
 
 #include <stdio.h>
+#include <errno.h>
+#include <string.h>
 
 enum UQUAD_ERROR_CODES{
 ERROR_OK = 0,
@@ -36,6 +38,7 @@ ERROR_KQ,
 ERROR_KQ_ACK_NONE,
 ERROR_KQ_ACK_TOO_MANY,
 ERROR_KQ_NO_ACKS_AVAIL,
+ERROR_KQ_SEND,
 ERROR_MOT_SATURATE
 };
 
@@ -44,6 +47,7 @@ ERROR_MOT_SATURATE
  * 
  */
 #define err_log(msg) fprintf(stderr,"%s:%d: %s\n",__FILE__,__LINE__,msg)
+#define err_log_stderr(msg) fprintf(stderr,"%s:%d: %s: %s\n",__FILE__,__LINE__,msg, strerror(errno))
 
 /**
  * Print error message with number to stderr
@@ -63,6 +67,12 @@ ERROR_MOT_SATURATE
  */
 #define err_check(retval,msg) if(retval!=ERROR_OK){fprintf(stderr,"%s:%d: %s\n",__FILE__,__LINE__,msg);return retval;}
 
+/**
+ * If @retval is an error, call quit().
+ * Usefull in test programs, allows cleaning up.
+ * 
+ */
+#define quit_if(retval) if(retval!=ERROR_OK)quit()
 
 /**
  * Verifies that malloc succeeded.

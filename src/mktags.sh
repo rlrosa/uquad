@@ -9,6 +9,7 @@ fi
 
 SCAN_DIRS=(imu
            motor
+	   test
 	   i2c_beagle
            common
            gps

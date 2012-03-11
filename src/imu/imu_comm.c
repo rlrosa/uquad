@@ -489,13 +489,12 @@ static int imu_comm_convert_lin(imu_t *imu, int16_t *raw, uquad_mat_t *conv, imu
     for(i=0; i < 3; ++i)
 	m3x1_0->m_full[i] = (double) raw[i];
     /// m3x1_0 has tmp answer
+    /// tmp = raw - b
     retval = uquad_mat_sub(m3x1_1,m3x1_0, calib->b);
     err_propagate(retval);
     /// m3x1_1 has tmp answer
-    retval = uquad_mat_prod(m3x1_0, calib->K_inv, m3x1_1);
-    err_propagate(retval);
-    /// m3x1_0 has tmp answer
-    retval = uquad_mat_prod(conv, calib->T, m3x1_0);
+    /// conv = k*tmp
+    retval = uquad_mat_prod(m3x1_0, calib->TK_inv, m3x1_1);
     err_propagate(retval);
     // conv has final answer
     return retval;
@@ -883,15 +882,9 @@ int imu_comm_alloc_calib_lin(imu_t *imu)
     int i;
     for (i = 0; i < 3; ++i)
     {
-	// K_inv
-	imu->calib.m_lin[i].K_inv = uquad_mat_alloc(3,3);
-	if (imu->calib.m_lin[i].K_inv == NULL)
-	{
-	    err_check(ERROR_MALLOC, "Failed to allocate K");
-	}
-	// T	    
-	imu->calib.m_lin[i].T = uquad_mat_alloc(3,3);
-	if (imu->calib.m_lin[i].T == NULL)
+	// TK_inv
+	imu->calib.m_lin[i].TK_inv = uquad_mat_alloc(3,3);
+	if (imu->calib.m_lin[i].TK_inv == NULL)
 	{
 	    err_check(ERROR_MALLOC, "Failed to allocate K");
 	}
@@ -926,66 +919,24 @@ int imu_comm_load_calib(imu_t *imu, const char *path)
 	err_check(ERROR_OPEN,"Failed to open calib file!");
     }
 
-    ktmp = uquad_mat_alloc(3,3);
-    meye3x3 = uquad_mat_alloc(3,3);
-    maux3x6 = uquad_mat_alloc(3,6);
-    if(ktmp == NULL || meye3x3 == NULL || maux3x6 == NULL)
+    for (i = 0; i < 3; ++i)
     {
-	err_log("Failed to allocate K");
-    }
-    else
-    {	
-	retval = uquad_mat_eye(meye3x3);
+	// TK_inv
+	retval = uquad_mat_load(imu->calib.m_lin[i].TK_inv, calib_file);
 	if(retval != ERROR_OK)
 	{
-	    err_log("Failed to generate eye matrix");
-	}
-	else
+	    err_log("Failed to load TK_inv matrix!");
+	    break;
+	}		    
+
+	// b
+	retval = uquad_mat_load(imu->calib.m_lin[i].b, calib_file);
+	if(retval != ERROR_OK)
 	{
-	    for (i = 0; i < 3; ++i)
-	    {
-		// K
-		retval = uquad_mat_load(ktmp, calib_file);
-		if(retval != ERROR_OK)
-		{
-		    err_log("Failed to load K matrix!");
-		    break;
-		}		    
-		err_propagate(retval);
-		// K_inv
-		retval = uquad_mat_inv(ktmp,
-				       imu->calib.m_lin[i].K_inv,
-				       meye3x3,
-				       maux3x6);
-		if(retval != ERROR_OK)
-		{
-		    // Cannot quit here, need to
-		    // free mem and close file, so just log.
-		    err_log("Failed to invert gain matrix!");
-		    break;
-		}
-
-		// T
-		retval = uquad_mat_load(imu->calib.m_lin[i].T, calib_file);
-		if(retval != ERROR_OK)
-		{
-		    err_log("Failed to load T matrix!");
-		    break;
-		}		    
-
-		// b
-		retval = uquad_mat_load(imu->calib.m_lin[i].b, calib_file);
-		if(retval != ERROR_OK)
-		{
-		    err_log("Failed to load b matrix!");
-		    break;
-		}
-	    }
+	    err_log("Failed to load b matrix!");
+	    break;
 	}
     }
-    uquad_mat_free(ktmp);
-    uquad_mat_free(meye3x3);
-    uquad_mat_free(maux3x6);
     fclose(calib_file);
     return retval;
 }

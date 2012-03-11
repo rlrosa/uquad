@@ -2,6 +2,7 @@
 #include <sys/time.h>
 #include <sys/ipc.h>
 #include <sys/msg.h>
+#include <signal.h> // for SIGINT, SIGQUIT
 #include <stdio.h>
 #include <stdlib.h>
 #include <uquad_error_codes.h>
@@ -12,6 +13,19 @@
 #define CLIENT_LOG_DATA "kq_c_data.log"
 #define CLIENT_LOG_ACK "kq_c_ack.log"
 #define USE_STDOUT 1
+
+static FILE *kq_c_data, *kq_c_ack;
+
+void uquad_sig_handler(int signal_num)
+{
+    fprintf(stdout,"Caught signal %d.\n",signal_num);
+    fprintf(stdout,"Cleaning up log files...\n");
+    if(kq_c_ack != NULL)
+	fclose(kq_c_ack);
+    if(kq_c_data != NULL)
+	fclose(kq_c_data);
+    exit(0);
+}
 
 /*
  * Declare the message structure.
@@ -32,7 +46,9 @@ main()
     size_t buf_length = 4;
     struct timeval detail_time;
 
-    FILE *kq_c_data, *kq_c_ack;
+    // Catch signals
+    signal(SIGINT, uquad_sig_handler);
+    signal(SIGQUIT, uquad_sig_handler);
 
 #if !USE_STDOUT
     kq_c_data = fopen(CLIENT_LOG_DATA,"w");
@@ -65,10 +81,6 @@ main()
 	msg_rx = 0;
 	while (msgrcv(msqid, &rbuf, buf_length, 1, IPC_NOWAIT) >= 0)
 	    msg_rx++;
-	/* { */
-	/*     usleep(LISTEN_T_US); */
-	/*     continue; */
-	/* } */
 	if(msg_rx == 0)
 	    continue;
 	/*

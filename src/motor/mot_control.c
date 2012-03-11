@@ -30,6 +30,13 @@ uquad_mot_t *mot_init(void)
     	retval = ERROR_FAIL;
     }
     sleep_ms(10);
+    m->kmsgq = uquad_kmsgq_init(MOT_SERVER_KEY, MOT_DRIVER_KEY);
+    if(m->kmsgq == NULL)
+    {
+	err_log("Failed to start message queue!");
+	retval = ERROR_FAIL;
+    }
+	
     if(retval != ERROR_OK)
     {
 	mot_deinit(m);
@@ -40,45 +47,19 @@ uquad_mot_t *mot_init(void)
 
 int mot_send(uquad_mot_t *mot)
 {
-    static unsigned long tx_counter = 0;
-    const static key_t key = 69;
-    static int msqid;
-    static int msgflg = IPC_CREAT | 0666;
-    static message_buf_t sbuf;
-    static size_t buf_length = (size_t)MOT_C;
-    static struct timeval tmp_tv, diff_tv;
+    struct timeval tmp_tv, diff_tv;
     int retval = ERROR_OK, i;
 
     gettimeofday(&tmp_tv,NULL);
     retval = uquad_timeval_substract(&diff_tv,tmp_tv,mot->last_set);
-    if(diff_tv.tv_usec < MOT_WAIT_US && diff_tv.tv_sec < 1)
+    if(diff_tv.tv_usec < MOT_UPDATE_MAX_US && diff_tv.tv_sec < 1)
     {
 	err_check(ERROR_MOT_SATURATE,"Cannot change speed so often!");
     }
-    if ((msqid = msgget(key, msgflg )) < 0)
-    {
-	err_check(ERROR_KQ,"msgget failed!");
-    }
-
-    /// We'll send message type 1
-    sbuf.mtype = 1;
-    for(i=0; i < MOT_C; ++i)
-	sbuf.mtext[i] = (char) mot->i2c_target[i];
-    /// Send a message.
-    if (msgsnd(msqid, &sbuf, buf_length, IPC_NOWAIT) < 0)
-    {
-	err_check(ERROR_KQ,"msgsnd failed!");
-    }
+    retval = uquad_kmsgq_send(mot->kmsgq, mot->i2c_target, MOT_C);
+    err_propagate(retval);
     gettimeofday(&mot->last_set,NULL);
-    /// Log sent data, timestamp, and counter
-    retval = fprintf(mot->tx_log,"%d\t%d\t%d\t%d\t%d\t%lu\n",
-		     mot->i2c_target[0],
-		     mot->i2c_target[1],
-		     mot->i2c_target[2],
-		     mot->i2c_target[3],
-		     (int)mot->last_set.tv_usec,
-		     tx_counter++);
-    memcpy(mot->i2c_curr,mot->i2c_target,MOT_C*sizeof(int));
+    memcpy(mot->i2c_curr,mot->i2c_target,MOT_C*sizeof(uint8_t));
     return ERROR_OK;
 }
 
@@ -102,13 +83,13 @@ int mot_set_vel_rads(uquad_mot_t *mot, double *w)
     
     for(i=0; i < MOT_C; ++i)
     {
-	if(w[i] <= 0.0)
+	if(w[i] < 1.0)
 	{
 	    err_check(ERROR_MOTOR_USAGE,"Use mot_stop() to stop motors!");
 	}
 	retval = mot_rad2i2c(w[i],&itmp);
 	err_propagate(retval);
-	mot->i2c_target[i] = itmp;
+	mot->i2c_target[i] = (uint8_t)itmp;
     }
     retval = mot_send(mot);
     err_propagate(retval);
@@ -129,7 +110,7 @@ int mot_set_idle(uquad_mot_t *mot)
 int mot_stop(uquad_mot_t *mot)
 {
     int retval = ERROR_OK;
-    memset(mot->i2c_target, 0, MOT_C*sizeof(int));
+    memset(mot->i2c_target, 0, MOT_C*sizeof(uint8_t));
     retval = mot_send(mot);
     err_propagate(retval);
     return retval;    
