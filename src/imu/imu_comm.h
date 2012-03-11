@@ -100,11 +100,12 @@ typedef struct imu_data{
 /**
  * Acc, gyro and magn use a linear model:
  *   data = T*K_inv*(raw - b)
- * parameters are:
  *   - raw  : Raw data from sensor, in bits
  *   - b    : Offset.
  *   - K_inv: Inverse of a diagonal gain matrix.
  *   - T    : Cross axis sensitivity
+ *
+ * Struct stores TK_inv == T*inv(K)
  *
  * K=[kx 0 0;
  *    0 ky 0;
@@ -119,8 +120,7 @@ typedef struct imu_data{
  *    -xy  yx 1];
  */
 typedef struct imu_calibration_lin_model{
-    uquad_mat_t *K_inv;
-    uquad_mat_t *T;
+    uquad_mat_t *TK_inv;
     uquad_mat_t *b;
 }imu_calib_lin_t;
 
