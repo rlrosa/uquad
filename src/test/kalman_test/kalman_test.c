@@ -5,6 +5,7 @@
 #include <sys/types.h>
 #include <unistd.h> // For STDIN_FILENO
 #include <stdio.h>
+#include "uquad_kalman.h"
 
 #define EXIT_CHAR 'q'
 #define CMD_CHAR_1 'c'
@@ -108,19 +109,13 @@ int main(int argc, char *argv[]){
     retval = imu_comm_get_fds(imu, &imu_fd);
     FD_ZERO(&rfds);
     printf("Options:\n'q' to abort,\n'c' to calibrate\n's' to display current calibration\n\n");
+
+
+    kalman_io_t* kalman_io_data = kalman_init();
+    uquad_mat_t* w = uquad_mat_alloc(4,1);
+
+
     while(1){
-	if(do_sleep){
-	    printf("Waiting...\n");
-	    //	    usleep(1000*500); // Wait for a while... (0.5 sec)
-	    printf("Running again.\n");
-	    if(--wait_counter<0){
-		// waited enough, now die
-		printf("\nGave up on waiting, terminating program...\n");
-		return -1;
-	    }
-	}else{
-	    wait_counter = WAIT_COUNTER_MAX;
-	}
 	// Run loop until user presses any key or velociraptors chew through the power cable
 	FD_SET(STDIN_FILENO,&rfds);
 	FD_SET(imu_fd,&rfds);
@@ -147,17 +142,17 @@ int main(int argc, char *argv[]){
 		if(imu_comm_get_status(imu) == IMU_COMM_STATE_RUNNING)
 		{
 		    // Printing to stdout is unreadable
-		    retval = imu_comm_get_raw_latest_unread(imu,&raw);
-		    if(retval == ERROR_OK)
-		    {
-			retval = imu_comm_print_raw(&raw,stdout);
-			err_propagate(retval);
-		    }
+
 		    retval = imu_comm_get_data_latest(imu,&data);
 		    if(retval == ERROR_OK)
 		    {
-			retval = imu_comm_print_data(&data,stdout);
-			err_propagate(retval);
+
+			w -> m_full[1] = 334.28;
+			w -> m_full[2] = 334.28;
+			w -> m_full[3] = 334.28;
+			w -> m_full[4] = 334.28;
+			retval = uquad_kalman(kalman_io_data, w, &data);
+
 		    }
 		    
 		    if(output_frames == NULL)

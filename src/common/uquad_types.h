@@ -17,5 +17,6 @@ typedef UQUAD_BOOL uquad_bool_t;
 #define IZZM 0.0000154L	// Tensor de inercia de los motores - segun z
 #define LENGTH 0.29L	// Largo en metros del los brazos del quad
 #define MASA 1.541L	// Masa del Quad en kg
+#define PI 3.1415926L
 
 #endif
