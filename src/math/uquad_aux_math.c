@@ -29,6 +29,8 @@
 #include "multiply_matrices_3x3.c"
 #include "gauss_elimination.c"
 #include "gauss_aux_elimination.c"
+#include "transpose_matrix.c"
+#include "transpose_square_matrix.c"
 //#include "doolittle.c"
 //#include "doolittle_pivot.c"
 
@@ -550,6 +552,63 @@ int uquad_mat_inv(uquad_mat_t *m1, uquad_mat_t *minv, uquad_mat_t *meye, uquad_m
     if(local_maux)
 	uquad_mat_free(maux);
 
+    return ERROR_OK;
+}
+
+int uquad_mat_transpose(uquad_mat_t *Mt, uquad_mat_t *M)
+{
+    if(Mt == NULL || M == NULL)
+    {
+	err_check(ERROR_NULL_POINTER, "Cannot load, must allocate memory previously.");
+    }
+    if(Mt->r != M->c || Mt->c != M->r)
+    {
+	err_check(ERROR_MATH_MAT_DIM,"Matrices must be mxn and nxm!");
+    }
+    Transpose_Matrix(Mt->m_full, M->m_full, M->r, M->c);
+    return ERROR_OK;
+}
+
+int uquad_mat_transpose_inplace(uquad_mat_t *m)
+{
+    if(m == NULL)
+    {
+	err_check(ERROR_NULL_POINTER, "Cannot load, must allocate memory previously.");
+    }
+    if(m->r != m->c)
+    {
+	err_check(ERROR_MATH_MAT_DIM, "Must be square!");
+    }
+    Transpose_Square_Matrix(m->m_full, m->r);
+    return ERROR_OK;
+}
+
+int uquad_mat_dot_product(uquad_mat_t *C, uquad_mat_t *A, uquad_mat_t *B)
+{
+    int i;
+    if(C == NULL)
+    {
+	err_check(ERROR_NULL_POINTER, "Cannot load, must allocate memory previously.");
+    }
+    if(A == NULL && B == NULL)
+	for(i = 0; i < C->r*C->c; ++i)
+	    C->m_full[i] *= C->m_full[i];
+    else
+    {
+	if (A == NULL || B == NULL)
+	{
+	    err_check(ERROR_NULL_POINTER, "Cannot load, must allocate memory previously.");
+	}
+	if (C->r != A->r ||
+	    C->c != A->c ||
+	    C->r != B->r ||
+	    C->c != B->c)
+	{
+	    err_check(ERROR_MATH_MAT_DIM, "Must same size!");
+	}
+	for(i = 0; i < C->r*C->c; ++i)
+	    C->m_full[i] = B->m_full[i] * A->m_full[i];
+    }
     return ERROR_OK;
 }
 

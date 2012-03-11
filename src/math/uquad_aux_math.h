@@ -7,10 +7,17 @@
 #include <uquad_error_codes.h>
 #include <uquad_types.h>
 
+#define deg2rad(a) (a*PI/180.0)
 #define uquad_round_double2int(x) ((x)>=0?(int)((x)+0.5):(int)((x)-0.5))
 #define uquad_max(a,b) (a>b)?a:b
 #define uquad_min(a,b) (a<b)?a:b
 #define uquad_square(a) (a*a)
+
+/// Math in degrees (instead of rad)
+#define cosd(a) cos(deg2rad(a))
+#define sind(a) sin(deg2rad(a))
+#define tand(a) atan(deg2rad(a))
+#define atan2d(y,x) atan2(deg2rad(y),deg2rad(x))
 
 /**
  * -- -- -- -- -- -- -- -- -- -- -- --
@@ -87,10 +94,6 @@ struct uquad_mat {
 };
 typedef struct uquad_mat uquad_mat_t;
 
-int uquad_mat_transpose(uquad_mat_t *B, uquad_mat_t *A);
-
-int uquad_mat_dot_product(uquad_mat_t *C, uquad_mat_t *A, uquad_mat_t *B);
-
 int uquad_mat_prod(uquad_mat_t *C, uquad_mat_t *A,uquad_mat_t *B);
 
 int uquad_mat_det(uquad_mat_t *m, double *res);
@@ -105,6 +108,11 @@ int uquad_mat_add(uquad_mat_t *C, uquad_mat_t *A, uquad_mat_t *B);
 int uquad_solve_lin(uquad_mat_t *A, uquad_mat_t *B, uquad_mat_t *x, uquad_mat_t *maux);
 
 int uquad_mat_inv(uquad_mat_t *m1, uquad_mat_t *minv, uquad_mat_t *meye, uquad_mat_t *maux);
+
+int uquad_mat_transpose(uquad_mat_t *Mt, uquad_mat_t *M);
+int uquad_mat_transpose_inplace(uquad_mat_t *m);
+
+int uquad_mat_dot_product(uquad_mat_t *C, uquad_mat_t *A, uquad_mat_t *B);
 
 int uquad_mat_load(uquad_mat_t *m, FILE *input);
 void uquad_mat_dump(uquad_mat_t *m, FILE *output);
