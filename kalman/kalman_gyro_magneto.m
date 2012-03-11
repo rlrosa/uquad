@@ -22,8 +22,10 @@ clc
 %% Observaciones y constantes
 
 % [acrud,wcrud,mcrud,tcrud,bcrud]=mong_read('/gyro/logs/zv3y00',0);
-[acrud,wcrud,mcrud,tcrud,bcrud]=mong_read('tests/mongoose/magnetometro/data_horizontal/x00z00',0);
-[a,w,euler] = mong_conv(acrud,wcrud,mcrud,0);
+% [acrud,wcrud,mcrud,tcrud,bcrud]=mong_read('tests/mongoose/magnetometro/data_horizontal/x00z00',0);
+% [a,w,euler] = mong_conv(acrud,wcrud,mcrud,0);
+[acrud,wcrud,mcrud,tcrud,bcrud]=mong_read('log_kalman_zparriba',0);
+[a,w,euler] = mong_conv(acrud,wcrud/14.375,mcrud,0);
 
 fs = 30;                % Frecuencia en Hz
 T  = 1/fs;              % Periodo de muestreo en segundos
@@ -54,8 +56,9 @@ sigma_a = load('acc','sigma');sigma_a=sigma_a.sigma;
 sigma_w = load('gyro','sigma');sigma_w=sigma_w.sigma;
 sigma_m = load('mag','sigma');sigma_m=sigma_m.sigma;
 
-Q = sigma_w^2*eye(Ns);  % 10*eye(Ns)
-R = diag(1*[1000 1000 10000 100 100 100]);        % 1000*eye(Ns)
+% Q = sigma_w^2*eye(Ns);  % 10*eye(Ns)
+Q = 100000000000*eye(Ns);
+R = diag(1000000000000*[100 100 100 100 100 100]);        % 1000*eye(Ns)
 
 P = 1*eye(Ns);
 x_est=zeros(N,Ns);

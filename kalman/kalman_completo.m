@@ -22,11 +22,12 @@ clc
 %% Observaciones y constantes
 
 % [acrud,wcrud,mcrud,tcrud,bcrud]=mong_read('/gyro/logs/zv3y00',0);
-[acrud,wcrud,mcrud,tcrud,bcrud]=mong_read('tests/mongoose/magnetometro/data_horizontal/x00z00',0);
-[a,w,euler] = mong_conv(acrud,wcrud,mcrud,0);
+% [acrud,wcrud,mcrud,tcrud,bcrud]=mong_read('tests/mongoose/magnetometro/data_horizontal/x00z00',0);
+[acrud,wcrud,mcrud,tcrud,bcrud,~,~,T]=mong_read('log_kalman_zparriba',0);
+[a,w,euler] = mong_conv(acrud,wcrud/14.375,mcrud,0);
 
-fs = 30;                % Frecuencia en Hz
-T  = 1/fs;              % Periodo de muestreo en segundos
+% fs = 30;                % Frecuencia en Hz
+% T  = 1/fs;              % Periodo de muestreo en segundos
 N  = size(a,1);         % Cantidad de muestras de las observaciones
 Ns = 12;                % N states: cantidad de variables de estado
 z  = [euler a w];       % Observaciones
@@ -34,12 +35,12 @@ z  = [euler a w];       % Observaciones
 
 %% Constantes
 
-Ixx  = 5;               % Tensor de inercia del quad - según x
-Iyy  = 5;               % Tensor de inercia del quad - según y
-Izz  = 10;              % Tensor de inercia del quad - según z
-Izzm = 2;               % Tensor de inercia de los motores - segun z
-L    = 0.3;             % Largo en metros del los brazos del quad
-M    = 1.3;             % Masa del Quad en kg
+Ixx  = 2.32e-2;         % Tensor de inercia del quad - según x
+Iyy  = 2.32e-2;         % Tensor de inercia del quad - según y
+Izz  = 4.37e-2;         % Tensor de inercia del quad - según z
+Izzm = 1.54e-5;         % Tensor de inercia de los motores - segun z
+L    = 0.29;            % Largo en metros del los brazos del quad
+M    = 1.541;           % Masa del Quad en kg
 g    = 9.81;            % Aceleracion gravitatoria
 
 sigma_a = load('acc','sigma');sigma_a=sigma_a.sigma;
@@ -55,7 +56,7 @@ D  = 3.4734e-6*w.^2-1.3205e-4.*w;   % Torque de Drag ejercido por los motores en
 
 %% Kalman
 
-f = @(x,y,z,psi,phi,theta,vqx,vqy,vqz,wqx,wqy,wqz,ax,ay,az,w,dw,TM,D) [ ...    
+f = @(x,y,z,psi,phi,theta,vqx,vqy,vqz,wqx,wqy,wqz,ax,ay,az,w,dw,TM,D,T) [ ...    
     x     + T *(vqx*cos(phi)*cos(theta)+vqy*(cos(theta)*sin(phi)*sin(psi)-cos(phi)*sin(theta))+vqz*(sin(psi)*sin(theta)+cos(psi)*cos(theta)*sin(phi)) ) ;
     y     + T *(vqx*cos(phi)*sin(theta)+vqy*(sin(theta)*sin(phi)*sin(psi)+cos(psi)*cos(theta))+vqz*(cos(psi)*sin(theta)*sin(phi)-cos(theta)*sin(psi)) ) ;
     z     + T *(-vqx*sin(phi)+vqy*cos(phi)*sin(psi)+vqz*cos(psi)*cos(psi));
@@ -85,7 +86,7 @@ h = @(psi,phi,theta,vqx,vqy,vqz,wqx,wqy,wqz,TM) [ ... % Devuelve [psi;phi;theta;
     wqz ...
     ];    
 
-F = @(x,y,z,psi,phi,theta,vqx,vqy,vqz,wqx,wqy,wqz,ax,ay,az,w,dw,TM,D) ...
+F = @(x,y,z,psi,phi,theta,vqx,vqy,vqz,wqx,wqy,wqz,ax,ay,az,w,dw,TM,D,T) ...
 	[ ... 
     1, 0, 0,                          T*(vqz*(cos(psi)*sin(theta) - cos(theta)*sin(phi)*sin(psi)) + vqy*cos(psi)*cos(theta)*sin(phi)), T*(vqy*(sin(phi)*sin(theta) + cos(phi)*cos(theta)*sin(psi)) - vqx*cos(theta)*sin(phi) + vqz*cos(phi)*cos(psi)*cos(theta)), -T*(vqy*(cos(phi)*cos(theta) + sin(phi)*sin(psi)*sin(theta)) - vqz*(cos(theta)*sin(psi) - cos(psi)*sin(phi)*sin(theta)) + vqx*cos(phi)*sin(theta)), T*cos(phi)*cos(theta), -T*(cos(phi)*sin(theta) - cos(theta)*sin(phi)*sin(psi)),  T*(sin(psi)*sin(theta) + cos(psi)*cos(theta)*sin(phi)),                                                                                                                                                                                                                                                                                            0,                                                                                                                                                                                                                                      0,                                                                                                                                                                                                                                                                                                                                                                                                                                                          0;
     0, 1, 0, -T*(vqy*(cos(theta)*sin(psi) - cos(psi)*sin(phi)*sin(theta)) + vqz*(cos(psi)*cos(theta) + sin(phi)*sin(psi)*sin(theta))),                         T*(vqz*cos(phi)*cos(psi)*sin(theta) - vqx*sin(phi)*sin(theta) + vqy*cos(phi)*sin(psi)*sin(theta)),  T*(vqz*(sin(psi)*sin(theta) + cos(psi)*cos(theta)*sin(phi)) - vqy*(cos(psi)*sin(theta) - cos(theta)*sin(phi)*sin(psi)) + vqx*cos(phi)*cos(theta)), T*cos(phi)*sin(theta),  T*(cos(psi)*cos(theta) + sin(phi)*sin(psi)*sin(theta)), -T*(cos(theta)*sin(psi) - cos(psi)*sin(phi)*sin(theta)),                                                                                                                                                                                                                                                                                            0,                                                                                                                                                                                                                                      0,                                                                                                                                                                                                                                                                                                                                                                                                                                                          0;
@@ -115,7 +116,7 @@ H = @(psi,phi,theta,vqx,vqy,vqz,wqx,wqy,wqz) ...
     ];
 
 Q = sigma_w^2*eye(Ns);  % 10*eye(Ns)
-R = diag(.1*[100 100 100 100 100 100 100 100 100]);        % 1000*eye(Ns)
+R = diag(1*[100 100 100 100 100 100 100 100 100]);        % 1000*eye(Ns)
 
 P = 1*eye(Ns);
 x_hat=zeros(N,Ns);
@@ -130,16 +131,16 @@ wqz_init   = z(1,9);
 vqx_init   = -(TM(1,1)*wqx_init + TM(1,2)*wqx_init + TM(1,3)*wqx_init + TM(1,4)*wqx_init - M*z(1,4)*wqx_init - M*z(1,5)*wqy_init - M*z(1,6)*wqx_init + M*g*wqx_init*sin(phi_init) - M*g*wqx_init*cos(phi_init)*cos(psi_init) - M*g*wqy_init*cos(phi_init)*sin(psi_init))/(M*wqy_init*(wqx_init - wqz_init));
 vqy_init   = -(TM(1,1)*wqz_init + TM(1,2)*wqz_init + TM(1,3)*wqz_init + TM(1,4)*wqz_init - M*z(1,4)*wqx_init - M*z(1,5)*wqy_init - M*z(1,6)*wqz_init + M*g*wqx_init*sin(phi_init) - M*g*wqz_init*cos(phi_init)*cos(psi_init) - M*g*wqy_init*cos(phi_init)*sin(psi_init))/(M*wqz_init*(wqx_init - wqz_init));
 vqz_init   = -(TM(1,1)*wqz_init + TM(1,2)*wqz_init + TM(1,3)*wqz_init + TM(1,4)*wqz_init - M*z(1,4)*wqz_init - M*z(1,5)*wqy_init - M*z(1,6)*wqz_init + M*g*wqz_init*sin(phi_init) - M*g*wqz_init*cos(phi_init)*cos(psi_init) - M*g*wqy_init*cos(phi_init)*sin(psi_init))/(M*wqy_init*(wqx_init - wqz_init));
-xinit = T *(vqx_init*cos(phi_init)*cos(theta_init)+vqy_init*(cos(theta_init)*sin(phi_init)*sin(psi_init)-cos(phi_init)*sin(theta_init))+vqz_init*(sin(psi_init)*sin(theta_init)+cos(psi_init)*cos(theta_init)*sin(phi_init)) );
-yinit = T *(vqx_init*cos(phi_init)*sin(theta_init)+vqy_init*(sin(theta_init)*sin(phi_init)*sin(psi_init)+cos(psi_init)*cos(theta_init))+vqz_init*(cos(psi_init)*sin(theta_init)*sin(phi_init)-cos(theta_init)*sin(psi_init)) );
-zinit = T *(-vqx_init*sin(phi_init)+vqy_init*cos(phi_init)*sin(psi_init)+vqz_init*cos(psi_init)*cos(psi_init));
+xinit = T(1) *(vqx_init*cos(phi_init)*cos(theta_init)+vqy_init*(cos(theta_init)*sin(phi_init)*sin(psi_init)-cos(phi_init)*sin(theta_init))+vqz_init*(sin(psi_init)*sin(theta_init)+cos(psi_init)*cos(theta_init)*sin(phi_init)) );
+yinit = T(1) *(vqx_init*cos(phi_init)*sin(theta_init)+vqy_init*(sin(theta_init)*sin(phi_init)*sin(psi_init)+cos(psi_init)*cos(theta_init))+vqz_init*(cos(psi_init)*sin(theta_init)*sin(phi_init)-cos(theta_init)*sin(psi_init)) );
+zinit = T(1) *(-vqx_init*sin(phi_init)+vqy_init*cos(phi_init)*sin(psi_init)+vqz_init*cos(psi_init)*cos(psi_init));
 x_hat(1,:)=[ xinit yinit zinit psi_init phi_init theta_init vqx_init vqy_init vqz_init wqy_init wqx_init wqz_init];
 clear psi_init; clear phi_init; clear theta_init; clear wqx_init; clear wqy_init; clear wqz_init; clear vqx_init; clear vqy_init; clear vqz_init; clear xinit; clear yinit; clear zinit;
 
 for i=2:N
     % Prediction         TODO - agitar que x_ depende de la lectura del acc
-    x_   = f(x_hat(i-1,1),x_hat(i-1,2),x_hat(i-1,3),x_hat(i-1,4),x_hat(i-1,5),x_hat(i-1,6),x_hat(i-1,7),x_hat(i-1,8),x_hat(i-1,9),x_hat(i-1,10),x_hat(i-1,11),x_hat(i-1,12),z(i-1,4),z(i-1,5),z(i-1,6),w(i-1,:),dw(i-1,:),TM(i-1,:),D(i-1,:));
-    Fk_1 = F(x_hat(i-1,1),x_hat(i-1,2),x_hat(i-1,3),x_hat(i-1,4),x_hat(i-1,5),x_hat(i-1,6),x_hat(i-1,7),x_hat(i-1,8),x_hat(i-1,9),x_hat(i-1,10),x_hat(i-1,11),x_hat(i-1,12),z(i-1,4),z(i-1,5),z(i-1,6),w(i-1,:),dw(i-1,:),TM(i-1,:),D(i-1,:));
+    x_   = f(x_hat(i-1,1),x_hat(i-1,2),x_hat(i-1,3),x_hat(i-1,4),x_hat(i-1,5),x_hat(i-1,6),x_hat(i-1,7),x_hat(i-1,8),x_hat(i-1,9),x_hat(i-1,10),x_hat(i-1,11),x_hat(i-1,12),z(i-1,4),z(i-1,5),z(i-1,6),w(i-1,:),dw(i-1,:),TM(i-1,:),D(i-1,:),T(i-1));
+    Fk_1 = F(x_hat(i-1,1),x_hat(i-1,2),x_hat(i-1,3),x_hat(i-1,4),x_hat(i-1,5),x_hat(i-1,6),x_hat(i-1,7),x_hat(i-1,8),x_hat(i-1,9),x_hat(i-1,10),x_hat(i-1,11),x_hat(i-1,12),z(i-1,4),z(i-1,5),z(i-1,6),w(i-1,:),dw(i-1,:),TM(i-1,:),D(i-1,:),T(i-1));
     P_   = Fk_1 * P * Fk_1'+ Q; 
     
     % Update

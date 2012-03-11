@@ -11,19 +11,18 @@ clc
 fs = 30;                % Frecuencia en Hz
 T  = 1/fs;              % Periodo de muestreo en segundos
 N  = size(a,1);         % Cantidad de muestras de las observaciones
-Ns = 12;                 % N states: cantidad de variables de estado
-g  = 9.81;
-z  = [euler a w];             % Observaciones
+Ns = 12;                % N states: cantidad de variables de estado
+z  = [euler a w];       % Observaciones
 % z  = z+0*randn(N,Ns); % Agregado de ruido
 
 %% Constantes
 
-Ixx  = 5;               % Tensor de inercia del quad - según x
-Iyy  = 5;               % Tensor de inercia del quad - según y
-Izz  = 10;              % Tensor de inercia del quad - según z
-Izzm = 2;               % Tensor de inercia de los motores - segun z
-L    = 0.3;             % Largo en metros del los brazos del quad
-M    = 1.3;             % Masa del Quad en kg
+Ixx  = 2.32e-2;         % Tensor de inercia del quad - según x
+Iyy  = 2.32e-2;         % Tensor de inercia del quad - según y
+Izz  = 4.37e-2;         % Tensor de inercia del quad - según z
+Izzm = 1.54e-5;         % Tensor de inercia de los motores - segun z
+L    = 0.29;            % Largo en metros del los brazos del quad
+M    = 1.541;           % Masa del Quad en kg
 g    = 9.81;            % Aceleracion gravitatoria
 
 sigma_a = load('acc','sigma');sigma_a=sigma_a.sigma;
@@ -50,54 +49,53 @@ f = @(psi,phi,theta,vqx,vqy,vqz,wqx,wqy,wqz,w,dw,TM,D) [ ...
     wqx   + T*( wqy*wqz*(Iyy-Izz)+wqy*Izzm*(w(1)-w(2)+w(3)-w(4))+L*(TM(2)-TM(4)) )/Ixx ;
     wqy   + T*( wqx*wqz*(Izz-Ixx)+wqx*Izzm*(w(1)-w(2)+w(3)-w(4))+L*(TM(3)-TM(1)) )/Iyy;
     wqz   + T*( -Izzm*(dw(1)-dw(2)+dw(3)-dw(4))+D(1)-D(2)+D(3)-D(4) )/Izz;
-    vqy*wqz-vqz*wqy+g*sin(phi);
-    vqz*wqx-vqx*wqz-g*cos(phi)*sin(psi);
-    vqx*wqy-vqy*wqx-g*cos(phi)*cos(psi)+1/M*(TM(1)+TM(2)+TM(3)+TM(4)) ...
+    0;
+    0;
+    1/M*(TM(1)+TM(2)+TM(3)+TM(4))
     ];
 
 h = @(psi,phi,theta,vqx,vqy,vqz,wqx,wqy,wqz,dvqx,dvqy,dvqz) [ ...% Devuelve [psi;phi;theta;ax;ay;az;wqx;wqy;wqz] --> misma forma que z. Sale tmb del el imu_conv
     psi ; 
     phi ; 
     theta ; 
-    dvqx-vqy*wqz+vqz*wqy-g*sin(phi);
-    dvqy-vqz*wqx+vqx*wqz+g*cos(phi)*sin(psi);
-    dvqz-vqx*wqy+vqy*wqx+g*cos(phi)*cos(psi);
+    dvqx-vqy*wqz+vqz*wqy+g*sin(phi);
+    dvqy-vqz*wqx+vqx*wqz-g*cos(phi)*sin(psi);
+    dvqz-vqx*wqy+vqy*wqx-g*cos(phi)*cos(psi);
     wqx ; 
     wqy ; 
     wqz ...
     ];    
 
 F = @(psi,phi,theta,vqx,vqy,vqz,wqx,wqy,wqz,w,dw,TM,D) [ ... 
- T*(wqy*cos(psi)*tan(phi) - wqz*sin(psi)*tan(phi)) + 1,           T*(wqz*cos(psi)*(tan(phi)^2 + 1) + wqy*sin(psi)*(tan(phi)^2 + 1)), 0,      0,      0,      0,                                                             T,                                          T*sin(psi)*tan(phi),      T*cos(psi)*tan(phi), 0, 0, 0;
-                      -T*(wqz*cos(psi) + wqy*sin(psi)),                                                                           1, 0,      0,      0,      0,                                                             0,                                                   T*cos(psi),              -T*sin(psi), 0, 0, 0;
- T*((wqy*cos(psi))/cos(phi) - (wqz*sin(psi))/cos(phi)), T*((wqz*cos(psi)*sin(phi))/cos(phi)^2 + (wqy*sin(phi)*sin(psi))/cos(phi)^2), 1,      0,      0,      0,                                                             0,                                        (T*sin(psi))/cos(phi),    (T*cos(psi))/cos(phi), 0, 0, 0;
-                                                     0,                                                                T*g*cos(phi), 0,      1,  T*wqz, -T*wqy,                                                             0,                                                       -T*vqz,                    T*vqy, 0, 0, 0;
-                                -T*g*cos(phi)*cos(psi),                                                       T*g*sin(phi)*sin(psi), 0, -T*wqz,      1,  T*wqx,                                                         T*vqz,                                                            0,                   -T*vqx, 0, 0, 0;
-                                 T*g*cos(phi)*sin(psi),                                                       T*g*cos(psi)*sin(phi), 0,  T*wqy, -T*wqx,      1,                                                        -T*vqy,                                                        T*vqx,                        0, 0, 0, 0;
-                                                     0,                                                                           0, 0,      0,      0,      0,                                                             1, (T*(wqz*(Iyy - Izz) + Izzm*(w(1) - w(2) + w(3) - w(4))))/Ixx,  (T*wqy*(Iyy - Izz))/Ixx, 0, 0, 0;
-                                                     0,                                                                           0, 0,      0,      0,      0, -(T*(wqz*(Ixx - Izz) - Izzm*(w(1) - w(2) + w(3) - w(4))))/Iyy,                                                            1, -(T*wqx*(Ixx - Izz))/Iyy, 0, 0, 0;
-                                                     0,                                                                           0, 0,      0,      0,      0,                                                             0,                                                            0,                        1, 0, 0, 0;
-                                                     0,                                                                  g*cos(phi), 0,      0,    wqz,   -wqy,                                                             0,                                                         -vqz,                      vqy, 0, 0, 0;
-                                  -g*cos(phi)*cos(psi),                                                         g*sin(phi)*sin(psi), 0,   -wqz,      0,    wqx,                                                           vqz,                                                            0,                     -vqx, 0, 0, 0;
-                                   g*cos(phi)*sin(psi),                                                         g*cos(psi)*sin(phi), 0,    wqy,   -wqx,      0,                                                          -vqy,                                                          vqx,                        0, 0, 0, 0];
  
+ T*(wqy*cos(psi)*tan(phi) - wqz*sin(psi)*tan(phi)) + 1,           T*(wqz*cos(psi)*(tan(phi)^2 + 1) + wqy*sin(psi)*(tan(phi)^2 + 1)), 0,      0,      0,      0,                                                     T,                                  T*sin(psi)*tan(phi),      T*cos(psi)*tan(phi), 0, 0, 0
+                      -T*(wqz*cos(psi) + wqy*sin(psi)),                                                                           1, 0,      0,      0,      0,                                                     0,                                           T*cos(psi),              -T*sin(psi), 0, 0, 0
+ T*((wqy*cos(psi))/cos(phi) - (wqz*sin(psi))/cos(phi)), T*((wqz*cos(psi)*sin(phi))/cos(phi)^2 + (wqy*sin(phi)*sin(psi))/cos(phi)^2), 1,      0,      0,      0,                                                     0,                                (T*sin(psi))/cos(phi),    (T*cos(psi))/cos(phi), 0, 0, 0
+                                                     0,                                                                T*g*cos(phi), 0,      1,  T*wqz, -T*wqy,                                                     0,                                               -T*vqz,                    T*vqy, 0, 0, 0
+                                -T*g*cos(phi)*cos(psi),                                                       T*g*sin(phi)*sin(psi), 0, -T*wqz,      1,  T*wqx,                                                 T*vqz,                                                    0,                   -T*vqx, 0, 0, 0
+                                 T*g*cos(phi)*sin(psi),                                                       T*g*cos(psi)*sin(phi), 0,  T*wqy, -T*wqx,      1,                                                -T*vqy,                                                T*vqx,                        0, 0, 0, 0
+                                                     0,                                                                           0, 0,      0,      0,      0,                                                     1, (T*(wqz*(Iyy - Izz) + Izzm*(w(1) - w(2) + w(3) - w(4))))/Ixx,  (T*wqy*(Iyy - Izz))/Ixx, 0, 0, 0
+                                                     0,                                                                           0, 0,      0,      0,      0, -(T*(wqz*(Ixx - Izz) - Izzm*(w(1) - w(2) + w(3) - w(4))))/Iyy,                                                    1, -(T*wqx*(Ixx - Izz))/Iyy, 0, 0, 0
+                                                     0,                                                                           0, 0,      0,      0,      0,                                                     0,                                                    0,                        1, 0, 0, 0
+                                                     0,                                                                           0, 0,      0,      0,      0,                                                     0,                                                    0,                        0, 0, 0, 0
+                                                     0,                                                                           0, 0,      0,      0,      0,                                                     0,                                                    0,                        0, 0, 0, 0
+                                                     0,                                                                           0, 0,      0,      0,      0,                                                     0,                                                    0,                        0, 0, 0, 0];
  
 H = @(psi,phi,theta,vqx,vqy,vqz,wqx,wqy,wqz) [ ...
+                    1,                   0, 0,    0,    0,    0,    0,    0,    0, 0, 0, 0
+                    0,                   1, 0,    0,    0,    0,    0,    0,    0, 0, 0, 0
+                    0,                   0, 1,    0,    0,    0,    0,    0,    0, 0, 0, 0
+                    0,          g*cos(phi), 0,    0, -wqz,  wqy,    0,  vqz, -vqy, 1, 0, 0
+ -g*cos(phi)*cos(psi), g*sin(phi)*sin(psi), 0,  wqz,    0, -wqx, -vqz,    0,  vqx, 0, 1, 0
+  g*cos(phi)*sin(psi), g*cos(psi)*sin(phi), 0, -wqy,  wqx,    0,  vqy, -vqx,    0, 0, 0, 1
+                    0,                   0, 0,    0,    0,    0,    1,    0,    0, 0, 0, 0
+                    0,                   0, 0,    0,    0,    0,    0,    1,    0, 0, 0, 0
+                    0,                   0, 0,    0,    0,    0,    0,    0,    1, 0, 0, 0];
  
-                    1,                    0, 0,    0,    0,    0,    0,    0,    0, 0, 0, 0
-                    0,                    1, 0,    0,    0,    0,    0,    0,    0, 0, 0, 0
-                    0,                    0, 1,    0,    0,    0,    0,    0,    0, 0, 0, 0
-                    0,          -g*cos(phi), 0,    0, -wqz,  wqy,    0,  vqz, -vqy, 1, 0, 0
-  g*cos(phi)*cos(psi), -g*sin(phi)*sin(psi), 0,  wqz,    0, -wqx, -vqz,    0,  vqx, 0, 1, 0
- -g*cos(phi)*sin(psi), -g*cos(psi)*sin(phi), 0, -wqy,  wqx,    0,  vqy, -vqx,    0, 0, 0, 1
-                    0,                    0, 0,    0,    0,    0,    1,    0,    0, 0, 0, 0
-                    0,                    0, 0,    0,    0,    0,    0,    1,    0, 0, 0, 0
-                    0,                    0, 0,    0,    0,    0,    0,    0,    1, 0, 0, 0];
-
 
 % Q = sigma_w^2*eye(Ns);  % 10*eye(Ns)
-Q = diag(1/10*sigma_w^2*[1 1 1 1 1 1 1 1 1 1 1 1]);
-R = diag(1*[10 10 10 70 70 70 10 10 10]);        % 1000*eye(Ns)
+Q = diag(1/1*sigma_w^2*[1 1 1 1 1 1 1 1 1 1 1 1]);
+R = diag(1*[10 10 10 100 100 100 10 10 10]);        % 1000*eye(Ns)
 
 P = 1*eye(Ns);
 x_hat=zeros(N,Ns);
@@ -114,7 +112,7 @@ vqz_init   = -(TM(1,1)*wqz_init + TM(1,2)*wqz_init + TM(1,3)*wqz_init + TM(1,4)*
 x_hat(1,:)=[ psi_init phi_init theta_init vqx_init vqy_init vqz_init wqy_init wqx_init wqz_init 0 0 0];
 clear psi_init; clear phi_init; clear theta_init; clear wqx_init; clear wqy_init; clear wqz_init; clear vqx_init; clear vqy_init; clear vqz_init;
 
-
+rodrigo=zeros(N,9);
 for i=2:N
     % Prediction    
     x_   = f(x_hat(i-1,1),x_hat(i-1,2),x_hat(i-1,3),x_hat(i-1,4),x_hat(i-1,5),x_hat(i-1,6),x_hat(i-1,7),x_hat(i-1,8),x_hat(i-1,9),w(i-1,:),dw(i-1,:),TM(i-1,:),D(i-1,:));
@@ -123,6 +121,7 @@ for i=2:N
     
     % Update
     yk         = z(i,:)' - h(x_(1),x_(2),x_(3),x_(4),x_(5),x_(6),x_(7),x_(8),x_(9),x_(10),x_(11),x_(12));
+    rodrigo(i,:) = yk;
     Hk         = H(x_hat(i-1,1),x_hat(i-1,2),x_hat(i-1,3),x_hat(i-1,4),x_hat(i-1,5),x_hat(i-1,6),x_hat(i-1,7),x_hat(i-1,8),x_hat(i-1,9));
     Sk         = Hk*P_*Hk' + R;
     Kk         = P_*Hk'*Sk^-1;
@@ -135,7 +134,7 @@ end
 
 % figure()
 
-subplot(311)
+subplot(221)
     plot(z(:,1),'b--')
     hold on; grid
     plot(z(:,2),'r--')
@@ -146,7 +145,7 @@ subplot(311)
     legend('\psi','\phi','\theta','\psi','\phi','\theta')
     hold off
     
-subplot(312)
+subplot(222)
     plot([x_hat(1:end,4)],'b')
     hold on; grid
     plot([x_hat(1:end,5)],'r')
@@ -154,7 +153,7 @@ subplot(312)
     legend('vqx','vqy','vqz')
     hold off
     
-subplot(313)
+subplot(223)
     plot(z(:,7),'b--')
     hold on; grid
     plot(z(:,8),'r--')
@@ -165,4 +164,10 @@ subplot(313)
     legend('wqx','wqy','wqz','wqx','wqy','wqz')
     hold off
     
-  
+subplot(224)
+    plot([x_hat(1:end,10)],'b')
+    hold on; grid    
+    plot([x_hat(1:end,11)],'r')
+    plot([x_hat(1:end,12)],'g')
+    legend('dvqx','dvqy','dvqz')
+    hold off
