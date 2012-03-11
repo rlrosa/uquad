@@ -26,4 +26,3 @@ for i in ${SCAN_DIRS[*]}; do
 done
 
 echo "Done"
-cd -
