@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 2.8.3)
 project (UQUAD)
 
 # List all dirs with headers
-include_directories(common motor kernel_msgq imu math gps submodules/gpsd)
+include_directories(common motor kernel_msgq imu math gps submodules/gpsd kalman)
 
 # List external libs
 link_directories(submodules/gpsd)
@@ -17,6 +17,7 @@ add_subdirectory(common)
 add_subdirectory(math)
 add_subdirectory(kernel_msgq)
 add_subdirectory(gps)
+add_subdirectory(kalman)
 
 # Check in test dir for deeper includes
 add_subdirectory(test)

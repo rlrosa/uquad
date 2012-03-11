@@ -10,6 +10,7 @@
 #define uquad_round_double2int(x) ((x)>=0?(int)((x)+0.5):(int)((x)-0.5))
 #define uquad_max(a,b) (a>b)?a:b
 #define uquad_min(a,b) (a<b)?a:b
+#define uquad_square(a) (a*a)
 
 /**
  * -- -- -- -- -- -- -- -- -- -- -- --
@@ -86,12 +87,17 @@ struct uquad_mat {
 };
 typedef struct uquad_mat uquad_mat_t;
 
+int uquad_mat_transpose(uquad_mat_t *B, uquad_mat_t *A);
+
+int uquad_mat_dot_product(uquad_mat_t *C, uquad_mat_t *A, uquad_mat_t *B);
+
 int uquad_mat_prod(uquad_mat_t *C, uquad_mat_t *A,uquad_mat_t *B);
 
 int uquad_mat_det(uquad_mat_t *m, double *res);
 
 int uquad_mat_scalar_div(uquad_mat_t *m, double k);
 int uquad_mat_scalar_mul(uquad_mat_t *m, double k);
+int uquad_mat_scalar_mul_2(uquad_mat_t *B, uquad_mat_t *A, double k);
 
 int uquad_mat_sub(uquad_mat_t *C, uquad_mat_t *A, uquad_mat_t *B);
 int uquad_mat_add(uquad_mat_t *C, uquad_mat_t *A, uquad_mat_t *B);
