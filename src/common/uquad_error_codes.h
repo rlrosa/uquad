@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <errno.h>
+#include <string.h>
 
 enum UQUAD_ERROR_CODES{
 ERROR_OK = 0,
@@ -41,14 +42,12 @@ ERROR_KQ_SEND,
 ERROR_MOT_SATURATE
 };
 
-extern int errno;
-
 /**
  * Print error message to stderr
  * 
  */
 #define err_log(msg) fprintf(stderr,"%s:%d: %s\n",__FILE__,__LINE__,msg)
-#define err_log_x2(msg, msg2) fprintf(stderr,"%s:%d: %s: %s\n",__FILE__,__LINE__,msg,msg2)
+#define err_log_stderr(msg) fprintf(stderr,"%s:%d: %s: %s\n",__FILE__,__LINE__,msg, strerror(errno))
 
 /**
  * Print error message with number to stderr
