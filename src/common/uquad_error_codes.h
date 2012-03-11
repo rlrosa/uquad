@@ -65,6 +65,12 @@ ERROR_MOT_SATURATE
  */
 #define err_check(retval,msg) if(retval!=ERROR_OK){fprintf(stderr,"%s:%d: %s\n",__FILE__,__LINE__,msg);return retval;}
 
+/**
+ * If @retval is an error, call quit().
+ * Usefull in test programs, allows cleaning up.
+ * 
+ */
+#define quit_if(retval) if(retval!=ERROR_OK)quit()
 
 /**
  * Verifies that malloc succeeded.

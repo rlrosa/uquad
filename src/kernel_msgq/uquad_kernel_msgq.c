@@ -23,6 +23,12 @@ uquad_kmsgq_t *uquad_kmsgq_init(int key_s, int key_c)
 	err_log("Failed to open ack log file, using stderr.");
 	server->s_log_ack = stderr;
     }
+    if((uquad_kmsgq_clear(server,server->k_s) != ERROR_OK) ||
+       (uquad_kmsgq_clear(server,server->k_c) != ERROR_OK))
+    {
+	uquad_kmsgq_deinit(server);
+	server = NULL;
+    }
     return server;
 }
 
