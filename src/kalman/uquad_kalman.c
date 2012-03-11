@@ -68,7 +68,7 @@ int uquad_kalman(kalman_io_t * k_io_data, uquad_mat_t* w, imu_data_t* data)
     err_propagate(retval);
     retval = F(Fk_1, k_io_data);
     err_propagate(retval);
-    retval = uquad_mat_traspose(Fk_1_T, Fk_1);
+    retval = uquad_mat_transpose(Fk_1_T, Fk_1);
     err_propagate(retval);
     retval = uquad_mat_prod(mtmp, Fk_1, k_io_data->P);
     err_propagate(retval);
@@ -123,9 +123,9 @@ int drag(uquad_mat_t* drag, uquad_mat_t* w)
     double A2 = -0.00013205;
     retval = uquad_mat_dot_product(w2,w,w);
     err_propagate(retval);
-    retval = uquad_mat_scalar_mul_2(tmp, w2, A1);
+    retval = uquad_mat_scalar_mul(tmp, w2, A1);
     err_propagate(retval);
-    retval = uquad_mat_scalar_mul_2(tmp2, w, A2);
+    retval = uquad_mat_scalar_mul(tmp2, w, A2);
     err_propagate(retval);
     retval = uquad_mat_add(drag,tmp,tmp2);
     err_propagate(retval);
@@ -144,9 +144,9 @@ int drive(uquad_mat_t* drive, uquad_mat_t* w)
     double A2 = -0.00049293;
     retval = uquad_mat_dot_product(w2,w,w);
     err_propagate(retval);
-    retval = uquad_mat_scalar_mul_2(tmp, w2, A1);
+    retval = uquad_mat_scalar_mul(tmp, w2, A1);
     err_propagate(retval);
-    retval = uquad_mat_scalar_mul_2(tmp2, w, A2);
+    retval = uquad_mat_scalar_mul(tmp2, w, A2);
     err_propagate(retval);
     retval = uquad_mat_add(drive,tmp,tmp2);
     err_propagate(retval);

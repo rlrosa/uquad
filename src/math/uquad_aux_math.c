@@ -213,28 +213,43 @@ int uquad_mat_scalar_div(uquad_mat_t *m, double k)
 
 /** 
  * Multiplies matrix m by scalar value k.
+ * If only one matrix is supplied, will multiply in place.
  *
- * If matrix is 3x3, a macro is used (+efficiency)
+ * If in place and matrix is 3x3, a macro is used (+efficiency)
  * 
- * @param m 
+ * @param Mk Result will be returned here.
+ * @param M  NULL for in place multiplicacion. Otherwise, M will remain
+ * unmodified, and the anwser will be Mk = M*k
  * @param k 
  * 
- * @return 
+ * @return error code
  */
-int uquad_mat_scalar_mul(uquad_mat_t *m, double k)
+int uquad_mat_scalar_mul(uquad_mat_t *Mk, uquad_mat_t *M, double k)
 {
-    if(m == NULL)
+    int i, size;
+    if(Mk == NULL)
     {
 	err_check(ERROR_NULL_POINTER,"NULL pointer is invalid arg.");
     }
-
-    if((m->r == 3) && (m->c == 3))
+    size = Mk->r * Mk->c;
+    if(M != NULL)
     {
-	Multiply_3x3_Matrix_by_Scalar(m->m_full,k);
+	if(Mk->r != M->r || Mk->c != M->c)
+	{
+	    err_check(ERROR_MATH_MAT_DIM,"Cannot multiply matrices, dims do not match.");
+	}
+	for(i = 0; i < size; ++i)
+	    Mk->m_full[i] = M->m_full[i]*k;
     }
     else
     {
-	Multiply_Matrix_by_Scalar(m->m_full,k,m->r,m->c);
+	if((Mk->r == 3) && (Mk->c == 3))
+	{
+	    Multiply_3x3_Matrix_by_Scalar(Mk->m_full,k);
+	}
+	else
+	    for(i = 0; i < size; ++i)
+		Mk->m_full[i] *= k;	
     }
     return ERROR_OK;
 }

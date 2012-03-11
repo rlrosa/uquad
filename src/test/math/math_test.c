@@ -164,7 +164,7 @@ int mat_scalar_test(uquad_bool_t mul_notdiv)
     if(mul_notdiv)
     {
 	printf("Will multiply by k=%f\n",k);
-	retval = uquad_mat_scalar_mul(m1,k);
+	retval = uquad_mat_scalar_mul(m1,NULL,k);
     }
     else
     {
