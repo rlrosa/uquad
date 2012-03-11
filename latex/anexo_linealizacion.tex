@@ -1,0 +1,260 @@
+\documentclass[main]{subfiles}
+\begin{document}
+
+\appendix
+
+\cleardoublepage
+\addappheadtotoc
+\appendixpage
+\renewcommand{\appendixname}{Anexo}
+\renewcommand{\appendixtocname}{Anexo}
+\renewcommand{\appendixpagename}{Anexos}
+\chapter{C\'alculos necesarios para la linealizaci\'on del sistema}
+\label{chap:anexo_linealizacion}
+
+Tal como se explica en el cap\'itulo \ref{chap:linealizacion} se lineliza el MVE obtenido en \ref{chap:modelo}, esto es, expresar el sistema no lineal bajo la forma:
+
+\begin{equation}
+\dot{\tilde{X}}(t)=A(t)\tilde{X}(t)+B(t)\tilde{u}(t)
+\end{equation}
+Donde $A(t)$ y $B(t)$ son tales que $a_{ij}= \frac{\partial f_i}{\partial x_j}\vert_{u=u^*}^{x=x^*}$ y  $b_{ij}= \frac{\partial f_i}{\partial u_j}\vert_{u=u^*}^{x=x^*}$
+
+\section{Linealizaci\'on para cualquier trayectoria}
+
+Para una trayectoria gen\'erica al linealizar el sistema se obtienen las matrices:
+
+\begin{equation}
+\label{eq:Agenerica}
+A(t)=\left(\begin{array}{cccc}
+0 & A_{12} & A_{13} & 0 \\
+0 & A_{22} & 0      & A_{24}\\
+0 & A_{32} & A_{33} & A_{34}\\
+0 & 0      & 0      & A_{44} \\    
+\end{array}\right)
+\end{equation}\\
+
+
+\begin{equation}
+\label{eq:Agenerica}
+B(t)=\left(\begin{array}{c}
+0\\
+0\\
+B_{31}\\
+B_{41} 
+\end{array}\right)
+\end{equation}\\
+Las entradas de la matriz de \ref{eq:Agenerica} representan matrices de $3\times3$ mientras que las entradas de la matriz \ref{eq:Bgenerica} representan matrices de $3\times4$. Es importante conocer las entradas de las matrices anteriores, al menos en lo que respecta a las dependencias de cada una de ellas con las variables de estado. 
+
+\begin{equation}
+A_{12}=\left(\begin{array}{ccc}
+f_{A_{12_1}}(\psi,\varphi,\theta,v_{qy},v_{qz}) & f_{A_{12_2}}(\psi,\varphi,\theta,v_{qx},v_{qy},v_{qz}) &  f_{A_{12_3}}(\psi,\varphi,\theta,v_{qx},v_{qy},v_{qz}) \\
+f_{A_{12_4}}(\psi,\varphi,\theta,v_{qy},v_{qz}) & f_{A_{12_5}}(\psi,\varphi,\theta,v_{qx},v_{qy},v_{qz}) & f_{A_{12_6}}(\psi,\varphi,\theta,v_{qx},v_{qy},v_{qz}) \\
+f_{A_{12_7}}(\psi,\varphi,v_{qy},v_{qz})&                                                        f_{A_{12_8}}(\psi,\varphi,v_{qx},v_{qy},v_{qz})&                                                                                                                                                 0\\
+\end{array}\right)
+\end{equation}\\
+
+\begin{equation}
+A_{13}=\left(\begin{array}{ccc}
+f_{A_{13_1}}(\psi,\varphi,\theta) & f_{A_{13_2}}(\psi,\varphi,\theta) &  f_{A_{13_3}}(\psi,\varphi,\theta) \\
+f_{A_{13_4}}(\psi,\varphi,\theta) & f_{A_{13_5}}(\psi,\varphi,\theta) & f_{A_{13_6}}(\psi,\varphi,\theta) \\
+f_{A_{13_7}}(\varphi)& f_{A_{13_8}}(\psi,\varphi)&                                                                                                                                                 f_{A_{13_8}}(\psi,\varphi)\\
+\end{array}\right)
+\end{equation}\\
+
+\begin{equation}
+A_{22}=\left(\begin{array}{ccc}
+f_{A_{22_1}}(\psi,\varphi,\omega_{qy},\omega_{qz}) & f_{A_{22_2}}(\psi,\varphi,\omega_{qy},\omega_{qz}) &  0 \\
+f_{A_{22_4}}(\psi,\omega_{qy},\omega_{qz}) & 0 & 0 \\
+f_{A_{22_7}}(\psi,\varphi,\omega_{qy},\omega_{qz})&                                                        f_{A_{22_8}}(\psi,\varphi,\omega_{qy},\omega_{qz})&                                                                                                                                                 0\\
+\end{array}\right)
+\end{equation}\\
+
+\begin{equation}
+A_{24}=\left(\begin{array}{ccc}
+1 & f_{A_{24_2}}(\psi,\varphi) & f_{A_{24_3}}(\psi,\varphi) \\
+0 & f_{A_{24_5}}(\psi) & f_{A_{24_6}}(\psi) \\
+0&f_{A_{24_8}}(\psi,\varphi)&f_{A_{24_9}}(\psi,\varphi)\\
+\end{array}\right)
+\end{equation}\\
+
+\begin{equation}
+A_{32}=\left(\begin{array}{ccc}
+0 & g\cos \varphi & 0 \\
+-g\cos \varphi \cos \psi & g\sin\varphi\sin\psi & 0 \\
+ g\cos \varphi \sin \psi & g\sin\varphi\cos\psi & 0 \\
+\end{array}\right)
+\end{equation}\\
+
+\begin{equation}
+A_{33}=\left(\begin{array}{ccc}
+0 & \omega_{qz} & -\omega_{qy} \\
+-\omega_{qz} & 0 &\omega_{qx} \\
+\omega_{qy} & -\omega_{qx}& 0 \\
+\end{array}\right)
+\end{equation}\\
+
+\begin{equation}
+A_{34}=\left(\begin{array}{ccc}
+0 & -v_{qz} & v_{qy} \\
+v_{qz} & 0 &-v_{qx} \\
+-v_{qy} & v_{qx}& 0 \\
+\end{array}\right)
+\end{equation}\\
+
+\begin{equation}
+A_{44}=\left(\begin{array}{ccc}
+0 &\frac{I_{zzm}}{I_{xx}}(\omega_1-\omega_2+\omega_3-\omega_4) + \frac{I_{yy}-I_{zz}}{I_{xx}}\omega_{qz}& \frac{I_{yy}-I_{zz}}{I_{xx}}\omega_{qy} \\
+\frac{I_{zzm}}{I_{yy}}(\omega_1-\omega_2+\omega_3-\omega_4) + \frac{-I_{xx}+I_{zz}}{I_{yy}}\omega_{qz} & \frac{-I_{xx}+I_{zz}}{I_{yy}}\omega_{qx}\\
+0&0&0\\
+\end{array}\right)
+\end{equation}\\
+
+\begin{equation}
+B_{31}=\left(\begin{array}{cccc}
+0 & 0 & 0 &0\\
+0&0&0\\
+f_{B_{31_9}}(\omega_1) & f_{B_{31_10}}(\omega_2) & f_{B_{31_11}}(\omega_3) &f_{B_{31_12}}(\omega_4)\\
+\end{array}\right)
+\end{equation}\\
+
+\begin{equation}
+B_{41}=\left(\begin{array}{cccc}
+0 & f_{B_{41_2}}(\omega_2) & 0 & f_{B_{41_4}}(\omega_4)\\
+f_{B_{41_5}}(\omega_1)&0&f_{B_{41_6}}(\omega_3)&0\\
+f_{B_{41_9}}(\omega_1) & f_{B_{41_10}}(\omega_2) & f_{B_{41_11}}(\omega_3) &f_{B_{41_11}}(\omega_4)\\
+\end{array}\right)
+\end{equation}\\
+
+\section{Linealizaci\'on para la condici\'on de hovering}
+Con las condiciones \ref{eq:slit} y \ref{eq:quieto} obtenidas en el cap\'itulo \ref{chap:linealizacion} se pueden obtener las matrices A y B en el caso particular de hovering. Adem\'as puede verificarse que todas las entradas de dichas matrices son constantes y que por lo tanto estamos frente a un sistema lineal invariante en el tiempo.
+\begin{equation}
+\label{eq:Ahov}
+A_{hov}=\left(\begin{array}{cccc}
+0 & 0 & A_{hov_{13}} & 0 \\
+0 & 0 & 0      & Id\\
+0 & A_{hov_{32}} & 0 & 0\\
+0 & 0      & 0 & 0 \\    
+\end{array}\right)
+\end{equation}\\
+
+
+\begin{equation}
+\label{eq:Bhov}
+B_{hov}=\left(\begin{array}{c}
+0\\
+0\\
+B_{hov_{31}}\\
+B_{hov_{41}} 
+\end{array}\right)
+\end{equation}\\
+
+Donde $Id$ es la matriz identidad y las matrices $A_{hov_{13}}$,$A_{hov_{32}}$, $B_{hov_{31}}$ y $A_{hov_{41}}$ son:
+\begin{equation}
+A_{hov_{13}}=\left(\begin{array}{ccc}
+\cos\theta & -\sin\theta & 0 \\
+\sin\theta & \cos\theta & 0\\
+0 & 0 &1\\
+\end{array}\right) \quad 
+A_{hov_{32}}=\left(\begin{array}{ccc}
+0 & g & 0 \\
+-g & 0 & 0\\
+0 & 0 &0\\
+\end{array}\right)
+\end{equation}
+
+
+\begin{equation}
+B_{hov_{31}}=\left(\begin{array}{cccc}
+0&0&0&0\\
+0&0&0&0\\
+1.5\times10^{-2}s^{-2} &1.5\times10^{-2}s^{-2} & 1.5\times10^{-2}s^{-2}& 1.5\times10^{-2}s^{-2} \\
+\end{array}\right) 
+\end{equation}
+\begin{equation}
+B_{hov_{41}}=\left(\begin{array}{cccc}
+0 & 2.9\times10^{-1}s^{-2} & 0 &-2.9\times10^{-1}s^{-2} \\
+-2.9\times10^{-1}s^{-2} &0& 2.9\times10^{-1}s^{-2} &0\\
+5.0\times10^{-2}s^{-2} & -5.0\times10^{-2}s^{-2} &5.0\times10^{-2}s^{-2} &-5.0\times10^{-2}s^{-2}\\
+\end{array}\right)
+\end{equation}
+
+Dado que fue impuesto que $\theta$ fuese constante para este movimiento, tenemos efectivamente un sistema lineal invariante en el tiempo.
+
+\section{Vuelo en linea recta a velocidad constante}
+
+Las matrices A y B obtenidas para esta situaci\'on de vuelo son:
+\begin{equation}
+\label{eq:Arec}
+A_{rec}=\left(\begin{array}{cccc}
+0 & A_{rec_{12}} & A_{rec_{13}} & 0 \\
+0 & 0 & 0      & Id\\
+0 & A_{rec_{32}} & 0 & A_{rec_{34}}\\
+0 & 0      & 0 & 0 \\    
+\end{array}\right)
+\end{equation}\\
+
+
+\begin{equation}
+\label{eq:Brec}
+B_{rec}=\left(\begin{array}{c}
+0\\
+0\\
+B_{rec_{31}}\\
+B_{rec_{41}} 
+\end{array}\right)
+\end{equation}\\
+
+Donde $A_{rec_{13}}=A_{hov_{13}}$, $A_{rec_{32}}=A_{hov_{32}}$,    $B_{rec}=B_{hov}$ y 
+
+\begin{equation}
+A_{rec_{12}}=\left(\begin{array}{ccc}
+v_{qz}\sin\theta & v_{qz}\cos\theta & -v_{qy}\cos\theta-v_{qx}\sin\theta \\
+-v_{qz}\cos\theta & v_{qz}\sin\theta & v_{qx}\cos\theta-v_{qy}\sin\theta \\
+v_{qy} & -v_{qz} &0\\
+\end{array}\right) \quad 
+A_{hov_{32}}=\left(\begin{array}{ccc}
+0 & -v_{qz} & v_{qy} \\
+v_{qz} & 0 & -v_{qx}\\
+-v_{qy} & v_{qx} &0\\
+\end{array}\right)
+\end{equation}
+
+\section{Vuelo a velocidad angular constante}
+Luego de las modificaciones introducidas en el MVE en la secci\'on \ref{chap:linealizacion} se procede a linealizar el sistema obtenido.
+\begin{equation}
+\label{eq:Agenerica}
+A(t)=\left(\begin{array}{cccc}
+A_{cir_{11}} & 0 & Id & A{_cir_{14}}  \\
+0 & A_{22} & 0      & A_{24}\\
+0 & A_{32} & A_{33} & A_{34}\\
+0 & 0      & 0      & A_{44} \\    
+\end{array}\right)
+\end{equation}\\
+
+
+\begin{equation}
+\label{eq:Agenerica}
+B(t)=\left(\begin{array}{c}
+0\\
+0\\
+B_{31}\\
+B_{41} 
+\end{array}\right)
+\end{equation}\\
+
+Las matrices obtenidas son todas id\'enticas a las obtenidas en la linealizaci\'on del MVE original a excepci\'on de las matrices $A_{cir_{11}}$ y $A_{cir_{14}}$. Estas tienen la forma:
+\begin{equation}
+A_{circ_{11}}=\left(\begin{array}{ccc}
+0 & \omega_{qz} & -\omega_{qy} \\
+-\omega_{qz} & 0 & \omega_{qx}\\
+\omega_{qy} & -\omega_{qx} &0\\
+
+\end{array}\right) \quad 
+A_{cir_{14}}=\left(\begin{array}{ccc}
+0 & -z_{z} & y_{q} \\
+z_{q} & 0 & -x_{q}\\
+-y_{q} & x_{q} &0\\
+\end{array}\right)
+\end{equation}
+
+\end{document}
