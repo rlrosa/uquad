@@ -22,7 +22,7 @@ function varargout = menu(varargin)
 
 % Edit the above text to modify the response to help menu
 
-% Last Modified by GUIDE v2.5 17-Dec-2011 18:08:18
+% Last Modified by GUIDE v2.5 06-Mar-2012 10:32:00
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -106,4 +106,7 @@ function pushbutton4_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton4 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
+clc
+clear all
+addpath('./lazo_cerrado')
+lazo_cerrado;

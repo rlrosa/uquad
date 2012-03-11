@@ -1,4 +1,4 @@
-function K=linealizacion(modo,setpoint,lqrm)
+function K=linealizacion_dis(modo,setpoint,lqrm)
 %--------------------------------------------------------------------------
 %Esta función recibe el modo de vuelo y el setpoint deseado y devuelve la
 %matriz de realimentación lqr
@@ -36,16 +36,21 @@ if modo=='hov'
     w4=334.279741754537;
 
     theta=setpoint(4);
-    Ah=eval(A);
-    Bh=eval(B);
     
+    Ah=eval(A);
+    %Ah=exp(A*Ts);
+    %syms s;
+    %aux=exp(A*s);
+    
+    %Bh=int(aux,0,Ts)*eval(B);
+    Bh=eval(B);
     %% Construcción de la matriz K método LQR para hovering
 
     %Por ahora hay dos opciones para trabajar. No se todavía cual es mejor
     if lqrm==0
-        Qp=diag([1 1 1e2 1 1 1 1 1 1 1 1 1]);
+        Qp=diag([1 1 1 100 100 100 1 1 1 1 1 1]);
         Rp=diag([1 1 1 1]);
-        [K,S,E]=lqr(Ah,Bh,Qp,Rp);
+        [K,S,E]=lqrd(Ah,Bh,Qp,Rp,Ts);
 
     else
         Qp2=diag([100 100 100 1 1 1 100 100 100 1 1 1]);
@@ -70,22 +75,23 @@ elseif modo=='rec'
     w3=334.279741754537;
     w4=334.279741754537;
     
+    %No voy a realimentar la posición. Me interesa controlar la velocidad
+    %solamente
     Ar=eval(A);
-    %Ar=Ar(4:12,4:12);
+    Ar=Ar(4:12,4:12);
     
     Br=eval(B);
-    %Br=Br(4:12,:);
+    Br=Br(4:12,:);
     
    
     %% Construcción de la matriz K método LQR para linea recta
     if lqrm==0
-        Qp=diag([1 1 1 1 1 1 1e4 1e4 1e4 1 1 1]);%No seas pancho no cambies esto
-        %Qp=diag([1 1 1 1 1 1 1 1 1 1 1 1]);
-        Rp=diag([1 1 1 1]);
-        %[K,S,E]=lqrd(Ar,Br,Qp,Rp,Ts);  
-        [K,S,E]=lqr(Ar,Br,Qp,Rp);  
+        %Qp=diag([1 1 1 100 100 100 1 1 1 1 1 1]);
+        Qp=diag([100 100 100 1 1 1 1 1 1]); %Sin las posiciones
+        Rp=diag([0.1 0.1 0.1 0.1]);
+        [K,S,E]=lqrd(Ar,Br,Qp,Rp,Ts);  
     else
-        Qp=diag([1e2 1e2 1e2 1 1 1 1e2 1e2 1e2 1 1 1]);
+        Qp2=diag([1 1 1 100 100 100 1 1 1]);
         Rp2=diag([1 1 1 1]);
         [K,S,E]=lqr(Ar,Br,Qp2,Rp2);
     end

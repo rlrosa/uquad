@@ -1,5 +1,5 @@
 Model {
-  Name			  "lazo_cerrado_hov"
+  Name			  "lazo_cerrado_hov_dis_sin_pos"
   Version		  7.6
   MdlSubVersion		  0
   GraphicalInterface {
@@ -20,7 +20,7 @@ Model {
       BusObject		      ""
       Name		      "w4"
     }
-    NumRootOutports	    13
+    NumRootOutports	    12
     Outport {
       BusObject		      ""
       BusOutputAsStruct	      "off"
@@ -81,13 +81,8 @@ Model {
       BusOutputAsStruct	      "off"
       Name		      "wq3"
     }
-    Outport {
-      BusObject		      ""
-      BusOutputAsStruct	      "off"
-      Name		      "U1"
-    }
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.117"
+    ComputedModelVersion    "1.176"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -99,7 +94,7 @@ Model {
       Type		      "Cell"
       Dimension		      2
       Cell		      "HDLSubsystem"
-      Cell		      "lazo_cerrado_hov"
+      Cell		      "lazo_cerrado_hov_dis_sin_pos"
       PropName		      "mdlProps"
     }
   }
@@ -118,9 +113,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "pater"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Wed Mar  7 11:46:03 2012"
-  RTWModifiedTimeStamp	  253021553
-  ModelVersionFormat	  "1.%<AutoIncrement:117>"
+  LastModifiedDate	  "Sat Mar 10 13:05:23 2012"
+  RTWModifiedTimeStamp	  253285315
+  ModelVersionFormat	  "1.%<AutoIncrement:176>"
   ConfigurationManager	  "None"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -204,8 +199,8 @@ Model {
 	  Version		  "1.10.0"
 	  StartTime		  "0.0"
 	  StopTime		  "10.0"
-	  AbsTol		  "1e-1"
-	  FixedStep		  "1e-4"
+	  AbsTol		  "1e1"
+	  FixedStep		  "1e-3"
 	  InitialStep		  "0.01"
 	  MaxNumMinSteps	  "-1"
 	  MaxOrder		  2
@@ -217,11 +212,11 @@ Model {
 	  MaxStep		  "0.01"
 	  MinStep		  "1e-20"
 	  MaxConsecutiveMinStep	  "100"
-	  RelTol		  "1e-2"
+	  RelTol		  "1e0"
 	  SolverMode		  "Auto"
 	  ConcurrentTasks	  off
-	  Solver		  "ode15s"
-	  SolverName		  "ode15s"
+	  Solver		  "VariableStepDiscrete"
+	  SolverName		  "VariableStepDiscrete"
 	  SolverJacobianMethodControl "FullPerturbation"
 	  ShapePreserveControl	  "DisableAll"
 	  ZeroCrossControl	  "UseLocalSettings"
@@ -335,7 +330,7 @@ Model {
 	  SaveWithParameterizedLinksMsg	"warning"
 	  CheckSSInitialOutputMsg on
 	  UnderspecifiedInitializationDetection	"Classic"
-	  MergeDetectMultiDrivingBlocksExec "none"
+	  MergeDetectMultiDrivingBlocksExec "warning"
 	  CheckExecutionContextPreStartOutputMsg off
 	  CheckExecutionContextRuntimeOutputMsg	off
 	  SignalResolutionControl "UseLocalSettings"
@@ -683,7 +678,7 @@ Model {
       }
       Name		      "Configuration"
       CurrentDlgPage	      "Solver"
-      ConfigPrmDlgPosition    " [ 216, 70, 1150, 652 ] "
+      ConfigPrmDlgPosition    " [ 204, 24, 1162, 676 ] "
     }
     PropName		    "ConfigurationSets"
   }
@@ -743,8 +738,28 @@ Model {
       BusSelectionMode	      off
     }
     Block {
-      BlockType		      Derivative
-      LinearizePole	      "inf"
+      BlockType		      DiscreteIntegrator
+      IntegratorMethod	      "Integration: Forward Euler"
+      gainval		      "1.0"
+      ExternalReset	      "none"
+      InitialConditionSource  "internal"
+      InitialCondition	      "0"
+      InitialConditionMode    "State and output"
+      SampleTime	      "1"
+      OutMin		      "[]"
+      OutMax		      "[]"
+      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+      LockScale		      off
+      RndMeth		      "Floor"
+      SaturateOnIntegerOverflow	off
+      LimitOutput	      off
+      UpperSaturationLimit    "inf"
+      LowerSaturationLimit    "-inf"
+      ShowSaturationPort      off
+      ShowStatePort	      off
+      IgnoreLimit	      off
+      StateMustResolveToSignalObject off
+      RTWStateStorageClass    "Auto"
     }
     Block {
       BlockType		      Gain
@@ -777,21 +792,6 @@ Model {
       LatchByDelayingOutsideSignal off
       LatchInputForFeedbackSignals off
       Interpolate	      on
-    }
-    Block {
-      BlockType		      Integrator
-      ExternalReset	      "none"
-      InitialConditionSource  "internal"
-      InitialCondition	      "0"
-      LimitOutput	      off
-      UpperSaturationLimit    "inf"
-      LowerSaturationLimit    "-inf"
-      ShowSaturationPort      off
-      ShowStatePort	      off
-      AbsoluteTolerance	      "auto"
-      IgnoreLimit	      off
-      ZeroCross		      on
-      ContinuousStateAttributes	"''"
     }
     Block {
       BlockType		      Mux
@@ -886,7 +886,7 @@ Model {
     }
   }
   System {
-    Name		    "lazo_cerrado_hov"
+    Name		    "lazo_cerrado_hov_dis_sin_pos"
     Location		    [0, 53, 1366, 768]
     Open		    on
     ModelBrowserVisibility  off
@@ -901,7 +901,7 @@ Model {
     ShowPageBoundaries	    off
     ZoomFactor		    "100"
     ReportName		    "simulink-default.rpt"
-    SIDHighWatermark	    "1288"
+    SIDHighWatermark	    "1331"
     Block {
       BlockType		      Inport
       Name		      "w1"
@@ -963,10 +963,10 @@ Model {
       BlockType		      Mux
       Name		      "Mux"
       SID		      "374"
-      Ports		      [12, 1]
+      Ports		      [7, 1]
       Position		      [1300, 577, 1330, 693]
       ShowName		      off
-      Inputs		      "12"
+      Inputs		      "7"
       DisplayOption	      "bar"
     }
     Block {
@@ -974,7 +974,7 @@ Model {
       Name		      "N"
       SID		      "397"
       Position		      [210, 690, 240, 720]
-      Gain		      "N"
+      Gain		      "[1;0;0;0;0;0;0]"
       Multiplication	      "Matrix(K*u) (u vector)"
       ParamDataTypeStr	      "Inherit: Inherit via internal rule"
       OutDataTypeStr	      "Inherit: Inherit via internal rule"
@@ -992,7 +992,7 @@ Model {
       Name		      "Subsystem1"
       SID		      "1261"
       Ports		      [4, 12]
-      Position		      [540, 181, 900, 504]
+      Position		      [540, 191, 900, 514]
       MinAlgLoopOccurrences   off
       PropExecContextOutsideSubsystem off
       RTWSystemCode	      "Auto"
@@ -1212,7 +1212,7 @@ Model {
 		  MaskHideContents	  off
 		  System {
 		    Name		    "Subsystem3"
-		    Location		    [124, 124, 1042, 612]
+		    Location		    [0, 53, 1366, 768]
 		    Open		    off
 		    ModelBrowserVisibility  off
 		    ModelBrowserWidth	    200
@@ -1283,12 +1283,25 @@ Model {
 		    SaturateOnIntegerOverflow off
 		    }
 		    Block {
-		    BlockType		    Integrator
+		    BlockType		    DiscreteIntegrator
 		    Name		    "Integrator"
-		    SID			    "887"
-		    Ports		    [2, 1]
-		    Position		    [1065, 207, 1095, 238]
+		    SID			    "1311"
+		    Ports		    [3, 1, 0, 0, 1]
+		    Position		    [1065, 210, 1120, 290]
+		    IntegratorMethod	    "Integration: Forward Euler"
+		    ExternalReset	    "either"
 		    InitialConditionSource  "external"
+		    SampleTime		    "Ts"
+		    ShowStatePort	    on
+		    ICPrevOutput	    "DiscIntNeverNeededParam"
+		    ICPrevScaledInput	    "DiscIntNeverNeededParam"
+		    MaskType		    "DiscretizedDiscreteIntegrator"
+		    MaskInitialization	    "%zoh"
+		    MaskIconFrame	    on
+		    MaskIconOpaque	    on
+		    MaskIconRotate	    "none"
+		    MaskPortRotate	    "default"
+		    MaskIconUnits	    "autoscale"
 		    }
 		    Block {
 		    BlockType		    Product
@@ -1444,7 +1457,7 @@ Model {
 		    BlockType		    Outport
 		    Name		    "x"
 		    SID			    "904"
-		    Position		    [1125, 213, 1155, 227]
+		    Position		    [1225, 243, 1255, 257]
 		    IconDisplay		    "Port number"
 		    }
 		    Line {
@@ -1658,7 +1671,6 @@ Model {
 		    Line {
 		    SrcBlock		    "Integrator"
 		    SrcPort		    1
-		    Points		    [0, -5]
 		    DstBlock		    "x"
 		    DstPort		    1
 		    }
@@ -1679,7 +1691,14 @@ Model {
 		    Line {
 		    SrcBlock		    "x0"
 		    SrcPort		    1
-		    Points		    [50, 0; 0, -5; 125, 0; 0, -20; 790, 0; 0, -475]
+		    Points		    [50, 0; 0, -5; 125, 0; 0, -20; 790, 0; 0, -430]
+		    DstBlock		    "Integrator"
+		    DstPort		    3
+		    }
+		    Line {
+		    SrcBlock		    "Integrator"
+		    SrcPort		    state
+		    Points		    [0, -4; -50, 0; 0, 50]
 		    DstBlock		    "Integrator"
 		    DstPort		    2
 		    }
@@ -1772,12 +1791,25 @@ Model {
 		    SaturateOnIntegerOverflow off
 		    }
 		    Block {
-		    BlockType		    Integrator
+		    BlockType		    DiscreteIntegrator
 		    Name		    "Integrator"
-		    SID			    "913"
-		    Ports		    [2, 1]
-		    Position		    [1065, 207, 1095, 238]
+		    SID			    "1328"
+		    Ports		    [3, 1, 0, 0, 1]
+		    Position		    [1065, 199, 1095, 231]
+		    IntegratorMethod	    "Integration: Forward Euler"
+		    ExternalReset	    "either"
 		    InitialConditionSource  "external"
+		    SampleTime		    "Ts"
+		    ShowStatePort	    on
+		    ICPrevOutput	    "DiscIntNeverNeededParam"
+		    ICPrevScaledInput	    "DiscIntNeverNeededParam"
+		    MaskType		    "DiscretizedDiscreteIntegrator"
+		    MaskInitialization	    "%zoh"
+		    MaskIconFrame	    on
+		    MaskIconOpaque	    on
+		    MaskIconRotate	    "none"
+		    MaskPortRotate	    "default"
+		    MaskIconUnits	    "autoscale"
 		    }
 		    Block {
 		    BlockType		    Product
@@ -2152,7 +2184,7 @@ Model {
 		    Line {
 		    SrcBlock		    "Integrator"
 		    SrcPort		    1
-		    Points		    [0, -5]
+		    Points		    [0, 5]
 		    DstBlock		    "y"
 		    DstPort		    1
 		    }
@@ -2180,7 +2212,14 @@ Model {
 		    Line {
 		    SrcBlock		    "y0"
 		    SrcPort		    1
-		    Points		    [40, 0; 0, -15; 915, 0; 0, -495]
+		    Points		    [40, 0; 0, -15; 915, 0; 0, -500]
+		    DstBlock		    "Integrator"
+		    DstPort		    3
+		    }
+		    Line {
+		    SrcBlock		    "Integrator"
+		    SrcPort		    state
+		    Points		    [0, -4; -35, 0; 0, 25]
 		    DstBlock		    "Integrator"
 		    DstPort		    2
 		    }
@@ -2255,12 +2294,25 @@ Model {
 		    IconDisplay		    "Port number"
 		    }
 		    Block {
-		    BlockType		    Integrator
+		    BlockType		    DiscreteIntegrator
 		    Name		    "Integrator"
-		    SID			    "938"
-		    Ports		    [2, 1]
-		    Position		    [1065, 207, 1095, 238]
+		    SID			    "1330"
+		    Ports		    [3, 1, 0, 0, 1]
+		    Position		    [1070, 229, 1100, 261]
+		    IntegratorMethod	    "Integration: Forward Euler"
+		    ExternalReset	    "either"
 		    InitialConditionSource  "external"
+		    SampleTime		    "Ts"
+		    ShowStatePort	    on
+		    ICPrevOutput	    "DiscIntNeverNeededParam"
+		    ICPrevScaledInput	    "DiscIntNeverNeededParam"
+		    MaskType		    "DiscretizedDiscreteIntegrator"
+		    MaskInitialization	    "%zoh"
+		    MaskIconFrame	    on
+		    MaskIconOpaque	    on
+		    MaskIconRotate	    "none"
+		    MaskPortRotate	    "default"
+		    MaskIconUnits	    "autoscale"
 		    }
 		    Block {
 		    BlockType		    Product
@@ -2388,14 +2440,14 @@ Model {
 		    Line {
 		    SrcBlock		    "Sum of\nElements"
 		    SrcPort		    1
-		    Points		    [35, 0]
+		    Points		    [35, 0; 0, -10; 5, 0]
 		    DstBlock		    "Integrator"
 		    DstPort		    1
 		    }
 		    Line {
 		    SrcBlock		    "Integrator"
 		    SrcPort		    1
-		    Points		    [0, -5]
+		    Points		    [0, -25]
 		    DstBlock		    "z"
 		    DstPort		    1
 		    }
@@ -2485,7 +2537,14 @@ Model {
 		    Line {
 		    SrcBlock		    "z0"
 		    SrcPort		    1
-		    Points		    [65, 0; 0, -30; 895, 0]
+		    Points		    [65, 0; 0, -30; 895, 0; 0, -490; 10, 0; 0, 30]
+		    DstBlock		    "Integrator"
+		    DstPort		    3
+		    }
+		    Line {
+		    SrcBlock		    "Integrator"
+		    SrcPort		    state
+		    Points		    [0, -4; -35, 0; 0, 25]
 		    DstBlock		    "Integrator"
 		    DstPort		    2
 		    }
@@ -2776,12 +2835,24 @@ Model {
 		    SaturateOnIntegerOverflow off
 		    }
 		    Block {
-		    BlockType		    Integrator
+		    BlockType		    DiscreteIntegrator
 		    Name		    "Integrator"
-		    SID			    "963"
+		    SID			    "1317"
 		    Ports		    [2, 1]
-		    Position		    [715, 102, 745, 133]
+		    Position		    [715, 97, 745, 128]
+		    IntegratorMethod	    "Integration: Forward Euler"
+		    ExternalReset	    "none"
 		    InitialConditionSource  "external"
+		    SampleTime		    "Ts"
+		    ICPrevOutput	    "DiscIntNeverNeededParam"
+		    ICPrevScaledInput	    "DiscIntNeverNeededParam"
+		    MaskType		    "DiscretizedDiscreteIntegrator"
+		    MaskInitialization	    "%zoh"
+		    MaskIconFrame	    on
+		    MaskIconOpaque	    on
+		    MaskIconRotate	    "none"
+		    MaskPortRotate	    "default"
+		    MaskIconUnits	    "autoscale"
 		    }
 		    Block {
 		    BlockType		    Product
@@ -2924,7 +2995,6 @@ Model {
 		    Line {
 		    SrcBlock		    "Integrator"
 		    SrcPort		    1
-		    Points		    [0, -5]
 		    DstBlock		    "theta"
 		    DstPort		    1
 		    }
@@ -3022,12 +3092,24 @@ Model {
 		    SaturateOnIntegerOverflow off
 		    }
 		    Block {
-		    BlockType		    Integrator
+		    BlockType		    DiscreteIntegrator
 		    Name		    "Integrator"
-		    SID			    "978"
+		    SID			    "1315"
 		    Ports		    [2, 1]
-		    Position		    [875, 232, 905, 263]
+		    Position		    [875, 227, 905, 258]
+		    IntegratorMethod	    "Integration: Forward Euler"
+		    ExternalReset	    "none"
 		    InitialConditionSource  "external"
+		    SampleTime		    "Ts"
+		    ICPrevOutput	    "DiscIntNeverNeededParam"
+		    ICPrevScaledInput	    "DiscIntNeverNeededParam"
+		    MaskType		    "DiscretizedDiscreteIntegrator"
+		    MaskInitialization	    "%zoh"
+		    MaskIconFrame	    on
+		    MaskIconOpaque	    on
+		    MaskIconRotate	    "none"
+		    MaskPortRotate	    "default"
+		    MaskIconUnits	    "autoscale"
 		    }
 		    Block {
 		    BlockType		    Product
@@ -3112,7 +3194,7 @@ Model {
 		    Line {
 		    SrcBlock		    "Integrator"
 		    SrcPort		    1
-		    Points		    [0, -5; 10, 0]
+		    Points		    [10, 0]
 		    Branch {
 		    DstBlock		    "psi"
 		    DstPort		    1
@@ -3216,7 +3298,7 @@ Model {
 		    Line {
 		    SrcBlock		    "psi0"
 		    SrcPort		    1
-		    Points		    [720, 0; 0, -190]
+		    Points		    [720, 0; 0, -195]
 		    DstBlock		    "Integrator"
 		    DstPort		    2
 		    }
@@ -3274,12 +3356,24 @@ Model {
 		    IconDisplay		    "Port number"
 		    }
 		    Block {
-		    BlockType		    Integrator
+		    BlockType		    DiscreteIntegrator
 		    Name		    "Integrator"
-		    SID			    "992"
+		    SID			    "1316"
 		    Ports		    [2, 1]
-		    Position		    [400, 127, 430, 158]
+		    Position		    [400, 132, 430, 163]
+		    IntegratorMethod	    "Integration: Forward Euler"
+		    ExternalReset	    "none"
 		    InitialConditionSource  "external"
+		    SampleTime		    "Ts"
+		    ICPrevOutput	    "DiscIntNeverNeededParam"
+		    ICPrevScaledInput	    "DiscIntNeverNeededParam"
+		    MaskType		    "DiscretizedDiscreteIntegrator"
+		    MaskInitialization	    "%zoh"
+		    MaskIconFrame	    on
+		    MaskIconOpaque	    on
+		    MaskIconRotate	    "none"
+		    MaskPortRotate	    "default"
+		    MaskIconUnits	    "autoscale"
 		    }
 		    Block {
 		    BlockType		    Product
@@ -3344,14 +3438,13 @@ Model {
 		    Line {
 		    SrcBlock		    "Integrator"
 		    SrcPort		    1
-		    Points		    [0, -5]
+		    Points		    [0, -10]
 		    DstBlock		    "phi"
 		    DstPort		    1
 		    }
 		    Line {
 		    SrcBlock		    "Subtract"
 		    SrcPort		    1
-		    Points		    [30, 0]
 		    DstBlock		    "Integrator"
 		    DstPort		    1
 		    }
@@ -4053,12 +4146,25 @@ Model {
 		    SaturateOnIntegerOverflow off
 		    }
 		    Block {
-		    BlockType		    Integrator
+		    BlockType		    DiscreteIntegrator
 		    Name		    "Integrator"
-		    SID			    "1047"
-		    Ports		    [2, 1]
-		    Position		    [1005, 552, 1035, 583]
+		    SID			    "1331"
+		    Ports		    [3, 1, 0, 0, 1]
+		    Position		    [1005, 549, 1035, 581]
+		    IntegratorMethod	    "Integration: Forward Euler"
+		    ExternalReset	    "either"
 		    InitialConditionSource  "external"
+		    SampleTime		    "Ts"
+		    ShowStatePort	    on
+		    ICPrevOutput	    "DiscIntNeverNeededParam"
+		    ICPrevScaledInput	    "DiscIntNeverNeededParam"
+		    MaskType		    "DiscretizedDiscreteIntegrator"
+		    MaskInitialization	    "%zoh"
+		    MaskIconFrame	    on
+		    MaskIconOpaque	    on
+		    MaskIconRotate	    "none"
+		    MaskPortRotate	    "default"
+		    MaskIconUnits	    "autoscale"
 		    }
 		    Block {
 		    BlockType		    Gain
@@ -4260,7 +4366,6 @@ Model {
 		    Line {
 		    SrcBlock		    "Integrator"
 		    SrcPort		    1
-		    Points		    [0, -5]
 		    DstBlock		    "wq2"
 		    DstPort		    1
 		    }
@@ -4287,7 +4392,14 @@ Model {
 		    Line {
 		    SrcBlock		    "wq20"
 		    SrcPort		    1
-		    Points		    [950, 0; 0, -185; -10, 0]
+		    Points		    [195, 0; 0, 10; 745, 0]
+		    DstBlock		    "Integrator"
+		    DstPort		    3
+		    }
+		    Line {
+		    SrcBlock		    "Integrator"
+		    SrcPort		    state
+		    Points		    [0, -4; -35, 0; 0, 25]
 		    DstBlock		    "Integrator"
 		    DstPort		    2
 		    }
@@ -4411,18 +4523,54 @@ Model {
 		    SaturateOnIntegerOverflow off
 		    }
 		    Block {
-		    BlockType		    Derivative
-		    Name		    "Derivative"
-		    SID			    "1070"
-		    Position		    [540, 815, 570, 845]
+		    BlockType		    Reference
+		    Name		    "Discrete Derivative"
+		    SID			    "1329"
+		    Ports		    [1, 1]
+		    Position		    [535, 812, 595, 848]
+		    LibraryVersion	    "1.225"
+		    SourceBlock		    "simulink/Discrete/Discrete Derivative"
+		    SourceType		    "Discrete Derivative"
+		    ShowPortLabels	    "FromPortIcon"
+		    SystemSampleTime	    "-1"
+		    FunctionWithSeparateData off
+		    RTWMemSecFuncInitTerm   "Inherit from model"
+		    RTWMemSecFuncExecute    "Inherit from model"
+		    RTWMemSecDataConstants  "Inherit from model"
+		    RTWMemSecDataInternal   "Inherit from model"
+		    RTWMemSecDataParameters "Inherit from model"
+		    GeneratePreprocessorConditionals off
+		    gainval		    "1.0"
+		    ICPrevScaledInput	    "0.0"
+		    OutMin		    "[]"
+		    OutMax		    "[]"
+		    OutDataTypeStr	    "Inherit: Inherit via internal rule"
+		    OutputDataTypeScalingMode "Inherit via internal rule"
+		    OutDataType		    "fixdt(1, 16)"
+		    OutScaling		    "2^-10"
+		    LockScale		    off
+		    RndMeth		    "Floor"
+		    DoSatur		    off
 		    }
 		    Block {
-		    BlockType		    Integrator
+		    BlockType		    DiscreteIntegrator
 		    Name		    "Integrator"
-		    SID			    "1071"
+		    SID			    "1323"
 		    Ports		    [2, 1]
-		    Position		    [1005, 552, 1035, 583]
+		    Position		    [1010, 557, 1040, 588]
+		    IntegratorMethod	    "Integration: Forward Euler"
+		    ExternalReset	    "none"
 		    InitialConditionSource  "external"
+		    SampleTime		    "Ts"
+		    ICPrevOutput	    "DiscIntNeverNeededParam"
+		    ICPrevScaledInput	    "DiscIntNeverNeededParam"
+		    MaskType		    "DiscretizedDiscreteIntegrator"
+		    MaskInitialization	    "%zoh"
+		    MaskIconFrame	    on
+		    MaskIconOpaque	    on
+		    MaskIconRotate	    "none"
+		    MaskPortRotate	    "default"
+		    MaskIconUnits	    "autoscale"
 		    }
 		    Block {
 		    BlockType		    Gain
@@ -4529,12 +4677,6 @@ Model {
 		    DstPort		    4
 		    }
 		    Line {
-		    SrcBlock		    "Derivative"
-		    SrcPort		    1
-		    DstBlock		    "Izzm"
-		    DstPort		    1
-		    }
-		    Line {
 		    SrcBlock		    "Subtract"
 		    SrcPort		    1
 		    DstBlock		    "1/Izz"
@@ -4543,21 +4685,20 @@ Model {
 		    Line {
 		    SrcBlock		    "1/Izz"
 		    SrcPort		    1
-		    Points		    [15, 0]
 		    DstBlock		    "Integrator"
 		    DstPort		    1
 		    }
 		    Line {
 		    SrcBlock		    "Integrator"
 		    SrcPort		    1
-		    Points		    [0, -5]
+		    Points		    [0, -10]
 		    DstBlock		    "wq3"
 		    DstPort		    1
 		    }
 		    Line {
 		    SrcBlock		    "wq30"
 		    SrcPort		    1
-		    Points		    [940, 0]
+		    Points		    [940, 0; 0, -395]
 		    DstBlock		    "Integrator"
 		    DstPort		    2
 		    }
@@ -4585,7 +4726,7 @@ Model {
 		    Line {
 		    SrcBlock		    "Sum of\nElements"
 		    SrcPort		    1
-		    DstBlock		    "Derivative"
+		    DstBlock		    "Discrete Derivative"
 		    DstPort		    1
 		    }
 		    Line {
@@ -4631,6 +4772,12 @@ Model {
 		    SrcPort		    1
 		    DstBlock		    "Subtract"
 		    DstPort		    2
+		    }
+		    Line {
+		    SrcBlock		    "Discrete Derivative"
+		    SrcPort		    1
+		    DstBlock		    "Izzm"
+		    DstPort		    1
 		    }
 		  }
 		}
@@ -4736,12 +4883,24 @@ Model {
 		    SaturateOnIntegerOverflow off
 		    }
 		    Block {
-		    BlockType		    Integrator
+		    BlockType		    DiscreteIntegrator
 		    Name		    "Integrator"
-		    SID			    "1090"
+		    SID			    "1321"
 		    Ports		    [2, 1]
-		    Position		    [1005, 552, 1035, 583]
+		    Position		    [1005, 557, 1035, 588]
+		    IntegratorMethod	    "Integration: Forward Euler"
+		    ExternalReset	    "none"
 		    InitialConditionSource  "external"
+		    SampleTime		    "Ts"
+		    ICPrevOutput	    "DiscIntNeverNeededParam"
+		    ICPrevScaledInput	    "DiscIntNeverNeededParam"
+		    MaskType		    "DiscretizedDiscreteIntegrator"
+		    MaskInitialization	    "%zoh"
+		    MaskIconFrame	    on
+		    MaskIconOpaque	    on
+		    MaskIconRotate	    "none"
+		    MaskPortRotate	    "default"
+		    MaskIconUnits	    "autoscale"
 		    }
 		    Block {
 		    BlockType		    Gain
@@ -4932,14 +5091,13 @@ Model {
 		    Line {
 		    SrcBlock		    "1/Ixx"
 		    SrcPort		    1
-		    Points		    [15, 0]
 		    DstBlock		    "Integrator"
 		    DstPort		    1
 		    }
 		    Line {
 		    SrcBlock		    "Integrator"
 		    SrcPort		    1
-		    Points		    [0, -5]
+		    Points		    [0, -10]
 		    DstBlock		    "wq1"
 		    DstPort		    1
 		    }
@@ -5390,12 +5548,24 @@ Model {
 		    SaturateOnIntegerOverflow off
 		    }
 		    Block {
-		    BlockType		    Integrator
+		    BlockType		    DiscreteIntegrator
 		    Name		    "Integrator"
-		    SID			    "1121"
+		    SID			    "1318"
 		    Ports		    [2, 1]
-		    Position		    [705, 292, 735, 323]
+		    Position		    [700, 297, 730, 328]
+		    IntegratorMethod	    "Integration: Forward Euler"
+		    ExternalReset	    "none"
 		    InitialConditionSource  "external"
+		    SampleTime		    "Ts"
+		    ICPrevOutput	    "DiscIntNeverNeededParam"
+		    ICPrevScaledInput	    "DiscIntNeverNeededParam"
+		    MaskType		    "DiscretizedDiscreteIntegrator"
+		    MaskInitialization	    "%zoh"
+		    MaskIconFrame	    on
+		    MaskIconOpaque	    on
+		    MaskIconRotate	    "none"
+		    MaskPortRotate	    "default"
+		    MaskIconUnits	    "autoscale"
 		    }
 		    Block {
 		    BlockType		    Product
@@ -5530,21 +5700,20 @@ Model {
 		    Line {
 		    SrcBlock		    "Add"
 		    SrcPort		    1
-		    Points		    [45, 0]
 		    DstBlock		    "Integrator"
 		    DstPort		    1
 		    }
 		    Line {
 		    SrcBlock		    "Integrator"
 		    SrcPort		    1
-		    Points		    [0, -5]
+		    Points		    [0, -10]
 		    DstBlock		    "vq1"
 		    DstPort		    1
 		    }
 		    Line {
 		    SrcBlock		    "vq10"
 		    SrcPort		    1
-		    Points		    [615, 0; 0, -420]
+		    Points		    [615, 0; 0, -415]
 		    DstBlock		    "Integrator"
 		    DstPort		    2
 		    }
@@ -5668,12 +5837,24 @@ Model {
 		    SaturateOnIntegerOverflow off
 		    }
 		    Block {
-		    BlockType		    Integrator
+		    BlockType		    DiscreteIntegrator
 		    Name		    "Integrator"
-		    SID			    "1141"
+		    SID			    "1320"
 		    Ports		    [2, 1]
-		    Position		    [755, 352, 785, 383]
+		    Position		    [755, 357, 785, 388]
+		    IntegratorMethod	    "Integration: Forward Euler"
+		    ExternalReset	    "none"
 		    InitialConditionSource  "external"
+		    SampleTime		    "Ts"
+		    ICPrevOutput	    "DiscIntNeverNeededParam"
+		    ICPrevScaledInput	    "DiscIntNeverNeededParam"
+		    MaskType		    "DiscretizedDiscreteIntegrator"
+		    MaskInitialization	    "%zoh"
+		    MaskIconFrame	    on
+		    MaskIconOpaque	    on
+		    MaskIconRotate	    "none"
+		    MaskPortRotate	    "default"
+		    MaskIconUnits	    "autoscale"
 		    }
 		    Block {
 		    BlockType		    Product
@@ -5897,14 +6078,13 @@ Model {
 		    Line {
 		    SrcBlock		    "Sum of\nElements1"
 		    SrcPort		    1
-		    Points		    [65, 0]
 		    DstBlock		    "Integrator"
 		    DstPort		    1
 		    }
 		    Line {
 		    SrcBlock		    "Integrator"
 		    SrcPort		    1
-		    Points		    [0, -5]
+		    Points		    [0, -10]
 		    DstBlock		    "vq3"
 		    DstPort		    1
 		    }
@@ -6016,12 +6196,24 @@ Model {
 		    SaturateOnIntegerOverflow off
 		    }
 		    Block {
-		    BlockType		    Integrator
+		    BlockType		    DiscreteIntegrator
 		    Name		    "Integrator"
-		    SID			    "1161"
+		    SID			    "1319"
 		    Ports		    [2, 1]
-		    Position		    [705, 292, 735, 323]
+		    Position		    [705, 287, 735, 318]
+		    IntegratorMethod	    "Integration: Forward Euler"
+		    ExternalReset	    "none"
 		    InitialConditionSource  "external"
+		    SampleTime		    "Ts"
+		    ICPrevOutput	    "DiscIntNeverNeededParam"
+		    ICPrevScaledInput	    "DiscIntNeverNeededParam"
+		    MaskType		    "DiscretizedDiscreteIntegrator"
+		    MaskInitialization	    "%zoh"
+		    MaskIconFrame	    on
+		    MaskIconOpaque	    on
+		    MaskIconRotate	    "none"
+		    MaskPortRotate	    "default"
+		    MaskIconUnits	    "autoscale"
 		    }
 		    Block {
 		    BlockType		    Product
@@ -6175,7 +6367,6 @@ Model {
 		    Line {
 		    SrcBlock		    "Integrator"
 		    SrcPort		    1
-		    Points		    [0, -5]
 		    DstBlock		    "vq2"
 		    DstPort		    1
 		    }
@@ -8347,6 +8538,7 @@ Model {
       Position		      [1585, 233, 1615, 247]
       Port		      "3"
       IconDisplay	      "Port number"
+      SampleTime	      "0.1"
     }
     Block {
       BlockType		      Outport
@@ -8419,191 +8611,6 @@ Model {
       Position		      [1585, 483, 1615, 497]
       Port		      "12"
       IconDisplay	      "Port number"
-    }
-    Block {
-      BlockType		      Outport
-      Name		      "U1"
-      SID		      "1280"
-      Position		      [515, 133, 545, 147]
-      Port		      "13"
-      IconDisplay	      "Port number"
-    }
-    Line {
-      SrcBlock		      "Subsystem1"
-      SrcPort		      1
-      Points		      [15, 0; 0, -15; 335, 0]
-      Branch {
-	DstBlock		"x"
-	DstPort			1
-      }
-      Branch {
-	Points			[0, 390]
-	DstBlock		"Mux"
-	DstPort			1
-      }
-    }
-    Line {
-      SrcBlock		      "Subsystem1"
-      SrcPort		      2
-      Points		      [15, 0; 0, -15; 310, 0]
-      Branch {
-	DstBlock		"y"
-	DstPort			1
-      }
-      Branch {
-	Points			[0, 375]
-	DstBlock		"Mux"
-	DstPort			2
-      }
-    }
-    Line {
-      SrcBlock		      "Subsystem1"
-      SrcPort		      4
-      Points		      [15, 0; 0, -15; 270, 0]
-      Branch {
-	DstBlock		"psi"
-	DstPort			1
-      }
-      Branch {
-	Points			[0, 345]
-	DstBlock		"Mux"
-	DstPort			4
-      }
-    }
-    Line {
-      SrcBlock		      "Subsystem1"
-      SrcPort		      5
-      Points		      [15, 0; 0, -15; 255, 0]
-      Branch {
-	DstBlock		"phi"
-	DstPort			1
-      }
-      Branch {
-	Points			[0, 330]
-	DstBlock		"Mux"
-	DstPort			5
-      }
-    }
-    Line {
-      SrcBlock		      "Subsystem1"
-      SrcPort		      6
-      Points		      [15, 0; 0, -15; 240, 0]
-      Branch {
-	DstBlock		"theta"
-	DstPort			1
-      }
-      Branch {
-	Points			[0, 315]
-	DstBlock		"Mux"
-	DstPort			6
-      }
-    }
-    Line {
-      SrcBlock		      "Subsystem1"
-      SrcPort		      7
-      Points		      [15, 0; 0, -15; 225, 0]
-      Branch {
-	DstBlock		"vq1"
-	DstPort			1
-      }
-      Branch {
-	Points			[0, 300]
-	DstBlock		"Mux"
-	DstPort			7
-      }
-    }
-    Line {
-      SrcBlock		      "Subsystem1"
-      SrcPort		      8
-      Points		      [15, 0; 0, -15; 215, 0]
-      Branch {
-	DstBlock		"vq2"
-	DstPort			1
-      }
-      Branch {
-	Points			[0, 285]
-	DstBlock		"Mux"
-	DstPort			8
-      }
-    }
-    Line {
-      SrcBlock		      "Subsystem1"
-      SrcPort		      9
-      Points		      [15, 0; 0, -15; 200, 0]
-      Branch {
-	DstBlock		"vq3"
-	DstPort			1
-      }
-      Branch {
-	Points			[0, 270]
-	DstBlock		"Mux"
-	DstPort			9
-      }
-    }
-    Line {
-      SrcBlock		      "Subsystem1"
-      SrcPort		      10
-      Points		      [15, 0; 0, -15; 190, 0]
-      Branch {
-	DstBlock		"wq1"
-	DstPort			1
-      }
-      Branch {
-	Points			[0, 255]
-	DstBlock		"Mux"
-	DstPort			10
-      }
-    }
-    Line {
-      SrcBlock		      "Subsystem1"
-      SrcPort		      11
-      Points		      [15, 0; 0, -15; 175, 0]
-      Branch {
-	DstBlock		"wq2"
-	DstPort			1
-      }
-      Branch {
-	Points			[0, 240]
-	DstBlock		"Mux"
-	DstPort			11
-      }
-    }
-    Line {
-      SrcBlock		      "Subsystem1"
-      SrcPort		      12
-      Points		      [15, 0; 0, 10; 160, 0]
-      Branch {
-	DstBlock		"wq3"
-	DstPort			1
-      }
-      Branch {
-	Points			[0, 200]
-	DstBlock		"Mux"
-	DstPort			12
-      }
-    }
-    Line {
-      SrcBlock		      "Subsystem1"
-      SrcPort		      3
-      Points		      [15, 0; 0, -15; 290, 0]
-      Branch {
-	DstBlock		"z"
-	DstPort			1
-      }
-      Branch {
-	Points			[0, 360]
-	DstBlock		"Mux"
-	DstPort			3
-      }
-    }
-    Line {
-      Name		      "realimentación"
-      Labels		      [0, 0; 0, 0]
-      SrcBlock		      "Gain"
-      SrcPort		      1
-      Points		      [0, -25; -460, 0; 0, -15; 5, 0]
-      DstBlock		      "Demux"
-      DstPort		      1
     }
     Line {
       SrcBlock		      "Demux"
@@ -8684,37 +8691,30 @@ Model {
     Line {
       SrcBlock		      "Sum3"
       SrcPort		      1
-      Points		      [20, 0; 0, 105]
+      Points		      [20, 0; 0, 115]
       DstBlock		      "Subsystem1"
       DstPort		      4
     }
     Line {
       SrcBlock		      "Sum2"
       SrcPort		      1
-      Points		      [70, 0; 0, 70]
+      Points		      [70, 0; 0, 80]
       DstBlock		      "Subsystem1"
       DstPort		      3
     }
     Line {
       SrcBlock		      "Sum1"
       SrcPort		      1
-      Points		      [85, 0; 0, 40]
+      Points		      [85, 0; 0, 50]
       DstBlock		      "Subsystem1"
       DstPort		      2
     }
     Line {
       SrcBlock		      "Sum"
       SrcPort		      1
-      Points		      [95, 0; 0, 10; 20, 0]
-      Branch {
-	DstBlock		"Subsystem1"
-	DstPort			1
-      }
-      Branch {
-	Points			[0, -85]
-	DstBlock		"U1"
-	DstPort			1
-      }
+      Points		      [95, 0; 0, 10; 100, 0]
+      DstBlock		      "Subsystem1"
+      DstPort		      1
     }
     Line {
       SrcBlock		      "N"
@@ -8722,6 +8722,154 @@ Model {
       Points		      [20, 0; 0, -25]
       DstBlock		      "Sum4"
       DstPort		      1
+    }
+    Line {
+      Name		      "realimentación"
+      Labels		      [0, 0]
+      SrcBlock		      "Gain"
+      SrcPort		      1
+      Points		      [0, -20; -395, 0; 0, -60; 55, 0; 0, -30; -115, 0]
+      DstBlock		      "Demux"
+      DstPort		      1
+    }
+    Line {
+      SrcBlock		      "Subsystem1"
+      SrcPort		      1
+      Points		      [330, 0; 0, -25]
+      DstBlock		      "x"
+      DstPort		      1
+    }
+    Line {
+      SrcBlock		      "Subsystem1"
+      SrcPort		      2
+      Points		      [665, 0]
+      DstBlock		      "y"
+      DstPort		      1
+    }
+    Line {
+      SrcBlock		      "Subsystem1"
+      SrcPort		      3
+      Points		      [310, 0]
+      Branch {
+	Points			[355, 0]
+	DstBlock		"z"
+	DstPort			1
+      }
+      Branch {
+	Points			[0, 325]
+	DstBlock		"Mux"
+	DstPort			1
+      }
+    }
+    Line {
+      SrcBlock		      "Subsystem1"
+      SrcPort		      4
+      Points		      [285, 0]
+      Branch {
+	Points			[380, 0]
+	DstBlock		"psi"
+	DstPort			1
+      }
+      Branch {
+	Points			[0, 315]
+	DstBlock		"Mux"
+	DstPort			2
+      }
+    }
+    Line {
+      SrcBlock		      "Subsystem1"
+      SrcPort		      5
+      Points		      [265, 0]
+      Branch {
+	Points			[400, 0]
+	DstBlock		"phi"
+	DstPort			1
+      }
+      Branch {
+	Points			[0, 305]
+	DstBlock		"Mux"
+	DstPort			3
+      }
+    }
+    Line {
+      SrcBlock		      "Subsystem1"
+      SrcPort		      6
+      Points		      [665, 0]
+      DstBlock		      "theta"
+      DstPort		      1
+    }
+    Line {
+      SrcBlock		      "Subsystem1"
+      SrcPort		      7
+      Points		      [665, 0]
+      DstBlock		      "vq1"
+      DstPort		      1
+    }
+    Line {
+      SrcBlock		      "Subsystem1"
+      SrcPort		      8
+      Points		      [665, 0]
+      DstBlock		      "vq2"
+      DstPort		      1
+    }
+    Line {
+      SrcBlock		      "Subsystem1"
+      SrcPort		      9
+      Points		      [250, 0]
+      Branch {
+	Points			[415, 0]
+	DstBlock		"vq3"
+	DstPort			1
+      }
+      Branch {
+	Points			[0, 220]
+	DstBlock		"Mux"
+	DstPort			4
+      }
+    }
+    Line {
+      SrcBlock		      "Subsystem1"
+      SrcPort		      10
+      Points		      [235, 0]
+      Branch {
+	Points			[430, 0]
+	DstBlock		"wq1"
+	DstPort			1
+      }
+      Branch {
+	Points			[0, 210]
+	DstBlock		"Mux"
+	DstPort			5
+      }
+    }
+    Line {
+      SrcBlock		      "Subsystem1"
+      SrcPort		      11
+      Points		      [220, 0]
+      Branch {
+	Points			[445, 0]
+	DstBlock		"wq2"
+	DstPort			1
+      }
+      Branch {
+	Points			[0, 200]
+	DstBlock		"Mux"
+	DstPort			6
+      }
+    }
+    Line {
+      SrcBlock		      "Subsystem1"
+      SrcPort		      12
+      Points		      [200, 0]
+      Branch {
+	DstBlock		"wq3"
+	DstPort			1
+      }
+      Branch {
+	Points			[0, 190]
+	DstBlock		"Mux"
+	DstPort			7
+      }
     }
     Annotation {
       Position		      [632, 572]
@@ -8731,6 +8879,9 @@ Model {
     }
     Annotation {
       Position		      [116, 522]
+    }
+    Annotation {
+      Position		      [976, 618]
     }
   }
 }
