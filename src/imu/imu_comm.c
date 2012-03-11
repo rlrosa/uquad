@@ -466,6 +466,44 @@ int imu_comm_read_frame(imu_t *imu){
     return ERROR_OK;
 }
 
+int convert_2_euler(imu_data_t *data)
+{
+    int retval;
+    double psi;
+    double phi;
+    double theta;
+    if(abs(data->acc->m_full[0])<9.72)
+    {
+	phi = -180/PI*asin(data->acc->m_full[0]/9.81);
+	psi=180/PI*atan2(data->acc->m_full[1],data->acc->m_full[2]);
+    }else if(data->acc->m_full[0]>0){
+	phi=-90;
+	psi=0;
+    }else{
+	phi=90;
+	psi=0;
+    }
+
+    m3x3->m[0][0]=cosd(phi)/(uquad_square(cosd(phi)) + uquad_square(sind(phi)));
+    m3x3->m[0][1]=(sind(phi)*sind(psi))/((uquad_square(cosd(phi)) + uquad_square(sind(phi)))*(uquad_square(cosd(psi)) + uquad_square(sind(psi))));
+    m3x3->m[0][2]=(cosd(psi)*sind(phi))/((uquad_square(cosd(phi)) + uquad_square(sind(phi)))*(uquad_square(cosd(psi)) + uquad_square(sind(psi))));
+    m3x3->m[1][0]=cosd(psi)/(uquad_square(cosd(psi)) + uquad_square(sind(psi)));
+    m3x3->m[1][1]=0;
+    m3x3->m[1][2]=-sind(psi)/(uquad_square(cosd(psi)) + uquad_square(sind(psi)));
+    m3x3->m[2][0]=-sind(phi)/(uquad_square(cosd(phi)) + uquad_square(sind(phi)));
+    m3x3->m[2][1]=(cosd(phi)*sind(psi))/((uquad_square(cosd(phi)) + uquad_square(sind(phi)))*(uquad_square(cosd(psi)) + uquad_square(sind(psi))));
+    m3x3->m[2][2]=(cosd(phi)*cosd(psi))/((uquad_square(cosd(phi)) + uquad_square(sind(phi)))*(uquad_square(cosd(psi)) + uquad_square(sind(psi))));
+
+    retval = uquad_mat_prod(m3x1_0,m3x3,data->magn);
+    err_propagate(retval);
+
+    theta=180/PI*atan2(m3x1_0->m_full[0],m3x1_0->m_full[1])+9.78;   
+
+    data->magn->m_full[0]=psi;
+    data->magn->m_full[1]=phi;
+    data->magn->m_full[2]=theta;
+}
+
 /** 
  * Uses linear model provided by calib to convert raw into valid
  * real world data.
@@ -1349,45 +1387,6 @@ static uint32_t swap_LSB_MSB_32(uint32_t a){
 	swap_LSB_MSB_16(b[0]) |
 	swap_LSB_MSB_16(b[1]);
     //TODO check!
-}
-
-
-int convert_2_euler(imu_data_t *data)
-{
-    int retval;
-    double psi;
-    double phi;
-    double theta;
-    if(abs(data->acc->m_full[0])<9.72)
-    {
-	phi = -180/PI*asin(data->acc->m_full[0]/9.81);
-	psi=180/PI*atan2(data->acc->m_full[1],data->acc->m_full[2]);
-    }else if(data->acc->m_full[0]>0){
-	phi=-90;
-	psi=0;
-    }else{
-	phi=90;
-	psi=0;
-    }
-
-    m3x3->m[0][0]=cosd(phi)/(cosd(phi)^2 + sind(phi)^2);
-    m3x3->m[0][1]=(sind(phi)*sind(psi))/((cosd(phi)^2 + sind(phi)^2)*(cosd(psi)^2 + sind(psi)^2));
-    m3x3->m[0][2]=(cosd(psi)*sind(phi))/((cosd(phi)^2 + sind(phi)^2)*(cosd(psi)^2 + sind(psi)^2));
-    m3x3->m[1][0]=cosd(psi)/(cosd(psi)^2 + sind(psi)^2);
-    m3x3->m[1][1]=0;
-    m3x3->m[1][2]=-sind(psi)/(cosd(psi)^2 + sind(psi)^2);
-    m3x3->m[2][0]=-sind(phi)/(cosd(phi)^2 + sind(phi)^2);
-    m3x3->m[2][1]=(cosd(phi)*sind(psi))/((cosd(phi)^2 + sind(phi)^2)*(cosd(psi)^2 + sind(psi)^2));
-    m3x3->m[2][2]=(cosd(phi)*cosd(psi))/((cosd(phi)^2 + sind(phi)^2)*(cosd(psi)^2 + sind(psi)^2));
-
-    retval = uquad_mat_prod(m3x1_0,m3x3,data->magn);
-    err_propagate(retval);
-
-    theta=180/pi*atan2(m3x1_0->m_full[0],m3x1_0->m_full[1])+9.78;   
-
-    data->magn->m_full[0]=psi;
-    data->magn->m_full[1]=phi;
-    data->magn->m_full[2]=theta;
 }
 
 #endif
