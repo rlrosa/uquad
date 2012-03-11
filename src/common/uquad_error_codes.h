@@ -2,6 +2,8 @@
 #define UQUAD_ERROR_CODES_H
 
 #include <stdio.h>
+#include <errno.h>
+#include <string.h>
 
 enum UQUAD_ERROR_CODES{
 ERROR_OK = 0,
@@ -26,7 +28,18 @@ ERROR_MATH_MAX_DIM,
 ERROR_MATH_MAT_DIM,
 ERROR_MATH_VEC_LEN,
 ERROR_MATH_MAT_SING,
-ERROR_MATH_DIV_0
+ERROR_MATH_DIV_0,
+ERROR_MOTOR_CMD_START,
+ERROR_MOTOR_CMD_KILL,
+ERROR_MOTOR_SET,
+ERROR_MOTOR_USAGE,
+ERROR_MOTOR_W,
+ERROR_KQ,
+ERROR_KQ_ACK_NONE,
+ERROR_KQ_ACK_TOO_MANY,
+ERROR_KQ_NO_ACKS_AVAIL,
+ERROR_KQ_SEND,
+ERROR_MOT_SATURATE
 };
 
 /**
@@ -34,6 +47,13 @@ ERROR_MATH_DIV_0
  * 
  */
 #define err_log(msg) fprintf(stderr,"%s:%d: %s\n",__FILE__,__LINE__,msg)
+#define err_log_stderr(msg) fprintf(stderr,"%s:%d: %s: %s\n",__FILE__,__LINE__,msg, strerror(errno))
+
+/**
+ * Print error message with number to stderr
+ * 
+ */
+#define err_log_num(msg,num) fprintf(stderr,"%s:%d: %s(%d)\n",__FILE__,__LINE__,msg,num)
 
 /**
  * If @retval is an error, then propagate error without printing anything.
@@ -47,6 +67,12 @@ ERROR_MATH_DIV_0
  */
 #define err_check(retval,msg) if(retval!=ERROR_OK){fprintf(stderr,"%s:%d: %s\n",__FILE__,__LINE__,msg);return retval;}
 
+/**
+ * If @retval is an error, call quit().
+ * Usefull in test programs, allows cleaning up.
+ * 
+ */
+#define quit_if(retval) if(retval!=ERROR_OK)quit()
 
 /**
  * Verifies that malloc succeeded.

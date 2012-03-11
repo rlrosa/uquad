@@ -421,7 +421,7 @@ function pushbutton1_Callback(hObject, eventdata, handles)
     tf=evalin('base','tf');
 
     time=linspace(ti,tf,(tf-ti)*5);
-    assignin('base','t',time);
+    %assignin('base','t',time);
 
     %A partir de la situación de vuelo definida establezco las Acciones a 
     %realizar
@@ -447,7 +447,8 @@ function pushbutton1_Callback(hObject, eventdata, handles)
     %recta(9) la fuerza tiene que ser, en la situación inicial,
     %igual al peso (hovering)
     %Se calcula la velocidad angular necesaria para lograr el hovering
-    if (ind~=1) && (ind~=9)
+    if (ind~=1) && (ind~=9) && (ind~=10)
+        fuerza_hov=m*9.81/4;
         val_hov=calc_omega(fuerza_hov);
         w1(time>(ti-1)) = val_hov; 
         w2(time>(ti-1)) = val_hov;
@@ -507,15 +508,34 @@ function pushbutton1_Callback(hObject, eventdata, handles)
              w1(time>(ti-1)) = val_rec;
              w2(time>(ti-1)) = val_rec;
              w3(time>(ti-1)) = val_rec;
-             w4(time>(ti-1)) = val_rec;         
-    
+             w4(time>(ti-1)) = val_rec;    
+             
+        case 10 % Vuelo en circulo
+            
+            %Determino los parámetros del circulo
+            G=trim_circ(1,1/5);
+            assignin('base','psi0',G(1));
+            assignin('base','phi0',G(2));
+            assignin('base','theta0',0);
+            assignin('base','vq10',G(3));
+            assignin('base','vq20',G(4));
+            assignin('base','vq30',G(5));
+            assignin('base','wq10',G(6));
+            assignin('base','wq20',G(7));
+            assignin('base','wq30',G(8));
+           
+            w1(time>(ti-1)) = G(9);
+            w2(time>(ti-1)) = G(10);
+            w3(time>(ti-1)) = G(11);
+            w4(time>(ti-1)) = G(12); 
     end
-        
+    
+    if ind~=10
     %Calculo las velocidades iniciales en el sistema del quadricoptero
     determinar_vel;
-    
+    end
     %Simulo el sistema en lazo abierto
-    sim_lazo_abierto(ti,tf,w1,w2,w3,w4)
+    [t,X]=sim_lazo_abierto(ti,tf,w1,w2,w3,w4);
     
     
     

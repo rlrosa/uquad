@@ -37,7 +37,19 @@
  * Vector
  * -- -- -- -- -- -- -- -- -- -- -- --
  */
-int uquad_vec_dot(uquad_vec_t *v1, uquad_vec_t *v2, uquad_vec_t *vr)
+
+/** 
+ * Performs dot product of vectors.
+ *
+ * Will validate check dimensions.
+ * 
+ * @param vr Answer.
+ * @param v1 
+ * @param v2 
+ * 
+ * @return 
+ */
+int uquad_vec_dot(uquad_vec_t *vr, uquad_vec_t *v1, uquad_vec_t *v2)
 {
     int i;
     if(v1 == NULL || v2 == NULL || vr == NULL)
@@ -53,7 +65,18 @@ int uquad_vec_dot(uquad_vec_t *v1, uquad_vec_t *v2, uquad_vec_t *vr)
     return ERROR_OK;
 }
 
-int uquad_vec_cross(uquad_vec_t *v1, uquad_vec_t *v2, uquad_vec_t *vr)
+/** 
+ * Performs cross product of vectors.
+ *
+ * Will validate check dimensions.
+ * 
+ * @param vr Answer.
+ * @param v1 
+ * @param v2 
+ * 
+ * @return 
+ */
+int uquad_vec_cross(uquad_vec_t *vr, uquad_vec_t *v1, uquad_vec_t *v2)
 {
     int i;
     if(v1 == NULL || v2 == NULL || vr == NULL)
@@ -70,6 +93,13 @@ int uquad_vec_cross(uquad_vec_t *v1, uquad_vec_t *v2, uquad_vec_t *vr)
     return ERROR_OK;
 }
 
+/** 
+ * Allocates memory for a vector of size l
+ * 
+ * @param l 
+ * 
+ * @return NULL or pointer to allocated memory.
+ */
 uquad_vec_t *uquad_vec_alloc(int l)
 {
     uquad_vec_t *v;
@@ -103,24 +133,40 @@ void uquad_vec_free(uquad_vec_t *v)
  * Matrix
  * -- -- -- -- -- -- -- -- -- -- -- --
  */
-int uquad_mat_prod(uquad_mat_t *m1,uquad_mat_t *m2,uquad_mat_t *mr)
+
+/** 
+ * Performs:
+ *   C = A*B
+ * 
+ * Checks dimensions before performing operation.
+ * Memory for C,A and B must have been previously allocated.
+ *
+ * If matrices are 3x3, a macro is used (+ efficiency).
+ *
+ * @param C Result.
+ * @param A First operand.
+ * @param B Second operand.
+ * 
+ * @return Error code.
+ */
+int uquad_mat_prod(uquad_mat_t *C, uquad_mat_t *A,uquad_mat_t *B)
 {
     int i_r,i_c,i_t, retval = ERROR_OK;
     double tmp;
-    if(m1 == NULL || m2 == NULL || mr == NULL)
+    if(A == NULL || B == NULL || C == NULL)
     {
 	err_check(ERROR_NULL_POINTER,"NULL pointer is invalid arg.");
     }
 
     // check dims
-    if((m1->c != m2->r) || !((mr->r == m1->r) && (mr->c == m2->c)))
+    if((A->c != B->r) || !((C->r == A->r) && (C->c == B->c)))
     {
 	err_check(ERROR_MATH_MAT_DIM,"Cannot multiply matrices, dims do not match.");
     }
-    if(mr->c == 3 && mr->r == 3)
-	Multiply_Matrices_3x3(mr->m_full,m1->m_full,m2->m_full);
+    if(C->c == 3 && C->r == 3)
+	Multiply_Matrices_3x3(C->m_full,A->m_full,B->m_full);
     else
-	Multiply_Matrices(mr->m_full,m1->m_full,m1->r,m1->c,m2->m_full,m2->c);
+	Multiply_Matrices(C->m_full,A->m_full,A->r,A->c,B->m_full,B->c);
     return ERROR_OK;
 }
 
@@ -130,6 +176,17 @@ int uquad_mat_det(uquad_mat_t *m, double *res)
     err_check(ERROR_FAIL,"Not implemented!");
 }
 
+/** 
+ * Divides matrix m by scalar value k.
+ * Will check if attempt to divide by 0.0.
+ *
+ * If matrices are 3x3, a macro is used (+ efficiency).
+ * 
+ * @param m 
+ * @param k 
+ * 
+ * @return 
+ */
 int uquad_mat_scalar_div(uquad_mat_t *m, double k)
 {
     if(k == 0.0)
@@ -152,6 +209,16 @@ int uquad_mat_scalar_div(uquad_mat_t *m, double k)
     return ERROR_OK;
 }
 
+/** 
+ * Multiplies matrix m by scalar value k.
+ *
+ * If matrix is 3x3, a macro is used (+efficiency)
+ * 
+ * @param m 
+ * @param k 
+ * 
+ * @return 
+ */
 int uquad_mat_scalar_mul(uquad_mat_t *m, double k)
 {
     if(m == NULL)
@@ -170,7 +237,21 @@ int uquad_mat_scalar_mul(uquad_mat_t *m, double k)
     return ERROR_OK;
 }
 
-/// C = A - B
+/** 
+ * Performs:
+ *   C = A-B
+ * 
+ * Checks dimensions before performing operation.
+ * Memory for C,A and B must have been previously allocated.
+ *
+ * If matrices are 3x3, a macro is used (+ efficiency).
+ *
+ * @param C Result.
+ * @param A First operand.
+ * @param B Second operand.
+ * 
+ * @return Error code.
+ */
 int uquad_mat_sub(uquad_mat_t *C, uquad_mat_t *A, uquad_mat_t *B)
 {
     if(C == NULL || A == NULL || B == NULL)
@@ -195,7 +276,21 @@ int uquad_mat_sub(uquad_mat_t *C, uquad_mat_t *A, uquad_mat_t *B)
     return ERROR_OK;
 }
 
-/// C = A + B
+/** 
+ * Performs:
+ *   C = A+B
+ * 
+ * Checks dimensions before performing operation.
+ * Memory for C,A and B must have been previously allocated.
+ *
+ * If matrices are 3x3, a macro is used (+ efficient).
+ *
+ * @param C Result.
+ * @param A First operand.
+ * @param B Second operand.
+ * 
+ * @return Error code.
+ */
 int uquad_mat_add(uquad_mat_t *C, uquad_mat_t *A, uquad_mat_t *B)
 {
     if(C == NULL || A == NULL || B == NULL)
@@ -220,6 +315,21 @@ int uquad_mat_add(uquad_mat_t *C, uquad_mat_t *A, uquad_mat_t *B)
     return ERROR_OK;
 }
 
+/** 
+ * Solves linear system using gaussian elimination:
+ *   A*x = B
+ * 
+ * Checks dimensions before operating.
+ * Requires aux matrix to build [A:B]. If none is supplied, will
+ * allocate required memory, and then free it.
+ *
+ * @param A 
+ * @param B 
+ * @param x 
+ * @param maux NULL or aux memory for [A:B], content destroyed.
+ * 
+ * @return Error code.
+ */
 int uquad_solve_lin(uquad_mat_t *A, uquad_mat_t *B, uquad_mat_t *x, uquad_mat_t *maux)
 {
     int retval;
@@ -270,12 +380,20 @@ int uquad_solve_lin(uquad_mat_t *A, uquad_mat_t *B, uquad_mat_t *x, uquad_mat_t 
     return ERROR_OK;
 }
 
+/** 
+ * Sets matrix to identity.
+ * Assumes memory was previously allocated.
+ * 
+ * @param m 
+ * 
+ * @return Error code
+ */
 int uquad_mat_eye(uquad_mat_t *m)
 {
     int retval;
     if(m == NULL)
     {
-	err_check(ERROR_MALLOC,"Could not allocate aux mem for inv.");
+	err_check(ERROR_NULL_POINTER,"NULL pointer is invalid arg.");
     }
     if(m->r != m->c)
     {
@@ -285,6 +403,84 @@ int uquad_mat_eye(uquad_mat_t *m)
     return ERROR_OK;
 }
 
+/** 
+ * Fills a matrix with zeros.
+ * 
+ * @param m 
+ * 
+ * @return error code.
+ */
+int uquad_mat_zeros(uquad_mat_t *m)
+{
+    if(m == NULL)
+    {
+	err_check(ERROR_NULL_POINTER,"NULL pointer is invalid arg.");
+    }
+    Zero_Matrix(m->m_full, m->r, m->c);
+    return ERROR_OK;
+}
+
+/** 
+ * Copies part of a matrix A to a smaller matrix, S.
+ * 
+ * @param S answer is returned here
+ * @param r first row of A that will be copied to S
+ * @param c first column of A that will be copied to S
+ * @param A src matrix
+ * 
+ * @return 
+ */
+int uquad_mat_get_subm(uquad_mat_t *S, int r, int c, uquad_mat_t *A)
+{
+    if(S == NULL || A == NULL)
+    {
+	err_check(ERROR_NULL_POINTER,"NULL pointer is invalid arg.");
+    }
+    if(A->r < r + S->r || A->c < c + S->c)
+    {
+	err_check(ERROR_MATH_MAT_DIM,"Cannot extract submatrix, too big!.");
+    }
+
+    Get_Submatrix(S->m_full, S->r, S->c,
+		  A->m_full, A->c, r, c);
+}
+
+/** 
+ * Sets part of a matrix A to match a smaller matrix, S.
+ * 
+ * @param A answer is returned here.
+ * @param r first row of A where S will be copied to.
+ * @param c first column of A where S will be copied to.
+ * @param S submatrix
+ * 
+ * @return 
+ */
+int uquad_mat_set_subm(uquad_mat_t *A, int r, int c, uquad_mat_t *S)
+{
+    if(A == NULL || S == NULL)
+    {
+	err_check(ERROR_NULL_POINTER,"NULL pointer is invalid arg.");
+    }
+    if(A->r - r < S->r || A->c -c < S->c)
+    {
+	err_check(ERROR_MATH_MAT_DIM,"Cannot set submatrix, too big!.");
+    }
+
+    Set_Submatrix(A->m_full, A->c,
+		  S->m_full, S->r, S->c, r, c);
+    return ERROR_OK;
+}
+
+/** 
+ * Creates a diagonal matrix, setting diagonal of m to diag, and the
+ * rest to zeros.
+ * Assumes length of diag matches length of diagonal.
+ * 
+ * @param m 
+ * @param diag 
+ * 
+ * @return 
+ */
 int uquad_mat_diag(uquad_mat_t *m, double *diag)
 {
     int retval;
@@ -298,6 +494,19 @@ int uquad_mat_diag(uquad_mat_t *m, double *diag)
     return ERROR_OK;
 }
 
+/** 
+ * Inverts matrix.
+ * Assumes memory was previously allocated for minv.
+ * Requires aux memory, two matrices. If not supplied, will allocate and
+ * free after finishing.
+ * 
+ * @param m1 Input.
+ * @param minv Result.
+ * @param meye NULL or auxiliary matrix, size of m1.
+ * @param maux NULL or auxiliary matrix, size of [m1:m1]
+ * 
+ * @return Error code.
+ */
 int uquad_mat_inv(uquad_mat_t *m1, uquad_mat_t *minv, uquad_mat_t *meye, uquad_mat_t *maux)
 {
     int retval;
@@ -344,6 +553,60 @@ int uquad_mat_inv(uquad_mat_t *m1, uquad_mat_t *minv, uquad_mat_t *meye, uquad_m
     return ERROR_OK;
 }
 
+/** 
+ * Will load matrix from text file.
+ * Will ignore spaces, end of lines, tabs, etc.
+ * Assumes memory has been previously allocated for matrix.
+ * 
+ * Example of a configuration file for a 7x3 matrix:
+ *   26.9552751514508        0                       0
+ *   0                       27.1044248763245        0
+ *   0                       0                       25.9160276670631
+ *   
+ *   1                       0.00953542215888624       0.00955723285532017
+ *   -0.000376784971686033   1                         -0.00677033632701969
+ *   0.0105047129596497      -0.00456172876850397      1
+ *   
+ *   13.0716873433579
+ *
+ *   -1.07951072069862
+ *   -40.723583688652
+ * 
+ * Note that elements are read row-wise (fills row, then next row, etc)
+ *
+ * @param imu 
+ * @param input stream to load from, or NULL for stdin
+ * 
+ * @return 
+ */
+int uquad_mat_load(uquad_mat_t *m, FILE *input)
+{
+    int i;
+    float ftmp;
+    if(m == NULL)
+    {
+	err_check(ERROR_NULL_POINTER, "Cannot load, must allocate memory previously.");
+    }
+    if(input == NULL)
+	input = stdin;
+    for(i=0; i < m->r*m->c; i++)
+    {
+	fscanf(input,"%f",&ftmp);
+	m->m_full[i] = (double) ftmp;
+    }
+    if(i < m->r*m->c)
+    {
+	err_check(ERROR_IO,"Failed to load matrix");
+    }
+    return ERROR_OK;
+}
+
+/** 
+ * Prints matrix to any output.
+ * 
+ * @param m 
+ * @param output
+ */
 void uquad_mat_dump(uquad_mat_t *m, FILE *output)
 {
     int i,j;
@@ -362,6 +625,14 @@ void uquad_mat_dump(uquad_mat_t *m, FILE *output)
 
 }
 
+/** 
+ * Allocates matrix of size r rows and c columns.
+ * 
+ * @param r Rows.
+ * @param c Columns.
+ * 
+ * @return NULL or pointer to allocated memory.
+ */
 uquad_mat_t *uquad_mat_alloc(int r, int c)
 {
     int i;
@@ -387,6 +658,12 @@ uquad_mat_t *uquad_mat_alloc(int r, int c)
     return m;
 }
 
+/** 
+ * Free memory allocated my uquad_mat_alloc()
+ * Will check if NULL argument is supplied.
+ * 
+ * @param m 
+ */
 void uquad_mat_free(uquad_mat_t *m)
 {
     int i;

@@ -1,5 +1,8 @@
 add_subdirectory(imu_comm_test)
 add_subdirectory(uquad_aux_time_test)
 add_subdirectory(uquad_aux_io_test)
+add_subdirectory(motor_test)
 add_subdirectory(gps)
 add_subdirectory(math)
+add_subdirectory(kernel_msgq)
+add_subdirectory(kalman_test)

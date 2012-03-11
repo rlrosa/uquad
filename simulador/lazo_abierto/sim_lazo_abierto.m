@@ -1,5 +1,5 @@
 %function sim_lazo_abierto 
-function sim_lazo_abierto(ti,tf,w1,w2,w3,w4)
+function [t,X]=sim_lazo_abierto(ti,tf,w1,w2,w3,w4)
 
 
 % Constantes del sistema, hay que guardarlas como globales para que
@@ -13,14 +13,13 @@ assignin('base','Iyy',2.32e-2);
 assignin('base','Izz',4.37e-2);
 assignin('base','Izzm',1.54e-5);
 
-%La linea del tiempo no la pude pasar como parámetro así que la defino como
-%global en la parte de la interfaz y acá me la traigo.
-t=evalin('base','t');
+t=linspace(ti,tf,(tf-ti)*5);
 
 %%Simulación del modelo Simulink
 [t,X]=sim('dinamica_quad',[ti tf], [],[t',w1',w2',w3',w4']);
 
 assignin('base','X',X);
+assignin('base','t',t);
 
 %Ploteo la trayectoria del cuadricóptero
 plot3(X(:,1),X(:,2),X(:,3));grid on
