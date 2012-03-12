@@ -20,6 +20,7 @@ Matrices = load('linealizacion.mat');
 A=Matrices.A;
 B=Matrices.B;
      
+Ts=evalin('base','Ts');
 %% Linealización en Hovering
 if modo=='hov'
     
@@ -37,11 +38,12 @@ if modo=='hov'
     theta=setpoint(4);
     Ah=eval(A);
     Bh=eval(B);
+    
     %% Construcción de la matriz K método LQR para hovering
 
     %Por ahora hay dos opciones para trabajar. No se todavía cual es mejor
     if lqrm==0
-        Qp=diag([1 1 1 100 100 100 1 1 1 100 100 100]);
+        Qp=diag([1 1 1e2 1 1 1 1 1 1 1 1 1]);
         Rp=diag([1 1 1 1]);
         [K,S,E]=lqr(Ah,Bh,Qp,Rp);
 
@@ -60,7 +62,7 @@ elseif modo=='rec'
 
     wq1=0; wq2=0; wq3=0;
 
-    psi=0; phi=0; theta=setpoint(4);
+    psis=0; phi=0; theta=setpoint(4);
 
 
     w1=334.279741754537;
@@ -68,22 +70,22 @@ elseif modo=='rec'
     w3=334.279741754537;
     w4=334.279741754537;
     
-    %No voy a realimentar la posición. Me interesa controlar la velocidad
-    %solamente
     Ar=eval(A);
-    Ar=Ar(4:12,4:12);
+    %Ar=Ar(4:12,4:12);
     
     Br=eval(B);
-    Br=Br(4:12,:);
+    %Br=Br(4:12,:);
     
    
     %% Construcción de la matriz K método LQR para linea recta
     if lqrm==0
-        Qp=diag([10 10 10 1 1 1 10 10 10]);
-        Rp=diag([0.1 0.1 0.1 0.1]);
+        Qp=diag([1 1 1 1 1 1 1e4 1e4 1e4 1 1 1]);%No seas pancho no cambies esto
+        %Qp=diag([1 1 1 1 1 1 1 1 1 1 1 1]);
+        Rp=diag([1 1 1 1]);
+        %[K,S,E]=lqrd(Ar,Br,Qp,Rp,Ts);  
         [K,S,E]=lqr(Ar,Br,Qp,Rp);  
     else
-        Qp2=diag([1 1 1 100 100 100 1 1 1]);
+        Qp=diag([1e2 1e2 1e2 1 1 1 1e2 1e2 1e2 1 1 1]);
         Rp2=diag([1 1 1 1]);
         [K,S,E]=lqr(Ar,Br,Qp2,Rp2);
     end

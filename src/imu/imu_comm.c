@@ -20,6 +20,10 @@ imu_status_t imu_comm_get_status(imu_t *imu){
 static int imu_comm_send_cmd(imu_t *imu, unsigned char cmd){
     uquad_bool_t ready = false;
     int retval;
+#if IMU_COMM_FAKE
+    // If reading from a log file, we have nothing to send to it
+    return ERROR_OK;
+#endif
     retval = imu_comm_check_io_locks(imu->device, NULL, &ready);
     err_propagate(retval);
     if(!ready){
@@ -99,10 +103,12 @@ static void imu_comm_calibration_clear(imu_t *imu){
  *@return error code
  */
 static int imu_comm_run_default(imu_t *imu){
-    int retval;
+    int retval = ERROR_OK;
+#if !IMU_FRAME_BINARY
     // Set run
     retval = imu_comm_send_cmd(imu,IMU_COMMAND_DEF);
     err_propagate(retval);
+#endif
     imu->status = IMU_COMM_STATE_RUNNING;
     return retval;
 }
@@ -122,7 +128,12 @@ static int imu_comm_configure(imu_t *imu){
 
 static int imu_comm_connect(imu_t *imu, const char *device){
     int retval;
+#if IMU_COMM_FAKE
+    // we don't want to write to the log file, just read.
+    imu->device = fopen(device,"rb+");
+#else
     imu->device = fopen(device,"wb+");
+#endif
     if(imu->device == NULL){
 	fprintf(stderr,"Device %s not found.\n",device);
 	return ERROR_OPEN;
@@ -258,6 +269,55 @@ static int imu_comm_avg(imu_t *imu){
 //    return ERROR_OK;
 }
 
+/** 
+ *Attemps to read end of frame character.
+ *Reads until timed out, or end character is found.
+ *NOTE: Assumes device can be read without blocking.
+ *
+ *@param imu 
+ *
+ *@return error code
+ */
+static int imu_comm_get_sync_end(imu_t *imu, uquad_bool_t *in_sync){
+    // Now read out the end char
+    int watchdog = 0, retval;
+    unsigned char tmp = 'X';// Anything diff from IMU_FRAME_END_CHAR
+    *in_sync = false;
+    while(watchdog < READ_RETRIES){
+	retval = fread(&tmp,IMU_INIT_END_SIZE,1,imu->device);
+	if(retval > 0){
+	    if(tmp == IMU_FRAME_END_CHAR)
+	    {
+		*in_sync = true;
+		return ERROR_OK;
+		break;
+	    }
+	    else
+	    {
+#if IMU_FRAME_BINARY // in ascii we have to read the separator char
+		err_check(ERROR_READ_SYNC,"Unexpected end of frame char: Discarding frame...");
+#endif
+	    }
+	}
+	else
+	{
+	    if (retval < 0)
+	    {
+		err_check(ERROR_IO,"Read error: Failed to read end char...");
+	    }
+	    else
+	    {
+		++watchdog;
+	    }
+	}
+    }
+    if (watchdog >= READ_RETRIES)
+    {
+	err_check(ERROR_READ_TIMEOUT,"Read error: Timed out waiting for end char...");
+    }
+    // never gets here
+}
+
 static uint8_t previous_sync_char = IMU_FRAME_INIT_CHAR;
 /** 
  *Reads 1 byte, expecting it to be IMU_FRAME_INIT_CHAR.
@@ -267,7 +327,7 @@ static uint8_t previous_sync_char = IMU_FRAME_INIT_CHAR;
  *
  *@return error code
  */
-static int imu_comm_get_sync(imu_t *imu, uquad_bool_t *in_sync){
+static int imu_comm_get_sync_init(imu_t *imu, uquad_bool_t *in_sync){
     int retval,i;
     *in_sync = false;
     unsigned char tmp = 'X';// Anything diff from IMU_FRAME_INIT_CHAR
@@ -286,7 +346,8 @@ static int imu_comm_get_sync(imu_t *imu, uquad_bool_t *in_sync){
 		if((tmp|IMU_FRAME_INIT_DIFF) == IMU_FRAME_INIT_CHAR_ALT)
 		{
 		    // Check if skipped frame
-		    if((tmp ^ previous_sync_char) == IMU_FRAME_INIT_DIFF)
+		    if(!IMU_FRAME_ALTERNATES_INIT ||
+		       ((tmp ^ previous_sync_char) == IMU_FRAME_INIT_DIFF))
 		    {
 			*in_sync = true;
 			previous_sync_char = tmp;
@@ -319,35 +380,47 @@ static int imu_comm_get_sync(imu_t *imu, uquad_bool_t *in_sync){
  */
 int imu_comm_read(imu_t *imu,uquad_bool_t *success){
     int retval;
-    retval = imu_comm_get_sync(imu,success);
+    imu_raw_t new_frame;
+
+    // sync by getting init frame char
+    retval = imu_comm_get_sync_init(imu,success);
     err_propagate(retval);
-    if(*success){
-	// sync worked, now get data
-	retval = imu_comm_read_frame(imu);
-	if(retval!=ERROR_OK)
-	    *success = false;
-	err_propagate(retval);
-    }
+    
+    // sync worked, now get data
+#if IMU_FRAME_BINARY
+    retval = imu_comm_read_frame_binary(imu, &new_frame);
+    err_propagate(retval);
+#else
+    retval = imu_comm_read_frame_ascii(imu, &new_frame);
+    err_propagate(retval);
+#endif
+
+    // verify sync by getting end of frame char
+    retval = imu_comm_get_sync_end(imu, success);
+    err_propagate(retval);
+
+    // add the frame to the buff
+    retval = imu_comm_add_frame(imu, &new_frame);
+    err_propagate(retval);
     return ERROR_OK;
 }
 
 /** 
  *Assumes sync char was read, reads the rest of the data.
- *Keeps going until a end char is found. Then stops.
+ *Does not read end of frame.
  *
  *@param imu 
- *@param frame New frame is returned here.
+ *@param new_frame New frame is returned here.
  *
  *@return error code
  */
-int imu_comm_read_frame(imu_t *imu){
+int imu_comm_read_frame_binary(imu_t *imu, imu_raw_t *new_frame)
+{
     int retval = ERROR_OK,watchdog,read,i;
     unsigned char tmp = 'X';// Anything diff from IMU_FRAME_INIT_CHAR
-    imu_raw_t *new_frame;
     uint8_t buff_tmp_8[IMU_DEFAULT_FRAME_SIZE_BYTES-2]; // no space for init/end
     uint16_t *buff_tmp_16;
-
-    new_frame = imu->frame_buff+imu->frame_buff_next;
+    uquad_bool_t end_sync = false;
 
     // Get sampling time
     watchdog = 0;
@@ -409,28 +482,6 @@ int imu_comm_read_frame(imu_t *imu){
     // Change LSB/MSB for 32 bit sensors (pressure)
     // pres
     new_frame->pres = *((uint32_t*)(buff_tmp_16+i));
-    
-    // Now read out the end char
-    watchdog = 0;
-    while(watchdog < READ_RETRIES){
-	retval = fread(&tmp,IMU_INIT_END_SIZE,1,imu->device);
-	if(retval > 0){
-	    if(tmp == IMU_FRAME_END_CHAR){
-		break;
-	    }else{
-		err_check(ERROR_READ_SYNC,"Unexpected end of frame char: Discarding frame...");
-	    }
-	}else{
-	    if(retval < 0){
-		err_check(ERROR_IO,"Read error: Failed to read end char...");
-	    }else{
-		++watchdog;
-	    }
-	}
-    }
-    if(watchdog>=READ_RETRIES){
-	err_check(ERROR_READ_TIMEOUT,"Read error: Timed out waiting for end char...");
-    }
 
     // Everything went ok, pat pat :)
 #if 0
@@ -458,10 +509,120 @@ int imu_comm_read_frame(imu_t *imu){
 
 #endif
 
-    retval = imu_comm_add_frame(imu,new_frame);
+
+    return ERROR_OK;
+}
+
+/** 
+ *Assumes sync char was read, reads the rest of the data.
+ *Does not read end of frame.
+ *
+ *@param imu 
+ *@param new_frame New frame is returned here.
+ *
+ *@return error code
+ */
+int imu_comm_read_frame_ascii(imu_t *imu, imu_raw_t *new_frame)
+{
+    int retval = ERROR_OK,i, itmp;
+    unsigned int uitmp;
+
+    // Get sampling time    
+    retval = fscanf(imu->device,"%ud",&uitmp);
+    new_frame->T_us = (uint16_t)uitmp;
+    if(retval < 0)
+    {
+	err_check(ERROR_IO,"Read error: Failed to read T_us...");
+    }
+
+    // Generate timestamp
+    gettimeofday(& new_frame->timestamp,NULL);
+
+    // Read sensors RAW data
+    // acc
+    for(i=0; i < 3; ++i)
+    {
+	retval = fscanf(imu->device,"%d",&itmp);
+	if(retval < 0)
+	{
+	    err_check(ERROR_IO,"Read error: Failed to read T_us...");
+	}
+	new_frame->acc[i] = (uint16_t) itmp;
+    }
+    // gyro
+    for(i=0; i < 3; ++i)
+    {
+	retval = fscanf(imu->device,"%d",&itmp);
+	if(retval < 0)
+	{
+	    err_check(ERROR_IO,"Read error: Failed to read T_us...");
+	}
+	new_frame->gyro[i] = (uint16_t) itmp;
+    }
+    // magn
+    for(i=0; i < 3; ++i)
+    {
+	retval = fscanf(imu->device,"%d",&itmp);
+	if(retval < 0)
+	{
+	    err_check(ERROR_IO,"Read error: Failed to read T_us...");
+	}
+	new_frame->magn[i] = (uint16_t) itmp;
+    }
+    // temp
+    retval = fscanf(imu->device,"%d",&itmp);
+    if(retval < 0)
+    {
+	err_check(ERROR_IO,"Read error: Failed to read T_us...");
+    }
+    new_frame->temp = (uint16_t) itmp;
+    // pres
+    retval = fscanf(imu->device,"%ud",&uitmp);
+    if(retval < 0)
+    {
+	err_check(ERROR_IO,"Read error: Failed to read T_us...");
+    }
+    new_frame->pres = (uint32_t) uitmp;
+    // Everything went ok, pat pat :)
+    return ERROR_OK;
+}
+
+int convert_2_euler(imu_data_t *data)
+{
+    int retval;
+    double psi;
+    double phi;
+    double theta;
+    if(uquad_abs(data->acc->m_full[0])<9.72)
+    {
+	phi = -180/PI*asin(data->acc->m_full[0]/9.81);
+	psi=180/PI*atan2(data->acc->m_full[1],data->acc->m_full[2]);
+    }else if(data->acc->m_full[0]>0){
+	phi=-90;
+	psi=0;
+    }else{
+	phi=90;
+	psi=0;
+    }
+
+    m3x3->m[0][0]=cosd(phi)/(uquad_square(cosd(phi)) + uquad_square(sind(phi)));
+    m3x3->m[0][1]=(sind(phi)*sind(psi))/((uquad_square(cosd(phi)) + uquad_square(sind(phi)))*(uquad_square(cosd(psi)) + uquad_square(sind(psi))));
+    m3x3->m[0][2]=(cosd(psi)*sind(phi))/((uquad_square(cosd(phi)) + uquad_square(sind(phi)))*(uquad_square(cosd(psi)) + uquad_square(sind(psi))));
+    m3x3->m[1][0]=cosd(psi)/(uquad_square(cosd(psi)) + uquad_square(sind(psi)));
+    m3x3->m[1][1]=0;
+    m3x3->m[1][2]=-sind(psi)/(uquad_square(cosd(psi)) + uquad_square(sind(psi)));
+    m3x3->m[2][0]=-sind(phi)/(uquad_square(cosd(phi)) + uquad_square(sind(phi)));
+    m3x3->m[2][1]=(cosd(phi)*sind(psi))/((uquad_square(cosd(phi)) + uquad_square(sind(phi)))*(uquad_square(cosd(psi)) + uquad_square(sind(psi))));
+    m3x3->m[2][2]=(cosd(phi)*cosd(psi))/((uquad_square(cosd(phi)) + uquad_square(sind(phi)))*(uquad_square(cosd(psi)) + uquad_square(sind(psi))));
+
+    retval = uquad_mat_prod(m3x1_0,m3x3,data->magn);
     err_propagate(retval);
 
+    theta=180/PI*atan2(m3x1_0->m_full[0],m3x1_0->m_full[1])+9.78;   
 
+    data->magn->m_full[0]=psi;
+    data->magn->m_full[1]=phi;
+    data->magn->m_full[2]=theta;
     return ERROR_OK;
 }
 
@@ -486,14 +647,15 @@ static int imu_comm_convert_lin(imu_t *imu, int16_t *raw, uquad_mat_t *conv, imu
     }
 
     for(i=0; i < 3; ++i)
-	m3x1_0->m_full[i] = (double) raw[i];
+	//TODO fix calibration or leave this?
+	m3x1_0->m_full[i] = ((double) raw[i])/IMU_GYRO_DEFAULT_GAIN;
     /// m3x1_0 has tmp answer
     /// tmp = raw - b
     retval = uquad_mat_sub(m3x1_1,m3x1_0, calib->b);
     err_propagate(retval);
     /// m3x1_1 has tmp answer
     /// conv = k*tmp
-    retval = uquad_mat_prod(m3x1_0, calib->TK_inv, m3x1_1);
+    retval = uquad_mat_prod(conv, calib->TK_inv, m3x1_1);
     err_propagate(retval);
     // conv has final answer
     return retval;
@@ -571,8 +733,10 @@ static int imu_comm_temp_convert(imu_t *imu, uint16_t *data, double *temp)
 
 #define PRESS_EXP  0.190294957183635 // 1/5.255 = 0.190294957183635
 /**
- * Convert raw pressure data to altitud.
- *
+ * Convert raw pressure data to relative altitud.
+ * The first call to this function will set a reference pressure, which
+ * will correspond to altitud 0m. Succesive calls wil return altitud
+ * relative to initial altitud.
  *
  *@param imu 
  *@param data Raw gyro data.
@@ -583,7 +747,11 @@ static int imu_comm_temp_convert(imu_t *imu, uint16_t *data, double *temp)
 static int imu_comm_pres_convert(imu_t *imu, uint32_t *data, double *alt)
 {
 
-    double p0 = 101325;
+    static double p0 = IMU_P0_UNDEF;
+    if(p0 == IMU_P0_UNDEF)
+	// first call sets reference for altitud
+	p0 = (double)*data;
+    //TODO usar un promedio de un tamaño razonable.
     *alt = 44330*(1- pow((((double)(*data))/p0),PRESS_EXP));
     return ERROR_OK;
 }
@@ -616,6 +784,9 @@ static int imu_comm_raw2data(imu_t *imu, imu_raw_t *raw, imu_data_t *data){
 
     // Convert magnetometer readings
     retval = imu_comm_magn_convert(imu, raw->magn, data->magn);
+    err_propagate(retval);
+
+    retval = convert_2_euler(data);
     err_propagate(retval);
 
     // Convert temperature readings
@@ -1346,6 +1517,5 @@ static uint32_t swap_LSB_MSB_32(uint32_t a){
 	swap_LSB_MSB_16(b[1]);
     //TODO check!
 }
-
 
 #endif

@@ -4,9 +4,7 @@
 #define wait_for_enter while(fread(tmp,1,1,stdin) == 0)
 
 enum test_type{
-    VECTOR_DOT = 0,
-    VECTOR_CROSS,
-    MATRIX_PROD,
+    MATRIX_PROD = 0,
     MATRIX_DET,
     MATRIX_INV,
     MATRIX_ADD,
@@ -18,7 +16,6 @@ enum test_type{
 };
 
 uquad_mat_t *m1, *m2, *mr;
-uquad_vec_t *v1, *v2, *vr;
 int retval;
 int r1,c1,r2,c2,l,i,j;
 float tmp;
@@ -74,17 +71,6 @@ int load_m1_m2(void)
     return ERROR_OK;
 }
 
-int vector_dot_test(void)
-{
-    printf("Enter vector length:(less than %d)\n",
-	   UQUAD_MAT_MAX_DIM);
-    scanf("%d",&l);
-    v1 = uquad_vec_alloc(l);
-    v2 = uquad_vec_alloc(l);
-    vr = uquad_vec_alloc(l);
-
-}
-
 int mat_inv_test(void)
 {
     if(alloc_m(&m1) != ERROR_OK)
@@ -104,7 +90,7 @@ int mat_inv_test(void)
 	err_check(ERROR_FAIL,"Failed loading data");
     }
 
-    retval = uquad_mat_inv(m1,mr,NULL,NULL);
+    retval = uquad_mat_inv(mr,m1,NULL,NULL);
     err_propagate(retval);
 
     printf("inv(A):\n");
@@ -164,12 +150,12 @@ int mat_scalar_test(uquad_bool_t mul_notdiv)
     if(mul_notdiv)
     {
 	printf("Will multiply by k=%f\n",k);
-	retval = uquad_mat_scalar_mul(m1,k);
+	retval = uquad_mat_scalar_mul(m1,NULL,k);
     }
     else
     {
 	printf("Will div by k=%f\n",k);
-	retval = uquad_mat_scalar_div(m1,k);
+	retval = uquad_mat_scalar_div(m1,NULL,k);
     }
     err_propagate(retval);
 
@@ -236,9 +222,7 @@ int main(int argc, char *argv[]){
     int retval = ERROR_OK;
     enum test_type sel_test;
     int cmd;
-    printf("Select test:\n\t%d:Vector dot\n\t%d:Vector cross\n\t%d:Matrix product\n\t%d:Matrix det\n\t%d:Matrix inv\n\t%d:Matrix add\n\t%d:Matrix sub\n\t%d:Matrix mul k\n\t%d:Matrix div k\n\t%d:Linear system\n",
-	   VECTOR_DOT,
-	   VECTOR_CROSS,
+    printf("Select test:\n\t%d:Matrix product\n\t%d:Matrix det\n\t%d:Matrix inv\n\t%d:Matrix add\n\t%d:Matrix sub\n\t%d:Matrix mul k\n\t%d:Matrix div k\n\t%d:Linear system\n",
 	   MATRIX_PROD,
 	   MATRIX_DET,
 	   MATRIX_INV,
@@ -256,9 +240,6 @@ int main(int argc, char *argv[]){
     sel_test = cmd;
     switch(sel_test)
     {
-    case VECTOR_DOT:
-	retval = vector_dot_test();
-	break;
     case MATRIX_PROD:
 	retval = matrix_prod_test();
 	break;
@@ -288,10 +269,6 @@ int main(int argc, char *argv[]){
     uquad_mat_free(m1);
     uquad_mat_free(m2);
     uquad_mat_free(mr);
-
-    uquad_vec_free(v1);
-    uquad_vec_free(v2);
-    uquad_vec_free(vr);
 
     return retval;
 }

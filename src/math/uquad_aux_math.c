@@ -10,16 +10,12 @@
 #include "copy_matrix.h"
 #include "join_by_rows.c"
 #include "join_by_cols.c"
-//#include "equilibrate_matrix.c"//TODO use?
 #include "zero_matrix.c"
 #include "identity_matrix.c"
 #include "set_diagonal.c"
 #include "get_diagonal.c"
 #include "get_submatrix.c"
 #include "set_submatrix.c"
-#include "div_matrix_by_scalar.c"
-#include "div_3x3_matrix_by_scalar.h"
-#include "mul_matrix_by_scalar.c"
 #include "mul_3x3_matrix_by_scalar.h"
 #include "add_matrices.c"
 #include "add_matrices_3x3.h"
@@ -29,104 +25,11 @@
 #include "multiply_matrices_3x3.c"
 #include "gauss_elimination.c"
 #include "gauss_aux_elimination.c"
+#include "transpose_matrix.c"
+#include "transpose_square_matrix.c"
+#include "equilibrate_matrix.c"
 //#include "doolittle.c"
 //#include "doolittle_pivot.c"
-
-/**
- * -- -- -- -- -- -- -- -- -- -- -- --
- * Vector
- * -- -- -- -- -- -- -- -- -- -- -- --
- */
-
-/** 
- * Performs dot product of vectors.
- *
- * Will validate check dimensions.
- * 
- * @param vr Answer.
- * @param v1 
- * @param v2 
- * 
- * @return 
- */
-int uquad_vec_dot(uquad_vec_t *vr, uquad_vec_t *v1, uquad_vec_t *v2)
-{
-    int i;
-    if(v1 == NULL || v2 == NULL || vr == NULL)
-    {
-	err_check(ERROR_NULL_POINTER,"NULL pointer is invalid arg.");
-    }
-    if(v1->l != v2->l || v1->l != vr->l)
-    {
-	err_check(ERROR_MATH_VEC_LEN,"Vectors must be of the same length!");
-    }
-    for(i=0; i < v1->l; ++i)
-	vr->v[i] = v1->v[i]*v2->v[i];
-    return ERROR_OK;
-}
-
-/** 
- * Performs cross product of vectors.
- *
- * Will validate check dimensions.
- * 
- * @param vr Answer.
- * @param v1 
- * @param v2 
- * 
- * @return 
- */
-int uquad_vec_cross(uquad_vec_t *vr, uquad_vec_t *v1, uquad_vec_t *v2)
-{
-    int i;
-    if(v1 == NULL || v2 == NULL || vr == NULL)
-    {
-	err_check(ERROR_NULL_POINTER,"NULL pointer is invalid arg.");
-    }
-    if(v1->l != v2->l || v1->l != vr->l || v1->l != 3)
-    {
-	err_check(ERROR_MATH_VEC_LEN,"Vectors must be of length 3 for cross product!");
-    }
-    vr->v[0] = v1->v[1]*v2->v[2] - v1->v[2]*v2->v[1];
-    vr->v[1] = v1->v[2]*v2->v[0] - v1->v[0]*v2->v[2];
-    vr->v[2] = v1->v[0]*v2->v[1] - v1->v[1]*v2->v[0];
-    return ERROR_OK;
-}
-
-/** 
- * Allocates memory for a vector of size l
- * 
- * @param l 
- * 
- * @return NULL or pointer to allocated memory.
- */
-uquad_vec_t *uquad_vec_alloc(int l)
-{
-    uquad_vec_t *v;
-    if(l > UQUAD_MATH_MAX_DIM)
-    {
-	err_log("Vector too long.");
-	return NULL;
-    }
-
-    v = (uquad_vec_t *)malloc(sizeof(struct uquad_vec));
-    mem_alloc_check(v);
-
-    v->l = l;
-
-    v->v = (double *)malloc(sizeof(double)*v->l);
-    mem_alloc_check(v->v);
-
-    return ERROR_OK;
-}
-
-void uquad_vec_free(uquad_vec_t *v)
-{
-    if(v == NULL)
-	return;
-    free(v->v);
-    free(v);
-}
 
 /**
  * -- -- -- -- -- -- -- -- -- -- -- --
@@ -177,63 +80,70 @@ int uquad_mat_det(uquad_mat_t *m, double *res)
 }
 
 /** 
- * Divides matrix m by scalar value k.
- * Will check if attempt to divide by 0.0.
+ * Multiplies matrix m by scalar value k.
+ * If only one matrix is supplied, will multiply in place.
  *
- * If matrices are 3x3, a macro is used (+ efficiency).
+ * If in place and matrix is 3x3, a macro is used (+efficiency)
  * 
- * @param m 
+ * @param Mk Result will be returned here.
+ * @param M  NULL for in place multiplicacion. Otherwise, M will remain
+ * unmodified, and the anwser will be Mk = M*k
  * @param k 
  * 
- * @return 
+ * @return error code
  */
-int uquad_mat_scalar_div(uquad_mat_t *m, double k)
+int uquad_mat_scalar_mul(uquad_mat_t *Mk, uquad_mat_t *M, double k)
 {
-    if(k == 0.0)
-    {
-	err_check(ERROR_MATH_DIV_0,"Cannot divide by 0!");
-    }
-    if(m == NULL)
+    int i, size;
+    if(Mk == NULL)
     {
 	err_check(ERROR_NULL_POINTER,"NULL pointer is invalid arg.");
     }
-
-    if((m->r == 3) && (m->c == 3))
+    size = Mk->r * Mk->c;
+    if(M != NULL)
     {
-	Divide_3x3_Matrix_by_Scalar(m->m_full,k);
+	if(Mk->r != M->r || Mk->c != M->c)
+	{
+	    err_check(ERROR_MATH_MAT_DIM,"Cannot multiply matrices, dims do not match.");
+	}
+	for(i = 0; i < size; ++i)
+	    Mk->m_full[i] = M->m_full[i]*k;
     }
     else
     {
-	Divide_Matrix_by_Scalar(m->m_full,k,m->r,m->c);
+	if((Mk->r == 3) && (Mk->c == 3))
+	{
+	    Multiply_3x3_Matrix_by_Scalar(Mk->m_full,k);
+	}
+	else
+	    for(i = 0; i < size; ++i)
+		Mk->m_full[i] *= k;	
     }
     return ERROR_OK;
 }
 
 /** 
- * Multiplies matrix m by scalar value k.
+ * Divides matrix m by scalar value k.
+ * If only one matrix is supplied, will multiply in place.
  *
- * If matrix is 3x3, a macro is used (+efficiency)
+ * If in place and matrix is 3x3, a macro is used (+efficiency)
  * 
- * @param m 
+ * @param Mk Result will be returned here.
+ * @param M  NULL for in place multiplicacion. Otherwise, M will remain
+ * unmodified, and the anwser will be Mk = M*k
  * @param k 
  * 
- * @return 
+ * @return error code
  */
-int uquad_mat_scalar_mul(uquad_mat_t *m, double k)
+int uquad_mat_scalar_div(uquad_mat_t *Mk, uquad_mat_t *M, double k)
 {
-    if(m == NULL)
+    int retval;
+    if(k == 0.0)
     {
-	err_check(ERROR_NULL_POINTER,"NULL pointer is invalid arg.");
+	err_check(ERROR_MATH_DIV_0,"Cannot divide by 0!");
     }
-
-    if((m->r == 3) && (m->c == 3))
-    {
-	Multiply_3x3_Matrix_by_Scalar(m->m_full,k);
-    }
-    else
-    {
-	Multiply_Matrix_by_Scalar(m->m_full,k,m->r,m->c);
-    }
+    retval = uquad_mat_scalar_mul(Mk, M,1.0/k);
+    err_propagate(retval);
     return ERROR_OK;
 }
 
@@ -334,6 +244,7 @@ int uquad_solve_lin(uquad_mat_t *A, uquad_mat_t *B, uquad_mat_t *x, uquad_mat_t 
 {
     int retval;
     uquad_bool_t local_mem = false;
+    uquad_mat_t *R, *C, *Beq;
     if(A == NULL || B == NULL)
     {
 	err_check(ERROR_NULL_POINTER,"NULL pointer is invalid arg.");
@@ -357,14 +268,47 @@ int uquad_solve_lin(uquad_mat_t *A, uquad_mat_t *B, uquad_mat_t *x, uquad_mat_t 
 	local_mem = true;
     }
 
+    R = uquad_mat_alloc(A->r, 1);
+    C = uquad_mat_alloc(A->c, 1);
+    Beq = uquad_mat_alloc(B->r,B->c);
+    if (R == NULL || C == NULL || Beq == NULL)
+    {
+	err_log("Could not allocate aux mem for lin solve.");
+	goto cleanup;
+    }
+
+    retval = uquad_mat_copy(Beq, B);
+    if(retval != ERROR_OK)
+    {
+	err_log_num("Failed to copy B.",retval);
+	goto cleanup;
+    }
+
+    // equilibrate matrices to reduce condition number
+#if USE_EQUILIBRATE
+    retval = Equilibrate_Matrix(A->m_full, A->r, A->c, R->m_full, C->m_full);
+    if(retval != ERROR_OK)
+    {
+	err_log_num("Equilibrate_Matrix() failed!",retval);
+	goto cleanup;
+    }
+
+    retval = Equilibrate_Right_Hand_Side(Beq->m_full, R->m_full, R->r);
+    if(retval != ERROR_OK)
+    {
+	err_log_num("Equilibrate_Right_Hand_Side() failed!",retval);
+	goto cleanup;
+    }
+#endif
     // we need [A:B]
-    Join_Matrices_by_Row(maux->m_full,A->m_full,A->r,A->c,B->m_full,B->c);
+    Join_Matrices_by_Row(maux->m_full,A->m_full,A->r,A->c,Beq->m_full,Beq->c);
 
     // find inv
     retval = Gaussian_Elimination_Aux(maux->m_full,maux->r,maux->c);
     if (retval < 0)
     {
-	err_check(ERROR_MATH_MAT_SING,"Gaussian elimination failed, matrix is singular");
+	err_log_num("Gaussian elimination failed, matrix is singular",retval);
+	goto cleanup;
     }
 
     // prepare return datax
@@ -372,6 +316,17 @@ int uquad_solve_lin(uquad_mat_t *A, uquad_mat_t *B, uquad_mat_t *x, uquad_mat_t 
 		  maux->m_full, maux->c,
 		  0, A->c);
 
+    // unequilibrate solution
+#if USE_EQUILIBRATE
+    retval = Unequilibrate_Solution(x->m_full, C->m_full, C->r);
+    if( retval != ERROR_OK)
+    {
+	err_log_num("Unequilibrate_Solution() failed!",retval);
+	goto cleanup;
+    }
+#endif
+	
+    cleanup:
     // cleanup
     if(local_mem)
 	// free tmp memory
@@ -443,6 +398,7 @@ int uquad_mat_get_subm(uquad_mat_t *S, int r, int c, uquad_mat_t *A)
 
     Get_Submatrix(S->m_full, S->r, S->c,
 		  A->m_full, A->c, r, c);
+    return ERROR_OK;
 }
 
 /** 
@@ -469,6 +425,22 @@ int uquad_mat_set_subm(uquad_mat_t *A, int r, int c, uquad_mat_t *S)
     Set_Submatrix(A->m_full, A->c,
 		  S->m_full, S->r, S->c, r, c);
     return ERROR_OK;
+}
+
+/** 
+ * Copy matrix src to dest.
+ * Assumes memory has been previously allocated for dest.
+ * 
+ * @param dest 
+ * @param src 
+ * 
+ * @return error code.
+ */
+int uquad_mat_copy(uquad_mat_t *dest, uquad_mat_t *src)
+{
+    int retval = uquad_mat_get_subm(dest, 0, 0, src);
+    err_propagate(retval);
+    return retval;
 }
 
 /** 
@@ -500,56 +472,148 @@ int uquad_mat_diag(uquad_mat_t *m, double *diag)
  * Requires aux memory, two matrices. If not supplied, will allocate and
  * free after finishing.
  * 
- * @param m1 Input.
- * @param minv Result.
- * @param meye NULL or auxiliary matrix, size of m1.
- * @param maux NULL or auxiliary matrix, size of [m1:m1]
+ * @param Minv Input.
+ * @param M Result.
+ * @param Meye NULL or auxiliary matrix, size of M.
+ * @param Maux NULL or auxiliary matrix, size of [M:M]
  * 
  * @return Error code.
  */
-int uquad_mat_inv(uquad_mat_t *m1, uquad_mat_t *minv, uquad_mat_t *meye, uquad_mat_t *maux)
+int uquad_mat_inv(uquad_mat_t *Minv, uquad_mat_t *M, uquad_mat_t *Meye, uquad_mat_t *Maux)
 {
     int retval;
-    uquad_bool_t local_meye = false, local_maux = false;
-    if(m1 == NULL || minv == NULL)
+    uquad_bool_t local_Meye = false, local_Maux = false;
+    if(M == NULL || Minv == NULL)
     {
 	err_check(ERROR_NULL_POINTER,"NULL pointer is invalid arg.");
     }
 
-    if(m1->r != m1->c)
+    if(M->r != M->c)
     {
 	err_check(ERROR_MATH_MAT_DIM,"Cannot invert non-square matrix!");
     }
 
-    if(meye == NULL)
+    if(Meye == NULL)
     {
-	meye= uquad_mat_alloc(m1->r,m1->c);
-	if(meye == NULL)
+	Meye= uquad_mat_alloc(M->r,M->c);
+	if(Meye == NULL)
 	{
-	    err_check(ERROR_MALLOC,"Could not allocate aux mem for inv.");
+	    err_log("Could not allocate aux mem for inv.");
+	    retval = ERROR_MALLOC;
+	    goto cleanup;
 	}
-	uquad_mat_eye(meye);
-	local_meye = true;
+	uquad_mat_eye(Meye);
+	local_Meye = true;
     }
 
-    if(maux == NULL)
+    if(Maux == NULL)
     {
-	maux = uquad_mat_alloc(m1->r,(m1->c)<<1);
-	if(maux == NULL)
+	Maux = uquad_mat_alloc(M->r,(M->c)<<1);
+	if(Maux == NULL)
 	{
-	    err_check(ERROR_MALLOC,"Could not allocate aux mem for inv.");
+	    err_log("Could not allocate aux mem for inv.");
+	    retval = ERROR_MALLOC;
+	    goto cleanup;
 	}
-	local_maux = true;
+	local_Maux = true;
     }
 
-    retval = uquad_solve_lin(m1, meye, minv, maux);
-    err_propagate(retval);
+    retval = uquad_solve_lin(M, Meye, Minv, Maux);
+    if(retval != ERROR_OK)
+    {
+	goto cleanup;
+    }
 
-    if(local_meye)
-	uquad_mat_free(meye);
-    if(local_maux)
-	uquad_mat_free(maux);
+    cleanup:
+    if(local_Meye)
+	uquad_mat_free(Meye);
+    if(local_Maux)
+	uquad_mat_free(Maux);
 
+    return retval;
+}
+
+/** 
+ * Transposes a matrix
+ * 
+ * @param Mt transpose of M
+ * @param M input
+ * 
+ * @return error code
+ */
+int uquad_mat_transpose(uquad_mat_t *Mt, uquad_mat_t *M)
+{
+    if(Mt == NULL || M == NULL)
+    {
+	err_check(ERROR_NULL_POINTER, "Cannot load, must allocate memory previously.");
+    }
+    if(Mt->r != M->c || Mt->c != M->r)
+    {
+	err_check(ERROR_MATH_MAT_DIM,"Matrices must be mxn and nxm!");
+    }
+    Transpose_Matrix(Mt->m_full, M->m_full, M->r, M->c);
+    return ERROR_OK;
+}
+
+/** 
+ * Transposes a matrix, in place.
+ * 
+ * @param m is the input, and will be transposed after execution.
+ * 
+ * @return error code
+ */
+int uquad_mat_transpose_inplace(uquad_mat_t *m)
+{
+    if(m == NULL)
+    {
+	err_check(ERROR_NULL_POINTER, "Cannot load, must allocate memory previously.");
+    }
+    if(m->r != m->c)
+    {
+	err_check(ERROR_MATH_MAT_DIM, "Must be square!");
+    }
+    Transpose_Square_Matrix(m->m_full, m->r);
+    return ERROR_OK;
+}
+
+/** 
+ * Performs element to element product of matrices:
+ *  C[i][j] = A[i][j]*B[i][j] for all i,j
+ * If called with A==NULL and B==NULL, will square each
+ * element of C, in place (C will be modified after execution)
+ * 
+ * @param C answer
+ * @param A input or NULL
+ * @param B input or NULL
+ * 
+ * @return error code
+ */
+int uquad_mat_dot_product(uquad_mat_t *C, uquad_mat_t *A, uquad_mat_t *B)
+{
+    int i;
+    if(C == NULL)
+    {
+	err_check(ERROR_NULL_POINTER, "Cannot load, must allocate memory previously.");
+    }
+    if(A == NULL && B == NULL)
+	for(i = 0; i < C->r*C->c; ++i)
+	    C->m_full[i] *= C->m_full[i];
+    else
+    {
+	if (A == NULL || B == NULL)
+	{
+	    err_check(ERROR_NULL_POINTER, "Cannot load, must allocate memory previously.");
+	}
+	if (C->r != A->r ||
+	    C->c != A->c ||
+	    C->r != B->r ||
+	    C->c != B->c)
+	{
+	    err_check(ERROR_MATH_MAT_DIM, "Must same size!");
+	}
+	for(i = 0; i < C->r*C->c; ++i)
+	    C->m_full[i] = B->m_full[i] * A->m_full[i];
+    }
     return ERROR_OK;
 }
 
@@ -619,7 +683,7 @@ void uquad_mat_dump(uquad_mat_t *m, FILE *output)
     for(i=0;i<m->r;i++)
     {
 	for(j=0;j<m->c;j++)
-	    fprintf(output, "%f\t",m->m[i][j]);
+	    fprintf(output, "%e\t",m->m[i][j]);
 	fprintf(output,"\n");
     }
 

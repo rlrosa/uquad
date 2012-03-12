@@ -15,6 +15,11 @@
 /// Default path for calibration file.
 #define IMU_DEFAULT_CALIB_PATH "imu_calib.txt"
 
+#define IMU_COMM_FAKE 0 // allows reading from log file
+
+#define IMU_FRAME_BINARY 1 // If 0, then IMU will send ascii, else binary
+#define IMU_FRAME_ELEMENTS 12
+#define IMU_FRAME_ALTERNATES_INIT 0
 #define IMU_FRAME_INIT_CHAR 'A'
 #define IMU_FRAME_INIT_CHAR_ALT 'C'
 #define IMU_FRAME_INIT_DIFF 0x2
@@ -27,6 +32,7 @@
 #define IMU_COMM_CALIBRATION_NULL_SIZE 256 // Tune!
 #define IMU_DEFAULT_FS 5 // this is an index
 #define IMU_DEFAULT_ACC_SENS 0 // this is an index
+#define IMU_GYRO_DEFAULT_GAIN 14.375L
 
 #define IMU_SAMPLE_COUNT_SIZE 2
 #define IMU_BYTES_PER_SENSOR 2
@@ -37,6 +43,7 @@
 #define IMU_SENS_OPT_COUNT 4
 #define IMU_FS_OPT_COUNT 1
 #define IMU_GRAVITY 9.81
+#define IMU_P0_UNDEF -1
 
 #define IMU_COMM_AVG_MAX_INTERVAL 2*IMU_FRAME_SAMPLE_AVG_COUNT //Too much...?
 

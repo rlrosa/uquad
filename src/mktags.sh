@@ -7,11 +7,8 @@ if [ "$1" == "-a" ]; then
     exit
 fi
 
-
-ETAGS_DIR=/home/rrosa/work/uquad/src/
-
-
 SCAN_DIRS=(imu
+	   kalman
            motor
 	   test
 	   main
@@ -22,15 +19,12 @@ SCAN_DIRS=(imu
 	   math
            submodules/gpsd)
 
-cd $ETAGS_DIR
-
 echo "Delete old database.."
 rm -f TAGS
 
 for i in ${SCAN_DIRS[*]}; do
     echo "Scanning:" $i;
-    etags -a `find $ETAGS_DIR/$i -name "*.cpp" -o -name "*.c" -o -name "*.h" -o -name "*.hpp"`                                                
+    etags -a `find ./$i -name "*.cpp" -o -name "*.c" -o -name "*.h" -o -name "*.hpp"`                                                
 done
 
 echo "Done"
-cd -
