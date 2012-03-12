@@ -77,6 +77,19 @@ ERROR_MOT_SATURATE
 #define quit_if(retval) if(retval!=ERROR_OK)quit()
 
 /**
+ * If @retval is an error, call quit().
+ * Usefull in test programs, allows cleaning up.
+ * 
+ */
+#define quit_log_if(retval,msg) if(retval!=ERROR_OK){err_log(msg);quit();}
+
+/**
+ * If @retval is an error, then got to the beginning of the loop
+ * 
+ */
+#define log_n_continue(retval,msg) if(retval!=ERROR_OK){err_log(msg);continue;}
+
+/**
  * Verifies that malloc succeeded.
  * 
  */

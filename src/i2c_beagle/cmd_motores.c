@@ -68,7 +68,7 @@ int uquad_mot_disable_all(int i2c_dev);
 int uquad_mot_set_speed(int i2c_dev, int mot_i2c_addr, __u8 val);
 int uquad_mot_set_speed_all(int i2c_dev, __u8 *v, int swap_order);
 /// Aux
-void uquad_sigint_handler(int signal_num);
+void uquad_sig_handler(int signal_num);
 /// Intercom via kernel msgq
 typedef struct msgbuf {
     long    mtype;
