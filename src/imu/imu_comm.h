@@ -32,6 +32,7 @@
 #define IMU_COMM_CALIBRATION_NULL_SIZE 256 // Tune!
 #define IMU_DEFAULT_FS 5 // this is an index
 #define IMU_DEFAULT_ACC_SENS 0 // this is an index
+#define IMU_GYRO_DEFAULT_GAIN 14.375L
 
 #define IMU_SAMPLE_COUNT_SIZE 2
 #define IMU_BYTES_PER_SENSOR 2

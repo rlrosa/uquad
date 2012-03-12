@@ -647,7 +647,8 @@ static int imu_comm_convert_lin(imu_t *imu, int16_t *raw, uquad_mat_t *conv, imu
     }
 
     for(i=0; i < 3; ++i)
-	m3x1_0->m_full[i] = (double) raw[i];
+	//TODO fix calibration or leave this?
+	m3x1_0->m_full[i] = ((double) raw[i])/IMU_GYRO_DEFAULT_GAIN;
     /// m3x1_0 has tmp answer
     /// tmp = raw - b
     retval = uquad_mat_sub(m3x1_1,m3x1_0, calib->b);
