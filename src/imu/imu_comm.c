@@ -732,8 +732,10 @@ static int imu_comm_temp_convert(imu_t *imu, uint16_t *data, double *temp)
 
 #define PRESS_EXP  0.190294957183635 // 1/5.255 = 0.190294957183635
 /**
- * Convert raw pressure data to altitud.
- *
+ * Convert raw pressure data to relative altitud.
+ * The first call to this function will set a reference pressure, which
+ * will correspond to altitud 0m. Succesive calls wil return altitud
+ * relative to initial altitud.
  *
  *@param imu 
  *@param data Raw gyro data.
@@ -744,7 +746,11 @@ static int imu_comm_temp_convert(imu_t *imu, uint16_t *data, double *temp)
 static int imu_comm_pres_convert(imu_t *imu, uint32_t *data, double *alt)
 {
 
-    double p0 = 101325;
+    static double p0 = IMU_P0_UNDEF;
+    if(p0 == IMU_P0_UNDEF)
+	// first call sets reference for altitud
+	p0 = (double)*data;
+    //TODO usar un promedio de un tamaño razonable.
     *alt = 44330*(1- pow((((double)(*data))/p0),PRESS_EXP));
     return ERROR_OK;
 }

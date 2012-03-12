@@ -42,6 +42,7 @@
 #define IMU_SENS_OPT_COUNT 4
 #define IMU_FS_OPT_COUNT 1
 #define IMU_GRAVITY 9.81
+#define IMU_P0_UNDEF -1
 
 #define IMU_COMM_AVG_MAX_INTERVAL 2*IMU_FRAME_SAMPLE_AVG_COUNT //Too much...?
 
