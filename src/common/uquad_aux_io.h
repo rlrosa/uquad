@@ -8,24 +8,21 @@
 #include <uquad_error_codes.h>
 #include <uquad_types.h>
 
-struct io_dev{
+typedef struct io_dev{
     int fd;
     uquad_bool_t ready_read;
     uquad_bool_t ready_write;
     struct io_dev * next;
-};
-typedef struct io_dev io_dev_t;
+} io_dev_t;
 
-struct io_dev_list{
+typedef struct io_dev_list{
     int dev_count;
     io_dev_t * first;
-};
-typedef struct io_dev_list io_dev_list_t;
+} io_dev_list_t;
 
-struct io{
+typedef struct io{
     io_dev_list_t dev_list;
-};
-typedef struct io io_t;
+} io_t;
 
 /** 
  * Initializes an empty io structure.
