@@ -522,3 +522,40 @@ int store_data(kalman_io_t* kalman_io_data, uquad_mat_t* w, imu_data_t* data)
 
     return ERROR_OK;
 }
+
+void kalman_deinit(kalman_io_t *kalman_io_data)
+{
+    uquad_mat_free(Fk_1);
+    uquad_mat_free(Fk_1_T);
+    uquad_mat_free(mtmp);
+    uquad_mat_free(P_);
+    uquad_mat_free(Fx);
+    uquad_mat_free(fx);
+    uquad_mat_free(hx);
+    uquad_mat_free(yk);
+    uquad_mat_free(HT);
+    uquad_mat_free(HP_);
+    uquad_mat_free(HP_H);
+    uquad_mat_free(Sk);
+    uquad_mat_free(P_HT);
+    uquad_mat_free(Kk);
+    uquad_mat_free(Kkyk);
+    uquad_mat_free(KkH);
+    uquad_mat_free(IKH);
+    uquad_mat_free(Sk_1);
+    uquad_mat_free(I);
+    uquad_mat_free(w2);
+    uquad_mat_free(tmp);
+    uquad_mat_free(tmp2);
+    uquad_mat_free(TM);
+    uquad_mat_free(D);
+    uquad_mat_free(H);
+    uquad_mat_free(kalman_io_data->x_hat);
+    uquad_mat_free(kalman_io_data->x_);
+    uquad_mat_free(kalman_io_data->u);
+    uquad_mat_free(kalman_io_data->z);
+    uquad_mat_free(kalman_io_data->Q);
+    uquad_mat_free(kalman_io_data->R);
+    uquad_mat_free(kalman_io_data->P);
+    free(kalman_io_data);
+}

@@ -18,6 +18,7 @@ add_subdirectory(math)
 add_subdirectory(kernel_msgq)
 add_subdirectory(gps)
 add_subdirectory(kalman)
+add_subdirectory(main)
 
 # Check in test dir for deeper includes
 add_subdirectory(test)

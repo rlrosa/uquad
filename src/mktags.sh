@@ -11,6 +11,7 @@ SCAN_DIRS=(imu
 	   kalman
            motor
 	   test
+	   main
 	   i2c_beagle
            common
            gps

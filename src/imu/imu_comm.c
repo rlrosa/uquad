@@ -213,8 +213,10 @@ int imu_comm_deinit(imu_t *imu){
     if(imu->device != NULL)
 	retval = imu_comm_disconnect(imu);
     // ignore answer and keep dying, leftovers are not reliable
-    //TODO
-    err_log("TODO:free ALL memory!!");
+    //TODO chec if more to free
+    uquad_mat_free(m3x3);
+    uquad_mat_free(m3x1_0);
+    uquad_mat_free(m3x1_1);
     free(imu);
     return retval;
 }
@@ -278,17 +280,15 @@ static int imu_comm_avg(imu_t *imu){
  *
  *@return error code
  */
-static int imu_comm_get_sync_end(imu_t *imu, uquad_bool_t *in_sync){
+static int imu_comm_get_sync_end(imu_t *imu){
     // Now read out the end char
     int watchdog = 0, retval;
     unsigned char tmp = 'X';// Anything diff from IMU_FRAME_END_CHAR
-    *in_sync = false;
     while(watchdog < READ_RETRIES){
 	retval = fread(&tmp,IMU_INIT_END_SIZE,1,imu->device);
 	if(retval > 0){
 	    if(tmp == IMU_FRAME_END_CHAR)
 	    {
-		*in_sync = true;
 		return ERROR_OK;
 		break;
 	    }
@@ -327,9 +327,8 @@ static uint8_t previous_sync_char = IMU_FRAME_INIT_CHAR;
  *
  *@return error code
  */
-static int imu_comm_get_sync_init(imu_t *imu, uquad_bool_t *in_sync){
+static int imu_comm_get_sync_init(imu_t *imu){
     int retval,i;
-    *in_sync = false;
     unsigned char tmp = 'X';// Anything diff from IMU_FRAME_INIT_CHAR
     for(i=0;;)//i<IMU_DEFAULT_FRAME_SIZE_BYTES;++i)
     {
@@ -349,7 +348,6 @@ static int imu_comm_get_sync_init(imu_t *imu, uquad_bool_t *in_sync){
 		    if(!IMU_FRAME_ALTERNATES_INIT ||
 		       ((tmp ^ previous_sync_char) == IMU_FRAME_INIT_DIFF))
 		    {
-			*in_sync = true;
 			previous_sync_char = tmp;
 			return ERROR_OK;
 		    }
@@ -378,12 +376,12 @@ static int imu_comm_get_sync_init(imu_t *imu, uquad_bool_t *in_sync){
  *
  *@return 
  */
-int imu_comm_read(imu_t *imu,uquad_bool_t *success){
+int imu_comm_read(imu_t *imu){
     int retval;
     imu_raw_t new_frame;
 
     // sync by getting init frame char
-    retval = imu_comm_get_sync_init(imu,success);
+    retval = imu_comm_get_sync_init(imu);
     err_propagate(retval);
     
     // sync worked, now get data
@@ -396,7 +394,7 @@ int imu_comm_read(imu_t *imu,uquad_bool_t *success){
 #endif
 
     // verify sync by getting end of frame char
-    retval = imu_comm_get_sync_end(imu, success);
+    retval = imu_comm_get_sync_end(imu);
     err_propagate(retval);
 
     // add the frame to the buff
