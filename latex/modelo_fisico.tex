@@ -133,7 +133,8 @@ La importancia del sistema $S_q$ radica en las simplificaciones que introduce a 
 
 Las tres transformaciones pueden representarse matricialmente de la siguiente forma: 
 
-$$
+\begin{equation}
+\label{eq:bases}
 H_I^1=\left(\begin{array}{ccc}
   \cos\theta&\sin\theta&0\\
   -\sin\theta&\cos\theta&0\\
@@ -149,7 +150,7 @@ H_I^1=\left(\begin{array}{ccc}
   0&-\sin\psi&\cos\psi  
   
   \end{array}\right) 
-$$
+\end{equation}
 
 
 
@@ -193,7 +194,7 @@ $$
 
 De esta ecuaci\'on se obtienen tres relaciones entre las velocidades angulares respecto de cada eje principal del sistema de coordenadas solidario al  cuadric\'optero con las derivadas de los \'angulos de Euler. Podemos re escribir dicha ecuaci\'on de la siguiente forma:
 
-$$
+\begin{equation}
 \left(\begin{array}{c}
 \dot{\psi}\\
 \dot{\varphi}\\
@@ -203,7 +204,8 @@ $$
 \omega_{q_y}\cos \psi - \omega_{q_z}\sin\psi\\
 \omega_{q_z} \frac{\cos\psi}{\cos\varphi}  + \omega_{q_y}\frac{\sin\psi}{\cos\varphi} \\
 \end{array}\right)
-$$
+\label{eq:euler}
+\end{equation}
 
 Realizando un razonamiento similar se deduce la relaci\'on que existe entre la velocidad del sistema expresada en el marco de referencia inercial con la velocidad expresada en el sistema de referencia solidario al cuadric\'optero. La velocidad en el sistema de referencia inercial no es otra cosa que la derivada de la posici\'on ($\vec{r}$). 
 $$
@@ -219,8 +221,8 @@ Para transformar las coordenadas de un sistema de referencia al otro alcanza con
 
 \begin{footnotesize}
 
-$$\left( \begin{array}{c}
-
+\begin{equation}
+\left( \begin{array}{c}
 \dot{x}\\
 \dot{y}\\
 \dot{z}
@@ -228,7 +230,9 @@ $$\left( \begin{array}{c}
 v_{q_x} \cos \varphi \cos \theta + v_{q_y} ( \cos \theta \sin \varphi \sin \psi-\cos \varphi \sin \theta ) + v_{q_z}(\sin \psi \sin \theta + \cos \psi \cos \theta \sin \varphi)  \\
 v_{q_x} \cos \varphi \sin \theta + v_{q_y} (\cos \psi \cos \theta + \sin \theta \sin \varphi \sin \psi) + v_{q_z}( \cos \psi \sin \theta \sin \varphi-\cos \theta \sin \psi ) \\
 -v_{q_x} \sin \varphi  + v_{q_y} \cos \varphi \sin \psi  + v_{q_z}\cos \varphi \cos \psi \\
-\end{array} \right)  $$
+\end{array} \right)
+\label{eq:pospunto}
+\end{equation}
 \end{footnotesize} 
 
 Hasta aqu\'i hemos obtenido simplemente relaciones cinem\'aticas; por un lado entre la velocidad angular del sistema $S_q$ y las derivadas de los \'angulos de Euler, por el otro se tiene el v\'inculo entre la velocidad absoluta del sistema y la velocidad absoluta expresada en el sistema $S_q$ y los \'angulos de Euler. Sin embargo a\'un no conocemos cuales son las Fuerzas y Momentos presentes en el sistema, ni que efectos producen sobre el mismo. Es aqu\'i que nos detendremos en el an\'alisis cinem\'atico para considerar la din\'amica del sistema. 
@@ -253,7 +257,7 @@ $$\vec{a} = (\dot{v_{q_x}}+v_{q_z} \omega_{q_y} - v_{q_y} \omega_{q_z} )\vec{i_q
 
 Operando se puede reescribir la primer cardinal de la siguiente forma:
 
-$$
+\begin{equation}
 \left(\begin{array}{c}\dot{v_{q_x}}\\
 \dot{v_{q_y}}\\
 \dot{v_{q_z}}\\
@@ -262,7 +266,8 @@ v_{q_y} \omega_{q_z} - v_{q_z} \omega_{q_y}	\\
 v_{q_z} \omega_{q_x} - v_{q_z} \omega_{q_z}\\
 v_{q_x} \omega_{q_y} - v_{q_y} \omega_{q_x}\\
 \end{array}\right) + \sum_{i=1}^4 F_{ext} 
-$$
+\label{vpuntos}
+\end{equation}
 
 
 \subsection{Segunda Cardinal}
@@ -342,7 +347,8 @@ $$
 
 A partir del c\'alculo de esta derivada podemos reescribir la segunda cardinal:
 
-$$ \Pi_{O\prime}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}\left(\begin{array}{c}
+\begin{equation}
+ \Pi_{O\prime}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}\left(\begin{array}{c}
 \dot{\omega_{q_x}}\\
 \dot{\omega_{q_y}}\\
 \dot{\omega_{q_z}}\\
@@ -353,10 +359,12 @@ $$ \Pi_{O\prime}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}\left(\begin{array}{c}
 
 -I_{zz_m}(\dot{\omega_1}-\dot{\omega_2}+\dot{\omega_3}-\dot{\omega_4})\\
 
-\end{array}\right) + M_G^{ext}$$
+\end{array}\right) + M_G^{ext}
+\label{eq:omegas}
+\end{equation}
 
 
-\section{Fuerzas y momentos involucradas}
+\section{Fuerzas y momentos involucrados}
 \label{FYT}
 
 Para completar el an\'alisis del sistema es fundamental conocer las expresiones de las fuerzas y los momentos involucrados. Por un lado se debe considerar la acci\'on del peso en el sistema. Adem\'as debemos conocer con precisi\'on las fuerzas y momentos que introducen las h\'elices del cuadric\'optero ya que son estos los elementos sobre los cuales se pueden realizar las acciones de control. Finalmente consideraremos tambi\'en el efecto del viento. Esta \'ultima es una fuerza que no puede conocerse a priori y ser\'a considerada como una perturbaci\'on en el sistema. Recordamos que las bajas velocidades a las que el sistema se mueve nos permiten despreciar las fuerzas aerodin\'amicas, a excepci\'on de aquellas que tienen como origen el giro de las h\'elices.
@@ -476,7 +484,9 @@ Luego de realizados los estudios sobre la cinem\'atica y din\'amica del sistema 
 Se debe aclarar que la elecci\'on realizada del vector de estados se debe exclusivamente a la conveniencia pr\'actica que se encuentra al trabajar con las variables expresadas en el sistema del cuadric\'optero. Esta conveniencia se ve reflejada en dos aspectos, en primer lugar las simplificaciones que introduce trabajar con estas variables en el marco de un desarrollo te\'orico de las ecuaciones que gobiernan al sistema, por otra parte, al disponer de sensores montados sobre el cuadric\'optero, los mismos medir\'an las velocidades angulares y lineales en el sistema $S_q$. Bajo esta elecci\'on parece razonable escoger el vector de estados de la siguiente manera:
 $$X=\left\lbrace  x,y,z, v_{q_z},v_{q_y},v_{q_z},\theta,\varphi,\psi,\omega_{q_x},\omega_{q_y},\omega_{q_z} \right\rbrace$$
 
-Las fuerzas y momentos dependen todos de las velocidades angulares de las h\'elices, luego de las simplificaciones realizadas el vector entrada se compone simplemente de las velocidades de las h\'elices es decir que:
+Las ecuaciones desarrolladas hasta ahora son las que gobiernan el comportamiento mecánico del sistema y son las que serán utilizadas para el desarrollo del simulador. Dichas ecuaciones dependen tanto de la velocidad angular de las hélices como de sus derivadas. Para realizar el control resulta m\'as sencillo poder trabajar sin dichas derivadas. La raz\'on es que las velocidades angulares y sus derivadas no son entradas independientes. Por lo tanto no se pueden imponer valores a unas sin considerar el comportamiento de las otras. En este sentido se realiza \'ultima aproximaci\'on. El t\'ermino de las derivadas de las velocidades angulares se encuentra presente exclusivamente en la ecuaci\'on \ref{eq:omegas}. Dicho t\'ermino se encuentra multiplicado por el momento de inercia de los motores. Considerando que la variaci\'on en la velocidad angular de los motores es inferior a la respuesta al escal\'on estudiada en \ref{chap:motores}, se puede despreciar el t\'ermino de las derivadas de las velocidades angulares respecto al t\'ermino asociado a los torques en la ecuaci\'on \ref{eq:omegas}.\\
+
+Luego de realizada esta simplificaci\'on tenemos que la entrada est\'a compuesta por el vector:
 
 $$u=\left\lbrace\omega_1, \omega_2, \omega_3, \omega_4\right\rbrace$$
 
@@ -494,8 +504,10 @@ El modelo en variables de estado es por lo tanto:
 &\dot{v_{q_z}}=v_{q_x} \omega_{q_y} - v_{q_y} \omega_{q_x}-g\cos\varphi\cos\psi+\frac{1}{M}\sum_{i=1}^4T_i\\
 &\dot{\omega_{q_x}}=\frac{\omega_{q_y}\omega_{q_z}(I_{yy}-I_{zz})+\omega_{q_y}I_{zz_m}(\omega_1-\omega_2+\omega_3-\omega_4)}{I_{xx}}+\frac{L(T_2-T_4)}{I_{xx}}\\
 &\dot{\omega_{q_y}}=\frac{\omega_{q_x}\omega_{q_z}(-I_{xx}+I_{zz})+\omega_{q_x}I_{zz_m}(\omega_1-\omega_2+\omega_3-\omega_4)}{{I_{yy}}}+\frac{L(T_3-T_1)}{I_{yy}}\\
-&\dot{\omega_{q_z}}=\frac{-I_{zz_m}(\dot{w_1}-\dot{w_2}+\dot{w_3}-\dot{w_4})}{I_{zz}}+\frac{Q_1-Q_2+Q_3-Q_4}{I_{zz}}\\
+&\dot{\omega_{q_z}}=\frac{Q_1-Q_2+Q_3-Q_4}{I_{zz}}\\
+%\frac{-I_{zz_m}(\dot{w_1}-\dot{w_2}+\dot{w_3}-\dot{w_4})}{I_{zz}}+
 \end{aligned}}
+\label{eq:modelo}
 \end{equation}
 
 
