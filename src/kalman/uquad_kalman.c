@@ -64,7 +64,7 @@ int uquad_kalman(kalman_io_t * kalman_io_data, uquad_mat_t* w, imu_data_t* data)
     err_propagate(retval);
 
     // Prediction
-    retval = f(kalman_io_data -> x_, kalman_io_data);
+    retval = f(kalman_io_data -> x_, kalman_io_data);//TODO initialize x_!
     err_propagate(retval);
     retval = F(Fk_1, kalman_io_data);
     err_propagate(retval);
@@ -185,7 +185,7 @@ int f(uquad_mat_t* fx, kalman_io_t* kalman_io_data)
     retval =  drag(D,w_mat);
     err_propagate(retval);
     double* TM_vec = TM->m_full;
-    double* D_vec = TM->m_full;
+    double* D_vec = D->m_full;
 
     fx->m_full[0]  = x     + T *(vqx*cos(phi)*cos(theta)+vqy*(cos(theta)*sin(phi)*sin(psi)-cos(phi)*sin(theta))+vqz*(sin(psi)*sin(theta)+cos(psi)*cos(theta)*sin(phi)) ) ;
     fx->m_full[1]  = y     + T *(vqx*cos(phi)*sin(theta)+vqy*(sin(theta)*sin(phi)*sin(psi)+cos(psi)*cos(theta))+vqz*(cos(psi)*sin(theta)*sin(phi)-cos(theta)*sin(psi)) ) ;
@@ -503,20 +503,19 @@ kalman_io_t* kalman_init()
 
 int store_data(kalman_io_t* kalman_io_data, uquad_mat_t* w, imu_data_t* data)
 {
-    kalman_io_data->u->m_full[0] = w->m_full[0];
-    kalman_io_data->u->m_full[1] = w->m_full[1];
-    kalman_io_data->u->m_full[2] = w->m_full[2];
-    kalman_io_data->u->m_full[3] = w->m_full[3];
+    int retval;
+    retval = uquad_mat_copy(kalman_io_data->u, w);
+    err_propagate(retval);
 
-    kalman_io_data->z->m_full[0] = data->magn->m_full[1];
-    kalman_io_data->z->m_full[1] = data->magn->m_full[2];
-    kalman_io_data->z->m_full[2] = data->magn->m_full[3];
-    kalman_io_data->z->m_full[3] = data->acc->m_full[1];
-    kalman_io_data->z->m_full[4] = data->acc->m_full[2];
-    kalman_io_data->z->m_full[5] = data->acc->m_full[3];
-    kalman_io_data->z->m_full[6] = data->gyro->m_full[1];
-    kalman_io_data->z->m_full[7] = data->gyro->m_full[2];
-    kalman_io_data->z->m_full[8] = data->gyro->m_full[3];
+    retval = uquad_mat_set_subm(kalman_io_data->z, 0, 0, data->magn);
+    err_propagate(retval);
+
+    retval = uquad_mat_set_subm(kalman_io_data->z, 3, 0, data->acc);
+    err_propagate(retval);
+
+    retval = uquad_mat_set_subm(kalman_io_data->z, 6, 0, data->gyro);
+    err_propagate(retval);
+
     kalman_io_data->z->m_full[9] = data->alt;
 
     kalman_io_data->T = data->T_us/1000000;

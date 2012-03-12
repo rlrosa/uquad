@@ -149,10 +149,10 @@ int main(int argc, char *argv[]){
 		    if(retval == ERROR_OK)
 		    {
 
+			w -> m_full[0] = 334.28;
 			w -> m_full[1] = 334.28;
 			w -> m_full[2] = 334.28;
 			w -> m_full[3] = 334.28;
-			w -> m_full[4] = 334.28;
 			retval = uquad_kalman(kalman_io_data, w, &data);
 			err_propagate(retval);
 
