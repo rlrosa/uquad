@@ -169,7 +169,7 @@ int mat_scalar_test(uquad_bool_t mul_notdiv)
     else
     {
 	printf("Will div by k=%f\n",k);
-	retval = uquad_mat_scalar_div(m1,k);
+	retval = uquad_mat_scalar_div(m1,NULL,k);
     }
     err_propagate(retval);
 

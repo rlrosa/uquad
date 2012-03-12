@@ -17,8 +17,6 @@
 #include "get_diagonal.c"
 #include "get_submatrix.c"
 #include "set_submatrix.c"
-#include "div_matrix_by_scalar.c"
-#include "div_3x3_matrix_by_scalar.h"
 #include "mul_3x3_matrix_by_scalar.h"
 #include "add_matrices.c"
 #include "add_matrices_3x3.h"
@@ -178,39 +176,6 @@ int uquad_mat_det(uquad_mat_t *m, double *res)
 }
 
 /** 
- * Divides matrix m by scalar value k.
- * Will check if attempt to divide by 0.0.
- *
- * If matrices are 3x3, a macro is used (+ efficiency).
- * 
- * @param m 
- * @param k 
- * 
- * @return 
- */
-int uquad_mat_scalar_div(uquad_mat_t *m, double k)
-{
-    if(k == 0.0)
-    {
-	err_check(ERROR_MATH_DIV_0,"Cannot divide by 0!");
-    }
-    if(m == NULL)
-    {
-	err_check(ERROR_NULL_POINTER,"NULL pointer is invalid arg.");
-    }
-
-    if((m->r == 3) && (m->c == 3))
-    {
-	Divide_3x3_Matrix_by_Scalar(m->m_full,k);
-    }
-    else
-    {
-	Divide_Matrix_by_Scalar(m->m_full,k,m->r,m->c);
-    }
-    return ERROR_OK;
-}
-
-/** 
  * Multiplies matrix m by scalar value k.
  * If only one matrix is supplied, will multiply in place.
  *
@@ -250,6 +215,31 @@ int uquad_mat_scalar_mul(uquad_mat_t *Mk, uquad_mat_t *M, double k)
 	    for(i = 0; i < size; ++i)
 		Mk->m_full[i] *= k;	
     }
+    return ERROR_OK;
+}
+
+/** 
+ * Divides matrix m by scalar value k.
+ * If only one matrix is supplied, will multiply in place.
+ *
+ * If in place and matrix is 3x3, a macro is used (+efficiency)
+ * 
+ * @param Mk Result will be returned here.
+ * @param M  NULL for in place multiplicacion. Otherwise, M will remain
+ * unmodified, and the anwser will be Mk = M*k
+ * @param k 
+ * 
+ * @return error code
+ */
+int uquad_mat_scalar_div(uquad_mat_t *Mk, uquad_mat_t *M, double k)
+{
+    int retval;
+    if(k == 0.0)
+    {
+	err_check(ERROR_MATH_DIV_0,"Cannot divide by 0!");
+    }
+    retval = uquad_mat_scalar_mul(Mk, M,1.0/k);
+    err_propagate(retval);
     return ERROR_OK;
 }
 
