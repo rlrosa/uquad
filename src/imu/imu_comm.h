@@ -15,6 +15,11 @@
 /// Default path for calibration file.
 #define IMU_DEFAULT_CALIB_PATH "imu_calib.txt"
 
+#define IMU_COMM_FAKE 0 // allows reading from log file
+
+#define IMU_FRAME_BINARY 1 // If 0, then IMU will send ascii, else binary
+#define IMU_FRAME_ELEMENTS 12
+#define IMU_FRAME_ALTERNATES_INIT 0
 #define IMU_FRAME_INIT_CHAR 'A'
 #define IMU_FRAME_INIT_CHAR_ALT 'C'
 #define IMU_FRAME_INIT_DIFF 0x2
