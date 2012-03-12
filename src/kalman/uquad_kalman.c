@@ -64,7 +64,7 @@ int uquad_kalman(kalman_io_t * kalman_io_data, uquad_mat_t* w, imu_data_t* data)
     err_propagate(retval);
 
     // Prediction
-    retval = f(kalman_io_data -> x_, kalman_io_data);//TODO initialize x_!
+    retval = f(kalman_io_data -> x_, kalman_io_data);
     err_propagate(retval);
     retval = F(Fk_1, kalman_io_data);
     err_propagate(retval);
