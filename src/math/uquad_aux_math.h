@@ -24,40 +24,6 @@
 
 /**
  * -- -- -- -- -- -- -- -- -- -- -- --
- * Dinamically allocated vector
- * 
- * Documentation in uquad_aux_math.c
- *
- * Example of usage:
- *   int i,retval;
- *   uquad_vec_t *v = uquad_vec_alloc(3);
- *   if (v == NULL)
- *   {
- *     perror("Failed to allocate vector");
- *     exit(-1);
- *   }
- *   for(i=0; i < v->l ; ++i)
- *     v->v[i] = 3*i; // some value
- *   ... (operations) ...
- *   uquad_vec_free(v);
- *   exit(0);
- * -- -- -- -- -- -- -- -- -- -- -- --
- */
-struct uquad_vec {
-    double * v;      // elements
-    int l;           // len
-};
-typedef struct uquad_vec uquad_vec_t;
-
-int uquad_vec_dot(uquad_vec_t *v1, uquad_vec_t *v2, uquad_vec_t *vr);
-
-int uquad_vec_cross(uquad_vec_t *v1, uquad_vec_t *v2, uquad_vec_t *vr);
-
-uquad_vec_t *uquad_vec_alloc(int l);
-void uquad_vec_free(uquad_vec_t *v);
-
-/**
- * -- -- -- -- -- -- -- -- -- -- -- --
  * Dinamically allocated matrix
  *
  * Documentation in uquad_aux_math.c
