@@ -75,9 +75,9 @@
 
 #include <float.h>             // required for DBL_MIN_EXP and DBL_MAX_EXP
 #include <math.h>              // required for frexp() and ldexp()  
-#define SUCCESS 0
-#define UNDERFLOWS 1
-#define OVERFLOWS 2
+#define SUCCESS ERROR_OK
+#define UNDERFLOWS ERROR_MATH_UNDERFLOWS
+#define OVERFLOWS ERROR_MATH_OVERFLOWS
 
 ////////////////////////////////////////////////////////////////////////////////
 // int Equilibrate_Matrix(double *A, int nrows, int ncols, double r[],        //

@@ -10,7 +10,6 @@
 #include "copy_matrix.h"
 #include "join_by_rows.c"
 #include "join_by_cols.c"
-//#include "equilibrate_matrix.c"//TODO use?
 #include "zero_matrix.c"
 #include "identity_matrix.c"
 #include "set_diagonal.c"
@@ -28,6 +27,7 @@
 #include "gauss_aux_elimination.c"
 #include "transpose_matrix.c"
 #include "transpose_square_matrix.c"
+#include "equilibrate_matrix.c"
 //#include "doolittle.c"
 //#include "doolittle_pivot.c"
 
@@ -244,6 +244,7 @@ int uquad_solve_lin(uquad_mat_t *A, uquad_mat_t *B, uquad_mat_t *x, uquad_mat_t 
 {
     int retval;
     uquad_bool_t local_mem = false;
+    uquad_mat_t *R, *C, *Beq;
     if(A == NULL || B == NULL)
     {
 	err_check(ERROR_NULL_POINTER,"NULL pointer is invalid arg.");
@@ -267,14 +268,47 @@ int uquad_solve_lin(uquad_mat_t *A, uquad_mat_t *B, uquad_mat_t *x, uquad_mat_t 
 	local_mem = true;
     }
 
+    R = uquad_mat_alloc(A->r, 1);
+    C = uquad_mat_alloc(A->c, 1);
+    Beq = uquad_mat_alloc(B->r,B->c);
+    if (R == NULL || C == NULL || Beq == NULL)
+    {
+	err_log("Could not allocate aux mem for lin solve.");
+	goto cleanup;
+    }
+
+    retval = uquad_mat_copy(Beq, B);
+    if(retval != ERROR_OK)
+    {
+	err_log_num("Failed to copy B.",retval);
+	goto cleanup;
+    }
+
+    // equilibrate matrices to reduce condition number
+#if USE_EQUILIBRATE
+    retval = Equilibrate_Matrix(A->m_full, A->r, A->c, R->m_full, C->m_full);
+    if(retval != ERROR_OK)
+    {
+	err_log_num("Equilibrate_Matrix() failed!",retval);
+	goto cleanup;
+    }
+
+    retval = Equilibrate_Right_Hand_Side(Beq->m_full, R->m_full, R->r);
+    if(retval != ERROR_OK)
+    {
+	err_log_num("Equilibrate_Right_Hand_Side() failed!",retval);
+	goto cleanup;
+    }
+#endif
     // we need [A:B]
-    Join_Matrices_by_Row(maux->m_full,A->m_full,A->r,A->c,B->m_full,B->c);
+    Join_Matrices_by_Row(maux->m_full,A->m_full,A->r,A->c,Beq->m_full,Beq->c);
 
     // find inv
     retval = Gaussian_Elimination_Aux(maux->m_full,maux->r,maux->c);
     if (retval < 0)
     {
-	err_check(ERROR_MATH_MAT_SING,"Gaussian elimination failed, matrix is singular");
+	err_log_num("Gaussian elimination failed, matrix is singular",retval);
+	goto cleanup;
     }
 
     // prepare return datax
@@ -282,6 +316,17 @@ int uquad_solve_lin(uquad_mat_t *A, uquad_mat_t *B, uquad_mat_t *x, uquad_mat_t 
 		  maux->m_full, maux->c,
 		  0, A->c);
 
+    // unequilibrate solution
+#if USE_EQUILIBRATE
+    retval = Unequilibrate_Solution(x->m_full, C->m_full, C->r);
+    if( retval != ERROR_OK)
+    {
+	err_log_num("Unequilibrate_Solution() failed!",retval);
+	goto cleanup;
+    }
+#endif
+	
+    cleanup:
     // cleanup
     if(local_mem)
 	// free tmp memory
@@ -353,6 +398,7 @@ int uquad_mat_get_subm(uquad_mat_t *S, int r, int c, uquad_mat_t *A)
 
     Get_Submatrix(S->m_full, S->r, S->c,
 		  A->m_full, A->c, r, c);
+    return ERROR_OK;
 }
 
 /** 
@@ -379,6 +425,22 @@ int uquad_mat_set_subm(uquad_mat_t *A, int r, int c, uquad_mat_t *S)
     Set_Submatrix(A->m_full, A->c,
 		  S->m_full, S->r, S->c, r, c);
     return ERROR_OK;
+}
+
+/** 
+ * Copy matrix src to dest.
+ * Assumes memory has been previously allocated for dest.
+ * 
+ * @param dest 
+ * @param src 
+ * 
+ * @return error code.
+ */
+int uquad_mat_copy(uquad_mat_t *dest, uquad_mat_t *src)
+{
+    int retval = uquad_mat_get_subm(dest, 0, 0, src);
+    err_propagate(retval);
+    return retval;
 }
 
 /** 
@@ -410,59 +472,75 @@ int uquad_mat_diag(uquad_mat_t *m, double *diag)
  * Requires aux memory, two matrices. If not supplied, will allocate and
  * free after finishing.
  * 
- * @param m1 Input.
- * @param minv Result.
- * @param meye NULL or auxiliary matrix, size of m1.
- * @param maux NULL or auxiliary matrix, size of [m1:m1]
+ * @param Minv Input.
+ * @param M Result.
+ * @param Meye NULL or auxiliary matrix, size of M.
+ * @param Maux NULL or auxiliary matrix, size of [M:M]
  * 
  * @return Error code.
  */
-int uquad_mat_inv(uquad_mat_t *m1, uquad_mat_t *minv, uquad_mat_t *meye, uquad_mat_t *maux)
+int uquad_mat_inv(uquad_mat_t *Minv, uquad_mat_t *M, uquad_mat_t *Meye, uquad_mat_t *Maux)
 {
     int retval;
-    uquad_bool_t local_meye = false, local_maux = false;
-    if(m1 == NULL || minv == NULL)
+    uquad_bool_t local_Meye = false, local_Maux = false;
+    if(M == NULL || Minv == NULL)
     {
 	err_check(ERROR_NULL_POINTER,"NULL pointer is invalid arg.");
     }
 
-    if(m1->r != m1->c)
+    if(M->r != M->c)
     {
 	err_check(ERROR_MATH_MAT_DIM,"Cannot invert non-square matrix!");
     }
 
-    if(meye == NULL)
+    if(Meye == NULL)
     {
-	meye= uquad_mat_alloc(m1->r,m1->c);
-	if(meye == NULL)
+	Meye= uquad_mat_alloc(M->r,M->c);
+	if(Meye == NULL)
 	{
-	    err_check(ERROR_MALLOC,"Could not allocate aux mem for inv.");
+	    err_log("Could not allocate aux mem for inv.");
+	    retval = ERROR_MALLOC;
+	    goto cleanup;
 	}
-	uquad_mat_eye(meye);
-	local_meye = true;
+	uquad_mat_eye(Meye);
+	local_Meye = true;
     }
 
-    if(maux == NULL)
+    if(Maux == NULL)
     {
-	maux = uquad_mat_alloc(m1->r,(m1->c)<<1);
-	if(maux == NULL)
+	Maux = uquad_mat_alloc(M->r,(M->c)<<1);
+	if(Maux == NULL)
 	{
-	    err_check(ERROR_MALLOC,"Could not allocate aux mem for inv.");
+	    err_log("Could not allocate aux mem for inv.");
+	    retval = ERROR_MALLOC;
+	    goto cleanup;
 	}
-	local_maux = true;
+	local_Maux = true;
     }
 
-    retval = uquad_solve_lin(m1, meye, minv, maux);
-    err_propagate(retval);
+    retval = uquad_solve_lin(M, Meye, Minv, Maux);
+    if(retval != ERROR_OK)
+    {
+	goto cleanup;
+    }
 
-    if(local_meye)
-	uquad_mat_free(meye);
-    if(local_maux)
-	uquad_mat_free(maux);
+    cleanup:
+    if(local_Meye)
+	uquad_mat_free(Meye);
+    if(local_Maux)
+	uquad_mat_free(Maux);
 
-    return ERROR_OK;
+    return retval;
 }
 
+/** 
+ * Transposes a matrix
+ * 
+ * @param Mt transpose of M
+ * @param M input
+ * 
+ * @return error code
+ */
 int uquad_mat_transpose(uquad_mat_t *Mt, uquad_mat_t *M)
 {
     if(Mt == NULL || M == NULL)
@@ -477,6 +555,13 @@ int uquad_mat_transpose(uquad_mat_t *Mt, uquad_mat_t *M)
     return ERROR_OK;
 }
 
+/** 
+ * Transposes a matrix, in place.
+ * 
+ * @param m is the input, and will be transposed after execution.
+ * 
+ * @return error code
+ */
 int uquad_mat_transpose_inplace(uquad_mat_t *m)
 {
     if(m == NULL)
@@ -491,6 +576,18 @@ int uquad_mat_transpose_inplace(uquad_mat_t *m)
     return ERROR_OK;
 }
 
+/** 
+ * Performs element to element product of matrices:
+ *  C[i][j] = A[i][j]*B[i][j] for all i,j
+ * If called with A==NULL and B==NULL, will square each
+ * element of C, in place (C will be modified after execution)
+ * 
+ * @param C answer
+ * @param A input or NULL
+ * @param B input or NULL
+ * 
+ * @return error code
+ */
 int uquad_mat_dot_product(uquad_mat_t *C, uquad_mat_t *A, uquad_mat_t *B)
 {
     int i;
@@ -586,7 +683,7 @@ void uquad_mat_dump(uquad_mat_t *m, FILE *output)
     for(i=0;i<m->r;i++)
     {
 	for(j=0;j<m->c;j++)
-	    fprintf(output, "%f\t",m->m[i][j]);
+	    fprintf(output, "%e\t",m->m[i][j]);
 	fprintf(output,"\n");
     }
 

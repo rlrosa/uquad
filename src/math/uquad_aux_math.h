@@ -1,11 +1,13 @@
 #ifndef UQUAD_AUX_MATH_H
 #define UQUAD_AUX_MATH_H
 
+#include <uquad_error_codes.h>
+#include <uquad_types.h>
+
 #define UQUAD_MATH_MAX_DIM 256
 #define UQUAD_MAT_MAX_DIM 64
 
-#include <uquad_error_codes.h>
-#include <uquad_types.h>
+#define USE_EQUILIBRATE 1
 
 #define deg2rad(a) (a*PI/180.0)
 #define uquad_round_double2int(x) ((x)>=0?(int)((x)+0.5):(int)((x)-0.5))
@@ -75,7 +77,7 @@ int uquad_mat_add(uquad_mat_t *C, uquad_mat_t *A, uquad_mat_t *B);
 
 int uquad_solve_lin(uquad_mat_t *A, uquad_mat_t *B, uquad_mat_t *x, uquad_mat_t *maux);
 
-int uquad_mat_inv(uquad_mat_t *m1, uquad_mat_t *minv, uquad_mat_t *meye, uquad_mat_t *maux);
+int uquad_mat_inv(uquad_mat_t *Minv, uquad_mat_t *M, uquad_mat_t *Meye, uquad_mat_t *Maux);
 
 int uquad_mat_transpose(uquad_mat_t *Mt, uquad_mat_t *M);
 int uquad_mat_transpose_inplace(uquad_mat_t *m);
@@ -89,6 +91,8 @@ int uquad_mat_eye(uquad_mat_t *m);
 int uquad_mat_zeros(uquad_mat_t *m);
 
 int uquad_mat_get_subm(uquad_mat_t *S, int r, int c, uquad_mat_t *A);
+int uquad_mat_set_subm(uquad_mat_t *A, int r, int c, uquad_mat_t *S);
+int uquad_mat_copy(uquad_mat_t *dest, uquad_mat_t *src);
 
 uquad_mat_t *uquad_mat_alloc(int r, int c);
 void uquad_mat_free(uquad_mat_t *m);

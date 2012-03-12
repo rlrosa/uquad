@@ -90,7 +90,7 @@ int mat_inv_test(void)
 	err_check(ERROR_FAIL,"Failed loading data");
     }
 
-    retval = uquad_mat_inv(m1,mr,NULL,NULL);
+    retval = uquad_mat_inv(mr,m1,NULL,NULL);
     err_propagate(retval);
 
     printf("inv(A):\n");
