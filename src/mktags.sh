@@ -8,6 +8,7 @@ if [ "$1" == "-a" ]; then
 fi
 
 SCAN_DIRS=(imu
+	   kalman
            motor
 	   test
 	   i2c_beagle

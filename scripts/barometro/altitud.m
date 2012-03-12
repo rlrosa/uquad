@@ -6,7 +6,7 @@ function alt_m = altitud(press_pas,p0)
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 if nargin < 2
-    p0 = mean(press_pas(1:50));   
+    p0 = mean(press_pas(1));   
 end
 
 alt_m = 44330*(1-(press_pas/p0).^(1/5.255));
