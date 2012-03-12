@@ -16,7 +16,7 @@ typedef struct kalman_io {
     uquad_mat_t *x_;
 } kalman_io_t;
 
-int uquad_kalman(kalman_io_t * k_io_data, uquad_mat_t* w, imu_data_t* data);
+int uquad_kalman(kalman_io_t * kalman_io_data, uquad_mat_t* w, imu_data_t* data);
 kalman_io_t* kalman_init();
 
 #endif

@@ -29,7 +29,7 @@ uquad_mat_t* IKH  = NULL;
 uquad_mat_t* Sk_1 = NULL;
 uquad_mat_t* I    = NULL;
 
-int uquad_kalman(kalman_io_t * k_io_data, uquad_mat_t* w, imu_data_t* data)
+int uquad_kalman(kalman_io_t * kalman_io_data, uquad_mat_t* w, imu_data_t* data)
 
 {
     int retval;
@@ -60,27 +60,27 @@ int uquad_kalman(kalman_io_t * k_io_data, uquad_mat_t* w, imu_data_t* data)
 	I    = uquad_mat_alloc(12,12);
     }
 
-    retval = store_data(k_io_data, w, data);
+    retval = store_data(kalman_io_data, w, data);
     err_propagate(retval);
 
     // Prediction
-    retval = f(k_io_data -> x_, k_io_data);
+    retval = f(kalman_io_data -> x_, kalman_io_data);
     err_propagate(retval);
-    retval = F(Fk_1, k_io_data);
+    retval = F(Fk_1, kalman_io_data);
     err_propagate(retval);
     retval = uquad_mat_transpose(Fk_1_T, Fk_1);
     err_propagate(retval);
-    retval = uquad_mat_prod(mtmp, Fk_1, k_io_data->P);
+    retval = uquad_mat_prod(mtmp, Fk_1, kalman_io_data->P);
     err_propagate(retval);
     retval = uquad_mat_prod(Fk_1,mtmp, Fk_1_T); // Aca lo vuelvo a guardar en Fk_1 para no hacer otra variable temporal
     err_propagate(retval);
-    retval = uquad_mat_add(P_,Fk_1,k_io_data->Q);
+    retval = uquad_mat_add(P_,Fk_1,kalman_io_data->Q);
     err_propagate(retval);
 
     // Update
-    retval = h(hx, k_io_data);
+    retval = h(hx, kalman_io_data);
     err_propagate(retval);
-    retval =  uquad_mat_sub(yk, k_io_data -> z , hx);
+    retval =  uquad_mat_sub(yk, kalman_io_data -> z , hx);
     err_propagate(retval);
     retval = uquad_mat_prod(HP_,H,P_);
     err_propagate(retval);
@@ -88,7 +88,7 @@ int uquad_kalman(kalman_io_t * k_io_data, uquad_mat_t* w, imu_data_t* data)
     err_propagate(retval);
     retval = uquad_mat_prod(HP_H,HP_,HT);
     err_propagate(retval);
-    retval = uquad_mat_add(Sk,HP_H,k_io_data -> R); // Sk
+    retval = uquad_mat_add(Sk,HP_H,kalman_io_data -> R); // Sk
     err_propagate(retval);
     retval = uquad_mat_inv(Sk_1,Sk,NULL,NULL);
     err_propagate(retval);
@@ -98,7 +98,7 @@ int uquad_kalman(kalman_io_t * k_io_data, uquad_mat_t* w, imu_data_t* data)
     err_propagate(retval);
     retval = uquad_mat_prod(Kkyk,Kk,yk);
     err_propagate(retval);
-    retval = uquad_mat_add(k_io_data->x_hat, k_io_data->x_, Kkyk);
+    retval = uquad_mat_add(kalman_io_data->x_hat, kalman_io_data->x_, Kkyk);
     err_propagate(retval);
     retval =  uquad_mat_eye(I);
     err_propagate(retval);
@@ -106,8 +106,10 @@ int uquad_kalman(kalman_io_t * k_io_data, uquad_mat_t* w, imu_data_t* data)
     err_propagate(retval);
     retval = uquad_mat_sub(IKH,I,KkH);
     err_propagate(retval);
-    retval = uquad_mat_prod(k_io_data->P, IKH, P_);
+    retval = uquad_mat_prod(kalman_io_data->P, IKH, P_);
     err_propagate(retval);
+
+    return ERROR_OK;
 }
 
 int drag(uquad_mat_t* drag, uquad_mat_t* w)
@@ -129,6 +131,7 @@ int drag(uquad_mat_t* drag, uquad_mat_t* w)
     err_propagate(retval);
     retval = uquad_mat_add(drag,tmp,tmp2);
     err_propagate(retval);
+    return ERROR_OK;
 }
 
 int drive(uquad_mat_t* drive, uquad_mat_t* w)
@@ -150,27 +153,28 @@ int drive(uquad_mat_t* drive, uquad_mat_t* w)
     err_propagate(retval);
     retval = uquad_mat_add(drive,tmp,tmp2);
     err_propagate(retval);
+    return ERROR_OK;
 }
 
-int f(uquad_mat_t* fx, kalman_io_t* k_io_data)
+int f(uquad_mat_t* fx, kalman_io_t* kalman_io_data)
 {
-    double x     = k_io_data -> x_hat -> m_full[1];
-    double y     = k_io_data -> x_hat -> m_full[1];
-    double z     = k_io_data -> x_hat -> m_full[2];
-    double psi   = k_io_data -> x_hat -> m_full[3];
-    double phi   = k_io_data -> x_hat -> m_full[4];
-    double theta = k_io_data -> x_hat -> m_full[5];
-    double vqx   = k_io_data -> x_hat -> m_full[6];
-    double vqy   = k_io_data -> x_hat -> m_full[7];
-    double vqz   = k_io_data -> x_hat -> m_full[8];
-    double wqx   = k_io_data -> x_hat -> m_full[9];
-    double wqy   = k_io_data -> x_hat -> m_full[10];
-    double wqz   = k_io_data -> x_hat -> m_full[11];
-    double T     = k_io_data -> T;
+    double x     = kalman_io_data -> x_hat -> m_full[1];
+    double y     = kalman_io_data -> x_hat -> m_full[1];
+    double z     = kalman_io_data -> x_hat -> m_full[2];
+    double psi   = kalman_io_data -> x_hat -> m_full[3];
+    double phi   = kalman_io_data -> x_hat -> m_full[4];
+    double theta = kalman_io_data -> x_hat -> m_full[5];
+    double vqx   = kalman_io_data -> x_hat -> m_full[6];
+    double vqy   = kalman_io_data -> x_hat -> m_full[7];
+    double vqz   = kalman_io_data -> x_hat -> m_full[8];
+    double wqx   = kalman_io_data -> x_hat -> m_full[9];
+    double wqy   = kalman_io_data -> x_hat -> m_full[10];
+    double wqz   = kalman_io_data -> x_hat -> m_full[11];
+    double T     = kalman_io_data -> T;
   
     int retval;
-    double* w    = k_io_data -> u -> m_full;
-    uquad_mat_t* w_mat    = k_io_data -> u;
+    double* w    = kalman_io_data -> u -> m_full;
+    uquad_mat_t* w_mat    = kalman_io_data -> u;
     if(TM == NULL)
     {
 	TM = uquad_mat_alloc(4,1);
@@ -196,50 +200,52 @@ int f(uquad_mat_t* fx, kalman_io_t* k_io_data)
     fx->m_full[10] = wqy   + T*( wqx*wqz*(IZZ-IXX)+wqx*IZZM*(w[0]-w[1]+w[2]-w[3])+LENGTH*(TM_vec[2]-TM_vec[0]) )/IYY;
     // fx->m_full[11] = wqz   + T*( -IZZM*(dw[0]-dw[1]+dw[2]-dw[3])+D[0]-D[1]+D[2]-D[3] )/IZZ;
     fx->m_full[11] = wqz   + T*( D_vec[0]-D_vec[1]+D_vec[2]-D_vec[3] )/IZZ;
+    return ERROR_OK;
 }
 
-int h(uquad_mat_t* hx, kalman_io_t* k_io_data)
+int h(uquad_mat_t* hx, kalman_io_t* kalman_io_data)
 {
     int retval;
     if(TM == NULL)
     {
-	TM = uquad_mat_alloc(4,1);
+	TM = uquad_mat_alloc(4,1); // TODO verificar que hay memoria y se ejecuto la sentencia correctamente
 	D = uquad_mat_alloc(4,1);
     }
-    retval = drive(TM,k_io_data->u);
+    retval = drive(TM,kalman_io_data->u);
     err_propagate(retval);
     double* TM_vec = TM -> m_full;
 
-    hx->m_full[0]  = k_io_data -> x_ -> m_full[3];
-    hx->m_full[1]  = k_io_data -> x_ -> m_full[4];
-    hx->m_full[2]  = k_io_data -> x_ -> m_full[5];
+    hx->m_full[0]  = kalman_io_data -> x_ -> m_full[3];
+    hx->m_full[1]  = kalman_io_data -> x_ -> m_full[4];
+    hx->m_full[2]  = kalman_io_data -> x_ -> m_full[5];
     hx->m_full[3]  = 0;
     hx->m_full[4]  = 0;
     hx->m_full[5]  = 1/MASA*(TM_vec[0]+TM_vec[1]+TM_vec[2]+TM_vec[3]);
-    hx->m_full[6]  = k_io_data -> x_ -> m_full[9];
-    hx->m_full[7]  = k_io_data -> x_ -> m_full[10];
-    hx->m_full[8]  = k_io_data -> x_ -> m_full[11];
-    hx->m_full[9] = k_io_data -> x_ -> m_full[2];
+    hx->m_full[6]  = kalman_io_data -> x_ -> m_full[9];
+    hx->m_full[7]  = kalman_io_data -> x_ -> m_full[10];
+    hx->m_full[8]  = kalman_io_data -> x_ -> m_full[11];
+    hx->m_full[9] = kalman_io_data -> x_ -> m_full[2];
+    return ERROR_OK; 
 }
 
-int F(uquad_mat_t* Fx, kalman_io_t* k_io_data)
+int F(uquad_mat_t* Fx, kalman_io_t* kalman_io_data)
 {
-    double x     = k_io_data -> x_hat -> m_full[0];
-    double y     = k_io_data -> x_hat -> m_full[1];
-    double z     = k_io_data -> x_hat -> m_full[2];
-    double psi   = k_io_data -> x_hat -> m_full[3];
-    double phi   = k_io_data -> x_hat -> m_full[4];
-    double theta = k_io_data -> x_hat -> m_full[5];
-    double vqx   = k_io_data -> x_hat -> m_full[6];
-    double vqy   = k_io_data -> x_hat -> m_full[7];
-    double vqz   = k_io_data -> x_hat -> m_full[8];
-    double wqx   = k_io_data -> x_hat -> m_full[9];
-    double wqy   = k_io_data -> x_hat -> m_full[10];
-    double wqz   = k_io_data -> x_hat -> m_full[11];
-    double T     = k_io_data -> T;
+    double x     = kalman_io_data -> x_hat -> m_full[0];
+    double y     = kalman_io_data -> x_hat -> m_full[1];
+    double z     = kalman_io_data -> x_hat -> m_full[2];
+    double psi   = kalman_io_data -> x_hat -> m_full[3];
+    double phi   = kalman_io_data -> x_hat -> m_full[4];
+    double theta = kalman_io_data -> x_hat -> m_full[5];
+    double vqx   = kalman_io_data -> x_hat -> m_full[6];
+    double vqy   = kalman_io_data -> x_hat -> m_full[7];
+    double vqz   = kalman_io_data -> x_hat -> m_full[8];
+    double wqx   = kalman_io_data -> x_hat -> m_full[9];
+    double wqy   = kalman_io_data -> x_hat -> m_full[10];
+    double wqz   = kalman_io_data -> x_hat -> m_full[11];
+    double T     = kalman_io_data -> T;
 
-    double* w    = k_io_data -> u -> m_full;
-    uquad_mat_t* w_t    = k_io_data -> u;
+    double* w    = kalman_io_data -> u -> m_full;
+    uquad_mat_t* w_t    = kalman_io_data -> u;
     int retval;
 
     if(TM == NULL)
@@ -408,6 +414,7 @@ int F(uquad_mat_t* Fx, kalman_io_t* k_io_data)
     Fx->m[11][9] = 0;
     Fx->m[11][10] = 0;
     Fx->m[11][11] = 1;
+    return ERROR_OK;
 }
 
 int H_init()
@@ -423,10 +430,12 @@ int H_init()
     H->m[7][10]=1;
     H->m[8][11]=1;
     H->m[9][2]=1;
+    return ERROR_OK;
 }
 
 kalman_io_t* kalman_init()
 {
+    int retval;
     kalman_io_t* kalman_io_data = (kalman_io_t*)malloc(sizeof(kalman_io_t));
     kalman_io_data->x_hat = uquad_mat_alloc(12,1);    
     kalman_io_data->x_ = uquad_mat_alloc(12,1);
@@ -435,26 +444,82 @@ kalman_io_t* kalman_init()
     kalman_io_data->Q = uquad_mat_alloc(12,12);
     kalman_io_data->R = uquad_mat_alloc(10,10);
     kalman_io_data->P = uquad_mat_alloc(12,12);
+
+    retval = uquad_mat_zeros(kalman_io_data->x_hat);
+    if(retval != ERROR_OK)
+	return NULL;
+    retval = uquad_mat_zeros(kalman_io_data->u);
+    if(retval != ERROR_OK)
+	return NULL;
+    retval = uquad_mat_zeros(kalman_io_data->Q);
+    if(retval != ERROR_OK)
+	return NULL;
+    retval = uquad_mat_zeros(kalman_io_data->R);
+    if(retval != ERROR_OK)
+	return NULL;
+    retval = uquad_mat_zeros(kalman_io_data->P);
+    if(retval != ERROR_OK)
+	return NULL;
+
+    kalman_io_data->Q->m[0][0] = 10;
+    kalman_io_data->Q->m[1][1] = 10;
+    kalman_io_data->Q->m[2][2] = 10;
+    kalman_io_data->Q->m[3][3] = 10;
+    kalman_io_data->Q->m[4][4] = 10;
+    kalman_io_data->Q->m[5][5] = 10;
+    kalman_io_data->Q->m[6][6] = 10;
+    kalman_io_data->Q->m[7][7] = 10;
+    kalman_io_data->Q->m[8][8] = 10;
+    kalman_io_data->Q->m[9][9] = 10;
+    kalman_io_data->Q->m[10][10] = 10;
+    kalman_io_data->Q->m[11][11] = 10;
+
+    kalman_io_data->R->m[0][0] = 1000;
+    kalman_io_data->R->m[1][1] = 1000;
+    kalman_io_data->R->m[2][2] = 1000;
+    kalman_io_data->R->m[3][3] = 1000;
+    kalman_io_data->R->m[4][4] = 1000;
+    kalman_io_data->R->m[5][5] = 1000;
+    kalman_io_data->R->m[6][6] = 10000;
+    kalman_io_data->R->m[7][7] = 10000;
+    kalman_io_data->R->m[8][8] = 10000;
+    kalman_io_data->R->m[9][9] = 100000;
+
+    kalman_io_data->P->m[0][0] = 1;
+    kalman_io_data->P->m[1][1] = 1;
+    kalman_io_data->P->m[2][2] = 1;
+    kalman_io_data->P->m[3][3] = 1;
+    kalman_io_data->P->m[4][4] = 1;
+    kalman_io_data->P->m[5][5] = 1;
+    kalman_io_data->P->m[6][6] = 1;
+    kalman_io_data->P->m[7][7] = 1;
+    kalman_io_data->P->m[8][8] = 1;
+    kalman_io_data->P->m[9][9] = 1;
+    kalman_io_data->P->m[10][10] = 1;
+    kalman_io_data->P->m[11][11] = 1;
+
     return kalman_io_data;
 }
 
-int store_data(kalman_io_t* k_io_data, uquad_mat_t* w, imu_data_t* data)
+int store_data(kalman_io_t* kalman_io_data, uquad_mat_t* w, imu_data_t* data)
 {
-    k_io_data->u->m_full[0] = w->m_full[0];
-    k_io_data->u->m_full[1] = w->m_full[1];
-    k_io_data->u->m_full[2] = w->m_full[2];
-    k_io_data->u->m_full[3] = w->m_full[3];
+    kalman_io_data->u->m_full[0] = w->m_full[0];
+    kalman_io_data->u->m_full[1] = w->m_full[1];
+    kalman_io_data->u->m_full[2] = w->m_full[2];
+    kalman_io_data->u->m_full[3] = w->m_full[3];
 
-    k_io_data->z->m_full[0] = data->magn->m_full[1];
-    k_io_data->z->m_full[1] = data->magn->m_full[2];
-    k_io_data->z->m_full[2] = data->magn->m_full[3];
-    k_io_data->z->m_full[3] = data->acc->m_full[1];
-    k_io_data->z->m_full[4] = data->acc->m_full[2];
-    k_io_data->z->m_full[5] = data->acc->m_full[3];
-    k_io_data->z->m_full[6] = data->gyro->m_full[1];
-    k_io_data->z->m_full[7] = data->gyro->m_full[2];
-    k_io_data->z->m_full[8] = data->gyro->m_full[3];
-    k_io_data->z->m_full[9] = data->alt;
+    kalman_io_data->z->m_full[0] = data->magn->m_full[1];
+    kalman_io_data->z->m_full[1] = data->magn->m_full[2];
+    kalman_io_data->z->m_full[2] = data->magn->m_full[3];
+    kalman_io_data->z->m_full[3] = data->acc->m_full[1];
+    kalman_io_data->z->m_full[4] = data->acc->m_full[2];
+    kalman_io_data->z->m_full[5] = data->acc->m_full[3];
+    kalman_io_data->z->m_full[6] = data->gyro->m_full[1];
+    kalman_io_data->z->m_full[7] = data->gyro->m_full[2];
+    kalman_io_data->z->m_full[8] = data->gyro->m_full[3];
+    kalman_io_data->z->m_full[9] = data->alt;
 
-    k_io_data->T = data->T_us/1000000;
+    kalman_io_data->T = data->T_us/1000000;
+
+    return ERROR_OK;
 }

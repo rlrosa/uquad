@@ -94,6 +94,7 @@ int main(int argc, char *argv[]){
     }
 
     // do stuff...
+    uquad_mat_t* tmp4print = uquad_mat_alloc(1,12);
     imu_data_t data;
     imu_raw_t raw;
     imu_calib_t *imu_calib;
@@ -153,11 +154,15 @@ int main(int argc, char *argv[]){
 			w -> m_full[3] = 334.28;
 			w -> m_full[4] = 334.28;
 			retval = uquad_kalman(kalman_io_data, w, &data);
+			err_propagate(retval);
 
 		    }
-		    
-		    retval = imu_comm_print_data(&data,output_frames);
+
+		    retval = uquad_mat_transpose(tmp4print,kalman_io_data->x_hat);
 		    err_propagate(retval);
+		    uquad_mat_dump(tmp4print,output_frames);
+		    //retval = imu_comm_print_data(&data,output_frames);
+		    //err_propagate(retval);
 
 		    if(output_frames == NULL)
 			fflush(stdout);
