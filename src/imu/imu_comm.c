@@ -603,6 +603,18 @@ int convert_2_euler(imu_data_t *data)
 	psi=0;
     }
 
+
+    m3x3->m[0][0] = cosd(phi)/(uquad_square(cosd(phi)) + uquad_square(sind(phi)));
+    m3x3->m[0][1] = (sind(phi)*sind(psi))/((uquad_square(cosd(phi)) + uquad_square(sind(phi)))*(uquad_square(cosd(psi)) + uquad_square(sind(psi))));
+    m3x3->m[0][2] = (cosd(psi)*sind(phi))/((uquad_square(cosd(phi)) + uquad_square(sind(phi)))*(uquad_square(cosd(psi)) + uquad_square(sind(psi))));
+    m3x3->m[1][0] = 0;
+    m3x3->m[1][1] = cosd(psi)/(uquad_square(cosd(psi)) + uquad_square(sind(psi)));
+    m3x3->m[1][2] = -sind(psi)/(uquad_square(cosd(psi)) + uquad_square(sind(psi)));
+    m3x3->m[2][0] = -sind(phi)/(uquad_square(cosd(phi)) + uquad_square(sind(phi)));
+    m3x3->m[2][1] = (cosd(phi)*sind(psi))/((uquad_square(cosd(phi)) + uquad_square(sind(phi)))*(uquad_square(cosd(psi)) + uquad_square(sind(psi))));
+    m3x3->m[2][2] = (cosd(phi)*cosd(psi))/((uquad_square(cosd(phi)) + uquad_square(sind(phi)))*(uquad_square(cosd(psi)) + uquad_square(sind(psi))));
+
+    /*    
     m3x3->m[0][0]=cosd(phi)/(uquad_square(cosd(phi)) + uquad_square(sind(phi)));
     m3x3->m[0][1]=(sind(phi)*sind(psi))/((uquad_square(cosd(phi)) + uquad_square(sind(phi)))*(uquad_square(cosd(psi)) + uquad_square(sind(psi))));
     m3x3->m[0][2]=(cosd(psi)*sind(phi))/((uquad_square(cosd(phi)) + uquad_square(sind(phi)))*(uquad_square(cosd(psi)) + uquad_square(sind(psi))));
@@ -612,6 +624,7 @@ int convert_2_euler(imu_data_t *data)
     m3x3->m[2][0]=-sind(phi)/(uquad_square(cosd(phi)) + uquad_square(sind(phi)));
     m3x3->m[2][1]=(cosd(phi)*sind(psi))/((uquad_square(cosd(phi)) + uquad_square(sind(phi)))*(uquad_square(cosd(psi)) + uquad_square(sind(psi))));
     m3x3->m[2][2]=(cosd(phi)*cosd(psi))/((uquad_square(cosd(phi)) + uquad_square(sind(phi)))*(uquad_square(cosd(psi)) + uquad_square(sind(psi))));
+    */
 
     retval = uquad_mat_prod(m3x1_0,m3x3,data->magn);
     err_propagate(retval);
@@ -636,7 +649,7 @@ int convert_2_euler(imu_data_t *data)
  * 
  * @return 
  */
-static int imu_comm_convert_lin(imu_t *imu, int16_t *raw, uquad_mat_t *conv, imu_calib_lin_t *calib)
+static int imu_comm_convert_lin(imu_t *imu, int16_t *raw, uquad_mat_t *conv, imu_calib_lin_t *calib, uquad_bool_t scale)
 {
     int i,retval = ERROR_OK;
     if(!imu->is_calibrated)
@@ -645,8 +658,10 @@ static int imu_comm_convert_lin(imu_t *imu, int16_t *raw, uquad_mat_t *conv, imu
     }
 
     for(i=0; i < 3; ++i)
-	//TODO fix calibration or leave this?
-	m3x1_0->m_full[i] = ((double) raw[i])/IMU_GYRO_DEFAULT_GAIN;
+	if(scale)
+	    m3x1_0->m_full[i] = ((double) raw[i])/IMU_GYRO_DEFAULT_GAIN;
+	else
+	    m3x1_0->m_full[i] = ((double) raw[i]);
     /// m3x1_0 has tmp answer
     /// tmp = raw - b
     retval = uquad_mat_sub(m3x1_1,m3x1_0, calib->b);
@@ -671,7 +686,7 @@ static int imu_comm_convert_lin(imu_t *imu, int16_t *raw, uquad_mat_t *conv, imu
 static int imu_comm_acc_convert(imu_t *imu, int16_t *raw, uquad_mat_t *acc)
 {
     int i, retval = ERROR_OK;
-    retval = imu_comm_convert_lin(imu, raw, acc, imu->calib.m_lin);
+    retval = imu_comm_convert_lin(imu, raw, acc, imu->calib.m_lin,false);
     err_propagate(retval);
     return retval;
 }
@@ -689,7 +704,7 @@ static int imu_comm_acc_convert(imu_t *imu, int16_t *raw, uquad_mat_t *acc)
 static int imu_comm_gyro_convert(imu_t *imu, int16_t *raw, uquad_mat_t *gyro)
 {
     int retval = ERROR_OK;
-    retval = imu_comm_convert_lin(imu, raw, gyro, imu->calib.m_lin + 1);
+    retval = imu_comm_convert_lin(imu, raw, gyro, imu->calib.m_lin + 1,true);
     err_propagate(retval);
     return retval;
 }
@@ -707,7 +722,7 @@ static int imu_comm_gyro_convert(imu_t *imu, int16_t *raw, uquad_mat_t *gyro)
 static int imu_comm_magn_convert(imu_t *imu, int16_t *raw, uquad_mat_t *magn)
 {
     int retval = ERROR_OK;
-    retval = imu_comm_convert_lin(imu, raw, magn, imu->calib.m_lin + 2);
+    retval = imu_comm_convert_lin(imu, raw, magn, imu->calib.m_lin + 2,false);
     err_propagate(retval);
     return retval;
 }
