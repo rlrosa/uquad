@@ -7,7 +7,7 @@
 #define UQUAD_MATH_MAX_DIM 256
 #define UQUAD_MAT_MAX_DIM 64
 
-#define USE_EQUILIBRATE 1
+#define USE_EQUILIBRATE 0
 
 #define deg2rad(a) (a*PI/180.0)
 #define uquad_round_double2int(x) ((x)>=0?(int)((x)+0.5):(int)((x)-0.5))
