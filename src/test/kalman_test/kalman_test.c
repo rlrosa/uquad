@@ -114,7 +114,7 @@ int main(int argc, char *argv[]){
 
     kalman_io_t* kalman_io_data = kalman_init();
     uquad_mat_t* w = uquad_mat_alloc(4,1);
-
+    uquad_bool_t first_run = true;
 
     while(1){
 	// Run loop until user presses any key or velociraptors chew through the power cable
@@ -148,11 +148,15 @@ int main(int argc, char *argv[]){
 		    err_propagate(retval);
 		    if(retval == ERROR_OK)
 		    {
-
 			w -> m_full[0] = 334.28;
 			w -> m_full[1] = 334.28;
 			w -> m_full[2] = 334.28;
 			w -> m_full[3] = 334.28;
+			if(first_run)
+			{
+			    first_run=false;
+			    continue;
+			}
 			retval = uquad_kalman(kalman_io_data, w, &data);
 			err_propagate(retval);
 

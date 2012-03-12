@@ -90,20 +90,31 @@ end
 
 
 % MAGNETOMETRO
-Km=[kmx 0 0;        
-    0 kmy 0;
-    0 0 kmz];
 
-bm=[bmx; bmy; bmz];
 
-Tm=[1    -mayza mazya;
-    maxza 1    -mazxa;
-   -maxya mayxa 1];
+K = [0.00473160006403247     -2.18916898319836e-05      0.000309423482503981;
+                         0       0.00455025410014059      7.83170752308679e-05;
+                         0                         0       0.00534686558080686];
+                     
+b=  [23.3152609806586;
+    -126.624459617958;
+    19.0429011162953];
+
+% Km=[kmx 0 0;        
+%     0 kmy 0;
+%     0 0 kmz];
+% 
+% bm=[bmx; bmy; bmz];
+% 
+% Tm=[1    -mayza mazya;
+%     maxza 1    -mazxa;
+%    -maxya mayxa 1];
 
 mconv = zeros(size(m));
 euler = zeros(size(m));
 for i=1:length(m(:,1))
-    auxm=Tm*(Km^(-1))*(m(i,:)'-bm);
+%     auxm=Tm*(Km^(-1))*(m(i,:)'-bm);
+    auxm = K*(m(i,:)'-b);
     mconv(i,:)=auxm';
     
     % Convierto a angulos de Euler
@@ -121,7 +132,7 @@ for i=1:length(m(:,1))
                                                  0,                                           cosd(psi)/(cosd(psi)^2 + sind(psi)^2),                                         -sind(psi)/(cosd(psi)^2 + sind(psi)^2);
             -sind(phi)/(cosd(phi)^2 + sind(phi)^2), (cosd(phi)*sind(psi))/((cosd(phi)^2 + sind(phi)^2)*(cosd(psi)^2 + sind(psi)^2)), (cosd(phi)*cosd(psi))/((cosd(phi)^2 + sind(phi)^2)*(cosd(psi)^2 + sind(psi)^2))]...
             *auxm;
-    theta=180/pi*atan2(mrot(1),mrot(2))+9.78;   
+    theta=180/pi*atan2(mrot(1),mrot(2))+9.78;
     euler(i,:)=[psi, phi, theta];
 end
 
