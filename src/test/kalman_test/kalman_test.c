@@ -70,7 +70,7 @@ int main(int argc, char *argv[]){
 	fprintf(stdout,"Using stdout to output...\n");
     }else{
 	int i;
-	retval = generate_log_name(log_name,NULL);
+	retval = generate_log_name(log_name,argv[2]);
 	if(retval < 0){
 	    err_log("Failed to create log name...");
 	    exit(1);
@@ -144,6 +144,7 @@ int main(int argc, char *argv[]){
 		    // Printing to stdout is unreadable
 
 		    retval = imu_comm_get_data_latest(imu,&data);
+		    err_propagate(retval);
 		    if(retval == ERROR_OK)
 		    {
 
@@ -155,6 +156,9 @@ int main(int argc, char *argv[]){
 
 		    }
 		    
+		    retval = imu_comm_print_data(&data,output_frames);
+		    err_propagate(retval);
+
 		    if(output_frames == NULL)
 			fflush(stdout);
 		}

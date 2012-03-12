@@ -42,7 +42,7 @@ clc
 % [acrud,wcrud,mcrud,tcrud,bcrud]=mong_read('/gyro/logs/zv3y00',0);
 % [acrud,wcrud,mcrud,tcrud,bcrud]=mong_read('tests/mongoose/magnetometro/data_horizontal/x00z00',0);
 
-[acrud,wcrud,mcrud,tcrud,bcrud,~,~,T]=mong_read('log-zparriba5',0);
+[acrud,wcrud,mcrud,tcrud,bcrud,~,~,T]=mong_read('log-zparriba4',0);
 [a,w,euler] = mong_conv(acrud,wcrud/14.375,mcrud,0);
 b=altitud(bcrud);
 
