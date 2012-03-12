@@ -40,7 +40,7 @@
 //     else { printf(" The Solution is: \n"); ...                             //
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
-#include <math.h>                                     // required for fabs()
+#include <math.h>                                     // required for uquad_abs()
 
 int Gaussian_Elimination_Aux(double *A, int nrows, int ncols)
 {
@@ -54,9 +54,9 @@ int Gaussian_Elimination_Aux(double *A, int nrows, int ncols)
 //            find the pivot row
 
       pivot_row = pa;
-      max = fabs(*(pa + row));
+      max = uquad_abs(*(pa + row));
       for (pA = pa + ncols, j = row + 1; j < nrows; pA += ncols, j++)
-         if ((dum = fabs(*(pA + row))) > max) { max = dum; pivot_row = pA; }
+         if ((dum = uquad_abs(*(pA + row))) > max) { max = dum; pivot_row = pA; }
       if (max == 0.0) return -1;
 
 //            and if it differs from the current row, interchange the two rows.

@@ -13,6 +13,9 @@
 #define uquad_min(a,b) (a<b)?a:b
 #define uquad_square(a) (a*a)
 
+/// abs() casts to integer, we don't want that
+#define uquad_abs(a) (((a) < 0) ? -(a) : (a))
+
 /// Math in degrees (instead of rad)
 #define cosd(a) cos(deg2rad(a))
 #define sind(a) sin(deg2rad(a))

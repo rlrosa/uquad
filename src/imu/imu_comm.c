@@ -593,7 +593,7 @@ int convert_2_euler(imu_data_t *data)
     double psi;
     double phi;
     double theta;
-    if(abs(data->acc->m_full[0])<9.72)
+    if(uquad_abs(data->acc->m_full[0])<9.72)
     {
 	phi = -180/PI*asin(data->acc->m_full[0]/9.81);
 	psi=180/PI*atan2(data->acc->m_full[1],data->acc->m_full[2]);

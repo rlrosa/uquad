@@ -72,10 +72,10 @@ int Doolittle_LU_Decomposition_with_Pivoting(double *A, int pivot[], int n)
 //            find the pivot row
 
       pivot[k] = k;
-      max = fabs( *(p_k + k) );
+      max = uquad_abs( *(p_k + k) );
       for (j = k + 1, p_row = p_k + n; j < n; j++, p_row += n) {
-         if ( max < fabs(*(p_row + k)) ) {
-            max = fabs(*(p_row + k));
+         if ( max < uquad_abs(*(p_row + k)) ) {
+            max = uquad_abs(*(p_row + k));
             pivot[k] = j;
             p_col = p_row;
          }
