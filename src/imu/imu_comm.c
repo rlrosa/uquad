@@ -327,7 +327,7 @@ static uint8_t previous_sync_char = IMU_FRAME_INIT_CHAR;
  *
  *@return error code
  */
-static int imu_comm_get_sync_init(imu_t *imu, uquad_bool_t){
+static int imu_comm_get_sync_init(imu_t *imu){
     int retval,i;
     unsigned char tmp = 'X';// Anything diff from IMU_FRAME_INIT_CHAR
     for(i=0;;)//i<IMU_DEFAULT_FRAME_SIZE_BYTES;++i)

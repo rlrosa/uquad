@@ -196,7 +196,7 @@ imu_status_t imu_comm_get_status(imu_t *imu);
 // -- -- -- -- -- -- -- -- -- -- -- --
 
 int imu_comm_get_fds(imu_t *imu, int *fds);
-int imu_comm_read(imu_t *imu, uquad_bool_t *success);
+int imu_comm_read(imu_t *imu);
 
 int imu_comm_get_data_latest(imu_t *imu, imu_data_t *data);
 int imu_comm_get_data_latest_unread(imu_t *imu, imu_data_t *data);

@@ -523,7 +523,7 @@ int store_data(kalman_io_t* kalman_io_data, uquad_mat_t* w, imu_data_t* data)
     return ERROR_OK;
 }
 
-void kalman_deinit(kalman_io_t *kalman)
+void kalman_deinit(kalman_io_t *kalman_io_data)
 {
     uquad_mat_free(Fk_1);
     uquad_mat_free(Fk_1_T);
