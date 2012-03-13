@@ -2,4 +2,12 @@ set(main_bin main)
 add_executable (${main_bin} main)
 
 # Set required libraries
-target_link_libraries(${main_bin} uquad_math imu uquad_aux_io uquad_aux_time uquad_aux_log uquad_gps_comm)
+target_link_libraries(${main_bin} uquad_math)
+target_link_libraries(${main_bin} motor)
+target_link_libraries(${main_bin} uquad_kernel_msgq)
+target_link_libraries(${main_bin} imu)
+target_link_libraries(${main_bin} uquad_io)
+target_link_libraries(${main_bin} uquad_time)
+target_link_libraries(${main_bin} uquad_log)
+target_link_libraries(${main_bin} gps_comm)
+target_link_libraries(${main_bin} kalman)
