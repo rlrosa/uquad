@@ -6,7 +6,7 @@
 #include <mot_control.h>
 #include <uquad_kalman.h>
 #include <control.h>
-//#include <path_planner.h>//TODO implement!
+#include <path_planner.h>
 //#include <uquad_gps_comm.h> //TODO add!
 #include <sys/signal.h> // for SIGINT and SIGQUIT
 #include <unistd.h> // for STDIN_FILENO
@@ -19,6 +19,7 @@ static kalman_io_t *kalman;
 static uquad_mot_t *mot;
 static io_t *io;
 static ctrl_t *ctrl;
+static path_planner_t *pp;
 //static gps_t *gps; //TODO add
 /// Global var
 uquad_mat_t *w;
@@ -58,6 +59,9 @@ void quit()
 
     /// Control module
     control_deinit(ctrl);
+
+    /// Path planner module
+    pp_deinit(pp);
 
     //TODO deinit everything?
     exit(retval);
@@ -125,6 +129,13 @@ int main(int argc, char *argv[]){
 	quit_log_if(ERROR_FAIL,"control init failed!");
     }
 
+    /// Path planner module
+    pp = pp_init();
+    if(pp == NULL)
+    {
+	quit_log_if(ERROR_FAIL,"path planner init failed!");
+    }
+
     /// Global vars
     w = uquad_mat_alloc(4,1);        // Current angular speed [rad/s]
     for(i=0; i < 4; ++i)
@@ -179,11 +190,11 @@ int main(int argc, char *argv[]){
 	    log_n_continue(retval,"Kalman update failed");
 
 	    /// Get current set point
-	    //TODO implement path_planner.[ch]
-
+	    retval = pp_update_setpoint(pp, x);
+	    log_n_continue(retval,"Kalman update failed");
+	    
 	    /// Get control command
-	    //TODO control.h!
-	    retval = control(ctrl, w, kalman->x_hat, NULL);
+	    retval = control(ctrl, w, kalman->x_hat, pp->sp);
 	    log_n_continue(retval,"Control failed!");
 
 	    /// Update motor controller

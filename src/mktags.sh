@@ -18,6 +18,7 @@ SCAN_DIRS=(imu
            kernel_msgq
 	   math
 	   control
+	   path_planner
            submodules/gpsd)
 
 echo "Delete old database.."

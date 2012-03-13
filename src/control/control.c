@@ -2,12 +2,14 @@
 #include <stdlib.h>
 #include <uquad_error_codes.h>
 
+uquad_mat_t *tmp_sub_sp_x;
 ctrl_t *control_init(void)
 {
     ctrl_t *ctrl = (ctrl_t *)malloc(sizeof(ctrl_t));
     mem_alloc_check(ctrl);
     ctrl->K = uquad_mat_alloc(4,7);
-    if(ctrl->K == NULL)
+    tmp_sub_sp_x = uquad_mat_alloc(12,1);
+    if(ctrl->K == NULL || tmp_sub_sp_x == NULL)
     {
 	err_log("Failed to allocate gain matrix!");
 	control_deinit(ctrl);
@@ -41,17 +43,26 @@ ctrl_t *control_init(void)
     ctrl->K->m_full[25] = -1.7170826631179;
     ctrl->K->m_full[26] = -2.1180757671686e-16;
     ctrl->K->m_full[27] = -0.5;
+
     return ctrl;
 }
 
-int control(ctrl_t *ctrl, uquad_mat_t *w, uquad_mat_t *x, sp_t *sp)
+int control(ctrl_t *ctrl, uquad_mat_t *w, uquad_mat_t *x, set_point_t *sp)
 {
     int retval;
-    if(sp != NULL)
+    if(ctrl == NULL || w == NULL || x == NULL || sp == NULL)
     {
-	err_check(ERROR_FAIL,"Not implemented! Should be NULL!");
+	err_check(ERROR_NULL_POINTER,"Inputs must be non NULL!");
     }
-    err_check(ERROR_FAIL,"Not implemented!");
+
+    retval = uquad_mat_sub(tmp_sub_sp_x, sp->x, x);
+    err_propagate(retval);
+    retval = uquad_mat_prod(w, ctrl->K, tmp_sub_sp_x);
+    err_propagate(retval);
+    retval = uquad_mat_add(w,sp->x,w);
+    err_propagate(retval);
+
+    return ERROR_OK;
 }
 
 void control_deinit(ctrl_t *ctrl)
@@ -61,8 +72,8 @@ void control_deinit(ctrl_t *ctrl)
 	err_log("No memory had been allocated for ctrl");
 	return;
     }
-    if(ctrl->K != NULL)
-	uquad_mat_free(ctrl->K);
+    uquad_mat_free(ctrl->K);
+    uquad_mat_free(tmp_sub_sp_x);
     free(ctrl);
 }
 
