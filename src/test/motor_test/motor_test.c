@@ -71,11 +71,12 @@ int main(int argc, char *argv[]){
     next_test();
     for(i = 0; i < 3; ++i)
     {
+	sleep_ms(10);
 	retval = mot_set_idle(mot);
 	quit_if(retval);
 	usleep(MOT_UPDATE_MAX_US);    
 	fprintf(stdout,"\n\n-- -- -- -- --\nLoop #%d\n-- -- -- -- --\n\n",i);
-	for (dtmp = 1.3 + MAX_W/1.2; dtmp < MAX_W - 5.0; dtmp++)
+	for (dtmp = 110.0; dtmp < 350.0; dtmp++)
 	{
 	    vels[0] = dtmp;
 	    vels[1] = dtmp + 0.2;
