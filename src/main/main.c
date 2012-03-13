@@ -5,6 +5,8 @@
 #include <imu_comm.h>
 #include <mot_control.h>
 #include <uquad_kalman.h>
+#include <control.h>
+//#include <path_planner.h>//TODO implement!
 //#include <uquad_gps_comm.h> //TODO add!
 #include <sys/signal.h> // for SIGINT and SIGQUIT
 #include <unistd.h> // for STDIN_FILENO
@@ -16,6 +18,7 @@ static imu_t *imu;
 static kalman_io_t *kalman;
 static uquad_mot_t *mot;
 static io_t *io;
+static ctrl_t *ctrl;
 //static gps_t *gps; //TODO add
 /// Global var
 uquad_mat_t *w;
@@ -29,22 +32,33 @@ imu_data_t imu_data;
 void quit()
 {
     int retval;
-    kalman_deinit(kalman);
+    /// IO manager
     retval = io_deinit(io);
     if(retval != ERROR_OK)
     {
 	err_log("Could not close IO correctly!");
     }
+
+    /// IMU
     retval = imu_comm_deinit(imu);
     if(retval != ERROR_OK)
     {
 	err_log("Could not close IMU correctly!");
     }
+
+    /// Kalman
+    kalman_deinit(kalman);
+
+    /// Motors
     retval = mot_deinit(mot);
     if(retval != ERROR_OK)
     {
 	err_log("Could not close motor driver correctly!");
     }
+
+    /// Control module
+    control_deinit(ctrl);
+
     //TODO deinit everything?
     exit(retval);
 }
@@ -104,6 +118,13 @@ int main(int argc, char *argv[]){
 	quit_log_if(ERROR_FAIL,"mot init failed!");
     }
 
+    /// Control module
+    ctrl = control_init();
+    if(mot == NULL)
+    {
+	quit_log_if(ERROR_FAIL,"control init failed!");
+    }
+
     /// Global vars
     w = uquad_mat_alloc(4,1);        // Current angular speed [rad/s]
     for(i=0; i < 4; ++i)
@@ -158,12 +179,12 @@ int main(int argc, char *argv[]){
 	    log_n_continue(retval,"Kalman update failed");
 
 	    /// Get current set point
-#warning "//TODO! path_planner.h not implemented!"
+	    //TODO implement path_planner.[ch]
 
 	    /// Get control command
-	    //retval = uquad_control(kalman->x_hat);
 	    //TODO control.h!
-#warning "//TODO! control.h not implemented!"
+	    retval = control(ctrl, w, kalman->x_hat, NULL);
+	    log_n_continue(retval,"Control failed!");
 
 	    /// Update motor controller
 	    retval = mot_set_vel_rads(mot, w->m_full);
