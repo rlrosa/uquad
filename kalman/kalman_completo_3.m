@@ -149,6 +149,13 @@ R = diag(100*[10 10 10 10 10 10 100 100 100 1000]);
 P = 1*eye(Ns);
 x_hat=zeros(N,Ns);
 
+K = load('./simulador/pruebas/primer_vuelo/K.mat');K = K.K;
+w_hover = 334.28;
+sp_x = zeros(7,1);
+sp_w = ones(4,1)*w_hover;
+w_control = zeros(4,N);
+x_hat_partial = zeros(7,N);
+
 % psi_init   = z(1,1);
 % phi_init   = z(1,2);
 % theta_init = z(1,3);
@@ -178,6 +185,10 @@ for i=2:N
     Kk         = P_*Hk'*Sk^-1;
     x_hat(i,:) = x_ + Kk*yk;
     P          = (eye(Ns)-Kk*Hk)*P_;
+
+    % Control
+    x_hat_partial(:,i) = [x_hat(i,3);x_hat(i,4);x_hat(i,5);x_hat(i,9);x_hat(i,10);x_hat(i,11);x_hat(i,12)];
+    w_control(:,i) = sp_w + K*(sp_x - x_hat_partial(:,i));
 end
 
 
