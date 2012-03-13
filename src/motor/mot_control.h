@@ -12,9 +12,10 @@
 #define MOT_MAX_I2C 220
 #define MOT_I2C_IDLE 50 // i2c
 #define MOT_W_IDLE 109.0L // rad/s
+#define MOT_W_HOVER 334.28L // rad/s
 #define MOT_C 4
 
-#define MOT_UPDATE_MAX_US 8000 // us
+#define MOT_UPDATE_MAX_US 2000 // us
 #define MOT_WAIT_STARTUP_MS 420 // ms
 
 #define START_MOTOR_CMD "./cmd > cmd_output.log &"

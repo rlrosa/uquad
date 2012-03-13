@@ -3,8 +3,6 @@
 
 #include <uquad_aux_math.h>
 
-#define W_HOVER 334.28
-
 typedef enum path_type{
     HOVER = 0,
     PATH_TYPE_COUNT

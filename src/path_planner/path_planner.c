@@ -1,4 +1,5 @@
 #include "path_planner.h"
+#include <mot_control.h>
 #include <stdlib.h>
 
 void setpoint_deinit(set_point_t *sp)
@@ -26,11 +27,11 @@ set_point_t *setpoint_init(void)
 	return NULL;
     }
     /// HOVER at 1m
-    sp->x->m_full[0] = 1; 
-    sp->w->m_full[0] = W_HOVER;
-    sp->w->m_full[1] = W_HOVER;
-    sp->w->m_full[2] = W_HOVER;
-    sp->w->m_full[3] = W_HOVER;
+    sp->x->m_full[0] = 0; 
+    sp->w->m_full[0] = MOT_W_HOVER;
+    sp->w->m_full[1] = MOT_W_HOVER;
+    sp->w->m_full[2] = MOT_W_HOVER;
+    sp->w->m_full[3] = MOT_W_HOVER;
     return sp;
 }
 
