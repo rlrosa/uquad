@@ -44,7 +44,8 @@ void next_test(void)
 int main(int argc, char *argv[]){
     int retval, i, j;
     struct timeval tv;
-    double vels[MOT_C], dtmp;
+    uquad_mat_t *vels = uquad_mat_alloc(MOT_C,1);
+    double dtmp;
 
     // Catch signals
     signal(SIGINT, uquad_sig_handler);
@@ -78,18 +79,18 @@ int main(int argc, char *argv[]){
 	fprintf(stdout,"\n\n-- -- -- -- --\nLoop #%d\n-- -- -- -- --\n\n",i);
 	for (dtmp = 110.0; dtmp < 350.0; dtmp++)
 	{
-	    vels[0] = dtmp;
-	    vels[1] = dtmp + 0.2;
-	    vels[2] = dtmp + 3.69;
-	    vels[3] = dtmp + 1.0;
+	    vels->m_full[0] = dtmp;
+	    vels->m_full[1] = dtmp + 0.2;
+	    vels->m_full[2] = dtmp + 3.69;
+	    vels->m_full[3] = dtmp + 1.0;
 	    retval = mot_set_vel_rads(mot,vels);
 	    gettimeofday(&tv,NULL);
 	    fprintf(log,"%d\t%0.4f\t%0.4f\t%0.4f\t%0.4f\t%d\n",
 		    retval,
-		    vels[0],
-		    vels[1],
-		    vels[2],
-		    vels[3],
+		    vels->m_full[0],
+		    vels->m_full[1],
+		    vels->m_full[2],
+		    vels->m_full[3],
 		    (int)tv.tv_usec);
 	    usleep(MOT_UPDATE_MAX_US);
 	}
@@ -121,19 +122,19 @@ int main(int argc, char *argv[]){
     next_test();
     for (dtmp = 300.0, i = 0; i < 100; ++i)
     {
-	vels[0] = dtmp;
-	vels[1] = dtmp - 1.0;
-	vels[2] = dtmp + 1.0;
-	vels[3] = dtmp + 1.0;
+	vels->m_full[0] = dtmp;
+	vels->m_full[1] = dtmp - 1.0;
+	vels->m_full[2] = dtmp + 1.0;
+	vels->m_full[3] = dtmp + 1.0;
 
 	retval = mot_set_vel_rads(mot,vels);
 	gettimeofday(&tv,NULL);
 	fprintf(log,"%d\t%0.4f\t%0.4f\t%0.4f\t%0.4f\t%d\n",
 		retval,
-		vels[0],
-		vels[1],
-		vels[2],
-		vels[3],
+		vels->m_full[0],
+		vels->m_full[1],
+		vels->m_full[2],
+		vels->m_full[3],
 		(int)tv.tv_usec);
 	if(i < 50)
 	    usleep(MOT_UPDATE_MAX_US);
@@ -145,6 +146,7 @@ int main(int argc, char *argv[]){
     /// Test Deinit
     next_test();
     retval = mot_deinit(mot);
+    uquad_mat_free(vels);
     gettimeofday(&tv,NULL);
     fprintf(log,"%d\t%d\n", retval, (int)tv.tv_usec);
 

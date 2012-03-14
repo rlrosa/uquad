@@ -29,8 +29,7 @@ uquad_mat_t* IKH  = NULL;
 uquad_mat_t* Sk_1 = NULL;
 uquad_mat_t* I    = NULL;
 
-int uquad_kalman(kalman_io_t * kalman_io_data, uquad_mat_t* w, imu_data_t* data)
-
+int uquad_kalman(kalman_io_t * kalman_io_data, uquad_mat_t* w, imu_data_t* data, double T)
 {
     int retval;
     if(Fk_1==NULL)
@@ -60,7 +59,7 @@ int uquad_kalman(kalman_io_t * kalman_io_data, uquad_mat_t* w, imu_data_t* data)
 	I    = uquad_mat_alloc(12,12);
     }
 
-    retval = store_data(kalman_io_data, w, data);
+    retval = store_data(kalman_io_data, w, data, T);
     err_propagate(retval);
 
     // Prediction
@@ -501,7 +500,7 @@ kalman_io_t* kalman_init()
     return kalman_io_data;
 }
 
-int store_data(kalman_io_t* kalman_io_data, uquad_mat_t* w, imu_data_t* data)
+int store_data(kalman_io_t* kalman_io_data, uquad_mat_t *w, imu_data_t* data, double T)
 {
     int retval;
     retval = uquad_mat_copy(kalman_io_data->u, w);
@@ -518,7 +517,9 @@ int store_data(kalman_io_t* kalman_io_data, uquad_mat_t* w, imu_data_t* data)
 
     kalman_io_data->z->m_full[9] = data->alt;
 
-    kalman_io_data->T = data->T_us/1000000;
+    // Use C timer instead of IMU timer, don't use this
+    //    kalman_io_data->T = data->T_us/1000000;
+    kalman_io_data->T = T/1000000;
 
     return ERROR_OK;
 }

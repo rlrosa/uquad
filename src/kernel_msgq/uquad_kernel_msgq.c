@@ -182,6 +182,8 @@ int uquad_kmsgq_send(uquad_kmsgq_t *server, uint8_t *msg, int msg_len)
 void uquad_kmsgq_deinit(uquad_kmsgq_t *server)
 {
     int retval;
+    if(server == NULL)
+	return;
     retval = uquad_kmsgq_clear(server, server->k_s);
     if(retval != ERROR_OK)
     {

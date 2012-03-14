@@ -104,7 +104,7 @@ static void imu_comm_calibration_clear(imu_t *imu){
  */
 static int imu_comm_run_default(imu_t *imu){
     int retval = ERROR_OK;
-#if !IMU_FRAME_BINARY
+#if IMU_FRAME_BINARY
     // Set run
     retval = imu_comm_send_cmd(imu,IMU_COMMAND_DEF);
     err_propagate(retval);
@@ -121,7 +121,7 @@ static int imu_comm_run_default(imu_t *imu){
  *@return error code
  */
 static int imu_comm_configure(imu_t *imu){
-    int retval;
+    int retval = ERROR_OK;
     //TODO configure stuff?
     return retval;
 }
@@ -182,6 +182,20 @@ imu_t *imu_comm_init(const char *device){
     if(retval != ERROR_OK)
 	return NULL;
 
+#if DEBUG
+    // open logs
+    imu->log_raw = fopen(IMU_LOG_RAW,"w");
+    imu->log_data = fopen(IMU_LOG_DATA,"w");
+    // init temp mem
+    imu->tmp_data.acc = uquad_mat_alloc(3,1);
+    imu->tmp_data.gyro = uquad_mat_alloc(3,1);
+    imu->tmp_data.magn = uquad_mat_alloc(3,1);
+    if(imu->log_raw == NULL || imu->log_data == NULL ||
+       imu->tmp_data.acc == NULL || imu->tmp_data.gyro == NULL ||
+       imu->tmp_data.magn == NULL)
+	return NULL;
+#endif //DEBUG
+
     // Send default values to IMU, then get it running, just in case it wasn't
     retval = imu_comm_configure(imu);
     if(retval != ERROR_OK)
@@ -210,8 +224,20 @@ imu_t *imu_comm_init(const char *device){
 
 int imu_comm_deinit(imu_t *imu){
     int retval = ERROR_OK;
+    if(imu == NULL)
+    {
+	err_log("WARN: Nothing to free.");
+	return ERROR_OK;
+    }
     if(imu->device != NULL)
 	retval = imu_comm_disconnect(imu);
+#if DEBUG
+    fclose(imu->log_raw);
+    fclose(imu->log_data);
+    uquad_mat_free(imu->tmp_data.acc);
+    uquad_mat_free(imu->tmp_data.gyro);
+    uquad_mat_free(imu->tmp_data.magn);
+#endif //DEBUG
     // ignore answer and keep dying, leftovers are not reliable
     //TODO chec if more to free
     imu_comm_free_calib_lin(imu);
@@ -401,6 +427,16 @@ int imu_comm_read(imu_t *imu){
     // add the frame to the buff
     retval = imu_comm_add_frame(imu, &new_frame);
     err_propagate(retval);
+#if DEBUG
+    retval = imu_comm_print_raw(&new_frame, imu->log_raw);
+    err_propagate(retval);
+    retval = imu_comm_raw2data(imu, &new_frame, &imu->tmp_data);
+    err_propagate(retval);
+    retval = imu_comm_print_data(&imu->tmp_data, imu->log_data);
+    err_propagate(retval);
+#endif //DEBUG
+    
+
     return ERROR_OK;
 }
 
@@ -745,7 +781,7 @@ static int imu_comm_temp_convert(imu_t *imu, uint16_t *data, double *temp)
     return ERROR_OK;
 }
 
-#define PRESS_EXP  0.190294957183635 // 1/5.255 = 0.190294957183635
+#define PRESS_EXP  0.190294957183635L // 1/5.255 = 0.190294957183635
 /**
  * Convert raw pressure data to relative altitud.
  * The first call to this function will set a reference pressure, which
@@ -779,7 +815,7 @@ static int imu_comm_pres_convert(imu_t *imu, uint32_t *data, double *alt)
  *
  *@return error code
  */
-static int imu_comm_raw2data(imu_t *imu, imu_raw_t *raw, imu_data_t *data){
+int imu_comm_raw2data(imu_t *imu, imu_raw_t *raw, imu_data_t *data){
     int retval;
     if(imu == NULL || raw == NULL || data == NULL){
 	err_check(ERROR_NULL_POINTER,"Non null pointers required as args...");

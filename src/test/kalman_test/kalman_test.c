@@ -114,6 +114,7 @@ int main(int argc, char *argv[]){
     kalman_io_t* kalman_io_data = kalman_init();
     uquad_mat_t* w = uquad_mat_alloc(4,1);
     uquad_bool_t first_run = true;
+    struct timeval tv_last_kalman, tv_diff, tv_tmp;
 
     while(1){
 	// Run loop until user presses any key or velociraptors chew through the power cable
@@ -153,22 +154,30 @@ int main(int argc, char *argv[]){
 			w -> m_full[3] = 334.28;
 			if(first_run)
 			{
+			    gettimeofday(&tv_last_kalman,NULL);
 			    first_run=false;
 			    continue;
 			}
-			retval = uquad_kalman(kalman_io_data, w, &data);
+			//TODO use external timing
+			gettimeofday(&tv_tmp,NULL);
+			retval = uquad_timeval_substract(&tv_diff, tv_last_kalman, tv_tmp);
+			if(retval < 0)
+			{
+			    // negative time, absurd
+			    err_check(ERROR_FAIL, "Negative time is not valid!");
+			}
+			retval = uquad_kalman(kalman_io_data, w, &data, tv_diff.tv_usec/1000000);
 			err_propagate(retval);
 
+			retval = uquad_mat_transpose(tmp4print,kalman_io_data->x_hat);
+			err_propagate(retval);
+			uquad_mat_dump(tmp4print,output_frames);
+			//retval = imu_comm_print_data(&data,output_frames);
+			//err_propagate(retval);
+
+			if(output_frames == NULL)
+			    fflush(stdout);
 		    }
-
-		    retval = uquad_mat_transpose(tmp4print,kalman_io_data->x_hat);
-		    err_propagate(retval);
-		    uquad_mat_dump(tmp4print,output_frames);
-		    //retval = imu_comm_print_data(&data,output_frames);
-		    //err_propagate(retval);
-
-		    if(output_frames == NULL)
-			fflush(stdout);
 		}
 	    }
 
