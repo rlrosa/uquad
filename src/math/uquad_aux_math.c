@@ -268,6 +268,7 @@ int uquad_solve_lin(uquad_mat_t *A, uquad_mat_t *B, uquad_mat_t *x, uquad_mat_t 
 	local_mem = true;
     }
 
+#if USE_EQUILIBRATE
     R = uquad_mat_alloc(A->r, 1);
     C = uquad_mat_alloc(A->c, 1);
     Beq = uquad_mat_alloc(B->r,B->c);
@@ -285,7 +286,7 @@ int uquad_solve_lin(uquad_mat_t *A, uquad_mat_t *B, uquad_mat_t *x, uquad_mat_t 
     }
 
     // equilibrate matrices to reduce condition number
-#if USE_EQUILIBRATE
+#warning "Equilibrate will break matrix A!"
     retval = Equilibrate_Matrix(A->m_full, A->r, A->c, R->m_full, C->m_full);
     if(retval != ERROR_OK)
     {
@@ -299,9 +300,12 @@ int uquad_solve_lin(uquad_mat_t *A, uquad_mat_t *B, uquad_mat_t *x, uquad_mat_t 
 	err_log_num("Equilibrate_Right_Hand_Side() failed!",retval);
 	goto cleanup;
     }
-#endif
     // we need [A:B]
     Join_Matrices_by_Row(maux->m_full,A->m_full,A->r,A->c,Beq->m_full,Beq->c);
+#else
+    // we need [A:B]
+    Join_Matrices_by_Row(maux->m_full,A->m_full,A->r,A->c,B->m_full,B->c);
+#endif
 
     // find inv
     retval = Gaussian_Elimination_Aux(maux->m_full,maux->r,maux->c);
@@ -324,6 +328,9 @@ int uquad_solve_lin(uquad_mat_t *A, uquad_mat_t *B, uquad_mat_t *x, uquad_mat_t 
 	err_log_num("Unequilibrate_Solution() failed!",retval);
 	goto cleanup;
     }
+    uquad_mat_free(R);
+    uquad_mat_free(C);
+    uquad_mat_free(Beq);
 #endif
 	
     cleanup:

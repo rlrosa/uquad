@@ -214,6 +214,7 @@ int imu_comm_deinit(imu_t *imu){
 	retval = imu_comm_disconnect(imu);
     // ignore answer and keep dying, leftovers are not reliable
     //TODO chec if more to free
+    imu_comm_free_calib_lin(imu);
     uquad_mat_free(m3x3);
     uquad_mat_free(m3x1_0);
     uquad_mat_free(m3x1_1);
@@ -1051,7 +1052,7 @@ uquad_bool_t imu_comm_calibration_is_calibrated(imu_t *imu){
 
 /** 
  * Allocates memory for three linear calibration structures.
- * Each structure uses 3 matrices.
+ * Each structure uses 2 matrices.
  * 
  * @param imu 
  * 
@@ -1077,6 +1078,28 @@ int imu_comm_alloc_calib_lin(imu_t *imu)
     }
     return ERROR_OK;
 }
+
+/** 
+ * Frees memory for three linear calibration structures.
+ * Each structure uses 2 matrices.
+ * 
+ * @param imu 
+ * 
+ * @return 
+ */
+int imu_comm_free_calib_lin(imu_t *imu)
+{
+    int i;
+    for (i = 0; i < 3; ++i)
+    {
+	// TK_inv
+	uquad_mat_free(imu->calib.m_lin[i].TK_inv);
+	// b
+	uquad_mat_free(imu->calib.m_lin[i].b);
+    }
+    return ERROR_OK;
+}
+
 
 /** 
  * Will load calibration for linear model from text file.

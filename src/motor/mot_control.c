@@ -122,6 +122,7 @@ int mot_deinit(uquad_mot_t *mot)
     retval = system(KILL_MOTOR_CMD);
     if(mot != NULL)
     {
+	uquad_kmsgq_deinit(mot->kmsgq);
 	if(mot->tx_log != NULL)
 	    fclose(mot->tx_log);
 	free(mot);
