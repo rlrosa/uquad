@@ -93,16 +93,9 @@ elseif modo=='rec';
 
 elseif modo=='cir';
          
-    G=trim_circ(setpoint(1),setpoint(2));
+    G=trim_circ(setpoint(1),setpoint(2))
    
-    N =[1 0 0 0 0 0 0 0 ;
-        0 1 0 0 0 0 0 0 ;
-        0 0 1 0 0 0 0 0 ;
-        0 0 0 1 0 0 0 0 ;
-        0 0 0 0 1 0 0 0 ;
-        0 0 0 0 0 1 0 0 ;
-        0 0 0 0 0 0 1 0 ;
-        0 0 0 0 0 0 0 1];
+    N =eye(12);
     %Defino el setpoint de las velocidades angulares
     w=[G(9);G(10);G(11);G(12)]*ones(1,length(t));
     setpoint = [ G(1) G(2) G(3) G(4) G(5) G(6) G(7) G(8)];

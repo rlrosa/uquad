@@ -202,7 +202,7 @@ function edit6_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit6 as text
 %        str2double(get(hObject,'String')) returns contents of edit6 as a double
-var=str2double(get(hObject,'String'));
+var=pi/180*str2double(get(hObject,'String'));
     assignin('base','thetas',var)
 
 % --- Executes during object creation, after setting all properties.

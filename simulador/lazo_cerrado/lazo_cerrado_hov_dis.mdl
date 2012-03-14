@@ -20,7 +20,7 @@ Model {
       BusObject		      ""
       Name		      "w4"
     }
-    NumRootOutports	    16
+    NumRootOutports	    14
     Outport {
       BusObject		      ""
       BusOutputAsStruct	      "off"
@@ -84,25 +84,15 @@ Model {
     Outport {
       BusObject		      ""
       BusOutputAsStruct	      "off"
-      Name		      "U1"
+      Name		      "Fx1"
     }
     Outport {
       BusObject		      ""
       BusOutputAsStruct	      "off"
-      Name		      "U2"
-    }
-    Outport {
-      BusObject		      ""
-      BusOutputAsStruct	      "off"
-      Name		      "U3"
-    }
-    Outport {
-      BusObject		      ""
-      BusOutputAsStruct	      "off"
-      Name		      "U4"
+      Name		      "Fx2"
     }
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.172"
+    ComputedModelVersion    "1.190"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -133,9 +123,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "pater"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Fri Mar  9 10:22:39 2012"
-  RTWModifiedTimeStamp	  253186498
-  ModelVersionFormat	  "1.%<AutoIncrement:172>"
+  LastModifiedDate	  "Tue Mar 13 16:19:09 2012"
+  RTWModifiedTimeStamp	  253556322
+  ModelVersionFormat	  "1.%<AutoIncrement:190>"
   ConfigurationManager	  "None"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -739,6 +729,11 @@ Model {
   }
   BlockParameterDefaults {
     Block {
+      BlockType		      Concatenate
+      NumInputs		      "2"
+      ConcatenateDimension    "1"
+    }
+    Block {
       BlockType		      Constant
       Value		      "1"
       VectorParams1D	      on
@@ -921,7 +916,7 @@ Model {
     ShowPageBoundaries	    off
     ZoomFactor		    "100"
     ReportName		    "simulink-default.rpt"
-    SIDHighWatermark	    "1331"
+    SIDHighWatermark	    "1443"
     Block {
       BlockType		      Inport
       Name		      "w1"
@@ -1011,8 +1006,8 @@ Model {
       BlockType		      SubSystem
       Name		      "Subsystem1"
       SID		      "1261"
-      Ports		      [4, 12]
-      Position		      [540, 191, 900, 514]
+      Ports		      [4, 13]
+      Position		      [540, 193, 900, 517]
       MinAlgLoopOccurrences   off
       PropExecContextOutsideSubsystem off
       RTWSystemCode	      "Auto"
@@ -3806,8 +3801,8 @@ Model {
 	  BlockType		  SubSystem
 	  Name			  "Dinámica"
 	  SID			  "1009"
-	  Ports			  [14, 6]
-	  Position		  [435, 97, 700, 458]
+	  Ports			  [15, 6]
+	  Position		  [435, 99, 700, 461]
 	  MinAlgLoopOccurrences	  off
 	  PropExecContextOutsideSubsystem off
 	  RTWSystemCode		  "Auto"
@@ -3939,6 +3934,14 @@ Model {
 	      SID		      "1023"
 	      Position		      [70, 643, 100, 657]
 	      Port		      "14"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "Fx1"
+	      SID		      "1409"
+	      Position		      [65, 798, 95, 812]
+	      Port		      "15"
 	      IconDisplay	      "Port number"
 	    }
 	    Block {
@@ -5395,8 +5398,8 @@ Model {
 	      BlockType		      SubSystem
 	      Name		      "Velocidades en el sistema del cuadricóptero"
 	      SID		      "1104"
-	      Ports		      [9, 3]
-	      Position		      [505, 89, 700, 361]
+	      Ports		      [10, 3]
+	      Position		      [505, 91, 700, 364]
 	      MinAlgLoopOccurrences   off
 	      PropExecContextOutsideSubsystem off
 	      RTWSystemCode	      "Auto"
@@ -5491,11 +5494,19 @@ Model {
 		  IconDisplay		  "Port number"
 		}
 		Block {
+		  BlockType		  Inport
+		  Name			  "Fx1"
+		  SID			  "1410"
+		  Position		  [70, 683, 100, 697]
+		  Port			  "10"
+		  IconDisplay		  "Port number"
+		}
+		Block {
 		  BlockType		  SubSystem
 		  Name			  "Subsystem6"
 		  SID			  "1114"
-		  Ports			  [5, 1]
-		  Position		  [475, 148, 665, 292]
+		  Ports			  [6, 1]
+		  Position		  [475, 150, 665, 295]
 		  MinAlgLoopOccurrences	  off
 		  PropExecContextOutsideSubsystem off
 		  RTWSystemCode		  "Auto"
@@ -5558,11 +5569,20 @@ Model {
 		    IconDisplay		    "Port number"
 		    }
 		    Block {
+		    BlockType		    Inport
+		    Name		    "Fx1"
+		    SID			    "1411"
+		    Position		    [20, 358, 50, 372]
+		    Port		    "6"
+		    IconDisplay		    "Port number"
+		    }
+		    Block {
 		    BlockType		    Sum
 		    Name		    "Add"
 		    SID			    "1120"
-		    Ports		    [2, 1]
-		    Position		    [610, 287, 640, 318]
+		    Ports		    [3, 1]
+		    Position		    [610, 289, 640, 321]
+		    Inputs		    "+++"
 		    InputSameDT		    off
 		    OutDataTypeStr	    "Inherit: Inherit via internal rule"
 		    SaturateOnIntegerOverflow off
@@ -5713,13 +5733,14 @@ Model {
 		    Line {
 		    SrcBlock		    "Subtract"
 		    SrcPort		    1
-		    Points		    [110, 0; 0, -290]
+		    Points		    [110, 0; 0, -295]
 		    DstBlock		    "Add"
 		    DstPort		    2
 		    }
 		    Line {
 		    SrcBlock		    "Add"
 		    SrcPort		    1
+		    Points		    [0, -5]
 		    DstBlock		    "Integrator"
 		    DstPort		    1
 		    }
@@ -5736,6 +5757,13 @@ Model {
 		    Points		    [615, 0; 0, -415]
 		    DstBlock		    "Integrator"
 		    DstPort		    2
+		    }
+		    Line {
+		    SrcBlock		    "Fx1"
+		    SrcPort		    1
+		    Points		    [540, 0]
+		    DstBlock		    "Add"
+		    DstPort		    3
 		    }
 		  }
 		}
@@ -6454,7 +6482,7 @@ Model {
 		Line {
 		  SrcBlock		  "Subsystem6"
 		  SrcPort		  1
-		  Points		  [80, 0]
+		  Points		  [0, -5; 80, 0]
 		  Branch {
 		    DstBlock		    "vq1"
 		    DstPort		    1
@@ -6485,7 +6513,7 @@ Model {
 		  SrcPort		  1
 		  Points		  [45, 0]
 		  Branch {
-		    Points		    [0, -305; -300, 0; 0, 160]
+		    Points		    [0, -305; -300, 0; 0, 145]
 		    DstBlock		    "Subsystem6"
 		    DstPort		    4
 		  }
@@ -6505,7 +6533,7 @@ Model {
 		  Branch {
 		    Points		    [0, -470; -260, 0; 0, 165]
 		    Branch {
-		    Points		    [0, 5]
+		    Points		    [0, -15]
 		    DstBlock		    "Subsystem6"
 		    DstPort		    5
 		    }
@@ -6586,6 +6614,7 @@ Model {
 		  SrcPort		  1
 		  Points		  [75, 0; 0, 30; 20, 0]
 		  Branch {
+		    Points		    [260, 0]
 		    DstBlock		    "Subsystem6"
 		    DstPort		    2
 		  }
@@ -6620,6 +6649,13 @@ Model {
 		  SrcPort		  1
 		  Points		  [10, 0; 0, -60]
 		  DstBlock		  "Subsystem7"
+		  DstPort		  6
+		}
+		Line {
+		  SrcBlock		  "Fx1"
+		  SrcPort		  1
+		  Points		  [350, 0; 0, -405]
+		  DstBlock		  "Subsystem6"
 		  DstPort		  6
 		}
 		Annotation {
@@ -6679,6 +6715,7 @@ Model {
 	      SrcPort		      1
 	      Points		      [330, 0]
 	      Branch {
+		Points			[55, 0]
 		DstBlock		"Velocidades en el sistema del cuadricóptero"
 		DstPort			6
 	      }
@@ -6693,6 +6730,7 @@ Model {
 	      SrcPort		      1
 	      Points		      [300, 0]
 	      Branch {
+		Points			[85, 0]
 		DstBlock		"Velocidades en el sistema del cuadricóptero"
 		DstPort			7
 	      }
@@ -6708,6 +6746,7 @@ Model {
 	      SrcPort		      1
 	      Points		      [270, 0]
 	      Branch {
+		Points			[115, 0]
 		DstBlock		"Velocidades en el sistema del cuadricóptero"
 		DstPort			8
 	      }
@@ -6722,6 +6761,7 @@ Model {
 	      SrcPort		      1
 	      Points		      [245, 0]
 	      Branch {
+		Points			[140, 0]
 		DstBlock		"Velocidades en el sistema del cuadricóptero"
 		DstPort			9
 	      }
@@ -6776,30 +6816,35 @@ Model {
 	    Line {
 	      SrcBlock		      "phi"
 	      SrcPort		      1
+	      Points		      [385, 0]
 	      DstBlock		      "Velocidades en el sistema del cuadricóptero"
 	      DstPort		      5
 	    }
 	    Line {
 	      SrcBlock		      "psi"
 	      SrcPort		      1
+	      Points		      [385, 0]
 	      DstBlock		      "Velocidades en el sistema del cuadricóptero"
 	      DstPort		      4
 	    }
 	    Line {
 	      SrcBlock		      "Velocidades en el sistema del cuadricóptero"
 	      SrcPort		      3
+	      Points		      [0, -5]
 	      DstBlock		      "vq3"
 	      DstPort		      1
 	    }
 	    Line {
 	      SrcBlock		      "Velocidades en el sistema del cuadricóptero"
 	      SrcPort		      2
+	      Points		      [0, -5]
 	      DstBlock		      "vq2"
 	      DstPort		      1
 	    }
 	    Line {
 	      SrcBlock		      "Velocidades en el sistema del cuadricóptero"
 	      SrcPort		      1
+	      Points		      [0, -5]
 	      DstBlock		      "vq1"
 	      DstPort		      1
 	    }
@@ -6850,6 +6895,13 @@ Model {
 	      SrcPort		      1
 	      DstBlock		      "Velocidades angulares en el sistema del cuadricoptero"
 	      DstPort		      8
+	    }
+	    Line {
+	      SrcBlock		      "Fx1"
+	      SrcPort		      1
+	      Points		      [375, 0; 0, -465]
+	      DstBlock		      "Velocidades en el sistema del cuadricóptero"
+	      DstPort		      10
 	    }
 	  }
 	}
@@ -8122,6 +8174,788 @@ Model {
 	  }
 	}
 	Block {
+	  BlockType		  SubSystem
+	  Name			  "Perturbaciones"
+	  SID			  "1336"
+	  Ports			  [3, 1]
+	  Position		  [75, 537, 195, 733]
+	  MinAlgLoopOccurrences	  off
+	  PropExecContextOutsideSubsystem off
+	  RTWSystemCode		  "Auto"
+	  FunctionWithSeparateData off
+	  Opaque		  off
+	  RequestExecContextInheritance	off
+	  MaskHideContents	  off
+	  System {
+	    Name		    "Perturbaciones"
+	    Location		    [0, 53, 1366, 768]
+	    Open		    off
+	    ModelBrowserVisibility  off
+	    ModelBrowserWidth	    200
+	    ScreenColor		    "white"
+	    PaperOrientation	    "landscape"
+	    PaperPositionMode	    "auto"
+	    PaperType		    "A4"
+	    PaperUnits		    "centimeters"
+	    TiledPaperMargins	    [1.270000, 1.270000, 1.270000, 1.270000]
+	    TiledPageScale	    1
+	    ShowPageBoundaries	    off
+	    ZoomFactor		    "100"
+	    Block {
+	      BlockType		      Inport
+	      Name		      "psi"
+	      SID		      "1434"
+	      Position		      [140, 368, 170, 382]
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "phi"
+	      SID		      "1435"
+	      Position		      [140, 398, 170, 412]
+	      Port		      "2"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Inport
+	      Name		      "theta"
+	      SID		      "1436"
+	      Position		      [140, 428, 170, 442]
+	      Port		      "3"
+	      IconDisplay	      "Port number"
+	    }
+	    Block {
+	      BlockType		      Constant
+	      Name		      "Constant"
+	      SID		      "1438"
+	      Position		      [165, 130, 195, 160]
+	      Value		      "0"
+	    }
+	    Block {
+	      BlockType		      Constant
+	      Name		      "Constant1"
+	      SID		      "1441"
+	      Position		      [165, 190, 195, 220]
+	      Value		      "0"
+	    }
+	    Block {
+	      BlockType		      Demux
+	      Name		      "Demux"
+	      SID		      "1442"
+	      Ports		      [1, 3]
+	      Position		      [690, 131, 695, 169]
+	      ShowName		      off
+	      Outputs		      "3"
+	      DisplayOption	      "bar"
+	    }
+	    Block {
+	      BlockType		      SubSystem
+	      Name		      "Fuerza horizontal"
+	      SID		      "1341"
+	      Ports		      [0, 1]
+	      Position		      [145, 22, 260, 98]
+	      MinAlgLoopOccurrences   off
+	      PropExecContextOutsideSubsystem off
+	      RTWSystemCode	      "Auto"
+	      FunctionWithSeparateData off
+	      Opaque		      off
+	      RequestExecContextInheritance off
+	      MaskHideContents	      off
+	      System {
+		Name			"Fuerza horizontal"
+		Location		[0, 53, 1366, 768]
+		Open			off
+		ModelBrowserVisibility	off
+		ModelBrowserWidth	200
+		ScreenColor		"white"
+		PaperOrientation	"landscape"
+		PaperPositionMode	"auto"
+		PaperType		"A4"
+		PaperUnits		"centimeters"
+		TiledPaperMargins	[1.270000, 1.270000, 1.270000, 1.270000]
+		TiledPageScale		1
+		ShowPageBoundaries	off
+		ZoomFactor		"100"
+		Block {
+		  BlockType		  Sum
+		  Name			  "Add"
+		  SID			  "1343"
+		  Ports			  [3, 1]
+		  Position		  [360, 128, 390, 162]
+		  Inputs		  "+++"
+		  InputSameDT		  off
+		  OutDataTypeStr	  "Inherit: Inherit via internal rule"
+		  SaturateOnIntegerOverflow off
+		}
+		Block {
+		  BlockType		  Reference
+		  Name			  "Band-Limited\nWhite Noise"
+		  SID			  "1405"
+		  Ports			  [0, 1]
+		  Position		  [170, 160, 200, 190]
+		  LibraryVersion	  "1.225"
+		  SourceBlock		  "simulink/Sources/Band-Limited\nWhite Noise"
+		  SourceType		  "Band-Limited White Noise."
+		  ShowPortLabels	  "FromPortIcon"
+		  SystemSampleTime	  "-1"
+		  FunctionWithSeparateData off
+		  RTWMemSecFuncInitTerm	  "Inherit from model"
+		  RTWMemSecFuncExecute	  "Inherit from model"
+		  RTWMemSecDataConstants  "Inherit from model"
+		  RTWMemSecDataInternal	  "Inherit from model"
+		  RTWMemSecDataParameters "Inherit from model"
+		  GeneratePreprocessorConditionals off
+		  Cov			  "[0]"
+		  Ts			  "0.1"
+		  seed			  "[23341]"
+		  VectorParams1D	  on
+		}
+		Block {
+		  BlockType		  Constant
+		  Name			  "Constant"
+		  SID			  "1407"
+		  Position		  [105, 65, 135, 95]
+		  Value			  "0"
+		}
+		Block {
+		  BlockType		  Constant
+		  Name			  "Constant1"
+		  SID			  "1408"
+		  Position		  [105, 215, 135, 245]
+		  Value			  "0"
+		}
+		Block {
+		  BlockType		  Trigonometry
+		  Name			  "Trigonometric\nFunction"
+		  SID			  "1406"
+		  Ports			  [1, 1]
+		  Position		  [205, 65, 235, 95]
+		}
+		Block {
+		  BlockType		  Outport
+		  Name			  "T"
+		  SID			  "1347"
+		  Position		  [590, 138, 620, 152]
+		  IconDisplay		  "Port number"
+		}
+		Line {
+		  SrcBlock		  "Add"
+		  SrcPort		  1
+		  DstBlock		  "T"
+		  DstPort		  1
+		}
+		Line {
+		  SrcBlock		  "Constant"
+		  SrcPort		  1
+		  DstBlock		  "Trigonometric\nFunction"
+		  DstPort		  1
+		}
+		Line {
+		  SrcBlock		  "Trigonometric\nFunction"
+		  SrcPort		  1
+		  Points		  [50, 0; 0, 55]
+		  DstBlock		  "Add"
+		  DstPort		  1
+		}
+		Line {
+		  SrcBlock		  "Band-Limited\nWhite Noise"
+		  SrcPort		  1
+		  Points		  [70, 0; 0, -30]
+		  DstBlock		  "Add"
+		  DstPort		  2
+		}
+		Line {
+		  SrcBlock		  "Constant1"
+		  SrcPort		  1
+		  Points		  [205, 0]
+		  DstBlock		  "Add"
+		  DstPort		  3
+		}
+	      }
+	    }
+	    Block {
+	      BlockType		      Product
+	      Name		      "Product"
+	      SID		      "1440"
+	      Ports		      [2, 1]
+	      Position		      [545, 132, 575, 163]
+	      Multiplication	      "Matrix(*)"
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      SubSystem
+	      Name		      "Subsystem"
+	      SID		      "1414"
+	      Ports		      [3, 1]
+	      Position		      [325, 358, 390, 452]
+	      MinAlgLoopOccurrences   off
+	      PropExecContextOutsideSubsystem off
+	      RTWSystemCode	      "Auto"
+	      FunctionWithSeparateData off
+	      Opaque		      off
+	      RequestExecContextInheritance off
+	      MaskHideContents	      off
+	      System {
+		Name			"Subsystem"
+		Location		[0, 53, 1366, 768]
+		Open			off
+		ModelBrowserVisibility	off
+		ModelBrowserWidth	200
+		ScreenColor		"white"
+		PaperOrientation	"landscape"
+		PaperPositionMode	"auto"
+		PaperType		"A4"
+		PaperUnits		"centimeters"
+		TiledPaperMargins	[1.270000, 1.270000, 1.270000, 1.270000]
+		TiledPageScale		1
+		ShowPageBoundaries	off
+		ZoomFactor		"100"
+		Block {
+		  BlockType		  Inport
+		  Name			  "theta"
+		  SID			  "1415"
+		  Position		  [60, 78, 90, 92]
+		  IconDisplay		  "Port number"
+		}
+		Block {
+		  BlockType		  Inport
+		  Name			  "phi"
+		  SID			  "1416"
+		  Position		  [60, 273, 90, 287]
+		  Port			  "2"
+		  IconDisplay		  "Port number"
+		}
+		Block {
+		  BlockType		  Inport
+		  Name			  "psi"
+		  SID			  "1417"
+		  Position		  [60, 513, 90, 527]
+		  Port			  "3"
+		  IconDisplay		  "Port number"
+		}
+		Block {
+		  BlockType		  Constant
+		  Name			  "Constant"
+		  SID			  "1418"
+		  Position		  [60, 15, 90, 45]
+		}
+		Block {
+		  BlockType		  Constant
+		  Name			  "Constant1"
+		  SID			  "1419"
+		  Position		  [45, 695, 75, 725]
+		  Value			  "0"
+		}
+		Block {
+		  BlockType		  Reference
+		  Name			  "Create 3x3 Matrix"
+		  SID			  "1420"
+		  Ports			  [9, 1]
+		  Position		  [580, 62, 640, 168]
+		  LibraryVersion	  "1.98"
+		  SourceBlock		  "aerolibutil/Create 3x3 Matrix"
+		  SourceType		  "Create 3x3 Matrix"
+		  ShowPortLabels	  "FromPortIcon"
+		  SystemSampleTime	  "-1"
+		  FunctionWithSeparateData off
+		  RTWMemSecFuncInitTerm	  "Inherit from model"
+		  RTWMemSecFuncExecute	  "Inherit from model"
+		  RTWMemSecDataConstants  "Inherit from model"
+		  RTWMemSecDataInternal	  "Inherit from model"
+		  RTWMemSecDataParameters "Inherit from model"
+		  GeneratePreprocessorConditionals off
+		}
+		Block {
+		  BlockType		  Reference
+		  Name			  "Create 3x3 Matrix1"
+		  SID			  "1421"
+		  Ports			  [9, 1]
+		  Position		  [560, 267, 620, 373]
+		  LibraryVersion	  "1.98"
+		  SourceBlock		  "aerolibutil/Create 3x3 Matrix"
+		  SourceType		  "Create 3x3 Matrix"
+		  ShowPortLabels	  "FromPortIcon"
+		  SystemSampleTime	  "-1"
+		  FunctionWithSeparateData off
+		  RTWMemSecFuncInitTerm	  "Inherit from model"
+		  RTWMemSecFuncExecute	  "Inherit from model"
+		  RTWMemSecDataConstants  "Inherit from model"
+		  RTWMemSecDataInternal	  "Inherit from model"
+		  RTWMemSecDataParameters "Inherit from model"
+		  GeneratePreprocessorConditionals off
+		}
+		Block {
+		  BlockType		  Reference
+		  Name			  "Create 3x3 Matrix2"
+		  SID			  "1422"
+		  Ports			  [9, 1]
+		  Position		  [560, 497, 620, 603]
+		  LibraryVersion	  "1.98"
+		  SourceBlock		  "aerolibutil/Create 3x3 Matrix"
+		  SourceType		  "Create 3x3 Matrix"
+		  ShowPortLabels	  "FromPortIcon"
+		  SystemSampleTime	  "-1"
+		  FunctionWithSeparateData off
+		  RTWMemSecFuncInitTerm	  "Inherit from model"
+		  RTWMemSecFuncExecute	  "Inherit from model"
+		  RTWMemSecDataConstants  "Inherit from model"
+		  RTWMemSecDataInternal	  "Inherit from model"
+		  RTWMemSecDataParameters "Inherit from model"
+		  GeneratePreprocessorConditionals off
+		}
+		Block {
+		  BlockType		  Product
+		  Name			  "Product"
+		  SID			  "1423"
+		  Ports			  [3, 1]
+		  Position		  [855, 280, 930, 360]
+		  Inputs		  "3"
+		  Multiplication	  "Matrix(*)"
+		  InputSameDT		  off
+		  OutDataTypeStr	  "Inherit: Inherit via internal rule"
+		  SaturateOnIntegerOverflow off
+		}
+		Block {
+		  BlockType		  Trigonometry
+		  Name			  "Trigonometric\nFunction"
+		  SID			  "1424"
+		  Ports			  [1, 1]
+		  Position		  [275, 70, 305, 100]
+		  Operator		  "cos"
+		}
+		Block {
+		  BlockType		  Trigonometry
+		  Name			  "Trigonometric\nFunction1"
+		  SID			  "1425"
+		  Ports			  [1, 1]
+		  Position		  [275, 145, 305, 175]
+		}
+		Block {
+		  BlockType		  Trigonometry
+		  Name			  "Trigonometric\nFunction2"
+		  SID			  "1426"
+		  Ports			  [1, 1]
+		  Position		  [255, 265, 285, 295]
+		  Operator		  "cos"
+		}
+		Block {
+		  BlockType		  Trigonometry
+		  Name			  "Trigonometric\nFunction3"
+		  SID			  "1427"
+		  Ports			  [1, 1]
+		  Position		  [255, 340, 285, 370]
+		}
+		Block {
+		  BlockType		  Trigonometry
+		  Name			  "Trigonometric\nFunction4"
+		  SID			  "1428"
+		  Ports			  [1, 1]
+		  Position		  [255, 505, 285, 535]
+		  Operator		  "cos"
+		}
+		Block {
+		  BlockType		  Trigonometry
+		  Name			  "Trigonometric\nFunction5"
+		  SID			  "1429"
+		  Ports			  [1, 1]
+		  Position		  [255, 580, 285, 610]
+		}
+		Block {
+		  BlockType		  UnaryMinus
+		  Name			  "Unary Minus"
+		  SID			  "1430"
+		  Position		  [410, 170, 440, 200]
+		}
+		Block {
+		  BlockType		  UnaryMinus
+		  Name			  "Unary Minus1"
+		  SID			  "1431"
+		  Position		  [390, 365, 420, 395]
+		}
+		Block {
+		  BlockType		  UnaryMinus
+		  Name			  "Unary Minus2"
+		  SID			  "1432"
+		  Position		  [390, 605, 420, 635]
+		}
+		Block {
+		  BlockType		  Outport
+		  Name			  "Direction Matrix"
+		  SID			  "1433"
+		  Position		  [1100, 313, 1130, 327]
+		  IconDisplay		  "Port number"
+		}
+		Line {
+		  SrcBlock		  "theta"
+		  SrcPort		  1
+		  Points		  [95, 0]
+		  Branch {
+		    DstBlock		    "Trigonometric\nFunction"
+		    DstPort		    1
+		  }
+		  Branch {
+		    Points		    [0, 75]
+		    DstBlock		    "Trigonometric\nFunction1"
+		    DstPort		    1
+		  }
+		}
+		Line {
+		  SrcBlock		  "Constant1"
+		  SrcPort		  1
+		  Points		  [250, 0; 0, -180]
+		  Branch {
+		    Points		    [0, -95]
+		    Branch {
+		    Points		    [0, -290]
+		    Branch {
+		    Points		    [0, -10]
+		    Branch {
+		    Points		    [0, -10]
+		    Branch {
+		    Points		    [0, -30]
+		    DstBlock		    "Create 3x3 Matrix"
+		    DstPort		    3
+		    }
+		    Branch {
+		    DstBlock		    "Create 3x3 Matrix"
+		    DstPort		    6
+		    }
+		    }
+		    Branch {
+		    DstBlock		    "Create 3x3 Matrix"
+		    DstPort		    7
+		    }
+		    }
+		    Branch {
+		    DstBlock		    "Create 3x3 Matrix"
+		    DstPort		    8
+		    }
+		    }
+		    Branch {
+		    Points		    [0, -90]
+		    Branch {
+		    Points		    [0, -15]
+		    Branch {
+		    Points		    [0, -20]
+		    Branch {
+		    Points		    [0, -20]
+		    DstBlock		    "Create 3x3 Matrix1"
+		    DstPort		    2
+		    }
+		    Branch {
+		    DstBlock		    "Create 3x3 Matrix1"
+		    DstPort		    4
+		    }
+		    }
+		    Branch {
+		    DstBlock		    "Create 3x3 Matrix1"
+		    DstPort		    6
+		    }
+		    }
+		    Branch {
+		    Points		    [0, 5]
+		    DstBlock		    "Create 3x3 Matrix1"
+		    DstPort		    8
+		    }
+		    }
+		  }
+		  Branch {
+		    Points		    [120, 0]
+		    Branch {
+		    DstBlock		    "Create 3x3 Matrix2"
+		    DstPort		    3
+		    }
+		    Branch {
+		    Points		    [0, -10]
+		    DstBlock		    "Create 3x3 Matrix2"
+		    DstPort		    2
+		    }
+		    Branch {
+		    Points		    [0, 5]
+		    Branch {
+		    Points		    [0, 35]
+		    DstBlock		    "Create 3x3 Matrix2"
+		    DstPort		    7
+		    }
+		    Branch {
+		    Points		    [0, 5]
+		    DstBlock		    "Create 3x3 Matrix2"
+		    DstPort		    4
+		    }
+		    }
+		  }
+		}
+		Line {
+		  SrcBlock		  "Constant"
+		  SrcPort		  1
+		  Points		  [400, 0]
+		  Branch {
+		    Points		    [65, 0; 0, 125]
+		    DstBlock		    "Create 3x3 Matrix"
+		    DstPort		    9
+		  }
+		  Branch {
+		    Points		    [0, 290]
+		    DstBlock		    "Create 3x3 Matrix1"
+		    DstPort		    5
+		  }
+		  Branch {
+		    Points		    [0, 480]
+		    DstBlock		    "Create 3x3 Matrix2"
+		    DstPort		    1
+		  }
+		}
+		Line {
+		  SrcBlock		  "Trigonometric\nFunction"
+		  SrcPort		  1
+		  Points		  [170, 0]
+		  Branch {
+		    Points		    [85, 0]
+		    DstBlock		    "Create 3x3 Matrix"
+		    DstPort		    1
+		  }
+		  Branch {
+		    Points		    [0, 30]
+		    DstBlock		    "Create 3x3 Matrix"
+		    DstPort		    5
+		  }
+		}
+		Line {
+		  SrcBlock		  "Trigonometric\nFunction1"
+		  SrcPort		  1
+		  Points		  [35, 0]
+		  Branch {
+		    Points		    [215, 0; 0, -75]
+		    DstBlock		    "Create 3x3 Matrix"
+		    DstPort		    2
+		  }
+		  Branch {
+		    Points		    [0, 25]
+		    DstBlock		    "Unary Minus"
+		    DstPort		    1
+		  }
+		}
+		Line {
+		  SrcBlock		  "Unary Minus"
+		  SrcPort		  1
+		  Points		  [115, 0; 0, -80]
+		  DstBlock		  "Create 3x3 Matrix"
+		  DstPort		  4
+		}
+		Line {
+		  SrcBlock		  "Trigonometric\nFunction3"
+		  SrcPort		  1
+		  Points		  [5, 0]
+		  Branch {
+		    Points		    [30, 0; 0, 25]
+		    DstBlock		    "Unary Minus1"
+		    DstPort		    1
+		  }
+		  Branch {
+		    Points		    [0, -15]
+		    DstBlock		    "Create 3x3 Matrix1"
+		    DstPort		    7
+		  }
+		}
+		Line {
+		  SrcBlock		  "phi"
+		  SrcPort		  1
+		  Points		  [75, 0]
+		  Branch {
+		    DstBlock		    "Trigonometric\nFunction2"
+		    DstPort		    1
+		  }
+		  Branch {
+		    Points		    [0, 75]
+		    DstBlock		    "Trigonometric\nFunction3"
+		    DstPort		    1
+		  }
+		}
+		Line {
+		  SrcBlock		  "Trigonometric\nFunction2"
+		  SrcPort		  1
+		  Points		  [175, 0]
+		  Branch {
+		    DstBlock		    "Create 3x3 Matrix1"
+		    DstPort		    1
+		  }
+		  Branch {
+		    Points		    [0, 80]
+		    DstBlock		    "Create 3x3 Matrix1"
+		    DstPort		    9
+		  }
+		}
+		Line {
+		  SrcBlock		  "Unary Minus1"
+		  SrcPort		  1
+		  Points		  [115, 0; 0, -80]
+		  DstBlock		  "Create 3x3 Matrix1"
+		  DstPort		  3
+		}
+		Line {
+		  SrcBlock		  "Trigonometric\nFunction5"
+		  SrcPort		  1
+		  Points		  [15, 0]
+		  Branch {
+		    Points		    [20, 0; 0, 25]
+		    DstBlock		    "Unary Minus2"
+		    DstPort		    1
+		  }
+		  Branch {
+		    Points		    [0, -35]
+		    DstBlock		    "Create 3x3 Matrix2"
+		    DstPort		    6
+		  }
+		}
+		Line {
+		  SrcBlock		  "psi"
+		  SrcPort		  1
+		  Points		  [75, 0]
+		  Branch {
+		    DstBlock		    "Trigonometric\nFunction4"
+		    DstPort		    1
+		  }
+		  Branch {
+		    Points		    [0, 75]
+		    DstBlock		    "Trigonometric\nFunction5"
+		    DstPort		    1
+		  }
+		}
+		Line {
+		  SrcBlock		  "Trigonometric\nFunction4"
+		  SrcPort		  1
+		  Points		  [80, 0]
+		  Branch {
+		    Points		    [170, 0; 0, 30]
+		    DstBlock		    "Create 3x3 Matrix2"
+		    DstPort		    5
+		  }
+		  Branch {
+		    Points		    [0, 70]
+		    DstBlock		    "Create 3x3 Matrix2"
+		    DstPort		    9
+		  }
+		}
+		Line {
+		  SrcBlock		  "Unary Minus2"
+		  SrcPort		  1
+		  Points		  [115, 0; 0, -40]
+		  DstBlock		  "Create 3x3 Matrix2"
+		  DstPort		  8
+		}
+		Line {
+		  SrcBlock		  "Product"
+		  SrcPort		  1
+		  DstBlock		  "Direction Matrix"
+		  DstPort		  1
+		}
+		Line {
+		  SrcBlock		  "Create 3x3 Matrix1"
+		  SrcPort		  1
+		  DstBlock		  "Product"
+		  DstPort		  2
+		}
+		Line {
+		  SrcBlock		  "Create 3x3 Matrix"
+		  SrcPort		  1
+		  Points		  [95, 0; 0, 180]
+		  DstBlock		  "Product"
+		  DstPort		  1
+		}
+		Line {
+		  SrcBlock		  "Create 3x3 Matrix2"
+		  SrcPort		  1
+		  Points		  [105, 0; 0, -205]
+		  DstBlock		  "Product"
+		  DstPort		  3
+		}
+	      }
+	    }
+	    Block {
+	      BlockType		      Concatenate
+	      Name		      "Vector\nConcatenate"
+	      SID		      "1439"
+	      Ports		      [3, 1]
+	      Position		      [275, 136, 280, 174]
+	      NumInputs		      "3"
+	      Mode		      "Vector"
+	    }
+	    Block {
+	      BlockType		      Outport
+	      Name		      "Fx1"
+	      SID		      "1397"
+	      Position		      [790, 133, 820, 147]
+	      IconDisplay	      "Port number"
+	    }
+	    Line {
+	      SrcBlock		      "psi"
+	      SrcPort		      1
+	      DstBlock		      "Subsystem"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "phi"
+	      SrcPort		      1
+	      DstBlock		      "Subsystem"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "theta"
+	      SrcPort		      1
+	      DstBlock		      "Subsystem"
+	      DstPort		      3
+	    }
+	    Line {
+	      SrcBlock		      "Subsystem"
+	      SrcPort		      1
+	      Points		      [65, 0; 0, -265]
+	      DstBlock		      "Product"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Vector\nConcatenate"
+	      SrcPort		      1
+	      DstBlock		      "Product"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "Product"
+	      SrcPort		      1
+	      DstBlock		      "Demux"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Demux"
+	      SrcPort		      1
+	      DstBlock		      "Fx1"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Fuerza horizontal"
+	      SrcPort		      1
+	      Points		      [0, 85]
+	      DstBlock		      "Vector\nConcatenate"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Constant"
+	      SrcPort		      1
+	      Points		      [30, 0; 0, 10]
+	      DstBlock		      "Vector\nConcatenate"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "Constant1"
+	      SrcPort		      1
+	      Points		      [30, 0; 0, -40]
+	      DstBlock		      "Vector\nConcatenate"
+	      DstPort		      3
+	    }
+	  }
+	}
+	Block {
 	  BlockType		  Outport
 	  Name			  "x"
 	  SID			  "1262"
@@ -8216,6 +9050,14 @@ Model {
 	  Port			  "12"
 	  IconDisplay		  "Port number"
 	}
+	Block {
+	  BlockType		  Outport
+	  Name			  "Fx1"
+	  SID			  "1412"
+	  Position		  [435, 733, 465, 747]
+	  Port			  "13"
+	  IconDisplay		  "Port number"
+	}
 	Line {
 	  SrcBlock		  "Cinemática"
 	  SrcPort		  1
@@ -8257,7 +9099,7 @@ Model {
 	    DstPort		    1
 	  }
 	  Branch {
-	    Points		    [0, -335; -875, 0; 0, 105]
+	    Points		    [0, -335; -875, 0; 0, 95]
 	    DstBlock		    "Dinámica"
 	    DstPort		    2
 	  }
@@ -8293,6 +9135,7 @@ Model {
 	    DstPort		    3
 	  }
 	  Branch {
+	    Points		    [310, 0]
 	    DstBlock		    "Dinámica"
 	    DstPort		    13
 	  }
@@ -8307,7 +9150,6 @@ Model {
 	    DstPort		    4
 	  }
 	  Branch {
-	    Points		    [0, 10]
 	    DstBlock		    "Dinámica"
 	    DstPort		    14
 	  }
@@ -8315,7 +9157,7 @@ Model {
 	Line {
 	  SrcBlock		  "Dinámica"
 	  SrcPort		  6
-	  Points		  [5, 0]
+	  Points		  [0, -5; 5, 0]
 	  Branch {
 	    Points		    [0, 325]
 	    DstBlock		    "wq3"
@@ -8329,56 +9171,56 @@ Model {
 	Line {
 	  SrcBlock		  "Fuerzas y Torques"
 	  SrcPort		  1
-	  Points		  [130, 0; 0, 125]
+	  Points		  [130, 0; 0, 115]
 	  DstBlock		  "Dinámica"
 	  DstPort		  3
 	}
 	Line {
 	  SrcBlock		  "Fuerzas y Torques"
 	  SrcPort		  2
-	  Points		  [110, 0; 0, 125]
+	  Points		  [110, 0; 0, 115]
 	  DstBlock		  "Dinámica"
 	  DstPort		  4
 	}
 	Line {
 	  SrcBlock		  "Fuerzas y Torques"
 	  SrcPort		  3
-	  Points		  [100, 0; 0, 125]
+	  Points		  [100, 0; 0, 115]
 	  DstBlock		  "Dinámica"
 	  DstPort		  5
 	}
 	Line {
 	  SrcBlock		  "Fuerzas y Torques"
 	  SrcPort		  4
-	  Points		  [90, 0; 0, 125]
+	  Points		  [90, 0; 0, 115]
 	  DstBlock		  "Dinámica"
 	  DstPort		  6
 	}
 	Line {
 	  SrcBlock		  "Fuerzas y Torques"
 	  SrcPort		  5
-	  Points		  [45, 0; 0, 125]
+	  Points		  [45, 0; 0, 115]
 	  DstBlock		  "Dinámica"
 	  DstPort		  7
 	}
 	Line {
 	  SrcBlock		  "Fuerzas y Torques"
 	  SrcPort		  6
-	  Points		  [35, 0; 0, 125]
+	  Points		  [35, 0; 0, 115]
 	  DstBlock		  "Dinámica"
 	  DstPort		  8
 	}
 	Line {
 	  SrcBlock		  "Fuerzas y Torques"
 	  SrcPort		  7
-	  Points		  [20, 0; 0, 125]
+	  Points		  [20, 0; 0, 115]
 	  DstBlock		  "Dinámica"
 	  DstPort		  9
 	}
 	Line {
 	  SrcBlock		  "Fuerzas y Torques"
 	  SrcPort		  8
-	  Points		  [5, 0; 0, 125]
+	  Points		  [5, 0; 0, 115]
 	  DstBlock		  "Dinámica"
 	  DstPort		  10
 	}
@@ -8400,7 +9242,7 @@ Model {
 	Line {
 	  SrcBlock		  "Dinámica"
 	  SrcPort		  1
-	  Points		  [160, 0]
+	  Points		  [0, -5; 160, 0]
 	  Branch {
 	    DstBlock		    "Cinemática"
 	    DstPort		    1
@@ -8414,7 +9256,7 @@ Model {
 	Line {
 	  SrcBlock		  "Dinámica"
 	  SrcPort		  2
-	  Points		  [135, 0]
+	  Points		  [0, -5; 135, 0]
 	  Branch {
 	    DstBlock		    "Cinemática"
 	    DstPort		    2
@@ -8428,7 +9270,7 @@ Model {
 	Line {
 	  SrcBlock		  "Dinámica"
 	  SrcPort		  3
-	  Points		  [100, 0]
+	  Points		  [0, -5; 100, 0]
 	  Branch {
 	    DstBlock		    "Cinemática"
 	    DstPort		    3
@@ -8442,7 +9284,7 @@ Model {
 	Line {
 	  SrcBlock		  "Dinámica"
 	  SrcPort		  4
-	  Points		  [50, 0]
+	  Points		  [0, -5; 50, 0]
 	  Branch {
 	    DstBlock		    "Cinemática"
 	    DstPort		    4
@@ -8456,7 +9298,7 @@ Model {
 	Line {
 	  SrcBlock		  "Dinámica"
 	  SrcPort		  5
-	  Points		  [30, 0]
+	  Points		  [0, -5; 30, 0]
 	  Branch {
 	    DstBlock		    "Cinemática"
 	    DstPort		    5
@@ -8464,6 +9306,21 @@ Model {
 	  Branch {
 	    Points		    [0, 325]
 	    DstBlock		    "wq2"
+	    DstPort		    1
+	  }
+	}
+	Line {
+	  SrcBlock		  "Perturbaciones"
+	  SrcPort		  1
+	  Points		  [0, -5; 160, 0]
+	  Branch {
+	    Points		    [60, 0]
+	    DstBlock		    "Dinámica"
+	    DstPort		    15
+	  }
+	  Branch {
+	    Points		    [0, 110]
+	    DstBlock		    "Fx1"
 	    DstPort		    1
 	  }
 	}
@@ -8634,34 +9491,18 @@ Model {
     }
     Block {
       BlockType		      Outport
-      Name		      "U1"
-      SID		      "1280"
-      Position		      [515, 133, 545, 147]
+      Name		      "Fx1"
+      SID		      "1413"
+      Position		      [855, 598, 885, 612]
       Port		      "13"
       IconDisplay	      "Port number"
     }
     Block {
       BlockType		      Outport
-      Name		      "U2"
-      SID		      "1324"
-      Position		      [495, 168, 525, 182]
+      Name		      "Fx2"
+      SID		      "1443"
+      Position		      [460, 148, 490, 162]
       Port		      "14"
-      IconDisplay	      "Port number"
-    }
-    Block {
-      BlockType		      Outport
-      Name		      "U3"
-      SID		      "1325"
-      Position		      [495, 353, 525, 367]
-      Port		      "15"
-      IconDisplay	      "Port number"
-    }
-    Block {
-      BlockType		      Outport
-      Name		      "U4"
-      SID		      "1327"
-      Position		      [470, 443, 500, 457]
-      Port		      "16"
       IconDisplay	      "Port number"
     }
     Line {
@@ -8743,42 +9584,23 @@ Model {
     Line {
       SrcBlock		      "Sum3"
       SrcPort		      1
-      Points		      [20, 0; 0, 115; 35, 0]
-      Branch {
-	DstBlock		"Subsystem1"
-	DstPort			4
-      }
-      Branch {
-	DstBlock		"U4"
-	DstPort			1
-      }
+      Points		      [20, 0; 0, 120]
+      DstBlock		      "Subsystem1"
+      DstPort		      4
     }
     Line {
       SrcBlock		      "Sum2"
       SrcPort		      1
-      Points		      [70, 0; 0, 80; 25, 0]
-      Branch {
-	DstBlock		"Subsystem1"
-	DstPort			3
-      }
-      Branch {
-	Points			[0, -35]
-	DstBlock		"U3"
-	DstPort			1
-      }
+      Points		      [70, 0; 0, 85]
+      DstBlock		      "Subsystem1"
+      DstPort		      3
     }
     Line {
       SrcBlock		      "Sum1"
       SrcPort		      1
-      Points		      [85, 0; 0, 50; 45, 0]
-      Branch {
-	DstBlock		"Subsystem1"
-	DstPort			2
-      }
-      Branch {
-	DstBlock		"U2"
-	DstPort			1
-      }
+      Points		      [85, 0; 0, 55]
+      DstBlock		      "Subsystem1"
+      DstPort		      2
     }
     Line {
       SrcBlock		      "Sum"
@@ -8790,8 +9612,7 @@ Model {
 	DstPort			1
       }
       Branch {
-	Points			[0, -85]
-	DstBlock		"U1"
+	DstBlock		"Fx2"
 	DstPort			1
       }
     }
@@ -8814,7 +9635,7 @@ Model {
     Line {
       SrcBlock		      "Subsystem1"
       SrcPort		      1
-      Points		      [315, 0]
+      Points		      [0, 10; 315, 0]
       Branch {
 	Points			[15, 0; 0, -25]
 	DstBlock		"x"
@@ -8829,7 +9650,7 @@ Model {
     Line {
       SrcBlock		      "Subsystem1"
       SrcPort		      2
-      Points		      [295, 0]
+      Points		      [0, 10; 295, 0]
       Branch {
 	Points			[370, 0]
 	DstBlock		"y"
@@ -8844,7 +9665,7 @@ Model {
     Line {
       SrcBlock		      "Subsystem1"
       SrcPort		      3
-      Points		      [275, 0]
+      Points		      [0, 10; 275, 0]
       Branch {
 	Points			[390, 0]
 	DstBlock		"z"
@@ -8859,7 +9680,7 @@ Model {
     Line {
       SrcBlock		      "Subsystem1"
       SrcPort		      4
-      Points		      [255, 0]
+      Points		      [0, 10; 255, 0]
       Branch {
 	Points			[410, 0]
 	DstBlock		"psi"
@@ -8874,7 +9695,7 @@ Model {
     Line {
       SrcBlock		      "Subsystem1"
       SrcPort		      5
-      Points		      [240, 0]
+      Points		      [0, 10; 240, 0]
       Branch {
 	Points			[425, 0]
 	DstBlock		"phi"
@@ -8889,7 +9710,7 @@ Model {
     Line {
       SrcBlock		      "Subsystem1"
       SrcPort		      6
-      Points		      [225, 0]
+      Points		      [0, 10; 225, 0]
       Branch {
 	Points			[440, 0]
 	DstBlock		"theta"
@@ -8904,7 +9725,7 @@ Model {
     Line {
       SrcBlock		      "Subsystem1"
       SrcPort		      7
-      Points		      [210, 0]
+      Points		      [0, 10; 210, 0]
       Branch {
 	Points			[455, 0]
 	DstBlock		"vq1"
@@ -8919,7 +9740,7 @@ Model {
     Line {
       SrcBlock		      "Subsystem1"
       SrcPort		      8
-      Points		      [195, 0]
+      Points		      [0, 10; 195, 0]
       Branch {
 	Points			[470, 0]
 	DstBlock		"vq2"
@@ -8934,7 +9755,7 @@ Model {
     Line {
       SrcBlock		      "Subsystem1"
       SrcPort		      9
-      Points		      [180, 0]
+      Points		      [0, 10; 180, 0]
       Branch {
 	Points			[485, 0]
 	DstBlock		"vq3"
@@ -8949,7 +9770,7 @@ Model {
     Line {
       SrcBlock		      "Subsystem1"
       SrcPort		      10
-      Points		      [160, 0]
+      Points		      [0, 10; 160, 0]
       Branch {
 	Points			[505, 0]
 	DstBlock		"wq1"
@@ -8964,7 +9785,7 @@ Model {
     Line {
       SrcBlock		      "Subsystem1"
       SrcPort		      11
-      Points		      [145, 0]
+      Points		      [0, 10; 145, 0]
       Branch {
 	Points			[520, 0]
 	DstBlock		"wq2"
@@ -8979,7 +9800,7 @@ Model {
     Line {
       SrcBlock		      "Subsystem1"
       SrcPort		      12
-      Points		      [120, 0]
+      Points		      [0, 10; 120, 0]
       Branch {
 	DstBlock		"wq3"
 	DstPort			1
@@ -8989,6 +9810,13 @@ Model {
 	DstBlock		"Mux"
 	DstPort			12
       }
+    }
+    Line {
+      SrcBlock		      "Subsystem1"
+      SrcPort		      13
+      Points		      [0, 85; -65, 0]
+      DstBlock		      "Fx1"
+      DstPort		      1
     }
     Annotation {
       Position		      [632, 572]
