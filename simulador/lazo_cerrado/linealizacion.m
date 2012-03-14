@@ -19,7 +19,7 @@ Matrices = load('linealizacion.mat');
 
 A=Matrices.A;
 B=Matrices.B;
-     
+Acirc=Matrices.Acirc;     
 Ts=evalin('base','Ts');
 %% Linealización en Hovering
 if modo=='hov'
@@ -43,7 +43,7 @@ if modo=='hov'
 
     %Por ahora hay dos opciones para trabajar. No se todavía cual es mejor
     if lqrm==0
-        Qp=diag([1 1 1e2 1 1 1 1 1 1 1 1 1]);
+        Qp=diag([1e4 1e4 1e4 1 1 1 1e4 1e4 1e4 1 1 1]);
         Rp=diag([1 1 1 1]);
         [K,S,E]=lqr(Ah,Bh,Qp,Rp);
 
@@ -79,8 +79,8 @@ elseif modo=='rec'
    
     %% Construcción de la matriz K método LQR para linea recta
     if lqrm==0
-        Qp=diag([1 1 1 1 1 1 1e4 1e4 1e4 1 1 1]);%No seas pancho no cambies esto
-        %Qp=diag([1 1 1 1 1 1 1 1 1 1 1 1]);
+        %Qp=diag([1 1 1 1 1 1 1e4 1e4 1e4 1 1 1]);%No seas pancho no cambies esto
+        Qp=diag([1 1 1 1 1 1 1 1 1 1 1 1]);
         Rp=diag([1 1 1 1]);
         %[K,S,E]=lqrd(Ar,Br,Qp,Rp,Ts);  
         [K,S,E]=lqr(Ar,Br,Qp,Rp);  
@@ -95,26 +95,21 @@ elseif modo=='cir'
     
     phi=setpoint(1); psis=setpoint(2);theta=0;
     vq1=setpoint(3); vq2=setpoint(4); vq3=setpoint(5);
-    
-    
+    Velhor=evalin('base','Vhor');
+    thetap=evalin('base','thetap');
+    x=Velhor/thetap*cos(phi);
+    y=Velhor/thetap*sin(phi)*sin(psis);
+    z=Velhor/thetap*sin(phi)*cos(psis);
     wq1=setpoint(6); wq2=setpoint(7); wq3=setpoint(8);
     
     w1=setpoint(9); w2=setpoint(10); w3=setpoint(11); w4=setpoint(12);
-        
-    %No voy a realimentar la posición. Me interesa controlar la velocidad
-    %solamente. Tampoco me interesa theta
-    Ac=A(4:12,4:12);
-    Ac=eval(Ac);
-    Ac(3,:)=[];
-    Ac(:,3)=[];
     
-    Bc=B(4:12,:);
-    Bc=eval(Bc);
-    Bc(3,:)=[];
+    Ac=eval(Acirc);       
+    Bc=eval(B);
     %% Construcción de la matriz K método LQR para circulos
     if lqrm==0
-        Qp=diag([1 1 1e2 1e2 1e5 1 1 1e2]);
-        
+        Qp=diag([10 1 1 1 1e3 1e2 1e4 1e4 1e4 1 1 1e2]);
+        %Qp=diag([1 1 1 1e2 1e2 1e2 1 1 1 1 1 1]);
         Rp=diag([1 1 1 1]);
         [K,S,E]=lqr(Ac,Bc,Qp,Rp);  
     else
