@@ -28,7 +28,7 @@
 /// Log data
 #define MOT_LOG_TX "cmd_tx.log"
 
-#define MAX_W 422.0
+#define MAX_W 422.0L
 
 /**
  * Structure to hold motor status.
@@ -44,6 +44,7 @@ typedef struct uquad_mot{
     FILE *tx_log;
     uint8_t i2c_curr[MOT_C];
     uint8_t i2c_target[MOT_C];
+    uquad_mat_t *w_curr;
     uquad_kmsgq_t *kmsgq;
     struct timeval last_set;
 }uquad_mot_t;
@@ -66,7 +67,7 @@ uquad_mot_t *mot_init(void);
  * 
  * @return error code
  */
-int mot_set_vel_rads(uquad_mot_t *mot, double *w);
+int mot_set_vel_rads(uquad_mot_t *mot, uquad_mat_t *w);
 
 /** 
  * Sets idle speed as target speed for all motors.

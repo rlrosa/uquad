@@ -111,7 +111,7 @@ void slow_land(void)
     w->m_full[3] = MOT_W_HOVER;
     for(i = 0; i < 5; ++i)
     {
-	retval = mot_set_vel_rads(mot, w->m_full);
+	retval = mot_set_vel_rads(mot, w);
 	if(retval != ERROR_OK)
 	    break;
 	else
@@ -120,7 +120,7 @@ void slow_land(void)
     sleep_ms(IDLE_TIME_MS);
     for(dtmp = MOT_W_HOVER;dtmp > MOT_W_IDLE;dtmp -= SLOW_LAND_STEP_W)
     {
-	retval = mot_set_vel_rads(mot, w->m_full);
+	retval = mot_set_vel_rads(mot, w);
 	if(retval != ERROR_OK)
 	{
 	    err_log("Failed to set speed when landing...");
@@ -255,8 +255,9 @@ int main(int argc, char *argv[]){
     uquad_bool_t first_run = true;
     uquad_bool_t reg_stdin = true;
     unsigned char tmp_buff[2];
-    struct timeval tv_last_m_cmd, tv_tmp, tv_diff;
+    struct timeval tv_last_m_cmd, tv_last_kalman, tv_tmp, tv_diff;
     gettimeofday(&tv_last_m_cmd,NULL);
+    gettimeofday(&tv_last_kalman,NULL);
     int count_err = 0, count_ok = FIXED;
     retval = ERROR_OK;
     poll_n_read:
@@ -307,8 +308,11 @@ int main(int argc, char *argv[]){
 		continue;
 	    }
 
+	    gettimeofday(&tv_tmp,NULL);
+	    uquad_timeval_substract(&tv_diff,tv_tmp,tv_last_kalman);
+	    gettimeofday(&tv_last_kalman,NULL);
 	    /// Get new state estimation
-	    retval = uquad_kalman(kalman, pp->sp->w, &imu_data);
+	    retval = uquad_kalman(kalman, mot->w_curr, &imu_data, (double)tv_diff.tv_usec);
 	    log_n_continue(retval,"Kalman update failed");
 
 	    /// Get current set point
@@ -319,16 +323,14 @@ int main(int argc, char *argv[]){
 	    retval = control(ctrl, w, kalman->x_hat, pp->sp);
 	    log_n_continue(retval,"Control failed!");
 
-	    sleep_ms(100);
-
 	    gettimeofday(&tv_tmp,NULL);
 	    uquad_timeval_substract(&tv_diff,tv_tmp,tv_last_m_cmd);	    
-	    if (tv_diff.tv_usec > 2*MOT_COMMAND_T_US)
+	    if (tv_diff.tv_usec > MOT_COMMAND_T_US)
 	    {
 		gettimeofday(&tv_last_m_cmd,NULL);
 
 		/// Update motor controller
-		retval = mot_set_vel_rads(mot, w->m_full);
+		retval = mot_set_vel_rads(mot, w);
 		log_n_continue(retval,"Failed to set motor speed!");
 #if DEBUG && LOG_W
 		fprintf(log_w, "%ld\t", tv_diff.tv_usec);
