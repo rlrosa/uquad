@@ -781,7 +781,7 @@ static int imu_comm_temp_convert(imu_t *imu, uint16_t *data, double *temp)
     return ERROR_OK;
 }
 
-#define PRESS_EXP  0.190294957183635 // 1/5.255 = 0.190294957183635
+#define PRESS_EXP  0.190294957183635L // 1/5.255 = 0.190294957183635
 /**
  * Convert raw pressure data to relative altitud.
  * The first call to this function will set a reference pressure, which
