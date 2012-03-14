@@ -6,7 +6,7 @@
 #define SERVER_KEY 1
 #define CLIENT_KEY 2
 
-#define SLEEP_DEFAULT_US 2000*4
+#define SLEEP_DEFAULT_US 2000
 #define SLEEP_STEP_US 100
 
 

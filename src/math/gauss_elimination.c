@@ -38,7 +38,7 @@
 //     else { printf(" The Solution is: \n"); ...                             //
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
-#include <math.h>                                     // required for fabs()
+#include <math.h>                                     // required for uquad_abs()
 
 int Gaussian_Elimination(double *A, int n, double *B)
 {
@@ -53,11 +53,11 @@ int Gaussian_Elimination(double *A, int n, double *B)
                        //  find the pivot row
 
       A_pivot_row = pa;
-      max = fabs(*(pa + row));
+      max = uquad_abs(*(pa + row));
       pA = pa + n;
       pivot_row = row;
       for (i = row + 1; i < n; pA += n, i++)
-         if ((dum = fabs(*(pA + row))) > max) { 
+         if ((dum = uquad_abs(*(pA + row))) > max) { 
             max = dum; A_pivot_row = pA; pivot_row = i; 
          }
       if (max == 0.0) return -1;                // the matrix A is singular

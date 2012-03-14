@@ -111,7 +111,6 @@ int main(int argc, char *argv[]){
     imu_calib_t *imu_calib;
     uquad_bool_t do_sleep = false;
     int read_will_not_lock;
-    uquad_bool_t data_ready = false;
     int wait_counter = WAIT_COUNTER_MAX;
     int imu_fd;
     uquad_bool_t calibrating = false;
@@ -146,7 +145,7 @@ int main(int argc, char *argv[]){
 	    // Read from IMU
 	    if(FD_ISSET(imu_fd,&rfds)){
 		do_sleep = false;
-		retval = imu_comm_read(imu,&data_ready);
+		retval = imu_comm_read(imu);
 		if(retval == ERROR_READ_TIMEOUT){
 		    printf("Not enough data available...\n");
 		    do_sleep = true;

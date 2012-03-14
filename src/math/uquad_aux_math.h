@@ -1,11 +1,13 @@
 #ifndef UQUAD_AUX_MATH_H
 #define UQUAD_AUX_MATH_H
 
+#include <uquad_error_codes.h>
+#include <uquad_types.h>
+
 #define UQUAD_MATH_MAX_DIM 256
 #define UQUAD_MAT_MAX_DIM 64
 
-#include <uquad_error_codes.h>
-#include <uquad_types.h>
+#define USE_EQUILIBRATE 0
 
 #define deg2rad(a) (a*PI/180.0)
 #define uquad_round_double2int(x) ((x)>=0?(int)((x)+0.5):(int)((x)-0.5))
@@ -13,45 +15,14 @@
 #define uquad_min(a,b) (a<b)?a:b
 #define uquad_square(a) (a*a)
 
+/// abs() casts to integer, we don't want that
+#define uquad_abs(a) (((a) < 0) ? -(a) : (a))
+
 /// Math in degrees (instead of rad)
 #define cosd(a) cos(deg2rad(a))
 #define sind(a) sin(deg2rad(a))
 #define tand(a) atan(deg2rad(a))
 #define atan2d(y,x) atan2(deg2rad(y),deg2rad(x))
-
-/**
- * -- -- -- -- -- -- -- -- -- -- -- --
- * Dinamically allocated vector
- * 
- * Documentation in uquad_aux_math.c
- *
- * Example of usage:
- *   int i,retval;
- *   uquad_vec_t *v = uquad_vec_alloc(3);
- *   if (v == NULL)
- *   {
- *     perror("Failed to allocate vector");
- *     exit(-1);
- *   }
- *   for(i=0; i < v->l ; ++i)
- *     v->v[i] = 3*i; // some value
- *   ... (operations) ...
- *   uquad_vec_free(v);
- *   exit(0);
- * -- -- -- -- -- -- -- -- -- -- -- --
- */
-struct uquad_vec {
-    double * v;      // elements
-    int l;           // len
-};
-typedef struct uquad_vec uquad_vec_t;
-
-int uquad_vec_dot(uquad_vec_t *v1, uquad_vec_t *v2, uquad_vec_t *vr);
-
-int uquad_vec_cross(uquad_vec_t *v1, uquad_vec_t *v2, uquad_vec_t *vr);
-
-uquad_vec_t *uquad_vec_alloc(int l);
-void uquad_vec_free(uquad_vec_t *v);
 
 /**
  * -- -- -- -- -- -- -- -- -- -- -- --
@@ -98,16 +69,15 @@ int uquad_mat_prod(uquad_mat_t *C, uquad_mat_t *A,uquad_mat_t *B);
 
 int uquad_mat_det(uquad_mat_t *m, double *res);
 
-int uquad_mat_scalar_div(uquad_mat_t *m, double k);
-int uquad_mat_scalar_mul_in_place(uquad_mat_t *m, double k);
-int uquad_mat_scalar_mul(uquad_mat_t *B, uquad_mat_t *A, double k);
+int uquad_mat_scalar_mul(uquad_mat_t *Mk, uquad_mat_t *M, double k);
+int uquad_mat_scalar_div(uquad_mat_t *Mk, uquad_mat_t *M, double k);
 
 int uquad_mat_sub(uquad_mat_t *C, uquad_mat_t *A, uquad_mat_t *B);
 int uquad_mat_add(uquad_mat_t *C, uquad_mat_t *A, uquad_mat_t *B);
 
 int uquad_solve_lin(uquad_mat_t *A, uquad_mat_t *B, uquad_mat_t *x, uquad_mat_t *maux);
 
-int uquad_mat_inv(uquad_mat_t *m1, uquad_mat_t *minv, uquad_mat_t *meye, uquad_mat_t *maux);
+int uquad_mat_inv(uquad_mat_t *Minv, uquad_mat_t *M, uquad_mat_t *Meye, uquad_mat_t *Maux);
 
 int uquad_mat_transpose(uquad_mat_t *Mt, uquad_mat_t *M);
 int uquad_mat_transpose_inplace(uquad_mat_t *m);
@@ -121,6 +91,8 @@ int uquad_mat_eye(uquad_mat_t *m);
 int uquad_mat_zeros(uquad_mat_t *m);
 
 int uquad_mat_get_subm(uquad_mat_t *S, int r, int c, uquad_mat_t *A);
+int uquad_mat_set_subm(uquad_mat_t *A, int r, int c, uquad_mat_t *S);
+int uquad_mat_copy(uquad_mat_t *dest, uquad_mat_t *src);
 
 uquad_mat_t *uquad_mat_alloc(int r, int c);
 void uquad_mat_free(uquad_mat_t *m);

@@ -42,7 +42,7 @@ clc
 % [acrud,wcrud,mcrud,tcrud,bcrud]=mong_read('/gyro/logs/zv3y00',0);
 % [acrud,wcrud,mcrud,tcrud,bcrud]=mong_read('tests/mongoose/magnetometro/data_horizontal/x00z00',0);
 
-[acrud,wcrud,mcrud,tcrud,bcrud,~,~,T]=mong_read('log-zparriba5',0);
+[acrud,wcrud,mcrud,tcrud,bcrud,~,~,T]=mong_read('log-zparriba4',0);
 [a,w,euler] = mong_conv(acrud,wcrud/14.375,mcrud,0);
 b=altitud(bcrud);
 
@@ -149,21 +149,28 @@ R = diag(100*[10 10 10 10 10 10 100 100 100 1000]);
 P = 1*eye(Ns);
 x_hat=zeros(N,Ns);
 
-psi_init   = z(1,1);
-phi_init   = z(1,2);
-theta_init = z(1,3);
-wqx_init   = z(1,7);
-wqy_init   = z(1,8);
-wqz_init   = z(1,9);
-vqx_init   = 0;%-(TM(1,1)*wqx_init + TM(1,2)*wqx_init + TM(1,3)*wqx_init + TM(1,4)*wqx_init - M*z(1,4)*wqx_init - M*z(1,5)*wqy_init - M*z(1,6)*wqx_init + M*g*wqx_init*sin(phi_init) - M*g*wqx_init*cos(phi_init)*cos(psi_init) - M*g*wqy_init*cos(phi_init)*sin(psi_init))/(M*wqy_init*(wqx_init - wqz_init));
-vqy_init   = 0;%-(TM(1,1)*wqz_init + TM(1,2)*wqz_init + TM(1,3)*wqz_init + TM(1,4)*wqz_init - M*z(1,4)*wqx_init - M*z(1,5)*wqy_init - M*z(1,6)*wqz_init + M*g*wqx_init*sin(phi_init) - M*g*wqz_init*cos(phi_init)*cos(psi_init) - M*g*wqy_init*cos(phi_init)*sin(psi_init))/(M*wqz_init*(wqx_init - wqz_init));
-vqz_init   = 0;%-(TM(1,1)*wqz_init + TM(1,2)*wqz_init + TM(1,3)*wqz_init + TM(1,4)*wqz_init - M*z(1,4)*wqz_init - M*z(1,5)*wqy_init - M*z(1,6)*wqz_init + M*g*wqz_init*sin(phi_init) - M*g*wqz_init*cos(phi_init)*cos(psi_init) - M*g*wqy_init*cos(phi_init)*sin(psi_init))/(M*wqy_init*(wqx_init - wqz_init));
-xinit = T(1) *(vqx_init*cos(phi_init)*cos(theta_init)+vqy_init*(cos(theta_init)*sin(phi_init)*sin(psi_init)-cos(phi_init)*sin(theta_init))+vqz_init*(sin(psi_init)*sin(theta_init)+cos(psi_init)*cos(theta_init)*sin(phi_init)) );
-yinit = T(1) *(vqx_init*cos(phi_init)*sin(theta_init)+vqy_init*(sin(theta_init)*sin(phi_init)*sin(psi_init)+cos(psi_init)*cos(theta_init))+vqz_init*(cos(psi_init)*sin(theta_init)*sin(phi_init)-cos(theta_init)*sin(psi_init)) );
-% zinit = T(1) *(-vqx_init*sin(phi_init)+vqy_init*cos(phi_init)*sin(psi_init)+vqz_init*cos(psi_init)*cos(psi_init));
-zinit = b(1);
-x_hat(1,:)=[ xinit yinit zinit psi_init phi_init theta_init vqx_init vqy_init vqz_init wqy_init wqx_init wqz_init];
-clear psi_init; clear phi_init; clear theta_init; clear wqx_init; clear wqy_init; clear wqz_init; clear vqx_init; clear vqy_init; clear vqz_init; clear xinit; clear yinit; clear zinit;
+K = load('./simulador/pruebas/primer_vuelo/K.mat');K = K.K;
+w_hover = 334.28;
+sp_x = zeros(7,1);
+sp_w = ones(4,1)*w_hover;
+w_control = zeros(4,N);
+x_hat_partial = zeros(7,N);
+
+% psi_init   = z(1,1);
+% phi_init   = z(1,2);
+% theta_init = z(1,3);
+% wqx_init   = z(1,7);
+% wqy_init   = z(1,8);
+% wqz_init   = z(1,9);
+% vqx_init   = 0;%-(TM(1,1)*wqx_init + TM(1,2)*wqx_init + TM(1,3)*wqx_init + TM(1,4)*wqx_init - M*z(1,4)*wqx_init - M*z(1,5)*wqy_init - M*z(1,6)*wqx_init + M*g*wqx_init*sin(phi_init) - M*g*wqx_init*cos(phi_init)*cos(psi_init) - M*g*wqy_init*cos(phi_init)*sin(psi_init))/(M*wqy_init*(wqx_init - wqz_init));
+% vqy_init   = 0;%-(TM(1,1)*wqz_init + TM(1,2)*wqz_init + TM(1,3)*wqz_init + TM(1,4)*wqz_init - M*z(1,4)*wqx_init - M*z(1,5)*wqy_init - M*z(1,6)*wqz_init + M*g*wqx_init*sin(phi_init) - M*g*wqz_init*cos(phi_init)*cos(psi_init) - M*g*wqy_init*cos(phi_init)*sin(psi_init))/(M*wqz_init*(wqx_init - wqz_init));
+% vqz_init   = 0;%-(TM(1,1)*wqz_init + TM(1,2)*wqz_init + TM(1,3)*wqz_init + TM(1,4)*wqz_init - M*z(1,4)*wqz_init - M*z(1,5)*wqy_init - M*z(1,6)*wqz_init + M*g*wqz_init*sin(phi_init) - M*g*wqz_init*cos(phi_init)*cos(psi_init) - M*g*wqy_init*cos(phi_init)*sin(psi_init))/(M*wqy_init*(wqx_init - wqz_init));
+% xinit = T(1) *(vqx_init*cos(phi_init)*cos(theta_init)+vqy_init*(cos(theta_init)*sin(phi_init)*sin(psi_init)-cos(phi_init)*sin(theta_init))+vqz_init*(sin(psi_init)*sin(theta_init)+cos(psi_init)*cos(theta_init)*sin(phi_init)) );
+% yinit = T(1) *(vqx_init*cos(phi_init)*sin(theta_init)+vqy_init*(sin(theta_init)*sin(phi_init)*sin(psi_init)+cos(psi_init)*cos(theta_init))+vqz_init*(cos(psi_init)*sin(theta_init)*sin(phi_init)-cos(theta_init)*sin(psi_init)) );
+% % zinit = T(1) *(-vqx_init*sin(phi_init)+vqy_init*cos(phi_init)*sin(psi_init)+vqz_init*cos(psi_init)*cos(psi_init));
+% zinit = b(1);
+% x_hat(1,:)=[ xinit yinit zinit psi_init phi_init theta_init vqx_init vqy_init vqz_init wqy_init wqx_init wqz_init];
+% clear psi_init; clear phi_init; clear theta_init; clear wqx_init; clear wqy_init; clear wqz_init; clear vqx_init; clear vqy_init; clear vqz_init; clear xinit; clear yinit; clear zinit;
 
 for i=2:N
     % Prediction
@@ -178,6 +185,10 @@ for i=2:N
     Kk         = P_*Hk'*Sk^-1;
     x_hat(i,:) = x_ + Kk*yk;
     P          = (eye(Ns)-Kk*Hk)*P_;
+
+    % Control
+    x_hat_partial(:,i) = [x_hat(i,3);x_hat(i,4);x_hat(i,5);x_hat(i,9);x_hat(i,10);x_hat(i,11);x_hat(i,12)];
+    w_control(:,i) = sp_w + K*(sp_x - x_hat_partial(:,i));
 end
 
 

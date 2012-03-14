@@ -78,7 +78,7 @@ int main(int argc, char *argv[]){
     /// -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
     /// Poll n read loop
     /// -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-    uquad_bool_t read = false,write = false, aux_bool = false;
+    uquad_bool_t read = false,write = false;
     uquad_bool_t reg_imu = true, reg_pipe = true, reg_stdin = true;
     imu_data_t imu_data;
     unsigned char tmp_buff[2];
@@ -92,7 +92,7 @@ int main(int argc, char *argv[]){
 	    retval = io_dev_ready(io,imu_fds,&read,&write);
 	    FREE_N_DIE_IF_ERROR(retval,"io_dev_ready() error");
 	    if(read){
-		retval = imu_comm_read(imu,&aux_bool);
+		retval = imu_comm_read(imu);
 		if(retval != ERROR_OK){
 		    fprintf(stdout,"\nIMU missed frame?\n\n");
 		}else{

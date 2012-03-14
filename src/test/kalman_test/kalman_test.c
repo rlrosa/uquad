@@ -70,7 +70,7 @@ int main(int argc, char *argv[]){
 	fprintf(stdout,"Using stdout to output...\n");
     }else{
 	int i;
-	retval = generate_log_name(log_name,NULL);
+	retval = generate_log_name(log_name,argv[2]);
 	if(retval < 0){
 	    err_log("Failed to create log name...");
 	    exit(1);
@@ -94,12 +94,12 @@ int main(int argc, char *argv[]){
     }
 
     // do stuff...
+    uquad_mat_t* tmp4print = uquad_mat_alloc(1,12);
     imu_data_t data;
     imu_raw_t raw;
     imu_calib_t *imu_calib;
     uquad_bool_t do_sleep = false;
     int read_will_not_lock;
-    uquad_bool_t data_ready = false;
     int wait_counter = WAIT_COUNTER_MAX;
     int imu_fd;
     uquad_bool_t calibrating = false;
@@ -113,7 +113,7 @@ int main(int argc, char *argv[]){
 
     kalman_io_t* kalman_io_data = kalman_init();
     uquad_mat_t* w = uquad_mat_alloc(4,1);
-
+    uquad_bool_t first_run = true;
 
     while(1){
 	// Run loop until user presses any key or velociraptors chew through the power cable
@@ -128,7 +128,7 @@ int main(int argc, char *argv[]){
 	    // Read from IMU
 	    if(FD_ISSET(imu_fd,&rfds)){
 		do_sleep = false;
-		retval = imu_comm_read(imu,&data_ready);
+		retval = imu_comm_read(imu);
 		if(retval == ERROR_READ_TIMEOUT){
 		    printf("Not enough data available...\n");
 		    do_sleep = true;
@@ -144,17 +144,29 @@ int main(int argc, char *argv[]){
 		    // Printing to stdout is unreadable
 
 		    retval = imu_comm_get_data_latest(imu,&data);
+		    err_propagate(retval);
 		    if(retval == ERROR_OK)
 		    {
-
+			w -> m_full[0] = 334.28;
 			w -> m_full[1] = 334.28;
 			w -> m_full[2] = 334.28;
 			w -> m_full[3] = 334.28;
-			w -> m_full[4] = 334.28;
+			if(first_run)
+			{
+			    first_run=false;
+			    continue;
+			}
 			retval = uquad_kalman(kalman_io_data, w, &data);
+			err_propagate(retval);
 
 		    }
-		    
+
+		    retval = uquad_mat_transpose(tmp4print,kalman_io_data->x_hat);
+		    err_propagate(retval);
+		    uquad_mat_dump(tmp4print,output_frames);
+		    //retval = imu_comm_print_data(&data,output_frames);
+		    //err_propagate(retval);
+
 		    if(output_frames == NULL)
 			fflush(stdout);
 		}

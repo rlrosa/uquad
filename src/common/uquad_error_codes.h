@@ -28,6 +28,8 @@ ERROR_MATH_MAX_DIM,
 ERROR_MATH_MAT_DIM,
 ERROR_MATH_VEC_LEN,
 ERROR_MATH_MAT_SING,
+ERROR_MATH_UNDERFLOWS,
+ERROR_MATH_OVERFLOWS,
 ERROR_MATH_DIV_0,
 ERROR_MOTOR_CMD_START,
 ERROR_MOTOR_CMD_KILL,
@@ -37,6 +39,7 @@ ERROR_MOTOR_W,
 ERROR_KQ,
 ERROR_KQ_ACK_NONE,
 ERROR_KQ_ACK_TOO_MANY,
+ERROR_KQ_ACK_MORE,
 ERROR_KQ_NO_ACKS_AVAIL,
 ERROR_KQ_SEND,
 ERROR_MOT_SATURATE
@@ -73,6 +76,19 @@ ERROR_MOT_SATURATE
  * 
  */
 #define quit_if(retval) if(retval!=ERROR_OK)quit()
+
+/**
+ * If @retval is an error, call quit().
+ * Usefull in test programs, allows cleaning up.
+ * 
+ */
+#define quit_log_if(retval,msg) if(retval!=ERROR_OK){err_log(msg);quit();}
+
+/**
+ * If @retval is an error, then got to the beginning of the loop
+ * 
+ */
+#define log_n_continue(retval,msg) if(retval!=ERROR_OK){err_log(msg);continue;}
 
 /**
  * Verifies that malloc succeeded.

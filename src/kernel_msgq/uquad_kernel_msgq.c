@@ -121,11 +121,11 @@ int uquad_kmsgq_check_stat(uquad_kmsgq_t *server)
 	if (ack_cnt > 1)
 	{
 	    // report weird stuff comming
-	    err_log_num("WARN: recieved too many acks from client! ACKs:",ack_cnt);
+	    err_log_num("WARN: recieved more acks than expected! Will clear ack queue. ACKs:",ack_cnt);
 	    retval = uquad_kmsgq_clear(server, server->k_c);
 	    err_propagate(retval);
 	    server->acks_pend = 0;
-	    retval = ERROR_KQ_ACK_TOO_MANY;
+	    retval = ERROR_KQ_ACK_MORE;
 	}
     }
     return retval;
@@ -148,6 +148,8 @@ int uquad_kmsgq_send(uquad_kmsgq_t *server, uint8_t *msg, int msg_len)
 	    err_check(ERROR_KQ_ACK_NONE,"Missed too many acks!");
 	}
 	break;
+    case ERROR_KQ_ACK_MORE:
+	// propagate it
     case ERROR_KQ_ACK_TOO_MANY:
 	// propagate it
     default:

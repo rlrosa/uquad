@@ -8,13 +8,17 @@ if [ "$1" == "-a" ]; then
 fi
 
 SCAN_DIRS=(imu
+	   kalman
            motor
 	   test
+	   main
 	   i2c_beagle
            common
            gps
            kernel_msgq
 	   math
+	   control
+	   path_planner
            submodules/gpsd)
 
 echo "Delete old database.."
