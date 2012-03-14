@@ -15,9 +15,12 @@
 /// Default path for calibration file.
 #define IMU_DEFAULT_CALIB_PATH "imu_calib.txt"
 
-#define IMU_COMM_FAKE 1 // allows reading from log file
+#define IMU_LOG_RAW "imu_raw.log"
+#define IMU_LOG_DATA "imu_data.log"
 
-#define IMU_FRAME_BINARY 0 // If 0, then IMU will send ascii, else binary
+#define IMU_COMM_FAKE 0 // allows reading from log file
+
+#define IMU_FRAME_BINARY 1 // If 0, then IMU will send ascii, else binary
 #define IMU_FRAME_ELEMENTS 12
 #define IMU_FRAME_ALTERNATES_INIT 0
 #define IMU_FRAME_INIT_CHAR 'A'
@@ -184,6 +187,11 @@ typedef struct imu{
     //    uquad_bool_t avg_ready;
     //    imu_data_t avg;
     //    struct timeval frame_avg_init,frame_avg_end;
+#if DEBUG
+    imu_data_t tmp_data;
+    FILE *log_raw;
+    FILE *log_data;
+#endif//DEBUG
 }imu_t;
 
 imu_t *imu_comm_init(const char *device);
@@ -201,6 +209,8 @@ int imu_comm_read(imu_t *imu);
 int imu_comm_get_data_latest(imu_t *imu, imu_data_t *data);
 int imu_comm_get_data_latest_unread(imu_t *imu, imu_data_t *data);
 int imu_comm_get_raw_latest_unread(imu_t *imu, imu_raw_t *raw);
+
+int imu_comm_raw2data(imu_t *imu, imu_raw_t *raw, imu_data_t *data);
 
 int imu_comm_print_data(imu_data_t *data, FILE *stream);
 int imu_comm_print_raw(imu_raw_t *frame, FILE *stream);

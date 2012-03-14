@@ -1,4 +1,4 @@
-#include <uquad_error_codes.h>
+#include <uquad_error_codes.h> // DEBUG is defined here
 #include <uquad_types.h>
 #include <macros_misc.h>
 #include <uquad_aux_io.h>
@@ -14,11 +14,12 @@
 
 #define UQUAD_HOW_TO "./main <imu_device>"
 #define MAX_ERRORS 20
-#define DEBUG 1
+#define FIXED 3
 #define LOG_W 1
 #define LOG_W_NAME "w.log"
 
 #define MOT_COMMAND_T_US MOT_UPDATE_MAX_US
+
 
 /// Global structs
 static imu_t *imu;
@@ -256,17 +257,33 @@ int main(int argc, char *argv[]){
     unsigned char tmp_buff[2];
     struct timeval tv_last_m_cmd, tv_tmp, tv_diff;
     gettimeofday(&tv_last_m_cmd,NULL);
-    int err_count = 0;
+    int count_err = 0, count_ok = FIXED;
     retval = ERROR_OK;
     poll_n_read:
     while(1){
 	if(!imu_update && retval != ERROR_OK)
-	    if(err_count++ > MAX_ERRORS)
+	{
+	    count_ok = 0;
+	    if(count_err++ > MAX_ERRORS)
 	    {
 		err_log("Too many errors! Aborting...");
 		slow_land();
 		/// program ends here
 	    }
+	}
+	else
+	{
+	    if(count_ok < FIXED)
+	    {
+		count_ok++;
+	    }
+	    else if(count_err > 0)
+	    {
+		// forget abour error
+		err_log_num("Recovered! Errors:",count_err);
+		count_err = 0;
+	    }
+	}
 	retval = io_poll(io);
 	quit_log_if(retval,"io_poll() error");
 	retval = io_dev_ready(io,imu_fds,&read,&write);
@@ -302,9 +319,11 @@ int main(int argc, char *argv[]){
 	    retval = control(ctrl, w, kalman->x_hat, pp->sp);
 	    log_n_continue(retval,"Control failed!");
 
+	    sleep_ms(100);
+
 	    gettimeofday(&tv_tmp,NULL);
 	    uquad_timeval_substract(&tv_diff,tv_tmp,tv_last_m_cmd);	    
-	    if (tv_diff.tv_usec > MOT_COMMAND_T_US)
+	    if (tv_diff.tv_usec > 2*MOT_COMMAND_T_US)
 	    {
 		gettimeofday(&tv_last_m_cmd,NULL);
 
@@ -317,7 +336,7 @@ int main(int argc, char *argv[]){
 		uquad_mat_dump(wt,log_w);
 #endif
 	    }
-	}
+	}//if(read)
 	// stdin
 	if(reg_stdin){
 	    retval = io_dev_ready(io,STDIN_FILENO,&read,&write);

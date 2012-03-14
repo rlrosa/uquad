@@ -80,7 +80,6 @@ int control(ctrl_t *ctrl, uquad_mat_t *w, uquad_mat_t *x, set_point_t *sp)
     if(h_hat_partial_log == NULL)
     {
 	h_hat_partial_log = fopen("h_partial.log","w");
-	h_hat_partial_log_pos = fopen("hat_partial_pos.log","w");
 	h_hat_t = uquad_mat_alloc(1,7);
     }
     retval = uquad_mat_transpose(h_hat_t, tmp_x_hat_partial);
