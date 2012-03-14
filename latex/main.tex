@@ -51,9 +51,16 @@
 \part{Desarrollo del controlador}
 \subfile{linealizacion}
 
+\cleardoublepage
+\addappheadtotoc
+\appendixpage
+\renewcommand{\appendixname}{Anexo}
+\renewcommand{\appendixtocname}{Anexo}
+\renewcommand{\appendixpagename}{Anexos}
 
-\subfile{anexo_tensores}
-\subfile{anexo_linealizacion}
+\appendix %Tuve que ponerlos con include porque con el subfile quedaban todos numerados con A
+\include{anexo_tensores} 
+\include{anexo_linealizacion}
 \bibliographystyle{plain} 
 \bibliography{biblio}
 \end{document}
