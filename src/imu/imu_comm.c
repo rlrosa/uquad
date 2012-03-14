@@ -104,7 +104,7 @@ static void imu_comm_calibration_clear(imu_t *imu){
  */
 static int imu_comm_run_default(imu_t *imu){
     int retval = ERROR_OK;
-#if !IMU_FRAME_BINARY
+#if IMU_FRAME_BINARY
     // Set run
     retval = imu_comm_send_cmd(imu,IMU_COMMAND_DEF);
     err_propagate(retval);
