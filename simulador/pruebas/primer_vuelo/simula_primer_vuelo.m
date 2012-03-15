@@ -28,7 +28,7 @@ w4=334.279741754537;
 A=eval(A);
 B=eval(B);
     
-Q=diag([1 1 1 1 1 1 1]);%Pesos de z,psi,phi,vqz wqx,wqy,wqz
+Q=diag([1e2 1 1 1 1 1 1]);%Pesos de z,psi,phi,vqz wqx,wqy,wqz
 R=diag([1 1 1 1]); %Pesos de w1 w2 w3 w4;
 
 [K,S,E]=lqr(A,B,Q,R);
@@ -78,4 +78,4 @@ assignin('base','setpoint',1);
 
   
 %Simulo el sistema  
-[t,X]=sim('primer_vuelo',[ti tf],[],[t',w(1,:)',w(2,:)',w(3,:)',w(4,:)']);
+[t,X,Y]=sim('primer_vuelo',[ti tf],[],[t',w(1,:)',w(2,:)',w(3,:)',w(4,:)']);
