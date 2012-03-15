@@ -243,7 +243,7 @@ int imu_comm_print_calib(imu_calib_t *calib, FILE *stream);
 // -- -- -- -- -- -- -- -- -- -- -- --
 uquad_bool_t imu_comm_calib_file(imu_t *imu);
 uquad_bool_t imu_comm_calib_estim(imu_t *imu);
-
+int imu_comm_calib_save(imu_t *imu, const char *filename);
 
 int imu_comm_calibration_start(imu_t *imu);
 int imu_comm_calibration_abort(imu_t *imu);

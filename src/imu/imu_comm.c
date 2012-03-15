@@ -1203,6 +1203,27 @@ int imu_comm_load_calib(imu_t *imu, const char *path)
     return retval;
 }
 
+int imu_comm_calib_save(imu_t *imu, const char *filename)
+{
+    int i;
+    FILE *calib_file = fopen(filename,"w");
+    if(calib_file == NULL)
+    {
+	err_check(ERROR_OPEN,"Could not open file to save calib!");
+    }
+
+    for (i = 0; i < 3; ++i)
+    {
+	// TK_inv
+	uquad_mat_dump(imu->calib.m_lin[i].TK_inv, calib_file);
+
+	// b
+	uquad_mat_dump(imu->calib.m_lin[i].b, calib_file);
+    }
+    fclose(calib_file);
+    return ERROR_OK;
+}
+
 /** 
  * Will alocate memory to store calibration data, and load
  * calibration data.
@@ -1617,6 +1638,9 @@ int imu_comm_calibration_finish(imu_t *imu, struct timeval calibration_end_time)
     imu->calib.timestamp_estim = tv_end;
     imu->calib.calib_estim_ready = true;
     imu->status = IMU_COMM_STATE_RUNNING;
+
+    //TODO implement
+    //retval = imu_comm_calbration_fix(imu);
 
     return ERROR_OK;
 }
