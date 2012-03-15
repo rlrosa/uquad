@@ -1,5 +1,5 @@
 Model {
-  Name			  "lazo_cerrado_hov_dis_sin_pos"
+  Name			  "primer_vuelo"
   Version		  7.6
   MdlSubVersion		  0
   GraphicalInterface {
@@ -20,7 +20,7 @@ Model {
       BusObject		      ""
       Name		      "w4"
     }
-    NumRootOutports	    12
+    NumRootOutports	    14
     Outport {
       BusObject		      ""
       BusOutputAsStruct	      "off"
@@ -81,8 +81,18 @@ Model {
       BusOutputAsStruct	      "off"
       Name		      "wq3"
     }
+    Outport {
+      BusObject		      ""
+      BusOutputAsStruct	      "off"
+      Name		      "noise"
+    }
+    Outport {
+      BusObject		      ""
+      BusOutputAsStruct	      "off"
+      Name		      "noise1"
+    }
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.176"
+    ComputedModelVersion    "1.188"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -94,7 +104,7 @@ Model {
       Type		      "Cell"
       Dimension		      2
       Cell		      "HDLSubsystem"
-      Cell		      "lazo_cerrado_hov_dis_sin_pos"
+      Cell		      "primer_vuelo"
       PropName		      "mdlProps"
     }
   }
@@ -113,9 +123,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "pater"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Sat Mar 10 13:05:23 2012"
-  RTWModifiedTimeStamp	  253285315
-  ModelVersionFormat	  "1.%<AutoIncrement:176>"
+  LastModifiedDate	  "Thu Mar 15 14:37:10 2012"
+  RTWModifiedTimeStamp	  253722914
+  ModelVersionFormat	  "1.%<AutoIncrement:188>"
   ConfigurationManager	  "None"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -738,6 +748,10 @@ Model {
       BusSelectionMode	      off
     }
     Block {
+      BlockType		      DigitalClock
+      SampleTime	      "1"
+    }
+    Block {
       BlockType		      DiscreteIntegrator
       IntegratorMethod	      "Integration: Forward Euler"
       gainval		      "1.0"
@@ -886,7 +900,7 @@ Model {
     }
   }
   System {
-    Name		    "lazo_cerrado_hov_dis_sin_pos"
+    Name		    "primer_vuelo"
     Location		    [0, 53, 1366, 768]
     Open		    on
     ModelBrowserVisibility  off
@@ -901,7 +915,7 @@ Model {
     ShowPageBoundaries	    off
     ZoomFactor		    "100"
     ReportName		    "simulink-default.rpt"
-    SIDHighWatermark	    "1331"
+    SIDHighWatermark	    "1360"
     Block {
       BlockType		      Inport
       Name		      "w1"
@@ -979,6 +993,205 @@ Model {
       ParamDataTypeStr	      "Inherit: Inherit via internal rule"
       OutDataTypeStr	      "Inherit: Inherit via internal rule"
       SaturateOnIntegerOverflow	off
+    }
+    Block {
+      BlockType		      SubSystem
+      Name		      "Ruido"
+      SID		      "1338"
+      Ports		      [0, 1]
+      Position		      [850, 32, 1050, 128]
+      MinAlgLoopOccurrences   off
+      PropExecContextOutsideSubsystem off
+      RTWSystemCode	      "Auto"
+      FunctionWithSeparateData off
+      Opaque		      off
+      RequestExecContextInheritance off
+      MaskHideContents	      off
+      System {
+	Name			"Ruido"
+	Location		[0, 53, 1366, 768]
+	Open			off
+	ModelBrowserVisibility	off
+	ModelBrowserWidth	200
+	ScreenColor		"white"
+	PaperOrientation	"landscape"
+	PaperPositionMode	"auto"
+	PaperType		"A4"
+	PaperUnits		"centimeters"
+	TiledPaperMargins	[1.270000, 1.270000, 1.270000, 1.270000]
+	TiledPageScale		1
+	ShowPageBoundaries	off
+	ZoomFactor		"100"
+	Block {
+	  BlockType		  Sum
+	  Name			  "Add"
+	  SID			  "1336"
+	  Ports			  [4, 1]
+	  Position		  [485, 154, 515, 186]
+	  Inputs		  "++++"
+	  InputSameDT		  off
+	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
+	  SaturateOnIntegerOverflow off
+	}
+	Block {
+	  BlockType		  Constant
+	  Name			  "Constant1"
+	  SID			  "1356"
+	  Position		  [60, 375, 90, 405]
+	  Value			  "0.5"
+	}
+	Block {
+	  BlockType		  DigitalClock
+	  Name			  "Digital Clock"
+	  SID			  "1358"
+	  Position		  [15, 48, 80, 72]
+	  SampleTime		  "Ts"
+	}
+	Block {
+	  BlockType		  Gain
+	  Name			  "Gain1"
+	  SID			  "1333"
+	  Position		  [295, 45, 325, 75]
+	  Gain			  "0.1"
+	  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
+	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
+	  SaturateOnIntegerOverflow off
+	}
+	Block {
+	  BlockType		  Gain
+	  Name			  "Gain2"
+	  SID			  "1353"
+	  Position		  [145, 150, 175, 180]
+	  Gain			  "3*sqrt(11)"
+	  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
+	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
+	  SaturateOnIntegerOverflow off
+	}
+	Block {
+	  BlockType		  Gain
+	  Name			  "Gain3"
+	  SID			  "1355"
+	  Position		  [310, 150, 340, 180]
+	  Gain			  "0.1"
+	  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
+	  OutDataTypeStr	  "Inherit: Inherit via internal rule"
+	  SaturateOnIntegerOverflow off
+	}
+	Block {
+	  BlockType		  Reference
+	  Name			  "Gaussian Noise\nGenerator"
+	  SID			  "1337"
+	  Ports			  [0, 1]
+	  Position		  [35, 238, 115, 282]
+	  LibraryVersion	  "1.73"
+	  SourceBlock		  "commnoisgen2/Gaussian Noise\nGenerator"
+	  SourceType		  "Gaussian Noise Generator"
+	  ShowPortLabels	  "FromPortIcon"
+	  SystemSampleTime	  "-1"
+	  FunctionWithSeparateData off
+	  RTWMemSecFuncInitTerm	  "Inherit from model"
+	  RTWMemSecFuncExecute	  "Inherit from model"
+	  RTWMemSecDataConstants  "Inherit from model"
+	  RTWMemSecDataInternal	  "Inherit from model"
+	  RTWMemSecDataParameters "Inherit from model"
+	  GeneratePreprocessorConditionals off
+	  m			  "0"
+	  d			  "0.1"
+	  s			  "41"
+	  Ts			  "Ts"
+	  frameBased		  off
+	  sampPerFrame		  "1"
+	  orient		  off
+	  outDataType		  "double"
+	}
+	Block {
+	  BlockType		  Trigonometry
+	  Name			  "Trigonometric\nFunction"
+	  SID			  "1332"
+	  Ports			  [1, 1]
+	  Position		  [130, 45, 160, 75]
+	}
+	Block {
+	  BlockType		  Trigonometry
+	  Name			  "Trigonometric\nFunction1"
+	  SID			  "1354"
+	  Ports			  [1, 1]
+	  Position		  [235, 150, 265, 180]
+	  Operator		  "cos"
+	}
+	Block {
+	  BlockType		  Outport
+	  Name			  "Out1"
+	  SID			  "1352"
+	  Position		  [745, 163, 775, 177]
+	  IconDisplay		  "Port number"
+	}
+	Line {
+	  SrcBlock		  "Digital Clock"
+	  SrcPort		  1
+	  Points		  [20, 0]
+	  Branch {
+	    DstBlock		    "Trigonometric\nFunction"
+	    DstPort		    1
+	  }
+	  Branch {
+	    Points		    [0, 105]
+	    DstBlock		    "Gain2"
+	    DstPort		    1
+	  }
+	}
+	Line {
+	  SrcBlock		  "Trigonometric\nFunction"
+	  SrcPort		  1
+	  DstBlock		  "Gain1"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "Gain2"
+	  SrcPort		  1
+	  DstBlock		  "Trigonometric\nFunction1"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "Trigonometric\nFunction1"
+	  SrcPort		  1
+	  DstBlock		  "Gain3"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "Gain1"
+	  SrcPort		  1
+	  Points		  [65, 0; 0, 95]
+	  DstBlock		  "Add"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "Gain3"
+	  SrcPort		  1
+	  DstBlock		  "Add"
+	  DstPort		  2
+	}
+	Line {
+	  SrcBlock		  "Gaussian Noise\nGenerator"
+	  SrcPort		  1
+	  Points		  [350, 0]
+	  DstBlock		  "Add"
+	  DstPort		  3
+	}
+	Line {
+	  SrcBlock		  "Constant1"
+	  SrcPort		  1
+	  Points		  [375, 0]
+	  DstBlock		  "Add"
+	  DstPort		  4
+	}
+	Line {
+	  SrcBlock		  "Add"
+	  SrcPort		  1
+	  DstBlock		  "Out1"
+	  DstPort		  1
+	}
+      }
     }
     Block {
       BlockType		      Constant
@@ -8517,6 +8730,32 @@ Model {
       SaturateOnIntegerOverflow	off
     }
     Block {
+      BlockType		      Sum
+      Name		      "Sum5"
+      SID		      "1351"
+      Ports		      [2, 1]
+      Position		      [1010, 255, 1030, 275]
+      ShowName		      off
+      IconShape		      "round"
+      Inputs		      "|++"
+      InputSameDT	      off
+      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+      SaturateOnIntegerOverflow	off
+    }
+    Block {
+      BlockType		      Sum
+      Name		      "Sum6"
+      SID		      "1357"
+      Ports		      [2, 1]
+      Position		      [985, 390, 1005, 410]
+      ShowName		      off
+      IconShape		      "round"
+      Inputs		      "|++"
+      InputSameDT	      off
+      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+      SaturateOnIntegerOverflow	off
+    }
+    Block {
       BlockType		      Outport
       Name		      "x"
       SID		      "339"
@@ -8610,6 +8849,22 @@ Model {
       SID		      "350"
       Position		      [1585, 483, 1615, 497]
       Port		      "12"
+      IconDisplay	      "Port number"
+    }
+    Block {
+      BlockType		      Outport
+      Name		      "noise"
+      SID		      "1359"
+      Position		      [1160, 88, 1190, 102]
+      Port		      "13"
+      IconDisplay	      "Port number"
+    }
+    Block {
+      BlockType		      Outport
+      Name		      "noise1"
+      SID		      "1360"
+      Position		      [445, 83, 475, 97]
+      Port		      "14"
       IconDisplay	      "Port number"
     }
     Line {
@@ -8712,9 +8967,17 @@ Model {
     Line {
       SrcBlock		      "Sum"
       SrcPort		      1
-      Points		      [95, 0; 0, 10; 100, 0]
-      DstBlock		      "Subsystem1"
-      DstPort		      1
+      Points		      [95, 0]
+      Branch {
+	Points			[0, 10; 100, 0]
+	DstBlock		"Subsystem1"
+	DstPort			1
+      }
+      Branch {
+	Points			[0, -125]
+	DstBlock		"noise1"
+	DstPort			1
+      }
     }
     Line {
       SrcBlock		      "N"
@@ -8734,47 +8997,10 @@ Model {
     }
     Line {
       SrcBlock		      "Subsystem1"
-      SrcPort		      1
-      Points		      [330, 0; 0, -25]
-      DstBlock		      "x"
-      DstPort		      1
-    }
-    Line {
-      SrcBlock		      "Subsystem1"
       SrcPort		      2
       Points		      [665, 0]
       DstBlock		      "y"
       DstPort		      1
-    }
-    Line {
-      SrcBlock		      "Subsystem1"
-      SrcPort		      3
-      Points		      [310, 0]
-      Branch {
-	Points			[355, 0]
-	DstBlock		"z"
-	DstPort			1
-      }
-      Branch {
-	Points			[0, 325]
-	DstBlock		"Mux"
-	DstPort			1
-      }
-    }
-    Line {
-      SrcBlock		      "Subsystem1"
-      SrcPort		      4
-      Points		      [285, 0]
-      Branch {
-	Points			[380, 0]
-	DstBlock		"psi"
-	DstPort			1
-      }
-      Branch {
-	Points			[0, 315]
-	DstBlock		"Mux"
-	DstPort			2
-      }
     }
     Line {
       SrcBlock		      "Subsystem1"
@@ -8814,32 +9040,17 @@ Model {
     }
     Line {
       SrcBlock		      "Subsystem1"
-      SrcPort		      9
-      Points		      [250, 0]
-      Branch {
-	Points			[415, 0]
-	DstBlock		"vq3"
-	DstPort			1
-      }
-      Branch {
-	Points			[0, 220]
-	DstBlock		"Mux"
-	DstPort			4
-      }
-    }
-    Line {
-      SrcBlock		      "Subsystem1"
       SrcPort		      10
       Points		      [235, 0]
-      Branch {
-	Points			[430, 0]
-	DstBlock		"wq1"
-	DstPort			1
-      }
       Branch {
 	Points			[0, 210]
 	DstBlock		"Mux"
 	DstPort			5
+      }
+      Branch {
+	Points			[430, 0]
+	DstBlock		"wq1"
+	DstPort			1
       }
     }
     Line {
@@ -8870,6 +9081,94 @@ Model {
 	DstBlock		"Mux"
 	DstPort			7
       }
+    }
+    Line {
+      SrcBlock		      "Subsystem1"
+      SrcPort		      1
+      Points		      [330, 0; 0, -25]
+      DstBlock		      "x"
+      DstPort		      1
+    }
+    Line {
+      SrcBlock		      "Subsystem1"
+      SrcPort		      3
+      Points		      [55, 0]
+      Branch {
+	DstBlock		"Sum5"
+	DstPort			1
+      }
+      Branch {
+	Points			[0, -25]
+	DstBlock		"z"
+	DstPort			1
+      }
+    }
+    Line {
+      SrcBlock		      "Ruido"
+      SrcPort		      1
+      Points		      [0, 20]
+      Branch {
+	Points			[0, 55]
+	Branch {
+	  Points		  [0, 135]
+	  DstBlock		  "Sum5"
+	  DstPort		  2
+	}
+	Branch {
+	  Points		  [-85, 0]
+	  DstBlock		  "Sum6"
+	  DstPort		  1
+	}
+      }
+      Branch {
+	Points			[0, -5]
+	DstBlock		"noise"
+	DstPort			1
+      }
+    }
+    Line {
+      SrcBlock		      "Sum5"
+      SrcPort		      1
+      Points		      [180, 0; 0, 325]
+      DstBlock		      "Mux"
+      DstPort		      1
+    }
+    Line {
+      SrcBlock		      "Subsystem1"
+      SrcPort		      4
+      Points		      [285, 0]
+      Branch {
+	Points			[380, 0]
+	DstBlock		"psi"
+	DstPort			1
+      }
+      Branch {
+	Points			[0, 315]
+	DstBlock		"Mux"
+	DstPort			2
+      }
+    }
+    Line {
+      SrcBlock		      "Subsystem1"
+      SrcPort		      9
+      Points		      [35, 0]
+      Branch {
+	Points			[55, 0]
+	DstBlock		"Sum6"
+	DstPort			2
+      }
+      Branch {
+	Points			[0, -25]
+	DstBlock		"vq3"
+	DstPort			1
+      }
+    }
+    Line {
+      SrcBlock		      "Sum6"
+      SrcPort		      1
+      Points		      [140, 0; 0, 235]
+      DstBlock		      "Mux"
+      DstPort		      4
     }
     Annotation {
       Position		      [632, 572]
