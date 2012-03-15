@@ -31,22 +31,15 @@
 #define IMU_INIT_END_SIZE 1
 #define IMU_DEFAULT_FRAME_SIZE_BYTES 30
 #define IMU_DEFAULT_FRAME_SIZE_DATA_BYTES IMU_DEFAULT_FRAME_SIZE_BYTES - 6 // init,end,time
+
 #define IMU_FRAME_BUFF_SIZE 16
+
 #define IMU_AVG_COUNT 8 // Reduce variance my taking avg
-#define IMU_COMM_CALIBRATION_NULL_SIZE 256 // Tune!
-#define IMU_DEFAULT_FS 5 // this is an index
-#define IMU_DEFAULT_ACC_SENS 0 // this is an index
+#define IMU_COMM_CALIBRATION_NULL_SIZE 256 //TODO Tune!
+
 #define IMU_GYRO_DEFAULT_GAIN 14.375L
 
-#define IMU_SAMPLE_COUNT_SIZE 2
-#define IMU_BYTES_PER_SENSOR 2
 #define IMU_BYTES_T_US 4
-#define IMU_SENSOR_COUNT 6
-#define IMU_ACCS 3
-#define IMU_GYROS 3
-#define IMU_SENS_OPT_COUNT 4
-#define IMU_FS_OPT_COUNT 1
-#define IMU_GRAVITY 9.81
 #define IMU_P0_UNDEF -1
 
 #define IMU_COMM_AVG_MAX_INTERVAL 2*IMU_FRAME_SAMPLE_AVG_COUNT //Too much...?

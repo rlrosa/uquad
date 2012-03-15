@@ -123,8 +123,6 @@ static void imu_comm_calibration_clear(imu_t *imu){
     imu->is_calibrated = false;
     //    imu->calibration_counter = -1;
     int i;
-    //TODO implement calib_free(), and make load check if mem is available
-    //before allocating mem for calibration.
     imu->calib.timestamp.tv_sec = 0;
     imu->calib.timestamp.tv_usec = 0;
 }
