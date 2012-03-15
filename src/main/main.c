@@ -252,7 +252,7 @@ int main(int argc, char *argv[]){
     /// Poll n read loop
     /// -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
     uquad_bool_t read = false,write = false, imu_update = false;
-    uquad_bool_t first_run = true;
+    int runs = 0;
     uquad_bool_t reg_stdin = true;
     unsigned char tmp_buff[2];
     struct timeval tv_last_m_cmd, tv_last_kalman, tv_tmp, tv_diff;
@@ -300,13 +300,17 @@ int main(int argc, char *argv[]){
 
 	    /// Get new unread data
 	    imu_update = true;
-	    retval = imu_comm_get_data_latest(imu,&imu_data);
-	    log_n_continue(retval,"IMU did not have new data!");
-	    if(first_run)
+	    retval = imu_comm_get_avg_unread(imu,&imu_data);
+	    //	    retval = imu_comm_get_data_latest(imu,&imu_data);
+	    //	    log_n_continue(retval,"IMU did not have new data!");
+	    if(runs < IMU_AVG_COUNT)
 	    {
-		first_run = false;
+		// we don't care about errors, not enough samples yet.
+		runs++;
 		continue;
 	    }
+	    // avg should be ready, so complain if it isn't
+	    log_n_continue(retval,"IMU did not have new avg!");
 
 	    gettimeofday(&tv_tmp,NULL);
 	    uquad_timeval_substract(&tv_diff,tv_tmp,tv_last_kalman);
@@ -314,6 +318,7 @@ int main(int argc, char *argv[]){
 	    /// Get new state estimation
 	    retval = uquad_kalman(kalman, mot->w_curr, &imu_data, (double)tv_diff.tv_usec);
 	    log_n_continue(retval,"Kalman update failed");
+	    printf("%ld.%06ld\t%ld\n", tv_last_kalman.tv_sec, tv_last_kalman.tv_usec,tv_diff.tv_usec);
 
 	    /// Get current set point
 	    retval = pp_update_setpoint(pp, kalman->x_hat);

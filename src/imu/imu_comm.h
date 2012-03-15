@@ -17,6 +17,7 @@
 
 #define IMU_LOG_RAW "imu_raw.log"
 #define IMU_LOG_DATA "imu_data.log"
+#define IMU_LOG_AVG "imu_avg.log"
 
 #define IMU_COMM_FAKE 0 // allows reading from log file
 
@@ -30,23 +31,16 @@
 #define IMU_INIT_END_SIZE 1
 #define IMU_DEFAULT_FRAME_SIZE_BYTES 30
 #define IMU_DEFAULT_FRAME_SIZE_DATA_BYTES IMU_DEFAULT_FRAME_SIZE_BYTES - 6 // init,end,time
-#define IMU_FRAME_BUFF_SIZE 16
-#define IMU_FRAME_SAMPLE_AVG_COUNT 8 // Reduce variance my taking avg
-#define IMU_COMM_CALIBRATION_NULL_SIZE 256 // Tune!
-#define IMU_DEFAULT_FS 5 // this is an index
-#define IMU_DEFAULT_ACC_SENS 0 // this is an index
-#define IMU_GYRO_DEFAULT_GAIN 14.375L
 
-#define IMU_SAMPLE_COUNT_SIZE 2
-#define IMU_BYTES_PER_SENSOR 2
+#define IMU_FRAME_BUFF_SIZE 16
+
+#define IMU_AVG_COUNT 8 // Reduce variance my taking avg
+#define IMU_CALIB_SIZE 256 //TODO Tune!
+
+#define IMU_GYRO_DEFAULT_GAIN 14.375L
+#define IMU_P0_DEFAULT 101325.0L
+
 #define IMU_BYTES_T_US 4
-#define IMU_SENSOR_COUNT 6
-#define IMU_ACCS 3
-#define IMU_GYROS 3
-#define IMU_SENS_OPT_COUNT 4
-#define IMU_FS_OPT_COUNT 1
-#define IMU_GRAVITY 9.81
-#define IMU_P0_UNDEF -1
 
 #define IMU_COMM_AVG_MAX_INTERVAL 2*IMU_FRAME_SAMPLE_AVG_COUNT //Too much...?
 
@@ -91,6 +85,19 @@ typedef struct imu_frame{
     struct timeval timestamp;
 }imu_raw_t;
 
+/**
+ * Extended raw struct, for calibration accumulation.
+ * Calibration will average a bunch of samples to get an
+ * accurate null estimate.
+ * 
+ */
+typedef struct imu_frame_null{
+    int32_t acc[3];
+    int32_t gyro[3];
+    int32_t magn[3];
+    uint32_t temp;
+    uint64_t pres;
+}imu_raw_null_t;
 
 /**
  * imu_data_t: Stores calibrated data. This is the final output of imu_comm,
@@ -140,9 +147,14 @@ typedef struct imu_calibration_lin_model{
  */
 typedef struct imu_calibration{
     imu_calib_lin_t m_lin[3]; //{acc,gyro,magn}
-    struct timeval timestamp;
-}imu_calib_t;
+    struct timeval timestamp_file;
+    uquad_bool_t calib_file_ready;
 
+    imu_raw_null_t null_est;
+    struct timeval timestamp_estim;
+    uquad_bool_t calib_estim_ready;
+    int calibration_counter;
+}imu_calib_t;
 
 /**
  * If IMU setting were to be modified from imu_comm, the 
@@ -172,25 +184,27 @@ typedef struct imu{
     imu_status_t status;
     /// calibration
     imu_calib_t calib;
-    uquad_bool_t is_calibrated;
     /// data
     imu_raw_t frame_buff[IMU_FRAME_BUFF_SIZE];
     int frame_buff_latest; // last sample is here
     int frame_buff_next; // new data will go here
     int unread_data;
 
+    /// avg
+    int frame_count;
+    imu_data_t tmp_avg;
     /// unused stuff (left from atomic imu)
     //    uquad_bool_t in_cfg_mode;
     //    imu_settings_t settings;
     //    int calibration_counter;
     //    int frames_sampled;
-    //    uquad_bool_t avg_ready;
     //    imu_data_t avg;
     //    struct timeval frame_avg_init,frame_avg_end;
 #if DEBUG
     imu_data_t tmp_data;
     FILE *log_raw;
     FILE *log_data;
+    FILE *log_avg;
 #endif//DEBUG
 }imu_t;
 
@@ -199,6 +213,9 @@ int imu_comm_deinit(imu_t *imu);
 
 imu_status_t imu_comm_get_status(imu_t *imu);
 
+int imu_data_alloc(imu_data_t *imu_data);
+void imu_data_free(imu_data_t *imu_data);
+
 // -- -- -- -- -- -- -- -- -- -- -- --
 // Reading from IMU
 // -- -- -- -- -- -- -- -- -- -- -- --
@@ -206,9 +223,14 @@ imu_status_t imu_comm_get_status(imu_t *imu);
 int imu_comm_get_fds(imu_t *imu, int *fds);
 int imu_comm_read(imu_t *imu);
 
+uquad_bool_t imu_comm_unread(imu_t *imu);
+
 int imu_comm_get_data_latest(imu_t *imu, imu_data_t *data);
 int imu_comm_get_data_latest_unread(imu_t *imu, imu_data_t *data);
 int imu_comm_get_raw_latest_unread(imu_t *imu, imu_raw_t *raw);
+
+int imu_comm_get_avg(imu_t *imu, imu_data_t *data);
+int imu_comm_get_avg_unread(imu_t *imu, imu_data_t *data);
 
 int imu_comm_raw2data(imu_t *imu, imu_raw_t *raw, imu_data_t *data);
 
@@ -219,7 +241,12 @@ int imu_comm_print_calib(imu_calib_t *calib, FILE *stream);
 // -- -- -- -- -- -- -- -- -- -- -- --
 // Calibration
 // -- -- -- -- -- -- -- -- -- -- -- --
-uquad_bool_t imu_comm_calibration_is_calibrated(imu_t *imu);
+uquad_bool_t imu_comm_calib_file(imu_t *imu);
+uquad_bool_t imu_comm_calib_estim(imu_t *imu);
+int imu_comm_calib_save(imu_t *imu, const char *filename);
+
+int imu_comm_calibration_start(imu_t *imu);
+int imu_comm_calibration_abort(imu_t *imu);
 
 #endif // IMU_COMM_H
 
