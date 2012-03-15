@@ -10,6 +10,41 @@ imu_status_t imu_comm_get_status(imu_t *imu){
 }
 
 /** 
+ * Allocates memory required for matrices
+ * used by struct
+ *
+ * @param imu_data
+ *
+ * @return error code
+ */
+int imu_data_alloc(imu_data_t *imu_data)
+{
+    imu_data->acc = uquad_mat_alloc(3,1);
+    imu_data->gyro = uquad_mat_alloc(3,1);
+    imu_data->magn = uquad_mat_alloc(3,1);
+    if(imu_data->acc == NULL ||
+       imu_data->acc == NULL ||
+       imu_data->acc == NULL)
+    {
+	err_propagate(ERROR_MALLOC);
+    }
+    return ERROR_OK;
+}
+
+/**
+ * Frees memory required for matrices
+ * used by struct
+ *
+ * @param imu_data
+ */
+void imu_data_free(imu_data_t *imu_data)
+{
+    uquad_mat_free(imu_data->acc);
+    uquad_mat_free(imu_data->gyro);
+    uquad_mat_free(imu_data->magn);
+}
+
+/**
  * Sends command to the IMU over serial line.
  *
  *@param imu 
@@ -186,15 +221,17 @@ imu_t *imu_comm_init(const char *device){
     // open logs
     imu->log_raw = fopen(IMU_LOG_RAW,"w");
     imu->log_data = fopen(IMU_LOG_DATA,"w");
+    imu->log_avg = fopen(IMU_LOG_AVG,"w");
     // init temp mem
-    imu->tmp_data.acc = uquad_mat_alloc(3,1);
-    imu->tmp_data.gyro = uquad_mat_alloc(3,1);
-    imu->tmp_data.magn = uquad_mat_alloc(3,1);
-    if(imu->log_raw == NULL || imu->log_data == NULL ||
-       imu->tmp_data.acc == NULL || imu->tmp_data.gyro == NULL ||
-       imu->tmp_data.magn == NULL)
+    retval = imu_data_alloc(&imu->tmp_data);
+    if(retval != ERROR_OK)
 	return NULL;
 #endif //DEBUG
+
+    // Get aux memory
+    retval = imu_data_alloc(&imu->tmp_avg);
+    if(retval != ERROR_OK)
+	return NULL;
 
     // Send default values to IMU, then get it running, just in case it wasn't
     retval = imu_comm_configure(imu);
@@ -231,14 +268,14 @@ int imu_comm_deinit(imu_t *imu){
     }
     if(imu->device != NULL)
 	retval = imu_comm_disconnect(imu);
+    // ignore answer and keep dying, leftovers are not reliable
 #if DEBUG
     fclose(imu->log_raw);
     fclose(imu->log_data);
-    uquad_mat_free(imu->tmp_data.acc);
-    uquad_mat_free(imu->tmp_data.gyro);
-    uquad_mat_free(imu->tmp_data.magn);
+    fclose(imu->log_avg);
+    imu_data_free(&imu->tmp_data);
 #endif //DEBUG
-    // ignore answer and keep dying, leftovers are not reliable
+    imu_data_free(&imu->tmp_avg);
     //TODO chec if more to free
     imu_comm_free_calib_lin(imu);
     uquad_mat_free(m3x3);
@@ -246,29 +283,6 @@ int imu_comm_deinit(imu_t *imu){
     uquad_mat_free(m3x1_1);
     free(imu);
     return retval;
-}
-
-static double grad2rad(double degrees){
-    // PI/180 == 0.017453292519943295
-    return degrees*0.017453292519943295;
-}
-
-#if 0
-static double rad2grad(double radians){
-    // 180/PI == 57.29577951308232
-    return radians*57.29577951308232;
-}
-#endif
-
-/** 
- *Returns index of the last frame that was read.
- *
- *@param imu 
- *
- *@return index
- */
-int frame_circ_index(imu_t *imu){
-    return (imu->frame_buff_next + IMU_FRAME_SAMPLE_AVG_COUNT - 1) % IMU_FRAME_SAMPLE_AVG_COUNT;
 }
 
 /** 
@@ -474,7 +488,7 @@ int imu_comm_read_frame_binary(imu_t *imu, imu_raw_t *new_frame)
     if(watchdog>=READ_RETRIES){
 	err_check(ERROR_READ_TIMEOUT,"Read error: Timed out waiting for T_us...");
     }
-    
+
     // Generate timestamp
     gettimeofday(& new_frame->timestamp,NULL);
 
@@ -511,7 +525,7 @@ int imu_comm_read_frame_binary(imu_t *imu, imu_raw_t *new_frame)
 	new_frame->gyro[i%3] = buff_tmp_16[i];
     // magn
     for(;i<9;++i)
-	new_frame->magn[i%3] = buff_tmp_16[i];    
+	new_frame->magn[i%3] = buff_tmp_16[i];
     // temp
     new_frame->temp = buff_tmp_16[i++];
     // Change LSB/MSB for 32 bit sensors (pressure)
@@ -562,7 +576,7 @@ int imu_comm_read_frame_ascii(imu_t *imu, imu_raw_t *new_frame)
     int retval = ERROR_OK,i, itmp;
     unsigned int uitmp;
 
-    // Get sampling time    
+    // Get sampling time
     retval = fscanf(imu->device,"%ud",&uitmp);
     new_frame->T_us = (uint16_t)uitmp;
     if(retval < 0)
@@ -867,6 +881,20 @@ int imu_comm_get_raw_latest(imu_t *imu, imu_raw_t *raw){
     return retval;
 }
 
+/**
+ * Checks if unread data (1 or more samples)
+ * exists.
+ *
+ * @param imu
+ *
+ * @return answer is returned here.
+ */
+uquad_bool_t imu_comm_unread(imu_t *imu)
+{
+    return imu->unread_data > 0;
+}
+
+
 /** 
  *Gets latest unread raw values.
  *Mem must be previously allocated for answer.
@@ -878,7 +906,7 @@ int imu_comm_get_raw_latest(imu_t *imu, imu_raw_t *raw){
  */
 int imu_comm_get_raw_latest_unread(imu_t *imu, imu_raw_t *raw){
     int retval;
-    if(imu->unread_data <= 0){
+    if(!imu_comm_unread(imu)){
 	err_check(ERROR_FAIL,"No unread data available.");
     }
     imu_raw_t *frame_latest = imu->frame_buff + imu->frame_buff_latest;
@@ -922,7 +950,7 @@ int imu_comm_get_data_latest(imu_t *imu, imu_data_t *data){
  */
 int imu_comm_get_data_latest_unread(imu_t *imu, imu_data_t *data){
     int retval = ERROR_OK;
-    if(imu->unread_data <= 0){
+    if(!imu_comm_unread(imu)){
 	err_check(ERROR_FAIL,"No unread data available.");
     }
 
@@ -1000,7 +1028,7 @@ int imu_comm_copy_data(imu_data_t *src, imu_data_t *dest)
  */
 int imu_comm_get_data_raw_latest_unread(imu_t *imu, imu_raw_t *data){
     int retval = ERROR_OK;
-    if(imu->unread_data <= 0){
+    if(!imu_comm_unread(imu)){
 	err_check(ERROR_FAIL,"No unread data available.");
     }
 
@@ -1226,7 +1254,8 @@ int imu_comm_calibration_get(imu_t *imu, imu_calib_t **calib){
 }
 
 /** 
- *Add frame to buff
+ * Add frame to buff
+ * Updates unread data and frame_count.
  *
  *@param imu 
  *@param new_frame frame to add
@@ -1240,9 +1269,160 @@ int imu_comm_add_frame(imu_t *imu, imu_raw_t *new_frame){
     imu->frame_buff_latest = imu->frame_buff_next;
     imu->frame_buff_next = (imu->frame_buff_next + 1)%IMU_FRAME_BUFF_SIZE;
     ++imu->unread_data;
+    imu->frame_count = uquad_min(imu->frame_count + 1,IMU_AVG_COUNT);
 
     err_propagate(retval);
 
+    return ERROR_OK;
+}
+
+/**
+ * Checks if enough samples are available to get average.
+ *
+ * @param imu
+ *
+ * @return if true, the can perform average
+ */
+uquad_bool_t imu_comm_avg_ready(imu_t *imu)
+{
+    return imu->frame_count >= IMU_AVG_COUNT;
+}
+
+/**
+ * Adds two data, destroying one.
+ * After execution, A == (A+B)
+ *
+ * @param A
+ * @param B
+ *
+ * @return
+ */
+int imu_comm_add_data(imu_data_t *A, imu_data_t *B)
+{
+    int retval = ERROR_OK;
+    retval = uquad_mat_add(A->acc,A->acc,B->acc);
+    err_propagate(retval);
+    retval = uquad_mat_add(A->gyro,A->gyro,B->gyro);
+    err_propagate(retval);
+    retval = uquad_mat_add(A->magn,A->magn,B->magn);
+    err_propagate(retval);
+    A->temp += B->temp;
+    A->alt += B->alt;
+    return retval;
+}
+
+/**
+ * Normalizes data, usefull after calculating average.
+ * This is faster than dividing after adding each element
+ * to the average, but assumes overflow will not happen.
+ * This assumption is reasonable with the reading we get from
+ * the IMU.
+ *
+ * @param data
+ * @param k
+ *
+ * @return
+ */
+int imu_data_normalize(imu_data_t *data, int k)
+{
+    double dk;
+    int retval = ERROR_OK;
+    if(k <= 0)
+    {
+	err_check(ERROR_INVALID_ARG,"Will not normalize to non positive value!");
+    }
+    dk = (double)k;
+    retval = uquad_mat_scalar_div(data->acc, NULL, dk);
+    err_propagate(retval);
+    retval = uquad_mat_scalar_div(data->gyro, NULL, dk);
+    err_propagate(retval);
+    retval = uquad_mat_scalar_div(data->magn, NULL, dk);
+    err_propagate(retval);
+    data->temp /= dk;
+    data->alt /= dk;
+    return retval;
+}
+
+/**
+ * Get previous index of circ buffer
+ *
+ * @param curr_index
+ *
+ * @return answer
+ */
+int circ_buff_prev_index(int curr_index, int buff_len)
+{
+    curr_index -= 1;
+    if(curr_index < 0)
+	curr_index += buff_len;
+    return curr_index;
+}
+
+/**
+ * Calculates average based on IMU_AVG_COUNT samples.
+ * Will sum up, and then normalize.
+ *
+ * @param imu
+ * @param data answer is returned here.
+ *
+ * @return error code.
+ */
+int imu_comm_get_avg(imu_t *imu, imu_data_t *data)
+{
+    int retval, i, j;
+    if(imu->frame_count < IMU_AVG_COUNT)
+    {
+	err_check(ERROR_IMU_AVG_NOT_ENOUGH,"Not enough samples to average!");
+    }
+    j = imu->frame_buff_latest;
+    for(i = 0; i < IMU_AVG_COUNT; ++i)
+    {
+	if(i == 0)
+	{
+	    /// initialize sum
+	    retval = imu_comm_raw2data(imu, imu->frame_buff + j,data);
+	    err_propagate(retval);
+	}
+	else
+	{
+	    retval = imu_comm_raw2data(imu, imu->frame_buff + j,&imu->tmp_avg);
+	    err_propagate(retval);
+	    /// add to sum
+	    retval = imu_comm_add_data(data, &imu->tmp_avg);
+	    err_propagate(retval);
+	}
+	j = circ_buff_prev_index(j,IMU_FRAME_BUFF_SIZE);
+    }
+    retval = imu_data_normalize(data, IMU_AVG_COUNT);
+    err_propagate(retval);
+#if DEBUG
+    retval = imu_comm_print_data(data,imu->log_avg);
+    err_propagate(retval);
+#endif
+    return retval;
+}
+
+
+/**
+ * Get average using the latest data, with at least 1
+ * unread sample.
+ *
+ *
+ * @param imu
+ * @param data answer
+ *
+ * @return
+ */
+int imu_comm_get_avg_unread(imu_t *imu, imu_data_t *data)
+{
+    int retval;
+    if(!imu_comm_unread(imu))
+    {
+	err_check(ERROR_IMU_NO_UPDATES,"No unread data!");
+    }
+    retval = imu_comm_get_avg(imu,data);
+    err_propagate(retval);
+    --imu->unread_data;
     return ERROR_OK;
 }
 
@@ -1260,7 +1440,7 @@ int imu_comm_print_data(imu_data_t *data, FILE *stream){
 	stream = stdout;
     }
     //    fprintf(stream,"%d\t%d\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\n",
-    fprintf(stream,"%d\t%d\t%0.2f\t%0.2f\t%0.2f\t%0.2f\t%0.2f\t%0.2f\t%0.2f\t%0.2f\t%0.2f\t%0.2f\t%0.2f\t%0.2f\n",
+    fprintf(stream,"%d\t%d\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\n",
 	    (int)data->timestamp.tv_sec,
 	    (int)data->timestamp.tv_usec,
 	    data->T_us,
@@ -1329,33 +1509,9 @@ int imu_comm_print_calib(imu_calib_t *calib, FILE *stream){
 
 
 
+
 #if 0
 /// unused code
-
-uquad_bool_t imu_comm_avg_ready(imu_t *imu){
-    return imu->avg_ready;
-}
-
-/** 
- * Return averaged data.
- * Mem must be previously allocated for data.
- * 
- * @param imu 
- * @param data Answer is returned here.
- * 
- * @return 
- */
-int imu_comm_get_avg(imu_t *imu, imu_data_t *data){
-    int retval, i;
-    if(imu_comm_avg_ready(imu)){
-	retval =  imu_comm_copy_data(&imu->avg, data);
-	err_propagate(retval);
-	imu->avg_ready = 0;
-	return ERROR_OK;
-    }
-    err_check(ERROR_IMU_AVG_NOT_ENOUGH,"Not enough samples to average");
-}
-
 
 /** 
  *Checks if samples used for avg fall withing a certain interval.

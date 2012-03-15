@@ -17,6 +17,7 @@
 
 #define IMU_LOG_RAW "imu_raw.log"
 #define IMU_LOG_DATA "imu_data.log"
+#define IMU_LOG_AVG "imu_avg.log"
 
 #define IMU_COMM_FAKE 0 // allows reading from log file
 
@@ -31,7 +32,7 @@
 #define IMU_DEFAULT_FRAME_SIZE_BYTES 30
 #define IMU_DEFAULT_FRAME_SIZE_DATA_BYTES IMU_DEFAULT_FRAME_SIZE_BYTES - 6 // init,end,time
 #define IMU_FRAME_BUFF_SIZE 16
-#define IMU_FRAME_SAMPLE_AVG_COUNT 8 // Reduce variance my taking avg
+#define IMU_AVG_COUNT 8 // Reduce variance my taking avg
 #define IMU_COMM_CALIBRATION_NULL_SIZE 256 // Tune!
 #define IMU_DEFAULT_FS 5 // this is an index
 #define IMU_DEFAULT_ACC_SENS 0 // this is an index
@@ -179,18 +180,21 @@ typedef struct imu{
     int frame_buff_next; // new data will go here
     int unread_data;
 
+    /// avg
+    int frame_count;
+    imu_data_t tmp_avg;
     /// unused stuff (left from atomic imu)
     //    uquad_bool_t in_cfg_mode;
     //    imu_settings_t settings;
     //    int calibration_counter;
     //    int frames_sampled;
-    //    uquad_bool_t avg_ready;
     //    imu_data_t avg;
     //    struct timeval frame_avg_init,frame_avg_end;
 #if DEBUG
     imu_data_t tmp_data;
     FILE *log_raw;
     FILE *log_data;
+    FILE *log_avg;
 #endif//DEBUG
 }imu_t;
 
@@ -199,6 +203,9 @@ int imu_comm_deinit(imu_t *imu);
 
 imu_status_t imu_comm_get_status(imu_t *imu);
 
+int imu_data_alloc(imu_data_t *imu_data);
+void imu_data_free(imu_data_t *imu_data);
+
 // -- -- -- -- -- -- -- -- -- -- -- --
 // Reading from IMU
 // -- -- -- -- -- -- -- -- -- -- -- --
@@ -206,9 +213,14 @@ imu_status_t imu_comm_get_status(imu_t *imu);
 int imu_comm_get_fds(imu_t *imu, int *fds);
 int imu_comm_read(imu_t *imu);
 
+uquad_bool_t imu_comm_unread(imu_t *imu);
+
 int imu_comm_get_data_latest(imu_t *imu, imu_data_t *data);
 int imu_comm_get_data_latest_unread(imu_t *imu, imu_data_t *data);
 int imu_comm_get_raw_latest_unread(imu_t *imu, imu_raw_t *raw);
+
+int imu_comm_get_avg(imu_t *imu, imu_data_t *data);
+int imu_comm_get_avg_unread(imu_t *imu, imu_data_t *data);
 
 int imu_comm_raw2data(imu_t *imu, imu_raw_t *raw, imu_data_t *data);
 
