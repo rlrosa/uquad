@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # After running this script tell emacs about the tags:
-#   M-x visit-tags-table RET $(ETAGS_DIR)/TAGS
+#   M-x visit-tags-table RET ./TAGS
 
 if [ "$1" == "-a" ]; then
     CURR_DIR=`pwd`
@@ -10,13 +10,8 @@ if [ "$1" == "-a" ]; then
     exit
 fi
 
-
-ETAGS_DIR=/home/rrosa/sketchbook/mongoose_fw/
-
 SCAN_DIRS=(.
            /usr/share/arduino/libraries)
-
-cd $ETAGS_DIR
 
 echo "Delete old database.."
 rm -f TAGS
@@ -27,4 +22,3 @@ for i in ${SCAN_DIRS[*]}; do
 done
 
 echo "Done"
-cd -

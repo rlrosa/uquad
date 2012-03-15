@@ -690,7 +690,7 @@ void uquad_mat_dump(uquad_mat_t *m, FILE *output)
     for(i=0;i<m->r;i++)
     {
 	for(j=0;j<m->c;j++)
-	    fprintf(output, "%e\t",m->m[i][j]);
+	    fprintf(output, "%0.15f\t",m->m[i][j]);
 	fprintf(output,"\n");
     }
 
