@@ -35,12 +35,12 @@
 #define IMU_FRAME_BUFF_SIZE 16
 
 #define IMU_AVG_COUNT 8 // Reduce variance my taking avg
-#define IMU_COMM_CALIBRATION_NULL_SIZE 256 //TODO Tune!
+#define IMU_CALIB_SIZE 256 //TODO Tune!
 
 #define IMU_GYRO_DEFAULT_GAIN 14.375L
+#define IMU_P0_DEFAULT 101325.0L
 
 #define IMU_BYTES_T_US 4
-#define IMU_P0_UNDEF -1
 
 #define IMU_COMM_AVG_MAX_INTERVAL 2*IMU_FRAME_SAMPLE_AVG_COUNT //Too much...?
 
@@ -85,6 +85,19 @@ typedef struct imu_frame{
     struct timeval timestamp;
 }imu_raw_t;
 
+/**
+ * Extended raw struct, for calibration accumulation.
+ * Calibration will average a bunch of samples to get an
+ * accurate null estimate.
+ * 
+ */
+typedef struct imu_frame_null{
+    int32_t acc[3];
+    int32_t gyro[3];
+    int32_t magn[3];
+    uint32_t temp;
+    uint64_t pres;
+}imu_raw_null_t;
 
 /**
  * imu_data_t: Stores calibrated data. This is the final output of imu_comm,
@@ -134,9 +147,14 @@ typedef struct imu_calibration_lin_model{
  */
 typedef struct imu_calibration{
     imu_calib_lin_t m_lin[3]; //{acc,gyro,magn}
-    struct timeval timestamp;
-}imu_calib_t;
+    struct timeval timestamp_file;
+    uquad_bool_t calib_file_ready;
 
+    imu_raw_null_t null_est;
+    struct timeval timestamp_estim;
+    uquad_bool_t calib_estim_ready;
+    int calibration_counter;
+}imu_calib_t;
 
 /**
  * If IMU setting were to be modified from imu_comm, the 
@@ -166,7 +184,6 @@ typedef struct imu{
     imu_status_t status;
     /// calibration
     imu_calib_t calib;
-    uquad_bool_t is_calibrated;
     /// data
     imu_raw_t frame_buff[IMU_FRAME_BUFF_SIZE];
     int frame_buff_latest; // last sample is here
@@ -224,7 +241,12 @@ int imu_comm_print_calib(imu_calib_t *calib, FILE *stream);
 // -- -- -- -- -- -- -- -- -- -- -- --
 // Calibration
 // -- -- -- -- -- -- -- -- -- -- -- --
-uquad_bool_t imu_comm_calibration_is_calibrated(imu_t *imu);
+uquad_bool_t imu_comm_calib_file(imu_t *imu);
+uquad_bool_t imu_comm_calib_estim(imu_t *imu);
+
+
+int imu_comm_calibration_start(imu_t *imu);
+int imu_comm_calibration_abort(imu_t *imu);
 
 #endif // IMU_COMM_H
 

@@ -1,4 +1,6 @@
 #include <imu_comm.h>
+#include <uquad_aux_log.h>
+#include <macros_misc.h>
 #include <sys/time.h>
 #include <time.h>
 #include <sys/types.h>
@@ -12,7 +14,7 @@
 #define WAIT_COUNTER_MAX 10
 #define IMU_COMM_TEST_EOL_LIM 128
 
-#define wait_for_enter printf("ERROR!\n") //while(fread(tmp,1,1,stdin) == 0)
+#define PRINT_DATA 0
 
 static int fix_end_of_time_string(char * string, int lim){
     int i;
@@ -30,20 +32,6 @@ static int fix_end_of_time_string(char * string, int lim){
 	string[i]='\0';
     }	
     return ERROR_OK;
-}
-
-static int generate_log_name(char * log_name, char * start_string){
-    time_t rawtime;
-    struct tm * tm;
-    int retval;
-    time(&rawtime);
-    tm = localtime (&rawtime);
-    retval = sprintf(log_name,"%04d_%02d_%02d_xx_%02d_%02d_%02d", 1900 + tm->tm_year, tm->tm_mon + 1,tm->tm_mday, tm->tm_hour, tm->tm_min, tm->tm_sec);
-    if(retval < 0)
-	return ERROR_FAIL;
-    if(start_string != NULL)
-	retval = sprintf(log_name,"%s%s",start_string,log_name);
-    return retval;
 }
 
 int main(int argc, char *argv[]){
@@ -68,7 +56,7 @@ int main(int argc, char *argv[]){
 	fprintf(stdout,"Using stdout to output...\n");
     }else{
 	int i;
-	retval = generate_log_name(log_name,NULL);
+	retval = uquad_log_generate_log_name(log_name,NULL);
 	if(retval < 0){
 	    fprintf(stderr,"Failed to create log name...");
 	    exit(1);
@@ -109,17 +97,16 @@ int main(int argc, char *argv[]){
     imu_data_t data;
     imu_raw_t raw;
     imu_calib_t *imu_calib;
-    uquad_bool_t do_sleep = false;
+    uquad_bool_t do_sleep = false, calibrating = false;
     int read_will_not_lock;
     int wait_counter = WAIT_COUNTER_MAX;
     int imu_fd;
-    uquad_bool_t calibrating = false;
     data.acc = uquad_mat_alloc(3,1);
     data.gyro = uquad_mat_alloc(3,1);
     data.magn = uquad_mat_alloc(3,1);
     retval = imu_comm_get_fds(imu, &imu_fd);
     FD_ZERO(&rfds);
-    //    printf("Options:\n'q' to abort,\n'c' to calibrate\n's' to display current calibration\n\n");
+    printf("Options:\n'q' to abort,\n'c' to calibrate\n's' to display current calibration\n\n");
     while(1){
 	if(do_sleep){
 	    printf("Waiting...\n");
@@ -152,34 +139,21 @@ int main(int argc, char *argv[]){
 		    continue;// skip the rest of the loop
 		}
 		if(retval != ERROR_OK){
+		    err_log_num("Error detected! Press enter to continue...",retval);
 		    wait_for_enter;
 		    continue;
 		}
 
-		if(imu_comm_get_status(imu) == IMU_COMM_STATE_RUNNING)
+		if(imu_comm_get_status(imu) == IMU_COMM_STATE_CALIBRATING)
+		    continue;
+		else
 		{
-#if 0
-		    if(calibrating){
-			// finished calibration
+		    if(calibrating)
+		    {
+			printf("Calibration completed!\nPress enter to continue...");
 			calibrating = false;
-			if(imu_comm_calibration_is_calibrated(imu)){
-			    printf("Calibration successful!\n");
-			    retval = imu_comm_calibration_get(imu,&imu_calib);
-			    if(retval != ERROR_OK)
-				printf("Failed to get calibration!");
-			    else{
-				// print a comment char to make it easy for matlab to parse the rest
-				fprintf(output_avg,"%%");
-				retval = imu_comm_print_data(&imu_calib,output_avg);
-				if(retval != ERROR_OK)
-				    printf("Failed to print calibration!");
-			    }
-			}else{
-			    printf("Calibration FAILED...\n");
-			    wait_for_enter;
-			}
+			wait_for_enter;
 		    }
-#endif	    
 		    // Printing to stdout is unreadable
 		    retval = imu_comm_get_raw_latest_unread(imu,&raw);
 		    if(retval == ERROR_OK)
@@ -187,28 +161,17 @@ int main(int argc, char *argv[]){
 			retval = imu_comm_print_raw(&raw,stdout);
 			err_propagate(retval);
 		    }
+#if PRINT_DATA
 		    retval = imu_comm_get_data_latest(imu,&data);
 		    if(retval == ERROR_OK)
 		    {
 			retval = imu_comm_print_data(&data,stdout);
 			err_propagate(retval);
 		    }
-		    
-#if 0
-			//TODO data is not ready
-		    if(output_frames != NULL)
-		    {
-			retval = imu_comm_get_data_latest_unread(imu,&data);
-			if(retval == ERROR_OK)
-			{
-			    retval = imu_comm_print_data(&data,output_frames);
-			    err_propagate(retval);
-			}
-		    }
 #endif
-		    
-		    // Get avg
+
 #if 0
+		    // Get avg
 		    //TODO avg is KO!
 		    if(imu_comm_avg_ready(imu)){
 			retval = imu_comm_get_avg(imu,&data);
@@ -232,28 +195,31 @@ int main(int argc, char *argv[]){
 		// exit
 		if(tmp[0] == IMU_COMM_TEST_EXIT_CHAR)
 		    break;
-#if 0
 		// do calibration
 		if(tmp[0] == IMU_COMM_TEST_CALIB_CHAR){
+		    sleep_ms(500);
 		    printf("Starting calibration...\n");
-		    calibrating = true;
 		    retval = imu_comm_calibration_start(imu);
 		    err_propagate(retval);
+		    calibrating = true;
 		}
 
 		// display current calibration
 		if(tmp[0] == IMU_COMM_TEST_CALIB_SHOW_CHAR){
-		    if(!imu_comm_calibration_is_calibrated(imu)){
-			printf("Calibration not ready.\n");
-		    }else{
+		    if(!imu_comm_calib_estim(imu))
+		    {
+			printf("Calibration not ready.\nPress enter to continue...");
+			wait_for_enter;
+		    }
+		    else
+		    {
 			retval = imu_comm_calibration_get(imu,&imu_calib);
 			err_propagate(retval);
 			printf("Current calibration:\n");
-			retval = imu_comm_print_calib(&imu_calib,stdout);
+			retval = imu_comm_print_calib(imu_calib,stdout);
 			err_propagate(retval);
 		    }
 		}
-#endif
 		printf("\nPress enter to continue...\n");
 		fflush(stdout);
 		wait_for_enter;
