@@ -199,6 +199,7 @@ imu_t *imu_comm_init(const char *device){
     int i,retval;
     imu = (imu_t *)malloc(sizeof(imu_t));
     mem_alloc_check(imu);
+    memset(imu,0,sizeof(imu_t));
     // Set default values
     //TODO
     imu->status = IMU_COMM_STATE_UNKNOWN;
