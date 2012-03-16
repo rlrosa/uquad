@@ -45,7 +45,7 @@
 int Gaussian_Elimination_Aux(double *A, int nrows, int ncols)
 {
    int row, i, j;
-   double max, dum, *pa, *pA, *pivot_row, *px;
+   double max, dum, *pa, *pA, *pivot_row;//, *px;//unused
 
                      // for each row find scale factor
 

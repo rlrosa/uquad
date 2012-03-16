@@ -1,6 +1,4 @@
 #include "mot_control.h"
-#include <uquad_aux_time.h>
-#include <uquad_types.h>
 #include <stdlib.h> // for malloc()
 #include <string.h> // for memset()
 #include <sys/types.h>
@@ -10,7 +8,6 @@
 uquad_mot_t *mot_init(void)
 {
     int retval = ERROR_OK;
-    uquad_bool_t do_cleanup = false;
     retval = system(KILL_MOTOR_CMD);
     // ignore return value, it's ok if it wasn't running
     retval = ERROR_OK;
@@ -58,7 +55,7 @@ uquad_mot_t *mot_init(void)
 int mot_send(uquad_mot_t *mot, double *w)
 {
     struct timeval tmp_tv, diff_tv;
-    int retval = ERROR_OK, i;
+    int retval = ERROR_OK;
 
     gettimeofday(&tmp_tv,NULL);
     retval = uquad_timeval_substract(&diff_tv,tmp_tv,mot->last_set);

@@ -213,6 +213,9 @@ int imu_comm_deinit(imu_t *imu);
 
 imu_status_t imu_comm_get_status(imu_t *imu);
 
+int imu_comm_stop(imu_t *imu);
+int imu_comm_resume(imu_t *imu);
+
 int imu_data_alloc(imu_data_t *imu_data);
 void imu_data_free(imu_data_t *imu_data);
 
@@ -247,6 +250,8 @@ int imu_comm_calib_save(imu_t *imu, const char *filename);
 
 int imu_comm_calibration_start(imu_t *imu);
 int imu_comm_calibration_abort(imu_t *imu);
+
+int imu_comm_calibration_get(imu_t *imu, imu_calib_t **calib);
 
 #endif // IMU_COMM_H
 

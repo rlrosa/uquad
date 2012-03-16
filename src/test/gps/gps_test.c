@@ -8,7 +8,7 @@
 
 #define FREE_N_DIE_IF_ERROR(ret,msg) if(ret!=ERROR_OK){fprintf(stderr,"GPS test failed:%s:%d:%s\n",__FILE__,__LINE__,msg);goto kill_n_close;}
 
-int main(int argc, char *argv[])
+int main(void)
 {
     int ret;
     gps_t *gps;
@@ -35,12 +35,11 @@ int main(int argc, char *argv[])
     /// -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
     /// Poll n read loop
     /// -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-    uquad_bool_t read = false,write = false, aux_bool = false;
+    uquad_bool_t read = false,write = false;
     uquad_bool_t reg_gps = true, reg_stdin = true;
     unsigned char tmp_buff[2];
-    int counter = 0;
     struct gps_fix_t gps_fix;
-    poll_n_read:
+    //    poll_n_read:
     while(1){
         ret = io_poll(io);
         FREE_N_DIE_IF_ERROR(ret,"io_poll() error");

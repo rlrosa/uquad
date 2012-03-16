@@ -41,8 +41,8 @@ void next_test(void)
     sleep_ms(100);
 }
 
-int main(int argc, char *argv[]){
-    int retval, i, j;
+int main(void){
+    int retval, i;
     struct timeval tv;
     uquad_mat_t *vels = uquad_mat_alloc(MOT_C,1);
     double dtmp;

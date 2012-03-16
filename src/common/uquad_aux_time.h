@@ -2,6 +2,7 @@
 #define UQUAD_AUX_TIME_H
 
 #include <sys/time.h>
+#include <unistd.h> // for usleep()
 
 /** 
  * Calculate the difference between two time vals, without losing precision.

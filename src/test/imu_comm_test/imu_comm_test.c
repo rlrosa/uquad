@@ -16,6 +16,7 @@
 
 #define PRINT_DATA 0
 
+#if 0
 static int fix_end_of_time_string(char * string, int lim){
     int i;
     if(lim<0)
@@ -33,6 +34,7 @@ static int fix_end_of_time_string(char * string, int lim){
     }	
     return ERROR_OK;
 }
+#endif
 
 int main(int argc, char *argv[]){
     int retval;
@@ -55,7 +57,6 @@ int main(int argc, char *argv[]){
     if(argc<3){
 	fprintf(stdout,"Using stdout to output...\n");
     }else{
-	int i;
 	retval = uquad_log_generate_log_name(log_name,NULL);
 	if(retval < 0){
 	    fprintf(stderr,"Failed to create log name...");

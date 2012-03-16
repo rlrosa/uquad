@@ -16,6 +16,7 @@ set_point_t *setpoint_init(void)
     int retval = ERROR_OK;
     set_point_t *sp = (set_point_t *)malloc(sizeof(set_point_t));
     mem_alloc_check(sp);
+    memset(sp,0,sizeof(set_point_t));
     sp->x = uquad_mat_alloc(12,1);
     mem_alloc_check(sp->x);
     sp->w = uquad_mat_alloc(4,1);
@@ -37,7 +38,6 @@ set_point_t *setpoint_init(void)
 
 path_planner_t *pp_init(void)
 {
-    int retval = ERROR_OK;
     path_planner_t *pp = (path_planner_t *)malloc(sizeof(path_planner_t));
     mem_alloc_check(pp);
     pp->pt = HOVER;
@@ -56,6 +56,10 @@ int pp_update_setpoint(path_planner_t *pp, uquad_mat_t *x)
     if (pp->pt != HOVER)
     {
 	err_check(ERROR_FAIL, "Not implemented!");
+    }
+    if(pp == NULL || x == NULL)
+    {
+	err_check(ERROR_NULL_POINTER,"Invalid argument.");
     }
     return ERROR_OK;
 }

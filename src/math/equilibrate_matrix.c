@@ -148,7 +148,7 @@ int Equilibrate_Matrix(double *A, int nrows, int ncols, double r[], double c[])
    double x;
    int min, max, exponent;
    int nonzero;
-   int i,j,k;
+   int i,j;//,k;//unused
    int return_code = SUCCESS;
 
                           // Find row scale factors.
