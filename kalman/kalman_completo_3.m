@@ -39,24 +39,14 @@ clc
 
 %% Observaciones y constantes
 
-% [acrud,wcrud,mcrud,tcrud,bcrud]=mong_read('/gyro/logs/zv3y00',0);
-% [acrud,wcrud,mcrud,tcrud,bcrud]=mong_read('tests/mongoose/magnetometro/data_horizontal/x00z00',0);
-
 [acrud,wcrud,mcrud,tcrud,bcrud,~,~,T]=mong_read('log-zparriba4',0);
+% [acrud,wcrud,mcrud,tcrud,bcrud,~,~,T]=mong_read('imu_raw_7.log',0,1);
 [a,w,euler] = mong_conv(acrud,wcrud/14.375,mcrud,0);
 b=altitud(bcrud);
 
-% w(:,1) = w(:,1)-mean(w(1:50,1));
-% w(:,2) = w(:,2)-mean(w(1:50,2));
-% w(:,3) = w(:,3)-mean(w(1:50,3));
-
-% fs = 30;                % Frecuencia en Hz
-% T  = 1/fs;              % Periodo de muestreo en segundos
-% T  = ones(length(a))*1/30;
 N  = size(a,1);         % Cantidad de muestras de las observaciones
 Ns = 12;                % N states: cantidad de variables de estado
 z  = [euler a w b];     % Observaciones
-% z  = z+0*randn(N,Ns);   % Agregado de ruido
 
 %% Constantes
 
@@ -144,17 +134,10 @@ H = @() ...
 % Q = sigma_w^2*eye(Ns);  % 10*eye(Ns)
 % Q = 100*eye(Ns);
 Q = diag(.1*[100 100 100 100 100 100 100 100 100 100 100 100]);
-R = diag(100*[10 10 10 10 10 10 100 100 100 1000]);
+R = diag(100*[10 10 10 10 10 10 100 100 100 100]);
 
 P = 1*eye(Ns);
 x_hat=zeros(N,Ns);
-
-K = load('./simulador/pruebas/primer_vuelo/K.mat');K = K.K;
-w_hover = 334.28;
-sp_x = zeros(7,1);
-sp_w = ones(4,1)*w_hover;
-w_control = zeros(4,N);
-x_hat_partial = zeros(7,N);
 
 % psi_init   = z(1,1);
 % phi_init   = z(1,2);
@@ -185,10 +168,6 @@ for i=2:N
     Kk         = P_*Hk'*Sk^-1;
     x_hat(i,:) = x_ + Kk*yk;
     P          = (eye(Ns)-Kk*Hk)*P_;
-
-    % Control
-    x_hat_partial(:,i) = [x_hat(i,3);x_hat(i,4);x_hat(i,5);x_hat(i,9);x_hat(i,10);x_hat(i,11);x_hat(i,12)];
-    w_control(:,i) = sp_w + K*(sp_x - x_hat_partial(:,i));
 end
 
 
@@ -206,10 +185,10 @@ subplot(221)
     hold off    
 
 subplot(222)
-    plot(z(:,1),'b--')
+    plot(z(:,1),'k')
     hold on; grid
-    plot(z(:,2),'r--')
-    plot(z(:,3),'g--')    
+    plot(z(:,2),'k')
+    plot(z(:,3),'k')    
     plot([x_hat(1:end,4)],'b')
     plot([x_hat(1:end,5)],'r')
     plot([x_hat(1:end,6)],'g')

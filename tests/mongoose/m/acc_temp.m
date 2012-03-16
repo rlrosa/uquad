@@ -37,6 +37,15 @@ end
 [aconv,wconv,mconv]=mong_conv(a,w,m,0);
 t_imu=t_imu/10;
 
+% a = a(1:200*50,:);
+% w = w(1:200*50,:);
+% m = m(1:200*50,:);
+% 
+% aconv = aconv(1:200*50,:);
+% wconv = wconv(1:200*50,:);
+% mconv = mconv(1:200*50,:);
+% t_imu = t_imu(1:200*50);
+
 %% Temperatura Posta
 F = fopen('tests/mongoose/temperaturomometro/data/README');
 D = textscan(F,'%s','delimiter','\t');
@@ -83,22 +92,22 @@ a_teoricos   = [zeros(N,1) zeros(N,1) -9.81*ones(N,1)];
 temperaturas = mean(vec2mat(t_imu,avr),2);
 
 % AJUSTE LINEAL
-x0_lin=[0 0];
+x0_lin=[1.1 1.1];
 [param,RESNORM_lin,RESIDUAL_lin,EXITFLAG_lin]=lsqnonlin...
     (@temp_acc_cost,x0_lin,[],[],optimset('MaxFunEvals',10000));
 
 %%
 
-%AJUSTE CUADRATICO
-x0=[0 0];
-[alpha,RESNORM,RESIDUAL,EXITFLAG]=lsqnonlin...
-    (@acc_temp_cost_cuad,x0,[],[],optimset('MaxFunEvals',10000));
+% %AJUSTE CUADRATICO
+% x0=[0 0];
+% [alpha,RESNORM,RESIDUAL,EXITFLAG]=lsqnonlin...
+%     (@acc_temp_cost_cuad,x0,[],[],optimset('MaxFunEvals',10000));
 
 %% Convierto
 
 A    = load('acc','X','T_0');
 to   = A.T_0;
-to = 23;
+% to = 23;
 
 K=[A.X(1) 0 0;
     0 A.X(2) 0;
@@ -118,10 +127,9 @@ for i=1:length(a(:,1))
     aconv_temp_lin(i,:)=aux';
 end
 
+break
 
 %%
-
-break
 
 % CON EL LINEAL
 aconv_temp_lin=zeros(size(a));
