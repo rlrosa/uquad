@@ -28,8 +28,11 @@
 #include "transpose_matrix.c"
 #include "transpose_square_matrix.c"
 #include "equilibrate_matrix.c"
+#include "hessenberg_orthog.c"
+#include "qr_hessenberg_matrix.c"
 //#include "doolittle.c"
 //#include "doolittle_pivot.c"
+
 
 /**
  * -- -- -- -- -- -- -- -- -- -- -- --
@@ -474,6 +477,19 @@ int uquad_mat_diag(uquad_mat_t *m, double *diag)
     return ERROR_OK;
 }
 
+int uquad_mat_get_diag(double v[],uquad_mat_t *m,int n)
+{
+    if(m == NULL)
+    {
+	err_check(ERROR_NULL_POINTER, "Cannot load, must allocate memory previously.");
+    }
+    if(m->r != m->c)
+    {
+	err_check(ERROR_MATH_MAT_DIM, "Must be square!");
+    }
+    Get_Diagonal(v,m->m_full,n,n);
+    return ERROR_OK;
+}
 /** 
  * Inverts matrix.
  * Assumes memory was previously allocated for minv.
@@ -625,6 +641,124 @@ int uquad_mat_dot_product(uquad_mat_t *C, uquad_mat_t *A, uquad_mat_t *B)
     return ERROR_OK;
 }
 
+/** Returns the eigenvectors and eigenvalues of a nxn matrix
+*/
+int uquad_mat_eig(uquad_mat_t *H, uquad_mat_t *S, double eigen_real[], double eigen_imag[], int n )
+{
+    int i;
+    int j;
+    int max_iter = 1000;
+    uquad_bool_t complex_eigv;
+    if (H == NULL || S == NULL)
+    {
+	    err_check(ERROR_NULL_POINTER, "Cannot load, must allocate memory previously.");
+    }
+    if ((H->r != n )||(H->c != n)||(S->r != n )||(S->c != n))
+    {
+	err_check(ERROR_MATH_MAT_DIM,"H dimensions are not consistent");
+    }
+    
+    Hessenberg_Form_Orthogonal(H->m_full,S->m_full,n);
+    //Identity_Matrix(S->m_full,n);
+    QR_Hessenberg_Matrix( H->m_full,S->m_full,eigen_real,eigen_imag,n, max_iter);
+   
+    //S matrix is not usefull in the way that is calculated. We inverse the order of the rows.
+    uquad_mat_mirror_rows(H,S,n);
+    for (i= 0; i<n;i++)
+    {
+	complex_eigv|=(eigen_imag[i]==0);
+	//TODO Verificar este error
+    }
+    return ERROR_OK;
+}
+
+/**From a nxn matrix, it's eingenvalues and eigenvectors returns exp(A);
+ *Exponential matrix is computed using the cannonical form of A
+ */
+int uquad_mat_exp(uquad_mat_t *expA, uquad_mat_t *A,uquad_mat_t *H, double eigen_real[], int n)
+{
+    int i;
+    int k = 0;
+    int scalar = 1;
+    uquad_bool_t is_zero = false;
+    uquad_mat_t* Ht = NULL;
+    uquad_mat_t* aux0 = NULL;
+    uquad_mat_t* aux1 = NULL;
+    double diag[n];
+    if (H == NULL || A == NULL)
+    {
+	    err_check(ERROR_NULL_POINTER, "Cannot load, must allocate memory previously.");
+    }
+    if ((H->r != n )||(H->c != n)||(A->r != n )||(A->c != n))
+    {
+	err_check(ERROR_MATH_MAT_DIM,"H dimensions are not consistent");
+    }
+    
+    aux0 = uquad_mat_alloc(n,n);
+    aux1 = uquad_mat_alloc(n,n);
+    Ht =uquad_mat_alloc(n,n);
+
+    uquad_mat_transpose(Ht,H);
+    
+    uquad_mat_prod(aux0, A,H);
+    uquad_mat_prod(aux1,Ht,aux0); // Canonical form
+
+    //Setting exp(eigv) in expA diagonal
+    uquad_mat_get_diag(diag,aux1,n);
+    uquad_mat_diag(expA,diag);
+
+    uquad_mat_sub(aux0,aux1,expA);
+    uquad_mat_copy(aux1,aux0);
+    /**Beeing diff= (canonical form-expA) whilee 1/(n!)diff^n is not zero.
+     *We perform sum(1/(n!)diff^n)
+     */
+
+   
+    do 
+    {    //Verifies that all the elements of the matrix are zero.
+	   for(i=0;i<n*n-1;i++)
+	   {
+	       is_zero|=(aux1->m_full[i]==0);
+	   }
+	   if(!is_zero)
+	  {   
+	      //if the matrix is different from the null matrix we compute (1/n!)diff^n
+	      uquad_mat_prod(aux1,aux1,aux0);
+	      if (k!=0)
+	      {
+		  scalar=scalar*k;
+		  uquad_mat_scalar_div(aux1,aux1,scalar);
+
+	      }
+	      
+	      uquad_mat_add(expA,expA,aux1);
+	      uquad_mat_scalar_mul(aux1,aux1,scalar);
+	      is_zero&=0;
+	      
+	  }
+    }while (!is_zero);
+
+    uquad_mat_prod(expA, expA,Ht);
+    uquad_mat_prod(expA,H,expA);
+
+    uquad_mat_free(aux0);
+    uquad_mat_free(aux1);
+    uquad_mat_free(Ht);
+}
+
+int uquad_mat_mirror_rows(uquad_mat_t *H, uquad_mat_t *S,int n)
+{
+    int i;
+    int j;
+    for(i=0;i<n;i++)
+    {
+	for(j=0;j<n;j++)
+	{
+	    H->m[i][j]=S->m[n-1-i][j];
+	}
+    }
+
+}
 /** 
  * Will load matrix from text file.
  * Will ignore spaces, end of lines, tabs, etc.
