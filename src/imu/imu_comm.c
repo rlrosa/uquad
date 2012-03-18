@@ -330,8 +330,7 @@ imu_t *imu_comm_init(const char *device){
 
     // now connect to the imu
     retval = imu_comm_connect(imu,device);
-    if(retval != ERROR_OK)
-	return NULL;
+    cleanup_if(retval);
 
 #if DEBUG
     // open logs
@@ -340,40 +339,38 @@ imu_t *imu_comm_init(const char *device){
     imu->log_avg = fopen(IMU_LOG_AVG,"w");
     // init temp mem
     retval = imu_data_alloc(&imu->tmp_data);
-    if(retval != ERROR_OK)
-	return NULL;
+    cleanup_if(retval);
 #endif //DEBUG
 
     // Get aux memory
     retval = imu_data_alloc(&imu->tmp_avg);
-    if(retval != ERROR_OK)
-	return NULL;
+    cleanup_if(retval);
 
     // Send default values to IMU, then get it running, just in case it wasn't
     retval = imu_comm_configure(imu);
-    if(retval != ERROR_OK)
-	return NULL;
+    cleanup_if(retval);
 
     retval = imu_comm_run_default(imu);
-    if(retval != ERROR_OK)
-	return NULL;
+    cleanup_if(retval);
 
     // Mark IMU as not calibrated
     imu_comm_calibration_clear(imu);
     // Load/estimate calibration
     retval = imu_comm_init_calibration(imu);
-    if(retval != ERROR_OK)
-	return NULL;
+    cleanup_if(retval);
 
     m3x3 = uquad_mat_alloc(3,3);
     m3x1_0 = uquad_mat_alloc(3,1);
     m3x1_1 = uquad_mat_alloc(3,1);
     if(m3x3 == NULL || m3x1_0 == NULL || m3x1_1 == NULL)
-	return NULL;
+	goto cleanup;
 
     // Wait 300ms + a bit more for IMU to reset
     sleep_ms(350);
+    return imu;
 
+    cleanup:
+    imu_comm_deinit(imu);
     return imu;
 }
 
