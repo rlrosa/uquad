@@ -82,6 +82,13 @@ ERROR_TIMING
 #define quit_if(retval) if(retval!=ERROR_OK)quit()
 
 /**
+ * If @retval is an error, jump to cleanup.
+ * Usefull in init routines, allows cleaning up.
+ *
+ */
+#define cleanup_if(retval) if(retval != ERROR_OK) {fprintf(stderr,"backtrace:%s:%d\n",__FILE__,__LINE__);goto cleanup;}
+
+/**
  * If @retval is an error, call quit().
  * Usefull in test programs, allows cleaning up.
  * 
