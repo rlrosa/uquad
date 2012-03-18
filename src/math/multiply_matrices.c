@@ -43,7 +43,7 @@ void Multiply_Matrices(double *C, double *A, int nrows, int ncols,
    double *pA = A;
    double *pB;
    double *p_B;
-   double *pC = C;
+   //   double *pC = C;//unused
    int i,j,k;
 
    for (i = 0; i < nrows; A += ncols, i++) 

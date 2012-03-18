@@ -4,7 +4,7 @@
 
 #define UQUAD_AUX_TIME_TEST_COUNT 3
 
-int main(int argc, char *argv[]){
+int main(void){
     int retval,test_counter = 0;
     struct timeval res,t1,t2;
     t1.tv_sec = 150;

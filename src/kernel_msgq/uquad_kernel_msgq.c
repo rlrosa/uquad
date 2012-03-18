@@ -1,6 +1,21 @@
 #include "uquad_kernel_msgq.h"
 #include <uquad_aux_math.h>
 
+int uquad_kmsgq_clear(key_t key)
+{
+    int msqid, watchdog = 0;
+    while(watchdog++ < UQUAD_KQ_MAX_CLEARS)
+    {
+	if ((msqid = msgget(key, 0666)) < 0)
+	    break;
+	if(msgctl(msqid, IPC_RMID, NULL) < 0)
+	{
+	    err_log_stderr("Failed to remove IPC queue!");
+	}
+    }
+    return ERROR_OK;
+}
+
 uquad_kmsgq_t *uquad_kmsgq_init(int key_s, int key_c)
 {
     uquad_kmsgq_t *server = (uquad_kmsgq_t *)malloc(sizeof(uquad_kmsgq_t));
@@ -23,8 +38,8 @@ uquad_kmsgq_t *uquad_kmsgq_init(int key_s, int key_c)
 	err_log("Failed to open ack log file, using stderr.");
 	server->s_log_ack = stderr;
     }
-    if((uquad_kmsgq_clear(server,server->k_s) != ERROR_OK) ||
-       (uquad_kmsgq_clear(server,server->k_c) != ERROR_OK))
+    if((uquad_kmsgq_clear(server->k_s) != ERROR_OK) ||
+       (uquad_kmsgq_clear(server->k_c) != ERROR_OK))
     {
 	uquad_kmsgq_deinit(server);
 	server = NULL;
@@ -32,27 +47,10 @@ uquad_kmsgq_t *uquad_kmsgq_init(int key_s, int key_c)
     return server;
 }
 
-int uquad_kmsgq_clear(uquad_kmsgq_t *server, key_t key)
-{
-    int msqid, i, watchdog = 0;
-    struct timeval time_aux;
-    while(watchdog++ < UQUAD_KQ_MAX_CLEARS)
-    {
-	if ((msqid = msgget(key, 0666)) < 0)
-	    break;
-	if(msgctl(msqid, IPC_RMID, NULL) < 0)
-	{
-	    err_log_stderr("Failed to remove IPC queue!");
-	}
-    }
-    return ERROR_OK;
-}
-
 int uquad_kmsgq_get_ack(uquad_kmsgq_t *server)
 {
     int msqid, i;
     struct timeval time_ack;
-    int ack_msg_flg = IPC_NOWAIT;
     if ((msqid = msgget(server->k_c, 0666)) < 0)
     {
 	return ERROR_KQ_NO_ACKS_AVAIL;
@@ -113,7 +111,7 @@ int uquad_kmsgq_check_stat(uquad_kmsgq_t *server)
 	{
 	    // report data was not received by client
 	    err_log("WARN: client did not ack!");
-	    retval = uquad_kmsgq_clear(server,server->k_s);
+	    retval = uquad_kmsgq_clear(server->k_s);
 	    err_propagate(retval);
 	    server->acks_pend = 0;
 	    retval = ERROR_KQ_ACK_NONE;
@@ -122,7 +120,7 @@ int uquad_kmsgq_check_stat(uquad_kmsgq_t *server)
 	{
 	    // report weird stuff comming
 	    err_log_num("WARN: recieved more acks than expected! Will clear ack queue. ACKs:",ack_cnt);
-	    retval = uquad_kmsgq_clear(server, server->k_c);
+	    retval = uquad_kmsgq_clear(server->k_c);
 	    err_propagate(retval);
 	    server->acks_pend = 0;
 	    retval = ERROR_KQ_ACK_MORE;
@@ -184,12 +182,12 @@ void uquad_kmsgq_deinit(uquad_kmsgq_t *server)
     int retval;
     if(server == NULL)
 	return;
-    retval = uquad_kmsgq_clear(server, server->k_s);
+    retval = uquad_kmsgq_clear(server->k_s);
     if(retval != ERROR_OK)
     {
 	err_log("WARN: Failed to clear server queue");
     }
-    retval = uquad_kmsgq_clear(server, server->k_c);
+    retval = uquad_kmsgq_clear(server->k_c);
     if(retval != ERROR_OK)
     {
 	err_log("WARN: Failed to clear client queue");

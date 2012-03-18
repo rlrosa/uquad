@@ -49,6 +49,7 @@ int alloc_m1_m2(void)
 {
     alloc_m(&m1);
     alloc_m(&m2);
+    return ERROR_OK;
 }
 
 static int counter = 1;
@@ -95,6 +96,7 @@ int mat_inv_test(void)
 
     printf("inv(A):\n");
     uquad_mat_dump(mr,NULL);
+    return ERROR_OK;
 }
 
 int matrix_add_sub_test(uquad_bool_t add_notsub)
@@ -129,6 +131,7 @@ int matrix_add_sub_test(uquad_bool_t add_notsub)
 
     printf("Result:\n");
     uquad_mat_dump(mr,NULL);
+    return ERROR_OK;
 }
 
 int mat_scalar_test(uquad_bool_t mul_notdiv)
@@ -188,6 +191,7 @@ int lin_solve_test(void)
 
     printf("Solution x of Ax=B:\n");
     uquad_mat_dump(mr,NULL);
+    return ERROR_OK;
 }
 
 int matrix_prod_test(void)
@@ -216,9 +220,10 @@ int matrix_prod_test(void)
         printf("Multiplication of the Matrices:\n");
 	uquad_mat_dump(mr,NULL);
     }
+    return ERROR_OK;
 }
 
-int main(int argc, char *argv[]){
+int main(void){
     int retval = ERROR_OK;
     enum test_type sel_test;
     int cmd;
@@ -230,8 +235,7 @@ int main(int argc, char *argv[]){
 	   MATRIX_SUBS,
 	   MATRIX_MUL_K,
 	   MATRIX_DIV_K,
-	   LIN_SOLVE,
-	   TEST_COUNT);
+	   LIN_SOLVE);
     scanf("%d",&cmd);
     if(cmd<0 || cmd > TEST_COUNT)
     {

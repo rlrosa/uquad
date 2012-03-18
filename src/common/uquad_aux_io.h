@@ -109,4 +109,18 @@ int io_get_dev(io_t * io, int fd, io_dev_t ** dev);
  */
 int io_dev_ready(io_t * io, int fd, uquad_bool_t * read, uquad_bool_t * write);
 
+/** 
+ * Individual file handling.
+ * If just one device will be handled, this function can be used instead of the
+ * io setup.
+ * 
+ * @param device 
+ * @param read_ok 
+ * @param write_ok 
+ * 
+ * @return 
+ */
+int check_io_locks(FILE *device, uquad_bool_t *read_ok, uquad_bool_t *write_ok);
+
+
 #endif

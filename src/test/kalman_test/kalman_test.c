@@ -17,24 +17,6 @@
 
 #define wait_for_enter printf("ERROR!\n") //while(fread(tmp,1,1,stdin) == 0)
 
-static int fix_end_of_time_string(char * string, int lim){
-    int i;
-    if(lim<0)
-	return -1;
-    for(i=0;i<lim;++i){
-	if(string[i]!='\n')
-	    continue;
-	break;
-    }
-    if(i==lim){
-	err_log("Failed to fix time string");
-	return ERROR_FAIL;
-    }else{
-	string[i]='\0';
-    }	
-    return ERROR_OK;
-}
-
 static int generate_log_name(char * log_name, char * start_string){
     time_t rawtime;
     struct tm * tm;
@@ -69,7 +51,6 @@ int main(int argc, char *argv[]){
     if(argc<3){
 	fprintf(stdout,"Using stdout to output...\n");
     }else{
-	int i;
 	retval = generate_log_name(log_name,argv[2]);
 	if(retval < 0){
 	    err_log("Failed to create log name...");
@@ -96,13 +77,9 @@ int main(int argc, char *argv[]){
     // do stuff...
     uquad_mat_t* tmp4print = uquad_mat_alloc(1,12);
     imu_data_t data;
-    imu_raw_t raw;
-    imu_calib_t *imu_calib;
     uquad_bool_t do_sleep = false;
     int read_will_not_lock;
-    int wait_counter = WAIT_COUNTER_MAX;
     int imu_fd;
-    uquad_bool_t calibrating = false;
     data.acc = uquad_mat_alloc(3,1);
     data.gyro = uquad_mat_alloc(3,1);
     data.magn = uquad_mat_alloc(3,1);

@@ -23,11 +23,11 @@ void uquad_sig_handler(int signal_num)
     exit(0);
 }
 
-main()
+int main()
 {
     int sleep_time = SLEEP_DEFAULT_US;
     int retval;
-    char msg[MSGSZ] = {50, 60, 70, 90};
+    unsigned char msg[MSGSZ] = {50, 60, 70, 90};
     uint8_t mark = 0;
     int error_count = 0;
 
@@ -39,7 +39,7 @@ main()
 
     while(1)
     {
-	msg[0] = (char) mark++;
+	msg[0] = (unsigned char) mark++;
 	retval = uquad_kmsgq_send(server, msg, MSGSZ);
 	if(retval != ERROR_OK)
 	{

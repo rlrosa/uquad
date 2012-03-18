@@ -1,12 +1,11 @@
 #include "imu_comm.h"
+#include <uquad_aux_io.h>
+#include <uquad_aux_time.h>
 #include <math.h> // for pow()
 /// Aux mem
 static uquad_mat_t *m3x3;
 static uquad_mat_t *m3x1_0;
 static uquad_mat_t *m3x1_1;
-
-/// Global var
-static double p0 = IMU_P0_DEFAULT;
 
 imu_status_t imu_comm_get_status(imu_t *imu){
     return imu->status;
@@ -62,7 +61,7 @@ static int imu_comm_send_cmd(imu_t *imu, unsigned char cmd){
     // If reading from a log file, we have nothing to send to it
     return ERROR_OK;
 #endif
-    retval = imu_comm_check_io_locks(imu->device, NULL, &ready);
+    retval = check_io_locks(imu->device, NULL, &ready);
     err_propagate(retval);
     if(!ready){
 	// cannot write
@@ -84,7 +83,7 @@ static int imu_comm_send_cmd(imu_t *imu, unsigned char cmd){
  * 
  * @return 
  */
-static int imu_comm_stop(imu_t *imu){
+int imu_comm_stop(imu_t *imu){
     int retval;
     if(imu->status == IMU_COMM_STATE_STOPPED){
 	err_log("IMU already stopped.");
@@ -104,7 +103,7 @@ static int imu_comm_stop(imu_t *imu){
  * 
  * @return 
  */
-static int imu_comm_resume(imu_t *imu){
+int imu_comm_resume(imu_t *imu){
     int retval;
     if(imu->status == IMU_COMM_STATE_RUNNING){
 	printf("IMU already running.\n");
@@ -124,8 +123,7 @@ static int imu_comm_resume(imu_t *imu){
  */
 static void imu_comm_calibration_clear(imu_t *imu){
     imu->calib.calib_estim_ready = false;
-    //    imu->calib.calibration_counter = -1;
-    int i;
+    imu->calib.calibration_counter = -1;
     imu->calib.timestamp_estim.tv_sec = 0;
     imu->calib.timestamp_estim.tv_usec = 0;
 }
@@ -158,12 +156,15 @@ static int imu_comm_run_default(imu_t *imu){
  */
 static int imu_comm_configure(imu_t *imu){
     int retval = ERROR_OK;
+    if(imu == NULL)
+    {
+	err_check(ERROR_NULL_POINTER,"Invalid arg.");
+    }
     //TODO configure stuff?
     return retval;
 }
 
 static int imu_comm_connect(imu_t *imu, const char *device){
-    int retval;
 #if IMU_COMM_FAKE
     // we don't want to write to the log file, just read.
     imu->device = fopen(device,"rb+");
@@ -189,6 +190,119 @@ static int imu_comm_disconnect(imu_t *imu){
 }
 
 /** 
+ * Allocates memory for three linear calibration structures.
+ * Each structure uses 2 matrices.
+ * 
+ * @param imu 
+ * 
+ * @return 
+ */
+int imu_comm_alloc_calib_lin(imu_t *imu)
+{
+    int i;
+    for (i = 0; i < 3; ++i)
+    {
+	// TK_inv
+	imu->calib.m_lin[i].TK_inv = uquad_mat_alloc(3,3);
+	if (imu->calib.m_lin[i].TK_inv == NULL)
+	{
+	    err_check(ERROR_MALLOC, "Failed to allocate K");
+	}
+	// b
+	imu->calib.m_lin[i].b = uquad_mat_alloc(3,1);
+	if (imu->calib.m_lin[i].b == NULL)
+	{
+	    err_check(ERROR_MALLOC, "Failed to allocate K");
+	}
+    }
+    return ERROR_OK;
+}
+
+/** 
+ * Frees memory for three linear calibration structures.
+ * Each structure uses 2 matrices.
+ * 
+ * @param imu 
+ * 
+ * @return 
+ */
+int imu_comm_free_calib_lin(imu_t *imu)
+{
+    int i;
+    for (i = 0; i < 3; ++i)
+    {
+	// TK_inv
+	uquad_mat_free(imu->calib.m_lin[i].TK_inv);
+	// b
+	uquad_mat_free(imu->calib.m_lin[i].b);
+    }
+    return ERROR_OK;
+}
+
+/** 
+ * Will load calibration for linear model from text file.
+ * Will ignore spaces, end of lines, tabs, etc.
+ * Expect to find matrices K,b and T (see imu_calib_lin_t)
+ * 
+ * @param imu 
+ * @param path 
+ * 
+ * @return 
+ */
+int imu_comm_load_calib(imu_t *imu, const char *path)
+{
+    int i,retval = ERROR_OK;
+    FILE *calib_file = fopen(path,"r+");
+    if(calib_file == NULL)
+    {
+	err_check(ERROR_OPEN,"Failed to open calib file!");
+    }
+
+    for (i = 0; i < 3; ++i)
+    {
+	// TK_inv
+	retval = uquad_mat_load(imu->calib.m_lin[i].TK_inv, calib_file);
+	if(retval != ERROR_OK)
+	{
+	    err_log("Failed to load TK_inv matrix!");
+	    break;
+	}		    
+
+	// b
+	retval = uquad_mat_load(imu->calib.m_lin[i].b, calib_file);
+	if(retval != ERROR_OK)
+	{
+	    err_log("Failed to load b matrix!");
+	    break;
+	}
+    }
+    fclose(calib_file);
+    imu->calib.calib_file_ready = true;
+    return retval;
+}
+
+/** 
+ * Will alocate memory to store calibration data, and load
+ * calibration data.
+ * 
+ * @param imu 
+ * 
+ * @return 
+ */
+int imu_comm_init_calibration(imu_t *imu)
+{
+    int retval = ERROR_OK;
+    retval = imu_comm_alloc_calib_lin(imu);
+    err_propagate(retval);
+    /// load calibration parameters from file
+    retval = imu_comm_load_calib(imu, IMU_DEFAULT_CALIB_PATH);
+    err_propagate(retval);
+    // Use default p0 until we get a calibration
+    imu->calib.null_est.pres = IMU_P0_DEFAULT;
+    return retval;
+}
+
+/** 
  *Initialize IMU struct and send default value to IMU, this
  *ensures starting from a know state.
  *
@@ -196,9 +310,10 @@ static int imu_comm_disconnect(imu_t *imu){
  */
 imu_t *imu_comm_init(const char *device){
     imu_t *imu;
-    int i,retval;
+    int retval = ERROR_OK;
     imu = (imu_t *)malloc(sizeof(imu_t));
     mem_alloc_check(imu);
+    memset(imu,0,sizeof(imu_t));
     // Set default values
     //TODO
     imu->status = IMU_COMM_STATE_UNKNOWN;
@@ -244,6 +359,8 @@ imu_t *imu_comm_init(const char *device){
 	return NULL;
 
     // Mark IMU as not calibrated
+    imu_comm_calibration_clear(imu);
+    // Load/estimate calibration
     retval = imu_comm_init_calibration(imu);
     if(retval != ERROR_OK)
 	return NULL;
@@ -287,33 +404,6 @@ int imu_comm_deinit(imu_t *imu){
 }
 
 /** 
- *Generates an average for each sensor. Uses a fixed buff size.
- *This should only be called when sampling starts, or if data is discarded 
- *or RX is stopped for a while.
- *
- *@param imu 
- *
- *@return error code
- */
-static int imu_comm_avg(imu_t *imu){
-    //TODO
-    err_check(ERROR_FAIL,"Not implemented.");
-//    int tmp,i,j;
-//    time_t sec_oldest, sec_new;
-//    suseconds_t usec_oldest, usec_new;
-//    imu->avg.timestamp = imu->frame_buff[frame_circ_index(imu)].timestamp;
-//    for(i=0;i<IMU_SENSOR_COUNT;++i){// loop sensors
-//	tmp = 0;
-//	for(j=0;j<IMU_FRAME_SAMPLE_AVG_COUNT;++j)// loop sensor data
-//	    tmp += (int)imu->frame_buff[j].raw[i];
-//	imu->avg.xyzrpy[i] = ((double)tmp)/IMU_FRAME_SAMPLE_AVG_COUNT;
-//    }
-//
-//    imu->avg_ready = 1;
-//    return ERROR_OK;
-}
-
-/** 
  *Attemps to read end of frame character.
  *Reads until timed out, or end character is found.
  *NOTE: Assumes device can be read without blocking.
@@ -332,7 +422,6 @@ static int imu_comm_get_sync_end(imu_t *imu){
 	    if(tmp == IMU_FRAME_END_CHAR)
 	    {
 		return ERROR_OK;
-		break;
 	    }
 	    else
 	    {
@@ -352,12 +441,8 @@ static int imu_comm_get_sync_end(imu_t *imu){
 		++watchdog;
 	    }
 	}
-    }
-    if (watchdog >= READ_RETRIES)
-    {
-	err_check(ERROR_READ_TIMEOUT,"Read error: Timed out waiting for end char...");
-    }
-    // never gets here
+    }// while(watchdog < READ_RETRIES)
+    err_check(ERROR_READ_TIMEOUT,"Read error: Timed out waiting for end char...");
 }
 
 static uint8_t previous_sync_char = IMU_FRAME_INIT_CHAR;
@@ -410,57 +495,184 @@ static int imu_comm_get_sync_init(imu_t *imu){
     err_check(ERROR_READ_SYNC,"Timed out!");
 }
 
+
 /** 
- *Attempts to sync with IMU, and read data.
+ * Set IMU to calibration mode.
+ * Will gather data to estimate null (offsets).
+ * NOTE: Assumes sensors are not being excited, ie, imu is staying completely still.
  *
  *@param imu 
- *@param success 
  *
  *@return 
  */
-int imu_comm_read(imu_t *imu){
+int imu_comm_calibration_start(imu_t *imu){
+    if(imu->status != IMU_COMM_STATE_RUNNING){
+	err_check(ERROR_IMU_STATUS,"IMU must be running to calibrate!");
+    }
+    imu->status = IMU_COMM_STATE_CALIBRATING;
+    /// clear calibration data/
+    memset(&imu->calib.null_est,0,sizeof(imu_raw_null_t));
+    imu->calib.calibration_counter = IMU_CALIB_SIZE;
+    return ERROR_OK;
+}
+
+/** 
+ *Abort current IMU calibration process. All progress will be lost.
+ *If a previous calibration existed, it will be preserved.
+ *
+ *@param imu 
+ *
+ *@return error code
+ */
+int imu_comm_calibration_abort(imu_t *imu){
+    if(imu->status != IMU_COMM_STATE_CALIBRATING)
+    {
+	err_check(ERROR_IMU_STATUS,"Cannot abort calibration, IMU is not calibrating!");
+    }
+    // Restore IMU status:
+    // if we were calibrating then we were running before
+    imu->status = IMU_COMM_STATE_RUNNING;
+
+    return ERROR_OK;
+}
+
+static struct timeval calibration_start_time;
+/** 
+ *Integrate calibration data into IMU.
+ *Replaces previous calibration, if any existed.
+ *
+ *@param imu 
+ *@param timestamp on the last sample used for the calibration
+ *
+ *@return error code.
+ */
+int imu_comm_calibration_finish(imu_t *imu){
+    int retval = ERROR_OK, i;
+    if(imu->status != IMU_COMM_STATE_CALIBRATING){
+	err_check(ERROR_IMU_STATUS,"Cannot finish calibration, IMU is not calibrating!");
+    }
+    if(imu->calib.calibration_counter != 0){
+	err_check(ERROR_IMU_STATUS,"Not enough samples gathered!");
+    }
+
+    struct timeval tv_end, tv_diff;
+    gettimeofday(&tv_end,NULL);
+    retval = uquad_timeval_substract(&tv_diff,tv_end,calibration_start_time);
+    if(retval < 0){
+	err_check(ERROR_FAIL,"Calibration duration should not be negative!");
+    }
+    //TODO check if calib took too long, and refuse it if so
+    //requires defintion of "too long"
+
+    for(i = 0; i < 3; ++i)
+    {
+	imu->calib.null_est.acc[i]  /= IMU_CALIB_SIZE;
+	imu->calib.null_est.gyro[i] /= IMU_CALIB_SIZE;
+	imu->calib.null_est.magn[i] /= IMU_CALIB_SIZE;
+    }
+    imu->calib.null_est.temp /= IMU_CALIB_SIZE;
+    imu->calib.null_est.pres /= IMU_CALIB_SIZE;
+
+    imu->calib.calibration_counter = -1;
+    imu->calib.timestamp_estim = tv_end;
+    imu->calib.calib_estim_ready = true;
+    imu->status = IMU_COMM_STATE_RUNNING;
+
+    //TODO implement
+    //retval = imu_comm_calbration_fix(imu);
+
+    return ERROR_OK;
+}
+
+/** 
+ *Add frame info to build up calibration.
+ *Will divide by frame count after done gathering, to avoid loosing info.
+ *
+ *@param imu 
+ *@param new_frame frame to add to calib 
+ *
+ *@return error code
+ */
+int imu_comm_calibration_continue(imu_t *imu, imu_raw_t *new_frame){
+    int retval, i;
+    if(imu->status != IMU_COMM_STATE_CALIBRATING)
+    {
+	err_check(ERROR_IMU_STATUS,"Cannot add frames, IMU is not calibrating!");
+    }
+    if(imu->calib.calibration_counter <= 0)
+    {
+	err_check(ERROR_FAIL,"Invalid value for calib.calibration_counter");
+    }
+
+    if(imu->calib.calibration_counter == IMU_CALIB_SIZE)
+    {
+	gettimeofday(&calibration_start_time,NULL);
+    }
+
+    /// add new frame to accumulated data
+    for( i = 0; i < 3; ++i)
+    {
+	imu->calib.null_est.acc[i] += (int32_t) new_frame->acc[i];
+	imu->calib.null_est.gyro[i] += (int32_t) new_frame->gyro[i];
+	imu->calib.null_est.magn[i] += (int32_t) new_frame->magn[i];
+    }
+    imu->calib.null_est.temp += (uint32_t) new_frame->temp;
+    imu->calib.null_est.pres += (uint64_t) new_frame->pres;
+
+    if(--imu->calib.calibration_counter == 0){
+	retval = imu_comm_calibration_finish(imu);
+	err_propagate(retval);
+    }
+
+    return ERROR_OK;
+}
+
+/** 
+ * Copies the data in src to dest.
+ * Must previously allocate mem for dest.
+ * 
+ * @param src 
+ * @param dest 
+ * 
+ * @return 
+ */
+int imu_comm_copy_frame(imu_raw_t *src, imu_raw_t *dest)
+{
+    int i;
+    if(src == NULL || dest == NULL)
+	err_check(ERROR_NULL_POINTER,"NULL pointer arg is not valid.");
+    dest->T_us = src->T_us;
+    for (i=0; i<3; ++i)
+	dest->acc[i] = src->acc[i];
+    for (i=0; i<3; ++i)
+	dest->gyro[i] = src->gyro[i];
+    for (i=0; i<3; ++i)
+	dest->magn[i] = src->magn[i];
+    dest->temp = src->temp;
+    dest->pres = src->pres;
+    dest->timestamp = src->timestamp;
+    return ERROR_OK;
+}
+
+/** 
+ * Add frame to buff
+ * Updates unread data and frame_count.
+ *
+ *@param imu 
+ *@param new_frame frame to add
+ *
+ *@return error code
+ */
+int imu_comm_add_frame(imu_t *imu, imu_raw_t *new_frame){
     int retval;
-    imu_raw_t new_frame;
 
-    // sync by getting init frame char
-    retval = imu_comm_get_sync_init(imu);
-    err_propagate(retval);
-    
-    // sync worked, now get data
-#if IMU_FRAME_BINARY
-    retval = imu_comm_read_frame_binary(imu, &new_frame);
-    err_propagate(retval);
-#else
-    retval = imu_comm_read_frame_ascii(imu, &new_frame);
-    err_propagate(retval);
-#endif
+    retval = imu_comm_copy_frame(new_frame, imu->frame_buff + imu->frame_buff_next);
+    imu->frame_buff_latest = imu->frame_buff_next;
+    imu->frame_buff_next = (imu->frame_buff_next + 1)%IMU_FRAME_BUFF_SIZE;
+    ++imu->unread_data;
+    imu->frame_count = uquad_min(imu->frame_count + 1,IMU_AVG_COUNT);
 
-    // verify sync by getting end of frame char
-    retval = imu_comm_get_sync_end(imu);
     err_propagate(retval);
-
-    // Add to calibration or to frame buff
-    if(imu_comm_get_status(imu) == IMU_COMM_STATE_CALIBRATING)
-    {
-	retval = imu_comm_calibration_continue(imu, &new_frame);
-	err_propagate(retval);
-    }
-    else
-    {
-	// add the frame to the buff
-	retval = imu_comm_add_frame(imu, &new_frame);
-	err_propagate(retval);
-    }
-
-
-#if DEBUG
-    retval = imu_comm_print_raw(&new_frame, imu->log_raw);
-    err_propagate(retval);
-    retval = imu_comm_raw2data(imu, &new_frame, &imu->tmp_data);
-    err_propagate(retval);
-    retval = imu_comm_print_data(&imu->tmp_data, imu->log_data);
-    err_propagate(retval);
-#endif //DEBUG
 
     return ERROR_OK;
 }
@@ -477,10 +689,8 @@ int imu_comm_read(imu_t *imu){
 int imu_comm_read_frame_binary(imu_t *imu, imu_raw_t *new_frame)
 {
     int retval = ERROR_OK,watchdog,read,i;
-    unsigned char tmp = 'X';// Anything diff from IMU_FRAME_INIT_CHAR
     uint8_t buff_tmp_8[IMU_DEFAULT_FRAME_SIZE_BYTES-2]; // no space for init/end
     uint16_t *buff_tmp_16;
-    uquad_bool_t end_sync = false;
 
     // Get sampling time
     watchdog = 0;
@@ -621,6 +831,61 @@ int imu_comm_read_frame_ascii(imu_t *imu, imu_raw_t *new_frame)
     return ERROR_OK;
 }
 
+/** 
+ *Attempts to sync with IMU, and read data.
+ *
+ *@param imu 
+ *@param success 
+ *
+ *@return 
+ */
+int imu_comm_read(imu_t *imu){
+    int retval;
+    imu_raw_t new_frame;
+
+    // sync by getting init frame char
+    retval = imu_comm_get_sync_init(imu);
+    err_propagate(retval);
+    
+    // sync worked, now get data
+#if IMU_FRAME_BINARY
+    retval = imu_comm_read_frame_binary(imu, &new_frame);
+    err_propagate(retval);
+#else
+    retval = imu_comm_read_frame_ascii(imu, &new_frame);
+    err_propagate(retval);
+#endif
+
+    // verify sync by getting end of frame char
+    retval = imu_comm_get_sync_end(imu);
+    err_propagate(retval);
+
+    // Add to calibration or to frame buff
+    if(imu_comm_get_status(imu) == IMU_COMM_STATE_CALIBRATING)
+    {
+	retval = imu_comm_calibration_continue(imu, &new_frame);
+	err_propagate(retval);
+    }
+    else
+    {
+	// add the frame to the buff
+	retval = imu_comm_add_frame(imu, &new_frame);
+	err_propagate(retval);
+    }
+
+
+#if DEBUG
+    retval = imu_comm_print_raw(&new_frame, imu->log_raw);
+    err_propagate(retval);
+    retval = imu_comm_raw2data(imu, &new_frame, &imu->tmp_data);
+    err_propagate(retval);
+    retval = imu_comm_print_data(&imu->tmp_data, imu->log_data);
+    err_propagate(retval);
+#endif //DEBUG
+
+    return ERROR_OK;
+}
+
 int convert_2_euler(imu_data_t *data)
 {
     int retval;
@@ -721,7 +986,7 @@ static int imu_comm_convert_lin(imu_t *imu, int16_t *raw, uquad_mat_t *conv, imu
  */
 static int imu_comm_acc_convert(imu_t *imu, int16_t *raw, uquad_mat_t *acc)
 {
-    int i, retval = ERROR_OK;
+    int retval = ERROR_OK;
     retval = imu_comm_convert_lin(imu, raw, acc, imu->calib.m_lin,false);
     err_propagate(retval);
     return retval;
@@ -776,6 +1041,10 @@ static int imu_comm_magn_convert(imu_t *imu, int16_t *raw, uquad_mat_t *magn)
  */
 static int imu_comm_temp_convert(imu_t *imu, uint16_t *data, double *temp)
 {
+    if(imu == NULL)
+    {
+	err_check(ERROR_NULL_POINTER,"Invalid argument.");
+    }
     *temp = ((double) *data)/10;
     return ERROR_OK;
 }
@@ -951,33 +1220,6 @@ int imu_comm_get_data_latest_unread(imu_t *imu, imu_data_t *data){
  * 
  * @return 
  */
-int imu_comm_copy_frame(imu_raw_t *src, imu_raw_t *dest)
-{
-    int i;
-    if(src == NULL || dest == NULL)
-	err_check(ERROR_NULL_POINTER,"NULL pointer arg is not valid.");
-    dest->T_us = src->T_us;
-    for (i=0; i<3; ++i)
-	dest->acc[i] = src->acc[i];
-    for (i=0; i<3; ++i)
-	dest->gyro[i] = src->gyro[i];
-    for (i=0; i<3; ++i)
-	dest->magn[i] = src->magn[i];
-    dest->temp = src->temp;
-    dest->pres = src->pres;
-    dest->timestamp = src->timestamp;
-    return ERROR_OK;
-}
-
-/** 
- * Copies the data in src to dest.
- * Must previously allocate mem for dest.
- * 
- * @param src 
- * @param dest 
- * 
- * @return 
- */
 int imu_comm_copy_data(imu_data_t *src, imu_data_t *dest)
 {
     int i;
@@ -1039,47 +1281,6 @@ int imu_comm_get_fds(imu_t *imu,int *fds){
     return ERROR_OK;
 }
 
-/** 
- *Checks if reading/writing will block.
- *Writing should not be a problem, hw buffers should handle it.
- *If attempting to read and there is no data available, we do not want to
- *lock up the sys, that is the purpose of 'select'.
- *
- *@param device attemping to read or write to.
- *@param check_read if true then checks if reading locks, if false check writing.
- *@param ready answer returned here
- *
- *@return error code
- */
-int imu_comm_check_io_locks(FILE *device, uquad_bool_t *read_ok, uquad_bool_t *write_ok){
-    fd_set rfds,wfds;
-    struct timeval tv;
-    int retval, fd = fileno(device);
-    FD_ZERO(&rfds);
-    FD_SET(fd,&rfds);
-    FD_ZERO(&wfds);
-    FD_SET(fd,&wfds);
-    // Set time waiting time to zero
-    tv.tv_sec = 0;
-    tv.tv_usec = 0;
-    // Check if we read/write without locking
-    retval = select(fd+1,				\
-		    (read_ok != NULL)?&rfds:NULL,	\
-		    (write_ok != NULL)?&wfds:NULL,	\
-		    NULL,&tv);
-    if(read_ok != NULL){
-	*read_ok = ((retval > 0) && FD_ISSET(fd,&rfds)) ? true:false;
-    }
-    if(write_ok != NULL)
-	*write_ok = ((retval >0) && FD_ISSET(fd,&wfds)) ? true:false;
-    if (retval < 0){
-	err_check(ERROR_IO,"select() failed!");
-    }else{
-	// retval == 0 <--> No data available
-    }
-    return ERROR_OK;
-}
-
 // -- -- -- -- -- -- -- -- -- -- -- --
 // Calibration
 // -- -- -- -- -- -- -- -- -- -- -- --
@@ -1108,101 +1309,6 @@ uquad_bool_t imu_comm_calib_estim(imu_t *imu)
     return imu->calib.calib_estim_ready;
 }
 
-/** 
- * Allocates memory for three linear calibration structures.
- * Each structure uses 2 matrices.
- * 
- * @param imu 
- * 
- * @return 
- */
-int imu_comm_alloc_calib_lin(imu_t *imu)
-{
-    int i;
-    for (i = 0; i < 3; ++i)
-    {
-	// TK_inv
-	imu->calib.m_lin[i].TK_inv = uquad_mat_alloc(3,3);
-	if (imu->calib.m_lin[i].TK_inv == NULL)
-	{
-	    err_check(ERROR_MALLOC, "Failed to allocate K");
-	}
-	// b
-	imu->calib.m_lin[i].b = uquad_mat_alloc(3,1);
-	if (imu->calib.m_lin[i].b == NULL)
-	{
-	    err_check(ERROR_MALLOC, "Failed to allocate K");
-	}
-    }
-    return ERROR_OK;
-}
-
-/** 
- * Frees memory for three linear calibration structures.
- * Each structure uses 2 matrices.
- * 
- * @param imu 
- * 
- * @return 
- */
-int imu_comm_free_calib_lin(imu_t *imu)
-{
-    int i;
-    for (i = 0; i < 3; ++i)
-    {
-	// TK_inv
-	uquad_mat_free(imu->calib.m_lin[i].TK_inv);
-	// b
-	uquad_mat_free(imu->calib.m_lin[i].b);
-    }
-    return ERROR_OK;
-}
-
-
-/** 
- * Will load calibration for linear model from text file.
- * Will ignore spaces, end of lines, tabs, etc.
- * Expect to find matrices K,b and T (see imu_calib_lin_t)
- * 
- * @param imu 
- * @param path 
- * 
- * @return 
- */
-int imu_comm_load_calib(imu_t *imu, const char *path)
-{
-    int i,j,retval;
-    uquad_mat_t *mtmp, *ktmp, *maux3x6, *meye3x3;
-    float ftmp;
-    FILE *calib_file = fopen(path,"r+");
-    if(calib_file == NULL)
-    {
-	err_check(ERROR_OPEN,"Failed to open calib file!");
-    }
-
-    for (i = 0; i < 3; ++i)
-    {
-	// TK_inv
-	retval = uquad_mat_load(imu->calib.m_lin[i].TK_inv, calib_file);
-	if(retval != ERROR_OK)
-	{
-	    err_log("Failed to load TK_inv matrix!");
-	    break;
-	}		    
-
-	// b
-	retval = uquad_mat_load(imu->calib.m_lin[i].b, calib_file);
-	if(retval != ERROR_OK)
-	{
-	    err_log("Failed to load b matrix!");
-	    break;
-	}
-    }
-    fclose(calib_file);
-    imu->calib.calib_file_ready = true;
-    return retval;
-}
-
 int imu_comm_calib_save(imu_t *imu, const char *filename)
 {
     int i;
@@ -1225,27 +1331,6 @@ int imu_comm_calib_save(imu_t *imu, const char *filename)
 }
 
 /** 
- * Will alocate memory to store calibration data, and load
- * calibration data.
- * 
- * @param imu 
- * 
- * @return 
- */
-int imu_comm_init_calibration(imu_t *imu)
-{
-    int retval = ERROR_OK;
-    retval = imu_comm_alloc_calib_lin(imu);
-    err_propagate(retval);
-    /// load calibration parameters from file
-    retval = imu_comm_load_calib(imu, IMU_DEFAULT_CALIB_PATH);
-    err_propagate(retval);
-    // Use default p0 until we get a calibration
-    imu->calib.null_est.pres = IMU_P0_DEFAULT;
-    return retval;
-}
-
-/** 
  *Get IMU calibration.
  *Currently only calibration is null estimation.
  * //TODO:
@@ -1259,7 +1344,6 @@ int imu_comm_init_calibration(imu_t *imu)
  */
 int imu_comm_calibration_get(imu_t *imu, imu_calib_t **calib){
 
-    int retval,i;
     if(!imu_comm_calib_file(imu) && !imu_comm_calib_estim(imu)){
 	err_check(ERROR_IMU_STATUS,"IMU is not calibrated");
     }
@@ -1268,29 +1352,6 @@ int imu_comm_calibration_get(imu_t *imu, imu_calib_t **calib){
     }
 
     *calib = &imu->calib;
-    return ERROR_OK;
-}
-
-/** 
- * Add frame to buff
- * Updates unread data and frame_count.
- *
- *@param imu 
- *@param new_frame frame to add
- *
- *@return error code
- */
-int imu_comm_add_frame(imu_t *imu, imu_raw_t *new_frame){
-    int retval;
-
-    retval = imu_comm_copy_frame(new_frame, imu->frame_buff + imu->frame_buff_next);
-    imu->frame_buff_latest = imu->frame_buff_next;
-    imu->frame_buff_next = (imu->frame_buff_next + 1)%IMU_FRAME_BUFF_SIZE;
-    ++imu->unread_data;
-    imu->frame_count = uquad_min(imu->frame_count + 1,IMU_AVG_COUNT);
-
-    err_propagate(retval);
-
     return ERROR_OK;
 }
 
@@ -1453,7 +1514,6 @@ int imu_comm_get_avg_unread(imu_t *imu, imu_data_t *data)
  * @return 
  */
 int imu_comm_print_data(imu_data_t *data, FILE *stream){
-    int i;
     if(stream == NULL){
 	stream = stdout;
     }
@@ -1485,7 +1545,6 @@ int imu_comm_print_data(imu_data_t *data, FILE *stream){
  * @return 
  */
 int imu_comm_print_raw(imu_raw_t *frame, FILE *stream){
-    int i;
     if(stream == NULL){
 	stream = stdout;
     }
@@ -1511,139 +1570,15 @@ int imu_comm_print_raw(imu_raw_t *frame, FILE *stream){
 
 int imu_comm_print_calib(imu_calib_t *calib, FILE *stream){
     //TODO
+    if(calib == NULL)
+    {
+	err_check(ERROR_NULL_POINTER,"Invalid argument.");
+    }
+    if(stream == NULL)
+	stream = stdout;
     err_check(ERROR_FAIL,"Not implemented.");
 }
 
-static struct timeval calibration_start_time;
-/** 
- *Add frame info to build up calibration.
- *Will divide by frame count after done gathering, to avoid loosing info.
- *
- *@param imu 
- *@param new_frame frame to add to calib 
- *
- *@return error code
- */
-int imu_comm_calibration_continue(imu_t *imu, imu_raw_t *new_frame){
-    int retval, i;
-    if(imu->status != IMU_COMM_STATE_CALIBRATING)
-    {
-	err_check(ERROR_IMU_STATUS,"Cannot add frames, IMU is not calibrating!");
-    }
-    if(imu->calib.calibration_counter <= 0)
-    {
-	err_check(ERROR_FAIL,"Invalid value for calib.calibration_counter");
-    }
-
-    if(imu->calib.calibration_counter == IMU_CALIB_SIZE)
-    {
-	gettimeofday(&calibration_start_time,NULL);
-    }
-
-    /// add new frame to accumulated data
-    for( i = 0; i < 3; ++i)
-    {
-	imu->calib.null_est.acc[i] += (int32_t) new_frame->acc[i];
-	imu->calib.null_est.gyro[i] += (int32_t) new_frame->gyro[i];
-	imu->calib.null_est.magn[i] += (int32_t) new_frame->magn[i];
-    }
-    imu->calib.null_est.temp += (uint32_t) new_frame->temp;
-    imu->calib.null_est.pres += (uint64_t) new_frame->pres;
-
-    if(--imu->calib.calibration_counter == 0){
-	retval = imu_comm_calibration_finish(imu,new_frame->timestamp);
-	err_propagate(retval);
-    }
-
-    return ERROR_OK;
-}
-
-/** 
- * Set IMU to calibration mode.
- * Will gather data to estimate null (offsets).
- * NOTE: Assumes sensors are not being excited, ie, imu is staying completely still.
- *
- *@param imu 
- *
- *@return 
- */
-int imu_comm_calibration_start(imu_t *imu){
-    if(imu->status != IMU_COMM_STATE_RUNNING){
-	err_check(ERROR_IMU_STATUS,"IMU must be running to calibrate!");
-    }
-    imu->status = IMU_COMM_STATE_CALIBRATING;
-    /// clear calibration data/
-    memset(&imu->calib.null_est,0,sizeof(imu_raw_null_t));
-    imu->calib.calibration_counter = IMU_CALIB_SIZE;
-    return ERROR_OK;
-}
-
-/** 
- *Abort current IMU calibration process. All progress will be lost.
- *If a previous calibration existed, it will be preserved.
- *
- *@param imu 
- *
- *@return error code
- */
-int imu_comm_calibration_abort(imu_t *imu){
-    if(imu->status != IMU_COMM_STATE_CALIBRATING)
-    {
-	err_check(ERROR_IMU_STATUS,"Cannot abort calibration, IMU is not calibrating!");
-    }
-    // Restore IMU status:
-    // if we were calibrating then we were running before
-    imu->status = IMU_COMM_STATE_RUNNING;
-
-    return ERROR_OK;
-}
-
-/** 
- *Integrate calibration data into IMU.
- *Replaces previous calibration, if any existed.
- *
- *@param imu 
- *@param timestamp on the last sample used for the calibration
- *
- *@return error code.
- */
-int imu_comm_calibration_finish(imu_t *imu, struct timeval calibration_end_time){
-    int retval = ERROR_OK, i;
-    if(imu->status != IMU_COMM_STATE_CALIBRATING){
-	err_check(ERROR_IMU_STATUS,"Cannot finish calibration, IMU is not calibrating!");
-    }
-    if(imu->calib.calibration_counter != 0){
-	err_check(ERROR_IMU_STATUS,"Not enough samples gathered!");
-    }
-
-    struct timeval tv_end, tv_diff;
-    gettimeofday(&tv_end,NULL);
-    retval = uquad_timeval_substract(&tv_diff,tv_end,calibration_start_time);
-    if(retval < 0){
-	err_check(ERROR_FAIL,"Calibration duration should not be negative!");
-    }
-    //TODO check if calib took too long, and refuse it if so
-    //requires defintion of "too long"
-
-    for(i = 0; i < 3; ++i)
-    {
-	imu->calib.null_est.acc[i]  /= IMU_CALIB_SIZE;
-	imu->calib.null_est.gyro[i] /= IMU_CALIB_SIZE;
-	imu->calib.null_est.magn[i] /= IMU_CALIB_SIZE;
-    }
-    imu->calib.null_est.temp /= IMU_CALIB_SIZE;
-    imu->calib.null_est.pres /= IMU_CALIB_SIZE;
-
-    imu->calib.calibration_counter = -1;
-    imu->calib.timestamp_estim = tv_end;
-    imu->calib.calib_estim_ready = true;
-    imu->status = IMU_COMM_STATE_RUNNING;
-
-    //TODO implement
-    //retval = imu_comm_calbration_fix(imu);
-
-    return ERROR_OK;
-}
 
 
 
