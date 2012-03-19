@@ -94,7 +94,7 @@ int SENSOR_SIGN[9] = { 1,1,1,1,1,1,1,1,1};  //Correct directions x,y,z - gyros, 
 // Sampling setting
 #define SAMP_T_INTR 5000UL // us - internal sampling rate
 #define SAMP_JITTER_INTR 12UL // us - timer misses by this amount
-#define SAMP_INTRS_EXTR 4 //  Main loop runs at SAMP_T_INTR*SAMP_INTRS_EXTR
+#define SAMP_INTRS_EXTR 2 //  Main loop runs at SAMP_T_INTR*SAMP_INTRS_EXTR
 #define SAMP_DIV_COMPASS 20 // sampled at SAMP_INTRS_EXTR/SAMP_DIV_COMPASS
 #define SAMP_DIV_BAROM 200 // sampled at SAMP_INTRS_EXTR/SAMP_DIV_BAROM
 #define SAMP_T_EXTR (SAMP_T_INTR*SAMP_INTRS_EXTR) // rate at which data is sent to UART
@@ -133,7 +133,7 @@ uquad_timing timing = {SAMP_T_INTR,
 
 // Debug data
 #if DEBUG
-#define DEBUG_TX_TIMING 0
+#define DEBUG_TX_TIMING 1
 static bool print_raw_bmp085 = false;
 #endif
 
@@ -168,11 +168,8 @@ float dt_tmp[SAMP_INTRS_EXTR];
 int dt_tmp_index = 0;
 #endif
 
-long time_us = 0;
-long time_us_old;
-long time_tmp = 0;
-long timer24=0; //Second timer used to print values 
-float AN[9]; //array that store the 3 ADC filtered data
+unsigned long time_barom_us = 0;
+unsigned long time_us = 0;
 
 float AN_OFFSET[9] = {0,0,0,0,0,0,0,0,0}; //Array that stores the Offset of the sensors
 
@@ -226,6 +223,17 @@ struct s_sensor_data
 s_sensor_offsets sen_offset = {{0,0,0},{0,0,0},{0,0,0},0,0,0,0};
 s_sensor_data sen_data = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
+// Store readings to average
+struct uquad_reads{
+    long int acc[3];
+    long int gyro[3];
+    long int magnetom[3];
+};
+
+struct uquad_reads acum_reads = {{0,0,0}, {0,0,0}, {0,0,0}};
+
+// Promed counter
+int loop_counter = 0;
 
 float Accel_Vector[3]= {0,0,0};    //Store the acceleration in a vector
 float Mag_Vector[3]= {0,0,0};      //Store the magnetometer direction in a vector
@@ -244,19 +252,9 @@ float yaw;
 float errorRollPitch[3]= {0,0,0}; 
 float errorYaw[3]= {0,0,0};
 
-//These counters allow us to sample some of the sensors at lower rates
-unsigned int  Compass_counter=0;
-unsigned int  Baro_counter=0;
-unsigned int  GPS_counter=0;
-unsigned int  Print_counter=0;
-
-
-
 float DCM_Matrix[3][3]       = {{1,0,0},{0,1,0},{0,0,1}}; 
 float Update_Matrix[3][3]    = {{0,1,2},{3,4,5},{6,7,8}}; 
 float Temporary_Matrix[3][3] = {{0,0,0},{0,0,0},{0,0,0}};
- 
-
 
 void setup()
 { 
@@ -313,121 +311,110 @@ void setup()
   time_us = micros();
   delay(20);
   
-  //init some counters
-  Compass_counter=0;
-  Baro_counter=0;
-  GPS_counter=0;
-  Print_counter=0; 
 }
-
+unsigned long Dt;
+unsigned long loop_in_us;
+unsigned long t_loop_chico;
+unsigned long pezon_viejo;
 void loop() //Main Loop
 {
     if (Serial.available() > 0)
     {
-	// read the incoming byte:
-	incomingByte = Serial.read();
-	if (incomingByte > 0)
-	    if(menu_execute(incomingByte) < 0)
-		Serial.println("Invalid command!");
+    	// read the incoming byte:
+    	incomingByte = Serial.read();
+    	if (incomingByte > 0)
+    	    if(menu_execute(incomingByte) < 0)
+    		Serial.println("Invalid command!");
     }
 
-    if(running)
+    // update barom reading state machine
+    barom_update_state_machine();
+    loop_in_us = micros();
+    Dt = loop_in_us - time_barom_us;
+    //if ( (Dt) >= 
+    //	 SAMP_T_BAROM_INTR - SAMP_JITTER_INTR )
+    if (loop_counter >= SAMP_INTRS_EXTR)
     {
-	// update barom reading state machine
-	barom_update_state_machine();
-
-	if( (micros()-time_us) >= 
-	    SAMP_T_INTR - SAMP_JITTER_INTR )
+	//	Serial.print("Tetas:");
+	//	Serial.println(Dt);
+	if(loop_counter != 0)
 	{
-	    // We enter here every SAMP_T_INTR +- SAMP_JITTER
-	    digitalWrite(debugPin,HIGH);
+	    // Average acc, gyro and compass
+	    sen_data.gyro_x_raw = (int)(acum_reads.gyro[0]/loop_counter);
+	    sen_data.gyro_y_raw = (int)(acum_reads.gyro[1]/loop_counter);
+	    sen_data.gyro_z_raw = (int)(acum_reads.gyro[2]/loop_counter);
+	    sen_data.accel_x_raw = (int)(acum_reads.acc[0]/loop_counter);
+	    sen_data.accel_y_raw = (int)(acum_reads.acc[1]/loop_counter);
+	    sen_data.accel_z_raw = (int)(acum_reads.acc[2]/loop_counter);
+	    sen_data.magnetom_x_raw = (int)(acum_reads.magnetom[0]/loop_counter);
+	    sen_data.magnetom_y_raw = (int)(acum_reads.magnetom[1]/loop_counter);
+	    sen_data.magnetom_z_raw = (int)(acum_reads.magnetom[2]/loop_counter);
+	    // Reset
+	    loop_counter=0;
+	    acum_reads.acc = {0,0,0};
+	    acum_reads.gyro = {0,0,0};
+	    acum_reads.magnetom = {0,0,0};
 
-	    time_us_old = time_us;
-	    time_us = micros();
-	    G_Dt_us = time_us-time_us_old;
-#if DEBUG_TX_TIMING
-	    dt_tmp[Print_counter] = G_Dt_us;
-	    dt_tmp_index++;
-#endif
-	    G_Dt = G_Dt_us/1000000.0;    // Real time of loop run. We use this on the DCM algorithm (gyro integration time)
-	    if(G_Dt > 1)
-		G_Dt = 0;  //keeps dt from blowing up, goes to zero to keep gyros from departing
-        
-   
-	    Compass_counter++;
-	    Baro_counter++;
-	    GPS_counter++;
-	    Print_counter++;
-        
-        
-	    //=================================================================================//
-	    //=======================  Data adquisition of all sensors ========================//
-        
-        
-	    //======================= Read the Gyro and Accelerometer =======================//
-	    if(sensors.gyro)
-		Read_Gyro();      // Read the data from the I2C Gyro
-	    if(sensors.acc)
-		Read_Accel();     // Read I2C accelero#endif
-      
-	    //=============================== Read the Compass ===============================//
-	    if(sensors.compass)
-		if (MAGNETON_FULL_FS ||
-		    (Compass_counter > SAMP_DIV_COMPASS))  // Read compass data at 10Hz... (5 loop runs)
-		{
-		    Compass_counter=0;
-		    Read_Compass();    // Read I2C magnetometer     
-		}
+	    //	    Dt = micros();
+	    barom_update_state_machine();
+	    if(sensors.pressure || sensors.temp)
+		Baro_req_update();
 
-	    //===================== Read the Temp and Pressure from Baro =====================//
-	    if ((Baro_counter > SAMP_DIV_BAROM) || ONLY_BMP085)  // Read baro data at 1Hz... (50 loop runs)
-	    {
-		Baro_counter=0;
-		// The following will trigger the barom update.
-		// Temperature takes 4.5ms, and pressure takes from 4.5 to 25.5, depending on
-		// OSS settings.
-		// If OSS==0, new data should be ready approximately 9ms after calling Baro_req_update()
-		if(sensors.pressure || sensors.temp)
-		    Baro_req_update();
-	    }
-	    //=============================== Read the GPS data ==============================//
-	    if (GPS_counter > 50)  // Read GPS data at 1Hz... (50 loop runs)
-	    {
-		GPS_counter=0;
-         
-		//this is were it would go...  
-	    }
-        
-        
-        
-        
-        
-	    //=================================================================================//
-	    //=======================  Calculations for DCM Algorithm  ========================//
-	    /* Matrix_update();  */
-	    /* Normalize(); */
-	    /* Drift_correction(); */
-	    /* Euler_angles(); */
-        
-       
-       
-       
-       
-	    //=================================================================================//
-	    //============================= Data Display/User Code ============================//
-	    // Make sure you don't take too long here!
-     
-	    //=============================== Read the GPS data ==============================//
-	    if (Print_counter == SAMP_INTRS_EXTR || ONLY_BMP085)  //
-	    {
-		Print_counter=0;
-         
-		printdata(); 
-	    }
-	    StatusLEDToggle();
-        
+	    /* Serial.print("Pezon:"); */
+	    /* Serial.println(micros()-Dt); */
+
+	    printdata(); 
+	    //Serial.println("breve historia sobre un niño");
+
+	    StatusLEDToggle();        
 	    digitalWrite(debugPin,LOW);
- 
-	} // internal sampling loop
-    } // running
-}
+	}
+
+	time_barom_us = loop_in_us;
+
+    }
+
+    t_loop_chico = micros();
+
+    if( (t_loop_chico - time_us) >= 
+	SAMP_T_INTR - SAMP_JITTER_INTR )
+    {
+
+	digitalWrite(debugPin,HIGH);
+	        
+	//================================================================================//
+	//======================  Data adquisition of all sensors ========================//
+                
+	//=================== Read the Gyro, Accelerometer and Compass ===================//
+	if(sensors.acc)
+	{
+	    Read_Accel();     // Read I2C accelero#endif
+	    acum_reads.acc[0] += (long int)sen_data.accel_x_raw;
+	    acum_reads.acc[1] += (long int)sen_data.accel_y_raw;
+	    acum_reads.acc[2] += (long int)sen_data.accel_z_raw;
+	}
+	barom_update_state_machine();
+	if(sensors.gyro)
+	{
+	    Read_Gyro();      // Read the data from the I2C Gyro
+	    acum_reads.gyro[0] += (long int)sen_data.gyro_x_raw;
+	    acum_reads.gyro[1] += (long int)sen_data.gyro_y_raw;
+	    acum_reads.gyro[2] += (long int)sen_data.gyro_z_raw;
+	}
+      	barom_update_state_machine();
+	if(sensors.compass)
+	{
+	     Read_Compass();    // Read I2C magnetometer
+	    acum_reads.magnetom[0] += (long int)sen_data.magnetom_x_raw;
+	    acum_reads.magnetom[1] += (long int)sen_data.magnetom_y_raw;
+	    acum_reads.magnetom[2] += (long int)sen_data.magnetom_z_raw;
+	}
+
+	loop_counter++;
+	/* Serial.print("lc"); */
+	/* Serial.println(t_loop_chico - time_us); */
+	/* Serial.print("tlc"); */
+	/* Serial.println(micros() - t_loop_chico); */
+	time_us = t_loop_chico;
+    }
+} 

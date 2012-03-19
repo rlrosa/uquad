@@ -16,7 +16,7 @@
 
 #define BMP085_ADDRESS 0x77  // I2C address of BMP085
 
-#define BMP085_TEMP_WAIT_US 4500 // time between temp request and data ready
+#define BMP085_TEMP_WAIT_US 4500UL // time between temp request and data ready
 
 static unsigned char OSS = 0;  // Oversampling Setting
 
@@ -43,7 +43,7 @@ enum barom_state {
     BAROM_WAITING,
     BAROM_DONE
 };
-barom_state barom_press, barom_temp;
+barom_state barom_press = BAROM_IDLE, barom_temp = BAROM_IDLE;
 
 static bool calibration_loaded = false;
 /** 
@@ -160,9 +160,11 @@ void Baro_req_update()
     if((barom_press != BAROM_IDLE) ||
 	   (barom_temp != BAROM_IDLE))
     {
-	Serial.println("\n\n-- -- -- -- --");
-	Serial.println("Missed barom data!!");
-	Serial.println("-- -- -- -- --\n\n");
+	/* Serial.println("\n\n-- -- -- -- --"); */
+	/* Serial.println("Missed barom data!!"); */
+	/* Serial.println("-- -- -- -- --\n\n"); */
+	Serial.println("B");
+	return;
     }
 #else
     assert((barom_press == BAROM_IDLE) &&
@@ -362,7 +364,7 @@ unsigned int bmp085ReadUT(bool req_done)
  */
 unsigned long bmp085GetUPWaitUS()
 {
-    return 1500 + 1000*(3<<OSS);
+    return 1500UL + 1000UL*(3<<OSS);
 }
 
 
