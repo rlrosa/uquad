@@ -57,8 +57,6 @@
  */
 int uquad_mat_prod(uquad_mat_t *C, uquad_mat_t *A,uquad_mat_t *B)
 {
-    int i_r,i_c,i_t, retval = ERROR_OK;
-    double tmp;
     if(A == NULL || B == NULL || C == NULL)
     {
 	err_check(ERROR_NULL_POINTER,"NULL pointer is invalid arg.");
@@ -79,6 +77,10 @@ int uquad_mat_prod(uquad_mat_t *C, uquad_mat_t *A,uquad_mat_t *B)
 int uquad_mat_det(uquad_mat_t *m, double *res)
 {
     //TODO use LU
+    if(m == NULL || res == NULL)
+    {
+	err_check(ERROR_NULL_POINTER,"NULL pointer is invalid arg.");
+    }
     err_check(ERROR_FAIL,"Not implemented!");
 }
 
@@ -247,7 +249,6 @@ int uquad_solve_lin(uquad_mat_t *A, uquad_mat_t *B, uquad_mat_t *x, uquad_mat_t 
 {
     int retval;
     uquad_bool_t local_mem = false;
-    uquad_mat_t *R, *C, *Beq;
     if(A == NULL || B == NULL)
     {
 	err_check(ERROR_NULL_POINTER,"NULL pointer is invalid arg.");
@@ -272,6 +273,7 @@ int uquad_solve_lin(uquad_mat_t *A, uquad_mat_t *B, uquad_mat_t *x, uquad_mat_t 
     }
 
 #if USE_EQUILIBRATE
+    uquad_mat_t *R, *C, *Beq;
     R = uquad_mat_alloc(A->r, 1);
     C = uquad_mat_alloc(A->c, 1);
     Beq = uquad_mat_alloc(B->r,B->c);
@@ -355,7 +357,6 @@ int uquad_solve_lin(uquad_mat_t *A, uquad_mat_t *B, uquad_mat_t *x, uquad_mat_t 
  */
 int uquad_mat_eye(uquad_mat_t *m)
 {
-    int retval;
     if(m == NULL)
     {
 	err_check(ERROR_NULL_POINTER,"NULL pointer is invalid arg.");
@@ -841,7 +842,6 @@ void uquad_mat_dump(uquad_mat_t *m, FILE *output)
 uquad_mat_t *uquad_mat_alloc(int r, int c)
 {
     int i;
-    double *tmp;
     if(!((r < UQUAD_MAT_MAX_DIM) && (c < UQUAD_MAT_MAX_DIM)))
     {
 	err_log("Invalid matrix size!");
@@ -871,7 +871,6 @@ uquad_mat_t *uquad_mat_alloc(int r, int c)
  */
 void uquad_mat_free(uquad_mat_t *m)
 {
-    int i;
     if(m == NULL)
 	return;
     free(m->m_full);

@@ -16,11 +16,6 @@ io_t * io_init(void){
 /// Device list handling
 /// -- -- -- -- -- -- -- -- -- -- -- --
 
-static int io_get_dev_count(io_t * io, int * dev_count){
-    *dev_count = io->dev_list.dev_count;
-    return ERROR_OK;
-}
-
 uquad_bool_t io_dev_list_empty(io_t * io){
     return (io->dev_list.first == NULL)?true:false;
 }
@@ -34,7 +29,6 @@ static int io_get_dev_list(io_t * io, io_dev_t ** dev){
 }
 
 static int io_get_last_dev(io_t * io, io_dev_t ** last_dev){
-    int dev_count_local = 0;
     if(io_dev_list_empty(io)){
 	*last_dev = NULL;
 	return ERROR_OK;
@@ -192,6 +186,47 @@ int io_deinit(io_t * io){
 	    dev = dev_next;
 	}
 	free(io);
+    }
+    return ERROR_OK;
+}
+
+/** 
+ *Checks if reading/writing will block.
+ *Writing should not be a problem, hw buffers should handle it.
+ *If attempting to read and there is no data available, we do not want to
+ *lock up the sys, that is the purpose of 'select'.
+ *
+ *@param device attemping to read or write to.
+ *@param check_read if true then checks if reading locks, if false check writing.
+ *@param ready answer returned here
+ *
+ *@return error code
+ */
+int check_io_locks(FILE *device, uquad_bool_t *read_ok, uquad_bool_t *write_ok){
+    fd_set rfds,wfds;
+    struct timeval tv;
+    int retval, fd = fileno(device);
+    FD_ZERO(&rfds);
+    FD_SET(fd,&rfds);
+    FD_ZERO(&wfds);
+    FD_SET(fd,&wfds);
+    // Set time waiting time to zero
+    tv.tv_sec = 0;
+    tv.tv_usec = 0;
+    // Check if we read/write without locking
+    retval = select(fd+1,				\
+		    (read_ok != NULL)?&rfds:NULL,	\
+		    (write_ok != NULL)?&wfds:NULL,	\
+		    NULL,&tv);
+    if(read_ok != NULL){
+	*read_ok = ((retval > 0) && FD_ISSET(fd,&rfds)) ? true:false;
+    }
+    if(write_ok != NULL)
+	*write_ok = ((retval >0) && FD_ISSET(fd,&wfds)) ? true:false;
+    if (retval < 0){
+	err_check(ERROR_IO,"select() failed!");
+    }else{
+	// retval == 0 <--> No data available
     }
     return ERROR_OK;
 }

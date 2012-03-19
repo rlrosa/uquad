@@ -5,6 +5,7 @@
 #include <signal.h> // for SIGINT, SIGQUIT
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h> // for usleep()
 #include <uquad_error_codes.h>
 
 #define MSGSZ     128
@@ -36,7 +37,7 @@ typedef struct msgbuf {
     char    mtext[MSGSZ];
 } message_buf;
 
-main()
+int main()
 {
     int msqid, i, msg_rx;
     key_t key = 1, key_tx = 2;

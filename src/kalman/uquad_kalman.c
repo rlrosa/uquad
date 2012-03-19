@@ -29,84 +29,42 @@ uquad_mat_t* IKH  = NULL;
 uquad_mat_t* Sk_1 = NULL;
 uquad_mat_t* I    = NULL;
 
-int uquad_kalman(kalman_io_t * kalman_io_data, uquad_mat_t* w, imu_data_t* data, double T)
+int H_init()
 {
     int retval;
-    if(Fk_1==NULL)
-    {
-	Fk_1   = uquad_mat_alloc(12,12);
-	Fk_1_T = uquad_mat_alloc(12,12);
-	mtmp   = uquad_mat_alloc(12,12);
-	P_     = uquad_mat_alloc(12,12);      
-	retval = H_init();
-	err_propagate(retval);
-	Fx = uquad_mat_alloc(12,12);
-	fx = uquad_mat_alloc(12,1);
-	hx = uquad_mat_alloc(10,1);
+    H = uquad_mat_alloc(10,12);
+    retval = uquad_mat_zeros(H);
+    err_propagate(retval);
+    H->m[0][3]=1;
+    H->m[1][4]=1;
+    H->m[2][5]=1;
+    H->m[6][9]=1;
+    H->m[7][10]=1;
+    H->m[8][11]=1;
+    H->m[9][2]=1;
+    return ERROR_OK;
+}
 
-	// Auxiliares para el update
-	yk = uquad_mat_alloc(10,1);
-	HT   = uquad_mat_alloc(12,10);
-	HP_  = uquad_mat_alloc(10,12);
-	HP_H = uquad_mat_alloc(10,10);
-	Sk   = uquad_mat_alloc(10,10);
-	P_HT = uquad_mat_alloc(12,10);
-	Kk   = uquad_mat_alloc(12,10);
-	Kkyk = uquad_mat_alloc(12,1);
-	KkH  = uquad_mat_alloc(12,12);
-	IKH  = uquad_mat_alloc(12,12);
-	Sk_1 = uquad_mat_alloc(10,10);
-	I    = uquad_mat_alloc(12,12);
-    }
-
-    retval = store_data(kalman_io_data, w, data, T);
+int store_data(kalman_io_t* kalman_io_data, uquad_mat_t *w, imu_data_t* data, double T)
+{
+    int retval;
+    retval = uquad_mat_copy(kalman_io_data->u, w);
     err_propagate(retval);
 
-    // Prediction
-    retval = f(kalman_io_data -> x_, kalman_io_data);
-    err_propagate(retval);
-    retval = F(Fk_1, kalman_io_data);
-    err_propagate(retval);
-    retval = uquad_mat_transpose(Fk_1_T, Fk_1);
-    err_propagate(retval);
-    retval = uquad_mat_prod(mtmp, Fk_1, kalman_io_data->P);
-    err_propagate(retval);
-    retval = uquad_mat_prod(Fk_1,mtmp, Fk_1_T); // Aca lo vuelvo a guardar en Fk_1 para no hacer otra variable temporal
-    err_propagate(retval);
-    retval = uquad_mat_add(P_,Fk_1,kalman_io_data->Q);
+    retval = uquad_mat_set_subm(kalman_io_data->z, 0, 0, data->magn);
     err_propagate(retval);
 
-    // Update
-    retval = h(hx, kalman_io_data);
+    retval = uquad_mat_set_subm(kalman_io_data->z, 3, 0, data->acc);
     err_propagate(retval);
-    retval =  uquad_mat_sub(yk, kalman_io_data -> z , hx);
+
+    retval = uquad_mat_set_subm(kalman_io_data->z, 6, 0, data->gyro);
     err_propagate(retval);
-    retval = uquad_mat_prod(HP_,H,P_);
-    err_propagate(retval);
-    retval = uquad_mat_transpose(HT,H);
-    err_propagate(retval);
-    retval = uquad_mat_prod(HP_H,HP_,HT);
-    err_propagate(retval);
-    retval = uquad_mat_add(Sk,HP_H,kalman_io_data -> R); // Sk
-    err_propagate(retval);
-    retval = uquad_mat_inv(Sk_1,Sk,NULL,NULL);
-    err_propagate(retval);
-    retval = uquad_mat_prod(P_HT,P_,HT);
-    err_propagate(retval);
-    retval = uquad_mat_prod(Kk,P_HT,Sk_1);
-    err_propagate(retval);
-    retval = uquad_mat_prod(Kkyk,Kk,yk);
-    err_propagate(retval);
-    retval = uquad_mat_add(kalman_io_data->x_hat, kalman_io_data->x_, Kkyk);
-    err_propagate(retval);
-    retval =  uquad_mat_eye(I);
-    err_propagate(retval);
-    retval = uquad_mat_prod(KkH, Kk, H);
-    err_propagate(retval);
-    retval = uquad_mat_sub(IKH,I,KkH);
-    err_propagate(retval);
-    retval = uquad_mat_prod(kalman_io_data->P, IKH, P_);
-    err_propagate(retval);
+
+    kalman_io_data->z->m_full[9] = data->alt;
+
+    // Use C timer instead of IMU timer, don't use this
+    //    kalman_io_data->T = data->T_us/1000000;
+    kalman_io_data->T = T/1000000;
 
     return ERROR_OK;
 }
@@ -229,9 +187,10 @@ int h(uquad_mat_t* hx, kalman_io_t* kalman_io_data)
 
 int F(uquad_mat_t* Fx, kalman_io_t* kalman_io_data)
 {
-    double x     = kalman_io_data -> x_hat -> m_full[0];
-    double y     = kalman_io_data -> x_hat -> m_full[1];
-    double z     = kalman_io_data -> x_hat -> m_full[2];
+    // unused vars
+    //    double x     = kalman_io_data -> x_hat -> m_full[0];
+    //    double y     = kalman_io_data -> x_hat -> m_full[1];
+    //    double z     = kalman_io_data -> x_hat -> m_full[2];
     double psi   = kalman_io_data -> x_hat -> m_full[3];
     double phi   = kalman_io_data -> x_hat -> m_full[4];
     double theta = kalman_io_data -> x_hat -> m_full[5];
@@ -416,22 +375,6 @@ int F(uquad_mat_t* Fx, kalman_io_t* kalman_io_data)
     return ERROR_OK;
 }
 
-int H_init()
-{
-    int retval;
-    H = uquad_mat_alloc(10,12);
-    retval = uquad_mat_zeros(H);
-    err_propagate(retval);
-    H->m[0][3]=1;
-    H->m[1][4]=1;
-    H->m[2][5]=1;
-    H->m[6][9]=1;
-    H->m[7][10]=1;
-    H->m[8][11]=1;
-    H->m[9][2]=1;
-    return ERROR_OK;
-}
-
 kalman_io_t* kalman_init()
 {
     int retval;
@@ -500,26 +443,84 @@ kalman_io_t* kalman_init()
     return kalman_io_data;
 }
 
-int store_data(kalman_io_t* kalman_io_data, uquad_mat_t *w, imu_data_t* data, double T)
+int uquad_kalman(kalman_io_t * kalman_io_data, uquad_mat_t* w, imu_data_t* data, double T)
 {
     int retval;
-    retval = uquad_mat_copy(kalman_io_data->u, w);
+    if(Fk_1==NULL)
+    {
+	Fk_1   = uquad_mat_alloc(12,12);
+	Fk_1_T = uquad_mat_alloc(12,12);
+	mtmp   = uquad_mat_alloc(12,12);
+	P_     = uquad_mat_alloc(12,12);      
+	retval = H_init();
+	err_propagate(retval);
+	Fx = uquad_mat_alloc(12,12);
+	fx = uquad_mat_alloc(12,1);
+	hx = uquad_mat_alloc(10,1);
+
+	// Auxiliares para el update
+	yk = uquad_mat_alloc(10,1);
+	HT   = uquad_mat_alloc(12,10);
+	HP_  = uquad_mat_alloc(10,12);
+	HP_H = uquad_mat_alloc(10,10);
+	Sk   = uquad_mat_alloc(10,10);
+	P_HT = uquad_mat_alloc(12,10);
+	Kk   = uquad_mat_alloc(12,10);
+	Kkyk = uquad_mat_alloc(12,1);
+	KkH  = uquad_mat_alloc(12,12);
+	IKH  = uquad_mat_alloc(12,12);
+	Sk_1 = uquad_mat_alloc(10,10);
+	I    = uquad_mat_alloc(12,12);
+    }
+
+    retval = store_data(kalman_io_data, w, data, T);
     err_propagate(retval);
 
-    retval = uquad_mat_set_subm(kalman_io_data->z, 0, 0, data->magn);
+    // Prediction
+    retval = f(kalman_io_data -> x_, kalman_io_data);
+    err_propagate(retval);
+    retval = F(Fk_1, kalman_io_data);
+    err_propagate(retval);
+    retval = uquad_mat_transpose(Fk_1_T, Fk_1);
+    err_propagate(retval);
+    retval = uquad_mat_prod(mtmp, Fk_1, kalman_io_data->P);
+    err_propagate(retval);
+    retval = uquad_mat_prod(Fk_1,mtmp, Fk_1_T); // Aca lo vuelvo a guardar en Fk_1 para no hacer otra variable temporal
+    err_propagate(retval);
+    retval = uquad_mat_add(P_,Fk_1,kalman_io_data->Q);
     err_propagate(retval);
 
-    retval = uquad_mat_set_subm(kalman_io_data->z, 3, 0, data->acc);
+    // Update
+    retval = h(hx, kalman_io_data);
     err_propagate(retval);
-
-    retval = uquad_mat_set_subm(kalman_io_data->z, 6, 0, data->gyro);
+    retval =  uquad_mat_sub(yk, kalman_io_data -> z , hx);
     err_propagate(retval);
-
-    kalman_io_data->z->m_full[9] = data->alt;
-
-    // Use C timer instead of IMU timer, don't use this
-    //    kalman_io_data->T = data->T_us/1000000;
-    kalman_io_data->T = T/1000000;
+    retval = uquad_mat_prod(HP_,H,P_);
+    err_propagate(retval);
+    retval = uquad_mat_transpose(HT,H);
+    err_propagate(retval);
+    retval = uquad_mat_prod(HP_H,HP_,HT);
+    err_propagate(retval);
+    retval = uquad_mat_add(Sk,HP_H,kalman_io_data -> R); // Sk
+    err_propagate(retval);
+    retval = uquad_mat_inv(Sk_1,Sk,NULL,NULL);
+    err_propagate(retval);
+    retval = uquad_mat_prod(P_HT,P_,HT);
+    err_propagate(retval);
+    retval = uquad_mat_prod(Kk,P_HT,Sk_1);
+    err_propagate(retval);
+    retval = uquad_mat_prod(Kkyk,Kk,yk);
+    err_propagate(retval);
+    retval = uquad_mat_add(kalman_io_data->x_hat, kalman_io_data->x_, Kkyk);
+    err_propagate(retval);
+    retval =  uquad_mat_eye(I);
+    err_propagate(retval);
+    retval = uquad_mat_prod(KkH, Kk, H);
+    err_propagate(retval);
+    retval = uquad_mat_sub(IKH,I,KkH);
+    err_propagate(retval);
+    retval = uquad_mat_prod(kalman_io_data->P, IKH, P_);
+    err_propagate(retval);
 
     return ERROR_OK;
 }

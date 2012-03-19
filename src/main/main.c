@@ -132,7 +132,6 @@ void slow_land(void)
 }
 
 void uquad_sig_handler(int signal_num){
-    int ret = ERROR_OK;
     err_log_num("Caught signal:",signal_num);
     quit();
 }
@@ -260,7 +259,7 @@ int main(int argc, char *argv[]){
     gettimeofday(&tv_last_kalman,NULL);
     int count_err = 0, count_ok = FIXED;
     retval = ERROR_OK;
-    poll_n_read:
+    //    poll_n_read:
     while(1){
 	if(!imu_update && retval != ERROR_OK)
 	{
@@ -294,13 +293,14 @@ int main(int argc, char *argv[]){
 	    retval = imu_comm_read(imu);
 	    if(retval != ERROR_OK)
 	    {
+		err_log("imu_comm_read() no me hizo feliz!");
 		imu_update = false;
 		continue;
 	    }
 
 	    /// Get new unread data
 	    imu_update = true;
-	    retval = imu_comm_get_avg_unread(imu,&imu_data);
+	    //TODO restore	    retval = imu_comm_get_avg_unread(imu,&imu_data);
 	    //	    retval = imu_comm_get_data_latest(imu,&imu_data);
 	    //	    log_n_continue(retval,"IMU did not have new data!");
 	    if(runs < IMU_AVG_COUNT)
@@ -313,12 +313,17 @@ int main(int argc, char *argv[]){
 	    log_n_continue(retval,"IMU did not have new avg!");
 
 	    gettimeofday(&tv_tmp,NULL);
-	    uquad_timeval_substract(&tv_diff,tv_tmp,tv_last_kalman);
+	    retval = uquad_timeval_substract(&tv_diff,tv_tmp,tv_last_kalman);
+	    if(retval < 0)
+		printf("Conchuda!");
 	    gettimeofday(&tv_last_kalman,NULL);
+	    printf("%ld.%06ld\t%ld\n", tv_last_kalman.tv_sec, tv_last_kalman.tv_usec,tv_diff.tv_usec);
+	    continue;//TODO remove
+
+
 	    /// Get new state estimation
 	    retval = uquad_kalman(kalman, mot->w_curr, &imu_data, (double)tv_diff.tv_usec);
 	    log_n_continue(retval,"Kalman update failed");
-	    printf("%ld.%06ld\t%ld\n", tv_last_kalman.tv_sec, tv_last_kalman.tv_usec,tv_diff.tv_usec);
 
 	    /// Get current set point
 	    retval = pp_update_setpoint(pp, kalman->x_hat);
