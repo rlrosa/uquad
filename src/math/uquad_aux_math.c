@@ -28,8 +28,8 @@
 #include "transpose_matrix.c"
 #include "transpose_square_matrix.c"
 #include "equilibrate_matrix.c"
-#include "hessenberg_orthog.c"
-#include "qr_hessenberg_matrix.c"
+//#include "hessenberg_orthog.c"
+//#include "qr_hessenberg_matrix.c"
 //#include "doolittle.c"
 //#include "doolittle_pivot.c"
 
@@ -641,124 +641,124 @@ int uquad_mat_dot_product(uquad_mat_t *C, uquad_mat_t *A, uquad_mat_t *B)
     return ERROR_OK;
 }
 
-/** Returns the eigenvectors and eigenvalues of a nxn matrix
-*/
-int uquad_mat_eig(uquad_mat_t *H, uquad_mat_t *S, double eigen_real[], double eigen_imag[], int n )
+
+
+int uquad_mat_exp(uquad_mat_t *expA, uquad_mat_t *A)
 {
-    int i;
-    int j;
-    int max_iter = 1000;
-    uquad_bool_t complex_eigv;
-    if (H == NULL || S == NULL)
+    if(A == NULL)
     {
-	    err_check(ERROR_NULL_POINTER, "Cannot load, must allocate memory previously.");
+	err_check(ERROR_NULL_POINTER, "Cannot load, must allocate memory previously.");
     }
-    if ((H->r != n )||(H->c != n)||(S->r != n )||(S->c != n))
+    if(A->r !=A->c)
     {
-	err_check(ERROR_MATH_MAT_DIM,"H dimensions are not consistent");
+	err_check(ERROR_MATH_MAT_DIM,"A is not a square matrix");
     }
+
+    int i=1;
+    uquad_mat_t *aux0 = NULL;
+    uquad_mat_t *aux1 = NULL;
+    uquad_mat_t *aux2 = NULL;
+    double factor=1;
+    int n=A->r;
+    double norm = 1;
     
-    Hessenberg_Form_Orthogonal(H->m_full,S->m_full,n);
-    //Identity_Matrix(S->m_full,n);
-    QR_Hessenberg_Matrix( H->m_full,S->m_full,eigen_real,eigen_imag,n, max_iter);
+    aux0 = uquad_mat_alloc(n,n);   //aux0 is used to compute A^k in every step
+    aux1 = uquad_mat_alloc(n,n);   //aux1 is used to compare the exponential matrix in k                                       step with the exponential matrix in the k+1 step
+    aux2 = uquad_mat_alloc(n,n);   //aux2 is for general purpose;
+
+
+    uquad_mat_eye(expA);
+    uquad_mat_eye(aux0);
+    //    uquad_mat_copy(aux0,A);
+    //uquad_mat_sub(aux1,aux0,expA);
+    //    uquad_mat_zeros(aux1
+    //norm = uquad_mat_norm(aux1);
+
+
+    while (norm > 1e-5)
+	{
+	    //Set aux1=expA 
+	    uquad_mat_copy(aux1,expA); // save the value of expA in k step
+	    
+	    //Performs A^k
+	    uquad_mat_prod(aux2,aux0,A);
+	    uquad_mat_copy(aux0,aux2);
+	    
+	    //Adds A^k/k! to expA
+	    uquad_mat_scalar_div(aux2,aux2,factor);
+	    uquad_mat_add(expA,expA,aux2);
+	    
+	    i++;
+	    factor*=i;
+	    
+	    //Performs the norm of expAk-expA(k+1)
+	    uquad_mat_sub(aux2,expA,aux1);
+	    norm =  uquad_mat_norm(aux2);
+	}
+    
    
-    //S matrix is not usefull in the way that is calculated. We inverse the order of the rows.
-    uquad_mat_mirror_rows(H,S,n);
-    for (i= 0; i<n;i++)
-    {
-	complex_eigv|=(eigen_imag[i]==0);
-	//TODO Verificar este error
-    }
+    //Cleaning
+    
+    uquad_mat_free(aux0);
+    uquad_mat_free(aux1);
+    uquad_mat_free(aux2);      
+    
+
     return ERROR_OK;
 }
 
-/**From a nxn matrix, it's eingenvalues and eigenvectors returns exp(A);
- *Exponential matrix is computed using the cannonical form of A
+
+/**Performs the euclidean norm of a matrix
+ **sqrt(sum(a[0]*a[0]+a[1]*a[1]...)
  */
-int uquad_mat_exp(uquad_mat_t *expA, uquad_mat_t *A,uquad_mat_t *H, double eigen_real[], int n)
+double uquad_mat_norm(uquad_mat_t *A)
 {
+    
+    if(A == NULL)
+    {
+	err_check(ERROR_NULL_POINTER, "Cannot load, must allocate memory previously.");
+    }
     int i;
-    int k = 0;
-    int scalar = 1;
-    uquad_bool_t is_zero = false;
-    uquad_mat_t* Ht = NULL;
-    uquad_mat_t* aux0 = NULL;
-    uquad_mat_t* aux1 = NULL;
-    double diag[n];
-    if (H == NULL || A == NULL)
+    int n = A->c;
+    double norm=0;
+    for (i=0;i<n*n;i++)
     {
-	    err_check(ERROR_NULL_POINTER, "Cannot load, must allocate memory previously.");
+	norm+=A->m_full[i]*A->m_full[i];
     }
-    if ((H->r != n )||(H->c != n)||(A->r != n )||(A->c != n))
-    {
-	err_check(ERROR_MATH_MAT_DIM,"H dimensions are not consistent");
-    }
-    
-    aux0 = uquad_mat_alloc(n,n);
-    aux1 = uquad_mat_alloc(n,n);
-    Ht =uquad_mat_alloc(n,n);
 
-    uquad_mat_transpose(Ht,H);
-    
-    uquad_mat_prod(aux0, A,H);
-    uquad_mat_prod(aux1,Ht,aux0); // Canonical form
+    norm=sqrt(norm);
+    return norm;
+}
 
-    //Setting exp(eigv) in expA diagonal
-    uquad_mat_get_diag(diag,aux1,n);
-    uquad_mat_diag(expA,diag);
-
-    uquad_mat_sub(aux0,aux1,expA);
-    uquad_mat_copy(aux1,aux0);
-    /**Beeing diff= (canonical form-expA) whilee 1/(n!)diff^n is not zero.
-     *We perform sum(1/(n!)diff^n)
-     */
-
+/* Performs the integral of A^t for ti<t<tf with an integration step of step. */
+/* The result is returned on B matrix */
+int uquad_mat_int(uquad_mat_t *B, uquad_mat_t *A, double ti, double tf, double step)
+{
    
-    do 
-    {    //Verifies that all the elements of the matrix are zero.
-	   for(i=0;i<n*n-1;i++)
-	   {
-	       is_zero|=(aux1->m_full[i]==0);
-	   }
-	   if(!is_zero)
-	  {   
-	      //if the matrix is different from the null matrix we compute (1/n!)diff^n
-	      uquad_mat_prod(aux1,aux1,aux0);
-	      if (k!=0)
-	      {
-		  scalar=scalar*k;
-		  uquad_mat_scalar_div(aux1,aux1,scalar);
+    int i;
+    double t=ti;
+    uquad_mat_t* aux0;
+    
+    uquad_mat_zeros(B);
+    aux0 = uquad_mat_alloc(A->r,A->c);
 
-	      }
-	      
-	      uquad_mat_add(expA,expA,aux1);
-	      uquad_mat_scalar_mul(aux1,aux1,scalar);
-	      is_zero&=0;
-	      
-	  }
-    }while (!is_zero);
-
-    uquad_mat_prod(expA, expA,Ht);
-    uquad_mat_prod(expA,H,expA);
+    while(t<tf)
+    {
+	for(i=1;i<A->r*A->c;i++)
+	{
+	    aux0->m_full[i] = exp(t*log(A->m_full[i]));
+	}
+	t+=step;
+	uquad_mat_add(B,B,aux0);
+	uquad_mat_scalar_mul(B,B,step);
+    }
 
     uquad_mat_free(aux0);
-    uquad_mat_free(aux1);
-    uquad_mat_free(Ht);
+    return ERROR_OK;
 }
 
-int uquad_mat_mirror_rows(uquad_mat_t *H, uquad_mat_t *S,int n)
-{
-    int i;
-    int j;
-    for(i=0;i<n;i++)
-    {
-	for(j=0;j<n;j++)
-	{
-	    H->m[i][j]=S->m[n-1-i][j];
-	}
-    }
 
-}
+
 /** 
  * Will load matrix from text file.
  * Will ignore spaces, end of lines, tabs, etc.
