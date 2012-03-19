@@ -6,7 +6,7 @@
 #include <uquad_aux_math.h>
 #include <path_planner.h>
 
-typedef struct control{
+typedef struct ctrl{
     uquad_mat_t *K;
 }ctrl_t;
 
