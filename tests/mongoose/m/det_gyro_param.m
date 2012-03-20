@@ -1,15 +1,15 @@
-global am at
-
 close all
 clear all
 % clc
+
+global wm wt
 
 [archivos,N]=cargo_nombres_gyro();
 wm=zeros(3,N);
 wt=zeros(3,N);
 for i=1:N
     [a,w]=mong_read(archivos{i},0);
-    wm(:,i)=pi/180*[mean(w(:,1)); mean(w(:,2));mean(w(:,3))];
+    wm(:,i)=[mean(w(:,1)); mean(w(:,2));mean(w(:,3))];
     if strcmp(archivos{i}(12:13),'v1');
         veloc=num2str(2*pi*2.2433);
     elseif strcmp(archivos{i}(12:13),'v2');            
@@ -21,7 +21,7 @@ for i=1:N
     else
         fprintf('\nBad name: det_gyro param - linea 22\n');
     end
-    wt(:,i)=gyro_teo(archivos{i}(11),veloc,strcmp(archivos{i}(12:13),'v2'),archivos{i}(15:16),~strcmp(archivos{i}(12:13),'v3'));  
+    wt(:,i)=180/pi*gyro_teo(archivos{i}(11),veloc,strcmp(archivos{i}(12:13),'v2'),archivos{i}(15:16),~strcmp(archivos{i}(12:13),'v3'));  
 end
 
 
@@ -40,9 +40,9 @@ end
 
 x0=[1 1 1 0 0 0 0 0 0 0 0 0];
 
-[X,RESNORM,RESIDUAL,EXITFLAG]=lsqnonlin(@gyro_cost,x0,[],[],optimset('MaxFunEvals',10000,'MaxIter',10000));
+[X,RESNORM,RESIDUAL,EXITFLAG]=lsqnonlin(@gyro_cost,x0,[],[],optimset('MaxFunEvals',100000,'MaxIter',100000));
 
-u=mean(RESIDUAL)
+u=mean(abs(RESIDUAL))
 %sigma=sqrt(RESNORM/(length(a(1,:))-1));
 sigma=std(RESIDUAL)
 

@@ -1,4 +1,4 @@
-function f = temp_acc_cost(x)
+function f = temp_acc_cost_2(x)
 
 crud = evalin('base','a_crudas');
 teo  = evalin('base','a_teoricos');
@@ -25,6 +25,5 @@ b=[A.X(4) A.X(5) A.X(6)]';
 
 f=zeros(length(crud(:,1)),1);
 for i=1:length(crud(:,1))
-%     f(3*i-2:3*i,1)=teo(i,:)'- (K*(1-x(7)*(t(i)-to)))^-1*(crud(i,:)'-b*(1+x(8)*(t(i)-to)));
-    f(3*i-2:3*i,1)=teo(i,:)'- (K*(1+x(1)*(t(i)-to)))^-1*(crud(i,:)'-b*(1+x(2)*(t(i)-to)));
+    f(3*i-2:3*i,1) = teo(i,:)'- (K*(1+x(1)*(t(i)-to)))^-1*(crud(i,:)'-b*(1+x(2)*(t(i)-to)));
 end

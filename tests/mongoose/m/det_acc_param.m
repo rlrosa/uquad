@@ -71,7 +71,7 @@ x0=[1/(3.9e-3*g) 1/(3.9e-3*g) 1/(3.9e-3*g) 0 0 0 0 0 0 0 0 0];
 
 [X,RESNORM,RESIDUAL,EXITFLAG]=lsqnonlin(@acc_cost,x0,[],[],optimset('MaxFunEvals',10000));
 
-u=mean(RESIDUAL)
+u=mean((RESIDUAL))
 %sigma=sqrt(RESNORM/(length(a(1,:))-1));
 sigma=std(RESIDUAL)
 
