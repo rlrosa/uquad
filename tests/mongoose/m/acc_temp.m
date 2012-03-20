@@ -82,7 +82,7 @@ t_posta = str2double(D{1}(index(orden)+1:index(orden+1)-1));
 
 %% Ajuste de temperatura todos los ejes
     
-global a_crudas a_teoricos temperaturas
+global a_crudas a_teoricos temperaturas to
 
 avr=10;
 a_crudas     = [mean(vec2mat(a(:,1),avr),2) mean(vec2mat(a(:,2),avr),2)...
@@ -92,7 +92,7 @@ a_teoricos   = [zeros(N,1) zeros(N,1) -9.81*ones(N,1)];
 temperaturas = mean(vec2mat(t_imu,avr),2);
 
 % AJUSTE LINEAL
-x0_lin=[1.1 1.1];
+x0_lin=[.5 .5];
 [param,RESNORM_lin,RESIDUAL_lin,EXITFLAG_lin]=lsqnonlin...
     (@temp_acc_cost,x0_lin,[],[],optimset('MaxFunEvals',10000));
 
@@ -106,8 +106,8 @@ x0_lin=[1.1 1.1];
 %% Convierto
 
 A    = load('acc','X','T_0');
-to   = A.T_0;
-% to = 23;
+% to   = A.T_0;
+to = 20;
 
 K=[A.X(1) 0 0;
     0 A.X(2) 0;
@@ -122,14 +122,102 @@ b=[A.X(4) A.X(5) A.X(6)]';
 % CON EL LINEAL
 aconv_temp_lin=zeros(size(a));
 for i=1:length(a(:,1))
-    aux = (K*(1-param(1)*(t_imu(i)-to)))^-1 * (a(i,:)'-b*(1+param(2)*(t_imu(i)-to)));
+    aux = (K*(1+param(1)*(t_imu(i)-to)))^-1 * (a(i,:)'-b*(1+param(2)*(t_imu(i)-to)));
 %     aux=T*(((1+alpha_lin*(t_imu(i)-to))*K)^(-1))*(a(i,:)'-b);
     aconv_temp_lin(i,:)=aux';
 end
 
 break
+%% Pruebas
+
+k = 3;
+
+figure 
+    plot(t_imu,a,'+')
+    hold on
+    a_avg1=moving_avg(a(:,1),20);
+    a_avg2=moving_avg(a(:,2),20);
+    a_avg3=moving_avg(a(:,3),20);
+    a_avg = [a_avg1 a_avg2 a_avg3];
+    plot(t_imu,a_avg,'*')
+    title('a contra temperatura')
 
 %%
+
+
+aconv_avg1=moving_avg(aconv(:,1),20);
+aconv_avg2=moving_avg(aconv(:,2),20);
+aconv_avg3=moving_avg(aconv(:,3),20);
+aconv_avg = [aconv_avg1 aconv_avg2 aconv_avg3];
+
+figure
+    plot(t_imu,aconv,'+')
+    hold on
+    plot(t_imu,aconv_avg,'g*')
+    title('aconv(z) contra temperatura')
+
+    
+    
+%%
+    
+t_prueba = (min(t_imu):(max(t_imu)-min(t_imu))/(length(a(:,1))-1):max(t_imu));
+Gox = A.X(1);
+box = A.X(4);
+Goy = A.X(2);
+boy = A.X(5);
+Goz = A.X(3);
+boz = A.X(6);
+
+
+alpha = .0025;
+
+to = 20;
+% to = A.T_0;
+
+figure
+    plot(t_imu,aconv_avg(:,3),'g*')
+    hold on
+%     plot(moving_avg(t_imu,20),moving_avg(((Gox*(1+alpha*(t_imu - to))).^-1.*(a(:,1)-box)),20),'*');
+%     plot(moving_avg(t_imu,20),moving_avg(((Goy*(1+alpha*(t_imu - to))).^-1.*(a(:,2)-boy)),20),'*r');
+    plot(moving_avg(t_imu,20),moving_avg(((Goz*(1+alpha*(t_imu - to))).^-1.*(a(:,3)-boz)),20),'*');
+%     plot(t_prueba,Go*(1-alpha*(t_prueba' - to))+bo);
+
+%%
+
+for alpha = .001:.001:.009
+    plot(t_imu,moving_avg(((Goz*(1+alpha*(t_imu - to))).^-1.*(a(:,3)-boz)),20),'*');
+end
+
+
+%%
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+break
 
 % CON EL LINEAL
 aconv_temp_lin=zeros(size(a));

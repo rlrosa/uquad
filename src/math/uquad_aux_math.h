@@ -94,8 +94,9 @@ int uquad_mat_get_subm(uquad_mat_t *S, int r, int c, uquad_mat_t *A);
 int uquad_mat_set_subm(uquad_mat_t *A, int r, int c, uquad_mat_t *S);
 int uquad_mat_copy(uquad_mat_t *dest, uquad_mat_t *src);
 
-int uquad_mat_eig(uquad_mat_t *H, uquad_mat_t *S, double eigen_real[],double eigen_imag[],int n);
-int uquad_mat_exp(uquad_mat_t *expA, uquad_mat_t *A,uquad_mat_t *H, double eigen_real[],int n);
+int uquad_mat_exp(uquad_mat_t *expA, uquad_mat_t *A);
+double uquad_mat_norm( uquad_mat_t *A);
+int uquad_mat_int(uquad_mat_t *B, uquad_mat_t *A, double ti, double tf, double step);
 int uquad_mat_mirror_rows(uquad_mat_t *H, uquad_mat_t *S, int n);
 
 uquad_mat_t *uquad_mat_alloc(int r, int c);

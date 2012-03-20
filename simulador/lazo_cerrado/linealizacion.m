@@ -43,7 +43,9 @@ if modo=='hov'
 
     %Por ahora hay dos opciones para trabajar. No se todavía cual es mejor
     if lqrm==0
-        Qp=diag([1e4 1e4 1e4 1 1 1 1e4 1e4 1e4 1 1 1]);
+        Qp=diag([1e4 1e4 1e4 1 1 1 1e4 1e4 1e4 1 1 1]); 
+        
+        
         Rp=diag([1 1 1 1]);
         [K,S,E]=lqr(Ah,Bh,Qp,Rp);
 

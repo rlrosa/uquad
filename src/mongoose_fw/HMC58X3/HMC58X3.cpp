@@ -50,7 +50,7 @@ void HMC58X3::init(bool setmode) {
     setMode(0);
   }
   
-  writeReg(HMC58X3_R_CONFA, 0x70); // Set data output rate to 15Hz
+  writeReg(HMC58X3_R_CONFA, 0x78); // Set data output rate to 75Hz (default 15Hz - 0x70)
   writeReg(HMC58X3_R_CONFB, 0xA0); // Set gain
   writeReg(HMC58X3_R_MODE, 0x00);
 }
