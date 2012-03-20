@@ -14,12 +14,28 @@
 
 #define UQUAD_HOW_TO "./main <imu_device>"
 #define MAX_ERRORS 20
+#define STARTUP_RUNS 200
 #define FIXED 3
+
+#if DEBUG
+#define TIMING 0
+#define TIMING_KALMAN 0
+#define TIMING_IMU 0
+#define TIMING_IO 0
 #define LOG_W 1
+#define LOG_W_CTRL 1
+#define DEBUG_X_HAT 1
+#define DEBUG_KALMAN_INPUT 1
+#endif
 #define LOG_W_NAME "w.log"
+#define LOG_W_CTRL_NAME "w_ctrl.log"
 
-#define MOT_COMMAND_T_US MOT_UPDATE_MAX_US
-
+/**
+ * Frequency at which motor controller is updated
+ * Must be at least MOT_UPDATE_MAX_US
+ *
+ */
+#define MOT_UPDATE_T MOT_UPDATE_MAX_US
 
 /// Global structs
 static imu_t *imu;
@@ -38,6 +54,16 @@ imu_data_t imu_data;
 #if LOG_W
 FILE *log_w = NULL;
 #endif //LOG_W
+#if LOG_W
+FILE *log_w_ctrl = NULL;
+#endif //LOG_W
+#if DEBUG_X_HAT
+FILE *log_x_hat = NULL;
+uquad_mat_t *x_hat_T = NULL;
+#endif //DEBUG_X_HAT
+#if DEBUG_KALMAN_INPUT
+FILE *log_kalman_in = NULL;
+#endif //DEBUG_KALMAN_INPUT
 #endif //DEBUG
 
 /** 
@@ -91,6 +117,19 @@ void quit()
     if(log_w != NULL)
 	fclose(log_w);
 #endif //LOG_W
+#if LOG_W_CTRL
+    if(log_w_ctrl != NULL)
+	fclose(log_w_ctrl);
+#endif //LOG_W_CTRL
+#if DEBUG_X_HAT
+    if(log_x_hat != NULL)
+	fclose(log_x_hat);
+    uquad_mat_free(x_hat_T);
+#endif //DEBUG_X_HAT
+#if DEBUG_KALMAN_INPUT
+    if(log_kalman_in != NULL)
+	fclose(log_kalman_in);
+#endif
 #endif //DEBUG
 
     //TODO deinit everything?
@@ -118,7 +157,7 @@ void slow_land(void)
 	    sleep_ms(RETRY_IDLE_WAIT_MS);
     }
     sleep_ms(IDLE_TIME_MS);
-    for(dtmp = MOT_W_HOVER;dtmp > MOT_W_IDLE;dtmp -= SLOW_LAND_STEP_W)
+    for(dtmp = MOT_W_HOVER;dtmp > MOT_IDLE_W;dtmp -= SLOW_LAND_STEP_W)
     {
 	retval = mot_set_vel_rads(mot, w);
 	if(retval != ERROR_OK)
@@ -203,7 +242,7 @@ int main(int argc, char *argv[]){
     w = uquad_mat_alloc(4,1);        // Current angular speed [rad/s]
     wt = uquad_mat_alloc(1,4);        // tranpose(w)
     for(i=0; i < 4; ++i)
-	w->m_full[i] = MOT_W_IDLE;
+	w->m_full[i] = MOT_IDLE_W;
     x = uquad_mat_alloc(1,12);   // State vector
     imu_data.acc = uquad_mat_alloc(3,1);
     imu_data.gyro = uquad_mat_alloc(3,1);
@@ -222,10 +261,40 @@ int main(int argc, char *argv[]){
     log_w = fopen(LOG_W_NAME,"w");
     if(log_w == NULL)
     {
-	err_log("Failed to open w_log!");
+	err_log("Failed to open log_w!");
 	quit();
     }
 #endif //LOG_W
+#if LOG_W_CTRL
+    log_w_ctrl = fopen(LOG_W_CTRL_NAME,"w");
+    if(log_w_ctrl == NULL)
+    {
+	err_log("Failed to open log_w_ctrl!");
+	quit();
+    }
+#endif //LOG_W_CTRL
+#if DEBUG_X_HAT
+    log_x_hat = fopen("x_hat.log","w");
+    if(log_x_hat == NULL)
+    {
+	err_log("Failed to open x_hat!");
+	quit();
+    }
+    x_hat_T = uquad_mat_alloc(1,12);
+    if(x_hat_T == NULL)
+    {
+	err_log("Failed alloc x_hat_T!");
+	quit();
+    }
+#endif //DEBUG_X_HAT
+#if DEBUG_KALMAN_INPUT
+    log_kalman_in = fopen("kalman_in.log","w");
+    if(log_kalman_in == NULL)
+    {
+	err_log("Failed open kalman_in log!");
+	quit();
+    }
+#endif
 #endif //DEBUG
 
     /// -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
@@ -250,13 +319,32 @@ int main(int argc, char *argv[]){
     /// -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
     /// Poll n read loop
     /// -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-    uquad_bool_t read = false,write = false, imu_update = false;
+    uquad_bool_t
+	read = false,
+	write = false,
+	imu_update = false;
     int runs = 0;
     uquad_bool_t reg_stdin = true;
     unsigned char tmp_buff[2];
-    struct timeval tv_last_m_cmd, tv_last_kalman, tv_tmp, tv_diff;
-    gettimeofday(&tv_last_m_cmd,NULL);
+    struct timeval
+	tv_tmp, tv_diff,
+	tv_last_m_cmd,
+	tv_last_kalman;
     gettimeofday(&tv_last_kalman,NULL);
+#if TIMING
+    struct timeval
+	tv_start,
+	tv_pgm,
+	tv_last_io_ok;
+    gettimeofday(&tv_last_m_cmd,NULL);
+    gettimeofday(&tv_last_io_ok,NULL);
+    gettimeofday(&tv_pgm,NULL);
+    gettimeofday(&tv_start,NULL);
+#endif
+#if TIMING && TIMING_IMU
+    struct timeval tv_last_imu_read, tv_imu_start, tv_imu_diff;
+    gettimeofday(&tv_last_imu_read,NULL);
+#endif
     int count_err = 0, count_ok = FIXED;
     retval = ERROR_OK;
     //    poll_n_read:
@@ -280,51 +368,101 @@ int main(int argc, char *argv[]){
 	    else if(count_err > 0)
 	    {
 		// forget abour error
-		err_log_num("Recovered! Errors:",count_err);
+		//		err_log_num("Recovered! Errors:",count_err);//TODO restore!
 		count_err = 0;
 	    }
 	}
+	imu_update = false;
 	retval = io_poll(io);
 	quit_log_if(retval,"io_poll() error");
 	retval = io_dev_ready(io,imu_fds,&read,&write);
 	quit_log_if(retval,"io_dev_ready() error");
 	if(read)
 	{
-	    retval = imu_comm_read(imu);
-	    if(retval != ERROR_OK)
+#if TIMING && TIMING_IO
+	    gettimeofday(&tv_tmp,NULL);
+	    retval = uquad_timeval_substract(&tv_diff,tv_tmp,tv_last_io_ok);
+	    if(retval < 0)
 	    {
-		err_log("imu_comm_read() no me hizo feliz!");
-		imu_update = false;
+		err_log("Timing error!");
+	    }
+	    gettimeofday(&tv_last_io_ok,NULL);
+	    gettimeofday(&tv_pgm,NULL);
+	    printf("IO:\t%ld\t\t%ld.%06ld\n", tv_diff.tv_usec,
+		   tv_pgm.tv_sec - tv_start.tv_sec,
+		   tv_pgm.tv_usec);
+#endif
+#if TIMING && TIMING_IMU
+	    gettimeofday(&tv_imu_start,NULL);
+#endif
+
+	    retval = imu_comm_read(imu, &imu_update);
+	    if(!imu_update)
+	    {
 		continue;
 	    }
 
-	    /// Get new unread data
-	    imu_update = true;
-	    //TODO restore	    retval = imu_comm_get_avg_unread(imu,&imu_data);
-	    //	    retval = imu_comm_get_data_latest(imu,&imu_data);
-	    //	    log_n_continue(retval,"IMU did not have new data!");
-	    if(runs < IMU_AVG_COUNT)
+#if TIMING && TIMING_IMU
+	    gettimeofday(&tv_tmp,NULL);
+	    retval = uquad_timeval_substract(&tv_diff,tv_tmp,tv_last_imu_read);
+	    if(retval < 0)
 	    {
-		// we don't care about errors, not enough samples yet.
+		err_log("Timing error!");
+	    }
+	    retval = uquad_timeval_substract(&tv_imu_diff,tv_tmp,tv_imu_start);
+	    if(retval < 0)
+	    {
+		err_log("Timing error!");
+	    }
+	    gettimeofday(&tv_last_imu_read,NULL);
+	    gettimeofday(&tv_pgm,NULL);
+	    printf("IMU:\t%ld\tDELAY:\t%ld\t\t%ld.%06ld\n",
+		   tv_diff.tv_usec, tv_imu_diff.tv_usec,
+		   tv_pgm.tv_sec - tv_start.tv_sec,
+		   tv_pgm.tv_usec);
+#endif
+
+	    if(!imu_comm_avg_ready(imu) || runs < STARTUP_RUNS)
+	    {
+		// not enough samples yet.
 		runs++;
 		continue;
 	    }
-	    // avg should be ready, so complain if it isn't
+	    /// Get new unread data
+	    retval = imu_comm_get_avg_unread(imu,&imu_data);
 	    log_n_continue(retval,"IMU did not have new avg!");
 
 	    gettimeofday(&tv_tmp,NULL);
 	    retval = uquad_timeval_substract(&tv_diff,tv_tmp,tv_last_kalman);
 	    if(retval < 0)
-		printf("Conchuda!");
-	    gettimeofday(&tv_last_kalman,NULL);
-	    printf("%ld.%06ld\t%ld\n", tv_last_kalman.tv_sec, tv_last_kalman.tv_usec,tv_diff.tv_usec);
-	    continue;//TODO remove
-
-
+	    {
+		err_log("Timing error!");
+	    }
 	    /// Get new state estimation
-	    retval = uquad_kalman(kalman, mot->w_curr, &imu_data, (double)tv_diff.tv_usec);
+	    if(runs == STARTUP_RUNS)
+		// the first time here, timing will not make sense, so use IMU
+		tv_diff.tv_usec = imu_data.T_us;
+	    retval = uquad_kalman(kalman, mot->w_curr, &imu_data,tv_diff.tv_usec);
 	    log_n_continue(retval,"Kalman update failed");
+	    /// Mark time when we leave Kalman
+	    gettimeofday(&tv_last_kalman,NULL);
+#if TIMING && TIMING_KALMAN
+	    gettimeofday(&tv_pgm,NULL);
+	    printf("KALMAN:\t%ld\t\t%ld.%06ld\n", tv_diff.tv_usec,
+		   tv_pgm.tv_sec - tv_start.tv_sec,
+		   tv_pgm.tv_usec);
+#endif
 
+#if DEBUG
+#if DEBUG_KALMAN_INPUT
+	    fprintf(log_kalman_in, "%lu\t",tv_diff.tv_usec);
+	    retval = imu_comm_print_data(&imu_data, log_kalman_in);
+#endif //DEBUG_KALMAN_INPUT
+#if DEBUG_X_HAT
+	    retval = uquad_mat_transpose(x_hat_T, kalman->x_hat);
+	    uquad_mat_dump(x_hat_T,log_x_hat);
+#endif //DEBUG_X_HAT
+#endif //DEBUG
 	    /// Get current set point
 	    retval = pp_update_setpoint(pp, kalman->x_hat);
 	    log_n_continue(retval,"Kalman update failed");
@@ -332,10 +470,14 @@ int main(int argc, char *argv[]){
 	    /// Get control command
 	    retval = control(ctrl, w, kalman->x_hat, pp->sp);
 	    log_n_continue(retval,"Control failed!");
+#if DEBUG && LOG_W_CTRL
+	    retval = uquad_mat_transpose(wt,w);
+	    uquad_mat_dump(wt,log_w_ctrl);
+#endif
 
 	    gettimeofday(&tv_tmp,NULL);
 	    uquad_timeval_substract(&tv_diff,tv_tmp,tv_last_m_cmd);	    
-	    if (tv_diff.tv_usec > MOT_COMMAND_T_US)
+	    if (tv_diff.tv_usec > MOT_UPDATE_T)
 	    {
 		gettimeofday(&tv_last_m_cmd,NULL);
 
@@ -344,7 +486,7 @@ int main(int argc, char *argv[]){
 		log_n_continue(retval,"Failed to set motor speed!");
 #if DEBUG && LOG_W
 		fprintf(log_w, "%ld\t", tv_diff.tv_usec);
-		retval = uquad_mat_transpose(wt,w);
+		retval = uquad_mat_transpose(wt,mot->w_curr);
 		uquad_mat_dump(wt,log_w);
 #endif
 	    }
