@@ -518,7 +518,6 @@ static int imu_comm_get_sync_init(imu_t *imu){
 	    else
 	    {
 		// wrong init char
-		return ERROR_READ_SYNC;
 		err_check(ERROR_READ_SYNC,"Wrong sync init char!");
 	    }
 	}
@@ -869,7 +868,9 @@ typedef enum read_status{
     STATE_COUNT
 } read_status_t;
 
+#if TIMING_IMU
 static struct timeval tv_init, tv_end, tv_diff;
+#endif
 /** 
  *Attempts to sync with IMU, and read data.
  *
@@ -881,8 +882,8 @@ static struct timeval tv_init, tv_end, tv_diff;
 int imu_comm_read(imu_t *imu, uquad_bool_t *ready){
     int retval;
     static imu_raw_t new_frame;
-    static int buff_index = 0;
     static read_status_t status = IDLE;
+    uquad_bool_t ok;
     *ready = false;
 
     switch(status)
@@ -891,15 +892,15 @@ int imu_comm_read(imu_t *imu, uquad_bool_t *ready){
 	/// -- -- -- -- -- -- -- -- -- -- -- --
 	/// 1 - sync init
 	/// -- -- -- -- -- -- -- -- -- -- -- --
+#if TIMING_IMU
 	gettimeofday(&tv_init,NULL);//TODO testing
-
+#endif
 	// sync by getting init frame char
 	retval = imu_comm_get_sync_init(imu);
-	if(retval != ERROR_OK)//TODO remove!
-	    return ERROR_FAIL;//TODO remove!
 	err_propagate(retval);
 	status++;
 
+#if TIMING_IMU
 	gettimeofday(&tv_end,NULL);//TODO testing
 	retval = uquad_timeval_substract(&tv_diff,tv_end,tv_init);//TODO testing
 	if(retval < 0)//TODO testing
@@ -907,31 +908,29 @@ int imu_comm_read(imu_t *imu, uquad_bool_t *ready){
 	    err_check(ERROR_TIMING,"Absurd timing!");//TODO testing
 	}//TODO testing
 	printf("%ld\t", tv_diff.tv_usec);//TODO testing
+#endif
 	break;
     case INIT_SYNC_DONE:
 	/// -- -- -- -- -- -- -- -- -- -- -- --
 	/// 2 - frame
 	/// -- -- -- -- -- -- -- -- -- -- -- --
-	if(buff_index == 0)
-	    gettimeofday(&tv_init,NULL);//TODO testing
-
 	// sync worked, now get data
 #if IMU_COMM_FAKE
-	uquad_bool_t read_ok;
-	retval = check_io_locks(-1, imu->device, &read_ok, NULL);
-	if(read_ok)
+	retval = check_io_locks(-1, imu->device, &ok, NULL);
+	if(ok)
 	{
 	    retval = imu_comm_read_frame_ascii(imu, &new_frame);
 	    err_propagate(retval);
 	    status++;
 	}
 #else
-	uquad_bool_t frame_complete;
-	retval = imu_comm_read_frame_binary(imu, &new_frame, &frame_complete);
+	retval = imu_comm_read_frame_binary(imu, &new_frame, &ok);
 	err_propagate(retval);
-	if(frame_complete)
+	if(ok)
 	{
+	    // frame completed!
 	    status++;
+#if TIMING_IMU
 	    gettimeofday(&tv_end,NULL);//TODO testing
 	    retval = uquad_timeval_substract(&tv_diff,tv_end,tv_init);//TODO testing
 	    if(retval < 0)//TODO testing
@@ -939,6 +938,8 @@ int imu_comm_read(imu_t *imu, uquad_bool_t *ready){
 		err_check(ERROR_TIMING,"Absurd timing!");//TODO testing
 	    }//TODO testing
 	    printf("%ld\t", tv_diff.tv_usec);//TODO testing
+	    gettimeofday(&tv_init,NULL);//TODO testing
+#endif
 	}
 #endif
 	break;
@@ -946,7 +947,9 @@ int imu_comm_read(imu_t *imu, uquad_bool_t *ready){
 	/// -- -- -- -- -- -- -- -- -- -- -- --
 	/// 3 - sync end
 	/// -- -- -- -- -- -- -- -- -- -- -- --
+#if TIMING_IMU
 	gettimeofday(&tv_init,NULL);//TODO testing
+#endif
 
 	// verify sync by getting end of frame char
 	retval = imu_comm_get_sync_end(imu);
@@ -958,6 +961,7 @@ int imu_comm_read(imu_t *imu, uquad_bool_t *ready){
 	err_propagate(retval);
 	status++;
 
+#if TIMING_IMU
 	gettimeofday(&tv_end,NULL);//TODO testing
 	retval = uquad_timeval_substract(&tv_diff,tv_end,tv_init);//TODO testing
 	if(retval < 0)//TODO testing
@@ -965,12 +969,15 @@ int imu_comm_read(imu_t *imu, uquad_bool_t *ready){
 	    err_check(ERROR_TIMING,"Absurd timing!");//TODO testing
 	}//TODO testing
 	printf("%ld\t", tv_diff.tv_usec);//TODO testing
+#endif
 	break;
     case END_SYNC_DONE:
 	/// -- -- -- -- -- -- -- -- -- -- -- --
 	/// 4 - add
 	/// -- -- -- -- -- -- -- -- -- -- -- --
+#if TIMING_IMU
 	gettimeofday(&tv_init,NULL);//TODO testing
+#endif
 
 	if(imu_comm_get_status(imu) == IMU_COMM_STATE_CALIBRATING)
 	    // Add to calibration or to frame buff
@@ -982,6 +989,7 @@ int imu_comm_read(imu_t *imu, uquad_bool_t *ready){
 	*ready = true;
 	status = IDLE; //restart
 
+#if TIMING_IMU
 	gettimeofday(&tv_end,NULL);//TODO testing
 	retval = uquad_timeval_substract(&tv_diff,tv_end,tv_init);//TODO testing
 	if(retval < 0)//TODO testing
@@ -989,6 +997,7 @@ int imu_comm_read(imu_t *imu, uquad_bool_t *ready){
 	    err_check(ERROR_TIMING,"Absurd timing!");//TODO testing
 	}//TODO testing
 	printf("%ld\t", tv_diff.tv_usec);//TODO testing
+#endif
 	break;
     default:
 	status = IDLE;
@@ -1001,7 +1010,9 @@ int imu_comm_read(imu_t *imu, uquad_bool_t *ready){
 	/// -- -- -- -- -- -- -- -- -- -- -- --
 	/// 5 - print
 	/// -- -- -- -- -- -- -- -- -- -- -- --
+#if TIMING_IMU
 	gettimeofday(&tv_init,NULL);//TODO testing
+#endif
 #if DEBUG
 	retval = imu_comm_print_raw(&new_frame, imu->log_raw);
 	err_propagate(retval);
@@ -1010,6 +1021,7 @@ int imu_comm_read(imu_t *imu, uquad_bool_t *ready){
 	retval = imu_comm_print_data(&imu->tmp_data, imu->log_data);
 	err_propagate(retval);
 #endif //DEBUG
+#if TIMING_IMU
 	gettimeofday(&tv_end,NULL);//TODO testing
 	retval = uquad_timeval_substract(&tv_diff,tv_end,tv_init);//TODO testing
 	if(retval < 0)//TODO testing
@@ -1018,6 +1030,7 @@ int imu_comm_read(imu_t *imu, uquad_bool_t *ready){
 	}//TODO testing
 	printf("%ld\t", tv_diff.tv_usec);//TODO testing
 	printf("\n");//TODO testing
+#endif
     }
 
     return ERROR_OK;
