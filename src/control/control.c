@@ -55,7 +55,7 @@ ctrl_t *control_init(void)
 
 int control(ctrl_t *ctrl, uquad_mat_t *w, uquad_mat_t *x, set_point_t *sp)
 {
-    int retval = ERROR_OK, i;
+    int retval = ERROR_OK;
     if(ctrl == NULL || w == NULL || x == NULL || sp == NULL)
     {
 	err_check(ERROR_NULL_POINTER,"Inputs must be non NULL!");
@@ -77,15 +77,6 @@ int control(ctrl_t *ctrl, uquad_mat_t *w, uquad_mat_t *x, set_point_t *sp)
     err_propagate(retval);
     retval = uquad_mat_add(w,sp->w,w);
     err_propagate(retval);
-    for(i = 0; i < MOT_C; ++i)
-    {
-	// Threshold at max throttle
-	if(w->m_full[i] > MOT_MAX_W)
-	{
-	    err_log_num("WARN:w out of range, setting max for motor:",i);
-	    w->m_full[i] =  MOT_MAX_W;
-	}
-    }
     return ERROR_OK;
 }
 

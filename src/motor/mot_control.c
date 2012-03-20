@@ -76,10 +76,6 @@ int mot_send(uquad_mot_t *mot, double *w)
 int mot_rad2i2c(double w, int *i2c)
 {
     double w_2, w_3;
-    if(w > MAX_W)
-    {
-	err_check(ERROR_MOTOR_W,"Speed out of range!");
-    }
     w_2 = w*w;
     w_3 = w_2*w;
     *i2c = uquad_round_double2int(0.0000022118*w_3 - 0.00071258*w_2 + 0.5106*w);
@@ -100,8 +96,20 @@ int mot_set_vel_rads(uquad_mot_t *mot, uquad_mat_t *w)
 	     * cause motors to stop.
 	     *
 	     */
-	    err_check(ERROR_MOTOR_USAGE,"Use mot_stop() to stop motors!");
+	    err_log_num("WARN:w out of range, setting min for motor:",i);
+	    w->m_full[i] =  MOT_IDLE_W;
 	}
+	else if (w->m_full[i] > MOT_MAX_W)
+	{
+	    /**
+	     * Setting speed to more than MOT_MAX_W could
+	     * damage battery.
+	     *
+	     */
+	    err_log_num("WARN:w out of range, setting max for motor:",i);
+	    w->m_full[i] =  MOT_MAX_W;
+	}
+
 	retval = mot_rad2i2c(w->m_full[i],&itmp);
 	err_propagate(retval);
 	mot->i2c_target[i] = (uint8_t)itmp;
