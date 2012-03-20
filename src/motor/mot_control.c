@@ -93,8 +93,13 @@ int mot_set_vel_rads(uquad_mot_t *mot, uquad_mat_t *w)
     
     for(i=0; i < MOT_C; ++i)
     {
-	if(w->m_full[i] < 1.0)
+	if(w->m_full[i] < MOT_IDLE_W)
 	{
+	    /**
+	     * Setting speed to less than MOT_IDLE_W could
+	     * cause motors to stop.
+	     *
+	     */
 	    err_check(ERROR_MOTOR_USAGE,"Use mot_stop() to stop motors!");
 	}
 	retval = mot_rad2i2c(w->m_full[i],&itmp);
@@ -108,13 +113,13 @@ int mot_set_vel_rads(uquad_mot_t *mot, uquad_mat_t *w)
 
 int mot_set_idle(uquad_mot_t *mot)
 {
-    static double w_idle[MOT_C] = {MOT_I2C_IDLE,
-			    MOT_I2C_IDLE,
-			    MOT_I2C_IDLE,
-			    MOT_I2C_IDLE};
+    static double w_idle[MOT_C] = {MOT_IDLE_I2C,
+			    MOT_IDLE_I2C,
+			    MOT_IDLE_I2C,
+			    MOT_IDLE_I2C};
     int retval = ERROR_OK,i ;
     for (i=0; i < MOT_C; ++i)
-	mot->i2c_target[i] = MOT_I2C_IDLE;
+	mot->i2c_target[i] = MOT_IDLE_I2C;
     retval = mot_send(mot, w_idle);
     err_propagate(retval);
     sleep_ms(MOT_WAIT_STARTUP_MS);
