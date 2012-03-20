@@ -1,6 +1,7 @@
 #include "control.h"
 #include <stdlib.h>
 #include <uquad_error_codes.h>
+#include <mot_control.h>
 
 uquad_mat_t *tmp_sub_sp_x;
 uquad_mat_t *tmp_x_hat_partial;
@@ -52,13 +53,9 @@ ctrl_t *control_init(void)
     return ctrl;
 }
 
-#if DEBUG
-FILE *h_hat_partial_log = NULL;
-uquad_mat_t *h_hat_t = NULL;
-#endif
 int control(ctrl_t *ctrl, uquad_mat_t *w, uquad_mat_t *x, set_point_t *sp)
 {
-    int retval;
+    int retval = ERROR_OK, i;
     if(ctrl == NULL || w == NULL || x == NULL || sp == NULL)
     {
 	err_check(ERROR_NULL_POINTER,"Inputs must be non NULL!");
@@ -76,21 +73,19 @@ int control(ctrl_t *ctrl, uquad_mat_t *w, uquad_mat_t *x, set_point_t *sp)
     tmp_x_hat_partial->m_full[5] = tmp_sub_sp_x->m_full[10]; // wqy
     tmp_x_hat_partial->m_full[6] = tmp_sub_sp_x->m_full[11]; // wqz
 
-#if DEBUG
-    if(h_hat_partial_log == NULL)
-    {
-	h_hat_partial_log = fopen("h_partial.log","w");
-	h_hat_t = uquad_mat_alloc(1,7);
-    }
-    retval = uquad_mat_transpose(h_hat_t, tmp_x_hat_partial);
-    uquad_mat_dump(h_hat_t,h_hat_partial_log);
-#endif
-
     retval = uquad_mat_prod(w, ctrl->K, tmp_x_hat_partial);
     err_propagate(retval);
     retval = uquad_mat_add(w,sp->w,w);
     err_propagate(retval);
-
+    for(i = 0; i < MOT_C; ++i)
+    {
+	// Threshold at max throttle
+	if(w->m_full[i] > MOT_MAX_W)
+	{
+	    err_log_num("WARN:w out of range, setting max for motor:",i);
+	    w->m_full[i] =  MOT_MAX_W;
+	}
+    }
     return ERROR_OK;
 }
 
