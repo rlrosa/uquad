@@ -80,6 +80,7 @@ int main(int argc, char *argv[]){
     /// -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
     uquad_bool_t read = false,write = false;
     uquad_bool_t reg_imu = true, reg_pipe = true, reg_stdin = true;
+    uquad_bool_t imu_ready = false;
     imu_data_t imu_data;
     unsigned char tmp_buff[2];
     int counter = 0;
@@ -92,13 +93,16 @@ int main(int argc, char *argv[]){
 	    retval = io_dev_ready(io,imu_fds,&read,&write);
 	    FREE_N_DIE_IF_ERROR(retval,"io_dev_ready() error");
 	    if(read){
-		retval = imu_comm_read(imu);
-		if(retval != ERROR_OK){
-		    fprintf(stdout,"\nIMU missed frame?\n\n");
-		}else{
-		    retval = imu_comm_get_data_latest_unread(imu,&imu_data);
-		    if(retval != ERROR_OK)
-			fprintf(stdout,"\nIMU had no data!\n\n");
+		retval = imu_comm_read(imu,&imu_ready);
+		if(imu_ready)
+		{
+		    if(retval != ERROR_OK){
+			fprintf(stdout,"\nIMU missed frame?\n\n");
+		    }else{
+			retval = imu_comm_get_data_latest_unread(imu,&imu_data);
+			if(retval != ERROR_OK)
+			    fprintf(stdout,"\nIMU had no data!\n\n");
+		    }
 		}
 	    }
 	}

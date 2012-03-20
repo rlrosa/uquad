@@ -110,17 +110,22 @@ int io_get_dev(io_t * io, int fd, io_dev_t ** dev);
 int io_dev_ready(io_t * io, int fd, uquad_bool_t * read, uquad_bool_t * write);
 
 /** 
- * Individual file handling.
- * If just one device will be handled, this function can be used instead of the
- * io setup.
- * 
- * @param device 
- * @param read_ok 
- * @param write_ok 
- * 
- * @return 
+ *Checks if reading/writing will block.
+ *Writing should not be a problem, hw buffers should handle it.
+ *If attempting to read and there is no data available, we do not want to
+ *lock up the sys, that is the purpose of 'select'.
+ *
+ *Will take either a fd as argument. If fd is negative, then will get
+ *the fd from the string device.
+ *
+ *@param fd file descriptor of device attempting to read from, or < 0 if 
+ *device should be used.
+ *@param device attemping to read or write to.
+ *@param check_read if true then checks if reading locks, if false check writing.
+ *@param ready answer returned here
+ *
+ *@return error code
  */
-int check_io_locks(FILE *device, uquad_bool_t *read_ok, uquad_bool_t *write_ok);
-
+int check_io_locks(int fd, FILE *device, uquad_bool_t *read_ok, uquad_bool_t *write_ok);
 
 #endif
