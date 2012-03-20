@@ -1,23 +1,5 @@
 #include <uquad_error_codes.h> // DEBUG is defined here
-#include <uquad_types.h>
-#include <macros_misc.h>
-#include <uquad_aux_io.h>
-#include <imu_comm.h>
-#include <mot_control.h>
-#include <uquad_kalman.h>
-#include <control.h>
-#include <path_planner.h>
-//#include <uquad_gps_comm.h> //TODO add!
-
-#include <sys/signal.h> // for SIGINT and SIGQUIT
-#include <unistd.h>     // for STDIN_FILENO
-
-#define UQUAD_HOW_TO "./main <imu_device>"
-#define MAX_ERRORS 20
-#define STARTUP_RUNS 200
-#define FIXED 3
-
-#if DEBUG
+#if DEBUG // The following define will affect includes
 #define TIMING 0
 #define TIMING_KALMAN 0
 #define TIMING_IMU 0
@@ -27,6 +9,25 @@
 #define DEBUG_X_HAT 1
 #define DEBUG_KALMAN_INPUT 1
 #endif
+
+#include <uquad_types.h>
+#include <macros_misc.h>
+#include <uquad_aux_io.h>
+#include <imu_comm.h>
+#include <mot_control.h>
+#include <uquad_kalman.h>
+#include <control.h>
+#include <path_planner.h>
+#include <uquad_gps_comm.h>
+
+#include <sys/signal.h> // for SIGINT and SIGQUIT
+#include <unistd.h>     // for STDIN_FILENO
+
+#define UQUAD_HOW_TO "./main <imu_device>"
+#define MAX_ERRORS 20
+#define STARTUP_RUNS 200
+#define FIXED 3
+
 #define LOG_W_NAME "w.log"
 #define LOG_W_CTRL_NAME "w_ctrl.log"
 
@@ -44,7 +45,7 @@ static uquad_mot_t *mot;
 static io_t *io;
 static ctrl_t *ctrl;
 static path_planner_t *pp;
-//static gps_t *gps; //TODO add
+static gps_t *gps;
 /// Global var
 uquad_mat_t *w, *wt;
 uquad_mat_t *x;
@@ -86,6 +87,9 @@ void quit()
     {
 	err_log("Could not close IMU correctly!");
     }
+
+    /// GPS
+    gps_comm_deinit(gps);
 
     /// Kalman
     kalman_deinit(kalman);
@@ -210,6 +214,14 @@ int main(int argc, char *argv[]){
 	quit_log_if(ERROR_FAIL,"imu init failed!");
     }
 
+    /// GPS
+    gps = gps_comm_init();
+    if(gps == NULL)
+    {
+	err_log("WARN: GPS not available!");
+	//	quit_log_if(ERROR_FAIL,"gps init failed!");
+    }
+
     /// Kalman
     kalman = kalman_init();
     if(kalman == NULL)
@@ -306,6 +318,14 @@ int main(int argc, char *argv[]){
     quit_log_if(retval,"Failed to get imu fds!!");
     retval = io_add_dev(io,imu_fds);
     quit_log_if(retval,"Failed to add imu to dev list");
+    // gps
+    int gps_fds;
+    if(gps != NULL)
+    {
+	gps_fds = gps_comm_get_fd(gps);
+	retval = io_add_dev(io,gps_fds);
+	quit_log_if(retval,"Failed to add gps to dev list");
+    }
     // stdin
     retval = io_add_dev(io,STDIN_FILENO);
     quit_log_if(retval, "Failed to add stdin to io list");
@@ -322,15 +342,21 @@ int main(int argc, char *argv[]){
     uquad_bool_t
 	read = false,
 	write = false,
-	imu_update = false;
+	imu_update = false,
+	gps_update = false,
+	reg_stdin = true,
+	reg_gps = (gps == NULL)?false:true;
     int runs = 0;
-    uquad_bool_t reg_stdin = true;
+    int err_imu = ERROR_OK, err_gps = ERROR_OK;
     unsigned char tmp_buff[2];
     struct timeval
 	tv_tmp, tv_diff,
 	tv_last_m_cmd,
-	tv_last_kalman;
+	tv_last_kalman,
+	tv_gps_last,
+	tv_gps_diff;
     gettimeofday(&tv_last_kalman,NULL);
+    gettimeofday(&tv_gps_last,NULL);
 #if TIMING
     struct timeval
 	tv_start,
@@ -349,7 +375,10 @@ int main(int argc, char *argv[]){
     retval = ERROR_OK;
     //    poll_n_read:
     while(1){
-	if(!imu_update && retval != ERROR_OK)
+	if((runs > STARTUP_RUNS) &&
+	   (retval != ERROR_OK  ||
+	    err_imu != ERROR_OK ||
+	    err_gps != ERROR_OK))
 	{
 	    count_ok = 0;
 	    if(count_err++ > MAX_ERRORS)
@@ -372,17 +401,27 @@ int main(int argc, char *argv[]){
 		count_err = 0;
 	    }
 	}
+	// reset error/update indicators
 	imu_update = false;
+	err_imu = ERROR_OK;
+	gps_update = false;
+	err_gps = ERROR_OK;
+	retval = ERROR_OK;
+
 	retval = io_poll(io);
 	quit_log_if(retval,"io_poll() error");
+
+	/// -- -- -- -- -- -- -- --
+	/// Check IMU updates
+	/// -- -- -- -- -- -- -- --
 	retval = io_dev_ready(io,imu_fds,&read,&write);
 	quit_log_if(retval,"io_dev_ready() error");
 	if(read)
 	{
 #if TIMING && TIMING_IO
 	    gettimeofday(&tv_tmp,NULL);
-	    retval = uquad_timeval_substract(&tv_diff,tv_tmp,tv_last_io_ok);
-	    if(retval < 0)
+	    err_imu = uquad_timeval_substract(&tv_diff,tv_tmp,tv_last_io_ok);
+	    if(err_imu < 0)
 	    {
 		err_log("Timing error!");
 	    }
@@ -396,21 +435,21 @@ int main(int argc, char *argv[]){
 	    gettimeofday(&tv_imu_start,NULL);
 #endif
 
-	    retval = imu_comm_read(imu, &imu_update);
+	    err_imu = imu_comm_read(imu, &imu_update);
 	    if(!imu_update)
 	    {
-		continue;
+		goto end_imu;
 	    }
 
 #if TIMING && TIMING_IMU
 	    gettimeofday(&tv_tmp,NULL);
-	    retval = uquad_timeval_substract(&tv_diff,tv_tmp,tv_last_imu_read);
-	    if(retval < 0)
+	    err_imu = uquad_timeval_substract(&tv_diff,tv_tmp,tv_last_imu_read);
+	    if(err_imu < 0)
 	    {
 		err_log("Timing error!");
 	    }
-	    retval = uquad_timeval_substract(&tv_imu_diff,tv_tmp,tv_imu_start);
-	    if(retval < 0)
+	    err_imu = uquad_timeval_substract(&tv_imu_diff,tv_tmp,tv_imu_start);
+	    if(err_imu < 0)
 	    {
 		err_log("Timing error!");
 	    }
@@ -426,73 +465,124 @@ int main(int argc, char *argv[]){
 	    {
 		// not enough samples yet.
 		runs++;
-		continue;
+		goto end_imu;
 	    }
 	    /// Get new unread data
-	    retval = imu_comm_get_avg_unread(imu,&imu_data);
-	    log_n_continue(retval,"IMU did not have new avg!");
+	    err_imu = imu_comm_get_avg_unread(imu,&imu_data);
+	    log_n_jump(err_imu,end_imu,"IMU did not have new avg!");
 
 	    gettimeofday(&tv_tmp,NULL);
-	    retval = uquad_timeval_substract(&tv_diff,tv_tmp,tv_last_kalman);
-	    if(retval < 0)
+	    err_imu = uquad_timeval_substract(&tv_diff,tv_tmp,tv_last_kalman);
+	    if(err_imu < 0)
 	    {
-		err_log("Timing error!");
+		log_n_jump(ERROR_TIMING,end_imu,"Timing error!");
 	    }
 	    /// Get new state estimation
 	    if(runs == STARTUP_RUNS)
 		// the first time here, timing will not make sense, so use IMU
 		tv_diff.tv_usec = imu_data.T_us;
-	    retval = uquad_kalman(kalman, mot->w_curr, &imu_data,tv_diff.tv_usec);
-	    log_n_continue(retval,"Kalman update failed");
-	    /// Mark time when we leave Kalman
-	    gettimeofday(&tv_last_kalman,NULL);
+	    // store time since last IMU sample
+	    imu_data.timestamp = tv_diff;
+	    end_imu:;
+	    // will jump here if something went wrong during IMU reading
+	}//if(read)
+
+	/// -- -- -- -- -- -- -- --
+	/// Check GPS updates
+	/// -- -- -- -- -- -- -- --
+	if(reg_gps)
+	{
+	    err_gps = io_dev_ready(io,gps_fds,&read,&write);
+	    if(read)
+	    {
+		err_gps = gps_comm_read(gps);
+		log_n_jump(err_gps,end_gps,"GPS had no data!");
+		if(gps_comm_get_status(gps))
+		{
+		    if(runs >= STARTUP_RUNS)
+			// ignore startup data
+			gps_update = true;
+		    gettimeofday(&tv_tmp,NULL);
+		    err_gps = uquad_timeval_substract(&tv_gps_diff,tv_tmp,tv_gps_last);
+		    gettimeofday(&tv_gps_last,NULL);
+		    fprintf(stdout,"\tlat:%f\n\tlon:%f\n\talt:%f\n\ttimestamp:%f\t%ld.%06ld\n\n",
+			    gps->fix.latitude,
+			    gps->fix.longitude,
+			    gps->fix.altitude,
+			    gps->fix.time,
+			    tv_gps_diff.tv_sec,tv_gps_diff.tv_usec);
+		}
+	    }
+	    end_gps:;
+	    // will jump here if something went wrong during GPS reading
+	}
+
+	if(!imu_update && !gps_update)
+	    continue;
+
+	/// -- -- -- -- -- -- -- --
+	/// Update state estimation
+	/// -- -- -- -- -- -- -- --
+	retval = uquad_kalman(kalman,
+			      mot->w_curr,
+			      &imu_data,
+			      imu_data.timestamp.tv_usec);
+	log_n_continue(retval,"Kalman update failed");
+	/// Mark time when we leave Kalman
+	gettimeofday(&tv_last_kalman,NULL);
 #if TIMING && TIMING_KALMAN
-	    gettimeofday(&tv_pgm,NULL);
-	    printf("KALMAN:\t%ld\t\t%ld.%06ld\n", tv_diff.tv_usec,
-		   tv_pgm.tv_sec - tv_start.tv_sec,
-		   tv_pgm.tv_usec);
+	gettimeofday(&tv_pgm,NULL);
+	printf("KALMAN:\t%ld\t\t%ld.%06ld\n", tv_diff.tv_usec,
+	       tv_pgm.tv_sec - tv_start.tv_sec,
+	       tv_pgm.tv_usec);
 #endif
 
 #if DEBUG
 #if DEBUG_KALMAN_INPUT
-	    fprintf(log_kalman_in, "%lu\t",tv_diff.tv_usec);
-	    retval = imu_comm_print_data(&imu_data, log_kalman_in);
+	fprintf(log_kalman_in, "%lu\t",tv_diff.tv_usec);
+	retval = imu_comm_print_data(&imu_data, log_kalman_in);
 #endif //DEBUG_KALMAN_INPUT
 #if DEBUG_X_HAT
-	    retval = uquad_mat_transpose(x_hat_T, kalman->x_hat);
-	    uquad_mat_dump(x_hat_T,log_x_hat);
+	retval = uquad_mat_transpose(x_hat_T, kalman->x_hat);
+	uquad_mat_dump(x_hat_T,log_x_hat);
 #endif //DEBUG_X_HAT
 #endif //DEBUG
-	    /// Get current set point
-	    retval = pp_update_setpoint(pp, kalman->x_hat);
-	    log_n_continue(retval,"Kalman update failed");
+	/// Get current set point
+	retval = pp_update_setpoint(pp, kalman->x_hat);
+	log_n_continue(retval,"Kalman update failed");
 
-	    /// Get control command
-	    retval = control(ctrl, w, kalman->x_hat, pp->sp);
-	    log_n_continue(retval,"Control failed!");
+	/// Get control command
+	retval = control(ctrl, w, kalman->x_hat, pp->sp);
+	log_n_continue(retval,"Control failed!");
 #if DEBUG && LOG_W_CTRL
-	    retval = uquad_mat_transpose(wt,w);
-	    uquad_mat_dump(wt,log_w_ctrl);
+	retval = uquad_mat_transpose(wt,w);
+	uquad_mat_dump(wt,log_w_ctrl);
 #endif
 
-	    gettimeofday(&tv_tmp,NULL);
-	    uquad_timeval_substract(&tv_diff,tv_tmp,tv_last_m_cmd);	    
-	    if (tv_diff.tv_usec > MOT_UPDATE_T)
-	    {
-		gettimeofday(&tv_last_m_cmd,NULL);
+	/// -- -- -- -- -- -- -- --
+	/// Run control
+	/// -- -- -- -- -- -- -- --
+	gettimeofday(&tv_tmp,NULL);
+	uquad_timeval_substract(&tv_diff,tv_tmp,tv_last_m_cmd);
+	if (tv_diff.tv_usec > MOT_UPDATE_T)
+	{
+	    gettimeofday(&tv_last_m_cmd,NULL);
 
-		/// Update motor controller
-		retval = mot_set_vel_rads(mot, w);
-		log_n_continue(retval,"Failed to set motor speed!");
+	    /// Update motor controller
+	    retval = mot_set_vel_rads(mot, w);
+	    log_n_continue(retval,"Failed to set motor speed!");
 #if DEBUG && LOG_W
-		fprintf(log_w, "%ld\t", tv_diff.tv_usec);
-		retval = uquad_mat_transpose(wt,mot->w_curr);
-		uquad_mat_dump(wt,log_w);
+	    fprintf(log_w, "%ld\t", tv_diff.tv_usec);
+	    retval = uquad_mat_transpose(wt,mot->w_curr);
+	    uquad_mat_dump(wt,log_w);
 #endif
-	    }
-	}//if(read)
-	// stdin
-	if(reg_stdin){
+	}
+
+	/// -- -- -- -- -- -- -- --
+	/// Check stdin
+	/// -- -- -- -- -- -- -- --
+	if(reg_stdin)
+	{
 	    retval = io_dev_ready(io,STDIN_FILENO,&read,&write);
 	    quit_log_if(retval,"io_dev_ready() error");
 	    if(read){
