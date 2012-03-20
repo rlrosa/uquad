@@ -12,6 +12,7 @@ enum test_type{
     MATRIX_MUL_K,
     MATRIX_DIV_K,
     LIN_SOLVE,
+    MATRIX_EXP,
     TEST_COUNT
 };
 
@@ -223,11 +224,46 @@ int matrix_prod_test(void)
     return ERROR_OK;
 }
 
+int mat_exp_test(void)
+{
+
+ 
+    //    int size = 3;
+    uquad_mat_t* A = NULL;
+    uquad_mat_t* expA = NULL;
+
+      if(alloc_m(&m1) != ERROR_OK)
+    {
+	err_check(ERROR_FAIL,"Could not allocate mem, cannot continue");
+    }
+
+    mr = uquad_mat_alloc(m1->r,m1->c);
+    if(mr == NULL)
+    {
+	err_check(ERROR_FAIL,"Could not allocate mem, cannot continue");
+    }
+
+    printf("Will load A to solve inv(A)\n");
+    if(load_m(m1) != ERROR_OK)
+    {
+	err_check(ERROR_FAIL,"Failed loading data");
+    }
+
+    A=m1;
+    expA=mr; 
+
+      
+    uquad_mat_exp(expA,A);
+    uquad_mat_dump(expA,0);
+   
+    return ERROR_OK;
+}
+
 int main(void){
     int retval = ERROR_OK;
     enum test_type sel_test;
     int cmd;
-    printf("Select test:\n\t%d:Matrix product\n\t%d:Matrix det\n\t%d:Matrix inv\n\t%d:Matrix add\n\t%d:Matrix sub\n\t%d:Matrix mul k\n\t%d:Matrix div k\n\t%d:Linear system\n",
+    printf("Select test:\n\t%d:Matrix product\n\t%d:Matrix det\n\t%d:Matrix inv\n\t%d:Matrix add\n\t%d:Matrix sub\n\t%d:Matrix mul k\n\t%d:Matrix div k\n\t%d:Linear system\n\t%d:Expnential Matrix\n",
 	   MATRIX_PROD,
 	   MATRIX_DET,
 	   MATRIX_INV,
@@ -235,7 +271,8 @@ int main(void){
 	   MATRIX_SUBS,
 	   MATRIX_MUL_K,
 	   MATRIX_DIV_K,
-	   LIN_SOLVE);
+	   LIN_SOLVE,
+	   MATRIX_EXP);
     scanf("%d",&cmd);
     if(cmd<0 || cmd > TEST_COUNT)
     {
@@ -264,6 +301,9 @@ int main(void){
 	break;
     case LIN_SOLVE:
 	retval = lin_solve_test();
+	break;
+    case MATRIX_EXP:
+	retval = mat_exp_test();
 	break;
     default:
 	err_check(ERROR_FAIL,"This shouldn't happen.");
