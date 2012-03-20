@@ -162,8 +162,8 @@ R = diag(1000*[10 10 10 10 10 10 10 10 10 10]);
 P = 1*eye(Ns);
 x_hat=zeros(N,Ns);
 
-K = load('Kotra4.mat');K = K.K;
-% K = load('./simulador/pruebas/primer_vuelo/K.mat');K = K.K;
+% K = load('Kotra4.mat');K = K.K;
+K = load('./simulador/pruebas/primer_vuelo/K.mat');K = K.K;
 w_hover = 334.28;
 sp_x = zeros(7,1);
 sp_w = ones(4,1)*w_hover;
@@ -185,6 +185,9 @@ x_hat_partial = zeros(7,N);
 % zinit = b(1);
 % x_hat(1,:)=[ xinit yinit zinit psi_init phi_init theta_init vqx_init vqy_init vqz_init wqy_init wqx_init wqz_init];
 % clear psi_init; clear phi_init; clear theta_init; clear wqx_init; clear wqy_init; clear wqz_init; clear vqx_init; clear vqy_init; clear vqz_init; clear xinit; clear yinit; clear zinit;
+
+w_max = 387.0; % Como MOT_MAX_W de mot_control.h
+w_min = 109.0; % Como MOT_IDLE_W de mot_control.h
 
 for i=2:N
     w = w_control(:,i-1);
@@ -215,6 +218,14 @@ for i=2:N
     % Control
     x_hat_partial(:,i) = [x_hat(i,3);x_hat(i,4);x_hat(i,5);x_hat(i,9);x_hat(i,10);x_hat(i,11);x_hat(i,12)];
     w_control(:,i) = sp_w + K*(sp_x - x_hat_partial(:,i));
+    for j=1:4
+      if(w_control(j,i) < w_min)
+        w_control(j,i) = w_min;
+      end
+      if (w_control(j,i) > w_max)
+        w_control(j,i) = w_max;
+      end
+    end
 end
 
 
