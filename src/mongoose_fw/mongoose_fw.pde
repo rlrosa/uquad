@@ -331,11 +331,9 @@ void loop() //Main Loop
     barom_update_state_machine();
     loop_in_us = micros();
     Dt = loop_in_us - time_barom_us;
-    //if ( (Dt) >= 
-    //	 SAMP_T_BAROM_INTR - SAMP_JITTER_INTR )
     if (loop_counter >= SAMP_INTRS_EXTR)
     {
-	//	Serial.print("Tetas:");
+	//	Serial.print("LG:");
 	//	Serial.println(Dt);
 	if(loop_counter != 0)
 	{
@@ -360,11 +358,10 @@ void loop() //Main Loop
 	    if(sensors.pressure || sensors.temp)
 		Baro_req_update();
 
-	    /* Serial.print("Pezon:"); */
+	    /* Serial.print("B:"); */
 	    /* Serial.println(micros()-Dt); */
 
 	    printdata(); 
-	    //Serial.println("breve historia sobre un niño");
 
 	    StatusLEDToggle();        
 	    digitalWrite(debugPin,LOW);
