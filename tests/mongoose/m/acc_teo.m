@@ -1,5 +1,7 @@
 function a=acc_teo(eje,theta,phi)
 
+% Ajustado para funcionar con logs de acc/logs_marzo
+
 syms ang1 ang2 ang3 Rx Ry Rz
 t=str2num(theta)*pi/180;
 p=str2num(phi)*pi/180;
@@ -19,27 +21,29 @@ Rz=[ cos(ang3) sin(ang3) 0;
     0 0 1];
 
 if eje=='x'
-    ang1=t;
-    ang3=p;
-    R1=eval(Rx);
-    R2=eval(Rz);
-    G = [0 0 -g];
-    
-elseif eje=='y'
-    
-    ang1=-p;
-    ang2=t;
-    ang3=0;
-    R1=eval(Ry);
+    ang1=p;
+    ang3=t;
+    R1=eval(Rz);
     R2=eval(Rx);
     G = [g 0 0];
     
-elseif eje=='z'
+elseif eje=='y'
+    ang1=-t;
     ang2=p;
-    ang3=-t;
-    R1=eval(Rz);
+    ang3=0;
+    R1=eval(Rx);
     R2=eval(Ry);
-    G = [0 -g 0];
+    G = [0 g 0];
+
+elseif eje=='z'
+    
+    ang1=0;
+    ang2=t;
+    ang3=-p;
+    R1=eval(Ry);
+    R2=eval(Rz);
+    G = [0 0 -g];
+    
 else
     fprintf('\nTe equivocaste vieja, tenés que pasar com eje "x", "y", o "z"\n')
 end
