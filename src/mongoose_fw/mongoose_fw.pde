@@ -351,9 +351,9 @@ void loop() //Main Loop
 	    sen_data.magnetom_z_raw = (int)(acum_reads.magnetom[2]/loop_counter);
 	    // Reset
 	    loop_counter=0;
-	    acum_reads.acc = {0,0,0};
-	    acum_reads.gyro = {0,0,0};
-	    acum_reads.magnetom = {0,0,0};
+	    acum_reads.acc[0] = 0;acum_reads.acc[1] = 0;acum_reads.acc[2] = 0;
+	    acum_reads.gyro[0] = 0;acum_reads.gyro[1] = 0;acum_reads.gyro[2] = 0;
+	    acum_reads.magnetom[0] = 0;acum_reads.magnetom[1] = 0;acum_reads.magnetom[2] = 0;
 
 	    //	    Dt = micros();
 	    barom_update_state_machine();
