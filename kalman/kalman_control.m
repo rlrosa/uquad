@@ -34,7 +34,7 @@
 % -------------------------------------------------------------------------
 
 % close all
-clear all
+%clear all
 clc
 
 %% Observaciones y constantes
@@ -43,9 +43,21 @@ clc
 % [acrud,wcrud,mcrud,tcrud,bcrud]=mong_read('tests/mongoose/magnetometro/data_horizontal/x00z00',0);
 
 % [acrud,wcrud,mcrud,tcrud,bcrud,~,~,T]=mong_read('log-zparriba4',0);
-[acrud,wcrud,mcrud,tcrud,bcrud,~,~,T]=mong_read('imu_raw_8.log',0,1);
-[a,w,euler] = mong_conv(acrud,wcrud/14.375,mcrud,0);
-b=altitud(bcrud);
+%[acrud,wcrud,mcrud,tcrud,bcrud,~,~,T]=mong_read('imu_raw_8.log',0,1);
+
+%[acrud,wcrud,mcrud,tcrud,bcrud,~,~,T]=mong_read('./src/build/main/imu_raw.log',0,1);
+%[a,w,euler] = mong_conv(acrud,wcrud/14.375,mcrud,0);
+%b=altitud(bcrud);
+
+% Test contra c
+% Usar datos que recibe uquad_kalman() para verificar comportamiento acorde
+% al codigo.
+xhat = load('./src/build/main/kalman_in.log');
+a = xhat(:,5:7);
+w = xhat(:,8:10);
+euler = xhat(:,11:13);
+b = xhat(:,end);
+T = xhat(:,1)/1e6;
 
 % w(:,1) = w(:,1)-mean(w(1:50,1));
 % w(:,2) = w(:,2)-mean(w(1:50,2));
@@ -137,14 +149,21 @@ H = @() ...
 
 % Q = sigma_w^2*eye(Ns);  % 10*eye(Ns)
 % Q = 100*eye(Ns);
+% Valores
+
+% uquad_kalman.c en git en 9f421f090debbb63725be9413fe659b98d043cd7
+%Q = diag(.1*[100 100 100 100 100 100 100 100 100 100 100 100]);
+%R = diag(100*[10 10 10 10 10 10 100 100 100 100]);
+% Configuracion mas estable (salta menos, aunque igual diverge)
 Q = diag(.0001*[100 100 100 100 100 100 100 100 100 100 100 100]);
 R = diag(1000*[10 10 10 10 10 10 10 10 10 10]);
+
 
 P = 1*eye(Ns);
 x_hat=zeros(N,Ns);
 
-K = load('Kotra4.mat');K = K.K;
-% K = load('./simulador/pruebas/primer_vuelo/K.mat');K = K.K;
+% K = load('Kotra4.mat');K = K.K;
+K = load('./simulador/pruebas/primer_vuelo/K.mat');K = K.K;
 w_hover = 334.28;
 sp_x = zeros(7,1);
 sp_w = ones(4,1)*w_hover;
@@ -167,13 +186,18 @@ x_hat_partial = zeros(7,N);
 % x_hat(1,:)=[ xinit yinit zinit psi_init phi_init theta_init vqx_init vqy_init vqz_init wqy_init wqx_init wqz_init];
 % clear psi_init; clear phi_init; clear theta_init; clear wqx_init; clear wqy_init; clear wqz_init; clear vqx_init; clear vqy_init; clear vqz_init; clear xinit; clear yinit; clear zinit;
 
+w_max = 387.0; % Como MOT_MAX_W de mot_control.h
+w_min = 109.0; % Como MOT_IDLE_W de mot_control.h
+
 for i=2:N
     w = w_control(:,i-1);
-    if ((i-2)<=0)
-        dw = zeros(4,1);
-    else
-        dw = w_control(:,i-1)-w_control(:,i-2);
-    end
+% En uquad_kalman() NO se usa esto, se usar dw == 0.
+%     if ((i-2)<=0)
+%         dw = zeros(4,1);
+%     else
+%         dw = w_control(:,i-1)-w_control(:,i-2);
+% %     end
+    dw = zeros(4,1);
     TM = 3.5296e-5*w.^2-4.9293e-4*w;   % Fuerzas ejercidas por los motores en N. Cada columna corresponde a 1 motor.
     D  = 3.4734e-6*w.^2-1.3205e-4*w;   % Torque de Drag ejercido por los motores en N*m. Cada columna corresponde a cada motor
     Tk=T(i-1);
@@ -194,6 +218,14 @@ for i=2:N
     % Control
     x_hat_partial(:,i) = [x_hat(i,3);x_hat(i,4);x_hat(i,5);x_hat(i,9);x_hat(i,10);x_hat(i,11);x_hat(i,12)];
     w_control(:,i) = sp_w + K*(sp_x - x_hat_partial(:,i));
+    for j=1:4
+      if(w_control(j,i) < w_min)
+        w_control(j,i) = w_min;
+      end
+      if (w_control(j,i) > w_max)
+        w_control(j,i) = w_max;
+      end
+    end
 end
 
 

@@ -190,22 +190,19 @@ int io_deinit(io_t * io){
     return ERROR_OK;
 }
 
-/** 
- *Checks if reading/writing will block.
- *Writing should not be a problem, hw buffers should handle it.
- *If attempting to read and there is no data available, we do not want to
- *lock up the sys, that is the purpose of 'select'.
- *
- *@param device attemping to read or write to.
- *@param check_read if true then checks if reading locks, if false check writing.
- *@param ready answer returned here
- *
- *@return error code
- */
-int check_io_locks(FILE *device, uquad_bool_t *read_ok, uquad_bool_t *write_ok){
+int check_io_locks(int fd, FILE *device, uquad_bool_t *read_ok, uquad_bool_t *write_ok){
     fd_set rfds,wfds;
     struct timeval tv;
-    int retval, fd = fileno(device);
+    int retval = ERROR_OK;
+    if(fd < 0)
+    {
+	fd = fileno(device);
+	if(fd < 0)
+	{
+	    err_log_stderr("Failed to get fd!");
+	    err_propagate(ERROR_IO);
+	}
+    }
     FD_ZERO(&rfds);
     FD_SET(fd,&rfds);
     FD_ZERO(&wfds);
@@ -223,10 +220,11 @@ int check_io_locks(FILE *device, uquad_bool_t *read_ok, uquad_bool_t *write_ok){
     }
     if(write_ok != NULL)
 	*write_ok = ((retval >0) && FD_ISSET(fd,&wfds)) ? true:false;
-    if (retval < 0){
-	err_check(ERROR_IO,"select() failed!");
-    }else{
-	// retval == 0 <--> No data available
+    if (retval < 0)
+    {
+	err_log_stderr("select() failed!");
+	err_propagate(ERROR_IO);
     }
+    // else: retval == 0 <--> No data available
     return ERROR_OK;
 }

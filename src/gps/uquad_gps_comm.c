@@ -14,34 +14,42 @@ gps_t *  gps_comm_init(void){
 
     // Initialize data structure and open connection
     ret = gps_open(NULL, 0, gps);
-    if(ret < 0){
+    if(ret < 0)
+    {
 	err_log("GPS init failed, could not open connection to GPS, is daemon running?");
-	free(gps);
-	return NULL;
+	cleanup_if(ERROR_GPS);
     }
 
     // Start TX from GPS
     ret = gps_stream(gps, GPS_COMM_STREAM_FLAGS_ENA, NULL);
-    if(ret < 0){
+    if(ret < 0)
+    {
 	err_log("GPS init failed, could not stream from GPS.\nAttempting to close connection...");
 	// deinit, and ignore return value, since gps_comm_deinit takes care of logging.
 	(void) gps_comm_deinit(gps);
-	return NULL;
+	cleanup_if(ERROR_GPS);
     }
-
     return gps;
+
+    cleanup:
+    gps_comm_deinit(gps);
+    return NULL;
 }   
 
-int  gps_comm_deinit(gps_t * gps){
+void  gps_comm_deinit(gps_t * gps){
     int ret;
+    if(gps == NULL)
+    {
+	err_log("WARN: Nothing to free");
+	return;
+    }
     ret = gps_stream(gps, GPS_COMM_STREAM_FLAGS_DIS, NULL);
     if(ret < 0)
-	err_log("WARNING: ignoring error while terminating GPS stream...");
+	err_log("WARN: ignoring error while terminating GPS stream...");
     ret = gps_close (gps);
     if(ret < 0)
-	err_log("WARNING: ignoring error while closing GPS...");
+	err_log("WARN: ignoring error while closing GPS...");
     free(gps);
-    return ret;
 }
 
 int gps_comm_get_status(gps_t *gps){

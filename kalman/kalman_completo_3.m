@@ -44,6 +44,16 @@ clc
 [a,w,euler] = mong_conv(acrud,wcrud/14.375,mcrud,0);
 b=altitud(bcrud);
 
+% Test contra c - Descomentar esto para ver como se porta con datos
+% promediados por la imu como entradas.
+% %T = ones(size(T))*13000/1e6;% Debug, T cte
+% xhat = load('./src/build/test/kalman_test/imu_data.log');
+% a = xhat(:,4:6);
+% w = xhat(:,7:9);
+% euler = xhat(:,10:12);
+% b = xhat(:,end);
+% T = xhat(:,3)/1e6;
+
 N  = size(a,1);         % Cantidad de muestras de las observaciones
 Ns = 12;                % N states: cantidad de variables de estado
 z  = [euler a w b];     % Observaciones
@@ -157,12 +167,20 @@ x_hat=zeros(N,Ns);
 
 for i=2:N
     % Prediction
-    x_   = f(x_hat(i-1,1),x_hat(i-1,2),x_hat(i-1,3),x_hat(i-1,4),x_hat(i-1,5),x_hat(i-1,6),x_hat(i-1,7),x_hat(i-1,8),x_hat(i-1,9),x_hat(i-1,10),x_hat(i-1,11),x_hat(i-1,12),w(i-1,:),dw(i-1,:),TM(i-1,:),D(i-1,:),T(i-1));
-    Fk_1 = F(x_hat(i-1,4),x_hat(i-1,5),x_hat(i-1,6),x_hat(i-1,7),x_hat(i-1,8),x_hat(i-1,9),x_hat(i-1,10),x_hat(i-1,11),x_hat(i-1,12),w(i-1,:),T(i-1));
+    x_   = f(x_hat(i-1,1),x_hat(i-1,2),x_hat(i-1,3),x_hat(i-1,4), ...
+      x_hat(i-1,5),x_hat(i-1,6),x_hat(i-1,7),x_hat(i-1,8),x_hat(i-1,9), ...
+      x_hat(i-1,10),x_hat(i-1,11),x_hat(i-1,12),w(i-1,:),dw(i-1,:), ...
+      TM(i-1,:),D(i-1,:),T(i-1));
+
+    Fk_1 = F(x_hat(i-1,4),x_hat(i-1,5),x_hat(i-1,6),x_hat(i-1,7), ...
+      x_hat(i-1,8),x_hat(i-1,9),x_hat(i-1,10),x_hat(i-1,11), ...
+      x_hat(i-1,12),w(i-1,:),T(i-1));
+
     P_   = Fk_1 * P * Fk_1'+ Q; 
     
     % Update
-    yk         = z(i,:)' - h(x_(3),x_(4),x_(5),x_(6),x_(7),x_(8),x_(9),x_(10),x_(11),x_(12),TM(i-1,:));
+    yk         = z(i,:)' - h(x_(3),x_(4),x_(5),x_(6),x_(7),x_(8),x_(9), ...
+      x_(10),x_(11),x_(12),TM(i-1,:));
     Hk         = H();
     Sk         = Hk*P_*Hk' + R;
     Kk         = P_*Hk'*Sk^-1;

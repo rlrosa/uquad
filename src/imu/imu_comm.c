@@ -2,6 +2,7 @@
 #include <uquad_aux_io.h>
 #include <uquad_aux_time.h>
 #include <math.h> // for pow()
+#include <fcntl.h> // for open()
 /// Aux mem
 static uquad_mat_t *m3x3;
 static uquad_mat_t *m3x1_0;
@@ -55,24 +56,19 @@ void imu_data_free(imu_data_t *imu_data)
  *@return error code
  */
 static int imu_comm_send_cmd(imu_t *imu, unsigned char cmd){
-    uquad_bool_t ready = false;
+#if !IMU_COMM_FAKE     // If reading from a log file, we have nothing to send to it
+    static unsigned char buff[2] = "X\n";
+    buff[0] = cmd;
     int retval;
-#if IMU_COMM_FAKE
-    // If reading from a log file, we have nothing to send to it
-    return ERROR_OK;
-#endif
-    retval = check_io_locks(imu->device, NULL, &ready);
-    err_propagate(retval);
-    if(!ready){
-	// cannot write
-	err_check(ERROR_WRITE,"Write error: Writing command would lock.");
-    }else{
-	// issue command
-	retval = fprintf(imu->device,"%c\n",cmd);
-	if(retval<0){
-	    err_check(ERROR_WRITE,"Write error: Failed to send cmd to IMU");
-	}
+    // issue command
+    retval = write(imu->device,&cmd,2);
+    //	retval = fprintf(imu->device,"%c\n",cmd);
+    if(retval<0)
+    {
+	err_log_stderr("Write error: Failed to send cmd to IMU");
+	err_propagate(ERROR_WRITE);
     }
+#endif //!IMU_COMM_FAKE
     return ERROR_OK;
 }
 
@@ -138,7 +134,7 @@ static void imu_comm_calibration_clear(imu_t *imu){
  */
 static int imu_comm_run_default(imu_t *imu){
     int retval = ERROR_OK;
-#if IMU_FRAME_BINARY
+#if !IMU_COMM_FAKE
     // Set run
     retval = imu_comm_send_cmd(imu,IMU_COMMAND_DEF);
     err_propagate(retval);
@@ -168,24 +164,39 @@ static int imu_comm_connect(imu_t *imu, const char *device){
 #if IMU_COMM_FAKE
     // we don't want to write to the log file, just read.
     imu->device = fopen(device,"rb+");
-#else
-    imu->device = fopen(device,"wb+");
-#endif
     if(imu->device == NULL){
 	fprintf(stderr,"Device %s not found.\n",device);
 	return ERROR_OPEN;
     }
+#else
+    imu->device = open(device,O_RDWR | O_NOCTTY | O_NONBLOCK);
+    if(imu->device < 0)
+    {
+	err_log_stderr("Failed to open dev!");
+	err_propagate(ERROR_IO);
+    }
+#endif
     return ERROR_OK;
 }
 
 static int imu_comm_disconnect(imu_t *imu){
     int retval = ERROR_OK;
-    retval = fclose(imu->device);
-    if(retval != ERROR_OK){
-	fprintf(stderr,"Failed to close connection to device.\n");
-	return ERROR_CLOSE;
+#if IMU_COMM_FAKE
+    if(imu->device != NULL)
+    {
+	retval = fclose(imu->device);
+	if(retval == 0)
+	    imu->device = NULL;
     }
-    imu->device = NULL;
+#else
+    if(imu->device > 0)
+	retval = close(imu->device);
+#endif
+    if(retval < 0)
+    {
+	err_log_stderr("Failed to close device!");
+	err_propagate(ERROR_CLOSE);
+    }
     return ERROR_OK;
 }
 
@@ -330,51 +341,63 @@ imu_t *imu_comm_init(const char *device){
 
     // now connect to the imu
     retval = imu_comm_connect(imu,device);
-    if(retval != ERROR_OK)
-	return NULL;
+    cleanup_if(retval);
 
 #if DEBUG
     // open logs
     imu->log_raw = fopen(IMU_LOG_RAW,"w");
+    if(retval < 0)
+    {
+	err_log_stderr("Failed to log file!");
+	cleanup_if(ERROR_OPEN);
+    }
     imu->log_data = fopen(IMU_LOG_DATA,"w");
+    if(retval < 0)
+    {
+	err_log_stderr("Failed to log file!");
+	cleanup_if(ERROR_OPEN);
+    }
     imu->log_avg = fopen(IMU_LOG_AVG,"w");
+    if(retval < 0)
+    {
+	err_log_stderr("Failed to log file!");
+	cleanup_if(ERROR_OPEN);
+    }
     // init temp mem
     retval = imu_data_alloc(&imu->tmp_data);
-    if(retval != ERROR_OK)
-	return NULL;
+    cleanup_if(retval);
 #endif //DEBUG
 
     // Get aux memory
     retval = imu_data_alloc(&imu->tmp_avg);
-    if(retval != ERROR_OK)
-	return NULL;
+    cleanup_if(retval);
 
     // Send default values to IMU, then get it running, just in case it wasn't
     retval = imu_comm_configure(imu);
-    if(retval != ERROR_OK)
-	return NULL;
+    cleanup_if(retval);
 
     retval = imu_comm_run_default(imu);
-    if(retval != ERROR_OK)
-	return NULL;
+    cleanup_if(retval);
 
     // Mark IMU as not calibrated
     imu_comm_calibration_clear(imu);
     // Load/estimate calibration
     retval = imu_comm_init_calibration(imu);
-    if(retval != ERROR_OK)
-	return NULL;
+    cleanup_if(retval);
 
     m3x3 = uquad_mat_alloc(3,3);
     m3x1_0 = uquad_mat_alloc(3,1);
     m3x1_1 = uquad_mat_alloc(3,1);
     if(m3x3 == NULL || m3x1_0 == NULL || m3x1_1 == NULL)
-	return NULL;
+	goto cleanup;
 
     // Wait 300ms + a bit more for IMU to reset
     sleep_ms(350);
-
     return imu;
+
+    cleanup:
+    imu_comm_deinit(imu);
+    return NULL;
 }
 
 int imu_comm_deinit(imu_t *imu){
@@ -384,13 +407,15 @@ int imu_comm_deinit(imu_t *imu){
 	err_log("WARN: Nothing to free.");
 	return ERROR_OK;
     }
-    if(imu->device != NULL)
-	retval = imu_comm_disconnect(imu);
+    retval = imu_comm_disconnect(imu);
     // ignore answer and keep dying, leftovers are not reliable
 #if DEBUG
-    fclose(imu->log_raw);
-    fclose(imu->log_data);
-    fclose(imu->log_avg);
+    if(imu->log_raw != NULL)
+	fclose(imu->log_raw);
+    if(imu->log_data != NULL)
+	fclose(imu->log_data);
+    if(imu->log_avg != NULL)
+	fclose(imu->log_avg);
     imu_data_free(&imu->tmp_data);
 #endif //DEBUG
     imu_data_free(&imu->tmp_avg);
@@ -416,30 +441,34 @@ static int imu_comm_get_sync_end(imu_t *imu){
     // Now read out the end char
     int watchdog = 0, retval;
     unsigned char tmp = 'X';// Anything diff from IMU_FRAME_END_CHAR
-    while(watchdog < READ_RETRIES){
+    while(watchdog < READ_RETRIES)
+    {
+#if IMU_COMM_FAKE
 	retval = fread(&tmp,IMU_INIT_END_SIZE,1,imu->device);
-	if(retval > 0){
+#else
+	retval = read(imu->device, &tmp,IMU_INIT_END_SIZE);
+#endif
+	if(retval < 0)
+	{
+	    err_log_stderr("Read error: failed to get sync char...");
+	    err_propagate(ERROR_CLOSE);
+	}
+	if(retval > 0)
+	{
 	    if(tmp == IMU_FRAME_END_CHAR)
 	    {
 		return ERROR_OK;
 	    }
+#if !IMU_COMM_FAKE // in ascii we have to read the separator char
 	    else
 	    {
-#if IMU_FRAME_BINARY // in ascii we have to read the separator char
 		err_check(ERROR_READ_SYNC,"Unexpected end of frame char: Discarding frame...");
-#endif
 	    }
+#endif
 	}
 	else
 	{
-	    if (retval < 0)
-	    {
-		err_check(ERROR_IO,"Read error: Failed to read end char...");
-	    }
-	    else
-	    {
-		++watchdog;
-	    }
+	    ++watchdog;
 	}
     }// while(watchdog < READ_RETRIES)
     err_check(ERROR_READ_TIMEOUT,"Read error: Timed out waiting for end char...");
@@ -455,43 +484,49 @@ static uint8_t previous_sync_char = IMU_FRAME_INIT_CHAR;
  *@return error code
  */
 static int imu_comm_get_sync_init(imu_t *imu){
-    int retval,i;
+    int retval;//,i;
     unsigned char tmp = 'X';// Anything diff from IMU_FRAME_INIT_CHAR
-    for(i=0;;)//i<IMU_DEFAULT_FRAME_SIZE_BYTES;++i)
+#if IMU_COMM_FAKE
+    retval = fread(&tmp,IMU_INIT_END_SIZE,1,imu->device);
+#else
+    retval = read(imu->device,&tmp,IMU_INIT_END_SIZE);
+#endif
+    if(retval < 0)
     {
-	retval = fread(&tmp,IMU_INIT_END_SIZE,1,imu->device);
-	if(retval < 0)
-	{	
-	    err_check(ERROR_IO,"Read error: failed to get sync char...");
-	}
-	else
+	err_log_stderr("Read error: failed to get sync char...");
+	err_propagate(ERROR_CLOSE);
+    }
+    else
+    {
+	if(retval > 0)
 	{
-	    if(retval > 0)
+	    // Match either of the init chars
+	    if((tmp|IMU_FRAME_INIT_DIFF) == IMU_FRAME_INIT_CHAR_ALT)
 	    {
-		// Match either of the init chars
-		if((tmp|IMU_FRAME_INIT_DIFF) == IMU_FRAME_INIT_CHAR_ALT)
+		// Check if skipped frame
+		if(!IMU_FRAME_ALTERNATES_INIT ||
+		   ((tmp ^ previous_sync_char) == IMU_FRAME_INIT_DIFF))
 		{
-		    // Check if skipped frame
-		    if(!IMU_FRAME_ALTERNATES_INIT ||
-		       ((tmp ^ previous_sync_char) == IMU_FRAME_INIT_DIFF))
-		    {
-			previous_sync_char = tmp;
-			return ERROR_OK;
-		    }
-		    else
-		    {
-			err_log("Skipped frame!");
-		    }
-
+		    previous_sync_char = tmp;
 		}
+		else
+		{
+		    err_log("Skipped frame!");
+		}
+		return ERROR_OK;
 	    }
 	    else
 	    {
-		// If here, then retval == 0
-		err_check(ERROR_READ_SYNC,"sync failed, out of data!");
+		// wrong init char
+		err_check(ERROR_READ_SYNC,"Wrong sync init char!");
 	    }
 	}
-    } // for
+	else
+	{
+	    // If here, then retval == 0
+	    err_check(ERROR_READ_SYNC,"sync failed, out of data!");
+	}
+    }
     err_check(ERROR_READ_SYNC,"Timed out!");
 }
 
@@ -677,6 +712,7 @@ int imu_comm_add_frame(imu_t *imu, imu_raw_t *new_frame){
     return ERROR_OK;
 }
 
+#if !IMU_COMM_FAKE
 /** 
  *Assumes sync char was read, reads the rest of the data.
  *Does not read end of frame.
@@ -686,57 +722,20 @@ int imu_comm_add_frame(imu_t *imu, imu_raw_t *new_frame){
  *
  *@return error code
  */
-int imu_comm_read_frame_binary(imu_t *imu, imu_raw_t *new_frame)
+void imu_comm_parse_frame_binary(imu_raw_t *new_frame, uint8_t *data)
 {
-    int retval = ERROR_OK,watchdog,read,i;
-    uint8_t buff_tmp_8[IMU_DEFAULT_FRAME_SIZE_BYTES-2]; // no space for init/end
-    uint16_t *buff_tmp_16;
+    int i;
+    int16_t *buff_tmp_16;
 
     // Get sampling time
-    watchdog = 0;
-    while(watchdog < READ_RETRIES){
-	retval = fread(& new_frame->T_us,IMU_BYTES_T_US,1,imu->device);
-	if(retval == 1){
-	    break;
-	}else{
-	    if(retval < 0){
-		err_check(ERROR_IO,"Read error: Failed to read T_us...");
-	    }else{
-		++watchdog;
-	    }
-	}
-    }
-    if(watchdog>=READ_RETRIES){
-	err_check(ERROR_READ_TIMEOUT,"Read error: Timed out waiting for T_us...");
-    }
+    memcpy(&new_frame->T_us, data, IMU_BYTES_T_US);
+    data += IMU_BYTES_T_US;
 
     // Generate timestamp
     gettimeofday(& new_frame->timestamp,NULL);
 
-    // Read sensors RAW data
-    watchdog = 0;
-    read = 0;
-    while(watchdog < READ_RETRIES){
-	retval = fread(buff_tmp_8 + read,1,IMU_DEFAULT_FRAME_SIZE_DATA_BYTES-read,imu->device);
-	if(retval > 0){
-	    read += retval;
-	    if(read == IMU_DEFAULT_FRAME_SIZE_DATA_BYTES)
-		// done reading
-		break;
-	}else{
-	    if(retval < 0){
-		err_check(ERROR_IO,"Read error: Failed to read sensor data...");
-	    }else{
-		++watchdog;
-	    }
-	}
-    }
-    if(watchdog>=READ_RETRIES){
-	err_check(ERROR_READ_TIMEOUT,"Read error: Timed out waiting for sensor data...");
-    }
-
-    // Change LSB/MSB for 16 bit sensors (acc,gyro,magn,temp)
-    buff_tmp_16 = (uint16_t *) buff_tmp_8;
+    // Get sensor data from buff (acc,gyro,magn,temp)
+    buff_tmp_16 = (int16_t *) data;
     i = 0;
     // acc
     for(;i<3;++i)
@@ -748,15 +747,44 @@ int imu_comm_read_frame_binary(imu_t *imu, imu_raw_t *new_frame)
     for(;i<9;++i)
 	new_frame->magn[i%3] = buff_tmp_16[i];
     // temp
-    new_frame->temp = buff_tmp_16[i++];
+    new_frame->temp = (uint16_t)buff_tmp_16[i++];
     // Change LSB/MSB for 32 bit sensors (pressure)
     // pres
     new_frame->pres = *((uint32_t*)(buff_tmp_16+i));
 
     // Everything went ok, pat pat :)
+}
+
+int imu_comm_read_frame_binary(imu_t *imu, imu_raw_t *new_frame, uquad_bool_t *done)
+{
+    static uint8_t buff_tmp_8[IMU_DEFAULT_FRAME_SIZE_BYTES-2]; // no space for init/end
+    static int buff_index = 0;
+    int retval = ERROR_OK;
+    uquad_bool_t read_ok = false;
+    *done = false;
+    retval = check_io_locks(imu->device, NULL, &read_ok, NULL);
+    if(read_ok)
+    {
+	retval = read(imu->device,buff_tmp_8 + buff_index,1);
+	if(retval < 0)
+	{
+		    err_log_stderr("Read error: no data! Restarting...");
+		    buff_index = 0;
+		    err_propagate(ERROR_IO);
+	}
+
+	if(++buff_index == IMU_DEFAULT_FRAME_SIZE_BYTES-2)
+	{
+	    // frame completed, now parse.
+	    buff_index = 0;
+	    imu_comm_parse_frame_binary(new_frame, buff_tmp_8);
+	    *done = true;
+	}
+    }
     return ERROR_OK;
 }
 
+#else
 /** 
  *Assumes sync char was read, reads the rest of the data.
  *Does not read end of frame.
@@ -830,7 +858,19 @@ int imu_comm_read_frame_ascii(imu_t *imu, imu_raw_t *new_frame)
     // Everything went ok, pat pat :)
     return ERROR_OK;
 }
+#endif
 
+typedef enum read_status{
+    IDLE = 0,
+    INIT_SYNC_DONE,
+    READ_FRAME_DONE,
+    END_SYNC_DONE,
+    STATE_COUNT
+} read_status_t;
+
+#if TIMING_IMU
+static struct timeval tv_init, tv_end, tv_diff;
+#endif
 /** 
  *Attempts to sync with IMU, and read data.
  *
@@ -839,49 +879,159 @@ int imu_comm_read_frame_ascii(imu_t *imu, imu_raw_t *new_frame)
  *
  *@return 
  */
-int imu_comm_read(imu_t *imu){
+int imu_comm_read(imu_t *imu, uquad_bool_t *ready){
     int retval;
-    imu_raw_t new_frame;
+    static imu_raw_t new_frame;
+    static read_status_t status = IDLE;
+    uquad_bool_t ok;
+    *ready = false;
 
-    // sync by getting init frame char
-    retval = imu_comm_get_sync_init(imu);
-    err_propagate(retval);
-    
-    // sync worked, now get data
-#if IMU_FRAME_BINARY
-    retval = imu_comm_read_frame_binary(imu, &new_frame);
-    err_propagate(retval);
+    switch(status)
+    {
+    case IDLE:
+	/// -- -- -- -- -- -- -- -- -- -- -- --
+	/// 1 - sync init
+	/// -- -- -- -- -- -- -- -- -- -- -- --
+#if TIMING_IMU
+	gettimeofday(&tv_init,NULL);//TODO testing
+#endif
+	// sync by getting init frame char
+	retval = imu_comm_get_sync_init(imu);
+	err_propagate(retval);
+	status++;
+
+#if TIMING_IMU
+	gettimeofday(&tv_end,NULL);//TODO testing
+	retval = uquad_timeval_substract(&tv_diff,tv_end,tv_init);//TODO testing
+	if(retval < 0)//TODO testing
+	{//TODO testing
+	    err_check(ERROR_TIMING,"Absurd timing!");//TODO testing
+	}//TODO testing
+	printf("%ld\t", tv_diff.tv_usec);//TODO testing
+#endif
+	break;
+    case INIT_SYNC_DONE:
+	/// -- -- -- -- -- -- -- -- -- -- -- --
+	/// 2 - frame
+	/// -- -- -- -- -- -- -- -- -- -- -- --
+	// sync worked, now get data
+#if IMU_COMM_FAKE
+	retval = check_io_locks(-1, imu->device, &ok, NULL);
+	if(ok)
+	{
+	    retval = imu_comm_read_frame_ascii(imu, &new_frame);
+	    err_propagate(retval);
+	    status++;
+	}
 #else
-    retval = imu_comm_read_frame_ascii(imu, &new_frame);
-    err_propagate(retval);
+	retval = imu_comm_read_frame_binary(imu, &new_frame, &ok);
+	err_propagate(retval);
+	if(ok)
+	{
+	    // frame completed!
+	    status++;
+#if TIMING_IMU
+	    gettimeofday(&tv_end,NULL);//TODO testing
+	    retval = uquad_timeval_substract(&tv_diff,tv_end,tv_init);//TODO testing
+	    if(retval < 0)//TODO testing
+	    {//TODO testing
+		err_check(ERROR_TIMING,"Absurd timing!");//TODO testing
+	    }//TODO testing
+	    printf("%ld\t", tv_diff.tv_usec);//TODO testing
+	    gettimeofday(&tv_init,NULL);//TODO testing
+#endif
+	}
+#endif
+	break;
+    case READ_FRAME_DONE:
+	/// -- -- -- -- -- -- -- -- -- -- -- --
+	/// 3 - sync end
+	/// -- -- -- -- -- -- -- -- -- -- -- --
+#if TIMING_IMU
+	gettimeofday(&tv_init,NULL);//TODO testing
 #endif
 
-    // verify sync by getting end of frame char
-    retval = imu_comm_get_sync_end(imu);
-    err_propagate(retval);
-
-    // Add to calibration or to frame buff
-    if(imu_comm_get_status(imu) == IMU_COMM_STATE_CALIBRATING)
-    {
-	retval = imu_comm_calibration_continue(imu, &new_frame);
+	// verify sync by getting end of frame char
+	retval = imu_comm_get_sync_end(imu);
+	if(retval == ERROR_READ_SYNC)
+	{
+	    // sync failed, restart
+	    status = IDLE;
+	}
 	err_propagate(retval);
-    }
-    else
-    {
-	// add the frame to the buff
-	retval = imu_comm_add_frame(imu, &new_frame);
+	status++;
+
+#if TIMING_IMU
+	gettimeofday(&tv_end,NULL);//TODO testing
+	retval = uquad_timeval_substract(&tv_diff,tv_end,tv_init);//TODO testing
+	if(retval < 0)//TODO testing
+	{//TODO testing
+	    err_check(ERROR_TIMING,"Absurd timing!");//TODO testing
+	}//TODO testing
+	printf("%ld\t", tv_diff.tv_usec);//TODO testing
+#endif
+	break;
+    case END_SYNC_DONE:
+	/// -- -- -- -- -- -- -- -- -- -- -- --
+	/// 4 - add
+	/// -- -- -- -- -- -- -- -- -- -- -- --
+#if TIMING_IMU
+	gettimeofday(&tv_init,NULL);//TODO testing
+#endif
+
+	if(imu_comm_get_status(imu) == IMU_COMM_STATE_CALIBRATING)
+	    // Add to calibration or to frame buff
+	    retval = imu_comm_calibration_continue(imu, &new_frame);
+	else
+	    // add the frame to the buff
+	    retval = imu_comm_add_frame(imu, &new_frame);
 	err_propagate(retval);
+	*ready = true;
+	status = IDLE; //restart
+
+#if TIMING_IMU
+	gettimeofday(&tv_end,NULL);//TODO testing
+	retval = uquad_timeval_substract(&tv_diff,tv_end,tv_init);//TODO testing
+	if(retval < 0)//TODO testing
+	{//TODO testing
+	    err_check(ERROR_TIMING,"Absurd timing!");//TODO testing
+	}//TODO testing
+	printf("%ld\t", tv_diff.tv_usec);//TODO testing
+#endif
+	break;
+    default:
+	status = IDLE;
+	err_check(ERROR_FAIL,"Invalid status! Restarting...");
+	break;
     }
 
-
+    if(*ready)
+    {
+	/// -- -- -- -- -- -- -- -- -- -- -- --
+	/// 5 - print
+	/// -- -- -- -- -- -- -- -- -- -- -- --
+#if TIMING_IMU
+	gettimeofday(&tv_init,NULL);//TODO testing
+#endif
 #if DEBUG
-    retval = imu_comm_print_raw(&new_frame, imu->log_raw);
-    err_propagate(retval);
-    retval = imu_comm_raw2data(imu, &new_frame, &imu->tmp_data);
-    err_propagate(retval);
-    retval = imu_comm_print_data(&imu->tmp_data, imu->log_data);
-    err_propagate(retval);
+	retval = imu_comm_print_raw(&new_frame, imu->log_raw);
+	err_propagate(retval);
+	retval = imu_comm_raw2data(imu, &new_frame, &imu->tmp_data);
+	err_propagate(retval);
+	retval = imu_comm_print_data(&imu->tmp_data, imu->log_data);
+	err_propagate(retval);
 #endif //DEBUG
+#if TIMING_IMU
+	gettimeofday(&tv_end,NULL);//TODO testing
+	retval = uquad_timeval_substract(&tv_diff,tv_end,tv_init);//TODO testing
+	if(retval < 0)//TODO testing
+	{//TODO testing
+	    err_check(ERROR_TIMING,"Absurd timing!");//TODO testing
+	}//TODO testing
+	printf("%ld\t", tv_diff.tv_usec);//TODO testing
+	printf("\n");//TODO testing
+#endif
+    }
 
     return ERROR_OK;
 }
@@ -1064,7 +1214,13 @@ static int imu_comm_temp_convert(imu_t *imu, uint16_t *data, double *temp)
  */
 static int imu_comm_pres_convert(imu_t *imu, uint32_t *data, double *alt)
 {
-    double p0 = imu->calib.null_est.pres;
+    //TODO fix!
+    static double p0 = -1;
+    if(p0 == -1)
+    {
+	imu->calib.null_est.pres = *data;
+	p0 = *data;
+    }
     *alt = 44330*(1- pow((((double)(*data))/p0),PRESS_EXP));
     return ERROR_OK;
 }
@@ -1270,7 +1426,9 @@ int imu_comm_get_data_raw_latest_unread(imu_t *imu, imu_raw_t *data){
  *
  *@return error code
  */
-int imu_comm_get_fds(imu_t *imu,int *fds){
+int imu_comm_get_fds(imu_t *imu,int *fds)
+{
+#if IMU_COMM_FAKE
     if(imu->device == NULL){
 	err_check(ERROR_NULL_POINTER,"Cannot get fds, device set to NULL");
     }
@@ -1278,6 +1436,9 @@ int imu_comm_get_fds(imu_t *imu,int *fds){
 	err_check(ERROR_NULL_POINTER,"Cannot return fds in NULL pointer");
     }
     *fds = fileno(imu->device);
+#else
+    *fds = imu->device;
+#endif
     return ERROR_OK;
 }
 

@@ -115,7 +115,7 @@ int drive(uquad_mat_t* drive, uquad_mat_t* w)
 
 int f(uquad_mat_t* fx, kalman_io_t* kalman_io_data)
 {
-    double x     = kalman_io_data -> x_hat -> m_full[1];
+    double x     = kalman_io_data -> x_hat -> m_full[0];//TODO esto ta mal, no?
     double y     = kalman_io_data -> x_hat -> m_full[1];
     double z     = kalman_io_data -> x_hat -> m_full[2];
     double psi   = kalman_io_data -> x_hat -> m_full[3];
@@ -403,29 +403,29 @@ kalman_io_t* kalman_init()
     if(retval != ERROR_OK)
 	return NULL;
 
-    kalman_io_data->Q->m[0][0] = 10;
-    kalman_io_data->Q->m[1][1] = 10;
-    kalman_io_data->Q->m[2][2] = 10;
-    kalman_io_data->Q->m[3][3] = 10;
-    kalman_io_data->Q->m[4][4] = 10;
-    kalman_io_data->Q->m[5][5] = 10;
-    kalman_io_data->Q->m[6][6] = 10;
-    kalman_io_data->Q->m[7][7] = 10;
-    kalman_io_data->Q->m[8][8] = 10;
-    kalman_io_data->Q->m[9][9] = 10;
-    kalman_io_data->Q->m[10][10] = 10;
-    kalman_io_data->Q->m[11][11] = 10;
+    kalman_io_data->Q->m[0][0] = 0.010;
+    kalman_io_data->Q->m[1][1] = 0.010;
+    kalman_io_data->Q->m[2][2] = 0.010;
+    kalman_io_data->Q->m[3][3] = 0.010;
+    kalman_io_data->Q->m[4][4] = 0.010;
+    kalman_io_data->Q->m[5][5] = 0.010;
+    kalman_io_data->Q->m[6][6] = 0.010;
+    kalman_io_data->Q->m[7][7] = 0.010;
+    kalman_io_data->Q->m[8][8] = 0.010;
+    kalman_io_data->Q->m[9][9] = 0.010;
+    kalman_io_data->Q->m[10][10] = 0.010;
+    kalman_io_data->Q->m[11][11] = 0.010;
 
-    kalman_io_data->R->m[0][0] = 1000;
-    kalman_io_data->R->m[1][1] = 1000;
-    kalman_io_data->R->m[2][2] = 1000;
-    kalman_io_data->R->m[3][3] = 1000;
-    kalman_io_data->R->m[4][4] = 1000;
-    kalman_io_data->R->m[5][5] = 1000;
+    kalman_io_data->R->m[0][0] = 10000;
+    kalman_io_data->R->m[1][1] = 10000;
+    kalman_io_data->R->m[2][2] = 10000;
+    kalman_io_data->R->m[3][3] = 10000;
+    kalman_io_data->R->m[4][4] = 10000;
+    kalman_io_data->R->m[5][5] = 10000;
     kalman_io_data->R->m[6][6] = 10000;
     kalman_io_data->R->m[7][7] = 10000;
     kalman_io_data->R->m[8][8] = 10000;
-    kalman_io_data->R->m[9][9] = 100000;
+    kalman_io_data->R->m[9][9] = 10000;
 
     kalman_io_data->P->m[0][0] = 1;
     kalman_io_data->P->m[1][1] = 1;
@@ -552,12 +552,15 @@ void kalman_deinit(kalman_io_t *kalman_io_data)
     uquad_mat_free(TM);
     uquad_mat_free(D);
     uquad_mat_free(H);
-    uquad_mat_free(kalman_io_data->x_hat);
-    uquad_mat_free(kalman_io_data->x_);
-    uquad_mat_free(kalman_io_data->u);
-    uquad_mat_free(kalman_io_data->z);
-    uquad_mat_free(kalman_io_data->Q);
-    uquad_mat_free(kalman_io_data->R);
-    uquad_mat_free(kalman_io_data->P);
-    free(kalman_io_data);
+    if(kalman_io_data != NULL)
+    {
+	uquad_mat_free(kalman_io_data->x_hat);
+	uquad_mat_free(kalman_io_data->x_);
+	uquad_mat_free(kalman_io_data->u);
+	uquad_mat_free(kalman_io_data->z);
+	uquad_mat_free(kalman_io_data->Q);
+	uquad_mat_free(kalman_io_data->R);
+	uquad_mat_free(kalman_io_data->P);
+	free(kalman_io_data);
+    }
 }

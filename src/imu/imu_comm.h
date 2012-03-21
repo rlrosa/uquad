@@ -19,9 +19,8 @@
 #define IMU_LOG_DATA "imu_data.log"
 #define IMU_LOG_AVG "imu_avg.log"
 
-#define IMU_COMM_FAKE 0 // allows reading from log file
+#define IMU_COMM_FAKE 0 // allows reading from ascii log file
 
-#define IMU_FRAME_BINARY 1 // If 0, then IMU will send ascii, else binary
 #define IMU_FRAME_ELEMENTS 12
 #define IMU_FRAME_ALTERNATES_INIT 0
 #define IMU_FRAME_INIT_CHAR 'A'
@@ -52,7 +51,7 @@
 /// ASCII 33, sets the unit in default mode
 #define IMU_COMMAND_DEF '!'
 
-#define READ_RETRIES 16
+#define READ_RETRIES 1
 
 /**
  * Raw data from IMU
@@ -180,7 +179,11 @@ enum imu_status{
 typedef enum imu_status imu_status_t;
 
 typedef struct imu{
-    FILE * device;
+#if IMU_COMM_FAKE
+    FILE *device;
+#else
+    int device;
+#endif
     imu_status_t status;
     /// calibration
     imu_calib_t calib;
@@ -224,7 +227,7 @@ void imu_data_free(imu_data_t *imu_data);
 // -- -- -- -- -- -- -- -- -- -- -- --
 
 int imu_comm_get_fds(imu_t *imu, int *fds);
-int imu_comm_read(imu_t *imu);
+int imu_comm_read(imu_t *imu, uquad_bool_t *ready);
 
 uquad_bool_t imu_comm_unread(imu_t *imu);
 
@@ -232,6 +235,7 @@ int imu_comm_get_data_latest(imu_t *imu, imu_data_t *data);
 int imu_comm_get_data_latest_unread(imu_t *imu, imu_data_t *data);
 int imu_comm_get_raw_latest_unread(imu_t *imu, imu_raw_t *raw);
 
+uquad_bool_t imu_comm_avg_ready(imu_t *imu);
 int imu_comm_get_avg(imu_t *imu, imu_data_t *data);
 int imu_comm_get_avg_unread(imu_t *imu, imu_data_t *data);
 

@@ -90,7 +90,8 @@ int main(int argc, char *argv[]){
 
     kalman_io_t* kalman_io_data = kalman_init();
     uquad_mat_t* w = uquad_mat_alloc(4,1);
-    uquad_bool_t first_run = true;
+    uquad_bool_t first_run = true,
+	imu_ready = false;
     struct timeval tv_last_kalman, tv_diff, tv_tmp;
 
     while(1){
@@ -106,10 +107,10 @@ int main(int argc, char *argv[]){
 	    // Read from IMU
 	    if(FD_ISSET(imu_fd,&rfds)){
 		do_sleep = false;
-		retval = imu_comm_read(imu);
-		if(retval == ERROR_READ_TIMEOUT){
-		    printf("Not enough data available...\n");
-		    do_sleep = true;
+		retval = imu_comm_read(imu, &imu_ready);
+		if(!imu_ready){
+		    //		    printf("Not enough data available...\n");
+		    //		    do_sleep = true;
 		    continue;// skip the rest of the loop
 		}
 		if(retval != ERROR_OK){
@@ -135,15 +136,15 @@ int main(int argc, char *argv[]){
 			    first_run=false;
 			    continue;
 			}
-			//TODO use external timing
 			gettimeofday(&tv_tmp,NULL);
-			retval = uquad_timeval_substract(&tv_diff, tv_last_kalman, tv_tmp);
+			retval = uquad_timeval_substract(&tv_diff, tv_tmp, tv_last_kalman);
 			if(retval < 0)
 			{
 			    // negative time, absurd
 			    err_check(ERROR_FAIL, "Negative time is not valid!");
 			}
-			retval = uquad_kalman(kalman_io_data, w, &data, tv_diff.tv_usec/1000000);
+			//			retval = uquad_kalman(kalman_io_data, w, &data, tv_diff.tv_usec);
+			retval = uquad_kalman(kalman_io_data, w, &data, 13000.0);
 			err_propagate(retval);
 
 			retval = uquad_mat_transpose(tmp4print,kalman_io_data->x_hat);

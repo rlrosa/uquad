@@ -17,9 +17,8 @@ gps_t *  gps_comm_init(void);
  *  
  * @param gps 
  *
- * @return 
  */
-int  gps_comm_deinit(gps_t *gps);
+void  gps_comm_deinit(gps_t *gps);
 
 /** 
  * From gps.h

@@ -95,10 +95,7 @@ int main(void)
     if(ret != ERROR_OK){
 	err_log("Failed to deinit io.");
     }
-    ret = gps_comm_deinit(gps);
-    if(ret != ERROR_OK){
-	err_log("Failed to deinit gps.");
-    }
+    gps_comm_deinit(gps);
     return ERROR_OK;
 }
 // -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --

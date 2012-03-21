@@ -25,6 +25,7 @@ ERROR_NULL_POINTER,
 ERROR_IMU_STATUS,
 ERROR_IMU_NOT_CALIB,
 ERROR_IO_DEV_NOT_FOUND,
+ERROR_GPS,
 ERROR_GPS_OPEN,
 ERROR_GPS_STREAM,
 ERROR_MATH_MAX_DIM,
@@ -82,6 +83,13 @@ ERROR_TIMING
 #define quit_if(retval) if(retval!=ERROR_OK)quit()
 
 /**
+ * If @retval is an error, jump to cleanup.
+ * Usefull in init routines, allows cleaning up.
+ *
+ */
+#define cleanup_if(retval) if(retval != ERROR_OK) {fprintf(stderr,"backtrace:%s:%d\n",__FILE__,__LINE__);goto cleanup;}
+
+/**
  * If @retval is an error, call quit().
  * Usefull in test programs, allows cleaning up.
  * 
@@ -93,6 +101,12 @@ ERROR_TIMING
  * 
  */
 #define log_n_continue(retval,msg) if(retval!=ERROR_OK){err_log(msg);continue;}
+
+/**
+ * If @retval is an error, then log and jump to label
+ * 
+ */
+#define log_n_jump(retval,label,msg) if(retval!=ERROR_OK){err_log(msg);goto label;}
 
 /**
  * Verifies that malloc succeeded.
