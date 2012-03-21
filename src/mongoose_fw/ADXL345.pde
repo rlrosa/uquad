@@ -63,16 +63,17 @@ void Read_Accel()
       sen_data.accel_x_raw = ( ((int)buff[1]) << 8) | buff[0]; // X axis
       sen_data.accel_y_raw = ( ((int)buff[3]) << 8) | buff[2]; // Y axis 
       sen_data.accel_z_raw = ( ((int)buff[5]) << 8) | buff[4]; // Z axis
+
+      // NOT USED
+      /* //subtract the offset */
+      /* sen_data.accel_x = sen_data.accel_x_raw - sen_offset.accel_offset[0]; */
+      /* sen_data.accel_y = sen_data.accel_y_raw - sen_offset.accel_offset[1]; */
+      /* sen_data.accel_z = sen_data.accel_z_raw - sen_offset.accel_offset[2]; */
       
-      //subtract the offset
-      sen_data.accel_x = sen_data.accel_x_raw - sen_offset.accel_offset[0];
-      sen_data.accel_y = sen_data.accel_y_raw - sen_offset.accel_offset[1];
-      sen_data.accel_z = sen_data.accel_z_raw - sen_offset.accel_offset[2];
-      
-      //change the sign if needed
-      sen_data.accel_x *= -1* SENSOR_SIGN[3];
-      sen_data.accel_y *= -1* SENSOR_SIGN[4];
-      sen_data.accel_z *= -1* SENSOR_SIGN[5];
+      /* //change the sign if needed */
+      /* sen_data.accel_x *= -1* SENSOR_SIGN[3]; */
+      /* sen_data.accel_y *= -1* SENSOR_SIGN[4]; */
+      /* sen_data.accel_z *= -1* SENSOR_SIGN[5]; */
   
   
     }
