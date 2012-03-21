@@ -160,6 +160,16 @@ static int imu_comm_configure(imu_t *imu){
     return retval;
 }
 
+/** 
+ * Open a connection to the IMU.
+ * Can be either a serial port (read/write) using binary
+ * transmission, or a log file in ascii (read only).
+ * 
+ * @param imu 
+ * @param device Name of the device to open.
+ * 
+ * @return error code.
+ */
 static int imu_comm_connect(imu_t *imu, const char *device){
 #if IMU_COMM_FAKE
     // we don't want to write to the log file, just read.
@@ -179,6 +189,13 @@ static int imu_comm_connect(imu_t *imu, const char *device){
     return ERROR_OK;
 }
 
+/** 
+ * Closes any connections opened by the imu, if any.
+ * 
+ * @param imu 
+ * 
+ * @return error code.
+ */
 static int imu_comm_disconnect(imu_t *imu){
     int retval = ERROR_OK;
 #if IMU_COMM_FAKE
@@ -253,7 +270,10 @@ int imu_comm_free_calib_lin(imu_t *imu)
 /** 
  * Will load calibration for linear model from text file.
  * Will ignore spaces, end of lines, tabs, etc.
- * Expect to find matrices K,b and T (see imu_calib_lin_t)
+ * Expect to find:
+ *  - a matrix M = T*inv(K)
+ *  - a matrix b
+ * See imu_calib_lin_t for details.
  * 
  * @param imu 
  * @param path 
@@ -325,19 +345,7 @@ imu_t *imu_comm_init(const char *device){
     imu = (imu_t *)malloc(sizeof(imu_t));
     mem_alloc_check(imu);
     memset(imu,0,sizeof(imu_t));
-    // Set default values
-    //TODO
     imu->status = IMU_COMM_STATE_UNKNOWN;
-//    imu_comm_restart_sampling(imu);
-//    imu->settings.fs = IMU_DEFAULT_FS;
-//    imu->settings.T = (double)1/imu_fs_values[IMU_DEFAULT_FS];
-//    imu->settings.acc_sens = IMU_DEFAULT_ACC_SENS;
-//    imu->settings.frame_width_bytes = IMU_DEFAULT_FRAME_SIZE_BYTES;
-//    for(i=0;i<IMU_SENSOR_COUNT;++i){
-//	imu->null_estimates.xyzrpy[i] = (1<< (IMU_ADC_BITS - 1)); // Set to mid scale
-//    }
-//    imu->null_estimates.timestamp.tv_sec = 0;
-//    imu->null_estimates.timestamp.tv_usec = 0;
 
     // now connect to the imu
     retval = imu_comm_connect(imu,device);
@@ -400,6 +408,15 @@ imu_t *imu_comm_init(const char *device){
     return NULL;
 }
 
+/** 
+ * Free any memory allocated for imu (if any), and close any
+ * open connections (if any).
+ * Safe to call under any circunstance.
+ * 
+ * @param imu 
+ * 
+ * @return 
+ */
 int imu_comm_deinit(imu_t *imu){
     int retval = ERROR_OK;
     if(imu == NULL)
@@ -476,12 +493,14 @@ static int imu_comm_get_sync_end(imu_t *imu){
 
 static uint8_t previous_sync_char = IMU_FRAME_INIT_CHAR;
 /** 
- *Reads 1 byte, expecting it to be IMU_FRAME_INIT_CHAR.
+ *Reads 1 byte, expecting it to be one of the frame init chars.
+ *Will log warning if same sync char is read twice, because 
+ *this implies a frame was skipped.
  *NOTE: Assumes device can be read without blocking.
  *
  *@param imu 
  *
- *@return error code
+ *@return error code, sync achieved iif ERROR_OK
  */
 static int imu_comm_get_sync_init(imu_t *imu){
     int retval;//,i;
@@ -714,11 +733,11 @@ int imu_comm_add_frame(imu_t *imu, imu_raw_t *new_frame){
 
 #if !IMU_COMM_FAKE
 /** 
- *Assumes sync char was read, reads the rest of the data.
- *Does not read end of frame.
+ *Takes an array of bytes and parses them according to the format
+ *of the frames sent by the IMU, generating an imu_raw_t structure.
  *
- *@param imu 
- *@param new_frame New frame is returned here.
+ *@param new_frame New frame is returned here. Must have been previously allocated.
+ *@param data raw data.
  *
  *@return error code
  */
@@ -755,6 +774,18 @@ void imu_comm_parse_frame_binary(imu_raw_t *new_frame, uint8_t *data)
     // Everything went ok, pat pat :)
 }
 
+/** 
+ * Will read data from imu->device.
+ * Reading is non blocking.
+ * Assumes sync char was previously read.
+ * 
+ * @param imu 
+ * @param new_frame answer is returned here. Valid iff done. Mem for
+ * new_frame must have been previously allocated.
+ * @param done true iif a frame was completed.
+ * 
+ * @return error code
+ */
 int imu_comm_read_frame_binary(imu_t *imu, imu_raw_t *new_frame, uquad_bool_t *done)
 {
     static uint8_t buff_tmp_8[IMU_DEFAULT_FRAME_SIZE_BYTES-2]; // no space for init/end
@@ -783,11 +814,11 @@ int imu_comm_read_frame_binary(imu_t *imu, imu_raw_t *new_frame, uquad_bool_t *d
     }
     return ERROR_OK;
 }
-
 #else
 /** 
  *Assumes sync char was read, reads the rest of the data.
  *Does not read end of frame.
+ *NOTE: Will block if data is not available.
  *
  *@param imu 
  *@param new_frame New frame is returned here.
@@ -860,6 +891,7 @@ int imu_comm_read_frame_ascii(imu_t *imu, imu_raw_t *new_frame)
 }
 #endif
 
+/// IMU read state machine support
 typedef enum read_status{
     IDLE = 0,
     INIT_SYNC_DONE,
@@ -867,17 +899,18 @@ typedef enum read_status{
     END_SYNC_DONE,
     STATE_COUNT
 } read_status_t;
-
 #if TIMING_IMU
 static struct timeval tv_init, tv_end, tv_diff;
 #endif
 /** 
  *Attempts to sync with IMU, and read data.
+ *Reading is performed 1 byte at a time, so if select() has
+ *been checked previously, reading will not block.
  *
  *@param imu 
- *@param success 
+ *@param success This will be true when last byte read is end of frame char.
  *
- *@return 
+ *@return error code
  */
 int imu_comm_read(imu_t *imu, uquad_bool_t *ready){
     int retval;
@@ -1005,6 +1038,7 @@ int imu_comm_read(imu_t *imu, uquad_bool_t *ready){
 	break;
     }
 
+#if DEBUG
     if(*ready)
     {
 	/// -- -- -- -- -- -- -- -- -- -- -- --
@@ -1013,14 +1047,12 @@ int imu_comm_read(imu_t *imu, uquad_bool_t *ready){
 #if TIMING_IMU
 	gettimeofday(&tv_init,NULL);//TODO testing
 #endif
-#if DEBUG
 	retval = imu_comm_print_raw(&new_frame, imu->log_raw);
 	err_propagate(retval);
 	retval = imu_comm_raw2data(imu, &new_frame, &imu->tmp_data);
 	err_propagate(retval);
 	retval = imu_comm_print_data(&imu->tmp_data, imu->log_data);
 	err_propagate(retval);
-#endif //DEBUG
 #if TIMING_IMU
 	gettimeofday(&tv_end,NULL);//TODO testing
 	retval = uquad_timeval_substract(&tv_diff,tv_end,tv_init);//TODO testing
@@ -1032,6 +1064,7 @@ int imu_comm_read(imu_t *imu, uquad_bool_t *ready){
 	printf("\n");//TODO testing
 #endif
     }
+#endif //DEBUG
 
     return ERROR_OK;
 }
