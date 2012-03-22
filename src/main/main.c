@@ -465,6 +465,7 @@ int main(int argc, char *argv[]){
 	    {
 		// not enough samples yet.
 		runs++;
+		imu_update = false; // we only used averaged data
 		goto end_imu;
 	    }
 	    /// Get new unread data
