@@ -23,7 +23,7 @@ assignin('base','Ixx',2.32e-2);
 assignin('base','Iyy',2.32e-2);
 assignin('base','Izz',4.37e-2);
 assignin('base','Izzm',1.54e-5);
-assignin('base','Ts',5e-2)
+%assignin('base','Ts',5e-2)
 %Tiempo de simulación.
 t=linspace(ti,tf,(tf-ti)*10);
 
@@ -127,7 +127,7 @@ modelo=['lazo_cerrado_' modo '_dis'];
 %% Grafico la trayectoria
 plot3(X(:,1),X(:,2),X(:,3));
 grid
-hold on
+hold on;
 
 
 syms a b c
@@ -144,7 +144,7 @@ m_T_q =simple((Id/(R_theta))*(Id/(R_phi))*(Id/(R_psis)));
 
 
 i=1;
-hold on;
+
 while i<=length(X(:,1))/20
     
     c=X(20*(i-1)+1,4);
@@ -158,9 +158,12 @@ while i<=length(X(:,1))/20
     T=(R*[1 0 0 0 0 0 ; 0 0 1 0 0 0 ;0 0 0 0 1 0]);
     D=D+T;
     i=i+1;
-   
+    
     plot3(D(1,:),D(2,:),D(3,:));
-  
+    grid
+    %pause(20*1e-2)
+    %hold on
+    
   end
 hold off
 %axis equal
