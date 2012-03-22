@@ -19,7 +19,15 @@
 #define IMU_LOG_DATA "imu_data.log"
 #define IMU_LOG_AVG "imu_avg.log"
 
-#define IMU_COMM_FAKE 0 // allows reading from ascii log file
+/**
+ * Setting this define to 1 will make imu_comm
+ * interact with a w/r serial port transmitting binary
+ * data.
+ * Setting it to 0 will allow reading from a read only 
+ * ascii log file.
+ * 
+ */
+#define IMU_COMM_FAKE 0
 
 #define IMU_FRAME_ELEMENTS 12
 #define IMU_FRAME_ALTERNATES_INIT 0
@@ -37,7 +45,7 @@
 #define IMU_CALIB_SIZE 256 //TODO Tune!
 
 #define IMU_GYRO_DEFAULT_GAIN 14.375L
-#define IMU_P0_DEFAULT 101325.0L
+#define IMU_P0_DEFAULT 101325.0L // Value used if no calibration is available.
 
 #define IMU_BYTES_T_US 4
 
@@ -51,6 +59,7 @@
 /// ASCII 33, sets the unit in default mode
 #define IMU_COMMAND_DEF '!'
 
+/// If READ_RETRIES > 1, then reading may block.
 #define READ_RETRIES 1
 
 /**
@@ -75,12 +84,12 @@
  * NOTE: No separation chars.
  */
 typedef struct imu_frame{
-    uint16_t T_us; // Time since previous sample in us
-    int16_t acc[3];
-    int16_t gyro[3];
-    int16_t magn[3];
-    uint16_t temp;
-    uint32_t pres;
+    uint16_t T_us;   // Time since previous sample in us
+    int16_t acc [3]; // ADC counts
+    int16_t gyro[3]; // ADC counts
+    int16_t magn[3]; // ADC counts
+    uint16_t temp;   // Tens of °C
+    uint32_t pres;   // Pa
     struct timeval timestamp;
 }imu_raw_t;
 
@@ -91,11 +100,11 @@ typedef struct imu_frame{
  * 
  */
 typedef struct imu_frame_null{
-    int32_t acc[3];
-    int32_t gyro[3];
-    int32_t magn[3];
-    uint32_t temp;
-    uint64_t pres;
+    int32_t acc [3]; // ADC counts
+    int32_t gyro[3]; // ADC counts
+    int32_t magn[3]; // ADC counts
+    uint32_t temp;   // Tens of °C
+    uint64_t pres;   // Pa
 }imu_raw_null_t;
 
 /**
@@ -145,14 +154,14 @@ typedef struct imu_calibration_lin_model{
  * that use a linear model imu_calib_lin_t(): acc,gyro and  magn
  */
 typedef struct imu_calibration{
-    imu_calib_lin_t m_lin[3]; //{acc,gyro,magn}
-    struct timeval timestamp_file;
-    uquad_bool_t calib_file_ready;
+    imu_calib_lin_t m_lin[3];      // {acc,gyro,magn}.
+    struct timeval timestamp_file; // time at which calib was read.
+    uquad_bool_t calib_file_ready; // calibration was read from file.
 
-    imu_raw_null_t null_est;
-    struct timeval timestamp_estim;
-    uquad_bool_t calib_estim_ready;
-    int calibration_counter;
+    imu_raw_null_t null_est;       // null estimates gathered this run.
+    struct timeval timestamp_estim;// time at which null estimate finished.
+    uquad_bool_t calib_estim_ready;// null estimates are ready.
+    int calibration_counter;       // current number of frames available for calibration.
 }imu_calib_t;
 
 /**
@@ -194,15 +203,9 @@ typedef struct imu{
     int unread_data;
 
     /// avg
-    int frame_count;
-    imu_data_t tmp_avg;
-    /// unused stuff (left from atomic imu)
-    //    uquad_bool_t in_cfg_mode;
-    //    imu_settings_t settings;
-    //    int calibration_counter;
-    //    int frames_sampled;
-    //    imu_data_t avg;
-    //    struct timeval frame_avg_init,frame_avg_end;
+    int frame_count;    // # of frames available for avg
+    imu_data_t tmp_avg; // Aux mem used for avg.
+
 #if DEBUG
     imu_data_t tmp_data;
     FILE *log_raw;

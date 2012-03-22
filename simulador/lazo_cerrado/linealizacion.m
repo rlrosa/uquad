@@ -47,8 +47,8 @@ if modo=='hov'
         
         
         Rp=diag([1 1 1 1]);
-        [K,S,E]=lqr(Ah,Bh,Qp,Rp);
-
+        %[K,S,E]=lqr(Ah,Bh,Qp,Rp);
+        K=uquad_dlqr(Ah,Bh,Qp,Rp);
     else
         Qp2=diag([100 100 100 1 1 1 100 100 100 1 1 1]);
         Rp2=diag([1 1 1 1]);
