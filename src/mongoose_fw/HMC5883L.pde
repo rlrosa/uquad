@@ -29,68 +29,69 @@ void Read_Compass()
 {
           
     
-          float magRot_x;
-          float magRot_y;
-          float magRot_z;          
           
           
           magn.getRaw(&sen_data.magnetom_x_raw,&sen_data.magnetom_y_raw,&sen_data.magnetom_z_raw);
           
-          magn.getValues(&sen_data.magnetom_x,&sen_data.magnetom_y,&sen_data.magnetom_z);
+	  // NOT USED
+          /* float magRot_x; */
+          /* float magRot_y; */
+          /* float magRot_z;           */
+          /* magn.getValues(&sen_data.magnetom_x,&sen_data.magnetom_y,&sen_data.magnetom_z); */
 
-          //===============================================
-          // Apply Hard iron compensation 
-          // This removes effects of permanetly magnetic material
-          // that is on the sensor platform
-          // (offset X,Y,and Z of raw data)
+          /* //=============================================== */
+          /* // Apply Hard iron compensation  */
+          /* // This removes effects of permanetly magnetic material */
+          /* // that is on the sensor platform */
+          /* // (offset X,Y,and Z of raw data) */
           
-          sen_data.magnetom_x -= sen_offset.magnetom_offset[0];
-          sen_data.magnetom_y -= sen_offset.magnetom_offset[1];
-          sen_data.magnetom_z -= sen_offset.magnetom_offset[2];
+          /* sen_data.magnetom_x -= sen_offset.magnetom_offset[0]; */
+          /* sen_data.magnetom_y -= sen_offset.magnetom_offset[1]; */
+          /* sen_data.magnetom_z -= sen_offset.magnetom_offset[2]; */
           
           
           
-          //===============================================
-          // Apply Soft iron compensation
-          // This removes the distortion caused by ferrous 
-          // material that is on the sensor platform
-          // (turn the elipse into a circle)
+          /* //=============================================== */
+          /* // Apply Soft iron compensation */
+          /* // This removes the distortion caused by ferrous  */
+          /* // material that is on the sensor platform */
+          /* // (turn the elipse into a circle) */
    
-          //===============================================
-          //Apply correction to the X axis
+          /* //=============================================== */
+          /* //Apply correction to the X axis */
           
-          //rotate the XY vector
-          magRot_x = sen_data.magnetom_x * cos(sen_offset.magnetom_XY_Theta) + sen_data.magnetom_y *sin(sen_offset.magnetom_XY_Theta);
-          magRot_y = sen_data.magnetom_y * cos(sen_offset.magnetom_XY_Theta) - sen_data.magnetom_x *sin(sen_offset.magnetom_XY_Theta);
+          /* //rotate the XY vector */
+          /* magRot_x = sen_data.magnetom_x * cos(sen_offset.magnetom_XY_Theta) + sen_data.magnetom_y *sin(sen_offset.magnetom_XY_Theta); */
+          /* magRot_y = sen_data.magnetom_y * cos(sen_offset.magnetom_XY_Theta) - sen_data.magnetom_x *sin(sen_offset.magnetom_XY_Theta); */
           
-          //Scale the X
-          sen_data.magnetom_x = magRot_x/sen_offset.magnetom_XY_Scale;
+          /* //Scale the X */
+          /* sen_data.magnetom_x = magRot_x/sen_offset.magnetom_XY_Scale; */
           
-          //rotate the XY vector back
-          sen_data.magnetom_x = sen_data.magnetom_x * cos(-sen_offset.magnetom_XY_Theta) + magRot_y * sin(-sen_offset.magnetom_XY_Theta);
-          sen_data.magnetom_y = magRot_y * cos(-sen_offset.magnetom_XY_Theta) + sen_data.magnetom_x * sin(-sen_offset.magnetom_XY_Theta);
-          
-          
-          
-          //===============================================
-          //Apply correction to the Z axis
-          
-          //rotate the YZ vector
-          magRot_z = sen_data.magnetom_z * cos(sen_offset.magnetom_YZ_Theta) + sen_data.magnetom_y *sin(sen_offset.magnetom_YZ_Theta);
-          magRot_y = sen_data.magnetom_y * cos(sen_offset.magnetom_YZ_Theta) - sen_data.magnetom_z *sin(sen_offset.magnetom_YZ_Theta);
-          
-          //Scale the Z
-          sen_data.magnetom_z = magRot_z/sen_offset.magnetom_YZ_Scale;
-          
-          //rotate the YZ vector back
-          sen_data.magnetom_z = sen_data.magnetom_z * cos(-sen_offset.magnetom_YZ_Theta) + magRot_y * sin(-sen_offset.magnetom_YZ_Theta);
-          sen_data.magnetom_y = magRot_y * cos(-sen_offset.magnetom_YZ_Theta) + sen_data.magnetom_z * sin(-sen_offset.magnetom_YZ_Theta);
+          /* //rotate the XY vector back */
+          /* sen_data.magnetom_x = sen_data.magnetom_x * cos(-sen_offset.magnetom_XY_Theta) + magRot_y * sin(-sen_offset.magnetom_XY_Theta); */
+          /* sen_data.magnetom_y = magRot_y * cos(-sen_offset.magnetom_XY_Theta) + sen_data.magnetom_x * sin(-sen_offset.magnetom_XY_Theta); */
           
           
-          //===============================================
-          // Now that the magnetometer data is corrected,
-          // we can calculate our magnetic heading
-          Compass_Heading(); // Calculate magnetic heading 
+          
+          /* //=============================================== */
+          /* //Apply correction to the Z axis */
+          
+          /* //rotate the YZ vector */
+          /* magRot_z = sen_data.magnetom_z * cos(sen_offset.magnetom_YZ_Theta) + sen_data.magnetom_y *sin(sen_offset.magnetom_YZ_Theta); */
+          /* magRot_y = sen_data.magnetom_y * cos(sen_offset.magnetom_YZ_Theta) - sen_data.magnetom_z *sin(sen_offset.magnetom_YZ_Theta); */
+          
+          /* //Scale the Z */
+          /* sen_data.magnetom_z = magRot_z/sen_offset.magnetom_YZ_Scale; */
+          
+          /* //rotate the YZ vector back */
+          /* sen_data.magnetom_z = sen_data.magnetom_z * cos(-sen_offset.magnetom_YZ_Theta) + magRot_y * sin(-sen_offset.magnetom_YZ_Theta); */
+          /* sen_data.magnetom_y = magRot_y * cos(-sen_offset.magnetom_YZ_Theta) + sen_data.magnetom_z * sin(-sen_offset.magnetom_YZ_Theta); */
+          
+          
+          /* //=============================================== */
+          /* // Now that the magnetometer data is corrected, */
+          /* // we can calculate our magnetic heading */
+          /* Compass_Heading(); // Calculate magnetic heading  */
 }
 
 

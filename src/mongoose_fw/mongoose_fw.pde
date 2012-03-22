@@ -331,11 +331,9 @@ void loop() //Main Loop
     barom_update_state_machine();
     loop_in_us = micros();
     Dt = loop_in_us - time_barom_us;
-    //if ( (Dt) >= 
-    //	 SAMP_T_BAROM_INTR - SAMP_JITTER_INTR )
     if (loop_counter >= SAMP_INTRS_EXTR)
     {
-	//	Serial.print("Tetas:");
+	//	Serial.print("LG:");
 	//	Serial.println(Dt);
 	if(loop_counter != 0)
 	{
@@ -351,20 +349,19 @@ void loop() //Main Loop
 	    sen_data.magnetom_z_raw = (int)(acum_reads.magnetom[2]/loop_counter);
 	    // Reset
 	    loop_counter=0;
-	    acum_reads.acc = {0,0,0};
-	    acum_reads.gyro = {0,0,0};
-	    acum_reads.magnetom = {0,0,0};
+	    acum_reads.acc[0] = 0;acum_reads.acc[1] = 0;acum_reads.acc[2] = 0;
+	    acum_reads.gyro[0] = 0;acum_reads.gyro[1] = 0;acum_reads.gyro[2] = 0;
+	    acum_reads.magnetom[0] = 0;acum_reads.magnetom[1] = 0;acum_reads.magnetom[2] = 0;
 
 	    //	    Dt = micros();
 	    barom_update_state_machine();
 	    if(sensors.pressure || sensors.temp)
 		Baro_req_update();
 
-	    /* Serial.print("Pezon:"); */
+	    /* Serial.print("B:"); */
 	    /* Serial.println(micros()-Dt); */
 
 	    printdata(); 
-	    //Serial.println("breve historia sobre un niño");
 
 	    StatusLEDToggle();        
 	    digitalWrite(debugPin,LOW);
