@@ -5,7 +5,7 @@ clc
 %% Observaciones y constantes
 
 % [acrud,wcrud,mcrud,tcrud,bcrud]=mong_read('/gyro/logs/zv3y00',0);
-[acrud,wcrud,mcrud,tcrud,bcrud]=mong_read('tests/mongoose/magnetometro/data_horizontal/z00y00',0);
+[acrud,wcrud,mcrud,tcrud,bcrud]=mong_read('tests/mongoose/magnetometro/data_horizontal/z00y30',0);
 [a,w,euler] = mong_conv(acrud,wcrud,mcrud,0);
 
 fs = 30;                % Frecuencia en Hz
@@ -32,7 +32,7 @@ sigma_m = load('mag','sigma');sigma_m=sigma_m.sigma;
 
 %% Entradas
 
-w  = 10*ones(N,4);                  % Velocidades angulares de los motores en rad/s. Cada columna corresponde con 1 motor
+w  = 334.28*ones(N,4);              % Velocidades angulares de los motores en rad/s. Cada columna corresponde con 1 motor
 dw = zeros(N,4);                    % Derivada de w. Cada columna corresponde a 1 motor
 TM = 3.5296e-5*w.^2-4.9293e-4.*w;   % Fuerzas ejercidas por los motores en N. Cada columna corresponde a 1 motor.
 D  = 3.4734e-6*w.^2-1.3205e-4.*w;   % Torque de Drag ejercido por los motores en N*m. Cada columna corresponde a cada motor
@@ -56,13 +56,13 @@ h = @(psi,phi,theta,vqx,vqy,vqz,wqx,wqy,wqz,TM) [ ...% Devuelve [psi;phi;theta;a
     psi ; 
     phi ; 
     theta ; 
-    vqy*wqz-vqz*wqy;
-    vqz*wqx-vqx*wqz;
-    vqx*wqy-vqy*wqx+1/M*(TM(1)+TM(2)+TM(3)+TM(4));
+    0;
+    0;
+    1/M*(TM(1)+TM(2)+TM(3)+TM(4));
     wqx ; 
     wqy ; 
     wqz ...
-    ];    
+    ];
 
 F = @(psi,phi,theta,vqx,vqy,vqz,wqx,wqy,wqz,w,dw,TM,D) [ ... 
  T*(wqy*cos(psi)*tan(phi) - wqz*sin(psi)*tan(phi)) + 1,           T*(wqz*cos(psi)*(tan(phi)^2 + 1) + wqy*sin(psi)*(tan(phi)^2 + 1)), 0,      0,      0,      0,                                                     T,                                  T*sin(psi)*tan(phi),      T*cos(psi)*tan(phi);
@@ -76,16 +76,18 @@ F = @(psi,phi,theta,vqx,vqy,vqz,wqx,wqy,wqz,w,dw,TM,D) [ ...
                                                      0,                                                                           0, 0,      0,      0,      0,                                                     0,                                                    0,                        1];
  
  
-H = @(psi,phi,theta,vqx,vqy,vqz,wqx,wqy,wqz) [...  
- 1, 0, 0,    0,    0,    0,    0,    0,    0;
- 0, 1, 0,    0,    0,    0,    0,    0,    0;
- 0, 0, 1,    0,    0,    0,    0,    0,    0;
- 0, 0, 0,    0,  wqz, -wqy,    0, -vqz,  vqy;
- 0, 0, 0, -wqz,    0,  wqx,  vqz,    0, -vqx;
- 0, 0, 0,  wqy, -wqx,    0, -vqy,  vqx,    0;
- 0, 0, 0,    0,    0,    0,    1,    0,    0;
- 0, 0, 0,    0,    0,    0,    0,    1,    0;
- 0, 0, 0,    0,    0,    0,    0,    0,    1];
+% H = @(psi,phi,theta,vqx,vqy,vqz,wqx,wqy,wqz) [...  
+H = @() [...
+1, 0, 0, 0, 0, 0, 0, 0, 0
+0, 1, 0, 0, 0, 0, 0, 0, 0
+0, 0, 1, 0, 0, 0, 0, 0, 0
+0, 0, 0, 0, 0, 0, 0, 0, 0
+0, 0, 0, 0, 0, 0, 0, 0, 0
+0, 0, 0, 0, 0, 0, 0, 0, 0
+0, 0, 0, 0, 0, 0, 1, 0, 0
+0, 0, 0, 0, 0, 0, 0, 1, 0
+0, 0, 0, 0, 0, 0, 0, 0, 1];
+ 
 
 
 Q = sigma_w^2*eye(Ns);  % 10*eye(Ns)
@@ -115,7 +117,8 @@ for i=2:N
     
     % Update
     yk         = z(i,:)' - h(x_(1),x_(2),x_(3),x_(4),x_(5),x_(6),x_(7),x_(8),x_(9),TM(i-1,:));
-    Hk         = H(x_hat(i-1,1),x_hat(i-1,2),x_hat(i-1,3),x_hat(i-1,4),x_hat(i-1,5),x_hat(i-1,6),x_hat(i-1,7),x_hat(i-1,8),x_hat(i-1,9));
+%     Hk         = H(x_hat(i-1,1),x_hat(i-1,2),x_hat(i-1,3),x_hat(i-1,4),x_hat(i-1,5),x_hat(i-1,6),x_hat(i-1,7),x_hat(i-1,8),x_hat(i-1,9));
+    Hk         = H();
     Sk         = Hk*P_*Hk' + R;
     Kk         = P_*Hk'*Sk^-1;
     x_hat(i,:) = x_ + Kk*yk;
