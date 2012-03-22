@@ -2,7 +2,7 @@ function K=uquad_dlqr(A,B,Q,R)
 
 rows=length(B(1,:));
 cols=length(B(:,1));
-Ts=5e-2;
+Ts=evalin('base','Ts');
 syms s;
 A=expm(A*Ts);
 gamma=expm(A*s);

@@ -92,7 +92,7 @@ Model {
       Name		      "w"
     }
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.264"
+    ComputedModelVersion    "1.270"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -123,9 +123,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "pater"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Wed Mar 21 13:31:46 2012"
-  RTWModifiedTimeStamp	  254237505
-  ModelVersionFormat	  "1.%<AutoIncrement:264>"
+  LastModifiedDate	  "Thu Mar 22 16:50:32 2012"
+  RTWModifiedTimeStamp	  254335533
+  ModelVersionFormat	  "1.%<AutoIncrement:270>"
   ConfigurationManager	  "None"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -906,6 +906,15 @@ Model {
       SampleTime	      "-1"
     }
     Block {
+      BlockType		      TransportDelay
+      DelayTime		      "1"
+      InitialOutput	      "0"
+      BufferSize	      "1024"
+      FixedBuffer	      off
+      TransDelayFeedthrough   off
+      PadeOrder		      "0"
+    }
+    Block {
       BlockType		      Trigonometry
       Operator		      "sin"
       ApproximationMethod     "None"
@@ -917,6 +926,10 @@ Model {
       BlockType		      UnaryMinus
       SampleTime	      "-1"
       SaturateOnIntegerOverflow	off
+    }
+    Block {
+      BlockType		      ZeroOrderHold
+      SampleTime	      "1"
     }
   }
   System {
@@ -935,7 +948,7 @@ Model {
     ShowPageBoundaries	    off
     ZoomFactor		    "100"
     ReportName		    "simulink-default.rpt"
-    SIDHighWatermark	    "1770"
+    SIDHighWatermark	    "1778"
     Block {
       BlockType		      Inport
       Name		      "w1"
@@ -10585,6 +10598,21 @@ Model {
       SaturateOnIntegerOverflow	off
     }
     Block {
+      BlockType		      TransportDelay
+      Name		      "Transport\nDelay"
+      SID		      "1778"
+      Ports		      [1, 1]
+      Position		      [105, 690, 135, 720]
+      InitialOutput	      "[x0;y0;z0;theta0]"
+    }
+    Block {
+      BlockType		      ZeroOrderHold
+      Name		      "Zero-Order\nHold"
+      SID		      "1777"
+      Position		      [160, 690, 190, 720]
+      SampleTime	      "Ts"
+    }
+    Block {
       BlockType		      Outport
       Name		      "x"
       SID		      "339"
@@ -10757,7 +10785,7 @@ Model {
     Line {
       SrcBlock		      "Setpoint"
       SrcPort		      1
-      DstBlock		      "N"
+      DstBlock		      "Transport\nDelay"
       DstPort		      1
     }
     Line {
@@ -11071,6 +11099,18 @@ Model {
 	DstBlock		"Mux1"
 	DstPort			4
       }
+    }
+    Line {
+      SrcBlock		      "Transport\nDelay"
+      SrcPort		      1
+      DstBlock		      "Zero-Order\nHold"
+      DstPort		      1
+    }
+    Line {
+      SrcBlock		      "Zero-Order\nHold"
+      SrcPort		      1
+      DstBlock		      "N"
+      DstPort		      1
     }
     Annotation {
       Position		      [632, 572]
