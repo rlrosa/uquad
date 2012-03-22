@@ -1,7 +1,42 @@
-clear all
+%clear all
 clc
 
-global mm mt
+global mm mc
+
+%% Calibracion bola y conversion
+% Usa MgnCalibration.m y cost_bola.m
+fprintf('Cargando datos...\n')
+[~,~,mm,t,~,~,~,~] = ...
+  mong_read('tests/mongoose/magnetometro/data_marzo/imu_raw.log',0,1);
+[K,b] = MgnCalibration(mm);
+
+mc = zeros(size(mm));
+for i=1:length(mm(:,1));
+  mc(i,:)=(K*(mm(i,:)'-b));
+end
+
+T_0 = mean(t);
+
+save('mag','K','b','T_0')
+
+fprintf('Aplicando lsqlin()...\n');
+
+x0=[0 0 0 1];
+[X,RESNORM,RESIDUAL,EXITFLAG]=lsqnonlin(@cost_bola,x0,[],[],optimset('MaxFunEvals',10000,'MaxIter',1000));
+
+% Ahora tengo X, que tiene el centro de la bola en X(1:3).
+% Vamos a ver cuan bola queda:
+for i=1:length(mm(:,1));
+  mc(i,:)=mc(i,:) - X(1:3);
+end
+norm_bola = sqrt(mc(:,1).^2 + mc(:,2).^2 + mc(:,3).^2);
+fprintf('\nEl radio de una bola que tendria que ser de radio 1 dio:\n')
+u=mean(norm_bola)
+sigma=std(norm_bola)
+
+return; % No interesa el resto.
+
+%% Calib mesa
 
 mm = zeros(18,3);
 mt = zeros(18,3);
@@ -67,20 +102,6 @@ sigma=std(RESIDUAL);
 save('mag','X','sigma','T_0')
 
 [am,~,mc]=mong_conv(am,w,mm,0);
-
-%% Calibración bola y conversión
-
-K = [0.00473160006403247     -2.18916898319836e-05      0.000309423482503981;
-                         0       0.00455025410014059      7.83170752308679e-05;
-                         0                         0       0.00534686558080686];
-                     
-b=  [23.3152609806586;
-    -126.624459617958;
-    19.0429011162953];
-
-for i=1:length(mm(1,:));
-mc(i,:)=(K*(mm(i,:)'-b));
-end
 
 %% Diferencias de ángulos usando solo magneto
 
