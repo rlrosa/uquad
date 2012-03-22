@@ -1133,7 +1133,7 @@ int convert_2_euler(imu_data_t *data)
  * 
  * @return 
  */
-static int imu_comm_convert_lin(imu_t *imu, int16_t *raw, uquad_mat_t *conv, imu_calib_lin_t *calib, uquad_bool_t scale)
+static int imu_comm_convert_lin(imu_t *imu, int16_t *raw, uquad_mat_t *conv, imu_calib_lin_t *calib)
 {
     int i,retval = ERROR_OK;
     if(!imu->calib.calib_file_ready && !imu->calib.calib_estim_ready)
@@ -1142,10 +1142,7 @@ static int imu_comm_convert_lin(imu_t *imu, int16_t *raw, uquad_mat_t *conv, imu
     }
 
     for(i=0; i < 3; ++i)
-	if(scale)
-	    m3x1_0->m_full[i] = ((double) raw[i])/IMU_GYRO_DEFAULT_GAIN;
-	else
-	    m3x1_0->m_full[i] = ((double) raw[i]);
+	m3x1_0->m_full[i] = ((double) raw[i]);
     /// m3x1_0 has tmp answer
     /// tmp = raw - b
     retval = uquad_mat_sub(m3x1_1,m3x1_0, calib->b);
@@ -1170,7 +1167,7 @@ static int imu_comm_convert_lin(imu_t *imu, int16_t *raw, uquad_mat_t *conv, imu
 static int imu_comm_acc_convert(imu_t *imu, int16_t *raw, uquad_mat_t *acc)
 {
     int retval = ERROR_OK;
-    retval = imu_comm_convert_lin(imu, raw, acc, imu->calib.m_lin,false);
+    retval = imu_comm_convert_lin(imu, raw, acc, imu->calib.m_lin);
     err_propagate(retval);
     return retval;
 }
@@ -1181,14 +1178,14 @@ static int imu_comm_acc_convert(imu_t *imu, int16_t *raw, uquad_mat_t *acc)
  *
  *@param imu 
  *@param data Raw gyro data.
- *@param gyro_reading Rate in °/s
+ *@param gyro_reading Rate in rad/s
  *
  *@return error code
  */
 static int imu_comm_gyro_convert(imu_t *imu, int16_t *raw, uquad_mat_t *gyro)
 {
     int retval = ERROR_OK;
-    retval = imu_comm_convert_lin(imu, raw, gyro, imu->calib.m_lin + 1,true);
+    retval = imu_comm_convert_lin(imu, raw, gyro, imu->calib.m_lin + 1);
     err_propagate(retval);
     return retval;
 }
@@ -1206,7 +1203,7 @@ static int imu_comm_gyro_convert(imu_t *imu, int16_t *raw, uquad_mat_t *gyro)
 static int imu_comm_magn_convert(imu_t *imu, int16_t *raw, uquad_mat_t *magn)
 {
     int retval = ERROR_OK;
-    retval = imu_comm_convert_lin(imu, raw, magn, imu->calib.m_lin + 2,false);
+    retval = imu_comm_convert_lin(imu, raw, magn, imu->calib.m_lin + 2);
     err_propagate(retval);
     return retval;
 }
