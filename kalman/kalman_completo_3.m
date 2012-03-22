@@ -41,7 +41,7 @@ clc
 
 [acrud,wcrud,mcrud,tcrud,bcrud,~,~,T]=mong_read('log-zparriba4',0);
 % [acrud,wcrud,mcrud,tcrud,bcrud,~,~,T]=mong_read('imu_raw_7.log',0,1);
-[a,w,euler] = mong_conv(acrud,wcrud/14.375,mcrud,0);
+[a,w,euler] = mong_conv(acrud,wcrud,mcrud,0);
 b=altitud(bcrud);
 
 % Test contra c - Descomentar esto para ver como se porta con datos
@@ -68,9 +68,9 @@ L    = 0.29;            % Largo en metros del los brazos del quad
 M    = 1.541;           % Masa del Quad en kg
 g    = 9.81;            % Aceleracion gravitatoria
 
-sigma_a = load('acc','sigma');sigma_a=sigma_a.sigma;
-sigma_w = load('gyro','sigma');sigma_w=sigma_w.sigma;
-sigma_m = load('mag','sigma');sigma_m=sigma_m.sigma;
+% sigma_a = load('acc','sigma');sigma_a=sigma_a.sigma;
+% sigma_w = load('gyro','sigma');sigma_w=sigma_w.sigma;
+% sigma_m = load('mag','sigma');sigma_m=sigma_m.sigma;
 
 %% Entradas
 
@@ -143,8 +143,8 @@ H = @() ...
 
 % Q = sigma_w^2*eye(Ns);  % 10*eye(Ns)
 % Q = 100*eye(Ns);
-Q = diag(.1*[100 100 100 100 100 100 100 100 100 100 100 100]);
-R = diag(100*[10 10 10 10 10 10 100 100 100 100]);
+Q = diag(.1*[100 100 100 100 100 100 100 100 100 10 10 10]);
+R = diag(10000*[100 100 100 100 100 100 100 100 100 10]);
 
 P = 1*eye(Ns);
 x_hat=zeros(N,Ns);

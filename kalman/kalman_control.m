@@ -42,22 +42,22 @@ clc
 % [acrud,wcrud,mcrud,tcrud,bcrud]=mong_read('/gyro/logs/zv3y00',0);
 % [acrud,wcrud,mcrud,tcrud,bcrud]=mong_read('tests/mongoose/magnetometro/data_horizontal/x00z00',0);
 
-% [acrud,wcrud,mcrud,tcrud,bcrud,~,~,T]=mong_read('log-zparriba4',0);
-%[acrud,wcrud,mcrud,tcrud,bcrud,~,~,T]=mong_read('imu_raw_8.log',0,1);
+[acrud,wcrud,mcrud,tcrud,bcrud,~,~,T]=mong_read('log-zparriba4',0);
+% [acrud,wcrud,mcrud,tcrud,bcrud,~,~,T]=mong_read('imu_raw_8.log',0,1);
 
-%[acrud,wcrud,mcrud,tcrud,bcrud,~,~,T]=mong_read('./src/build/main/imu_raw.log',0,1);
-%[a,w,euler] = mong_conv(acrud,wcrud/14.375,mcrud,0);
-%b=altitud(bcrud);
+% [acrud,wcrud,mcrud,tcrud,bcrud,~,~,T]=mong_read('./src/build/main/imu_raw.log',0,1);
+[a,w,euler] = mong_conv(acrud,wcrud/14.375,mcrud,0);
+b=altitud(bcrud);
 
 % Test contra c
 % Usar datos que recibe uquad_kalman() para verificar comportamiento acorde
 % al codigo.
-xhat = load('./src/build/main/kalman_in.log');
-a = xhat(:,5:7);
-w = xhat(:,8:10);
-euler = xhat(:,11:13);
-b = xhat(:,end);
-T = xhat(:,1)/1e6;
+% xhat = load('./src/build/main/kalman_in.log');
+% a = xhat(:,5:7);
+% w = xhat(:,8:10);
+% euler = xhat(:,11:13);
+% b = xhat(:,end);
+% T = xhat(:,1)/1e6;
 
 % w(:,1) = w(:,1)-mean(w(1:50,1));
 % w(:,2) = w(:,2)-mean(w(1:50,2));
@@ -152,11 +152,11 @@ H = @() ...
 % Valores
 
 % uquad_kalman.c en git en 9f421f090debbb63725be9413fe659b98d043cd7
-%Q = diag(.1*[100 100 100 100 100 100 100 100 100 100 100 100]);
-%R = diag(100*[10 10 10 10 10 10 100 100 100 100]);
+Q = diag(.1*[100 100 100 100 100 100 100 100 100 100 100 100]);
+R = diag(100*[10 10 10 10 10 10 100 100 100 100]);
 % Configuracion mas estable (salta menos, aunque igual diverge)
-Q = diag(.0001*[100 100 100 100 100 100 100 100 100 100 100 100]);
-R = diag(1000*[10 10 10 10 10 10 10 10 10 10]);
+% Q = diag(.0001*[100 100 100 100 100 100 100 100 100 100 100 100]);
+% R = diag(1000*[10 10 10 10 10 10 10 10 10 10]);
 
 
 P = 1*eye(Ns);
