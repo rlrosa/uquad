@@ -114,8 +114,8 @@ typedef struct imu_frame_null{
 typedef struct imu_data{
     double T_us;       // us
     uquad_mat_t *acc;  // m/s^2
-    uquad_mat_t *gyro; // °/s
-    uquad_mat_t *magn; // °
+    uquad_mat_t *gyro; // rad/s
+    uquad_mat_t *magn; // rad
     double temp;       // °C
     double alt;        // m
 
