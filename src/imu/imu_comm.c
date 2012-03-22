@@ -1003,7 +1003,7 @@ int imu_comm_read(imu_t *imu, uquad_bool_t *ready){
 	}//TODO testing
 	printf("%ld\t", tv_diff.tv_usec);//TODO testing
 #endif
-	break;
+	//break; // Do not break here, keep going!
     case END_SYNC_DONE:
 	/// -- -- -- -- -- -- -- -- -- -- -- --
 	/// 4 - add
