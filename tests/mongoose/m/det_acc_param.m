@@ -43,7 +43,7 @@ for i=1:3
                 phi='45';
                  k=k+1; 
             end
-            str=['acc/logs/' eje theta otro phi '.txt'];            
+            str=['acc/logs_marzo/' eje theta otro phi '.txt'];
             [a,w,c,t,b]=mong_read(str,0);
             te(k,1) = mean(t);
             am(:,k)=[mean(a(:,1)); mean(a(:,2));mean(a(:,3))];
