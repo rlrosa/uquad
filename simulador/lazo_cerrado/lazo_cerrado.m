@@ -22,7 +22,7 @@ function varargout = lazo_cerrado(varargin)
 
 % Edit the above text to modify the response to help lazo_cerrado
 
-% Last Modified by GUIDE v2.5 21-Mar-2012 09:55:17
+% Last Modified by GUIDE v2.5 21-Mar-2012 23:49:57
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -514,7 +514,9 @@ function slider2_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-assignin('base','ang_amp',2*get(hObject,'Value')*pi/180);
+var = 2*get(hObject,'Value');
+assignin('base','ang_amp',var*pi/180);
+set(handles.ruido2,'String',num2str(var,'%f1.2'));
 
 % --- Executes during object creation, after setting all properties.
 function slider2_CreateFcn(hObject, eventdata, handles)
@@ -529,6 +531,8 @@ end
 
 assignin('base','ang_amp',0);
 set(hObject,'Value',0);
+
+
 % --- Executes on slider movement.
 function slider1_Callback(hObject, eventdata, handles)
 % hObject    handle to slider1 (see GCBO)
@@ -537,7 +541,10 @@ function slider1_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-assignin('base','ang_frec',0.5*get(hObject,'Value'));
+var = 0.5*get(hObject,'Value');
+assignin('base','ang_frec',var);
+set(handles.ruido1,'String',num2str(var,'%1.2f'));
+
 
 % --- Executes during object creation, after setting all properties.
 function slider1_CreateFcn(hObject, eventdata, handles)
@@ -559,7 +566,9 @@ function slider4_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-assignin('base','ang_offset',(-2+4*get(hObject,'Value'))*pi/180);
+var = (-2+4*get(hObject,'Value'));
+assignin('base','ang_offset',var*pi/180);
+set(handles.ruido4,'String',num2str(var,'%f1.2'));
 
 % --- Executes during object creation, after setting all properties.
 function slider4_CreateFcn(hObject, eventdata, handles)
@@ -582,7 +591,9 @@ function slider3_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-assignin('base','ang_cov',2*get(hObject,'Value')*pi/180);
+var=2*get(hObject,'Value');
+assignin('base','ang_cov',var*pi/180);
+set(handles.ruido3,'String',num2str(var,'%f1.2'));
 
 % --- Executes during object creation, after setting all properties.
 function slider3_CreateFcn(hObject, eventdata, handles)
@@ -605,7 +616,9 @@ function slider6_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-
+var=2*get(hObject,'Value');
+assignin('base','yaw_amp',var*pi/180);
+set(handles.ruido6,'String',num2str(var,'%f1.2'));
 
 % --- Executes during object creation, after setting all properties.
 function slider6_CreateFcn(hObject, eventdata, handles)
@@ -627,7 +640,9 @@ function slider5_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-
+var=0.5*get(hObject,'Value');
+assignin('base','yaw_frec',var);
+set(handles.ruido5,'String',num2str(var,'%f1.2'));
 
 % --- Executes during object creation, after setting all properties.
 function slider5_CreateFcn(hObject, eventdata, handles)
@@ -649,7 +664,9 @@ function slider8_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-
+var = (-2+4*get(hObject,'Value'));
+assignin('base','yaw_offset',var*pi/180);
+set(handles.ruido8,'String',num2str(var,'%f1.2'));
 
 % --- Executes during object creation, after setting all properties.
 function slider8_CreateFcn(hObject, eventdata, handles)
@@ -672,7 +689,9 @@ function slider7_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-
+var=2*get(hObject,'Value');
+assignin('base','yaw_cov',var*pi/180);
+set(handles.ruido7,'String',num2str(var,'%f1.2'));
 
 % --- Executes during object creation, after setting all properties.
 function slider7_CreateFcn(hObject, eventdata, handles)
@@ -695,7 +714,9 @@ function slider10_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-assignin('base','wq_amp',0.2*get(hObject,'Value'));
+var=0.2*get(hObject,'Value');
+assignin('base','wq_amp',var*pi/180);
+set(handles.ruido10,'String',num2str(var,'%f1.2'));
 
 % --- Executes during object creation, after setting all properties.
 function slider10_CreateFcn(hObject, eventdata, handles)
@@ -717,7 +738,9 @@ function slider9_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-assignin('base','wq_frec',0.5*get(hObject,'Value'));
+var=0.1*get(hObject,'Value');
+assignin('base','wq_frec',var);
+set(handles.ruido9,'String',num2str(var,'%f1.2'));
 
 % --- Executes during object creation, after setting all properties.
 function slider9_CreateFcn(hObject, eventdata, handles)
@@ -739,7 +762,9 @@ function slider12_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-assignin('base','wq_offset',-2+4*get(hObject,'Value'));
+var = (-2+4*get(hObject,'Value'));
+assignin('base','wq_offset',var*pi/180);
+set(handles.ruido12,'String',num2str(var,'%f1.2'));
 
 % --- Executes during object creation, after setting all properties.
 function slider12_CreateFcn(hObject, eventdata, handles)
@@ -762,8 +787,9 @@ function slider11_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-assignin('base','wq_cov',0.2*get(hObject,'Value'));
-
+var=0.2*get(hObject,'Value');
+assignin('base','wq_amp',var*pi/180);
+set(handles.ruido11,'String',num2str(var,'%f1.2'));
 % --- Executes during object creation, after setting all properties.
 function slider11_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to slider11 (see GCBO)
@@ -786,7 +812,9 @@ function slider14_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-assignin('base','vq_amp',0.5*get(hObject,'Value'));
+var=0.5*get(hObject,'Value');
+assignin('base','vq_amp',var*pi/180);
+set(handles.ruido22,'String',num2str(var,'%f1.2'));
 
 % --- Executes during object creation, after setting all properties.
 function slider14_CreateFcn(hObject, eventdata, handles)
@@ -809,7 +837,9 @@ function slider13_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-assignin('base','vq_frec',0.5*get(hObject,'Value'));
+var=0.5*get(hObject,'Value');
+assignin('base','vq_frec',var);
+set(handles.ruido21,'String',num2str(var,'%f1.2'));
 
 % --- Executes during object creation, after setting all properties.
 function slider13_CreateFcn(hObject, eventdata, handles)
@@ -831,7 +861,9 @@ function slider16_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-assignin('base','vq_offset',-2+4*get(hObject,'Value'));
+var = (-2+4*get(hObject,'Value'));
+assignin('base','vq_offset',var*pi/180);
+set(handles.ruido24,'String',num2str(var,'%f1.2'));
 
 % --- Executes during object creation, after setting all properties.
 function slider16_CreateFcn(hObject, eventdata, handles)
@@ -854,7 +886,9 @@ function slider15_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-assignin('base','vq_conv',0.1*get(hObject,'Value'));
+var=0.5*get(hObject,'Value');
+assignin('base','vq_amp',var*pi/180);
+set(handles.ruido23,'String',num2str(var,'%f1.2'));
 
 % --- Executes during object creation, after setting all properties.
 function slider15_CreateFcn(hObject, eventdata, handles)
@@ -877,7 +911,9 @@ function slider22_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-assignin('base','z_amp',2*get(hObject,'Value'));
+var=get(hObject,'Value');
+assignin('base','z_amp',var);
+set(handles.ruido18,'String',num2str(var,'%f1.2'));
 
 % --- Executes during object creation, after setting all properties.
 function slider22_CreateFcn(hObject, eventdata, handles)
@@ -899,7 +935,9 @@ function slider21_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-assignin('base','z_frec',0.1*get(hObject,'Value'));
+var=0.1*get(hObject,'Value');
+assignin('base','z_frec',var);
+set(handles.ruido17,'String',num2str(var,'%f1.2'));
 
 % --- Executes during object creation, after setting all properties.
 function slider21_CreateFcn(hObject, eventdata, handles)
@@ -921,7 +959,9 @@ function slider24_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-assignin('base','z_offset',-0.5+0.5*get(hobject,'Value'));
+var = (-0.5+get(hObject,'Value'));
+assignin('base','z_offset',var*pi/180);
+set(handles.ruido20,'String',num2str(var,'%f1.2'));
 
 % --- Executes during object creation, after setting all properties.
 function slider24_CreateFcn(hObject, eventdata, handles)
@@ -944,7 +984,9 @@ function slider23_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-assignin('base','z_cov',2*get(hObject,'Value'));
+var=2*get(hObject,'Value');
+assignin('base','z_cov',var);
+set(handles.ruido19,'String',num2str(var,'%f1.2'));
 
 % --- Executes during object creation, after setting all properties.
 function slider23_CreateFcn(hObject, eventdata, handles)
@@ -966,8 +1008,9 @@ function slider18_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-assignin('base','hor_amp',2*get(hObject,'Value'));
-
+var = 2*get(hObject,'Value');
+assignin('base','hor_amp',var);
+set(handles.ruido14,'String',num2str(var,'%f1.2'));
 % --- Executes during object creation, after setting all properties.
 function slider18_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to slider18 (see GCBO)
@@ -988,7 +1031,9 @@ function slider17_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-assignin('base','hor_frec',5e-3*get(hObject,'Value'));
+var = 5*get(hObject,'Value');
+assignin('base','hor_frec',var);
+set(handles.ruido13,'String',num2str(var,'%1.2f'));
 
 % --- Executes during object creation, after setting all properties.
 function slider17_CreateFcn(hObject, eventdata, handles)
@@ -1010,7 +1055,9 @@ function slider20_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-assignin('base','hor_offset',-1+2*get(hObject,'Value'));
+var = (-1+2*get(hObject,'Value'));
+assignin('base','hor_offset',var);
+set(handles.ruido16,'String',num2str(var,'%f1.2'));
 
 % --- Executes during object creation, after setting all properties.
 function slider20_CreateFcn(hObject, eventdata, handles)
@@ -1033,7 +1080,9 @@ function slider19_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-assignin('base','hor_cov',2*get(hObject,'Value'));
+var=2*get(hObject,'Value');
+assignin('base','hor_cov',var);
+set(handles.ruido15,'String',num2str(var,'%f1.2'));
 
 % --- Executes during object creation, after setting all properties.
 function slider19_CreateFcn(hObject, eventdata, handles)
@@ -1046,3 +1095,206 @@ if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColo
     set(hObject,'BackgroundColor',[.9 .9 .9]);
 end
 assignin('base','hor_cov',0);
+
+
+
+function edit31_Callback(hObject, eventdata, handles)
+% hObject    handle to edit31 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit31 as text
+%        str2double(get(hObject,'String')) returns contents of edit31 as a double
+
+var=1e-3*str2double(get(hObject,'String'));
+assignin('base','Ts',var)
+
+% --- Executes during object creation, after setting all properties.
+function edit31_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit31 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+assignin('base','Ts',5e-2)
+
+
+
+
+% --- Executes during object creation, after setting all properties.
+function ruido1_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to ruido1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+set(hObject,'String','0');
+
+
+% --- Executes during object creation, after setting all properties.
+function ruido2_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to ruido2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+set(hObject,'String','0');
+
+% --- Executes during object creation, after setting all properties.
+function ruido3_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to ruido3 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+set(hObject,'String','0');
+
+% --- Executes during object creation, after setting all properties.
+function ruido4_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to ruido4 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+set(hObject,'String','0');
+
+
+% --- Executes during object creation, after setting all properties.
+function ruido5_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to ruido5 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+set(hObject,'String','0');
+
+% --- Executes during object creation, after setting all properties.
+function ruido6_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to ruido6 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+set(hObject,'String','0');
+
+% --- Executes during object creation, after setting all properties.
+function ruido7_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to ruido7 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+set(hObject,'String','0');
+
+% --- Executes during object creation, after setting all properties.
+function ruido8_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to ruido8 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+set(hObject,'String','0');
+
+
+% --- Executes during object creation, after setting all properties.
+function ruido9_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to ruido9 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+set(hObject,'String','0');
+
+% --- Executes during object creation, after setting all properties.
+function ruido10_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to ruido10 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+set(hObject,'String','0');
+
+% --- Executes during object creation, after setting all properties.
+function ruido11_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to ruido11 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+set(hObject,'String','0');
+
+% --- Executes during object creation, after setting all properties.
+function ruido12_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to ruido12 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+set(hObject,'String','0');
+
+
+% --- Executes during object creation, after setting all properties.
+function ruido13_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to ruido13 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+set(hObject,'String','0');
+
+% --- Executes during object creation, after setting all properties.
+function ruido15_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to ruido15 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+set(hObject,'String','0');
+
+% --- Executes during object creation, after setting all properties.
+function ruido16_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to ruido16 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+set(hObject,'String','0');
+
+% --- Executes during object creation, after setting all properties.
+function ruido14_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to ruido14 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+set(hObject,'String','0');
+
+
+% --- Executes during object creation, after setting all properties.
+function ruido17_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to ruido17 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+set(hObject,'String','0');
+
+% --- Executes during object creation, after setting all properties.
+function ruido18_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to ruido18 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+set(hObject,'String','0');
+
+% --- Executes during object creation, after setting all properties.
+function ruido20_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to ruido20 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+set(hObject,'String','0');
+
+% --- Executes during object creation, after setting all properties.
+function ruido19_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to ruido19 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+set(hObject,'String','0');
+
+
+% --- Executes during object creation, after setting all properties.
+function ruido21_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to ruido21 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+set(hObject,'String','0');
+
+% --- Executes during object creation, after setting all properties.
+function ruido22_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to ruido22 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+set(hObject,'String','0');
+
+% --- Executes during object creation, after setting all properties.
+function ruido23_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to ruido23 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+set(hObject,'String','0');
+
+% --- Executes during object creation, after setting all properties.
+function ruido24_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to ruido24 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+set(hObject,'String','0');
