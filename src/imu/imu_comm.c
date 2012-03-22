@@ -1088,27 +1088,15 @@ int convert_2_euler(imu_data_t *data)
     }
 
 
-    m3x3->m[0][0] = cosd(phi)/(uquad_square(cosd(phi)) + uquad_square(sind(phi)));
-    m3x3->m[0][1] = (sind(phi)*sind(psi))/((uquad_square(cosd(phi)) + uquad_square(sind(phi)))*(uquad_square(cosd(psi)) + uquad_square(sind(psi))));
-    m3x3->m[0][2] = (cosd(psi)*sind(phi))/((uquad_square(cosd(phi)) + uquad_square(sind(phi)))*(uquad_square(cosd(psi)) + uquad_square(sind(psi))));
+    m3x3->m[0][0] = cos(phi)/(uquad_square(cos(phi)) + uquad_square(sin(phi)));
+    m3x3->m[0][1] = (sin(phi)*sin(psi))/((uquad_square(cos(phi)) + uquad_square(sin(phi)))*(uquad_square(cos(psi)) + uquad_square(sin(psi))));
+    m3x3->m[0][2] = (cos(psi)*sin(phi))/((uquad_square(cos(phi)) + uquad_square(sin(phi)))*(uquad_square(cos(psi)) + uquad_square(sin(psi))));
     m3x3->m[1][0] = 0;
-    m3x3->m[1][1] = cosd(psi)/(uquad_square(cosd(psi)) + uquad_square(sind(psi)));
-    m3x3->m[1][2] = -sind(psi)/(uquad_square(cosd(psi)) + uquad_square(sind(psi)));
-    m3x3->m[2][0] = -sind(phi)/(uquad_square(cosd(phi)) + uquad_square(sind(phi)));
-    m3x3->m[2][1] = (cosd(phi)*sind(psi))/((uquad_square(cosd(phi)) + uquad_square(sind(phi)))*(uquad_square(cosd(psi)) + uquad_square(sind(psi))));
-    m3x3->m[2][2] = (cosd(phi)*cosd(psi))/((uquad_square(cosd(phi)) + uquad_square(sind(phi)))*(uquad_square(cosd(psi)) + uquad_square(sind(psi))));
-
-    /*    
-    m3x3->m[0][0]=cosd(phi)/(uquad_square(cosd(phi)) + uquad_square(sind(phi)));
-    m3x3->m[0][1]=(sind(phi)*sind(psi))/((uquad_square(cosd(phi)) + uquad_square(sind(phi)))*(uquad_square(cosd(psi)) + uquad_square(sind(psi))));
-    m3x3->m[0][2]=(cosd(psi)*sind(phi))/((uquad_square(cosd(phi)) + uquad_square(sind(phi)))*(uquad_square(cosd(psi)) + uquad_square(sind(psi))));
-    m3x3->m[1][0]=cosd(psi)/(uquad_square(cosd(psi)) + uquad_square(sind(psi)));
-    m3x3->m[1][1]=0;
-    m3x3->m[1][2]=-sind(psi)/(uquad_square(cosd(psi)) + uquad_square(sind(psi)));
-    m3x3->m[2][0]=-sind(phi)/(uquad_square(cosd(phi)) + uquad_square(sind(phi)));
-    m3x3->m[2][1]=(cosd(phi)*sind(psi))/((uquad_square(cosd(phi)) + uquad_square(sind(phi)))*(uquad_square(cosd(psi)) + uquad_square(sind(psi))));
-    m3x3->m[2][2]=(cosd(phi)*cosd(psi))/((uquad_square(cosd(phi)) + uquad_square(sind(phi)))*(uquad_square(cosd(psi)) + uquad_square(sind(psi))));
-    */
+    m3x3->m[1][1] = cos(psi)/(uquad_square(cos(psi)) + uquad_square(sin(psi)));
+    m3x3->m[1][2] = -sin(psi)/(uquad_square(cos(psi)) + uquad_square(sin(psi)));
+    m3x3->m[2][0] = -sin(phi)/(uquad_square(cos(phi)) + uquad_square(sin(phi)));
+    m3x3->m[2][1] = (cos(phi)*sin(psi))/((uquad_square(cos(phi)) + uquad_square(sin(phi)))*(uquad_square(cos(psi)) + uquad_square(sin(psi))));
+    m3x3->m[2][2] = (cos(phi)*cos(psi))/((uquad_square(cos(phi)) + uquad_square(sin(phi)))*(uquad_square(cos(psi)) + uquad_square(sin(psi))));
 
     retval = uquad_mat_prod(m3x1_0,m3x3,data->magn);
     err_propagate(retval);
