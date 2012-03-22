@@ -75,7 +75,7 @@ Tg=[1    -gayza gazya;
 wconv=zeros(size(w));
 for i=1:length(w(:,1))
     auxg=Tg*(Kg^(-1))*(w(i,:)'-bg);
-    wconv(i,:)=auxg';
+    wconv(i,:)=pi/180*auxg';
 end
 
 
@@ -103,7 +103,7 @@ for i=1:length(m(:,1))
             -sind(phi)/(cosd(phi)^2 + sind(phi)^2), (cosd(phi)*sind(psi))/((cosd(phi)^2 + sind(phi)^2)*(cosd(psi)^2 + sind(psi)^2)), (cosd(phi)*cosd(psi))/((cosd(phi)^2 + sind(phi)^2)*(cosd(psi)^2 + sind(psi)^2))]...
             *auxm;
     theta=180/pi*atan2(mrot(1),mrot(2))+9.78;
-    euler(i,:)=[psi, phi, theta];
+    euler(i,:)=pi/180*[psi, phi, theta];
 end
 
 if plotear
@@ -116,10 +116,10 @@ if plotear
         title('Aceleraciones lineales en m/(s^2)')
         subplot(312)
         plot(t,wconv(:,1)); hold on; plot(t,wconv(:,2),'r'); plot(t,wconv(:,3),'g'); legend('w_x','w_y','w_z'); grid;
-        title('Velocidades angulares en °/s')
+        title('Velocidades angulares en rad/s')
         subplot(313)
         plot(t,euler(:,1)); hold on; plot(t,euler(:,2),'r'); plot(t,euler(:,3),'g'); legend('\psi','\phi','\theta'); grid;
-        title('Angulos de Euler')
+        title('Angulos de Euler en radianes')
 end
 
 % %% Desplazamientos
