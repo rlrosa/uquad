@@ -47,6 +47,9 @@
 #define IMU_GYRO_DEFAULT_GAIN 14.375L // Not used
 #define IMU_P0_DEFAULT 101325.0L // Value used if no calibration is available.
 
+#define IMU_TH_DEADLOCK_ACC 9.72L // m/s^2
+#define IMU_TH_DEADLOCK_ANG 0.17069L // rad
+
 #define IMU_BYTES_T_US 4
 
 #define IMU_COMM_AVG_MAX_INTERVAL 2*IMU_FRAME_SAMPLE_AVG_COUNT //Too much...?

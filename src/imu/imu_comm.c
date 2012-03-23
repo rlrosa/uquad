@@ -1072,18 +1072,18 @@ int imu_comm_read(imu_t *imu, uquad_bool_t *ready){
 int convert_2_euler(imu_data_t *data)
 {
     int retval;
-    double psi;
-    double phi;
-    double theta;
-    if(uquad_abs(data->acc->m_full[0])<9.72)
+    double psi;   // rad
+    double phi;   // rad
+    double theta; // rad
+    if(uquad_abs(data->acc->m_full[0]) < IMU_TH_DEADLOCK_ACC)
     {
-	phi = -180/PI*asin(data->acc->m_full[0]/9.81);
-	psi=180/PI*atan2(data->acc->m_full[1],data->acc->m_full[2]);
+	phi = -asin(data->acc->m_full[0]/GRAVITY);
+	psi = atan2(data->acc->m_full[1],data->acc->m_full[2]);
     }else if(data->acc->m_full[0]>0){
-	phi=-90;
+	phi=-PI/2;
 	psi=0;
     }else{
-	phi=90;
+	phi=PI/2;
 	psi=0;
     }
 
@@ -1101,7 +1101,7 @@ int convert_2_euler(imu_data_t *data)
     retval = uquad_mat_prod(m3x1_0,m3x3,data->magn);
     err_propagate(retval);
 
-    theta=180/PI*atan2(m3x1_0->m_full[0],m3x1_0->m_full[1])+9.78;   
+    theta=atan2(m3x1_0->m_full[0],m3x1_0->m_full[1]) + IMU_TH_DEADLOCK_ANG;//9.78;
 
     data->magn->m_full[0]=psi;
     data->magn->m_full[1]=phi;
