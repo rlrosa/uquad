@@ -53,6 +53,42 @@ En la figura \ref{fig:cinematica} se puede observar un diagrama de bloques de la
 
 Al igual que el bloque anterior, se divide este en dos sub-bloques m\'as (ver figura \ref{fig:dinamica}). Los bloques en este caso son el que devuelve las velocidades angulares y las lineales. 
 
+\subsection{Lazo cerrado}
+
+Como se explica en el cap\'itulo \ref{chap:linealizacion} para tratar las trayectorias circulares en el plano horizontal es necesario introducir un cambio de variables en el sistema, este cambio de variables consiste en expresar la posici\'on del cuadric\'optero en el sistema $S_q$ solidiario a \'el y considerando como origen el centro de la trayectoria circular, en lugar de expresar la posici\'on en el sistema cartesiano inercial. Esta modificaci\'on implica realizar un cambio en el modelo para trabajar con dichas trayectorias, simplemente se agrega una matriz de rotaci\'on para trabajar con la posci\'on expresada en el sistema solidario al cuadric\'optero.\\ 
+
+La estructura del lazo cerrado es la que se observa en la figura \ref{fig:lazo_cerrado}. Desde la interfaz gr\'afica se puede seleccionar el tipo de trayectoria que se desea realizar, los valores de las variables de estado con las que se desea realizar dicha trayectoria\footnote{Evidentemente existen restricciones a la hora de elegir las variables de estado, a modo de ejemplo no seremos capaces de controlar una trayectoria en linea recta si las velocidades angulares no son nulas}. Las velocidades angulares objetivo para cada motor ser\'an determinadas a partir de la informaci\'on anterior. Al igual que en el simulador de lazo abierto se tiene la posibilidad de establecer tanto el tiempo inicial de la simulaci\'on y las condiciones iniciales. As\'imismo estar\'a determinada por la trayectoria la matriz de realimentaci\'on.\\
+
+Fue necesario adem\'as acotar la velocidad angular de los motores ya que esta no puede tener cualquier valor, para esto se agregaron los bloques de saturaci\'on a la entrada del subsistema que representa la din\'amica del cuadric\'optero.
+
+Como se explic\'o en la secci\'on \ref{chap: cosas generales} el control ser\'a realizado con un microprocesador, esto implica que las acciones de control no podr\'an ser modificadas en forma continua, cada cierto per\'iodo se indicar\'a un nuevo valor de velocidad angular para cada motor. Del mismo modo, no se tiene conocimiento del estado en todo instante sino que se tienen datos cada un cierto intervalo de tiempo (no necesariamente igual al per\'iodo con el cual se act\'ua sobre los motores). Estas consideraciones hacen necesaria una modificaci\'on en el sistema que hasta ahora hab\'ia sido considerado como continuo, es necesario convertir el sistema de tiempo continuo desarrollado a un sistema de tiempo discreto. Dicha modificaci\'on se logra sustituyendo los bloques integradores y derivadores que formaban parte del sistema por integradores y derivadores discretos con un per\'iodo de muestreo que tambi\'en puede ser impuesto desde la interfaz gr\'afica. En la figura \ref{fig:t_muestreo} se puede observar la misma trayectoria para tres tiempos de muestreo diferentes. En dicha trayectoria se muestra la subida del cuadric\'optero desde la altura inicial $z=0m$ hasta $z=3m$. 
+ 
+\begin{figure} [h!]
+  \centering
+  \subfloat[Ts=50ms]{\label{fig:50ms}
+  		\includegraphics[width=0.35\textwidth]
+  			{./pics_simulador/50ms.png}}
+  \subfloat[Ts=500ms]{\label{fig:500ms} 
+  		\includegraphics[width=0.35\textwidth]
+  			{./pics_simulador/500ms.png}}
+	  \subfloat[Ts=1s]{\label{fig:1000ms} 
+  		\includegraphics[width=0.35\textwidth]
+  			{./pics_simulador/1000ms.png}} 
+  \caption{Trayectoria de ascenso del cuadric\'optero desde $z=0$ a $z=3$}
+  \label{fig:t_muestreo}
+\end{figure} 
+ 
+Se observa claramente un deterioro de la performance en la subida al aumentar el per\'iodo de muestreo y de de acci\'on sobre los motores. Por dicho motivo es importante incluir esta variable a la hora de realizar diversas simulaciones ya que el sistema real debe realizar una gran cantidad de operaciones y si bien su capacidad es considerable no es infinita. Esto puede producir que se tenga acotado interiormente el per\'iodo de muestreo.\\
+
+Por \'ultimo, se desea incluir la posibilidad de agregar ruido a los estados medidos. Las medidas que se obtienen de los sensores no son exactas, por dicho motivo la posibilidad de agregar ruido es muy interesante de modo de testear la robustez del controlador implementado. 
+
+
+  \begin{figure}[h!]
+	\centering
+	\includegraphics[width=1\textwidth]{./pics_simulador/vistac.png}
+	\caption{Interfaz del simulador de lazo cerrado}
+	\label{fig:vistac}
+\end{figure}
 
 \section{Simulaciones}
 En esta secci\'on procedermos a realizar algunas simulaciones a fin de verificar que los resultados arrojados se corresponden con lo esperado a priori. 
@@ -120,7 +156,7 @@ En la figura \ref{fig:hovz} se presenta la altura en funci\'on del tiempo. La mi
   \label{fig:hov}
 \end{figure}
 
-\subsection{Escal\'on en los cuatro motores}
+\subsubsection{Escal\'on en los cuatro motores}
 Con condiciones iniciales nulas, excepto que $z_0=50m$ en condici\'on de hovering se aumenta la velocidad angular de los motores en $100 rads^{-1}$ en $t=5s$. Se simula durante diez segundos. En la figura \ref{fig:escalon} se presentan graficamente los resultados obtenidos en la simulaci\'on. La altura m\'axima alcanzada por el cuadric\'optero en la simulaci\'on es de $136.6m$ mientras que en la teor\'ia dicha altura es de $136.4m$. Nuevamente la diferencia entre el valor simulado y el esperado difieren de manera despreciable.
 
 \begin{figure} [h!]
