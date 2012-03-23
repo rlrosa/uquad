@@ -88,22 +88,27 @@ for i=1:length(m(:,1))
     mconv(i,:)=auxm';
     
     % Convierto a angulos de Euler
+    % phi, psi, theta en radianes
     if (abs(aconv(i,1))<9.72)
-        phi=-180/pi*asin(aconv(i,1)/9.81);
-        psi=180/pi*atan2(aconv(i,2),aconv(i,3));
+        phi=-asin(aconv(i,1)/9.81);
+        psi=atan2(aconv(i,2),aconv(i,3));
     elseif aconv(i,1) > 0
-        phi=-90;
+        phi=-pi/2;
         psi=0;
     else 
-        phi=90;
+        phi=pi/2;
         psi=0;
     end
-    mrot = [ cosd(phi)/(cosd(phi)^2 + sind(phi)^2), (sind(phi)*sind(psi))/((cosd(phi)^2 + sind(phi)^2)*(cosd(psi)^2 + sind(psi)^2)), (cosd(psi)*sind(phi))/((cosd(phi)^2 + sind(phi)^2)*(cosd(psi)^2 + sind(psi)^2));
-                                                 0,                                           cosd(psi)/(cosd(psi)^2 + sind(psi)^2),                                         -sind(psi)/(cosd(psi)^2 + sind(psi)^2);
-            -sind(phi)/(cosd(phi)^2 + sind(phi)^2), (cosd(phi)*sind(psi))/((cosd(phi)^2 + sind(phi)^2)*(cosd(psi)^2 + sind(psi)^2)), (cosd(phi)*cosd(psi))/((cosd(phi)^2 + sind(phi)^2)*(cosd(psi)^2 + sind(psi)^2))]...
+    mrot = [ cos(phi)/(cos(phi)^2 + sin(phi)^2), (sin(phi)*sin(psi))/((cos(phi)^2 + sin(phi)^2)*(cos(psi)^2 + sin(psi)^2)), (cos(psi)*sin(phi))/((cos(phi)^2 + sin(phi)^2)*(cos(psi)^2 + sin(psi)^2));
+                                                 0,                                           cos(psi)/(cos(psi)^2 + sin(psi)^2),                                         -sin(psi)/(cos(psi)^2 + sin(psi)^2);
+            -sin(phi)/(cos(phi)^2 + sin(phi)^2), (cos(phi)*sin(psi))/((cos(phi)^2 + sin(phi)^2)*(cos(psi)^2 + sin(psi)^2)), (cos(phi)*cos(psi))/((cos(phi)^2 + sin(phi)^2)*(cos(psi)^2 + sin(psi)^2))]...
             *auxm;
-    theta=180/pi*atan2(mrot(1),mrot(2))+9.78;
-    euler(i,:)=pi/180*[psi, phi, theta];
+    mrot = mrot*180/pi; % atan2 toma radianes como argumento.
+    theta=atan2(mrot(1),mrot(2))+0.17069; %9.78@deg;
+    euler(i,:)=[  ...
+      psi, ...
+      phi, ...
+      theta];
 end
 
 if plotear
@@ -118,7 +123,7 @@ if plotear
         plot(t,wconv(:,1)); hold on; plot(t,wconv(:,2),'r'); plot(t,wconv(:,3),'g'); legend('w_x','w_y','w_z'); grid;
         title('Velocidades angulares en rad/s')
         subplot(313)
-        plot(t,euler(:,1)); hold on; plot(t,euler(:,2),'r'); plot(t,euler(:,3),'g'); legend('\psi','\phi','\theta'); grid;
+        plot(t,euler(:,1)*180/pi); hold on; plot(t,euler(:,2)*180/pi,'r'); plot(t,euler(:,3)*180/pi,'g'); legend('\psi','\phi','\theta'); grid;
         title('Angulos de Euler en radianes')
 end
 
