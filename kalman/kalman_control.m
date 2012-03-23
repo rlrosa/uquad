@@ -241,13 +241,13 @@ subplot(221)
     hold off    
 
 subplot(222)
-    plot(z(:,1),'k')
+    plot(z(:,1)*180/pi,'k')
     hold on; grid
-    plot(z(:,2),'k')
-    plot(z(:,3),'k')    
-    plot([x_hat(1:end,4)],'b')
-    plot([x_hat(1:end,5)],'r')
-    plot([x_hat(1:end,6)],'g')
+    plot(z(:,2)*180/pi,'k')
+    plot(z(:,3)*180/pi,'k')
+    plot([x_hat(1:end,4)]*180/pi,'b')
+    plot([x_hat(1:end,5)]*180/pi,'r')
+    plot([x_hat(1:end,6)]*180/pi,'g')
     legend('\psi','\phi','\theta','\psi','\phi','\theta')
     hold off    
     
