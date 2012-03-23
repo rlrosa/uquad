@@ -357,12 +357,12 @@ int main(int argc, char *argv[]){
 	tv_gps_diff;
     gettimeofday(&tv_last_kalman,NULL);
     gettimeofday(&tv_gps_last,NULL);
+    gettimeofday(&tv_last_m_cmd,NULL);
 #if TIMING
     struct timeval
 	tv_start,
 	tv_pgm,
 	tv_last_io_ok;
-    gettimeofday(&tv_last_m_cmd,NULL);
     gettimeofday(&tv_last_io_ok,NULL);
     gettimeofday(&tv_pgm,NULL);
     gettimeofday(&tv_start,NULL);
