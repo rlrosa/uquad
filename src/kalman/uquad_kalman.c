@@ -403,22 +403,22 @@ kalman_io_t* kalman_init()
     if(retval != ERROR_OK)
 	return NULL;
 
-    kalman_io_data->Q->m[0][0] = 0.010;
-    kalman_io_data->Q->m[1][1] = 0.010;
-    kalman_io_data->Q->m[2][2] = 0.010;
-    kalman_io_data->Q->m[3][3] = 0.010;
-    kalman_io_data->Q->m[4][4] = 0.010;
-    kalman_io_data->Q->m[5][5] = 0.010;
-    kalman_io_data->Q->m[6][6] = 0.010;
-    kalman_io_data->Q->m[7][7] = 0.010;
-    kalman_io_data->Q->m[8][8] = 0.010;
-    kalman_io_data->Q->m[9][9] = 0.010;
-    kalman_io_data->Q->m[10][10] = 0.010;
-    kalman_io_data->Q->m[11][11] = 0.010;
+    kalman_io_data->Q->m[0][0] = 100.0;
+    kalman_io_data->Q->m[1][1] = 100.0;
+    kalman_io_data->Q->m[2][2] = 100.0;
+    kalman_io_data->Q->m[3][3] = 1.0;
+    kalman_io_data->Q->m[4][4] = 1.0;
+    kalman_io_data->Q->m[5][5] = 1.0;
+    kalman_io_data->Q->m[6][6] = 10.0;
+    kalman_io_data->Q->m[7][7] = 10.0;
+    kalman_io_data->Q->m[8][8] = 10.0;
+    kalman_io_data->Q->m[9][9] = 1.0;
+    kalman_io_data->Q->m[10][10] = 1.0;
+    kalman_io_data->Q->m[11][11] = 1.0;
 
-    kalman_io_data->R->m[0][0] = 10000;
-    kalman_io_data->R->m[1][1] = 10000;
-    kalman_io_data->R->m[2][2] = 10000;
+    kalman_io_data->R->m[0][0] = 1000;
+    kalman_io_data->R->m[1][1] = 1000;
+    kalman_io_data->R->m[2][2] = 1000;
     kalman_io_data->R->m[3][3] = 10000;
     kalman_io_data->R->m[4][4] = 10000;
     kalman_io_data->R->m[5][5] = 10000;
