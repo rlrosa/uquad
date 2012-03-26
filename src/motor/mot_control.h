@@ -36,9 +36,16 @@
  * 
  * Motors are defined as:
  *  0: 0x69
+ *  1: 0x6b
+ *  2: 0x6a
+ *  3: 0x68
+ *
+ * The driver order is:
+ *  0: 0x69
  *  1: 0x6a
  *  2: 0x6b
  *  3: 0x68
+ * Order is adapted before sending
  * 
  */
 typedef struct uquad_mot{
