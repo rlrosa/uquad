@@ -20,10 +20,10 @@ Izzm=1.54e-05;
 g=9.81;
    
 %Fuerzas y torques de los motores
-T1=3.5296e-5*w1^2-4.9293e-04*w1;
-T2=3.5296e-5*w2^2-4.9293e-04*w2;
-T3=3.5296e-5*w3^2-4.9293e-04*w3;
-T4=3.5296e-5*w4^2-4.9293e-04*w4;
+T1=4.60160135072435e-05*w1^2-0.00103822726273726*w1;
+T2=4.60160135072435e-05*w2^2-0.00103822726273726*w2;
+T3=4.60160135072435e-05*w3^2-0.00103822726273726*w3;
+T4=4.60160135072435e-05*w4^2-0.00103822726273726*w4;
 
 Q1=3.4734e-6*w1^2-1.3205e-4*w1;
 Q2=3.4734e-6*w2^2-1.3205e-4*w2;
@@ -62,4 +62,4 @@ dXcirc(1:3,1)= [vq1+wq2*z-wq3*y;
 A3primeras=[diff(dXcirc,x) diff(dXcirc,y) diff(dXcirc,z)  diff(dXcirc,psis) diff(dXcirc,phi) diff(dXcirc,theta) diff(dXcirc,vq1) diff(dXcirc,vq2) diff(dXcirc,vq3)  diff(dXcirc,wq1) diff(dXcirc,wq2) diff(dXcirc,wq3)];
 Acirc=[A3primeras;A(4:12,1:12)];
 
-save('./../lazo_cerrado/linealizacion','A','B','Acirc'); 
+save('./simulador/lazo_cerrado/linealizacion','A','B','Acirc'); 

@@ -1,7 +1,7 @@
 function w=calc_omega(F)
 
 syms x
-val=solve(3.5296e-5*x^2-4.9293e-4*x-F);
+val=solve(4.60160135072435e-05*x^2-0.00103822726273726*x-F);
 val_hov=eval(val);
         
 if (val_hov(1)>=0)

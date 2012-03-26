@@ -30,10 +30,10 @@ if modo=='hov'
 
     psis=0; phi=0;   
 
-    w1=334.279741754537;
-    w2=334.279741754537;
-    w3=334.279741754537;
-    w4=334.279741754537;
+    w1=298.086701308402;
+    w2=298.086701308402;
+    w3=298.086701308402;
+    w4=298.086701308402;
 
     theta=setpoint(4);
     
@@ -49,7 +49,8 @@ if modo=='hov'
     %Por ahora hay dos opciones para trabajar. No se todavía cual es mejor
     if lqrm==0
         Qp=diag([1 1 1 100 100 100 1 1 1 1 1 1]);
-        Rp=diag([1 1 1 1]);
+        %Qp = diag([1 1 100 1 1 1 1 1 1 1 1 1]);
+        Rp=diag([0.01 0.01 0.01 0.01]);
         [K,S,E]=lqrd(Ah,Bh,Qp,Rp,Ts);
 
     else

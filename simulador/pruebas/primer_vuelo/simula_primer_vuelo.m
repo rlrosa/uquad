@@ -19,16 +19,16 @@ vq1=0; vq2=0; vq3=0;
 
 psis=0; phi=0;  
 
-w1=334.279741754537;
-w2=334.279741754537;
-w3=334.279741754537;
-w4=334.279741754537;
+w1=298.086701308402;
+w2=298.086701308402;
+w3=298.086701308402;
+w4=298.086701308402;
 
 
 A=eval(A);
 B=eval(B);
     
-Q=diag([100 1 1 1 1 1 1]);%Pesos de z,psi,phi,vqz wqx,wqy,wqz
+Q=diag([1 1e2 1e2 1 1 1 1]);%Pesos de z,psi,phi,vqz wqx,wqy,wqz
 R=diag([1 1 1 1]); %Pesos de w1 w2 w3 w4;
 
 [K,S,E]=lqr(A,B,Q,R);

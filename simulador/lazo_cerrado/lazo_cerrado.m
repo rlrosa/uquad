@@ -514,7 +514,7 @@ function slider2_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-var = 2*get(hObject,'Value');
+var = 0.5*get(hObject,'Value');
 assignin('base','ang_amp',var*pi/180);
 set(handles.ruido2,'String',num2str(var,'%f1.2'));
 
@@ -541,7 +541,7 @@ function slider1_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-var = 0.5*get(hObject,'Value');
+var = 0.1*get(hObject,'Value');
 assignin('base','ang_frec',var);
 set(handles.ruido1,'String',num2str(var,'%1.2f'));
 
@@ -566,7 +566,7 @@ function slider4_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-var = (-2+4*get(hObject,'Value'));
+var = (-1.5+3*get(hObject,'Value'));
 assignin('base','ang_offset',var*pi/180);
 set(handles.ruido4,'String',num2str(var,'%f1.2'));
 
@@ -591,7 +591,7 @@ function slider3_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-var=2*get(hObject,'Value');
+var=0.3*get(hObject,'Value');
 assignin('base','ang_cov',var*pi/180);
 set(handles.ruido3,'String',num2str(var,'%f1.2'));
 
