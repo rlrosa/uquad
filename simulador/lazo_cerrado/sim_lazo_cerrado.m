@@ -62,7 +62,9 @@ if modo=='hov'
 
     %Defino el setpoint de las velocidade angulares
     w = zeros(4,length(t));
-    w(:,:) =334.279741754537;
+    %w(:,:) =298.086701308402;
+    w(:,:) =300;
+   
     
     
     
