@@ -30,6 +30,7 @@
 #define UQUAD_HOW_TO "./main <imu_device>"
 #define MAX_ERRORS 20
 #define STARTUP_RUNS 200
+#define STARTUP_KALMAN 200
 #define FIXED 3
 
 #define LOG_W_NAME "w.log"
@@ -361,25 +362,24 @@ int main(int argc, char *argv[]){
     uquad_bool_t reg_gps = (gps == NULL)?false:true;
     struct timeval tv_gps_diff;
 #endif
-    int runs = 0;
+    int runs_imu = 0, runs_kalman = 0;
     int err_imu = ERROR_OK, err_gps = ERROR_OK;
     unsigned char tmp_buff[2];
     struct timeval
 	tv_tmp, tv_diff,
 	tv_last_m_cmd,
 	tv_last_kalman,
-	tv_gps_last;
-    gettimeofday(&tv_last_kalman,NULL);
+	tv_last_imu,
+	tv_gps_last,
+	tv_start;
     gettimeofday(&tv_gps_last,NULL);
-    gettimeofday(&tv_last_m_cmd,NULL);
+    gettimeofday(&tv_start,NULL);
 #if TIMING
     struct timeval
-	tv_start,
 	tv_pgm,
 	tv_last_io_ok;
     gettimeofday(&tv_last_io_ok,NULL);
     gettimeofday(&tv_pgm,NULL);
-    gettimeofday(&tv_start,NULL);
 #endif
 #if TIMING && TIMING_IMU
     struct timeval tv_last_imu_read, tv_imu_start, tv_imu_diff;
@@ -389,7 +389,7 @@ int main(int argc, char *argv[]){
     retval = ERROR_OK;
     //    poll_n_read:
     while(1){
-	if((runs > STARTUP_RUNS) &&
+	if((runs_imu > STARTUP_RUNS) &&
 	   (retval != ERROR_OK  ||
 	    err_imu != ERROR_OK ||
 	    err_gps != ERROR_OK))
@@ -450,10 +450,12 @@ int main(int argc, char *argv[]){
 #endif
 
 	    err_imu = imu_comm_read(imu, &imu_update);
+	    log_n_jump(err_imu,end_imu,"imu_comm_read() failed!");
 	    if(!imu_update)
 	    {
 		goto end_imu;
 	    }
+	    imu_update = false; // data may not be of direct use
 
 #if TIMING && TIMING_IMU
 	    gettimeofday(&tv_tmp,NULL);
@@ -475,29 +477,57 @@ int main(int argc, char *argv[]){
 		   tv_pgm.tv_usec);
 #endif
 
-	    if(!imu_comm_avg_ready(imu) || runs < STARTUP_RUNS)
+	    /// discard first samples
+	    if(!(runs_imu > STARTUP_RUNS))
 	    {
-		// not enough samples yet.
-		runs++;
-		imu_update = false; // we only used averaged data
+		++runs_imu;
+		if(runs_imu == STARTUP_RUNS)
+		{
+		    gettimeofday(&tv_last_imu,NULL);
+		    retval = uquad_timeval_substract(&tv_diff,tv_last_imu,tv_start);
+		    log_n_jump(err_imu,end_imu,"Failed to calculate IMU startup time!");
+		    err_log_tv("IMU startup completed in ", tv_diff);
+		    ++runs_imu; // so re-entry doesn't happen
+		}
 		goto end_imu;
 	    }
+
+	    /// check calibration status
+	    if(imu_comm_get_status(imu) == IMU_COMM_STATE_CALIBRATING)
+		// if calibrating, tehn data should not be used.
+		goto end_imu;
+	    else if(!imu_comm_calib_estim(imu))
+	    {
+		// if no calibration estim exists, build one.
+		err_imu = imu_comm_calibration_start(imu);
+		log_n_jump(err_imu,end_imu,"Failed to start calibration!");
+		goto end_imu;
+	    }
+
 	    /// Get new unread data
+	    if(!imu_comm_avg_ready(imu))
+	    {
+		// we only used averaged data
+		goto end_imu;
+	    }
+
 	    err_imu = imu_comm_get_avg_unread(imu,&imu_data);
 	    log_n_jump(err_imu,end_imu,"IMU did not have new avg!");
 
 	    gettimeofday(&tv_tmp,NULL);
-	    err_imu = uquad_timeval_substract(&tv_diff,tv_tmp,tv_last_kalman);
+	    err_imu = uquad_timeval_substract(&tv_diff,tv_tmp,tv_last_imu);
 	    if(err_imu < 0)
 	    {
 		log_n_jump(ERROR_TIMING,end_imu,"Timing error!");
 	    }
-	    /// Get new state estimation
-	    if(runs == STARTUP_RUNS)
-		// the first time here, timing will not make sense, so use IMU
-		tv_diff.tv_usec = imu_data.T_us;
+
 	    // store time since last IMU sample
 	    imu_data.timestamp = tv_diff;
+
+	    /// new data will be useful!
+	    imu_update = true;
+	    gettimeofday(&tv_last_imu,NULL);
+
 	    end_imu:;
 	    // will jump here if something went wrong during IMU reading
 	}//if(read)
@@ -541,25 +571,26 @@ int main(int argc, char *argv[]){
 	    continue;
 
 	/// -- -- -- -- -- -- -- --
-	/// check calibration status
-	/// -- -- -- -- -- -- -- --
-	if(imu_comm_get_status(imu) == IMU_COMM_STATE_CALIBRATING)
-	    // if calibrating, then data should not be used.
-	    continue;
-	else if(!imu_comm_calib_estim(imu))
-	{
-	    // if no calibration estim exists, build one.
-	    retval = imu_comm_calibration_start(imu);
-	    err_propagate(retval);
-	}
-
-	/// -- -- -- -- -- -- -- --
 	/// Update state estimation
 	/// -- -- -- -- -- -- -- --
-	retval = uquad_kalman(kalman,
-			      mot->w_curr,
-			      &imu_data,
-			      imu_data.timestamp.tv_usec);
+	gettimeofday(&tv_tmp,NULL);
+	retval = uquad_timeval_substract(&tv_diff,tv_tmp,tv_last_kalman);
+	if(retval < 0)
+	{
+	    log_n_continue(ERROR_TIMING,"Absurd timing!");
+	}
+	if(runs_kalman > STARTUP_KALMAN)
+	    // use real w
+	    retval = uquad_kalman(kalman,
+				  mot->w_curr,
+				  &imu_data,
+				  tv_diff.tv_usec);
+	else
+	    // use w from setpoint
+	    retval = uquad_kalman(kalman,
+				  pp->sp->w,
+				  &imu_data,
+				  tv_diff.tv_usec);
 	log_n_continue(retval,"Kalman update failed");
 	/// Mark time when we leave Kalman
 	gettimeofday(&tv_last_kalman,NULL);
@@ -580,6 +611,20 @@ int main(int argc, char *argv[]){
 	uquad_mat_dump(x_hat_T,log_x_hat);
 #endif //DEBUG_X_HAT
 #endif //DEBUG
+	if(!(runs_kalman > STARTUP_KALMAN))
+	{
+	    ++runs_kalman;
+	    if(runs_kalman == STARTUP_KALMAN)
+	    {
+		gettimeofday(&tv_last_m_cmd,NULL);
+		retval = uquad_timeval_substract(&tv_diff,tv_last_m_cmd,tv_start);
+		log_n_jump(err_imu,end_imu,"Failed to calculate Kalman startup time!");
+		err_log_tv("Kalman startup completed in ", tv_diff);
+		++runs_kalman; // so re-entry doesn't happen
+	    }
+	    continue;
+	}
+
 	/// Get current set point
 	retval = pp_update_setpoint(pp, kalman->x_hat);
 	log_n_continue(retval,"Kalman update failed");
