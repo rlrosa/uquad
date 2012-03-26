@@ -78,7 +78,9 @@ int mot_rad2i2c(double w, int *i2c)
     double w_2, w_3;
     w_2 = w*w;
     w_3 = w_2*w;
-    *i2c = uquad_round_double2int(0.0000022118*w_3 - 0.00071258*w_2 + 0.5106*w);
+    *i2c = uquad_round_double2int(3.25038742351062e-06*w_3
+				  - 0.00107345094348345*w_2
+				  + 0.552199572510559*w);
     return ERROR_OK;
 }
 
