@@ -106,6 +106,7 @@ int main(int argc, char *argv[]){
     int read_will_not_lock;
     int wait_counter = WAIT_COUNTER_MAX;
     int imu_fd;
+    unsigned long sample_count = 0;
     data.acc = uquad_mat_alloc(3,1);
     data.gyro = uquad_mat_alloc(3,1);
     data.magn = uquad_mat_alloc(3,1);
@@ -151,6 +152,7 @@ int main(int argc, char *argv[]){
 
 		if(!data_ready)
 		    continue;
+		sample_count++;
 
 		if(imu_comm_get_status(imu) == IMU_COMM_STATE_CALIBRATING)
 		    // if calibrating, then data should not be used.
