@@ -145,8 +145,7 @@ int main(int argc, char *argv[]){
 		    continue;// skip the rest of the loop
 		}
 		if(retval != ERROR_OK){
-		    err_log_num("Error detected! Press enter to continue...",retval);
-		    wait_for_enter;
+		    err_log_num("Error detected!:",retval);
 		    continue;
 		}
 
