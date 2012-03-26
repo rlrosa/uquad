@@ -100,8 +100,8 @@ int drive(uquad_mat_t* drive, uquad_mat_t* w)
 	tmp = uquad_mat_alloc(4,1);
 	tmp2 = uquad_mat_alloc(4,1);
     }
-    double A1 = 0.000035296;
-    double A2 = -0.00049293;
+    double A1 = 4.60160135072435e-05;
+    double A2 = -0.00103822726273726;
     retval = uquad_mat_dot_product(w2,w,w);
     err_propagate(retval);
     retval = uquad_mat_scalar_mul(tmp, w2, A1);
@@ -416,9 +416,9 @@ kalman_io_t* kalman_init()
     kalman_io_data->Q->m[10][10] = 0.010;
     kalman_io_data->Q->m[11][11] = 0.010;
 
-    kalman_io_data->R->m[0][0] = 10000;
-    kalman_io_data->R->m[1][1] = 10000;
-    kalman_io_data->R->m[2][2] = 10000;
+    kalman_io_data->R->m[0][0] = 1;
+    kalman_io_data->R->m[1][1] = 1;
+    kalman_io_data->R->m[2][2] = 1;
     kalman_io_data->R->m[3][3] = 10000;
     kalman_io_data->R->m[4][4] = 10000;
     kalman_io_data->R->m[5][5] = 10000;
