@@ -39,9 +39,9 @@
 #define IMU_DEFAULT_FRAME_SIZE_BYTES 30
 #define IMU_DEFAULT_FRAME_SIZE_DATA_BYTES IMU_DEFAULT_FRAME_SIZE_BYTES - 6 // init,end,time
 
-#define IMU_FRAME_BUFF_SIZE 16
+#define IMU_FRAME_BUFF_SIZE 32
 
-#define IMU_AVG_COUNT 8 // Reduce variance my taking avg
+#define IMU_AVG_COUNT 24 // Reduce variance my taking avg
 #define IMU_CALIB_SIZE 512 //TODO Tune!
 
 #define IMU_GYRO_DEFAULT_GAIN 14.375L // Not used
