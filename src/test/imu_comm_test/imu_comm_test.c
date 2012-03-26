@@ -14,7 +14,8 @@
 #define WAIT_COUNTER_MAX 10
 #define IMU_COMM_TEST_EOL_LIM 128
 
-#define PRINT_DATA 0
+#define PRINT_RAW 0
+#define PRINT_DATA 1
 
 #if 0
 static int fix_end_of_time_string(char * string, int lim){
@@ -96,7 +97,9 @@ int main(int argc, char *argv[]){
 
     // do stuff...
     imu_data_t data;
+#if PRINT_RAW
     imu_raw_t raw;
+#endif
     imu_calib_t *imu_calib;
     uquad_bool_t do_sleep = false, calibrating = false;
     uquad_bool_t data_ready = false;
@@ -146,6 +149,9 @@ int main(int argc, char *argv[]){
 		    continue;
 		}
 
+		if(!data_ready)
+		    continue;
+
 		if(imu_comm_get_status(imu) == IMU_COMM_STATE_CALIBRATING)
 		    // if calibrating, then data should not be used.
 		    continue;
@@ -154,6 +160,8 @@ int main(int argc, char *argv[]){
 		    // if no calibration estim exists, build one.
 		    retval = imu_comm_calibration_start(imu);
 		    err_propagate(retval);
+		    calibrating = true;
+		    continue;
 		}
 
 		if(calibrating)
@@ -162,15 +170,21 @@ int main(int argc, char *argv[]){
 		    calibrating = false;
 		    wait_for_enter;
 		}
-		// Printing to stdout is unreadable
+#if PRINT_RAW
 		retval = imu_comm_get_raw_latest_unread(imu,&raw);
 		if(retval == ERROR_OK)
 		{
 		    retval = imu_comm_print_raw(&raw,stdout);
 		    err_propagate(retval);
 		}
+#endif
 #if PRINT_DATA
+#if PRINT_RAW
+		// undread data was already taken by get_raw_latest_unread()
 		retval = imu_comm_get_data_latest(imu,&data);
+#else
+		retval = imu_comm_get_data_latest_unread(imu,&data);
+#endif
 		if(retval == ERROR_OK)
 		{
 		    retval = imu_comm_print_data(&data,stdout);
