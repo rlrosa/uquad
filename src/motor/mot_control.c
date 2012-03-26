@@ -56,6 +56,12 @@ int mot_send(uquad_mot_t *mot, double *w)
 {
     struct timeval tmp_tv, diff_tv;
     int retval = ERROR_OK;
+    static uint8_t buff_out[MOT_C];
+    // swap order of 0x6b and 0x6a
+    buff_out[0] = mot->i2c_target[0];
+    buff_out[1] = mot->i2c_target[2];
+    buff_out[2] = mot->i2c_target[1];
+    buff_out[3] = mot->i2c_target[3];
 
     gettimeofday(&tmp_tv,NULL);
     retval = uquad_timeval_substract(&diff_tv,tmp_tv,mot->last_set);
@@ -63,7 +69,7 @@ int mot_send(uquad_mot_t *mot, double *w)
     {
 	err_check(ERROR_MOT_SATURATE,"Cannot change speed so often!");
     }
-    retval = uquad_kmsgq_send(mot->kmsgq, mot->i2c_target, MOT_C);
+    retval = uquad_kmsgq_send(mot->kmsgq, buff_out, MOT_C);
     err_propagate(retval);
     gettimeofday(&mot->last_set,NULL);
     // update current i2c
