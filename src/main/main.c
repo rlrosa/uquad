@@ -359,6 +359,7 @@ int main(int argc, char *argv[]){
     uquad_bool_t gps_update = false;
 #if USE_GPS
     uquad_bool_t reg_gps = (gps == NULL)?false:true;
+    struct timeval tv_gps_diff;
 #endif
     int runs = 0;
     int err_imu = ERROR_OK, err_gps = ERROR_OK;
@@ -367,8 +368,7 @@ int main(int argc, char *argv[]){
 	tv_tmp, tv_diff,
 	tv_last_m_cmd,
 	tv_last_kalman,
-	tv_gps_last,
-	tv_gps_diff;
+	tv_gps_last;
     gettimeofday(&tv_last_kalman,NULL);
     gettimeofday(&tv_gps_last,NULL);
     gettimeofday(&tv_last_m_cmd,NULL);
