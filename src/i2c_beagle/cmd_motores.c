@@ -353,7 +353,7 @@ int uquad_read(void){
 
 #if CHECK_STDIN
     /// get speed data from stdin
-    retval = select(max_fd_plus_one, &rfds, NULL, NULL, &tv);
+    retval = select(STDIN_FILENO+1, &rfds, NULL, NULL, &tv);
     // Don't rely on the value of tv now!
 
     if (retval < 0)
