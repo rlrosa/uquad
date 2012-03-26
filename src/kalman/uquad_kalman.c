@@ -115,7 +115,7 @@ int drive(uquad_mat_t* drive, uquad_mat_t* w)
 
 int f(uquad_mat_t* fx, kalman_io_t* kalman_io_data)
 {
-    double x     = kalman_io_data -> x_hat -> m_full[0];//TODO esto ta mal, no?
+    double x     = kalman_io_data -> x_hat -> m_full[0];
     double y     = kalman_io_data -> x_hat -> m_full[1];
     double z     = kalman_io_data -> x_hat -> m_full[2];
     double psi   = kalman_io_data -> x_hat -> m_full[3];
