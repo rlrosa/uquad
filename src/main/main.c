@@ -534,8 +534,24 @@ int main(int argc, char *argv[]){
 	}
 #endif
 
+	/// -- -- -- -- -- -- -- --
+	/// check if new data
+	/// -- -- -- -- -- -- -- --
 	if(!imu_update && !gps_update)
 	    continue;
+
+	/// -- -- -- -- -- -- -- --
+	/// check calibration status
+	/// -- -- -- -- -- -- -- --
+	if(imu_comm_get_status(imu) == IMU_COMM_STATE_CALIBRATING)
+	    // if calibrating, then data should not be used.
+	    continue;
+	else if(!imu_comm_calib_estim(imu))
+	{
+	    // if no calibration estim exists, build one.
+	    retval = imu_comm_calibration_start(imu);
+	    err_propagate(retval);
+	}
 
 	/// -- -- -- -- -- -- -- --
 	/// Update state estimation
