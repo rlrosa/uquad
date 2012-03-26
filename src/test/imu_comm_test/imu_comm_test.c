@@ -147,44 +147,49 @@ int main(int argc, char *argv[]){
 		}
 
 		if(imu_comm_get_status(imu) == IMU_COMM_STATE_CALIBRATING)
+		    // if calibrating, then data should not be used.
 		    continue;
-		else
+		else if(!imu_comm_calib_estim(imu))
 		{
-		    if(calibrating)
-		    {
-			printf("Calibration completed!\nPress enter to continue...");
-			calibrating = false;
-			wait_for_enter;
-		    }
-		    // Printing to stdout is unreadable
-		    retval = imu_comm_get_raw_latest_unread(imu,&raw);
-		    if(retval == ERROR_OK)
-		    {
-			retval = imu_comm_print_raw(&raw,stdout);
-			err_propagate(retval);
-		    }
+		    // if no calibration estim exists, build one.
+		    retval = imu_comm_calibration_start(imu);
+		    err_propagate(retval);
+		}
+
+		if(calibrating)
+		{
+		    printf("Calibration completed!\nPress enter to continue...");
+		    calibrating = false;
+		    wait_for_enter;
+		}
+		// Printing to stdout is unreadable
+		retval = imu_comm_get_raw_latest_unread(imu,&raw);
+		if(retval == ERROR_OK)
+		{
+		    retval = imu_comm_print_raw(&raw,stdout);
+		    err_propagate(retval);
+		}
 #if PRINT_DATA
-		    retval = imu_comm_get_data_latest(imu,&data);
-		    if(retval == ERROR_OK)
-		    {
-			retval = imu_comm_print_data(&data,stdout);
-			err_propagate(retval);
-		    }
+		retval = imu_comm_get_data_latest(imu,&data);
+		if(retval == ERROR_OK)
+		{
+		    retval = imu_comm_print_data(&data,stdout);
+		    err_propagate(retval);
+		}
 #endif
 
 #if 0
-		    // Get avg
-		    //TODO avg is KO!
-		    if(imu_comm_avg_ready(imu)){
-			retval = imu_comm_get_avg(imu,&data);
-			err_propagate(retval);
-			retval = imu_comm_print_data(&data,output_avg);
-			err_propagate(retval);
-		    }
-#endif
-		    if(output_frames == NULL || output_avg == NULL)
-			fflush(stdout);
+		// Get avg
+		//TODO avg is KO!
+		if(imu_comm_avg_ready(imu)){
+		    retval = imu_comm_get_avg(imu,&data);
+		    err_propagate(retval);
+		    retval = imu_comm_print_data(&data,output_avg);
+		    err_propagate(retval);
 		}
+#endif
+		if(output_frames == NULL || output_avg == NULL)
+		    fflush(stdout);
 	    }
 
 	    // Handle user input
