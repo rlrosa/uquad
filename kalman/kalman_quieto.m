@@ -29,7 +29,7 @@
 % los estados x, y, z (posicion absoluta)
 % -------------------------------------------------------------------------
 
-close all
+% close all
 clear all
 clc
 
@@ -167,7 +167,7 @@ end
 
 
 % %% Plots
-% 
+
 % figure()
 
 subplot(221)

@@ -4,23 +4,27 @@ close all
 clear all
 clc
 
-x=load('./tests/Motores/data/i2c_vs_todo/notas_cuad.txt');
+% x =load('./tests/Motores/data/i2c_vs_todo/notas_cuad.txt');
+[log1,log2,log3,log4] = read_marzo_log();
+x = log1;
 
 i2c   = x(:,1);                % Comando i2c
 Fm    = 9.81/1000*x(:,2)/4;    % Fuerza en N-m por motor
-w     = (pi*mean(x(:,3:6)'))'; % Velocidad angular promedio de los motores (rad/s)
+% w     = (pi*mean(x(:,3:6)'))'; % Velocidad angular promedio de los motores (rad/s)
+w     = pi*x(:,3);
+
 
 % PLOT VELOCIDADES DE LOS 4 MOTORES
 
-figure
-    plot(i2c,x(:,4),'s-'); hold on; 
-    plot(i2c,x(:,5),'r+-');
-    plot(i2c,x(:,6),'g*-');
-    plot(i2c,x(:,3),'k^-');
-    title('\fontsize{16}Comando i^2c vs velocidad angular')
-    xlabel('\fontsize{13}Comando i^2c')
-    ylabel('\fontsize{13}Velocidad angular (rad/s)')
-    legend('\fontsize{14}{\color{blue}D0}','\fontsize{14}{\color{red}D2}','\fontsize{14}{\color{green}D4}','\fontsize{14}D6','location','southeast')
+% figure
+%     plot(i2c,x(:,4),'s-'); hold on; 
+%     plot(i2c,x(:,5),'r+-');
+%     plot(i2c,x(:,6),'g*-');
+%     plot(i2c,x(:,3),'k^-');
+%     title('\fontsize{16}Comando i^2c vs velocidad angular')
+%     xlabel('\fontsize{13}Comando i^2c')
+%     ylabel('\fontsize{13}Velocidad angular (rad/s)')
+%     legend('\fontsize{14}{\color{blue}D0}','\fontsize{14}{\color{red}D2}','\fontsize{14}{\color{green}D4}','\fontsize{14}D6','location','southeast')
 
 %% Fuerza vs. velocidad angular    
 
@@ -118,3 +122,6 @@ sigma_4  = std(e_4);
 fprintf('\nModelo Cuatroático\n\tError: %d\n\tSigma: %d',e_4_prom,sigma_4)
 fprintf('\nEl modelo cuatroático es casi idéntico al cúbico. El término en w^4 es 6 órdenes más chico que el de w^3\n')
 
+
+p_quad_FW
+p_cub_IW2

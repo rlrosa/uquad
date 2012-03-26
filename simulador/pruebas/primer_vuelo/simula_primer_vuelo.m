@@ -33,8 +33,9 @@ R=diag([1 1 1 1]); %Pesos de w1 w2 w3 w4;
 
 [K,S,E]=lqr(A,B,Q,R);
 
+save('K','K');
 assignin('base','K',K);
-save('./simulador/pruebas/primer_vuelo/K.mat');
+
 %% Inicialización
 assignin('base','g',9.81); %Constante gravitacional
 assignin('base','L',0.29); %Largo de los brazos del quadcopter en metros
