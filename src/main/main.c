@@ -551,6 +551,7 @@ int main(int argc, char *argv[]){
 	    // if no calibration estim exists, build one.
 	    retval = imu_comm_calibration_start(imu);
 	    err_propagate(retval);
+	    continue;
 	}
 
 	/// -- -- -- -- -- -- -- --
