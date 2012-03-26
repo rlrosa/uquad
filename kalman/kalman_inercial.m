@@ -33,14 +33,21 @@
 % los estados x, y, z (posicion absoluta)
 % -------------------------------------------------------------------------
 
-close all
-clear all
-clc
+function [x_hat] = kalman_inercial(file);
+
+if nargin < 1
+    close all
+    clear all
+    clc
+    file = '../../../Escritorio/imu_raw.log';
+end
 
 %% Observaciones y constantes
 
-[acrud,wcrud,mcrud,tcrud,bcrud,~,~,T]=mong_read('log-zparriba4',0);
+% [acrud,wcrud,mcrud,tcrud,bcrud,~,~,T]=mong_read('log-zparriba4',0);
 % [acrud,wcrud,mcrud,tcrud,bcrud,~,~,T]=mong_read('imu_raw_7.log',0,1);
+
+[acrud,wcrud,mcrud,~,bcrud,~,~,T]=mong_read(file,0,1);
 [a,w,euler] = mong_conv(acrud,wcrud,mcrud,0);
 b=altitud(bcrud);
 
@@ -142,7 +149,7 @@ H = @() ...
     ];
 
 Q = diag(.1*[100 100 100 100 100 100 100 100 100 10 10 10]);
-R = diag(10000*[100 100 100 100 100 100 100 100 100 10]);
+R = diag(1000*[100 100 100 100 100 100 100 100 100 10]);
 
 P = 1*eye(Ns);
 x_hat=zeros(N,Ns);
