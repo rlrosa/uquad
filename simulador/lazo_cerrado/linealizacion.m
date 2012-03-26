@@ -43,8 +43,8 @@ if modo=='hov'
 
     %Por ahora hay dos opciones para trabajar. No se todavía cual es mejor
     if lqrm==0
-        Qp=diag([1 1 1e2 1 1 1 1 1 1e4 1 1 1]); 
-        
+        %Qp=diag([1 1 1e2 1 1 1 1 1 1e4 1 1 1]); 
+        Qp=diag([1 1 1e2 1e2 1e2 1 1 1 1 1 1 1]);
         
         Rp=diag([1 1 1 1]);
         %[K,S,E]=lqr(Ah,Bh,Qp,Rp);
@@ -81,11 +81,12 @@ elseif modo=='rec'
    
     %% Construcción de la matriz K método LQR para linea recta
     if lqrm==0
-        %Qp=diag([1 1 1 1 1 1 1e4 1e4 1e4 1 1 1]);%No seas pancho no cambies esto
-        Qp=diag([1 1 1 1 1 1 1 1 1 1 1 1]);
+        Qp=diag([1 1 1 1 1 1 1e4 1e4 1e4 1 1 1]);%No seas pancho no cambies esto
+        %Qp=diag([1 1 1 1 1 1 1 1 1 1 1 1]);
         Rp=diag([1 1 1 1]);
         %[K,S,E]=lqrd(Ar,Br,Qp,Rp,Ts);  
-        [K,S,E]=lqr(Ar,Br,Qp,Rp);  
+        %[K,S,E]=lqr(Ar,Br,Qp,Rp);
+        K = uquad_dlqr(Ar, Br,Qp,Rp);
     else
         Qp=diag([1e2 1e2 1e2 1 1 1 1e2 1e2 1e2 1 1 1]);
         Rp2=diag([1 1 1 1]);
