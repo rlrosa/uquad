@@ -16,7 +16,7 @@ if(exist('imu_raw','var'))
   % Se carga mucho mas rapido asi.
   Daux = load(file);
   if(size(Daux,2) ~= 14)
-    error('Log tiene \# de col incorrecto!');
+    error('Log tiene # de col incorrecto!');
   end
   T = Daux(:,3);
   T = T * 1e-6; % Paso de microsegundos a segundos

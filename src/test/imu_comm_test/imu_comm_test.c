@@ -14,7 +14,8 @@
 #define WAIT_COUNTER_MAX 10
 #define IMU_COMM_TEST_EOL_LIM 128
 
-#define PRINT_DATA 0
+#define PRINT_RAW 0
+#define PRINT_DATA 1
 
 #if 0
 static int fix_end_of_time_string(char * string, int lim){
@@ -96,7 +97,9 @@ int main(int argc, char *argv[]){
 
     // do stuff...
     imu_data_t data;
+#if PRINT_RAW
     imu_raw_t raw;
+#endif
     imu_calib_t *imu_calib;
     uquad_bool_t do_sleep = false, calibrating = false;
     uquad_bool_t data_ready = false;
@@ -146,45 +149,61 @@ int main(int argc, char *argv[]){
 		    continue;
 		}
 
-		if(imu_comm_get_status(imu) == IMU_COMM_STATE_CALIBRATING)
+		if(!data_ready)
 		    continue;
-		else
+
+		if(imu_comm_get_status(imu) == IMU_COMM_STATE_CALIBRATING)
+		    // if calibrating, then data should not be used.
+		    continue;
+		else if(!imu_comm_calib_estim(imu))
 		{
-		    if(calibrating)
-		    {
-			printf("Calibration completed!\nPress enter to continue...");
-			calibrating = false;
-			wait_for_enter;
-		    }
-		    // Printing to stdout is unreadable
-		    retval = imu_comm_get_raw_latest_unread(imu,&raw);
-		    if(retval == ERROR_OK)
-		    {
-			retval = imu_comm_print_raw(&raw,stdout);
-			err_propagate(retval);
-		    }
+		    // if no calibration estim exists, build one.
+		    retval = imu_comm_calibration_start(imu);
+		    err_propagate(retval);
+		    calibrating = true;
+		    continue;
+		}
+
+		if(calibrating)
+		{
+		    printf("Calibration completed!\nPress enter to continue...");
+		    calibrating = false;
+		    wait_for_enter;
+		}
+#if PRINT_RAW
+		retval = imu_comm_get_raw_latest_unread(imu,&raw);
+		if(retval == ERROR_OK)
+		{
+		    retval = imu_comm_print_raw(&raw,stdout);
+		    err_propagate(retval);
+		}
+#endif
 #if PRINT_DATA
-		    retval = imu_comm_get_data_latest(imu,&data);
-		    if(retval == ERROR_OK)
-		    {
-			retval = imu_comm_print_data(&data,stdout);
-			err_propagate(retval);
-		    }
+#if PRINT_RAW
+		// undread data was already taken by get_raw_latest_unread()
+		retval = imu_comm_get_data_latest(imu,&data);
+#else
+		retval = imu_comm_get_data_latest_unread(imu,&data);
+#endif
+		if(retval == ERROR_OK)
+		{
+		    retval = imu_comm_print_data(&data,stdout);
+		    err_propagate(retval);
+		}
 #endif
 
 #if 0
-		    // Get avg
-		    //TODO avg is KO!
-		    if(imu_comm_avg_ready(imu)){
-			retval = imu_comm_get_avg(imu,&data);
-			err_propagate(retval);
-			retval = imu_comm_print_data(&data,output_avg);
-			err_propagate(retval);
-		    }
-#endif
-		    if(output_frames == NULL || output_avg == NULL)
-			fflush(stdout);
+		// Get avg
+		//TODO avg is KO!
+		if(imu_comm_avg_ready(imu)){
+		    retval = imu_comm_get_avg(imu,&data);
+		    err_propagate(retval);
+		    retval = imu_comm_print_data(&data,output_avg);
+		    err_propagate(retval);
 		}
+#endif
+		if(output_frames == NULL || output_avg == NULL)
+		    fflush(stdout);
 	    }
 
 	    // Handle user input

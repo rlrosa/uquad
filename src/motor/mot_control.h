@@ -13,7 +13,7 @@
 #define MOT_MAX_W 387.0L // rad/s (match MOT_MAX_I2C)
 #define MOT_IDLE_I2C 50 // i2c
 #define MOT_IDLE_W 109.0L // rad/s (match MOT_IDLE_I2C)
-#define MOT_W_HOVER 334.28L // rad/s
+#define MOT_W_HOVER 298.09L //334.28L // rad/s
 #define MOT_C 4
 
 #define MOT_UPDATE_MAX_US 2000 // us

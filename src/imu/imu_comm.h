@@ -42,7 +42,7 @@
 #define IMU_FRAME_BUFF_SIZE 16
 
 #define IMU_AVG_COUNT 8 // Reduce variance my taking avg
-#define IMU_CALIB_SIZE 256 //TODO Tune!
+#define IMU_CALIB_SIZE 512 //TODO Tune!
 
 #define IMU_GYRO_DEFAULT_GAIN 14.375L // Not used
 #define IMU_P0_DEFAULT 101325.0L // Value used if no calibration is available.

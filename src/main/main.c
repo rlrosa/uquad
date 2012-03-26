@@ -10,6 +10,8 @@
 #define DEBUG_KALMAN_INPUT 1
 #endif
 
+#define USE_GPS 0
+
 #include <uquad_types.h>
 #include <macros_misc.h>
 #include <uquad_aux_io.h>
@@ -18,7 +20,9 @@
 #include <uquad_kalman.h>
 #include <control.h>
 #include <path_planner.h>
+#if USE_GPS
 #include <uquad_gps_comm.h>
+#endif
 
 #include <sys/signal.h> // for SIGINT and SIGQUIT
 #include <unistd.h>     // for STDIN_FILENO
@@ -45,7 +49,9 @@ static uquad_mot_t *mot;
 static io_t *io;
 static ctrl_t *ctrl;
 static path_planner_t *pp;
+#if USE_GPS
 static gps_t *gps;
+#endif
 /// Global var
 uquad_mat_t *w, *wt;
 uquad_mat_t *x;
@@ -88,8 +94,10 @@ void quit()
 	err_log("Could not close IMU correctly!");
     }
 
+#if USE_GPS
     /// GPS
     gps_comm_deinit(gps);
+#endif
 
     /// Kalman
     kalman_deinit(kalman);
@@ -214,6 +222,7 @@ int main(int argc, char *argv[]){
 	quit_log_if(ERROR_FAIL,"imu init failed!");
     }
 
+#if USE_GPS
     /// GPS
     gps = gps_comm_init();
     if(gps == NULL)
@@ -221,6 +230,7 @@ int main(int argc, char *argv[]){
 	err_log("WARN: GPS not available!");
 	//	quit_log_if(ERROR_FAIL,"gps init failed!");
     }
+#endif
 
     /// Kalman
     kalman = kalman_init();
@@ -318,6 +328,7 @@ int main(int argc, char *argv[]){
     quit_log_if(retval,"Failed to get imu fds!!");
     retval = io_add_dev(io,imu_fds);
     quit_log_if(retval,"Failed to add imu to dev list");
+#if USE_GPS
     // gps
     int gps_fds;
     if(gps != NULL)
@@ -326,6 +337,7 @@ int main(int argc, char *argv[]){
 	retval = io_add_dev(io,gps_fds);
 	quit_log_if(retval,"Failed to add gps to dev list");
     }
+#endif
     // stdin
     retval = io_add_dev(io,STDIN_FILENO);
     quit_log_if(retval, "Failed to add stdin to io list");
@@ -343,9 +355,12 @@ int main(int argc, char *argv[]){
 	read = false,
 	write = false,
 	imu_update = false,
-	gps_update = false,
-	reg_stdin = true,
-	reg_gps = (gps == NULL)?false:true;
+	reg_stdin = true;
+    uquad_bool_t gps_update = false;
+#if USE_GPS
+    uquad_bool_t reg_gps = (gps == NULL)?false:true;
+    struct timeval tv_gps_diff;
+#endif
     int runs = 0;
     int err_imu = ERROR_OK, err_gps = ERROR_OK;
     unsigned char tmp_buff[2];
@@ -353,8 +368,7 @@ int main(int argc, char *argv[]){
 	tv_tmp, tv_diff,
 	tv_last_m_cmd,
 	tv_last_kalman,
-	tv_gps_last,
-	tv_gps_diff;
+	tv_gps_last;
     gettimeofday(&tv_last_kalman,NULL);
     gettimeofday(&tv_gps_last,NULL);
     gettimeofday(&tv_last_m_cmd,NULL);
@@ -488,6 +502,7 @@ int main(int argc, char *argv[]){
 	    // will jump here if something went wrong during IMU reading
 	}//if(read)
 
+#if USE_GPS
 	/// -- -- -- -- -- -- -- --
 	/// Check GPS updates
 	/// -- -- -- -- -- -- -- --
@@ -517,9 +532,26 @@ int main(int argc, char *argv[]){
 	    end_gps:;
 	    // will jump here if something went wrong during GPS reading
 	}
+#endif
 
+	/// -- -- -- -- -- -- -- --
+	/// check if new data
+	/// -- -- -- -- -- -- -- --
 	if(!imu_update && !gps_update)
 	    continue;
+
+	/// -- -- -- -- -- -- -- --
+	/// check calibration status
+	/// -- -- -- -- -- -- -- --
+	if(imu_comm_get_status(imu) == IMU_COMM_STATE_CALIBRATING)
+	    // if calibrating, then data should not be used.
+	    continue;
+	else if(!imu_comm_calib_estim(imu))
+	{
+	    // if no calibration estim exists, build one.
+	    retval = imu_comm_calibration_start(imu);
+	    err_propagate(retval);
+	}
 
 	/// -- -- -- -- -- -- -- --
 	/// Update state estimation
