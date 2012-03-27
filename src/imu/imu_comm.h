@@ -118,7 +118,7 @@ typedef struct imu_data{
     double T_us;       // us
     uquad_mat_t *acc;  // m/s^2
     uquad_mat_t *gyro; // rad/s
-    uquad_mat_t *magn; // rad
+    uquad_mat_t *magn; // rad - Euler angles - {psi/roll,phi/pitch,theta/yaw}
     double temp;       // °C
     double alt;        // m
 
