@@ -124,7 +124,7 @@ if plotear
         title('Velocidades angulares en rad/s')
         subplot(313)
         plot(t,euler(:,1)*180/pi); hold on; plot(t,euler(:,2)*180/pi,'r'); plot(t,euler(:,3)*180/pi,'g'); legend('\psi','\phi','\theta'); grid;
-        title('Angulos de Euler en radianes')
+        title('Angulos de Euler en grados')
 end
 
 % %% Desplazamientos
