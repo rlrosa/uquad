@@ -23,7 +23,7 @@ figure()
     line(t,t_imu,'Color','m','Parent',ax2,'linewidth',2);
     if bool
         hold on
-        line(T*ind,t_posta,'Color','k','Parent',ax2,'linewidth',2);
+        %line(T*ind,t_posta,'Color','k','Parent',ax2,'linewidth',2);
         legend_handle2=legend('\fontsize{14}Temperatura ambiente','\fontsize{14}Temperatura IMU','location','NorthEast');
     else
         legend_handle2=legend('\fontsize{14}Temperatura IMU','location','NorthEast');
