@@ -31,6 +31,7 @@ else
     mv ../../../../src/build/main/cmd_output.log .
     mv ../../../../src/build/main/x_hat.log .
     mv ../../../../src/build/main/kalman_in.log .
+    mv ../../../../src/build/main/tv.log .
     cd ../
     echo success!
 fi
