@@ -33,9 +33,9 @@
 % los estados x, y, z (posicion absoluta)
 % -------------------------------------------------------------------------
 
-close all
-clear all
-clc
+% close all
+% clear all
+% clc
 
 %% Observaciones y constantes
 
@@ -45,7 +45,8 @@ clc
 % [acrud,wcrud,mcrud,tcrud,bcrud,~,~,T]=mong_read('log-zparriba4',0);
 % [acrud,wcrud,mcrud,tcrud,bcrud,~,~,T]=mong_read('../../../Escritorio/imu_raw.log',0,1);
 
-file = 'tests/main/logs/vuelo_2_03_25/imu_raw.log';
+% file = 'tests/main/logs/vuelo_2_03_25/imu_raw.log';
+file = '../../../Escritorio/imu_raw.log';
 [acrud,wcrud,mcrud,tcrud,bcrud,~,~,T]=mong_read(file,0,1);
 
 % [acrud,wcrud,mcrud,tcrud,bcrud,~,~,T]=mong_read('imu_raw_8.log',0,1);
@@ -160,14 +161,14 @@ H = @() ...
 % R = diag(1000*[10 10 10 10 10 10 10 10 10 10]);
 
 Q = diag(1*[100 100 100 1 1 1 10 10 10 1 1 1]);
-R = diag(1000*[.001 .001 .001 10 10 10 10 10 10 10]);
+R = diag(100*[.01 .01 .01 100 100 100 1 1 1 100]);
 
 P = 1*eye(Ns);
 x_hat=zeros(N,Ns);
 
 % K = load('Kotra4.mat');K = K.K;
 K = load('K.mat');K = K.K;
-w_hover = 334.28;
+w_hover = 298.0867;
 sp_x = zeros(7,1);
 sp_w = ones(4,1)*w_hover;
 w_control = zeros(4,N);
@@ -202,9 +203,9 @@ for i=2:N
 %         dw = w_control(:,i-1)-w_control(:,i-2);
 % %     end
     dw = zeros(4,1); 
-    TM = 3.5296e-5*w.^2-4.9293e-4*w;   % Fuerzas ejercidas por los motores en N. Cada columna corresponde a 1 motor.
-    D  = 3.4734e-6*w.^2-1.3205e-4*w;   % Torque de Drag ejercido por los motores en N*m. Cada columna corresponde a cada motor
-    Tk=T(i-1);
+    TM = drive(w);   % Fuerzas ejercidas por los motores en N. Cada columna corresponde a 1 motor.
+    D  = drag(w);   % Torque de Drag ejercido por los motores en N*m. Cada columna corresponde a cada motor
+    Tk=T(i);
     
     % Prediction
     x_   = f(x_hat(i-1,1),x_hat(i-1,2),x_hat(i-1,3),x_hat(i-1,4),x_hat(i-1,5),x_hat(i-1,6),x_hat(i-1,7),x_hat(i-1,8),x_hat(i-1,9),x_hat(i-1,10),x_hat(i-1,11),x_hat(i-1,12),w,dw,TM,D,Tk);
