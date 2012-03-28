@@ -48,11 +48,13 @@ if modo=='hov'
 
     %Por ahora hay dos opciones para trabajar. No se todavía cual es mejor
     if lqrm==0
-        Qp=diag([1 1 1 100 100 100 1 1 1 1 1 1]);
+        Qp=diag([1 1 1 1e3 1e3 1 1 1 1 1 1 1]);
+        %Rp=diag([0.01 0.01 0.01 0.01]);
         %Qp = diag([1 1 100 1 1 1 1 1 1 1 1 1]);
-        Rp=diag([0.01 0.01 0.01 0.01]);
+        
+        Rp = diag([1e-2 1e-2 1e-2 1e-2]);
         [K,S,E]=lqrd(Ah,Bh,Qp,Rp,Ts);
-
+        
     else
         Qp2=diag([100 100 100 1 1 1 100 100 100 1 1 1]);
         Rp2=diag([1 1 1 1]);

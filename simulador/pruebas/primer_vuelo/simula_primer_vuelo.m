@@ -28,10 +28,10 @@ w4=298.086701308402;
 A=eval(A);
 B=eval(B);
     
-Q=diag([1 1e2 1e2 1 1 1 1]);%Pesos de z,psi,phi,vqz wqx,wqy,wqz
-R=diag([1 1 1 1]); %Pesos de w1 w2 w3 w4;
+Q=diag([1 1e3 1e3 1 1 1 1]);%Pesos de z,psi,phi,vqz wqx,wqy,wqz
+R=diag([1e-2 1e-2 1e-2 1e-2]); %Pesos de w1 w2 w3 w4;
 
-[K,S,E]=lqr(A,B,Q,R);
+[K,S,E]=lqrd(A,B,Q,R,10e-3);
 
 save('K','K');
 assignin('base','K',K);

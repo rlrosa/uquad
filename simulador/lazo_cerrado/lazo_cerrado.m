@@ -591,7 +591,7 @@ function slider3_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-var=0.3*get(hObject,'Value');
+var=15*get(hObject,'Value');
 assignin('base','ang_cov',var*pi/180);
 set(handles.ruido3,'String',num2str(var,'%f1.2'));
 
