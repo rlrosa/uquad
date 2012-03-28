@@ -2,7 +2,7 @@ close all
 clear all
 clc
 
-fs = 50;
+fs = 100;
 
 %% Cargo datos
 
@@ -94,23 +94,25 @@ temperaturas = mean(vec2mat(t_imu,avr),2);
 x0_lin=zeros(1,6);
 [x,RESNORM,RESIDUAL,EXITFLAG]=lsqnonlin(@temp_acc_cost_3,x0_lin,[],[],optimset('MaxFunEvals',10000));
 
+save('acc_temp','x','to');
+
 %% Convierto
 
 K=[A.X(1) 0 0;
     0 A.X(2) 0;
     0 0 A.X(3)];
 
-% T=[1 -A.X(7) A.X(8);
-%    A.X(9) 1 -A.X(10);
-%    -A.X(11) A.X(12) 1];
+T=[1 -A.X(7) A.X(8);
+   A.X(9) 1 -A.X(10);
+   -A.X(11) A.X(12) 1];
 
 b=[A.X(4) A.X(5) A.X(6)]';
 
 aconv_temp_lin=zeros(size(a));
 for i=1:length(a(:,1))
-    aux = ((K^-1) + [ x(1)*(t_imu(i)-to) 0                  0 ;                  ...
-                 0                  x(2)*(t_imu(i)-to) 0 ;                  ...
-                 0                  0                  x(3)*(t_imu(i)-to) ] ...
+    aux = T * ((K^-1) + [ x(1)*(t_imu(i)-to) 0                  0 ;                  ...
+                          0                  x(2)*(t_imu(i)-to) 0 ;                  ...
+                          0                  0                  x(3)*(t_imu(i)-to) ] ...
           ) * (a(i,:)'- (b + [x(4)*(t_imu(i)-to); ...
                                  x(5)*(t_imu(i)-to); ...
                                  x(6)*(t_imu(i)-to)] )) ;

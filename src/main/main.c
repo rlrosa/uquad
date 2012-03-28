@@ -73,6 +73,7 @@ uquad_mat_t *x_hat_T = NULL;
 FILE *log_kalman_in = NULL;
 #endif //DEBUG_KALMAN_INPUT
 #endif //DEBUG
+FILE *log_tv = NULL;
 
 /** 
  * Clean up and close
@@ -144,6 +145,8 @@ void quit()
 	fclose(log_kalman_in);
 #endif
 #endif //DEBUG
+    if(log_tv != NULL)
+	fclose(log_tv);
 
     //TODO deinit everything?
     exit(retval);
@@ -319,6 +322,12 @@ int main(int argc, char *argv[]){
     }
 #endif
 #endif //DEBUG
+    log_tv = fopen("tv.log","w");
+    if(log_tv == NULL)
+    {
+	err_log("Failed to open tv_log!");
+	quit();
+    }
 
     /// -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
     /// Register IO devices
@@ -669,9 +678,9 @@ int main(int argc, char *argv[]){
 		    fprintf(stdout,"\nNo user input!!\n\n");
 		else
 		{
-		    err_log("Will land and quit!");
-		    slow_land();
-		    // program ends here
+		    gettimeofday(&tv_tmp,NULL);
+		    retval = uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
+		    log_tv(log_tv, "RET:", tv_diff);
 		}
 	    }
 	}

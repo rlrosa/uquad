@@ -1,13 +1,26 @@
-
-function [aconv,wconv,euler] = mong_conv(a,w,m,plotear)
+function [aconv,wconv,euler] = mong_conv(a,w,m,plotear,t_imu)
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 % function [aconv,wconv,mconv] = mong_conv(a,w,m,plotear)
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-if(nargin < 4)
+if(~exist('plotear','var'))
   plotear = 1;
 end
 
-fs=50;
+AT=load('acc_temp','x','to');
+a_to = AT.to;
+
+if(~exist('t_imu','var'))
+  fprintf('Flaco, mirá que no pasaste la temperatura, y eso q te avise\nSe calibrará sin la compensación por temperatura\n');
+  t_imu = a_to;
+else
+    if length(t_imu)>512
+        t_imu = mean(t_imu(1:512))/10;
+    else
+        t_imu = mean(t_imu)/10;
+    end
+end
+
+fs=100;
 
 %% Carga datos calibración
 
@@ -55,9 +68,15 @@ Ta=[1 -ayza azya;
    axza 1 -azxa;
    -axya ayxa 1];
 
+Ka_1 = (Ka^-1) + [ AT.x(1)*(t_imu-a_to) 0                    0 ;                      ...
+                   0                    AT.x(2)*(t_imu-a_to) 0 ;                      ...
+                   0                    0                    AT.x(3)*(t_imu-a_to) ] ;
+               
+bat = ba + [AT.x(4); AT.x(5); AT.x(6)]*(t_imu-a_to);
+
 aconv=zeros(size(a));
 for i=1:length(a(:,1))
-    aux=Ta*(Ka^(-1))*(a(i,:)'-ba);
+    aux=Ta*(Ka_1)*(a(i,:)'-bat);
     aconv(i,:)=aux';
 end
 
@@ -114,7 +133,6 @@ end
 if plotear
     T=1/fs;
     t=0:T:T*(length(a(:,1))-1);
-    tp=0:10*T:T*(length(a(:,1))-1);
     figure()
         subplot(311)
         plot(t,aconv(:,1)); hold on; plot(t,aconv(:,2),'r'); plot(t,aconv(:,3),'g'); legend('a_x','a_y','a_z'); grid;
@@ -124,7 +142,7 @@ if plotear
         title('Velocidades angulares en rad/s')
         subplot(313)
         plot(t,euler(:,1)*180/pi); hold on; plot(t,euler(:,2)*180/pi,'r'); plot(t,euler(:,3)*180/pi,'g'); legend('\psi','\phi','\theta'); grid;
-        title('Angulos de Euler en radianes')
+        title('Angulos de Euler en grados')
 end
 
 % %% Desplazamientos

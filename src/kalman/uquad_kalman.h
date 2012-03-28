@@ -3,8 +3,26 @@
 #include <uquad_aux_math.h>
 #include <imu_comm.h>
 
-// Encabezados de las funciones del uquad_kalman.c que voy a llamar desde otro lado
-
+/**
+ * Kalman struct description:
+ *
+ * x_hat: State vector
+ *    [x         ] - m
+ *    [y         ] - m
+ *    [z         ] - m
+ *    [psi/roll  ] - rad
+ *    [phi/pitch ] - rad
+ *    [theta/yaw ] - rad
+ *    [vqx       ] - m/s
+ *    [vqy       ] - m/s
+ *    [vqz       ] - m/s
+ *    [wqx       ] - rad/s
+ *    [wqy       ] - rad/s
+ *    [wqz       ] - rad/s
+ *
+ * T: Time since last sample, in us
+ *
+ */
 typedef struct kalman_io {
     uquad_mat_t *x_hat;
     uquad_mat_t *u;
