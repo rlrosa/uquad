@@ -33,6 +33,19 @@
 #define STARTUP_KALMAN 200
 #define FIXED 3
 
+/**
+ *
+ * Sampling time within [TS_MIN,TS_MAX] will be used for
+ * kalman filtering. If out of range, using it within the kalman filter
+ * would force a violent reaction, and the stabilization time would
+ * be unacceptable.
+ *
+ */
+#define TS_JITTER 2000L      // Max jitter accepted
+#define TS_MAX (TS_DEFAULT_US + TS_JITTER)
+#define TS_MIN (TS_DEFAULT_US - TS_JITTER)
+#define TS_JITTER_RATE_MAX 1.0 // Warning display threshold
+
 #define LOG_W_NAME "w.log"
 #define LOG_W_CTRL_NAME "w_ctrl.log"
 
@@ -194,6 +207,7 @@ void uquad_sig_handler(int signal_num){
 int main(int argc, char *argv[]){
     int retval = ERROR_OK, i;
     char * device_imu;
+    double ts_jitter_rate = 0;
 
     // Catch signals
     signal(SIGINT, uquad_sig_handler);
@@ -587,6 +601,21 @@ int main(int argc, char *argv[]){
 	if(retval < 0)
 	{
 	    log_n_continue(ERROR_TIMING,"Absurd timing!");
+	}
+	/// Check sampling period jitter
+	retval = in_range_us(tv_diff, TS_MIN, TS_MAX);
+	static unsigned long kalman_loops = 0;
+	kalman_loops = (kalman_loops+1)%65536;// avoid overflow
+	if(retval != 0)
+	{
+	    static unsigned long ts_errors = 0;
+	    ts_jitter_rate = 100*((double)ts_errors++/(kalman_loops+1));
+	    if(ts_jitter_rate > TS_JITTER_RATE_MAX)
+	    {
+		fprintf(stderr,"Jitter rate: %0.2lf%%\t",ts_jitter_rate);
+		err_log_tv("TS supplied to Kalman out of range!:",tv_diff);
+	    }
+	    tv_diff.tv_usec = (retval > 0) ? TS_MAX:TS_MIN;
 	}
 	if(runs_kalman > STARTUP_KALMAN)
 	    // use real w
