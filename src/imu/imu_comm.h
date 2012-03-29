@@ -27,43 +27,49 @@
  * ascii log file.
  * 
  */
-#define IMU_COMM_FAKE 0
+#define IMU_COMM_FAKE                     0
 
-#define IMU_FRAME_ELEMENTS 12
-#define IMU_FRAME_ALTERNATES_INIT 0
-#define IMU_FRAME_INIT_CHAR 'A'
-#define IMU_FRAME_INIT_CHAR_ALT 'C'
-#define IMU_FRAME_INIT_DIFF 0x2
-#define IMU_FRAME_END_CHAR 'Z'
-#define IMU_INIT_END_SIZE 1
-#define IMU_DEFAULT_FRAME_SIZE_BYTES 30
+/**
+ * Definition of default sampling period, in microseconds.
+ * Should match code running on IMU.
+ */
+#define TS_DEFAULT_US                     10000L
+
+#define IMU_FRAME_ELEMENTS                12
+#define IMU_FRAME_ALTERNATES_INIT         0
+#define IMU_FRAME_INIT_CHAR               'A'
+#define IMU_FRAME_INIT_CHAR_ALT           'C'
+#define IMU_FRAME_INIT_DIFF               0x2
+#define IMU_FRAME_END_CHAR                'Z'
+#define IMU_INIT_END_SIZE                 1
+#define IMU_DEFAULT_FRAME_SIZE_BYTES      30
 #define IMU_DEFAULT_FRAME_SIZE_DATA_BYTES IMU_DEFAULT_FRAME_SIZE_BYTES - 6 // init,end,time
 
-#define IMU_FRAME_BUFF_SIZE 32
+#define IMU_FRAME_BUFF_SIZE               32
 
-#define IMU_AVG_COUNT 24 // Reduce variance my taking avg
-#define IMU_CALIB_SIZE 512 //TODO Tune!
+#define IMU_AVG_COUNT                     24 // Reduce variance my taking avg
+#define IMU_CALIB_SIZE                    512 //TODO Tune!
 
-#define IMU_GYRO_DEFAULT_GAIN 14.375L // Not used
-#define IMU_P0_DEFAULT 101325.0L // Value used if no calibration is available.
+#define IMU_GYRO_DEFAULT_GAIN             14.375L // Not used
+#define IMU_P0_DEFAULT                    101325.0L // Value used if no calibration is available.
 
-#define IMU_TH_DEADLOCK_ACC 9.72L // m/s^2
-#define IMU_TH_DEADLOCK_ANG 0.17069L // rad
+#define IMU_TH_DEADLOCK_ACC               9.72L // m/s^2
+#define IMU_TH_DEADLOCK_ANG               0.17069L // rad
 
-#define IMU_BYTES_T_US 4
+#define IMU_BYTES_T_US                    4
 
-#define IMU_COMM_AVG_MAX_INTERVAL 2*IMU_FRAME_SAMPLE_AVG_COUNT //Too much...?
+#define IMU_COMM_AVG_MAX_INTERVAL         2*IMU_FRAME_SAMPLE_AVG_COUNT //Too much...?
 
 /// ASCII 35, exits from menu and runs unit
-#define IMU_COMMAND_RUN '#'
+#define IMU_COMMAND_RUN                   '#'
 /// ASCII 36, stops sampling and shows menu
-#define IMU_COMMAND_STOP '$'
+#define IMU_COMMAND_STOP                  '$'
 
 /// ASCII 33, sets the unit in default mode
-#define IMU_COMMAND_DEF '!'
+#define IMU_COMMAND_DEF                   '!'
 
 /// If READ_RETRIES > 1, then reading may block.
-#define READ_RETRIES 1
+#define READ_RETRIES                      1
 
 /**
  * Raw data from IMU
@@ -202,12 +208,12 @@ typedef struct imu{
     /// data
     imu_raw_t frame_buff[IMU_FRAME_BUFF_SIZE];
     int frame_buff_latest; // last sample is here
-    int frame_buff_next; // new data will go here
+    int frame_buff_next;   // new data will go here
     int unread_data;
 
     /// avg
-    int frame_count;    // # of frames available for avg
-    imu_data_t tmp_avg; // Aux mem used for avg.
+    int frame_count;       // # of frames available for avg
+    imu_data_t tmp_avg;    // Aux mem used for avg.
 
 #if DEBUG
     imu_data_t tmp_data;
