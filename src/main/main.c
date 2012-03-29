@@ -602,6 +602,12 @@ int main(int argc, char *argv[]){
 	{
 	    log_n_continue(ERROR_TIMING,"Absurd timing!");
 	}
+#if TIMING && TIMING_KALMAN
+	gettimeofday(&tv_pgm,NULL);
+	printf("KALMAN:\t%ld\t\t%ld.%06ld\n", tv_diff.tv_usec,
+	       tv_pgm.tv_sec - tv_start.tv_sec,
+	       tv_pgm.tv_usec);
+#endif
 	/// Check sampling period jitter
 	retval = in_range_us(tv_diff, TS_MIN, TS_MAX);
 	static unsigned long kalman_loops = 0;
@@ -617,6 +623,8 @@ int main(int argc, char *argv[]){
 	    }
 	    tv_diff.tv_usec = (retval > 0) ? TS_MAX:TS_MIN;
 	}
+	/// Mark time when we run Kalman
+	gettimeofday(&tv_last_kalman,NULL);
 	if(runs_kalman > STARTUP_KALMAN)
 	    // use real w
 	    retval = uquad_kalman(kalman,
@@ -630,14 +638,6 @@ int main(int argc, char *argv[]){
 				  &imu_data,
 				  tv_diff.tv_usec);
 	log_n_continue(retval,"Kalman update failed");
-	/// Mark time when we leave Kalman
-	gettimeofday(&tv_last_kalman,NULL);
-#if TIMING && TIMING_KALMAN
-	gettimeofday(&tv_pgm,NULL);
-	printf("KALMAN:\t%ld\t\t%ld.%06ld\n", tv_diff.tv_usec,
-	       tv_pgm.tv_sec - tv_start.tv_sec,
-	       tv_pgm.tv_usec);
-#endif
 
 #if DEBUG
 #if DEBUG_KALMAN_INPUT
