@@ -54,26 +54,26 @@ ERROR_TIMING
  * Print error message to stderr
  * 
  */
-#define err_log(msg) fprintf(stderr,"%s:%d: %s\n",__FILE__,__LINE__,msg)
-#define err_log_stderr(msg) fprintf(stderr,"%s:%d: %s: %s\n",__FILE__,__LINE__,msg, strerror(errno))
+#define err_log(msg) fprintf(stderr,"%s:%s:%d: %s\n",__TIME__,__FILE__,__LINE__,msg)
+#define err_log_stderr(msg) fprintf(stderr,"%s:%s:%d: %s: %s\n",__TIME__,__FILE__,__LINE__,msg, strerror(errno))
 
 /**
  * Print error message with number to stderr
  * 
  */
-#define err_log_num(msg,num) fprintf(stderr,"%s:%d: %s(%d)\n",__FILE__,__LINE__,msg,num)
+#define err_log_num(msg,num) fprintf(stderr,"%s:%s:%d: %s(%d)\n",__TIME__,__FILE__,__LINE__,msg,num)
 
 /**
  * Print timeval message with unsigned long to stderr
  * 
  */
-#define err_log_tv(msg,tv) fprintf(stderr,"%s:%d: %s(%ld.%06ld)\n",__FILE__,__LINE__,msg,tv.tv_sec, tv.tv_usec)
+#define err_log_tv(msg,tv) fprintf(stderr,"%s:%s:%d: %s(%ld.%06ld)\n",__TIME__,__FILE__,__LINE__,msg,tv.tv_sec, tv.tv_usec)
 
 /**
  * Print timeval to log with unsigned long to stderr
  * 
  */
-#define log_tv(log,msg,tv) fprintf(log,"%s:%d: %s(%ld.%06ld)\n",__FILE__,__LINE__,msg,tv.tv_sec, tv.tv_usec)
+#define log_tv(log,msg,tv) fprintf(log,"%s:%s:%d: %s(%ld.%06ld)\n",__TIME__,__FILE__,__LINE__,msg,tv.tv_sec, tv.tv_usec)
 
 /**
  * If @retval is an error, then propagate error without printing anything.
@@ -85,7 +85,7 @@ ERROR_TIMING
  * If @retval is an error, then print @msg to stderr and propagate error.
  * 
  */
-#define err_check(retval,msg) if(retval!=ERROR_OK){fprintf(stderr,"%s:%d: %s\n",__FILE__,__LINE__,msg);return retval;}
+#define err_check(retval,msg) if(retval!=ERROR_OK){fprintf(stderr,"%s:%s:%d: %s\n",__TIME__,__FILE__,__LINE__,msg);return retval;}
 
 /**
  * If @retval is an error, call quit().
@@ -124,7 +124,7 @@ ERROR_TIMING
  * Verifies that malloc succeeded.
  * 
  */
-#define mem_alloc_check(pointer) if(pointer==NULL){fprintf(stderr,"%s:%d: malloc failed\n",__FILE__,__LINE__);return NULL;}
+#define mem_alloc_check(pointer) if(pointer==NULL){fprintf(stderr,"%s:%s:%d: malloc failed\n",__TIME__,__FILE__,__LINE__);return NULL;}
 
 /// No functions
 
