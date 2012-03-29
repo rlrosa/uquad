@@ -4,6 +4,8 @@
 #include <sys/time.h>
 #include <unistd.h> // for usleep()
 
+#define sleep_ms(ms) usleep(1000*ms)
+
 /** 
  * Calculate the difference between two time vals, without losing precision.
  * 
@@ -17,6 +19,15 @@
  */
 int uquad_timeval_substract (struct timeval * result, struct timeval x, struct timeval y);
 
-#define sleep_ms(ms) usleep(1000*ms)
+/**
+ * Verifies that a time diff falls within a given range, in microseconds.
+ *
+ * @param tv_diff Difference calculated using uquad_timeval_substract()
+ * @param min_us Range min in microseconds.
+ * @param max_us Range max in microseconds.
+ *
+ * @return 0 iif in range, -1 iif less than min_us, 1 iif more than max_us
+ */
+int in_range_us(struct timeval tv_diff, long int min_us, long int max_us);
 
 #endif
