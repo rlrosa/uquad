@@ -422,9 +422,9 @@ kalman_io_t* kalman_init()
     kalman_io_data->R->m[3][3] = 10000;
     kalman_io_data->R->m[4][4] = 10000;
     kalman_io_data->R->m[5][5] = 10000;
-    kalman_io_data->R->m[6][6] = 1;
-    kalman_io_data->R->m[7][7] = 1;
-    kalman_io_data->R->m[8][8] = 1;
+    kalman_io_data->R->m[6][6] = 100;
+    kalman_io_data->R->m[7][7] = 100;
+    kalman_io_data->R->m[8][8] = 100;
     kalman_io_data->R->m[9][9] = 10000;
 
     kalman_io_data->P->m[0][0] = 1;
