@@ -27,3 +27,18 @@ int uquad_timeval_substract (struct timeval * result, struct timeval x, struct t
     // 0 if equal
     return 0;
 }
+
+int in_range_us(struct timeval tv_diff, long int min_us, long int max_us)
+{
+    int retval = 0;
+    if(tv_diff.tv_sec > 0       ||
+       tv_diff.tv_usec > max_us ||
+       tv_diff.tv_usec < min_us)
+    {
+	if(tv_diff.tv_sec > 0 || tv_diff.tv_usec > max_us)
+	    retval = 1;
+	else
+	    retval = -1;
+    }
+    return retval;
+}
