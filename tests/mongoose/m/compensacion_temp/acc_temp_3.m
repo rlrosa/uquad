@@ -49,7 +49,12 @@ fs = 100;
 
 
 [a,w,m,t_imu,~,fecha,ind]=mong_read...
-    (['tests/mongoose/temperaturomometro/data_marzo/subida_1.log'],0);
+    (['tests/mongoose/temperaturomometro/data_secador/6_mesa_estufa/imu_raw.log'],1,1);
+% a = a(5341:3*5341,:);
+% w = w(5341:3*5341,:);
+% m = m(5341:3*5341,:);
+% t_imu=t_imu(5341:3*5341);
+
 [aconv,wconv,mconv]=mong_conv(a,w,m,0);
 t_imu=t_imu/10;
 
@@ -88,11 +93,11 @@ avr=10;
 a_crudas     = [mean(vec2mat(a(:,1),avr),2) mean(vec2mat(a(:,2),avr),2)...
                 mean(vec2mat(a(:,3),avr),2)];
 N            = size(a_crudas,1);
-a_teoricos   = [zeros(N,1) zeros(N,1) -9.81*ones(N,1)];
+a_teoricos   = [zeros(N,1) zeros(N,1) 9.81*ones(N,1)];
 temperaturas = mean(vec2mat(t_imu,avr),2);
 
 x0_lin=zeros(1,6);
-[x,RESNORM,RESIDUAL,EXITFLAG]=lsqnonlin(@temp_acc_cost_3,x0_lin,[],[],optimset('MaxFunEvals',10000));
+[x,RESNORM,RESIDUAL,EXITFLAG]=lsqnonlin(@temp_acc_cost_3,x0_lin,[],[],optimset('MaxFunEvals',10000,'MaxIter',1000));
 
 save('acc_temp','x','to');
 
