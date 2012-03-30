@@ -1,12 +1,13 @@
-close all
-clear all
-clc
+% close all
+% clear all
+% clc
 
 %% Load data
 
 % Imu
 % imu_file = '../../../Escritorio/imu_raw.log';
-imu_file = 'tests/main/logs/vuelo_5/imu_raw.log';
+% imu_file = 'tests/main/logs/vuelo_5/imu_raw.log';
+imu_file = 'tests/main/logs/29marzo/imu_raw.log';
 [acrud,wcrud,mcrud,~,bcrud,~,~,T]=mong_read(imu_file,0,1);
 avg = 24;
 acrud(:,1) = moving_avg(acrud(:,1),avg); acrud(:,2) = moving_avg(acrud(:,2),avg); acrud(:,3) = moving_avg(acrud(:,3),avg);
@@ -116,7 +117,7 @@ subplot(224)
     plot([x_hat(1:end,12)],'g')
     legend('w_x','w_y','w_z','w_x','w_y','w_z')
     hold off
-    
+%%
 figure()
     plot(w_control)
     axis([2 length(w_control) min(min(w_control(2:end,:))) ...
