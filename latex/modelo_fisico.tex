@@ -5,19 +5,9 @@
 
 \chapter{Modelo F\'isico}
 \label{chap:modelo}
-Resulta imprescindible para controlar el cuadric\'optero comprender cabalmente su comportamiento. Con esta \'optica, lo que se busca es obtener el modelo m\'as sencillo que sea capaz de representar adecuadamente al sistema. El objetivo de esta secci\'on es el de realizar el desarrollo de dicho modelo. La forma de modelar el sistema elegida es un Modelo de Variables de Estado, de ahora en m\'as MVE. Lo que se busca es obtener una representaci\'on del sistema de la forma $\dot{\overrightarrow{x}}=f\left(\overrightarrow{x},\overrightarrow{u},t\right)$, donde $\overrightarrow{x}$ es el vector de estados del sistema, $\overrightarrow{u}$ es el vector que representa las entradas del sistema y $t$ es el tiempo. \\
+Resulta imprescindible para controlar el cuadric\'optero comprender cabalmente su comportamiento. Con esta \'optica, lo que se busca es obtener el modelo m\'as sencillo que sea capaz de representar adecuadamente al sistema. El objetivo de esta secci\'on es el de realizar el desarrollo de dicho modelo. La forma de modelar el sistema elegida es un Modelo en Variables de Estado, de ahora en m\'as MVE. Lo que se busca es obtener una representaci\'on del sistema de la forma $\dot{\vec{x}}=f\left(\vec{x},\vec{u},t\right)$, donde $\vec{x}$ es el vector de estados del sistema, $\vec{u}$ es el vector que representa las entradas del sistema y $t$ es el tiempo. \\
 
-Al tratarse de una plataforma comercial no se dispone de todos los par\'ametros fundamentales para el desarrollo de dicho modelo. Por ejemplo, no se conoce como es la respuesta de los motores (tanto velocidad como empuje), el tensor de inercia del sistema,etc. S\'i bien algunos par\'ametros como las masas de las distintas partes que componen el sistema y las distancias involucradas en el desarrollo que se har\'a a continuaci\'on son sencillas de obtener, se tuvieron que realizar experimentos y c\'alculos m\'as sofisticados para la completa caracterizaci\'on del sistema. Estos aspectos no ser\'an desarrollados en profundidad a lo largo de este trabajo, pero pueden consultarse los valores de las constantes obtenidas   en el anexo \ref{anexo_tensores}
-,mientras que el c\'alculo de los tensores de inercia de inter\'es
- y la obtenci\'on de la respuesta de los motores se encuentran desarrollados en profundidad en los anexos \ref{anexo_motores}
-respectivamente.\\
-
-En la presente secci\'on nos limitaremos a obtener las ecuaciones que gobiernan el comportamiento del cuadric\'optero.\\
-
-
-Para el estudio en cuesti\'on se considerar\'a el cuadric\'optero seg\'un las convenciones expresadas en la figura \ref{fig:quad}. Por un lado se definen las coordenadas "del mundo" $(i_I , j_I , k_I )$, un sistema de referencia inercial fijo. Las magnitudes correspondientes a la base de este referencial se notar\'an
-con el sub\'indice $I$. Por otro lado se utilizar\'a el sistema de referencia $(i_q , j_q , k_q )$ solidario al cuadric\'optero. En este caso las magnitudes medidas en ese referencial se notar\'an con el sub\'indice $q$. En la figura \ref{fig:quad} se pueden apreciar ambos sistemas de referencia.
-
+Al tratarse de una plataforma comercial no se dispone de todos los par\'ametros fundamentales para el desarrollo de dicho modelo, a modo de ejemplo, no se conoce como es la respuesta de los motores  ni el tensor de inercia del sistema(ver los cap\'itulos \ref{chap:test_motores} y \ref{chap:anexo_tensores} respectivamente). En la presente secci\'on nos limitaremos a obtener las ecuaciones que gobiernan el comportamiento del cuadric\'optero.\\
     
 \begin{figure}
 	\centering
@@ -26,24 +16,13 @@ con el sub\'indice $I$. Por otro lado se utilizar\'a el sistema de referencia $(
 	\label{fig:quad}
 \end{figure}
 
-
-
-
-
-
-En la presente secci\'on se utilizar\'an las herramientas de la mec\'anica cl\'asica a fin de obtener un modelo, que como tal, no es una representaci\'on exacta de la realidad. Se realizar\'an diversas hip\'otesis que permiten conocer el sistema en forma aproximada, pero perfectamente adecuada para las condiciones en las cuales se operar\'a el cuadric\'optero. 
-
 \section{Hip\'otesis de trabajo}
 
-Previo al desarrollo del modelo es muy importante esclarecer las hip\'otesis en las cuales opera el cuadric\'optero. Una vez definidas las mismas seremos capaces de realizar las simplificaciones pertinentes.
-
-
-
-No debe perderse de vista que el cuadric\'optero con el que se trabaja fue dise\~nado para ser comandado a trav\'es de un control remoto. Por dicho motivo es razonable que sus caracter\'isticas sean tales que le permitan a una persona volarlo desde el suelo. Parece perfectamente razonable que se haya dise\~nado el sistema para volar por tiempos limitados, distancias relativamente cortas y a bajas velocidades, para permitirle al operador un control manual m\'as sencillo. Asimismo, estas consideraciones permiten introducir diversas simplificaciones en el modelado.
+No debe perderse de vista que el cuadric\'optero con el que se trabaja fue dise\~nado para ser comandado a trav\'es de un control remoto. Por dicho motivo es razonable que sus caracter\'isticas sean tales que le permitan a una persona volarlo desde el suelo. Parece perfectamente razonable que se haya dise\~nado el sistema para volar por tiempos limitados, distancias relativamente cortas y a bajas velocidades. Estas consideraciones permiten introducir diversas simplificaciones en el modelado.
 
 
 \subsection{La Tierra como sistema de referencia inercial}
-Evidentemente la Tierra {\bf no} es un sistema de referencia inercial ya que la misma se encuentra sometida a la traslaci\'on en torno al Sol y a una rotaci\'on en sobre su eje. Supongamos una part\'icula que se encuentra en movimiento relativo a la Tierra. Su aceleraci\'on respecto de un sistema verdaderamente inercial puede escribirse como:
+La Tierra {\bf no} es un sistema de referencia inercial ya que la misma se encuentra sometida a la traslaci\'on en torno al Sol y a una rotaci\'on en sobre su eje. Supongamos una part\'icula que se encuentra en movimiento relativo a la Tierra. Su aceleraci\'on respecto de un sistema verdaderamente inercial puede escribirse como:
 \begin{equation}
 \vec{a}=\vec{a\prime}+\vec{a_T} +\vec{a_C}
 \end{equation}.
@@ -111,7 +90,7 @@ donde g es la constante gravitacional de la Tierra, su valor es aproximadamente 
 Debido a las bajas velocidades que lograr\'a el cuadric\'optero se decidi\'o despreciar las fuerzas de tipo aerodin\'amicas, salvo aquellas responsables de las fuerzas y momentos de las h\'elices. Estas fuerzas ser\'an analizadas con mayor profundidad en la secci\'on \ref{FYT}.
 \section{Sistema de referencia}
 
-Como ya se mencion\'o, a lo largo del presente desarrollo se trabajar\'a constantemente con dos sistemas de referencia: uno inercial\footnote{En esta secci\'on se consideran sistemas inerciales en el sentido cl\'asico} solidario a la tierra ($S_I$) y otro solidario al cuadc\'optero ($S_q$) como se muestra en la figura \ref{fig:quad}. El sistema $S_I$ es un sistema local donde la direcci\'on $\vec{i}$, $\vec{j}$ y $\vec{k}$ corresponden a las direcciones Este, Norte y hacia arriba.
+Como ya se mencion\'o, a lo largo del presente desarrollo se trabajar\'a constantemente con dos sistemas de referencia: uno inercial\footnote{En esta secci\'on se consideran sistemas inerciales en el sentido cl\'asico} solidario a la tierra ($S_I$) y otro solidario al cuadc\'optero ($S_q$) como se muestra en la figura \ref{fig:quad}. El sistema $S_I$ es un sistema local donde la direcci\'on $\vec{i}$, $\vec{j}$ y $\vec{k}$ corresponden a las direcciones Este, Norte y hacia arriba y el origen es la posici\'on inicial del cuadric\'optero. En la figura \ref{fig:quad} se pueden apreciar ambos sistemas de referencia.
 El sistema $S_q$ se puede obtener realizando tres rotaciones compuestas del sistema $S_I$, dichas rotaciones se muestran en la figura \ref{fig:rotaciones}. Los \'angulos $\theta, \varphi$ y $\psi$ son conocidos como \'angulos de Euler.
 
 \begin{figure} [h!]
@@ -129,7 +108,7 @@ El sistema $S_q$ se puede obtener realizando tres rotaciones compuestas del sist
   \label{fig:rotaciones}
 \end{figure}
 
-La importancia del sistema $S_q$ radica en las simplificaciones que introduce a la hora de escribir las ecuaciones, ya que por ejemplo en dicho sistema el empuje de las h\'elices, los torques que introducen y velocidades angulares de los motores del cuadric\'optero tienen siempre la misma direcci\'on. Asimismo cabe agregar que el sistema de navegaci\'on incluir\'a entre otros un aceler\'ometro y un gir\'oscopo IMU(Inertial Measurment Unit). Dichos dispositivos miden la aceleraci\'on y la velocidad angular del sistema en un sistema de coordenadas solidario al cuadic\'optero, es decir en el sistema $S_q$. Si bien no es fundamental expresar las ecuaciones del sistema en este marco de referencia resulta conveniente hacerlo ya que gran parte de la informaci\'on vendr\'a dada en este sistema. Considerar este sistema implica una simplificaci\'on del procesamiento de los datos obtenidos por la IMU. 
+La importancia del sistema $S_q$ radica en las simplificaciones que introduce a la hora de escribir las ecuaciones, ya que por ejemplo en dicho sistema las direcciones del empuje de las h\'elices, de los torques que introducen y de las velocidades angulares de los motores del cuadric\'optero son constantes. Asimismo, el sistema de navegaci\'on incluir\'a entre otros un aceler\'ometro y un gir\'oscopo, dichos dispositivos miden la aceleraci\'on y la velocidad angular del sistema en un sistema de coordenadas solidario al cuadic\'optero, es decir en el sistema $S_q$. Si bien no es fundamental expresar las ecuaciones del sistema en este marco de referencia resulta conveniente hacerlo ya que gran parte de la informaci\'on vendr\'a dada en este sistema. Considerar este sistema implica una simplificaci\'on del procesamiento de los datos obtenidos por la IMU. 
 
 Las tres transformaciones pueden representarse matricialmente de la siguiente forma: 
 
@@ -170,7 +149,7 @@ $$
  $$ H_q^I=(H_2^q.H_1^2.H_I^1)^{-1}=(H_I^1)^{-1}.(H_1^2)^{-1}.(H_2^q)^{-1}=H_1^I.H_2^1.H_q^2$$
  
 \section{Cinem\'atica}
-Adem\'as de la relaci\'on entre las coordenadas de un sistema y del otro, es interesante conocer la relaci\'on que existe entre la velocidad angular del sistema y las derivadas de los \'angulos de Euler. Sea $\vec{\omega}$ la velocidad angular del cuadric\'optero(y por ende la del sistema $S_q$). La expresi\'on de la velocidad angular en el sistema de referencia del cuadric\'optero es la siguiente:
+Adem\'as de la relaci\'on entre las coordenadas de un sistema y del otro, es interesante conocer la relaci\'on que existe entre la velocidad angular del sistema y las derivadas de los \'angulos de Euler. Sea $\vec{\omega}$ la velocidad angular del cuadric\'optero (y por ende la del sistema $S_q$). La expresi\'on de la velocidad angular en el sistema de referencia del cuadric\'optero es la siguiente:
 $$
 \vec{\omega}=w_{q_x}\vec{i_q}+w_{q_y}\vec{j_q}+w_{q_z}\vec{k_q}
 $$ 

@@ -474,6 +474,10 @@ static int imu_comm_get_sync_end(imu_t *imu){
 	{
 	    if(tmp == IMU_FRAME_END_CHAR)
 	    {
+#if IMU_COMM_FAKE
+		// read out end of line
+		retval = fread(&tmp,IMU_INIT_END_SIZE,1,imu->device);
+#endif
 		return ERROR_OK;
 	    }
 #if !IMU_COMM_FAKE // in ascii we have to read the separator char
@@ -537,7 +541,7 @@ static int imu_comm_get_sync_init(imu_t *imu){
 	    else
 	    {
 		// wrong init char
-		err_check(ERROR_READ_SYNC,"Wrong sync init char!");
+		err_check(ERROR_READ_SKIP,"Wrong sync init char!");
 	    }
 	}
 	else
@@ -548,7 +552,6 @@ static int imu_comm_get_sync_init(imu_t *imu){
     }
     err_check(ERROR_READ_SYNC,"Timed out!");
 }
-
 
 /** 
  * Set IMU to calibration mode.
@@ -643,12 +646,12 @@ int imu_comm_calibration_finish(imu_t *imu){
  *Will divide by frame count after done gathering, to avoid loosing info.
  *
  *@param imu 
- *@param new_frame frame to add to calib 
  *
  *@return error code
  */
-int imu_comm_calibration_continue(imu_t *imu, imu_raw_t *new_frame){
+int imu_comm_calibration_continue(imu_t *imu){
     int retval, i;
+    static imu_raw_t new_frame;
     if(imu->status != IMU_COMM_STATE_CALIBRATING)
     {
 	err_check(ERROR_IMU_STATUS,"Cannot add frames, IMU is not calibrating!");
@@ -664,14 +667,17 @@ int imu_comm_calibration_continue(imu_t *imu, imu_raw_t *new_frame){
     }
 
     /// add new frame to accumulated data
+    retval = imu_comm_get_raw_latest_unread(imu, &new_frame);
+    err_propagate(retval);
+
     for( i = 0; i < 3; ++i)
     {
-	imu->calib.null_est.acc[i] += (int32_t) new_frame->acc[i];
-	imu->calib.null_est.gyro[i] += (int32_t) new_frame->gyro[i];
-	imu->calib.null_est.magn[i] += (int32_t) new_frame->magn[i];
+	imu->calib.null_est.acc[i] += (int32_t) new_frame.acc[i];
+	imu->calib.null_est.gyro[i] += (int32_t) new_frame.gyro[i];
+	imu->calib.null_est.magn[i] += (int32_t) new_frame.magn[i];
     }
-    imu->calib.null_est.temp += (uint32_t) new_frame->temp;
-    imu->calib.null_est.pres += (uint64_t) new_frame->pres;
+    imu->calib.null_est.temp += (uint32_t) new_frame.temp;
+    imu->calib.null_est.pres += (uint64_t) new_frame.pres;
 
     if(--imu->calib.calibration_counter == 0){
 	retval = imu_comm_calibration_finish(imu);
@@ -1012,13 +1018,17 @@ int imu_comm_read(imu_t *imu, uquad_bool_t *ready){
 	gettimeofday(&tv_init,NULL);//TODO testing
 #endif
 
-	if(imu_comm_get_status(imu) == IMU_COMM_STATE_CALIBRATING)
-	    // Add to calibration or to frame buff
-	    retval = imu_comm_calibration_continue(imu, &new_frame);
-	else
-	    // add the frame to the buff
-	    retval = imu_comm_add_frame(imu, &new_frame);
+	// add the frame to the buff
+	retval = imu_comm_add_frame(imu, &new_frame);
 	err_propagate(retval);
+
+	if(imu_comm_get_status(imu) == IMU_COMM_STATE_CALIBRATING)
+	{
+	    // Add to calibration
+	    retval = imu_comm_calibration_continue(imu);
+	    err_propagate(retval);
+	}
+
 	*ready = true;
 	status = IDLE; //restart
 
@@ -1202,7 +1212,7 @@ static int imu_comm_magn_convert(imu_t *imu, int16_t *raw, uquad_mat_t *magn)
  *
  *
  *@param imu 
- *@param data Raw gyro data.
+ *@param data Raw temp data.
  *@param temp Temperature in °C
  *
  *@return error code
@@ -1225,7 +1235,7 @@ static int imu_comm_temp_convert(imu_t *imu, uint16_t *data, double *temp)
  * relative to initial altitud.
  *
  *@param imu 
- *@param data Raw gyro data.
+ *@param data Raw press data.
  *@param temp Temperature in °C
  *
  *@return error code

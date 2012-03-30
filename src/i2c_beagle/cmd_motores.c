@@ -27,7 +27,7 @@
 
 #define MAX_SPEED 220
 #define MIN_SPEED 45
-#define DEBUG 1
+#define DEBUG 0
 #define LOG_FAILS 2000 // evita saturar la UART o el SSH
 #define MAX_FAILS 20000
 #define PRINT_COUNT 500
@@ -113,7 +113,9 @@ int uquad_mot_i2c_addr_open(int i2c_dev, int addr){
 	return NOT_OK;
     }
 #else
+#if DEBUG
     fprintf(i2c_fake,"%d",addr);
+#endif
 #endif
     return OK;
 }
@@ -128,9 +130,11 @@ int uquad_mot_i2c_send_byte(int i2c_dev, __u8 reg, __u8 value){
 	printf("errno info:\t %s\n",strerror(errno));
     }
 #else
+#if DEBUG
     struct timeval t;
     gettimeofday(&t,NULL);
     fprintf(i2c_fake,"\t%d\t%d\t%ld\n",(int)reg, (int)value,(long int)t.tv_usec);
+#endif
 #endif
     return OK;
 }
@@ -482,6 +486,7 @@ int main(int argc, char *argv[])
 	return -1;
     }
 #else
+#if DEBUG
     i2c_fake = fopen(FAKE_I2C_PATH,"w");
     if (i2c_fake == NULL) {
 	fprintf(LOG_ERR,"ERROR! Failed to open %s!\nAborting...\n",filename);
@@ -489,6 +494,7 @@ int main(int argc, char *argv[])
 	/* ERROR HANDLING; you can check errno to see what went wrong */
 	return -1;
     }
+#endif
 #endif
 
     // Catch signals
