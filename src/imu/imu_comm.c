@@ -537,7 +537,7 @@ static int imu_comm_get_sync_init(imu_t *imu){
 	    else
 	    {
 		// wrong init char
-		err_check(ERROR_READ_SYNC,"Wrong sync init char!");
+		err_check(ERROR_READ_SKIP,"Wrong sync init char!");
 	    }
 	}
 	else
