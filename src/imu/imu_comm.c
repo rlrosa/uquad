@@ -474,6 +474,10 @@ static int imu_comm_get_sync_end(imu_t *imu){
 	{
 	    if(tmp == IMU_FRAME_END_CHAR)
 	    {
+#if IMU_COMM_FAKE
+		// read out end of line
+		retval = fread(&tmp,IMU_INIT_END_SIZE,1,imu->device);
+#endif
 		return ERROR_OK;
 	    }
 #if !IMU_COMM_FAKE // in ascii we have to read the separator char
