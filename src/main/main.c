@@ -438,7 +438,7 @@ int main(int argc, char *argv[]){
 	    else if(count_err > 0)
 	    {
 		// forget abour error
-		//		err_log_num("Recovered! Errors:",count_err);//TODO restore!
+		err_log_num("Recovered! Errors:",count_err);
 		count_err = 0;
 	    }
 	}
@@ -596,6 +596,11 @@ int main(int argc, char *argv[]){
 	/// -- -- -- -- -- -- -- --
 	if(!imu_update && !gps_update)
 	    continue;
+
+#if IMU_COMM_FAKE
+	// simulate delay (no delay when reading from txt)
+	sleep_ms(10);
+#endif
 
 	/// -- -- -- -- -- -- -- --
 	/// Update state estimation
