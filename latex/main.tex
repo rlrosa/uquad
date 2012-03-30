@@ -35,7 +35,7 @@
 \begin{document}
 \subfile{introduccion}
 \part{Descripción del sistema}
-\subfile{eleccion_hardware}
+\subfile{hardware}
 \part{Modelado del sistema}
 \subfile{modelo_fisico}
 \subfile{simulador}
@@ -60,6 +60,7 @@
 \renewcommand{\appendixpagename}{Anexos}
 
 \appendix %Tuve que ponerlos con include porque con el subfile quedaban todos numerados con A
+\include{anexo_mongoose}
 \include{anexo_tensores} 
 \include{anexo_linealizacion}
 \bibliographystyle{plain} 
