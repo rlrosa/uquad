@@ -29,6 +29,7 @@ acrud = acrud(imu_calib:end,:);
 wcrud = wcrud(imu_calib:end,:);
 mcrud = mcrud(imu_calib:end,:);
 bcrud = bcrud(imu_calib:end,:);
+T     = T(imu_calib:end,:);
 
 [a,w,euler] = mong_conv(acrud,wcrud,mcrud,0);
 b=altitud(bcrud,b0);
@@ -71,12 +72,12 @@ x_hat_partial = zeros(N,7);
 %% Kalman
 
 for i=2:N
-    wc_i = i-kalman_startup+1;
+    wc_i = i-kalman_startup;
 
     % Kalman
-    if(i > kalman_startup)
+    if(i > kalman_startup + 1)
       % Use control output as current w
-      [x_hat(i,:),P] = kalman_imu(x_hat(i-1,:),P,T(i),w_control(wc_i -1,:)',z(i,:)');
+      [x_hat(i,:),P] = kalman_imu(x_hat(i-1,:),P,T(i),w_control(wc_i - 1,:)',z(i,:)');
     else
       % Use set point w as current w
       [x_hat(i,:),P] = kalman_imu(x_hat(i-1,:),P,T(i),sp_w,z(i,:)');
@@ -92,7 +93,7 @@ for i=2:N
         x_hat(i,10), x_hat(i,11), x_hat(i,12)];
 
     % First kalman_startup samples will not be used for control
-    if(i <= kalman_startup)
+    if~(i > kalman_startup + 1)
       continue;
     end
     w_control(wc_i,:) = (sp_w + K*(sp_x - x_hat_partial(i,:)'))';
