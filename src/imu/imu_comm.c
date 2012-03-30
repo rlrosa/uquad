@@ -549,7 +549,6 @@ static int imu_comm_get_sync_init(imu_t *imu){
     err_check(ERROR_READ_SYNC,"Timed out!");
 }
 
-
 /** 
  * Set IMU to calibration mode.
  * Will gather data to estimate null (offsets).
@@ -643,12 +642,12 @@ int imu_comm_calibration_finish(imu_t *imu){
  *Will divide by frame count after done gathering, to avoid loosing info.
  *
  *@param imu 
- *@param new_frame frame to add to calib 
  *
  *@return error code
  */
-int imu_comm_calibration_continue(imu_t *imu, imu_raw_t *new_frame){
+int imu_comm_calibration_continue(imu_t *imu){
     int retval, i;
+    static imu_raw_t new_frame;
     if(imu->status != IMU_COMM_STATE_CALIBRATING)
     {
 	err_check(ERROR_IMU_STATUS,"Cannot add frames, IMU is not calibrating!");
@@ -664,14 +663,17 @@ int imu_comm_calibration_continue(imu_t *imu, imu_raw_t *new_frame){
     }
 
     /// add new frame to accumulated data
+    retval = imu_comm_get_raw_latest_unread(imu, &new_frame);
+    err_propagate(retval);
+
     for( i = 0; i < 3; ++i)
     {
-	imu->calib.null_est.acc[i] += (int32_t) new_frame->acc[i];
-	imu->calib.null_est.gyro[i] += (int32_t) new_frame->gyro[i];
-	imu->calib.null_est.magn[i] += (int32_t) new_frame->magn[i];
+	imu->calib.null_est.acc[i] += (int32_t) new_frame.acc[i];
+	imu->calib.null_est.gyro[i] += (int32_t) new_frame.gyro[i];
+	imu->calib.null_est.magn[i] += (int32_t) new_frame.magn[i];
     }
-    imu->calib.null_est.temp += (uint32_t) new_frame->temp;
-    imu->calib.null_est.pres += (uint64_t) new_frame->pres;
+    imu->calib.null_est.temp += (uint32_t) new_frame.temp;
+    imu->calib.null_est.pres += (uint64_t) new_frame.pres;
 
     if(--imu->calib.calibration_counter == 0){
 	retval = imu_comm_calibration_finish(imu);
@@ -1012,13 +1014,17 @@ int imu_comm_read(imu_t *imu, uquad_bool_t *ready){
 	gettimeofday(&tv_init,NULL);//TODO testing
 #endif
 
-	if(imu_comm_get_status(imu) == IMU_COMM_STATE_CALIBRATING)
-	    // Add to calibration or to frame buff
-	    retval = imu_comm_calibration_continue(imu, &new_frame);
-	else
-	    // add the frame to the buff
-	    retval = imu_comm_add_frame(imu, &new_frame);
+	// add the frame to the buff
+	retval = imu_comm_add_frame(imu, &new_frame);
 	err_propagate(retval);
+
+	if(imu_comm_get_status(imu) == IMU_COMM_STATE_CALIBRATING)
+	{
+	    // Add to calibration
+	    retval = imu_comm_calibration_continue(imu);
+	    err_propagate(retval);
+	}
+
 	*ready = true;
 	status = IDLE; //restart
 
