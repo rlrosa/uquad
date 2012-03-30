@@ -1212,7 +1212,7 @@ static int imu_comm_magn_convert(imu_t *imu, int16_t *raw, uquad_mat_t *magn)
  *
  *
  *@param imu 
- *@param data Raw gyro data.
+ *@param data Raw temp data.
  *@param temp Temperature in °C
  *
  *@return error code
@@ -1235,7 +1235,7 @@ static int imu_comm_temp_convert(imu_t *imu, uint16_t *data, double *temp)
  * relative to initial altitud.
  *
  *@param imu 
- *@param data Raw gyro data.
+ *@param data Raw press data.
  *@param temp Temperature in °C
  *
  *@return error code
