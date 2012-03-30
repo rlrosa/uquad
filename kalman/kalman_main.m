@@ -1,4 +1,4 @@
-function kalman_main(imu_file)
+% function kalman_main(imu_file)
 
 %% Load data
 
