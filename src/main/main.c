@@ -24,8 +24,8 @@
 #include <uquad_gps_comm.h>
 #endif
 
-#include <sys/signal.h> // for SIGINT and SIGQUIT
-#include <unistd.h>     // for STDIN_FILENO
+#include <sys/signal.h>   // for SIGINT and SIGQUIT
+#include <unistd.h>       // for STDIN_FILENO
 
 #define UQUAD_HOW_TO "./main <imu_device>"
 #define MAX_ERRORS 20
@@ -478,7 +478,7 @@ int main(int argc, char *argv[]){
 	    {
 		goto end_imu;
 	    }
-	    imu_update = false; // data may not be of direct use
+	    imu_update = false; // data may not be of direct use, may be calib
 
 #if TIMING && TIMING_IMU
 	    gettimeofday(&tv_tmp,NULL);
@@ -517,7 +517,7 @@ int main(int argc, char *argv[]){
 
 	    /// check calibration status
 	    if(imu_comm_get_status(imu) == IMU_COMM_STATE_CALIBRATING)
-		// if calibrating, tehn data should not be used.
+		// if calibrating, then data should not be used.
 		goto end_imu;
 	    else if(!imu_comm_calib_estim(imu))
 	    {
@@ -528,7 +528,7 @@ int main(int argc, char *argv[]){
 	    }
 
 	    /// Get new unread data
-	    if(!imu_comm_avg_ready(imu))
+	    if(!imu_comm_unread(imu) || !imu_comm_avg_ready(imu))
 	    {
 		// we only used averaged data
 		goto end_imu;
