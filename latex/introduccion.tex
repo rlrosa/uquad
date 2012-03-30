@@ -4,27 +4,16 @@
 \chapter*{Introducci\'on}
 %TODO add contents line
 
-La presente monograf\'ia presenta el trabajo llevado a cabo y los resultados obtenidos a lo largo del desarrollo del  proyecto de fin de carrera ``uQuad!''. El objetivo del mismo es dise\~nar e implementar un veh\'iculo a\'ereo no tripulado (UAV, por sus siglas en ingl\'es) a partir de un cuadric\'optero radiocontrolado.\\
-\\
-Para ello ser\'a necesario estudiar el comportamiento f\'isico del sistema y modelar el mismo. En base a dicho modelo se podr\'a entonces dise\~nar e integrar un sistema de control que permita el vuelo aut\'onomo del sistema.\\
-\\
-El sistema necesitar\'a obtener informaci\'on acerca de su estado y el de su entorno para poder llevar a cabo sus funciones. Dicha informaci\'on ser\'a obtenida a trav\'es de un conjunto de sensores, los cuales deber\'an ser adaptados e integrados al sistema en forma adecuada. Se deber\'a, entonces, integrar la instrumentaci\'on adecuada para obtener medidas de variables f\'isicas fundamentales para realizar el control.\\
-\\
-A fin de definir el alcance del proyecto, debe aclararse que se entiende por vuelo aut\'onomo la capacidad de mantener una posici\'on y altitud determinada o la de seguir una ruta programable.El dispositivo deber\'a contar con algoritmos de control lo suficientemente robustos como para poder realizar maniobras simples en forma aut\'onoma en diversas condiciones, tanto en espacios interiores como exteriores.\\
-\\
-Si bien no se ha definido una aplicaci\'on espec\'ifica para el sistema dise\~nado, es claro que mediante modificaciones no demasiado grandes el mismo puede ser adaptado a m\'ultiples usos.\\
-\\
-El desarrollo del proyecto implicar\'a, entonces:
+Existe actualmente en el Instituto de Ingenier\'ia El\'ectrica de la Facultad de Ingenier\'ia de la Universidad de la Rep\'ublica una linea de investigaci\'on orientada a la rob\'otica m\'ovil y a t\'ecnicas de control. En este marco, se han desarrollado diversas plataformas experimentales tanto por docentes del Departamento de Control como por estudiantes durante los proyectos de fin de carrera. En particular, dos proyectos de fin de carrera se orientaron al diseño de un UAV\footnote{Unmaned aereal vehicule} con arquitectura de avi\'on. El primero de ellos, \emph{AMFO1-Bobby}, se avoc\'o al diseño y construcci\'on de un avi\'on de dimensiones reducidas capaz de vuelo relativamente prolongada. Dicha plataforma fue diseñada para ser volada gracias a un control remoto. El proyecto AUION, continua el trabajado desarrollado hasta aqu\'i resolviendo el diseño del controlador del avi\'on  en la situac\'on de vuelo, quedando excluido el despegue y el aterrizaje del veh\'iculo.\\
 
-\begin{itemize}
-\item Analizar el dispositivo comercial con el fin de comprender el sistema a controlar
-\item Analizar el comportamiento f\'isico del sistema y modelar el mismo en forma adecuada
-\item Realizar ingenier\'ia inversa al cuadric\'optero, su electr\'onica y su sistema de control. En particular, se prestar\'a especial detalle a los protocolos utilizados para el control de motores.
-\item Poner a punto la instrumentaci\'on necesaria
-\item Dise\~nar el sistema de procesamiento de datos de los sensores
-\item Implementar las vias de comunicaci\'on necesarias para obtener datos a partir de los sensores, realizar el comando remoto del sistema, dar instrucciones e indicar la ruta a seguir al mismo, etc.
-\item Dise\~nar e integrar el sistema de control
-\item Lograr que el cuadricoptero sea capaz de realizar el seguimiento de una ruta en forma aut\'onoma
-\end{itemize}
+En el presente proyecto se continua trabajando en la linea presentada, dise\~nando e integrando un sistema de control a un veh\'iculo a\'ereo comercial con arquitectura de cuadric\'optero de forma de lograr el vuelo aut\'onomo del mismo. Por vuelo aut\'onomo se entiende la capacidad de seguir una trayectoria autogenerada a partir de puntos del espacio introducidos por un usuario por los cuales se desea ``pasar'', de ahora en m\'as \emph{waypoints}. \\
+
+La arquitectura escogida ofrece una gran variedad de aplicaciones entre las cuales se puede nombrar la fotograf\'ia y el cine, el relevamiento de zonas peligrosas o contaminadas, la  vigilancia y la navegaci\'on bajo techo. \\
+
+No es el objetivo de este proyecto desarrollar un producto final, sino que por el contrario lo que se plantea es desarrollar una plataforma experimental sobre la cual otros grupos puedan trabajar, profundizando en diversas \'areas como la estimaci\'on de estados, t\'ecnicas de control m\'as avanzadas, la generaci\'on de rutas \'optimas y la cooperaci\'on entre varias plataformas id\'enticas.\\
+
+El objetivo del presente proyecto incluye instrumentar dos cuadrico\'opteros de forma de poder obtener todas las variables de estado con las que se elige representar al sistema. La comprensi\'on del comando de los motores y la caracterizaci\'on de los mismos son parte fundamental para realizar el control del sistema. Se desarrollar\'a una primer versi\'on de un generador de rutas que defina la trayector\'ia a seguir a partir de waypoints introducidos por el usuario. Se desarrollar\'a un controlador que permita seguir la trayectoria generada por el generador de rutas. Se deber\'a programar e integrar una CPU a cada cuadric\'optero para realizar las tareas hasta aqu\'i planteadas, manteniendo la posibilidad de trabajar en modo autom\'atico y manual.\\
+
+Como ya fue explicitado, es de inter\'es que este proyecto sea la plataforma para el desarrollo de proyectos que permitan una profundizaci\'on en las lineas de trabajo planteadas, por dicho motivo se incluye dentro del alcance el diseño de un simulador que permita, a lo largo de este y de futuros proyectos, testear los algor\'itmos de control en desarrollo.
 
 \end{document}
