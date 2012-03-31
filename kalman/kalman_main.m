@@ -1,8 +1,11 @@
-function kalman_main(imu_file)
+% function kalman_main(imu_file)
 
 %% Load data
 
 % Imu
+% imu_file = '../../../Escritorio/imu_raw.log';
+% imu_file = 'tests/main/logs/vuelo_5/imu_raw.log';
+imu_file = 'tests/main/logs/29marzo/imu_raw.log';
 [acrud,wcrud,mcrud,~,bcrud,~,~,T]=mong_read(imu_file,0,1);
 avg = 24;
 startup_runs = 200;
