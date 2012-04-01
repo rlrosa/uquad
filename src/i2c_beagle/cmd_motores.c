@@ -28,6 +28,7 @@
 #define MAX_SPEED 220
 #define MIN_SPEED 45
 #define DEBUG 0
+#define CHECK_STDIN 1
 #define LOG_FAILS 2000 // evita saturar la UART o el SSH
 #define MAX_FAILS 20000
 #define PRINT_COUNT 500
@@ -337,7 +338,6 @@ int uquad_send_ack()
     return OK;
 }
 
-#define CHECK_STDIN 0
 static int itmp[MOT_COUNT] = {0,0,0,0};
 static int max_fd_plus_one = -1;
 int uquad_read(void){
