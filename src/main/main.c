@@ -28,7 +28,6 @@
 #include <uquad_gps_comm.h>
 #endif
 
-#include <sys/resource.h> // for setpriority
 #include <sys/signal.h>   // for SIGINT and SIGQUIT
 #include <unistd.h>       // for STDIN_FILENO
 
@@ -238,9 +237,6 @@ int main(int argc, char *argv[]){
     // Catch signals
     signal(SIGINT, uquad_sig_handler);
     signal(SIGQUIT, uquad_sig_handler);
-
-    // Be important
-    setpriority(PRIO_PROCESS, 0, -20);
 
     if(argc<2)
     {
