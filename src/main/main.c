@@ -572,7 +572,10 @@ int main(int argc, char *argv[]){
 		{
 		    gettimeofday(&tv_last_imu,NULL);
 		    err_imu = uquad_timeval_substract(&tv_diff,tv_last_imu,tv_start);
-		    log_n_jump(err_imu,end_imu,"Failed to calculate IMU startup time!");
+		    if(err_imu < 0)
+		    {
+			log_n_jump(err_imu,end_imu,"Absurd IMU startup time!");
+		    }
 		    err_log_tv("IMU startup completed in ", tv_diff);
 		    ++runs_imu; // so re-entry doesn't happen
 		}
@@ -729,7 +732,11 @@ int main(int argc, char *argv[]){
 	    {
 		gettimeofday(&tv_last_m_cmd,NULL);
 		retval = uquad_timeval_substract(&tv_diff,tv_last_m_cmd,tv_start);
-		log_n_jump(err_imu,end_imu,"Failed to calculate Kalman startup time!");
+		if(retval < 0)
+		{
+		    err_log("Absurd Kalman startup time!");
+		    continue;
+		}
 		err_log_tv("Kalman startup completed in ", tv_diff);
 		++runs_kalman; // so re-entry doesn't happen
 	    }
