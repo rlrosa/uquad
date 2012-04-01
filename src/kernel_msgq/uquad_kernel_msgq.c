@@ -26,18 +26,22 @@ uquad_kmsgq_t *uquad_kmsgq_init(int key_s, int key_c)
     server->mbuf.mtype = 1;//UQUAD_MSGTYPE;
     server->msgflg = IPC_CREAT | 0666;
     server->tx_counter = 0;
+#if LOG_KQ_S_DATA
     server->s_log_data = fopen(UQUAD_KQ_S_LOG_DATA,"w");
     if(server->s_log_data == NULL)
     {
 	err_log("Failed to open data log file, using stderr.");
 	server->s_log_data = stderr;
     }
+#endif
+#if LOG_KQ_S_ACK
     server->s_log_ack = fopen(UQUAD_KQ_S_LOG_ACK,"w");
     if(server->s_log_ack == NULL)
     {
 	err_log("Failed to open ack log file, using stderr.");
 	server->s_log_ack = stderr;
     }
+#endif
     if((uquad_kmsgq_clear(server->k_s) != ERROR_OK) ||
        (uquad_kmsgq_clear(server->k_c) != ERROR_OK))
     {
@@ -49,8 +53,7 @@ uquad_kmsgq_t *uquad_kmsgq_init(int key_s, int key_c)
 
 int uquad_kmsgq_get_ack(uquad_kmsgq_t *server)
 {
-    int msqid, i;
-    struct timeval time_ack;
+    int msqid;
     if ((msqid = msgget(server->k_c, 0666)) < 0)
     {
 	return ERROR_KQ_NO_ACKS_AVAIL;
@@ -65,11 +68,15 @@ int uquad_kmsgq_get_ack(uquad_kmsgq_t *server)
 	return ERROR_KQ_NO_ACKS_AVAIL;
     }
 
+#if LOG_KQ_S_ACK
     /// Print the answer.
+    struct timeval time_ack;
+    int i;
     gettimeofday(&time_ack,NULL);
     for(i = 0; i < MSGSZ; ++i)
 	fprintf(server->s_log_ack,"%d\t",(int)server->mbuf.mtext[i]);
     fprintf(server->s_log_ack,"%d\n",(int)time_ack.tv_usec);
+#endif
     return ERROR_OK;
 }
 
@@ -132,7 +139,6 @@ int uquad_kmsgq_check_stat(uquad_kmsgq_t *server)
 int uquad_kmsgq_send(uquad_kmsgq_t *server, uint8_t *msg, int msg_len)
 {
     int retval = ERROR_OK,i, msqid;
-    struct timeval tsent;
     static int acks_not_recv = 0;
     retval = uquad_kmsgq_check_stat(server);
     switch (retval)
@@ -167,12 +173,15 @@ int uquad_kmsgq_send(uquad_kmsgq_t *server, uint8_t *msg, int msg_len)
 	err_check(ERROR_KQ_SEND,"msgsnd failed!");
     }
     server->acks_pend++;
+#if LOG_KQ_S_DATA
     /// log sent data
+    struct timeval tsent;
     gettimeofday(&tsent,NULL);
     fprintf(server->s_log_data,"%lu\t",server->tx_counter++);
     for(i = 0; i < msg_len; ++i)
 	fprintf(server->s_log_data,"%d\t",(int)server->mbuf.mtext[i]);
     fprintf(server->s_log_data,"%d\n",(int)tsent.tv_usec);
+#endif
     return retval;
 }
 
@@ -192,9 +201,13 @@ void uquad_kmsgq_deinit(uquad_kmsgq_t *server)
     {
 	err_log("WARN: Failed to clear client queue");
     }
+#if LOG_KQ_S_DATA
     if(server->s_log_data != stderr)
 	fclose(server->s_log_data);
+#endif
+#if LOG_KQ_S_ACK
     if(server->s_log_ack != stderr)
 	fclose(server->s_log_ack);
+#endif
     free(server);
 }

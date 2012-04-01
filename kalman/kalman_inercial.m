@@ -42,8 +42,9 @@ clc
 % [acrud,wcrud,mcrud,tcrud,bcrud,~,~,T]=mong_read('log-zparriba4',0);
 % [acrud,wcrud,mcrud,tcrud,bcrud,~,~,T]=mong_read('imu_raw_7.log',0,1);
 
-file = '../../../Escritorio/imu_raw.log';
-[acrud,wcrud,mcrud,~,bcrud,~,~,T]=mong_read(file,0,1);
+% file = '../../../Escritorio/imu_raw.log';
+file = './tests/mongoose/acc/logs_zparriba/z00y00.txt';
+[acrud,wcrud,mcrud,~,bcrud,~,~,T]=mong_read(file,1);
 [a,w,euler] = mong_conv(acrud,wcrud,mcrud,0);
 b=altitud(bcrud);
 

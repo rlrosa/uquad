@@ -10,6 +10,12 @@
 #include <stdlib.h>
 #include <stdint.h>
 
+#if DEBUG
+#define LOG_KQ_S_DATA 0
+#define LOG_KQ_S_ACK  0
+#endif
+
+
 #define MSGSZ 4
 #define UQUAD_MSGTYPE 1L
 #define UQUAD_KQ_MAX_ACKS 100
@@ -32,8 +38,12 @@ typedef struct uquad_kmsgq{
     int msgflg;
     int acks_pend; // pending acks
     unsigned long tx_counter;
+#if LOG_KQ_S_DATA
     FILE *s_log_data;   // server log
+#endif
+#if LOG_KQ_S_ACK
     FILE *s_log_ack;   // server log
+#endif
 }uquad_kmsgq_t;
 
 uquad_kmsgq_t *uquad_kmsgq_init(int key_s, int key_c);

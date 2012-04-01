@@ -27,7 +27,13 @@
 
 #define MAX_SPEED 220
 #define MIN_SPEED 45
+
 #define DEBUG 0
+#define CHECK_STDIN 0
+#if DEBUG
+#define LOG_VELS 1
+#endif
+
 #define LOG_FAILS 2000 // evita saturar la UART o el SSH
 #define MAX_FAILS 20000
 #define PRINT_COUNT 500
@@ -298,6 +304,7 @@ void uquad_sig_handler(int signal_num){
     exit(ret);
 }
 
+#if LOG_VELS
 unsigned long rx_counter = 0;
 static inline void log_vels(void)
 {
@@ -310,6 +317,7 @@ static inline void log_vels(void)
 	    (int)timestamp.tv_usec,
 	    rx_counter++);
 }
+#endif
 
 static char ack_counter = 0;
 int uquad_send_ack()
@@ -337,7 +345,6 @@ int uquad_send_ack()
     return OK;
 }
 
-#define CHECK_STDIN 0
 static int itmp[MOT_COUNT] = {0,0,0,0};
 static int max_fd_plus_one = -1;
 int uquad_read(void){
@@ -394,7 +401,9 @@ int uquad_read(void){
 	    	{
 	    	    log_to_err("Refused to set m speed, invalid argument.");
 	    	}
+#if LOG_VELS
 	    log_vels();
+#endif
 	}
     }
 #else
@@ -423,7 +432,9 @@ int uquad_read(void){
 		log_to_err("Refused to set m speed, invalid argument.");
 	    }
 	}
-	log_vels();	
+#if LOG_VELS
+	log_vels();
+#endif
     }
 #endif
     return retval;
