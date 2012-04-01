@@ -576,6 +576,7 @@ int main(int argc, char *argv[]){
 		    {
 			log_n_jump(err_imu,end_imu,"Absurd IMU startup time!");
 		    }
+		    err_imu = ERROR_OK; // clear timing info
 		    err_log_tv("IMU startup completed in ", tv_diff);
 		    ++runs_imu; // so re-entry doesn't happen
 		}
@@ -737,6 +738,7 @@ int main(int argc, char *argv[]){
 		    err_log("Absurd Kalman startup time!");
 		    continue;
 		}
+		retval = ERROR_OK;
 		err_log_tv("Kalman startup completed in ", tv_diff);
 		++runs_kalman; // so re-entry doesn't happen
 	    }
@@ -792,6 +794,7 @@ int main(int argc, char *argv[]){
 		    log_tv(log_tv, "RET:", tv_diff);
 		}
 	    }
+	    retval = ERROR_OK;
 	}
 	fflush(stdout);
     }
