@@ -14,7 +14,7 @@
 
 #define NEW_LINE_LEN PATH_MAX
 
-#define READER_TIMEOUT 20 // sec
+#define READER_TIMEOUT 15 // sec
 
 #define LOG_STD_ERR 1
 #define LOG_FILE 1

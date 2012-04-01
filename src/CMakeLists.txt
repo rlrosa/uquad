@@ -23,6 +23,7 @@ include_directories(gps)
 include_directories(kalman)
 include_directories(control)
 include_directories(path_planner)
+include_directories(logger)
 
 # List external libs
 link_directories(submodules/gpsd)
@@ -47,6 +48,7 @@ add_subdirectory(kalman)
 add_subdirectory(main)
 add_subdirectory(control)
 add_subdirectory(path_planner)
+add_subdirectory(logger)
 
 # Check in test dir for deeper includes
 add_subdirectory(test)
