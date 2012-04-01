@@ -15,9 +15,8 @@
 /// Default path for calibration file.
 #define IMU_DEFAULT_CALIB_PATH "imu_calib.txt"
 
-#define IMU_LOG_RAW "imu_raw.log"
-#define IMU_LOG_DATA "imu_data.log"
-#define IMU_LOG_AVG "imu_avg.log"
+#define IMU_COMM_PRINT_DATA_FORMAT "%d\t%d\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\n"
+#define IMU_COMM_PRINT_RAW_FORMAT "%d\t%d\t%u\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%u\t%u\n"
 
 /**
  * Setting this define to 1 will make imu_comm
@@ -214,13 +213,6 @@ typedef struct imu{
     /// avg
     int frame_count;       // # of frames available for avg
     imu_data_t tmp_avg;    // Aux mem used for avg.
-
-#if DEBUG
-    imu_data_t tmp_data;
-    FILE *log_raw;
-    FILE *log_data;
-    FILE *log_avg;
-#endif//DEBUG
 }imu_t;
 
 imu_t *imu_comm_init(const char *device);
@@ -245,6 +237,7 @@ uquad_bool_t imu_comm_unread(imu_t *imu);
 
 int imu_comm_get_data_latest(imu_t *imu, imu_data_t *data);
 int imu_comm_get_data_latest_unread(imu_t *imu, imu_data_t *data);
+int imu_comm_get_raw_latest(imu_t *imu, imu_raw_t *raw);
 int imu_comm_get_raw_latest_unread(imu_t *imu, imu_raw_t *raw);
 
 uquad_bool_t imu_comm_avg_ready(imu_t *imu);

@@ -351,31 +351,6 @@ imu_t *imu_comm_init(const char *device){
     retval = imu_comm_connect(imu,device);
     cleanup_if(retval);
 
-#if DEBUG
-    // open logs
-    imu->log_raw = fopen(IMU_LOG_RAW,"w");
-    if(retval < 0)
-    {
-	err_log_stderr("Failed to log file!");
-	cleanup_if(ERROR_OPEN);
-    }
-    imu->log_data = fopen(IMU_LOG_DATA,"w");
-    if(retval < 0)
-    {
-	err_log_stderr("Failed to log file!");
-	cleanup_if(ERROR_OPEN);
-    }
-    imu->log_avg = fopen(IMU_LOG_AVG,"w");
-    if(retval < 0)
-    {
-	err_log_stderr("Failed to log file!");
-	cleanup_if(ERROR_OPEN);
-    }
-    // init temp mem
-    retval = imu_data_alloc(&imu->tmp_data);
-    cleanup_if(retval);
-#endif //DEBUG
-
     // Get aux memory
     retval = imu_data_alloc(&imu->tmp_avg);
     cleanup_if(retval);
@@ -426,15 +401,6 @@ int imu_comm_deinit(imu_t *imu){
     }
     retval = imu_comm_disconnect(imu);
     // ignore answer and keep dying, leftovers are not reliable
-#if DEBUG
-    if(imu->log_raw != NULL)
-	fclose(imu->log_raw);
-    if(imu->log_data != NULL)
-	fclose(imu->log_data);
-    if(imu->log_avg != NULL)
-	fclose(imu->log_avg);
-    imu_data_free(&imu->tmp_data);
-#endif //DEBUG
     imu_data_free(&imu->tmp_avg);
     //TODO chec if more to free
     imu_comm_free_calib_lin(imu);
@@ -1056,14 +1022,6 @@ int imu_comm_read(imu_t *imu, uquad_bool_t *ready){
 	/// -- -- -- -- -- -- -- -- -- -- -- --
 #if TIMING_IMU
 	gettimeofday(&tv_init,NULL);//TODO testing
-#endif
-	retval = imu_comm_print_raw(&new_frame, imu->log_raw);
-	err_propagate(retval);
-	retval = imu_comm_raw2data(imu, &new_frame, &imu->tmp_data);
-	err_propagate(retval);
-	retval = imu_comm_print_data(&imu->tmp_data, imu->log_data);
-	err_propagate(retval);
-#if TIMING_IMU
 	gettimeofday(&tv_end,NULL);//TODO testing
 	retval = uquad_timeval_substract(&tv_diff,tv_end,tv_init);//TODO testing
 	if(retval < 0)//TODO testing
@@ -1663,10 +1621,6 @@ int imu_comm_get_avg(imu_t *imu, imu_data_t *data)
     }
     retval = imu_data_normalize(data, IMU_AVG_COUNT);
     err_propagate(retval);
-#if DEBUG
-    retval = imu_comm_print_data(data,imu->log_avg);
-    err_propagate(retval);
-#endif
     return retval;
 }
 
@@ -1706,8 +1660,7 @@ int imu_comm_print_data(imu_data_t *data, FILE *stream){
     if(stream == NULL){
 	stream = stdout;
     }
-    //    fprintf(stream,"%d\t%d\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\n",
-    fprintf(stream,"%d\t%d\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\n",
+    fprintf(stream,IMU_COMM_PRINT_DATA_FORMAT,
 	    (int)data->timestamp.tv_sec,
 	    (int)data->timestamp.tv_usec,
 	    data->T_us,
@@ -1738,7 +1691,7 @@ int imu_comm_print_raw(imu_raw_t *frame, FILE *stream){
 	stream = stdout;
     }
 
-    fprintf(stream,"%d\t%d\t%u\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%u\t%u\n",
+    fprintf(stream,IMU_COMM_PRINT_RAW_FORMAT,
 	    (int)frame->timestamp.tv_sec,
 	    (int)frame->timestamp.tv_usec,
 	    frame->T_us,
