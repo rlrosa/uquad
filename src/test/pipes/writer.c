@@ -66,6 +66,8 @@ int main(int argc, char *argv[])
 	    err_log("TIMING: absurd!");
 	}
 	fprintf(pipe_f,"%lu\n",counter++);
+	if(tv_diff.tv_usec > 2)
+	    fprintf(stderr,"TX:\t%lu\n",tv_diff.tv_usec);
 	gettimeofday(&tv_old,NULL);	
     }
 }
