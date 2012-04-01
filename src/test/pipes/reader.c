@@ -8,12 +8,18 @@
 #define PIPE_NAME "wr_pipe"
 #define DEF_PERM 0666
 
+#define LOG_STD_ERR 1
+#define LOG_FILE 1
+
 static FILE *pipe_f = NULL;
+static FILE *log_file = NULL;
 
 void quit(void)
 {
     if(pipe_f != NULL)
 	fclose(pipe_f);
+    if(log_file != NULL)
+	fclose(log_file);
     exit(0);
 }
 
@@ -55,6 +61,14 @@ int main(int argc, char *argv[])
 	    quit();
 	}
     }
+
+    log_file = fopen("read.log","w");
+    if(log_file == NULL)
+    {
+	err_log_stderr("Failed to open log file!");
+	quit();
+    }
+
     gettimeofday(&tv_old,NULL);
     for(;;)
     {
@@ -67,8 +81,15 @@ int main(int argc, char *argv[])
 	    {
 		err_log("TIMING: absurd!");
 	    }
+#if LOG_STD_ERR
 	    fprintf(stderr,"RX stamp:\t%lu\t",ul);
 	    log_tv(stderr,"RX time:\t",tv_diff);
+#endif
+#if LOG_FILE
+	    fprintf(log_file,"RX stamp:\t%lu\t",ul);
+	    log_tv(log_file,"RX time:\t",tv_diff);
+#endif
+
 	    gettimeofday(&tv_old,NULL);	
 	}
     }
