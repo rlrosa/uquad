@@ -27,7 +27,7 @@ Una vez que llega la siguiente medida de los sensores, contaminada necesariament
 
 Por otro lado, las mayores restricciones que impone el filtro de Kalman son que el sistema dinámico subyacente debe ser lineal y que los ruidos presentes deben ser blancos y Gaussianos.\\
 
-El sistema dinámico que queremos estimar, como se puede ver en el capítulo \ref{chap:modelo}, es claramente \textbf{no lineal}, por lo que se debe buscar alguna altenativa al filtro de Kalman clásico. Al investigar en la literatura existente, basados en \ref{bib:kalman} y \ref{bib:kalman2}, se decide implementar un filtro de Kalman extendido para la estimación del vector de estados.
+El sistema dinámico que queremos estimar, como se puede ver en el capítulo \ref{chap:modelo}, es claramente \textbf{no lineal}, por lo que se debe buscar alguna altenativa al filtro de Kalman clásico. Al investigar en la literatura existente, basados en \cite{bib:kalman} y \cite{bib:kalman2}, se decide implementar un filtro de Kalman extendido para la estimación del vector de estados.
 
 \section{Filtro de Kalman Extendido (EKF)}
 
@@ -43,7 +43,7 @@ $$\mathbf{z}_{k} = h(\mathbf{x}_{k}) + \mathbf{v}_{k}$$
 
 donde $\mathbf{w}_k$ y $\mathbf{v}_k$ son los ruidos de proceso y observación respectivamente. Se asume que son gaussianos y de media nula. Sus matrices de covarianza son $\mathbf{Q}_k$ y $\mathbf{R}_k$ respectivamente.
 
-La función $f$ es utilizada para hallar el estado predicho a partir del estado previo, y de forma análoga la función $h$ se utiliza para hallar la medida predicha a partir del estado. Dicho de otro modo, la función $f$ guarda información sobre la evolución del estado, mientras que la función $h$ representa la transformación entre el vector de estados y la observación ideal (sin ruido). Dada la no linealidad del sistema, las funciones $f$ y $h$ no pueden ser aplicadas directamente a la covarianza. En su lugar se computa su \textbf{Jacobiano}, una matriz de derivadas parciales. Es importante destacar que el filtro de Kalman Extendido no tiene propiedades de optimalidad y su presición dependerá en gran medida de la presición de la linealización. Dado que se realiza una linealización dinámica, no hay manera de conocer su performance de antemano (por mayor detalles referirse a \ref{bib:kay}).\\
+La función $f$ es utilizada para hallar el estado predicho a partir del estado previo, y de forma análoga la función $h$ se utiliza para hallar la medida predicha a partir del estado. Dicho de otro modo, la función $f$ guarda información sobre la evolución del estado, mientras que la función $h$ representa la transformación entre el vector de estados y la observación ideal (sin ruido). Dada la no linealidad del sistema, las funciones $f$ y $h$ no pueden ser aplicadas directamente a la covarianza. En su lugar se computa su \textbf{Jacobiano}, una matriz de derivadas parciales. Es importante destacar que el filtro de Kalman Extendido no tiene propiedades de optimalidad y su precisión dependerá en gran medida de la precisión de la linealización. Dado que se realiza una linealización dinámica, no hay manera de conocer su performance de antemano (por mayor detalles referirse a \cite{bib:kay}).\\
 Para la predicción del estado se utilizan las ecuaciones del modelo físico del cuadricóptero presentadas en el capítulo \ref{chap:modelo}.\\
 
 Las ecuaciones que gobiernan el comportamiento del filtro de Kalman Extendido son:
@@ -84,7 +84,7 @@ Los datos (en algunos casos redundantes) obtenidos de los diferentes sensores so
   X=\left\lbrace  x,y,z, \theta,\varphi,\psi, v_{q_z},v_{q_y},v_{q_z},\omega_{q_x},\omega_{q_y},\omega_{q_z} \right\rbrace
 \end{equation}
 
-De la caracterización de los motores, capítulo \ref{chap:motores}, se obtiene la relación matemática entre la fuerza realizada por cada uno de los motores contra la velocidad de giro del mismo y la relación entre la el torque de \emph{drag} realizado por cada motor y su velocidad de giro. Por lo tanto basta con controlar la velocidad de giro de los motores para poder determinar todas las entradas al sistema. Se considerá entonces como entrada al sistema las velocidades angulares $w_1$, $w_2$, $w_3$, $w_4$ de los 4 motores.\\
+De la caracterización de los motores, capítulo \ref{chap:motores}, se obtiene la relación matemática entre la fuerza realizada por cada uno de los motores contra la velocidad de giro del mismo y la relación entre la el torque de \emph{drag} realizado por cada motor y su velocidad de giro. Por lo tanto basta con controlar la velocidad de giro de los motores para poder determinar todas las entradas al sistema. Se considerará entonces como entrada al sistema las velocidades angulares $w_1$, $w_2$, $w_3$, $w_4$ de los 4 motores.\\
 
 El esquema general del integración de los sensores se puede ver en la figura \ref{fig:diagrama_kalman}, el cual se pasa a describir a continuación.
 
@@ -104,7 +104,7 @@ La separación en 2 filtros distintos otorga una interesante flexibilidad. Es po
 
 \subsubsection*{Orientación}
 
-En estado estático, los ángulos de \emph{pitch} y \emph{roll} pueden ser determinados proyectando el vector medido de aceleración gravitacional por el acelerómetro. A su vez, los cambios entre el sensor magnético y el vector geomagnético medido, representan al ángulo \emph{yaw}. Por lo tanto, el conjunto del acelerómetro y magnetómetro son capaces de determinar la orientación del cuadricóptero mediante las medidas del vector de aceleración gravitatoria y el vector geomagnético. Dado que el magnetómetro digital no introduce acumulación de error, este sistema ha sido muy utilizado para la determinación estática de la posición, como se puede ver en \ref{bib:euler_magneto_acc}.
+En estado estático, los ángulos de \emph{pitch} y \emph{roll} pueden ser determinados proyectando el vector medido de aceleración gravitacional por el acelerómetro. A su vez, los cambios entre el sensor magnético y el vector geomagnético medido, representan al ángulo \emph{yaw}. Por lo tanto, el conjunto del acelerómetro y magnetómetro son capaces de determinar la orientación del cuadricóptero mediante las medidas del vector de aceleración gravitatoria y el vector geomagnético. Dado que el magnetómetro digital no introduce acumulación de error, este sistema ha sido muy utilizado para la determinación estática de la posición, como se puede ver en \cite{bib:euler_magneto_acc}.
 
 %TODO nunca va a haber otra aceleracion que no sea en z, por la dinámica del quad? entonces el razonamiento anterior no solo vale para estado estatico.
 
