@@ -1200,13 +1200,13 @@ static int imu_comm_temp_convert(imu_t *imu, uint16_t *data, double *temp)
  */
 static int imu_comm_pres_convert(imu_t *imu, uint32_t *data, double *alt)
 {
-    //TODO fix!
-    static double p0 = -1;
-    if(p0 == -1)
-    {
-	imu->calib.null_est.pres = *data;
-	p0 = *data;
-    }
+    double p0;
+    p0 = (imu_comm_calib_estim(imu))?
+	// we have a calibration, use it.
+	imu->calib.null_est.pres:
+	// if not, use default
+	IMU_P0_DEFAULT;
+
     *alt = 44330*(1- pow((((double)(*data))/p0),PRESS_EXP));
     return ERROR_OK;
 }
