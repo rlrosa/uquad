@@ -5,10 +5,10 @@
 % Imu
 % imu_file = '../../../Escritorio/imu_raw.log';
 % imu_file = 'tests/main/logs/vuelo_4_2/imu_raw.log';
-imu_file = 'tests/main/logs/29marzo2/imu_raw.log';
+imu_file = 'tests/main/logs/1abril-todo-solo-matriztranqui/imu_raw.log';
 % imu_file = 'tests/main/logs/29marzo/imu_raw.log';
 [acrud,wcrud,mcrud,~,bcrud,~,~,T]=mong_read(imu_file,0,1);
-avg = 24;
+avg = 1;
 startup_runs = 200;
 imu_calib = 512;
 kalman_startup = 200;
@@ -21,12 +21,14 @@ bcrud = bcrud(startup_runs:end,:);
 T = T(startup_runs:end,:);
 
 % p0 is estimated form first imu_calib samples
-b0 = mean(bcrud(1:imu_calib));
+% b0 = mean(bcrud(1:imu_calib));
+b0 = bcrud(1);
 
 % averages are used
 acrud(:,1) = moving_avg(acrud(:,1),avg); acrud(:,2) = moving_avg(acrud(:,2),avg); acrud(:,3) = moving_avg(acrud(:,3),avg);
 wcrud(:,1) = moving_avg(wcrud(:,1),avg); wcrud(:,2) = moving_avg(wcrud(:,2),avg); wcrud(:,3) = moving_avg(wcrud(:,3),avg);
 mcrud(:,1) = moving_avg(mcrud(:,1),avg); mcrud(:,2) = moving_avg(mcrud(:,2),avg); mcrud(:,3) = moving_avg(mcrud(:,3),avg);
+bcrud      = moving_avg(bcrud,avg);
 
 % first imu_calib values are not used for kalman/control/etc
 acrud = acrud(imu_calib:end,:);
@@ -52,6 +54,7 @@ b=altitud(bcrud,b0);
 % Constantes
 N       = size(a,1);         % Cantidad de muestras de las observaciones
 Ns      = 12;                % N states: cantidad de variables de estado
+w_idle  = 109;
 w_hover = 298.0867;
 w_max   = 387.0; 
 w_min   = 109.0; 
@@ -68,10 +71,11 @@ D       = drag(w);           % Torque de Drag ejercido por los motores en N*m. C
 z  = [euler a w b];     
 
 % Inicialización
-x_hat         = zeros(N,Ns);
-P             = 1*eye(Ns);
-w_control     = zeros(N-kalman_startup,4);
-x_hat_partial = zeros(N,7);
+x_hat          = zeros(N,Ns);
+P              = 1*eye(Ns);
+w_control      = zeros(N-kalman_startup,4);
+w_control(1,:) = w_idle*ones(size(w_control(1,:)));
+x_hat_partial  = zeros(N,7);
 
 %% Kalman
 
