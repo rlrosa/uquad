@@ -9,18 +9,19 @@
 #include <stdio.h>
 #include <stdint.h>
 
-#define MOT_MAX_I2C 220
-#define MOT_MAX_W 387.0L // rad/s (match MOT_MAX_I2C)
-#define MOT_IDLE_I2C 50 // i2c
-#define MOT_IDLE_W 109.0L // rad/s (match MOT_IDLE_I2C)
-#define MOT_W_HOVER 298.09L //334.28L // rad/s
-#define MOT_C 4
+#define MOT_I2C_MAX         220     // i2c
+#define MOT_I2C_IDLE        50      // i2c
+#define MOT_W_MAX           387.0L  // rad/s (match MOT_MAX_I2C)
+#define MOT_W_IDLE          109.0L  // rad/s (match MOT_IDLE_I2C)
+#define MOT_W_HOVER         298.09L // rad/s
+#define MOT_W_STARTUP_RANGE (MOT_W_HOVER - MOT_W_IDLE)
+#define MOT_C               4
 
-#define MOT_UPDATE_MAX_US 2000 // us
+#define MOT_UPDATE_MAX_US   2000 // us
 #define MOT_WAIT_STARTUP_MS 420 // ms
 
 #define START_MOTOR_CMD "./cmd > cmd_output.log &"
-#define KILL_MOTOR_CMD "kill -INT `pidof -s cmd` > /dev/null &"
+#define KILL_MOTOR_CMD  "kill -INT `pidof -s cmd` > /dev/null &"
 
 /// Communication with motor driver is done via kernel msgs
 #define MOT_SERVER_KEY 169 // some number
@@ -28,8 +29,6 @@
 
 /// Log data
 #define MOT_LOG_TX "cmd_tx.log"
-
-#define MAX_W 422.0L
 
 /**
  * Structure to hold motor status.

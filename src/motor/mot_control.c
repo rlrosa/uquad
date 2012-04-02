@@ -97,17 +97,17 @@ int mot_set_vel_rads(uquad_mot_t *mot, uquad_mat_t *w)
     
     for(i=0; i < MOT_C; ++i)
     {
-	if(w->m_full[i] < MOT_IDLE_W)
+	if(w->m_full[i] < MOT_W_IDLE)
 	{
 	    /**
-	     * Setting speed to less than MOT_IDLE_W could
+	     * Setting speed to less than MOT_W_IDLE could
 	     * cause motors to stop.
 	     *
 	     */
 	    err_log_num("WARN:w out of range, setting min for motor:",i);
-	    w->m_full[i] =  MOT_IDLE_W;
+	    w->m_full[i] =  MOT_W_IDLE;
 	}
-	else if (w->m_full[i] > MOT_MAX_W)
+	else if (w->m_full[i] > MOT_W_MAX)
 	{
 	    /**
 	     * Setting speed to more than MOT_MAX_W could
@@ -115,7 +115,7 @@ int mot_set_vel_rads(uquad_mot_t *mot, uquad_mat_t *w)
 	     *
 	     */
 	    err_log_num("WARN:w out of range, setting max for motor:",i);
-	    w->m_full[i] =  MOT_MAX_W;
+	    w->m_full[i] =  MOT_W_MAX;
 	}
 
 	retval = mot_rad2i2c(w->m_full[i],&itmp);
@@ -129,13 +129,13 @@ int mot_set_vel_rads(uquad_mot_t *mot, uquad_mat_t *w)
 
 int mot_set_idle(uquad_mot_t *mot)
 {
-    static double w_idle[MOT_C] = {MOT_IDLE_I2C,
-			    MOT_IDLE_I2C,
-			    MOT_IDLE_I2C,
-			    MOT_IDLE_I2C};
+    static double w_idle[MOT_C] = {MOT_I2C_IDLE,
+			    MOT_I2C_IDLE,
+			    MOT_I2C_IDLE,
+			    MOT_I2C_IDLE};
     int retval = ERROR_OK,i ;
     for (i=0; i < MOT_C; ++i)
-	mot->i2c_target[i] = MOT_IDLE_I2C;
+	mot->i2c_target[i] = MOT_I2C_IDLE;
     retval = mot_send(mot, w_idle);
     err_propagate(retval);
     sleep_ms(MOT_WAIT_STARTUP_MS);
