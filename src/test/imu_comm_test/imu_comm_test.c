@@ -19,8 +19,9 @@
 #define WAIT_COUNTER_MAX 10
 #define IMU_COMM_TEST_EOL_LIM 128
 
-#define PRINT_RAW 0
+#define PRINT_RAW  0
 #define PRINT_DATA 1
+#define PRINT_AVG  1
 
 static imu_t *imu = NULL;
 static FILE *log_imu_raw = NULL;
@@ -186,24 +187,22 @@ int main(int argc, char *argv[]){
 		retval = imu_comm_get_data_latest(imu,&data);
 #else
 		retval = imu_comm_get_data_latest_unread(imu,&data);
-#endif
+#endif // PRINT_RAW
 		if(retval == ERROR_OK)
 		{
 		    retval = imu_comm_print_data(&data,log_imu_data);
 		    quit_if(retval);
 		}
-#endif
+#endif // PRINT_DATA
 
-#if 0
-		// Get avg
-		//TODO avg is KO!
+#if PRINT_AVG
 		if(imu_comm_avg_ready(imu)){
 		    retval = imu_comm_get_avg(imu,&data);
 		    quit_if(retval);
 		    retval = imu_comm_print_data(&data,log_imu_avg);
 		    quit_if(retval);
 		}
-#endif
+#endif // PRINT_AVG
 	    }
 
 	    // Handle user input
