@@ -291,7 +291,7 @@ int main(int argc, char *argv[]){
 
     /// Control module
     ctrl = control_init();
-    if(mot == NULL)
+    if(ctrl == NULL)
     {
 	quit_log_if(ERROR_FAIL,"control init failed!");
     }
