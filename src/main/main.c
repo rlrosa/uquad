@@ -31,11 +31,11 @@
 #include <sys/signal.h>   // for SIGINT and SIGQUIT
 #include <unistd.h>       // for STDIN_FILENO
 
-#define UQUAD_HOW_TO "./main <imu_device>"
-#define MAX_ERRORS 20
-#define STARTUP_RUNS 200
+#define UQUAD_HOW_TO   "./main <imu_device>"
+#define MAX_ERRORS     20
+#define STARTUP_RUNS   200
 #define STARTUP_KALMAN 200
-#define FIXED 3
+#define FIXED          3
 
 /**
  *
@@ -45,13 +45,13 @@
  * be unacceptable.
  *
  */
-#define TS_JITTER 2000L      // Max jitter accepted
-#define TS_MAX (TS_DEFAULT_US + TS_JITTER)
-#define TS_MIN (TS_DEFAULT_US - TS_JITTER)
+#define TS_JITTER          2000L      // Max jitter accepted
+#define TS_MAX             (TS_DEFAULT_US + TS_JITTER)
+#define TS_MIN             (TS_DEFAULT_US - TS_JITTER)
 #define TS_JITTER_RATE_MAX 1.0 // Warning display threshold
 
-#define LOG_W_NAME "w.log"
-#define LOG_W_CTRL_NAME "w_ctrl.log"
+#define LOG_W_NAME         "w"
+#define LOG_W_CTRL_NAME    "w_ctrl"
 
 #define LOG_IMU_RAW_NAME   "imu_raw"
 #define LOG_IMU_DATA_NAME  "imu_data"
