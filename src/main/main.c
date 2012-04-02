@@ -210,7 +210,7 @@ void slow_land(void)
 	    sleep_ms(RETRY_IDLE_WAIT_MS);
     }
     sleep_ms(IDLE_TIME_MS);
-    for(dtmp = MOT_W_HOVER;dtmp > MOT_IDLE_W;dtmp -= SLOW_LAND_STEP_W)
+    for(dtmp = MOT_W_HOVER;dtmp > MOT_W_IDLE;dtmp -= SLOW_LAND_STEP_W)
     {
 	retval = mot_set_vel_rads(mot, w);
 	if(retval != ERROR_OK)
@@ -726,7 +726,28 @@ int main(int argc, char *argv[]){
 #endif //DEBUG
 	if(!(runs_kalman > STARTUP_KALMAN))
 	{
+	    /**
+	     * Startup:
+	     *   - Kalman estimator.
+	     *   - Ramp motors.
+	     */
 	    ++runs_kalman;
+	    if(runs_kalman == 1)
+	    {
+		/**
+		 * Use current IMU calibration to set
+		 * yaw == 0, this will keep us looking forward
+		 * when hovering.
+		 */
+		if(pp->pt != HOVER)
+		{
+		    quit_log_if(retval,"ERR: theta (Yaw) set to IMU calibration"\
+				"is only valid when in HOVER mode");
+		}
+		retval = imu_comm_raw2data(imu, &imu->calib.null_est, &imu_data);
+		quit_log_if(retval,"Failed to correct setpoint!");
+		pp->sp->x->m_full[5] = imu_data.magn->m_full[2];
+	    }
 	    if(runs_kalman == STARTUP_KALMAN)
 	    {
 		gettimeofday(&tv_last_m_cmd,NULL);
@@ -739,6 +760,15 @@ int main(int argc, char *argv[]){
 		retval = ERROR_OK;
 		err_log_tv("Kalman startup completed in ", tv_diff);
 		++runs_kalman; // so re-entry doesn't happen
+	    }
+	    else
+	    {
+		// Ramp up motors to MOT_W_HOVER, avoid step
+		for(i = 0; i < MOT_C; ++i)
+		    w->m_full[i] = MOT_W_IDLE +
+			runs_kalman*(MOT_W_STARTUP_RANGE/STARTUP_KALMAN);
+		retval = mot_set_vel_rads(mot, w);
+		log_n_continue(retval,"Failed to set motor speed!");
 	    }
 	}
 
