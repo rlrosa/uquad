@@ -1,9 +1,3 @@
-trap ctrl_c INT
-function ctrl_c() {
-        echo "** Trapped CTRL-C"
-	killall logger
-}
-
 if [ $1 ];
 then
     serial_port=$1
@@ -38,5 +32,14 @@ then
     mkfifo build/main/${err_pipe}
 fi
 
+# run network check, kill cmd if network fails
+(cd ../scripts; ./check_net.sh &)
+
 # run main, route stderr to pipe
-(cd build/main; ./logger ${err_pipe}; ./main ${serial_port} 2> ${err_pipe})
+(cd build/main; ./logger ${err_pipe} &; ./main ${serial_port} 2> ${err_pipe})
+
+# trap ctrl_c INT
+# function ctrl_c() {
+#         echo "** Trapped CTRL-C"
+# 	sleep 1
+# }
