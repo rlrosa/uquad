@@ -519,6 +519,7 @@ static int imu_comm_get_sync_init(imu_t *imu){
     err_check(ERROR_READ_SYNC,"Timed out!");
 }
 
+static imu_raw_null_t calib_accum;
 /** 
  * Set IMU to calibration mode.
  * Will gather data to estimate null (offsets).
@@ -534,7 +535,7 @@ int imu_comm_calibration_start(imu_t *imu){
     }
     imu->status = IMU_COMM_STATE_CALIBRATING;
     /// clear calibration data/
-    memset(&imu->calib.null_est,0,sizeof(imu_raw_null_t));
+    memset(&calib_accum,0,sizeof(imu_raw_null_t));
     imu->calib.calibration_counter = IMU_CALIB_SIZE;
     return ERROR_OK;
 }
@@ -589,12 +590,17 @@ int imu_comm_calibration_finish(imu_t *imu){
 
     for(i = 0; i < 3; ++i)
     {
-	imu->calib.null_est.acc[i]  /= IMU_CALIB_SIZE;
-	imu->calib.null_est.gyro[i] /= IMU_CALIB_SIZE;
-	imu->calib.null_est.magn[i] /= IMU_CALIB_SIZE;
+	imu->calib.null_est.acc[i]  =
+	    (uint16_t)(calib_accum.acc[i]/IMU_CALIB_SIZE);
+	imu->calib.null_est.gyro[i] =
+	    (uint16_t)(calib_accum.gyro[i]/IMU_CALIB_SIZE);
+	imu->calib.null_est.magn[i] =
+	    (uint16_t)(calib_accum.magn[i]/IMU_CALIB_SIZE);
     }
-    imu->calib.null_est.temp /= IMU_CALIB_SIZE;
-    imu->calib.null_est.pres /= IMU_CALIB_SIZE;
+    imu->calib.null_est.temp =
+	(uint16_t)(calib_accum.temp/IMU_CALIB_SIZE);
+    imu->calib.null_est.pres =
+	(uint32_t)(calib_accum.pres/IMU_CALIB_SIZE);
 
     imu->calib.calibration_counter = -1;
     imu->calib.timestamp_estim = tv_end;
@@ -638,12 +644,12 @@ int imu_comm_calibration_continue(imu_t *imu){
 
     for( i = 0; i < 3; ++i)
     {
-	imu->calib.null_est.acc[i] += (int32_t) new_frame.acc[i];
-	imu->calib.null_est.gyro[i] += (int32_t) new_frame.gyro[i];
-	imu->calib.null_est.magn[i] += (int32_t) new_frame.magn[i];
+	calib_accum.acc[i]  += (int32_t) new_frame.acc[i];
+	calib_accum.gyro[i] += (int32_t) new_frame.gyro[i];
+	calib_accum.magn[i] += (int32_t) new_frame.magn[i];
     }
-    imu->calib.null_est.temp += (uint32_t) new_frame.temp;
-    imu->calib.null_est.pres += (uint64_t) new_frame.pres;
+    calib_accum.temp += (uint32_t) new_frame.temp;
+    calib_accum.pres += (uint64_t) new_frame.pres;
 
     if(--imu->calib.calibration_counter == 0){
 	retval = imu_comm_calibration_finish(imu);
