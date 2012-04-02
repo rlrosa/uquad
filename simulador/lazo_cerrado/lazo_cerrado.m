@@ -714,7 +714,7 @@ function slider10_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-var=0.2*get(hObject,'Value');
+var=0.02*get(hObject,'Value');
 assignin('base','wq_amp',var*pi/180);
 set(handles.ruido10,'String',num2str(var,'%f1.2'));
 
@@ -787,9 +787,9 @@ function slider11_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-var=0.2*get(hObject,'Value');
-assignin('base','wq_amp',var*pi/180);
-set(handles.ruido11,'String',num2str(var,'%f1.2'));
+var=0.001*get(hObject,'Value');
+assignin('base','wq_cov',var*pi/180);
+set(handles.ruido11,'String',num2str(1000*var,'%f1.2'));
 % --- Executes during object creation, after setting all properties.
 function slider11_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to slider11 (see GCBO)
@@ -959,7 +959,7 @@ function slider24_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-var = (-0.5+get(hObject,'Value'));
+var = (-1+2*get(hObject,'Value'));
 assignin('base','z_offset',var*pi/180);
 set(handles.ruido20,'String',num2str(var,'%f1.2'));
 
@@ -1120,7 +1120,7 @@ function edit31_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-assignin('base','Ts',5e-2)
+
 
 
 
