@@ -6,6 +6,9 @@
 #define TIMING_IO 0
 #define LOG_W 1
 #define LOG_W_CTRL 1
+#define LOG_IMU_RAW 1
+#define LOG_IMU_DATA 1
+#define LOG_IMU_AVG 1
 #define DEBUG_X_HAT 1
 #define DEBUG_KALMAN_INPUT 1
 #endif
@@ -20,11 +23,11 @@
 #include <uquad_kalman.h>
 #include <control.h>
 #include <path_planner.h>
+#include <uquad_logger.h>
 #if USE_GPS
 #include <uquad_gps_comm.h>
 #endif
 
-#include <sys/resource.h> // for setpriority
 #include <sys/signal.h>   // for SIGINT and SIGQUIT
 #include <unistd.h>       // for STDIN_FILENO
 
@@ -50,6 +53,13 @@
 #define LOG_W_NAME "w.log"
 #define LOG_W_CTRL_NAME "w_ctrl.log"
 
+#define LOG_IMU_RAW_NAME   "imu_raw"
+#define LOG_IMU_DATA_NAME  "imu_data"
+#define LOG_IMU_AVG_NAME   "imu_avg"
+#define LOG_X_HAT_NAME     "x_hat"
+#define LOG_KALMAN_IN_NAME "kalman_in"
+#define LOG_TV_NAME        "tv"
+
 /**
  * Frequency at which motor controller is updated
  * Must be at least MOT_UPDATE_MAX_US
@@ -73,6 +83,15 @@ uquad_mat_t *x;
 imu_data_t imu_data;
 /// Logs
 #if DEBUG
+#if LOG_IMU_RAW
+FILE *log_imu_raw;
+#endif //LOG_IMU_RAW
+#if LOG_IMU_DATA
+FILE *log_imu_data;
+#endif //LOG_IMU_DATA
+#if LOG_IMU_AVG
+FILE *log_imu_avg;
+#endif //LOG_IMU_AVG
 #if LOG_W
 FILE *log_w = NULL;
 #endif //LOG_W
@@ -141,26 +160,30 @@ void quit()
 
     // Logs
 #if DEBUG
+#if LOG_IMU_RAW
+    uquad_logger_remove(log_imu_raw);
+#endif //LOG_IMU_RAW
+#if LOG_IMU_DATA
+    uquad_logger_remove(log_imu_data);
+#endif //LOG_IMU_DATA
+#if LOG_IMU_AVG
+    uquad_logger_remove(log_imu_avg);
+#endif //LOG_IMU_AVG
 #if LOG_W
-    if(log_w != NULL)
-	fclose(log_w);
+    uquad_logger_remove(log_w);
 #endif //LOG_W
 #if LOG_W_CTRL
-    if(log_w_ctrl != NULL)
-	fclose(log_w_ctrl);
+    uquad_logger_remove(log_w_ctrl);
 #endif //LOG_W_CTRL
 #if DEBUG_X_HAT
-    if(log_x_hat != NULL)
-	fclose(log_x_hat);
+    uquad_logger_remove(log_x_hat);
     uquad_mat_free(x_hat_T);
 #endif //DEBUG_X_HAT
 #if DEBUG_KALMAN_INPUT
-    if(log_kalman_in != NULL)
-	fclose(log_kalman_in);
+    uquad_logger_remove(log_kalman_in);
 #endif
 #endif //DEBUG
-    if(log_tv != NULL)
-	fclose(log_tv);
+    uquad_logger_remove(log_tv);
 
     //TODO deinit everything?
     exit(retval);
@@ -209,13 +232,11 @@ int main(int argc, char *argv[]){
     int retval = ERROR_OK, i;
     char * device_imu;
     double ts_jitter_rate = 0;
+    imu_raw_t imu_frame;
 
     // Catch signals
     signal(SIGINT, uquad_sig_handler);
     signal(SIGQUIT, uquad_sig_handler);
-
-    // Be important
-    setpriority(PRIO_PROCESS, 0, -20);
 
     if(argc<2)
     {
@@ -301,8 +322,32 @@ int main(int argc, char *argv[]){
 
     /// Logs
 #if DEBUG
+#if LOG_IMU_RAW
+    log_imu_raw = uquad_logger_add(LOG_IMU_RAW_NAME);
+    if(log_imu_raw == NULL)
+    {
+	err_log("Failed to open log_imu_raw!");
+	quit();
+    }
+#endif //LOG_IMU_RAW
+#if LOG_IMU_DATA
+    log_imu_data = uquad_logger_add(LOG_IMU_DATA_NAME);
+    if(log_imu_data == NULL)
+    {
+	err_log("Failed to open log_imu_data!");
+	quit();
+    }
+#endif //LOG_IMU_DATA
+#if LOG_IMU_AVG
+    log_imu_avg = uquad_logger_add(LOG_IMU_AVG_NAME);
+    if(log_imu_avg == NULL)
+    {
+	err_log("Failed to open log_imu_avg!");
+	quit();
+    }
+#endif //LOG_IMU_AVG
 #if LOG_W
-    log_w = fopen(LOG_W_NAME,"w");
+    log_w = uquad_logger_add(LOG_W_NAME);
     if(log_w == NULL)
     {
 	err_log("Failed to open log_w!");
@@ -310,7 +355,7 @@ int main(int argc, char *argv[]){
     }
 #endif //LOG_W
 #if LOG_W_CTRL
-    log_w_ctrl = fopen(LOG_W_CTRL_NAME,"w");
+    log_w_ctrl = uquad_logger_add(LOG_W_CTRL_NAME);
     if(log_w_ctrl == NULL)
     {
 	err_log("Failed to open log_w_ctrl!");
@@ -318,7 +363,7 @@ int main(int argc, char *argv[]){
     }
 #endif //LOG_W_CTRL
 #if DEBUG_X_HAT
-    log_x_hat = fopen("x_hat.log","w");
+    log_x_hat = uquad_logger_add(LOG_X_HAT_NAME);
     if(log_x_hat == NULL)
     {
 	err_log("Failed to open x_hat!");
@@ -332,7 +377,7 @@ int main(int argc, char *argv[]){
     }
 #endif //DEBUG_X_HAT
 #if DEBUG_KALMAN_INPUT
-    log_kalman_in = fopen("kalman_in.log","w");
+    log_kalman_in = uquad_logger_add(LOG_KALMAN_IN_NAME);
     if(log_kalman_in == NULL)
     {
 	err_log("Failed open kalman_in log!");
@@ -340,7 +385,7 @@ int main(int argc, char *argv[]){
     }
 #endif
 #endif //DEBUG
-    log_tv = fopen("tv.log","w");
+    log_tv = uquad_logger_add(LOG_TV_NAME);
     if(log_tv == NULL)
     {
 	err_log("Failed to open tv_log!");
@@ -484,6 +529,21 @@ int main(int argc, char *argv[]){
 	    }
 	    imu_update = false; // data may not be of direct use, may be calib
 
+#if LOG_IMU_RAW || LOG_IMU_DATA
+	    err_imu = imu_comm_get_raw_latest(imu,&imu_frame);
+	    log_n_jump(err_imu,end_imu,"could not get new frame...");
+#if LOG_IMU_RAW
+	    err_imu= imu_comm_print_raw(&imu_frame, log_imu_raw);
+	    log_n_jump(err_imu,end_imu,"could not print new raw frame...");
+#endif // LOG_IMU_RAW
+#if LOG_IMU_DATA
+	    err_imu = imu_comm_raw2data(imu, &imu_frame, &imu_data);
+	    log_n_jump(err_imu,end_imu,"could not convert new raw...");
+	    err_imu = imu_comm_print_data(&imu_data, log_imu_data);
+	    log_n_jump(err_imu,end_imu,"could not print new data...");
+#endif // LOG_IMU_DATA
+#endif // LOG_IMU_RAW || LOG_IMU_DATA
+
 #if TIMING && TIMING_IMU
 	    gettimeofday(&tv_tmp,NULL);
 	    err_imu = uquad_timeval_substract(&tv_diff,tv_tmp,tv_last_imu_read);
@@ -511,8 +571,12 @@ int main(int argc, char *argv[]){
 		if(runs_imu == STARTUP_RUNS)
 		{
 		    gettimeofday(&tv_last_imu,NULL);
-		    retval = uquad_timeval_substract(&tv_diff,tv_last_imu,tv_start);
-		    log_n_jump(err_imu,end_imu,"Failed to calculate IMU startup time!");
+		    err_imu = uquad_timeval_substract(&tv_diff,tv_last_imu,tv_start);
+		    if(err_imu < 0)
+		    {
+			log_n_jump(err_imu,end_imu,"Absurd IMU startup time!");
+		    }
+		    err_imu = ERROR_OK; // clear timing info
 		    err_log_tv("IMU startup completed in ", tv_diff);
 		    ++runs_imu; // so re-entry doesn't happen
 		}
@@ -540,6 +604,10 @@ int main(int argc, char *argv[]){
 
 	    err_imu = imu_comm_get_avg_unread(imu,&imu_data);
 	    log_n_jump(err_imu,end_imu,"IMU did not have new avg!");
+#if LOG_IMU_AVG
+	    err_imu = imu_comm_print_data(&imu_data, log_imu_avg);
+	    log_n_jump(err_imu,end_imu,"Failed to log imu avg!");
+#endif // LOG_IMU_AVG
 
 	    gettimeofday(&tv_tmp,NULL);
 	    err_imu = uquad_timeval_substract(&tv_diff,tv_tmp,tv_last_imu);
@@ -665,7 +733,12 @@ int main(int argc, char *argv[]){
 	    {
 		gettimeofday(&tv_last_m_cmd,NULL);
 		retval = uquad_timeval_substract(&tv_diff,tv_last_m_cmd,tv_start);
-		log_n_jump(err_imu,end_imu,"Failed to calculate Kalman startup time!");
+		if(retval < 0)
+		{
+		    err_log("Absurd Kalman startup time!");
+		    continue;
+		}
+		retval = ERROR_OK;
 		err_log_tv("Kalman startup completed in ", tv_diff);
 		++runs_kalman; // so re-entry doesn't happen
 	    }
@@ -721,6 +794,7 @@ int main(int argc, char *argv[]){
 		    log_tv(log_tv, "RET:", tv_diff);
 		}
 	    }
+	    retval = ERROR_OK;
 	}
 	fflush(stdout);
     }

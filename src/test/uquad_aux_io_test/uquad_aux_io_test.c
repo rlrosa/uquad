@@ -1,4 +1,4 @@
-#include <uquad_aux_log.h>
+#include <uquad_logger.h>
 #include <uquad_error_codes.h>
 #include <uquad_aux_io.h>
 #include <imu_comm.h>

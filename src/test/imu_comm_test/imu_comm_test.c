@@ -1,91 +1,92 @@
 #include <imu_comm.h>
-#include <uquad_aux_log.h>
+#include <uquad_logger.h>
 #include <macros_misc.h>
 #include <sys/time.h>
 #include <time.h>
 #include <sys/types.h>
-#include <unistd.h> // For STDIN_FILENO
+#include <sys/signal.h> // for SIGINT and SIGQUIT
+#include <unistd.h>     // For STDIN_FILENO
 #include <stdio.h>
 
 #define IMU_COMM_TEST_EXIT_CHAR 'q'
 #define IMU_COMM_TEST_CALIB_CHAR 'c'
 #define IMU_COMM_TEST_CALIB_SHOW_CHAR 's'
-#define IMU_COMM_TEST_HOW_TO "\nIncorrect arguments!\nUsage: ./imu_comm_test /dev/tty# log_to_file\n\nIf last argument is supplied (it can be any string) then the program will log raw data and\n processed data to two files, named according to the current timestamp."
+#define IMU_COMM_TEST_HOW_TO "\nIncorrect arguments!\n"\
+    "Usage: ./imu_comm_test /dev/tty# log_to_file\n\n"\
+    "If last argument is supplied (it can be any string) "\
+    "then the program will log raw data and\n processed"\
+    " data to two files, named according to the current timestamp."
 #define WAIT_COUNTER_MAX 10
 #define IMU_COMM_TEST_EOL_LIM 128
 
 #define PRINT_RAW 0
 #define PRINT_DATA 1
 
-#if 0
-static int fix_end_of_time_string(char * string, int lim){
-    int i;
-    if(lim<0)
-	return -1;
-    for(i=0;i<lim;++i){
-	if(string[i]!='\n')
-	    continue;
-	break;
-    }
-    if(i==lim){
-	fprintf(stderr,"Failed to fix time string");
-	return ERROR_FAIL;
-    }else{
-	string[i]='\0';
-    }	
-    return ERROR_OK;
+static imu_t *imu = NULL;
+static FILE *log_imu_raw = NULL;
+static FILE *log_imu_data = NULL;
+static FILE *log_imu_avg = NULL;
+
+void quit()
+{
+    // Deinit structure & close connection
+    (void) imu_comm_deinit(imu);
+    // Close log files, if any
+    uquad_logger_remove(log_imu_raw);
+    uquad_logger_remove(log_imu_data);
+    uquad_logger_remove(log_imu_avg);
+    printf("Exit successful!\n");
+    exit(0);
 }
-#endif
+
+void uquad_sig_handler(int signal_num){
+    err_log_num("Caught signal:",signal_num);
+    quit();
+}
 
 int main(int argc, char *argv[]){
     int retval;
-    FILE * output_frames = NULL;
-    FILE * output_avg = NULL;
     unsigned char tmp[2];
     char * device;
-    char log_name[FILENAME_MAX];
-    char log_filename[FILENAME_MAX];
-    struct imu * imu = NULL;
     fd_set rfds;
     struct timeval tv;
 
-    if(argc<2){
+    // Catch signals
+    signal(SIGINT, uquad_sig_handler);
+    signal(SIGQUIT, uquad_sig_handler);
+
+    if(argc < 2)
+    {
 	fprintf(stderr,IMU_COMM_TEST_HOW_TO);
-	exit(1);
-    }else{
+	quit();
+    }
+    else
+    {
 	device = argv[1];
     }
-    if(argc<3){
-	fprintf(stdout,"Using stdout to output...\n");
-    }else{
-	retval = uquad_log_generate_log_name(log_name,NULL);
-	if(retval < 0){
-	    fprintf(stderr,"Failed to create log name...");
-	    exit(1);
-	}
    
-	// Setup frame log
-	sprintf(log_filename,"./logs/%s.log",log_name);
-	output_frames = fopen(log_filename,"w");
-	if(output_frames == NULL){
-	    fprintf(stderr,"Failed to create frame log file...");
-	    exit(1);
-	}
-	fprintf(stdout,"Sending frame output to log file: %s\n",log_name);
+    // Setup raw frame log
+    log_imu_raw = uquad_logger_add("imu_raw");
+    if(log_imu_raw == NULL)
+    {
+	err_log("Failed to create frame log file...");
+	quit();
+    }
 
-	// Setup avg log
-	retval = sprintf(log_filename,"./logs/%savg.log",log_name);
-	if(retval < 0){
-	    fprintf(stderr,"Failed to create frame avg log file name...");
-	    exit(1);
-	}
-	output_avg = fopen(log_filename,"w");
-	if(output_avg == NULL){
-	    fprintf(stderr,"Failed to create avg log file...");
-	    exit(1);
-	}
-	fprintf(stdout,"Sending avg output to log file: %s\n",log_name);
+    // Setup data log
+    log_imu_data = uquad_logger_add("imu_data");
+    if(log_imu_data == NULL)
+    {
+	err_log("Failed to create data log file...");
+	quit();
+    }
 
+    // Setup avg log
+    log_imu_avg = uquad_logger_add("imu_avg");
+    if(log_imu_avg == NULL)
+    {
+	err_log("Failed to create avg log file...");
+	quit();
     }
 
     // Initialize structure
@@ -160,7 +161,7 @@ int main(int argc, char *argv[]){
 		{
 		    // if no calibration estim exists, build one.
 		    retval = imu_comm_calibration_start(imu);
-		    err_propagate(retval);
+		    quit_if(retval);
 		    calibrating = true;
 		    continue;
 		}
@@ -175,8 +176,8 @@ int main(int argc, char *argv[]){
 		retval = imu_comm_get_raw_latest_unread(imu,&raw);
 		if(retval == ERROR_OK)
 		{
-		    retval = imu_comm_print_raw(&raw,stdout);
-		    err_propagate(retval);
+		    retval = imu_comm_print_raw(&raw,log_imu_raw);
+		    quit_if(retval);
 		}
 #endif
 #if PRINT_DATA
@@ -188,8 +189,8 @@ int main(int argc, char *argv[]){
 #endif
 		if(retval == ERROR_OK)
 		{
-		    retval = imu_comm_print_data(&data,stdout);
-		    err_propagate(retval);
+		    retval = imu_comm_print_data(&data,log_imu_data);
+		    quit_if(retval);
 		}
 #endif
 
@@ -198,13 +199,11 @@ int main(int argc, char *argv[]){
 		//TODO avg is KO!
 		if(imu_comm_avg_ready(imu)){
 		    retval = imu_comm_get_avg(imu,&data);
-		    err_propagate(retval);
-		    retval = imu_comm_print_data(&data,output_avg);
-		    err_propagate(retval);
+		    quit_if(retval);
+		    retval = imu_comm_print_data(&data,log_imu_avg);
+		    quit_if(retval);
 		}
 #endif
-		if(output_frames == NULL || output_avg == NULL)
-		    fflush(stdout);
 	    }
 
 	    // Handle user input
@@ -222,7 +221,7 @@ int main(int argc, char *argv[]){
 		    sleep_ms(500);
 		    printf("Starting calibration...\n");
 		    retval = imu_comm_calibration_start(imu);
-		    err_propagate(retval);
+		    quit_if(retval);
 		    calibrating = true;
 		}
 
@@ -236,10 +235,10 @@ int main(int argc, char *argv[]){
 		    else
 		    {
 			retval = imu_comm_calibration_get(imu,&imu_calib);
-			err_propagate(retval);
+			quit_if(retval);
 			printf("Current calibration:\n");
 			retval = imu_comm_print_calib(imu_calib,stdout);
-			err_propagate(retval);
+			quit_if(retval);
 		    }
 		}
 		printf("\nPress enter to continue...\n");
@@ -248,17 +247,8 @@ int main(int argc, char *argv[]){
 	    }
 	}
     }
-		
-    // Deinit structure & close connection
-    retval = imu_comm_deinit(imu);
-    err_propagate(retval);
-    // Close log files, if any
-    if(output_avg != NULL)
-	fclose(output_avg);
-    if(output_frames != NULL)
-	fclose(output_frames);
-    printf("Exit successful!\n");
-
+	
+    quit();
     return 0;
 }
     
