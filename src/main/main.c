@@ -306,8 +306,6 @@ int main(int argc, char *argv[]){
     /// Global vars
     w = uquad_mat_alloc(4,1);        // Current angular speed [rad/s]
     wt = uquad_mat_alloc(1,4);        // tranpose(w)
-    for(i=0; i < 4; ++i)
-	w->m_full[i] = MOT_IDLE_W;
     x = uquad_mat_alloc(1,12);   // State vector
     imu_data.acc = uquad_mat_alloc(3,1);
     imu_data.gyro = uquad_mat_alloc(3,1);
@@ -742,14 +740,17 @@ int main(int argc, char *argv[]){
 		err_log_tv("Kalman startup completed in ", tv_diff);
 		++runs_kalman; // so re-entry doesn't happen
 	    }
-	    continue;
 	}
 
-	/// Get current set point
+	/// -- -- -- -- -- -- -- --
+	/// Update setpoint
+	/// -- -- -- -- -- -- -- --
 	retval = pp_update_setpoint(pp, kalman->x_hat);
 	log_n_continue(retval,"Kalman update failed");
 
-	/// Get control command
+	/// -- -- -- -- -- -- -- --
+	/// Run control
+	/// -- -- -- -- -- -- -- --
 	retval = control(ctrl, w, kalman->x_hat, pp->sp);
 	log_n_continue(retval,"Control failed!");
 #if DEBUG && LOG_W_CTRL
@@ -758,7 +759,7 @@ int main(int argc, char *argv[]){
 #endif
 
 	/// -- -- -- -- -- -- -- --
-	/// Run control
+	/// Set motor speed
 	/// -- -- -- -- -- -- -- --
 	gettimeofday(&tv_tmp,NULL);
 	uquad_timeval_substract(&tv_diff,tv_tmp,tv_last_m_cmd);
