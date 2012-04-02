@@ -6,11 +6,11 @@ B=Matrices.B;
 
 
 %Saco todas las variables que no vamos a usar;
-A(6:8,:)=[];
+A(7:8,:)=[];
 A(1:2,:)=[];
-A(:,6:8)=[];
+A(:,7:8)=[];
 A(:,1:2)=[];
-B(6:8,:)=[];
+B(7:8,:)=[];
 B(1:2,:)=[];
 
 wq1=0; wq2=0; wq3=0;
@@ -28,8 +28,8 @@ w4=298.086701308402;
 A=eval(A);
 B=eval(B);
     
-Q=diag([1 1e3 1e3 1 1 1 1]);%Pesos de z,psi,phi,vqz wqx,wqy,wqz
-R=diag(100*[1e-2 1e-2 1e-2 1e-2]); %Pesos de w1 w2 w3 w4;
+Q=diag([1 1e3 1e3 1e3 1 1 1 1]);%Pesos de z,psi,phi,vqz wqx,wqy,wqz
+R=diag(100*[1 1 1 1]); %Pesos de w1 w2 w3 w4;
 
 [K,S,E]=lqrd(A,B,Q,R,10e-3);
 
