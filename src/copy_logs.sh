@@ -19,13 +19,12 @@ then
 else
     mkdir $1
     cd $1
-    mv ../../../../src/build/main/i2c.dev .
+    mv ../../../../src/build/main/err.log .
     mv ../../../../src/build/main/imu_data.log .
     mv ../../../../src/build/main/imu_raw.log .
     mv ../../../../src/build/main/imu_avg.log .
-    mv ../../../../src/build/main/kq_s_ack.log .
-    mv ../../../../src/build/main/kq_s_data.log .
     mv ../../../../src/build/main/w.log .
+    mv ../../../../src/build/main/w_ctrl.log .
     mv ../../../../src/build/main/cmd_rx.log .
     mv ../../../../src/build/main/cmd_tx.log .
     mv ../../../../src/build/main/cmd_output.log .
