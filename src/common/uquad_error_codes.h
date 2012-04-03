@@ -71,10 +71,17 @@ ERROR_TIMING
 #define err_log_tv(msg,tv) fprintf(stderr,"%s:%s:%d: %s(%ld.%06ld)\n",__TIME__,__FILE__,__LINE__,msg,tv.tv_sec, tv.tv_usec)
 
 /**
- * Print timeval to log with unsigned long to stderr
+ * Print timeval to log with unsigned long to log
  * 
  */
 #define log_tv(log,msg,tv) fprintf(log,"%s:%s:%d: %s(%ld.%06ld)\n",__TIME__,__FILE__,__LINE__,msg,tv.tv_sec, tv.tv_usec)
+
+/**
+ * Print timeval to log with unsigned long to log, no '\n'
+ * 
+ */
+#define log_tv_only(log,tv) fprintf(log,"%ld.%06ld\t",tv.tv_sec, tv.tv_usec)
+
 
 /**
  * If @retval is an error, then propagate error without printing anything.
