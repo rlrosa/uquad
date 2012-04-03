@@ -1,3 +1,4 @@
+#!/bin/bash
 # Run main and whatever is required
 # Args:
 #   ./go.sh <serial_port> <do_pc_test>
