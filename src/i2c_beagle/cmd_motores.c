@@ -27,42 +27,37 @@
     "or 4, enabling each motor.\n\n\t./cmd ena9 enaA enaB ena8\nwhere"\
     "enaX enables motor X, valid is 0 or 1\n\n"
 
-#define MAX_SPEED 220
-#define MIN_SPEED 45
+#define MAX_SPEED                 220 // i2c
+#define MIN_SPEED                 45  // i2c
 
-#define DEBUG 0
-#define CHECK_STDIN 0
+#define DEBUG                     0
+#define CHECK_STDIN               0
 #if DEBUG
-#define LOG_VELS 1
+#define LOG_VELS                  1
 #endif
 
-#define LOG_FAILS 2000 // evita saturar la UART o el SSH
-#define MAX_FAILS 20000
-#define PRINT_COUNT 500
-#define RUN_FOREVER 0
-#define SLEEP_INC_US 0 // esto es lo que incrementa el sleep dsp de los 4 motores
-#define LOOPS 10000
-#define ZERO_LOOPS 200
-#define FIN_LOOPS 1
-#define MOT_COUNT 4
-#define UQUAD_MOT_I2C_REG_ENABLE 0xA0
-#define UQUAD_MOT_ENABLE_DAT 0x00
+#define PRINT_COUNT               500
+#define MOT_COUNT                 4
+#define UQUAD_MOT_I2C_REG_ENABLE  0xA0
+#define UQUAD_MOT_ENABLE_DAT      0x00
 #define UQUAD_MOT_I2C_REG_DISABLE 0xA1
-#define UQUAD_MOT_DISABLE_DAT 0x00
-#define UQUAD_MOT_I2C_REG_VEL 0xA2
+#define UQUAD_MOT_DISABLE_DAT     0x00
+#define UQUAD_MOT_I2C_REG_VEL     0xA2
+#define MOT_SELECTED              1
+#define MOT_NOT_SELECTED          0
 
-#define OK 0
-#define NOT_OK -1
+#define OK                        0
+#define NOT_OK                    -1
 
-#define UQUAD_STARTUP_RETRIES 100
-#define UQUAD_STOP_RETRIES 1000
+#define UQUAD_STARTUP_RETRIES     100
+#define UQUAD_STOP_RETRIES        1000
 
-#define LOG_ERR stdout
+#define LOG_ERR                   stdout
 
-#define backtrace() fprintf(LOG_ERR,"%s:%d\n",__FUNCTION__,__LINE__)
+#define backtrace()     fprintf(LOG_ERR,"%s:%d\n",__FUNCTION__,__LINE__)
 #define log_to_err(msg) fprintf(LOG_ERR,"%s: %s:%d\n",msg,__FUNCTION__,__LINE__)
 
-#define sleep_ms(ms) usleep(1000*ms)
+#define sleep_ms(ms)    usleep(1000*ms)
 
 /// Forwards defs
 int uquad_mot_i2c_addr_open(int i2c_dev, int addr);
@@ -93,11 +88,9 @@ static message_buf_t rbuf;
 static struct timeval timestamp;
 static int i2c_file = -1;
 static int mot_i2c_addr[MOT_COUNT] = {0x69,
-				       0x6a,
-				       0x6b,
-				       0x68};
-#define MOT_SELECTED 1
-#define MOT_NOT_SELECTED 0
+				      0x6a,
+				      0x6b,
+				      0x68};
 static unsigned short mot_selected[MOT_COUNT] = {MOT_NOT_SELECTED,
 						 MOT_NOT_SELECTED,
 						 MOT_NOT_SELECTED,
