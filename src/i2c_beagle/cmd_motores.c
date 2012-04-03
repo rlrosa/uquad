@@ -111,7 +111,7 @@ int uquad_mot_i2c_addr_open(int i2c_dev, int addr){
     if (ioctl(i2c_dev,I2C_SLAVE,addr) < 0)
     {
 	/* ERROR HANDLING; you can check errno to see what went wrong */
-	fprintf("ERROR! %s failed to write to 0x%02X...\n"\
+	fprintf(LOG_ERR,"ERROR! %s failed to write to 0x%02X...\n"	\
 		"errno info:\t %s\n",__FUNCTION__,addr,strerror(errno));
 	return NOT_OK;
     }
@@ -129,7 +129,7 @@ int uquad_mot_i2c_send_byte(int i2c_dev, __u8 reg, __u8 value){
     if(i2c_smbus_write_byte_data(i2c_dev,reg,value) < 0)
     {
 	/* ERROR HANDLING: i2c transaction failed */
-	fprintf(stderr,"Failed to send value %d\tto 0x%02X\n."\
+	fprintf(LOG_ERR,"Failed to send value %d\tto 0x%02X\n."\
 		"errno info:\t %s\n",(int)value,(int)reg,strerror(errno));
     }
 #else
