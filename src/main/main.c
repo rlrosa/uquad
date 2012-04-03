@@ -503,20 +503,24 @@ int main(int argc, char *argv[]){
 	if(read)
 	{
 #if TIMING && TIMING_IO
-	    gettimeofday(&tv_tmp,NULL);
+	    err_imu = gettimeofday(&tv_tmp,NULL);
+	    err_log_std(err_imu);
 	    err_imu = uquad_timeval_substract(&tv_diff,tv_tmp,tv_last_io_ok);
 	    if(err_imu < 0)
 	    {
 		err_log("Timing error!");
 	    }
-	    gettimeofday(&tv_last_io_ok,NULL);
-	    gettimeofday(&tv_pgm,NULL);
+	    err_imu = gettimeofday(&tv_last_io_ok,NULL);
+	    err_log_std(err_imu);
+	    err_imu = gettimeofday(&tv_pgm,NULL);
+	    err_log_std(err_imu);
 	    printf("IO:\t%ld\t\t%ld.%06ld\n", tv_diff.tv_usec,
 		   tv_pgm.tv_sec - tv_start.tv_sec,
 		   tv_pgm.tv_usec);
 #endif
 #if TIMING && TIMING_IMU
-	    gettimeofday(&tv_imu_start,NULL);
+	    err_imu = gettimeofday(&tv_imu_start,NULL);
+	    err_log_std(err_imu);
 #endif
 
 	    err_imu = imu_comm_read(imu, &imu_update);
@@ -543,7 +547,8 @@ int main(int argc, char *argv[]){
 #endif // LOG_IMU_RAW || LOG_IMU_DATA
 
 #if TIMING && TIMING_IMU
-	    gettimeofday(&tv_tmp,NULL);
+	    err_imu = gettimeofday(&tv_tmp,NULL);
+	    err_log_std(err_imu);
 	    err_imu = uquad_timeval_substract(&tv_diff,tv_tmp,tv_last_imu_read);
 	    if(err_imu < 0)
 	    {
@@ -554,8 +559,10 @@ int main(int argc, char *argv[]){
 	    {
 		err_log("Timing error!");
 	    }
-	    gettimeofday(&tv_last_imu_read,NULL);
-	    gettimeofday(&tv_pgm,NULL);
+	    err_imu = gettimeofday(&tv_last_imu_read,NULL);
+	    err_log_std(err_imu);
+	    err_imu = gettimeofday(&tv_pgm,NULL);
+	    err_log_std(err_imu);
 	    printf("IMU:\t%ld\tDELAY:\t%ld\t\t%ld.%06ld\n",
 		   tv_diff.tv_usec, tv_imu_diff.tv_usec,
 		   tv_pgm.tv_sec - tv_start.tv_sec,
@@ -568,7 +575,8 @@ int main(int argc, char *argv[]){
 		++runs_imu;
 		if(runs_imu == STARTUP_RUNS)
 		{
-		    gettimeofday(&tv_last_imu,NULL);
+		    err_imu = gettimeofday(&tv_last_imu,NULL);
+		    err_log_std(err_imu);
 		    err_imu = uquad_timeval_substract(&tv_diff,tv_last_imu,tv_start);
 		    if(err_imu < 0)
 		    {
@@ -619,7 +627,8 @@ int main(int argc, char *argv[]){
 
 	    /// new data will be useful!
 	    imu_update = true;
-	    gettimeofday(&tv_last_imu,NULL);
+	    err_imu = gettimeofday(&tv_last_imu,NULL);
+	    err_log_std(err_imu);
 
 	    end_imu:;
 	    // will jump here if something went wrong during IMU reading
@@ -673,6 +682,7 @@ int main(int argc, char *argv[]){
 	/// -- -- -- -- -- -- -- --
 	gettimeofday(&tv_tmp,NULL);
 	retval = uquad_timeval_substract(&tv_diff,tv_tmp,tv_last_kalman);
+	tv_tmp = tv_diff; // will be used for logging
 	if(retval < 0)
 	{
 	    log_n_continue(ERROR_TIMING,"Absurd timing!");
@@ -716,7 +726,7 @@ int main(int argc, char *argv[]){
 
 #if DEBUG
 #if DEBUG_KALMAN_INPUT
-	fprintf(log_kalman_in, "%lu\t",tv_diff.tv_usec);
+	log_tv_only(log_kalman_in,tv_tmp);
 	retval = imu_comm_print_data(&imu_data, log_kalman_in);
 #endif //DEBUG_KALMAN_INPUT
 #if DEBUG_X_HAT
@@ -782,10 +792,13 @@ int main(int argc, char *argv[]){
 	/// -- -- -- -- -- -- -- --
 	/// Run control
 	/// -- -- -- -- -- -- -- --
+	gettimeofday(&tv_tmp,NULL);
+	uquad_timeval_substract(&tv_diff,tv_tmp,tv_last_m_cmd);
 	retval = control(ctrl, w, kalman->x_hat, pp->sp);
 	log_n_continue(retval,"Control failed!");
 #if DEBUG && LOG_W_CTRL
 	retval = uquad_mat_transpose(wt,w);
+	log_tv_only(log_w_ctrl,tv_diff);
 	uquad_mat_dump(wt,log_w_ctrl);
 #endif
 
@@ -794,18 +807,17 @@ int main(int argc, char *argv[]){
 	/// -- -- -- -- -- -- -- --
 	gettimeofday(&tv_tmp,NULL);
 	uquad_timeval_substract(&tv_diff,tv_tmp,tv_last_m_cmd);
-	if (tv_diff.tv_usec > MOT_UPDATE_T)
+	if (tv_diff.tv_usec > MOT_UPDATE_T || tv_diff.tv_sec > 1)
 	{
-	    gettimeofday(&tv_last_m_cmd,NULL);
-
 	    /// Update motor controller
 	    retval = mot_set_vel_rads(mot, w);
 	    log_n_continue(retval,"Failed to set motor speed!");
 #if DEBUG && LOG_W
-	    fprintf(log_w, "%ld\t", tv_diff.tv_usec);
+	    log_tv_only(log_w,tv_diff);
 	    retval = uquad_mat_transpose(wt,mot->w_curr);
 	    uquad_mat_dump(wt,log_w);
 #endif
+	    tv_last_m_cmd = tv_tmp;
 	}
 
 	/// -- -- -- -- -- -- -- --
