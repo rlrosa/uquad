@@ -7,6 +7,6 @@ all:
 debug:
 	$(CC) -g $(SOURCES) -o $(EXECUTABLE)_debug
 pc_test:
-	$(CC) -g -DPC_TEST $(SOURCES) -o $(EXECUTABLE)_pc_test_debug
+	$(CC) -g -DPC_TEST $(SOURCES) -o $(EXECUTABLE)pc_test
 clean:
 	rm $(EXECUTABLE)
