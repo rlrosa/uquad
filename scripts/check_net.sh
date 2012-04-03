@@ -7,7 +7,7 @@ sleep 4
 # check connections
 while(true);
 do
-    x=`host 10.42.43.1 2>&1 | grep NXDOMAIN`
+    x=`ping -c1 10.42.43.1 2>&1 | grep "100% packet loss"`
     if [ ! "$x" = "" ]; then
 	echo "Connection lost!"
 	kill -9 `pidof -s cmd`
