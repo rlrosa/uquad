@@ -1,7 +1,6 @@
 #include "control.h"
 #include <stdlib.h>
 #include <uquad_error_codes.h>
-#include <mot_control.h>
 
 uquad_mat_t *tmp_sub_sp_x;
 uquad_mat_t *tmp_x_hat_partial;
@@ -9,9 +8,9 @@ ctrl_t *control_init(void)
 {
     ctrl_t *ctrl = (ctrl_t *)malloc(sizeof(ctrl_t));
     mem_alloc_check(ctrl);
-    ctrl->K = uquad_mat_alloc(4,7);
+    ctrl->K = uquad_mat_alloc(4,STATES_CONTROLLED);
     tmp_sub_sp_x = uquad_mat_alloc(12,1);
-    tmp_x_hat_partial = uquad_mat_alloc(7,1);
+    tmp_x_hat_partial = uquad_mat_alloc(STATES_CONTROLLED,1);
     if(ctrl->K == NULL || tmp_sub_sp_x == NULL || tmp_x_hat_partial == NULL)
     {
 	err_log("Failed to allocate gain matrix!");
@@ -54,43 +53,6 @@ ctrl_t *control_init(void)
     ctrl -> K -> m[3][5] = -2.59308747713986731398;
     ctrl -> K -> m[3][6] = 0.00000000000052698359;
     ctrl -> K -> m[3][7] = -4.21378644021863024705;
-   
-
-
-    /* Matriz Violenta
-      ctrl -> K -> m[0][0] = 0.49934047680831794569;
-      ctrl -> K -> m[0][1] = 0.00000000000003744260;
-      ctrl -> K -> m[0][2] = -21.75937550244218243733;
-      ctrl -> K -> m[0][3] = 3.85038861888382433207;
-      ctrl -> K -> m[0][4] = 0.00000000000003921728;
-      ctrl -> K -> m[0][5] = -8.15001366200123378292;
-      ctrl -> K -> m[0][6] = 0.49977826290407101339;
-     
-      ctrl -> K -> m[1][0] = 0.49934047680834670047;
-      ctrl -> K -> m[1][1] = 21.75937550244205809236;
-      ctrl -> K -> m[1][2] = -0.00000000000010364819;
-      ctrl -> K -> m[1][3] = 3.85038861888383676657;
-      ctrl -> K -> m[1][4] = 8.15001366200116983407;
-      ctrl -> K -> m[1][5] = -0.00000000000003326558;
-      ctrl -> K -> m[1][6] = -0.49977826290402943554;
-     
-      ctrl -> K -> m[2][0] = 0.49934047680831950000;
-      ctrl -> K -> m[2][1] = 0.00000000000001721972;
-      ctrl -> K -> m[2][2] = 21.75937550244223572804;
-      ctrl -> K -> m[2][3] = 3.85038861888395356203;
-      ctrl -> K -> m[2][4] = -0.00000000000001767908;
-      ctrl -> K -> m[2][5] = 8.15001366200125332284;
-      ctrl -> K -> m[2][6] = 0.49977826290418553290;
-     
-      ctrl -> K -> m[3][0] = 0.49934047680834414695;
-      ctrl -> K -> m[3][1] = -21.75937550244203322336;
-      ctrl -> K -> m[3][2] = 0.00000000000009935126;
-      ctrl -> K -> m[3][3] = 3.85038861888365513408;
-      ctrl -> K -> m[3][4] = -8.15001366200116983407;
-      ctrl -> K -> m[3][5] = 0.00000000000002454443;
-      ctrl -> K -> m[3][6] = -0.49977826290411730970;
-    */
-
 
     return ctrl;
 }

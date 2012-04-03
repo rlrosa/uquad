@@ -6,6 +6,8 @@
 #include <uquad_aux_math.h>
 #include <path_planner.h>
 
+#define STATES_CONTROLLED 8
+
 typedef struct ctrl{
     uquad_mat_t *K;
 }ctrl_t;
