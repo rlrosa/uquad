@@ -43,6 +43,11 @@ uquad_mot_t *mot_init(void)
 	err_log("Failed to start message queue!");
 	goto cleanup;
     }
+
+    // initialize timer
+    retval = gettimeofday(&m->last_set,NULL);
+    cleanup_log_if(retval,"Failed to initialize timer");
+
     return m;
 
     cleanup:
@@ -63,15 +68,22 @@ int mot_send(uquad_mot_t *mot, double *w)
     buff_out[2] = mot->i2c_target[1];
     buff_out[3] = mot->i2c_target[3];
 
-    gettimeofday(&tmp_tv,NULL);
+    retval = gettimeofday(&tmp_tv,NULL);
+    err_check_std(retval);
     retval = uquad_timeval_substract(&diff_tv,tmp_tv,mot->last_set);
     if(diff_tv.tv_usec < MOT_UPDATE_MAX_US && diff_tv.tv_sec < 1)
     {
-	err_check(ERROR_MOT_SATURATE,"Cannot change speed so often!");
+	err_log_tv("mot_control():",tmp_tv);
+	err_log_tv("mot_control():",mot->last_set);
+	err_log_tv("mot_control():",diff_tv);
+	err_log("Should change speed so often!");
+#warning "Timing check in disabled!"
+	//	err_check(ERROR_MOT_SATURATE,"Cannot change speed so often!");//TODO restore!
     }
     retval = uquad_kmsgq_send(mot->kmsgq, buff_out, MOT_C);
     err_propagate(retval);
-    gettimeofday(&mot->last_set,NULL);
+    retval = gettimeofday(&mot->last_set,NULL);
+    err_check_std(retval);
     // update current i2c
     memcpy(mot->i2c_curr,mot->i2c_target,MOT_C*sizeof(uint8_t));
     // update current speed

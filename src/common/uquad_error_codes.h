@@ -89,6 +89,13 @@ ERROR_TIMING
 #define err_check(retval,msg) if(retval!=ERROR_OK){fprintf(stderr,"%s:%s:%d: %s\n",__TIME__,__FILE__,__LINE__,msg);return retval;}
 
 /**
+ * If @retval is an error, then print strerr to stderr and propagate error.
+ *
+ */
+#define err_check_std(retval) if(retval!=ERROR_OK){fprintf(stderr,"%s:%s:%d: %s\n",__TIME__,__FILE__,__LINE__,strerror(errno));}
+
+
+/**
  * If @retval is an error, call quit().
  * Usefull in test programs, allows cleaning up.
  * 
@@ -101,6 +108,13 @@ ERROR_TIMING
  *
  */
 #define cleanup_if(retval) if(retval != ERROR_OK) {fprintf(stderr,"backtrace:%s:%d\n",__FILE__,__LINE__);goto cleanup;}
+
+/**
+ * If @retval is an error, jump to cleanup.
+ * Usefull in init routines, allows cleaning up.
+ *
+ */
+#define cleanup_log_if(retval,msg) if(retval != ERROR_OK) {fprintf(stderr,"%s:%d:\t%s\n",__FILE__,__LINE__,msg);goto cleanup;}
 
 /**
  * If @retval is an error, call quit().
