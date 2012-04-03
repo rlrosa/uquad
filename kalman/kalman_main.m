@@ -5,7 +5,7 @@
 % Imu
 % imu_file = '../../../Escritorio/imu_raw.log';
 % imu_file = 'tests/main/logs/vuelo_4_2/imu_raw.log';
-imu_file = 'tests/main/logs/1abril-todo-solo-matriztranqui/imu_raw.log';
+imu_file = 'tests/main/logs/1abril-todo-solo-enloquecio/imu_raw.log';
 % imu_file = 'tests/main/logs/29marzo/imu_raw.log';
 [acrud,wcrud,mcrud,~,bcrud,~,~,T]=mong_read(imu_file,0,1);
 avg = 1;
@@ -18,11 +18,12 @@ acrud = acrud(startup_runs:end,:);
 wcrud = wcrud(startup_runs:end,:);
 mcrud = mcrud(startup_runs:end,:);
 bcrud = bcrud(startup_runs:end,:);
-T = T(startup_runs:end,:);
+T = T(startup_runs:end);
 
-% p0 is estimated form first imu_calib samples
-% b0 = mean(bcrud(1:imu_calib));
-b0 = bcrud(1);
+% p0 and theta0 is estimated form first imu_calib samples
+[a_calib,~,euler_calib] = mong_conv(acrud(1:imu_calib,:),wcrud(1:imu_calib,:),mcrud(1:imu_calib,:),0);
+theta0                  = mean(euler_calib(:,3));
+b0                      = mean(bcrud(1:imu_calib));
 
 % averages are used
 acrud(:,1) = moving_avg(acrud(:,1),avg); acrud(:,2) = moving_avg(acrud(:,2),avg); acrud(:,3) = moving_avg(acrud(:,3),avg);
@@ -54,12 +55,13 @@ b=altitud(bcrud,b0);
 % Constantes
 N       = size(a,1);         % Cantidad de muestras de las observaciones
 Ns      = 12;                % N states: cantidad de variables de estado
-w_idle  = 109;
+Nc      = 8;                 % N control states: Cantidad de estados a controlar
+% w_idle  = 109;               %     se controla z,psi,phi,theta,vqz,wqx,wqy,wqz
 w_hover = 298.0867;
 w_max   = 387.0; 
 w_min   = 109.0; 
 K       = load('K.mat');K = K.K;
-sp_x    = zeros(7,1);
+sp_x    = [0;0;0;theta0;0;0;0;0];
 sp_w    = ones(4,1)*w_hover;
 
 % Entradas
@@ -74,8 +76,8 @@ z  = [euler a w b];
 x_hat          = zeros(N,Ns);
 P              = 1*eye(Ns);
 w_control      = zeros(N-kalman_startup,4);
-w_control(1,:) = w_idle*ones(size(w_control(1,:)));
-x_hat_partial  = zeros(N,7);
+w_control(1,:) = w_hover*ones(size(w_control(1,:)));
+x_hat_partial  = zeros(N,8);
 
 %% Kalman
 
@@ -97,8 +99,8 @@ for i=2:N
 %     end
     
     % Control
-    x_hat_partial(i,:) = [x_hat(i,3), x_hat(i,4), x_hat(i,5), x_hat(i,9), ...
-        x_hat(i,10), x_hat(i,11), x_hat(i,12)];
+    x_hat_partial(i,:) = [x_hat(i,3), x_hat(i,4), x_hat(i,5), x_hat(i,6), ...
+        x_hat(i,9), x_hat(i,10), x_hat(i,11), x_hat(i,12)];
 
     % First kalman_startup samples will not be used for control
     if~(i > kalman_startup + 1)
@@ -117,5 +119,5 @@ end
 
 %% Plots
 
-plot_main(x_hat,z);
-plot_w(w_control);
+plot_main(x_hat,z,T);
+plot_w(w_control,T(kalman_startup+1:end));

@@ -10,7 +10,7 @@ AT=load('acc_temp','x','to');
 a_to = AT.to;
 
 if(~exist('t_imu','var'))
-  fprintf('Flaco, mirá que no pasaste la temperatura, y eso q te avise\nSe calibrará sin la compensación por temperatura\n');
+%   fprintf('Calibración sin compensación por temperatura\nSe debe pasar como último parámetro el vector de temperaturas\n');
   t_imu = a_to;
 else
     if length(t_imu)>512
