@@ -438,12 +438,15 @@ int main(int argc, char *argv[]){
     struct timeval
 	tv_tmp, tv_diff,
 	tv_last_m_cmd,
+	tv_last_ramp,
 	tv_last_kalman,
 	tv_last_imu,
 	tv_gps_last,
 	tv_start;
     gettimeofday(&tv_gps_last,NULL);
     gettimeofday(&tv_start,NULL);
+    gettimeofday(&tv_last_ramp,NULL);
+    gettimeofday(&tv_last_kalman,NULL);
 #if TIMING
     struct timeval
 	tv_pgm,
@@ -757,6 +760,12 @@ int main(int argc, char *argv[]){
 		retval = imu_comm_raw2data(imu, &imu->calib.null_est, &imu_data);
 		quit_log_if(retval,"Failed to correct setpoint!");
 		pp->sp->x->m_full[5] = imu_data.magn->m_full[2];
+		retval = imu_comm_print_data(&imu_data, stderr);
+		if(retval != ERROR_OK)
+		{
+		    err_log("Failed to print IMU calibration!");
+		}
+		retval = ERROR_OK;// ignore error
 	    }
 	    if(runs_kalman == STARTUP_KALMAN)
 	    {
@@ -774,11 +783,25 @@ int main(int argc, char *argv[]){
 	    else
 	    {
 		// Ramp up motors to MOT_W_HOVER, avoid step
+		retval = gettimeofday(&tv_tmp,NULL);
+		err_log_std(retval);
 		for(i = 0; i < MOT_C; ++i)
 		    w->m_full[i] = MOT_W_IDLE +
 			runs_kalman*(MOT_W_STARTUP_RANGE/STARTUP_KALMAN);
 		retval = mot_set_vel_rads(mot, w);
 		log_n_continue(retval,"Failed to set motor speed!");
+		retval = uquad_timeval_substract(&tv_diff,tv_tmp,tv_last_ramp);
+		if(retval < 0)
+		{
+		    err_log("Absurd ramp timing!");
+		    continue;
+		}
+		log_tv_only(log_w,tv_diff);
+		retval = uquad_mat_transpose(wt,w);
+		log_n_continue(retval,"Failed to transpose!");
+		uquad_mat_dump(wt,log_w);
+		retval = gettimeofday(&tv_last_ramp,NULL);
+		log_n_continue(retval,"Failed to update ramp timer!");
 		continue;
 	    }
 	}
