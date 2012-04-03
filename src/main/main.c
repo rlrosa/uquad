@@ -769,6 +769,7 @@ int main(int argc, char *argv[]){
 			runs_kalman*(MOT_W_STARTUP_RANGE/STARTUP_KALMAN);
 		retval = mot_set_vel_rads(mot, w);
 		log_n_continue(retval,"Failed to set motor speed!");
+		continue;
 	    }
 	}
 
