@@ -99,8 +99,13 @@ ERROR_TIMING
  * If @retval is an error, then print strerr to stderr and propagate error.
  *
  */
-#define err_log_std(retval) if(retval!=ERROR_OK){fprintf(stderr,"%s:%s:%d: %s\n",__TIME__,__FILE__,__LINE__,strerror(errno));}
+#define err_check_std(retval) if(retval!=ERROR_OK){fprintf(stderr,"%s:%s:%d: %s\n",__TIME__,__FILE__,__LINE__,strerror(errno));return retval;}
 
+/**
+ * If @retval is an error, then print strerr to stderr.
+ *
+ */
+#define err_log_std(retval) if(retval!=ERROR_OK){fprintf(stderr,"%s:%s:%d: %s\n",__TIME__,__FILE__,__LINE__,strerror(errno));}
 
 /**
  * If @retval is an error, call quit().
