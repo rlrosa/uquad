@@ -6,7 +6,10 @@ blue   = [0,0,128]/256;
 red    = [178,34,34]/256;
 width  = 2;
 
-t = cumsum(T);
+% t = cumsum(T);
+T = mean(T);
+t = 0:T:T*(length(w_control)-1);
+fprintf('Ojo que el tiempo en el plot de w considera un periodo promedio, no esta del todo bien\n')
 
 figure()
     hold on
