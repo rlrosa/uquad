@@ -23,7 +23,9 @@
 
 #include <time.h>
 
-#define USAGE_STR "Incorrect arguments! Use no arguments (all enabled), or 4, enabling each motor.\n\n\t./cmd ena9 enaA enaB ena8\nwhere enaX enables motor X, valid is 0 or 1\n\n"
+#define USAGE_STR "Incorrect arguments! Use no arguments (all enabled),"\
+    "or 4, enabling each motor.\n\n\t./cmd ena9 enaA enaB ena8\nwhere"\
+    "enaX enables motor X, valid is 0 or 1\n\n"
 
 #define MAX_SPEED 220
 #define MIN_SPEED 45
@@ -103,7 +105,9 @@ static unsigned short mot_selected[MOT_COUNT] = {MOT_NOT_SELECTED,
 
 static __u8 vels[MOT_COUNT] = {0,0,0,0};
 
+#if LOG_VELS
 static FILE *log_rx;
+#endif
 #ifdef PC_TEST
 static FILE *i2c_fake;
 #define FAKE_I2C_PATH "i2c.dev"
@@ -114,8 +118,8 @@ int uquad_mot_i2c_addr_open(int i2c_dev, int addr){
     if (ioctl(i2c_dev,I2C_SLAVE,addr) < 0)
     {
 	/* ERROR HANDLING; you can check errno to see what went wrong */
-	printf("ERROR! %s failed to write to 0x%02X...\n",__FUNCTION__,addr);
-	printf("errno info:\t %s\n",strerror(errno));
+	fprintf("ERROR! %s failed to write to 0x%02X...\n"\
+		"errno info:\t %s\n",__FUNCTION__,addr,strerror(errno));
 	return NOT_OK;
     }
 #else
@@ -132,8 +136,8 @@ int uquad_mot_i2c_send_byte(int i2c_dev, __u8 reg, __u8 value){
     if(i2c_smbus_write_byte_data(i2c_dev,reg,value) < 0)
     {
 	/* ERROR HANDLING: i2c transaction failed */
-	fprintf(stderr,"Failed to send value %d\tto 0x%02X\n",(int)value,(int)reg);
-	printf("errno info:\t %s\n",strerror(errno));
+	fprintf(stderr,"Failed to send value %d\tto 0x%02X\n."\
+		"errno info:\t %s\n",(int)value,(int)reg,strerror(errno));
     }
 #else
 #if DEBUG
@@ -294,12 +298,14 @@ void uquad_sig_handler(int signal_num){
     fprintf(LOG_ERR,"Caught signal %d.\n",signal_num);
     if( i2c_file>= 0 )
     {
-	fprintf(stderr,"Shutting down motors...\n");
+	fprintf(LOG_ERR,"Shutting down motors...\n");
 	while(uquad_mot_disable_all(i2c_file) != OK)
-	    fprintf(stderr,"Failed to shutdown motors!... Retrying...\n");
-	fprintf(stderr,"Motors successfully stoped!\n");
+	    fprintf(LOG_ERR,"Failed to shutdown motors!... Retrying...\n");
+	fprintf(LOG_ERR,"Motors successfully stoped!\n");
     }
+#if LOG_VELS
     fclose(log_rx);
+#endif
     fclose(LOG_ERR);
     exit(ret);
 }
@@ -448,18 +454,20 @@ int main(int argc, char *argv[])
     int watchdog = 0, success_count = 0;
     char filename[20];
 
+#if LOG_VELS
     // Open log files
     log_rx = fopen("cmd_rx.log","w");
     if (log_rx == NULL) {
-	printf("ERROR! Failed to open log...\n");
+	fprintf(LOG_ERR,"ERROR! Failed to open log...\n");
 	return -1;
     }
+#endif
 
     if(argc != 5) // vel de los 4 motores + el nombre del programa (argv[0]).
     {
 	if(argc == 1)
 	{
-	    printf("Input speed and press RET to set.\n");
+	    fprintf(LOG_ERR,"Input speed and press RET to set.\n");
 	    for(i=0;i<MOT_COUNT;++i)
 		mot_selected[i] = 1;
 	}
@@ -474,7 +482,9 @@ int main(int argc, char *argv[])
 	    tmp = atoi(argv[i+1]);
 	    if((tmp != MOT_NOT_SELECTED) && (tmp != MOT_SELECTED))
 	    {
-		printf("Valid arguments are:\n\tSelected:\t%d\n\tNot selected:\t%d\n",
+		fprintf(LOG_ERR,"Valid arguments are:\n"\
+			"\tSelected:\t%d\n"\
+			"\tNot selected:\t%d\n",
 		       MOT_SELECTED, MOT_NOT_SELECTED);
 		return -1;
 	    }
