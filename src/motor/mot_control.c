@@ -73,12 +73,8 @@ int mot_send(uquad_mot_t *mot, double *w)
     retval = uquad_timeval_substract(&diff_tv,tmp_tv,mot->last_set);
     if(diff_tv.tv_usec < MOT_UPDATE_MAX_US && diff_tv.tv_sec < 1)
     {
-	err_log_tv("mot_control():",tmp_tv);
-	err_log_tv("mot_control():",mot->last_set);
-	err_log_tv("mot_control():",diff_tv);
-	err_log("Should change speed so often!");
-#warning "Timing check in disabled!"
-	//	err_check(ERROR_MOT_SATURATE,"Cannot change speed so often!");//TODO restore!
+	log_tv_only(stderr,diff_tv);
+	err_check(ERROR_MOT_SATURATE,"Cannot change speed so often!");//TODO restore!
     }
     retval = uquad_kmsgq_send(mot->kmsgq, buff_out, MOT_C);
     err_propagate(retval);
