@@ -156,7 +156,7 @@ int f(uquad_mat_t* fx, kalman_io_t* kalman_io_data)
     fx->m_full[9] = wqx   + T*( wqy*wqz*(IYY-IZZ)+wqy*IZZM*(w[0]-w[1]+w[2]-w[3])+LENGTH*(TM_vec[1]-TM_vec[3]) )/IXX ;
     fx->m_full[10] = wqy   + T*( wqx*wqz*(IZZ-IXX)+wqx*IZZM*(w[0]-w[1]+w[2]-w[3])+LENGTH*(TM_vec[2]-TM_vec[0]) )/IYY;
     // fx->m_full[11] = wqz   + T*( -IZZM*(dw[0]-dw[1]+dw[2]-dw[3])+D[0]-D[1]+D[2]-D[3] )/IZZ;
-    fx->m_full[11] = wqz   + T*( D_vec[0]-D_vec[1]+D_vec[2]-D_vec[3] )/IZZ;
+    fx->m_full[11] = wqz   - T*( D_vec[0]-D_vec[1]+D_vec[2]-D_vec[3] )/IZZ;
     return ERROR_OK;
 }
 
