@@ -3,6 +3,8 @@
 #include <uquad_aux_math.h>
 #include <imu_comm.h>
 
+#define STATE_COUNT       12
+
 /**
  * Kalman struct description:
  *
