@@ -15,6 +15,7 @@ imu_status_t imu_comm_get_status(imu_t *imu){
 /** 
  * Allocates memory required for matrices
  * used by struct
+ * Sets all data to zeros.
  *
  * @param imu_data
  *
@@ -22,6 +23,7 @@ imu_status_t imu_comm_get_status(imu_t *imu){
  */
 int imu_data_alloc(imu_data_t *imu_data)
 {
+    int retval = ERROR_OK;
     imu_data->acc = uquad_mat_alloc(3,1);
     imu_data->gyro = uquad_mat_alloc(3,1);
     imu_data->magn = uquad_mat_alloc(3,1);
@@ -29,8 +31,19 @@ int imu_data_alloc(imu_data_t *imu_data)
        imu_data->acc == NULL ||
        imu_data->acc == NULL)
     {
+	uquad_mat_free(imu_data->acc);
+	uquad_mat_free(imu_data->gyro);
+	uquad_mat_free(imu_data->magn);
 	err_propagate(ERROR_MALLOC);
     }
+    // initialize data to zeros
+    retval = uquad_mat_zeros(imu_data->acc);
+    err_propagate(retval);
+    retval = uquad_mat_zeros(imu_data->gyro);
+    err_propagate(retval);
+    retval = uquad_mat_zeros(imu_data->magn);
+    err_propagate(retval);
+
     return ERROR_OK;
 }
 
@@ -325,6 +338,8 @@ int imu_comm_init_calibration(imu_t *imu)
     int retval = ERROR_OK;
     retval = imu_comm_alloc_calib_lin(imu);
     err_propagate(retval);
+    retval = imu_data_alloc(&imu->calib.null_est_data);
+    err_propagate(retval);
     /// load calibration parameters from file
     retval = imu_comm_load_calib(imu, IMU_DEFAULT_CALIB_PATH);
     err_propagate(retval);
@@ -604,11 +619,15 @@ int imu_comm_calibration_finish(imu_t *imu){
 
     imu->calib.calibration_counter = -1;
     imu->calib.timestamp_estim = tv_end;
+
+    // update offset estimation
+    retval = imu_comm_raw2data(imu,
+			       &imu->calib.null_est,
+			       &imu->calib.null_est_data);
+    err_propagate(retval);
+
     imu->calib.calib_estim_ready = true;
     imu->status = IMU_COMM_STATE_RUNNING;
-
-    //TODO implement
-    //retval = imu_comm_calbration_fix(imu);
 
     return ERROR_OK;
 }
@@ -1148,6 +1167,9 @@ static int imu_comm_gyro_convert(imu_t *imu, int16_t *raw, uquad_mat_t *gyro)
 {
     int retval = ERROR_OK;
     retval = imu_comm_convert_lin(imu, raw, gyro, imu->calib.m_lin + 1);
+    err_propagate(retval);
+    // compensate for temperature by using startup-offset
+    retval = uquad_mat_sub(gyro,gyro,imu->calib.null_est_data->gyro);
     err_propagate(retval);
     return retval;
 }
