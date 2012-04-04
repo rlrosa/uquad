@@ -28,7 +28,7 @@ w4=298.086701308402;
 A=eval(A);
 B=eval(B);
     
-Q=diag([1 1e3 1e3 1e3 1 1 1 1]);%Pesos de z,psi,phi,vqz wqx,wqy,wqz
+Q=diag([1 1e3 1e3 1e3 1 1 1 1]);%Pesos de z,psi,phi,theta, vqz wqx,wqy,wqz
 R=diag(100*[1 1 1 1]); %Pesos de w1 w2 w3 w4;
 
 [K,S,E]=lqrd(A,B,Q,R,10e-3);
