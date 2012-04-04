@@ -65,6 +65,18 @@ ERROR_TIMING
 #define err_log_num(msg,num) fprintf(stderr,"%s:%s:%d: %s(%d)\n",__TIME__,__FILE__,__LINE__,msg,num)
 
 /**
+ * Print error message with double to stderr
+ *
+ */
+#define err_log_double(msg,dbl) fprintf(stderr,"%s:%s:%d: %s: %lf\n",__TIME__,__FILE__,__LINE__,msg,dbl)
+
+/**
+ * Print error message with double to log
+ *
+ */
+#define log_double(log,msg,dbl) fprintf(log,"%s:%s:%d: %s: %lf\n",__TIME__,__FILE__,__LINE__,msg,dbl)
+
+/**
  * Print timeval message with unsigned long to stderr
  * 
  */
@@ -81,7 +93,6 @@ ERROR_TIMING
  * 
  */
 #define log_tv_only(log,tv) fprintf(log,"%ld.%06ld\t",tv.tv_sec, tv.tv_usec)
-
 
 /**
  * If @retval is an error, then propagate error without printing anything.
