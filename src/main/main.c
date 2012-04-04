@@ -13,6 +13,10 @@
 #define DEBUG_KALMAN_INPUT 1
 #endif
 
+#define W_SP_STEP 1.0L
+#define W_SP_INC  '+'
+#define W_SP_DEC  '-'
+
 #define USE_GPS 0
 
 #include <uquad_types.h>
@@ -231,7 +235,7 @@ void uquad_sig_handler(int signal_num){
 int main(int argc, char *argv[]){
     int retval = ERROR_OK, i;
     char * device_imu;
-    double ts_jitter_rate = 0;
+    double ts_jitter_rate = 0, dtmp;
     imu_raw_t imu_frame;
 
     // Catch signals
@@ -858,7 +862,30 @@ int main(int argc, char *argv[]){
 		{
 		    gettimeofday(&tv_tmp,NULL);
 		    retval = uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
-		    log_tv(log_tv, "RET:", tv_diff);
+		    if(retval <= 0)
+		    {
+			err_log("Absurd timing!");
+		    }
+		    log_tv_only(log_tv, tv_diff);
+		    retval = ERROR_OK; // clear error
+		    dtmp = 0.0;
+		    switch(tmp_buff[0])
+		    {
+		    case W_SP_INC:
+			dtmp = W_SP_STEP;
+			break;
+		    case W_SP_DEC:
+			dtmp = -W_SP_STEP;
+			break;
+		    default:
+			break;
+		    }
+		    for(i = 0; i < MOT_C; ++i)
+			pp->sp->w->m_full[i] += dtmp;
+		    // save to log file
+		    log_double(log_tv,"Current w_sp",pp->sp->w->m_full[0]);
+		    // display on screen
+		    err_log_double("Current w_sp",pp->sp->w->m_full[0]);
 		}
 	    }
 	    retval = ERROR_OK;
