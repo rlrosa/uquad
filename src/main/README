@@ -1,0 +1,34 @@
+# Program description
+
+main.c is THE autopilot software.
+It will perform the following:
+
+   - Startup all IO devices:
+     - IMU
+     - GPS
+     - STDIN
+     - motors
+   - Discard STARTUP_RUNS samples from the IMU, to get rid of old data accumulated in the uart.
+   - Calibrate IMU using IMU_CALIB_SIZE samples, to get an estimation of:
+     - pressure at the current height (to determine current altitud).
+     - current heading (theta/yaw), to use as setpoint (and keep looking forward).
+   - Use STARTUP_KALMAN samples to:
+     - let intertial kalman filter reach a steady state.
+     - ramp up motor speed from MOT_W_IDLE to MOT_W_HOVER
+   - Run main loop, which will:
+     - Check for updates from IO: IMU/GPS
+     - Update state estimation.
+     - Update set point based on current position.
+     - Update motor speed according to control.
+
+# How to run
+
+For normal use, ie, to fly the quadcopter, a script go.sh is available in src/. Running it should build/copy/organize everything necessary to get the control loop running, and also run some scripts to shutdown motors if wireless connection is lost.
+
+The program will not run on its own, it requires:
+    - logger: main.c writes data to pipes (which are Kernel structures located in RAM), to avoid IO blocking. A an instance of logger is called for each pipe, to read the pipe and save to a log file.
+    - cmd: this is the motor driver. It will continuosly send commands to the motors, and update the value send according to what main.c sends via kernel message queues. NOTE: If i2c is not available, ie, if testing on a PC, the cmd must be compiled to fake i2c. To do this, go to src/i2c_beagle and run:<pre><code>make pc_test
+</code></pre>
+This will generate an executable cmdpc_test, which must be copied to src/build/main/ and renamed to cmd.
+    - imu_calib.txt: IMU module expects a calibration file.
+    - An IMU connected to a serial line. If IMU is not available, an ascii log file may be used. It must have the same format as the IMU uses when running in ascii mode (default). The IMU module must be compiled setting IMU_COMM_FAKE to 1.
