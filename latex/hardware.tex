@@ -5,22 +5,30 @@
 \chapter{Hardware}
 La elecci\'on del Hardware significa una parte muy importante del Proyecto, ya que las decisiones tomadas condicionan el resto del mismo. Una mala elecci\'on de alguno de los componentes puede resultar en complicaciones no previstas a la hora de la ejecuci\'on, causando contratiempos inesperados y trabajo excesivo. Es necesario, entonces, el estudio detallado de cada uno de los componentes a utilizar, comparando caracter\'isticas, rendimientos y utilidades.\\
 
-Elegir adecuadamente el Hardware necesario agiliza las etapas siguientes de todo el Proyecto. Resulta fundamental la toma de buenas decisiones, las cuales deben estar basadas en un previo estudio de cada etapa del proyecto, sus requerimientos, un estudio comparativo de las posibles soluciones y el conocimiento cabal de los componentes a utilizar.\\
+
 
 \section{Plataforma f\'isica: Cuadric\'opteros}
 
 
-A la hora de la planificaci\'on del Proyecto se plantean dos opciones que se diferencian b\'asicamente en el punto de partida. Ambas tienen como objetivo principal dise\~nar e integrar un sistema de control que permita al cuadric\'optero mantener un vuelo aut\'onomo, pero una de ellas consta adem\'as del dise\~no y el armado del mismo. \\Esta \'ultima incluye desaf\'ios de ingenier\'ia mec\'anica, conocimientos de resistencia, flexibilidad y peso de materiales, as\'i como tambi\'en diversas complicaciones a la hora de fabricar y armar las partes. \\
+A la hora de la planificaci\'on del Proyecto se plantean la opci\'on de partir de cero dise\~nando completamente el cuadric\'optero. Si bien esta opci\'on tiene la ventaja de que se puede conocer completamente su funcionamiento incluye desaf\'ios de ingenier\'ia mec\'anica, conocimientos de resistencia, flexibilidad y peso de materiales, as\'i como tambi\'en diversas complicaciones adicionales a la hora de fabricar y armar los distintos componentes. \\
 
 Teniendo en cuenta que se trata de un proyecto con tiempo acotado y su objetivo se centra en el control del veh\'iculo, la necesidad de partir de hardware ya construido resulta imperiosa. La plataforma escogida es el cuadric\'optero Turbo Ace X720, este mismo cuadric\'optero es conocido adem\'as como LotusRc 850.\\
 
-Esta plataforma es controlada por un usuario a trav\'es de un control remoto. El sistema receptor ( ) - CPU se encarga de setear la velocidad angular de cada motor en funci\'on de la se\~nal recibida. 
-%TODO nombre del control y receptor
+\begin{figure}
+	\centering
+	\includegraphics[width=0.35\textwidth]{./pics_eleccion_hardware/turboace.png}
+	\caption{Turbo Ace X720}
+	\label{fig:cuadricoptero}
+\end{figure}
+
+
+Esta plataforma es controlada por un usuario a trav\'es de un control remoto (Walkera 2801). El sistema receptor - CPU se encarga de setear la velocidad angular de cada motor en funci\'on de la se\~nal recibida. 
+
  
 \subsubsection*{Motores}
 Los motores de la plataforma son \emph{Brushless}, estos son motores el\'ectricos alimentados con corriente continua. Tienen un sistema de conmutaci\'on el\'ectrico y presentan relaciones lineales entre \emph{Corriente} y \emph{Torque} y entre \emph{Frecuencia} y \emph{velocidad}. Son com\'unmente utilizados en veh\'iculos radio-controlados por su gran eficiencia, potencia, durabilidad y su bajo peso en comparaci\'on con los tradicionales motores \emph{Brushed}. Sin embargo, los motores de CC \emph{Brushless} son mucho m\'as complicados de controlar, ya que la fase var\'ia con la rotaci\'on del motor. Para controlarlos debe utilizarse un dispositivo llamado \emph{Controlador el\'ectrico de velocidad}, o \textbf{ESCs}. Com\'unmente los ESCs se clasifican seg\'un su corriente m\'axima, por ejemplo 10 amp\'eres o 10A.\\
 
-El comando de los motores se basa en el protocolo $I^2C$ funcionando a una frecuencia de $400kHz$.  
+El comando de los motores se basa en el protocolo $I^2C$ de frecuencia $400kHz$.  
 
 \subsubsection*{Peso}
 
@@ -36,22 +44,20 @@ El tiempo de vuelo puede resultar cr\'itico seg\'un la aplicaci\'on considerada,
 
 Lamentablemente el software presente en la CPU es privativo por lo tanto reutilizarlo parece una tarea muy dificultosa, del mismo modo obtener la lectura de los sensores presentes tampoco parece una tarea sencilla. Por dicho motivo se opta por dotar al sistema de instrumentaci\'on adicional. 
 
-En la figura \ref{fig:cuadricoptero} se puede apreciar una imagen de la plataforma utilizada.
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=0.35\textwidth]{./pics_eleccion_hardware/turboace.png}
-	\caption{Turbo Ace X720}
-	\label{fig:cuadricoptero}
-\end{figure}
 
 
 \section{Inteligencia}
 
 Adem\'as de la plataforma f\'isica, deben seleccionarse componentes electr\'onicos capaces de procesar la informaci\'on proveniente de los sensores, computar y ejecutar los algoritmos de control y generar las se\~nales necesarias para transmitir las instrucciones a los motores.\\
 
-La soluci\'on implementada se basa en la plataforma de desarrollo \emph{Beagleboard}. Esta plataforma posee un microprosesador TI ARM Cortex A8 de 1GHz y un DSP TMS320C64x+ de 800MHz, la memor\'ia RAM de la misma es de 512 Mb y si bien no tiene memoria no volatil soporta tarjetas SD de hasta 4GB.
+La soluci\'on implementada se basa en la plataforma de desarrollo \emph{Beagleboard}. Esta plataforma posee un microprosesador TI ARM Cortex A8 de 1GHz y un DSP TMS320C64x+ de 800MHz, la memor\'ia RAM de la misma es de 512 Mb y si bien no tiene memoria no volatil soporta tarjetas SD de hasta 4GB. Ver figura \ref{fig:beagle}.
 
-
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=0.35\textwidth]{./pics_eleccion_hardware/beagle.pdf}
+	\caption{Beagleboard}
+	\label{fig:beagle}
+\end{figure}
 \subsection*{Dimensiones y peso}
 
 Si bien no resulta una caracetr\'istica determinante, es conveniente que las dimensiones y peso de la placa elegida sean lo menores posibles, de forma de no ocupar gran parte de la carga \'util del cuadric\'optero con electr\'onica asociada a la inteligencia implementada. El peso de la Beagleboard y una bater\'ia asociada diseñada especialmente para esta plataforma es de 76 gramos y sus dimensiones son $10cm\times8.5cm\times2cm$. La autonom\'ia de la bater\'ia es de aproximadamente 2 horas. \\
@@ -67,7 +73,7 @@ La BeagleBoard ofrece la posilibidad de cargar un kernel de \emph{Linux} desde u
 Las posibilidades que ofrece la Beagleboard en cuanto a puertos de entrada y salida son muy considerables. A modo de ejemplo se tienen cuatro puertos USB, una interfaz ethernet un puerto de expansi\'on de 28 pines de proposito general y un puerto serie. En lo que respecta a la soluci\'on implementada es importante destacar que los pines 23 y 24 pueden ser programados para comunicarse a trav\'es del protocolo $I^2C$ fundamental para enviar comandos a los motores. Los pines 23 y 24 corresponden a las lineas de datos y al reloj respectivamente. Por otra parte, los pines 8 y 6 pueden ser configurados para funcionar como pines de transmici\'on y recepci\'on de un puerto serie. Esto ser\'a fundamental para la comunicaci\'on con algunos de los sensores.\\
 
 \section{Instrumentaci\'on}
-\vspace*{15pt}
+
 Para poder controlar el sistema es importante poder conocer los valores que toman las variables del mismo. Como se ver\'a en el cap\'itulo sobre el desarrollo del modelo f\'isico del cuadric\'optero, las variables que es necesario conocer son:
 
 \begin{itemize}
@@ -89,7 +95,7 @@ Por ejemplo, la medida de un aceler\'ometro en ca\'ida libre ser\'a cero a pesar
 Existen diversos tipos de aceler\'ometro, en este caso se eligi\'o trabajar con un aceler\'ometro contenido en un circuito integrado (tecnolog\'ia MEMS). Las razones de esta elecci\'on son fundamentalmente tama\~no y peso (cr\'iticos en la aplicaci\'on) y econ\'omicos. Los mismos son m\'as peque\~nos, livianos y baratos que otras tecnolog\'ias.\\
 Dicho aceler\'ometro procesa las medidas y las convierte a una salida el\'ectrica; la forma de dicha salida depende si el integrado es anal\'ogico o digital.\\
 Los aceler\'ometros basados en tecnolog\'ias MEMS miden cambios internos de la transferencia de calor causada por la aceleraci\'on, ofreciendo ventajas significativas sobre el empleo de una estructura tradicional s\'olida de masas de prueba.\\
-Ya que la masa de prueba en el dise\~no de los sensores MEMS son mol\'eculas de gas, las estructuras m\'oviles mec\'anicas son eliminadas dentro del aceler\'ometro.\\
+
 
 %TODO Referencia a MEMS
 Un aceler\'ometro de tres ejes no es otra cosa que un aceler\'ometro capaz de medir su aceleraci\'on propia en tres ejes de coordenadas.\\
