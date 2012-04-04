@@ -5,7 +5,7 @@
 % Imu
 % if(~exist('imu_file','var'))
     % imu_file = '../../../Escritorio/imu_raw.log';
-    imu_file = 'tests/main/logs/3abril_tarde_2/imu_raw.log';
+    imu_file = 'tests/main/logs/3abril_noche_4/imu_raw.log';
 % end
 [acrud,wcrud,mcrud,~,bcrud,~,~,T]=mong_read(imu_file,0,1);
 avg = 1;
@@ -120,7 +120,7 @@ end
 %% Plots
 
 figure; 
-    plot(w_control(:,1)+w_control(:,3)-w_control(:,2)-w_control(:,4),'r','linewidth',3); 
+    plot(-w_control(:,1)-w_control(:,3)+w_control(:,2)+w_control(:,4),'r','linewidth',3); 
     title('diferencia entre velocidades angulares (adelante+atras)-(derecha+izquierda)'); 
     legend('Giro en z')
 plot_main(x_hat,z,T);
