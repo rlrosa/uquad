@@ -5,7 +5,7 @@
 % Imu
 % if(~exist('imu_file','var'))
     % imu_file = '../../../Escritorio/imu_raw.log';
-    imu_file = 'tests/main/logs/3abril_noche_4/imu_raw.log';
+    imu_file = 'tests/main/logs/4abril_manana_2/imu_raw.log';
 % end
 [acrud,wcrud,mcrud,~,bcrud,~,~,T]=mong_read(imu_file,0,1);
 avg = 1;

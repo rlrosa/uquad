@@ -1169,7 +1169,7 @@ static int imu_comm_gyro_convert(imu_t *imu, int16_t *raw, uquad_mat_t *gyro)
     retval = imu_comm_convert_lin(imu, raw, gyro, imu->calib.m_lin + 1);
     err_propagate(retval);
     // compensate for temperature by using startup-offset
-    retval = uquad_mat_sub(gyro,gyro,imu->calib.null_est_data->gyro);
+    retval = uquad_mat_sub(gyro,gyro,imu->calib.null_est_data.gyro);
     err_propagate(retval);
     return retval;
 }
