@@ -11,3 +11,8 @@ z = kin2z([ones(length(kin_cut),1) kin_cut]);
 
 plot_main(x_hat_c,z,T)
 plot_w([zeros(1,4);wlog(:,2:end)],T)
+
+figure; 
+    plot(-wlog(:,2)-wlog(:,4)+wlog(:,3)+wlog(:,5),'r','linewidth',3); 
+    title('diferencia entre velocidades angulares (adelante+atras)-(derecha+izquierda)'); 
+    legend('Giro en z')
