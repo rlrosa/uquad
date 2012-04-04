@@ -4,11 +4,11 @@
 
 All explanations assume you start from uquad/src/
 
-Main:	The main control loop is not implemented yet.
-	It will be in control/, and consist of a loop in which:
+Main:	The main control loop is main/main.c. See main/README for more info.
+	It will consists of a loop in which:
 	   - all the io devices are polled.
 	   - those input devices with data ready are handled (new data is read)
-	   - the state is updated with the new data
+	   - the state estimation is updated with the new data
 	   - actions are performed in order to achieve whatever goal has been set (hover, go forward, track an object, etc)
 
 Devices: Each device should have it's own API, in a separate folder (example: imu/).
