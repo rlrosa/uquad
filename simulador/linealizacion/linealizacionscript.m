@@ -43,7 +43,7 @@ dX = [vq1*cos(phi)*cos(theta)+vq2*(cos(theta)*sin(phi)*sin(psis)-cos(phi)*sin(th
       vq1*wq2-vq2*wq1-g*cos(phi)*cos(psis)+(T1+T2+T3+T4)/M;
       (wq2*wq3*(Iyy-Izz)+L*(T2-T4)+wq2*Izzm*(w1-w2+w3-w4))/Ixx;
       (wq1*wq3*(Izz-Ixx)+L*(T3-T1)+wq1*Izz*(w1-w2+w3-w4))/Iyy;
-	  (Q1-Q2+Q3-Q4)/Izz];
+	  -(Q1-Q2+Q3-Q4)/Izz];
    
 dX=eval(dX);
 
