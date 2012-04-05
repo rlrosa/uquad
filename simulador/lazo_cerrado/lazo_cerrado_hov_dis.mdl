@@ -92,7 +92,7 @@ Model {
       Name		      "w"
     }
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.289"
+    ComputedModelVersion    "1.292"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -123,9 +123,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "pater"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Tue Apr  3 19:11:32 2012"
-  RTWModifiedTimeStamp	  255381078
-  ModelVersionFormat	  "1.%<AutoIncrement:289>"
+  LastModifiedDate	  "Thu Apr  5 19:08:14 2012"
+  RTWModifiedTimeStamp	  255553686
+  ModelVersionFormat	  "1.%<AutoIncrement:292>"
   ConfigurationManager	  "None"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -948,7 +948,7 @@ Model {
     ShowPageBoundaries	    off
     ZoomFactor		    "100"
     ReportName		    "simulink-default.rpt"
-    SIDHighWatermark	    "1894"
+    SIDHighWatermark	    "1912"
     Block {
       BlockType		      Inport
       Name		      "w1"
@@ -3050,7 +3050,7 @@ Model {
       System {
 	Name			"Subsystem1"
 	Location		[1, 82, 1367, 821]
-	Open			on
+	Open			off
 	ModelBrowserVisibility	off
 	ModelBrowserWidth	200
 	ScreenColor		"white"
@@ -9091,7 +9091,7 @@ Model {
 	    Block {
 	      BlockType		      SubSystem
 	      Name		      "Fuerza Motor2"
-	      SID		      "1874"
+	      SID		      "1904"
 	      Ports		      [1, 1]
 	      Position		      [90, 117, 205, 193]
 	      MinAlgLoopOccurrences   off
@@ -9119,14 +9119,14 @@ Model {
 		Block {
 		  BlockType		  Inport
 		  Name			  "w"
-		  SID			  "1875"
-		  Position		  [170, 168, 200, 182]
+		  SID			  "1905"
+		  Position		  [75, 233, 105, 247]
 		  IconDisplay		  "Port number"
 		}
 		Block {
 		  BlockType		  Sum
 		  Name			  "Add"
-		  SID			  "1876"
+		  SID			  "1906"
 		  Ports			  [2, 1]
 		  Position		  [525, 206, 555, 239]
 		  InputSameDT		  off
@@ -9134,9 +9134,26 @@ Model {
 		  SaturateOnIntegerOverflow off
 		}
 		Block {
+		  BlockType		  Sum
+		  Name			  "Add1"
+		  SID			  "1907"
+		  Ports			  [2, 1]
+		  Position		  [160, 231, 190, 264]
+		  InputSameDT		  off
+		  OutDataTypeStr	  "Inherit: Inherit via internal rule"
+		  SaturateOnIntegerOverflow off
+		}
+		Block {
+		  BlockType		  Constant
+		  Name			  "Constant"
+		  SID			  "1908"
+		  Position		  [75, 275, 105, 305]
+		  Value			  "15.2"
+		}
+		Block {
 		  BlockType		  Gain
 		  Name			  "Gain"
-		  SID			  "1877"
+		  SID			  "1909"
 		  Position		  [410, 152, 460, 188]
 		  Gain			  "4.60160135072435e-05"
 		  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
@@ -9146,7 +9163,7 @@ Model {
 		Block {
 		  BlockType		  Gain
 		  Name			  "Gain1"
-		  SID			  "1878"
+		  SID			  "1910"
 		  Position		  [420, 200, 450, 230]
 		  Gain			  " -0.001038227262737266741675"
 		  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
@@ -9156,7 +9173,7 @@ Model {
 		Block {
 		  BlockType		  Product
 		  Name			  "Product"
-		  SID			  "1879"
+		  SID			  "1911"
 		  Ports			  [2, 1]
 		  Position		  [330, 152, 360, 183]
 		  InputSameDT		  off
@@ -9166,7 +9183,7 @@ Model {
 		Block {
 		  BlockType		  Outport
 		  Name			  "T"
-		  SID			  "1880"
+		  SID			  "1912"
 		  Position		  [590, 213, 620, 227]
 		  IconDisplay		  "Port number"
 		}
@@ -9200,19 +9217,35 @@ Model {
 		Line {
 		  SrcBlock		  "w"
 		  SrcPort		  1
-		  Points		  [55, 0]
+		  DstBlock		  "Add1"
+		  DstPort		  1
+		}
+		Line {
+		  SrcBlock		  "Constant"
+		  SrcPort		  1
+		  Points		  [15, 0; 0, -35]
+		  DstBlock		  "Add1"
+		  DstPort		  2
+		}
+		Line {
+		  SrcBlock		  "Add1"
+		  SrcPort		  1
+		  Points		  [60, 0; 0, -35]
 		  Branch {
-		    Points		    [0, 40]
-		    DstBlock		    "Gain1"
+		    Points		    [0, -35]
+		    Branch {
+		    Points		    [0, -20]
+		    DstBlock		    "Product"
 		    DstPort		    1
-		  }
-		  Branch {
+		    }
+		    Branch {
+		    Points		    [0, -5]
 		    DstBlock		    "Product"
 		    DstPort		    2
+		    }
 		  }
 		  Branch {
-		    Points		    [0, -15]
-		    DstBlock		    "Product"
+		    DstBlock		    "Gain1"
 		    DstPort		    1
 		  }
 		}
