@@ -332,6 +332,7 @@ int imu_comm_free_calib(imu_calib_t calib)
 	uquad_mat_free(calib.m_lin[i].b);
     }
     imu_data_free(&calib.null_est_data);
+    uquad_mat_free(calib.t_off);
     return ERROR_OK;
 }
 
@@ -375,8 +376,13 @@ int imu_comm_load_calib(imu_t *imu, const char *path)
     {
 	err_check(ERROR_READ, "Failed to read z_temp");
     }
-    retval = ERROR_OK;// clear fscanf match count
-    imu->calib.z_temp = dtmp;
+    m3x1_0->m_full[0] = 0.0;
+    m3x1_0->m_full[1] = 0.0;
+    m3x1_0->m_full[2] = dtmp;
+    retval = uquad_mat_prod(imu->calib.t_off,
+			    imu->calib.m_lin[0].TK_inv,
+			    m3x1_0);
+    err_propagate(retval);
 
     fclose(calib_file);
     imu->calib.calib_file_ready = true;
@@ -398,6 +404,11 @@ int imu_comm_init_calibration(imu_t *imu)
     err_propagate(retval);
     retval = imu_data_alloc(&imu->calib.null_est_data);
     err_propagate(retval);
+    imu->calib.t_off = uquad_mat_alloc(3,1);
+    if(imu->calib.t_off == NULL)
+    {
+	err_check(ERROR_MALLOC, "Failed to allocate temp offset!");
+    }
     /// load calibration parameters from file
     retval = imu_comm_load_calib(imu, IMU_DEFAULT_CALIB_PATH);
     err_propagate(retval);
@@ -420,6 +431,12 @@ imu_t *imu_comm_init(const char *device){
     memset(imu,0,sizeof(imu_t));
     imu->status = IMU_COMM_STATE_UNKNOWN;
 
+    m3x3 = uquad_mat_alloc(3,3);
+    m3x1_0 = uquad_mat_alloc(3,1);
+    m3x1_1 = uquad_mat_alloc(3,1);
+    if(m3x3 == NULL || m3x1_0 == NULL || m3x1_1 == NULL)
+	goto cleanup;
+
     // now connect to the imu
     retval = imu_comm_connect(imu,device);
     cleanup_if(retval);
@@ -440,12 +457,6 @@ imu_t *imu_comm_init(const char *device){
     // Load/estimate calibration
     retval = imu_comm_init_calibration(imu);
     cleanup_if(retval);
-
-    m3x3 = uquad_mat_alloc(3,3);
-    m3x1_0 = uquad_mat_alloc(3,1);
-    m3x1_1 = uquad_mat_alloc(3,1);
-    if(m3x3 == NULL || m3x1_0 == NULL || m3x1_1 == NULL)
-	goto cleanup;
 
     // Wait 300ms + a bit more for IMU to reset
     sleep_ms(350);
@@ -1181,6 +1192,8 @@ static int imu_comm_convert_lin(imu_t *imu, int16_t *raw, uquad_mat_t *conv, imu
 
 /** 
  *Converts raw acc data to m/s^2
+ *Model:
+ *  T*inv(K)*(raw - offset + b_t*(temp - temp_0))
  *
  *@param imu 
  *@param frame Raw data from IMU
@@ -1193,7 +1206,13 @@ static int imu_comm_acc_convert(imu_t *imu, int16_t *raw, uquad_mat_t *acc, doub
     int retval = ERROR_OK;
     retval = imu_comm_convert_lin(imu, raw, acc, imu->calib.m_lin);    
     err_propagate(retval);
-    acc->m_full[2] += imu->calib.z_temp*temp;
+    // temperature correction
+    retval = uquad_mat_scalar_mul(m3x1_0,
+				  imu->calib.t_off,
+				  temp - imu->calib.null_est_data.temp);
+    err_propagate(retval);
+    retval = uquad_mat_add(acc, acc, m3x1_0);
+    err_propagate(retval);
     return retval;  
 }
 
