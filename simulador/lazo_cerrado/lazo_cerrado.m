@@ -99,8 +99,9 @@ function edit1_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
-
+set(hObject,'String','0');
+var=str2double(get(hObject,'String'));
+    assignin('base','x0',var)
 
 function edit2_Callback(hObject, eventdata, handles)
 % hObject    handle to edit2 (see GCBO)
@@ -123,7 +124,9 @@ function edit2_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'String','0');
+var=str2double(get(hObject,'String'));
+    assignin('base','y0',var)
 function edit3_Callback(hObject, eventdata, handles)
 % hObject    handle to edit3 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -145,7 +148,9 @@ function edit3_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'String','0');
+var=str2double(get(hObject,'String'));
+    assignin('base','z0',var)
 function edit4_Callback(hObject, eventdata, handles)
 % hObject    handle to edit4 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -168,7 +173,9 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
-
+set(hObject,'String','0');
+var=str2double(get(hObject,'String'));
+    assignin('base','Vx0',var)
 
 function edit5_Callback(hObject, eventdata, handles)
 % hObject    handle to edit5 (see GCBO)
@@ -191,7 +198,9 @@ function edit5_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'String','0');
+var=str2double(get(hObject,'String'));
+    assignin('base','Vy0',var)
 
 
 function edit6_Callback(hObject, eventdata, handles)
@@ -215,7 +224,9 @@ function edit6_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'String','0');
+var=str2double(get(hObject,'String'));
+    assignin('base','Vz0',var)
 
 
 function edit7_Callback(hObject, eventdata, handles)
@@ -227,6 +238,7 @@ function edit7_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of edit7 as a double
 var=pi/180*str2double(get(hObject,'String'));
     assignin('base','theta0',var)
+    
 
 % --- Executes during object creation, after setting all properties.
 function edit7_CreateFcn(hObject, eventdata, handles)
@@ -239,7 +251,9 @@ function edit7_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'String','0');
+var=str2double(get(hObject,'String'));
+    assignin('base','theta0',var)
 
 
 function edit8_Callback(hObject, eventdata, handles)
@@ -263,7 +277,9 @@ function edit8_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'String','0');
+var=str2double(get(hObject,'String'));
+    assignin('base','psi0',var)
 
 
 function edit9_Callback(hObject, eventdata, handles)
@@ -287,6 +303,9 @@ function edit9_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+set(hObject,'String','0');
+var=str2double(get(hObject,'String'));
+    assignin('base','phi0',var)
 
 
 
@@ -311,7 +330,9 @@ function edit10_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'String','0');
+var=str2double(get(hObject,'String'));
+    assignin('base','wq10',var)
 
 
 function edit11_Callback(hObject, eventdata, handles)
@@ -335,7 +356,9 @@ function edit11_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'String','0');
+var=str2double(get(hObject,'String'));
+    assignin('base','wq20',var)
 
 
 function edit12_Callback(hObject, eventdata, handles)
@@ -359,7 +382,11 @@ function edit12_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'String','0');
+var=str2double(get(hObject,'String'));
+    assignin('base','wq30',var)
+    
+    
 function edit13_Callback(hObject, eventdata, handles)
 % hObject    handle to edit13 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -381,7 +408,9 @@ function edit13_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'String','0');
+var=str2double(get(hObject,'String'));
+    assignin('base','ti',var)
 
 
 function tf=edit14_Callback(hObject, eventdata, handles)
@@ -405,7 +434,9 @@ function edit14_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'String','30');
+var=str2double(get(hObject,'String'));
+    assignin('base','tf',var)
 
 
 % --- Executes on selection change in listbox1.
@@ -431,6 +462,10 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 assignin('base','indice',1);
+assignin('base','xs',0);
+assignin('base','ys',0);
+assignin('base','zs',0);
+assignin('base','thetas',1);
 
 function pushbutton1_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton1 (see GCBO)
@@ -1120,7 +1155,9 @@ function edit31_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
+set(hObject,'String','10');
+var=str2double(get(hObject,'String'));
+    assignin('base','Ts',var)
 
 
 
