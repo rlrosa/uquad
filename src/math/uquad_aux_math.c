@@ -788,7 +788,7 @@ int uquad_mat_int(uquad_mat_t *B, uquad_mat_t *A, double ti, double tf, double s
 int uquad_mat_load(uquad_mat_t *m, FILE *input)
 {
     int i;
-    float ftmp;
+    double dtmp;
     if(m == NULL)
     {
 	err_check(ERROR_NULL_POINTER, "Cannot load, must allocate memory previously.");
@@ -797,11 +797,11 @@ int uquad_mat_load(uquad_mat_t *m, FILE *input)
 	input = stdin;
     for(i=0; i < m->r*m->c; i++)
     {
-	if(fscanf(input,"%f",&ftmp) <= 0)
+	if(fscanf(input,"%lf",&dtmp) <= 0)
 	{
 	    err_check(ERROR_READ, "Failed to load data!");
 	}
-	m->m_full[i] = (double) ftmp;
+	m->m_full[i] = dtmp;
     }
     if(i < m->r*m->c)
     {

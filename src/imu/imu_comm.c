@@ -351,7 +351,7 @@ int imu_comm_free_calib(imu_calib_t calib)
 int imu_comm_load_calib(imu_t *imu, const char *path)
 {
     int i,retval = ERROR_OK;
-    float ftmp;
+    double dtmp;
     FILE *calib_file = fopen(path,"r+");
     if(calib_file == NULL)
     {
@@ -370,13 +370,13 @@ int imu_comm_load_calib(imu_t *imu, const char *path)
     }
 
     //load z temp
-    retval = fscanf(calib_file,"%f",&ftmp);
+    retval = fscanf(calib_file,"%lf",&dtmp);
     if(retval <= 0)
     {
 	err_check(ERROR_READ, "Failed to read z_temp");
     }
     retval = ERROR_OK;// clear fscanf match count
-    imu->calib.z_temp = (double) ftmp;
+    imu->calib.z_temp = dtmp;
 
     fclose(calib_file);
     imu->calib.calib_file_ready = true;
@@ -516,6 +516,8 @@ static int imu_comm_get_sync_end(imu_t *imu){
 #if IMU_COMM_FAKE
 		// read out end of line
 		retval = fread(&tmp,IMU_INIT_END_SIZE,1,imu->device);
+		if(retval >= 0 && tmp =='\r')
+		    fread(&tmp,IMU_INIT_END_SIZE,1,imu->device);
 #endif
 		return ERROR_OK;
 	    }
