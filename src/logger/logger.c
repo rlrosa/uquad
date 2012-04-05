@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/stat.h> // for mkfifo()
 #include <signal.h> // for SIGINT, SIGQUIT
 #include <uquad_aux_io.h>
@@ -50,8 +51,6 @@ int main(int argc, char *argv[])
     char log_name[PATH_MAX];
     int itmp;
     size_t len;
-
-    new_line = (char *) malloc(sizeof(char)*PATH_MAX);
 
     // Catch signals
     signal(SIGINT, uquad_sig_handler);
@@ -107,7 +106,6 @@ int main(int argc, char *argv[])
     gettimeofday(&tv_old,NULL);
     for(;;)
     {
-	//	retval = fscanf(pipe_f,"%lf",&lf);
 	retval = getline(&new_line, &len, pipe_f);
 	if(retval > 0)
 	{
@@ -118,6 +116,7 @@ int main(int argc, char *argv[])
 		err_log("TIMING: absurd!");
 	    }
 	    fprintf(log_file,"%s",new_line);
+	    fflush(log_file);
 	    gettimeofday(&tv_old,NULL);	
 	}
 	else
