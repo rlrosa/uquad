@@ -49,11 +49,11 @@ fs = 100;
 
 
 [a,w,m,t_imu,~,fecha,ind]=mong_read...
-    (['tests/mongoose/temperaturomometro/data_secador/1/imu_raw.log'],1,1);
- a = a(6320:end,:);
- w = w(6320:end,:);
- m = m(6320:end,:);
- t_imu=t_imu(6320:end,:);
+    (['tests/mongoose/temperaturomometro/data_abril/imu_raw.log'],1,1);
+a = a(2.26e4:4.8e5,:);
+w = w(2.26e4:4.8e5,:);
+m = m(2.26e4:4.8e5,:);
+t_imu=t_imu(2.26e4:4.8e5,:);
 
 [aconv,wconv,mconv]=mong_conv(a,w,m,0);
 t_imu=t_imu/10;
@@ -141,18 +141,18 @@ figure
     plot(moving_avg(t_imu,20),moving_avg(aconv_temp_lin(:,2),20),'*m');
     plot(t_imu,aconv_avg(:,3),'b*')
     plot(moving_avg(t_imu,20),moving_avg(aconv_temp_lin(:,3),20),'*y');
-    axis([15 30 -11 1]); xlabel('Temperatura'); ylabel('Aceleracion en m/s^2');
+%     axis([15 30 -11 1]); xlabel('Temperatura'); ylabel('Aceleracion en m/s^2');
     legend('ax sin compensar','ax compensada','ay sin compensar','ay compensada','az sin compensar','az compensada')
         
 figure()
 subplot(211)
     plot(aconv_temp_lin(:,3),'g'); hold on; grid;
     plot(aconv(:,3),'r');
-    axis([0 length(aconv_temp_lin) -10.5 -9.5])
+%     axis([0 length(aconv_temp_lin) -10.5 -9.5])
 subplot(212)
     plot(moving_avg(aconv_temp_lin(:,3),20),'g'); hold on; grid;
     plot(moving_avg(aconv(:,3),20),'r');
-    axis([0 length(aconv_temp_lin) -10.5 -9.5])
+%     axis([0 length(aconv_temp_lin) -10.5 -9.5])
     
 fprintf('Raiz de suma de errores al cuadrado\nK constante:%f\nK lineal:%f\n'...
     ,sqrt(sum((aconv(:,3)+9.81).^2)),sqrt(sum((aconv_temp_lin(:,3)+9.81).^2)))
