@@ -283,6 +283,7 @@ int imu_comm_free_calib_lin(imu_t *imu)
 int imu_comm_load_calib(imu_t *imu, const char *path)
 {
     int i,retval = ERROR_OK;
+    float ftmp;
     FILE *calib_file = fopen(path,"r+");
     if(calib_file == NULL)
     {
@@ -307,6 +308,11 @@ int imu_comm_load_calib(imu_t *imu, const char *path)
 	    break;
 	}
     }
+
+    //load z temp
+    fscanf(calib_file,"%f",&ftmp);
+    imu->calib.z_temp = (double) ftmp;
+
     fclose(calib_file);
     imu->calib.calib_file_ready = true;
     return retval;
@@ -1126,12 +1132,13 @@ static int imu_comm_convert_lin(imu_t *imu, int16_t *raw, uquad_mat_t *conv, imu
  *
  *@return error code
  */
-static int imu_comm_acc_convert(imu_t *imu, int16_t *raw, uquad_mat_t *acc)
+static int imu_comm_acc_convert(imu_t *imu, int16_t *raw, uquad_mat_t *acc, double temp)
 {
     int retval = ERROR_OK;
-    retval = imu_comm_convert_lin(imu, raw, acc, imu->calib.m_lin);
+    retval = imu_comm_convert_lin(imu, raw, acc, imu->calib.m_lin);    
     err_propagate(retval);
-    return retval;
+    acc->m_full[2] += imu->calib.z_temp*temp;
+    return retval;  
 }
 
 /**
@@ -1234,9 +1241,13 @@ int imu_comm_raw2data(imu_t *imu, imu_raw_t *raw, imu_data_t *data){
     // Get timestamp
     data->timestamp = raw->timestamp;
     data->T_us = (double) raw->T_us;//TODO check!
+    
+    // Convert temperature readings
+    retval = imu_comm_temp_convert(imu, &(raw->temp), &(data->temp));
+    err_propagate(retval);
 
     // Convert accelerometer readings    
-    retval = imu_comm_acc_convert(imu, raw->acc, data->acc);
+    retval = imu_comm_acc_convert(imu, raw->acc, data->acc, data->temp);
     err_propagate(retval);
 
     // Convert gyroscope readings
@@ -1248,11 +1259,7 @@ int imu_comm_raw2data(imu_t *imu, imu_raw_t *raw, imu_data_t *data){
     err_propagate(retval);
 
     retval = convert_2_euler(data);
-    err_propagate(retval);
-
-    // Convert temperature readings
-    retval = imu_comm_temp_convert(imu, &(raw->temp), &(data->temp));
-    err_propagate(retval);
+    err_propagate(retval);  
 
     // Convert altitud readings
     retval = imu_comm_pres_convert(imu, &(raw->pres), &(data->alt));

@@ -49,11 +49,11 @@ fs = 100;
 
 
 [a,w,m,t_imu,~,fecha,ind]=mong_read...
-    (['tests/mongoose/temperaturomometro/data_secador/6_mesa_estufa/imu_raw.log'],1,1);
-% a = a(5341:3*5341,:);
-% w = w(5341:3*5341,:);
-% m = m(5341:3*5341,:);
-% t_imu=t_imu(5341:3*5341);
+    (['tests/mongoose/temperaturomometro/data_secador/1/imu_raw.log'],1,1);
+ a = a(6320:end,:);
+ w = w(6320:end,:);
+ m = m(6320:end,:);
+ t_imu=t_imu(6320:end,:);
 
 [aconv,wconv,mconv]=mong_conv(a,w,m,0);
 t_imu=t_imu/10;
@@ -96,7 +96,7 @@ N            = size(a_crudas,1);
 a_teoricos   = [zeros(N,1) zeros(N,1) 9.81*ones(N,1)];
 temperaturas = mean(vec2mat(t_imu,avr),2);
 
-x0_lin=zeros(1,6);
+x0_lin=0;
 [x,RESNORM,RESIDUAL,EXITFLAG]=lsqnonlin(@temp_acc_cost_3,x0_lin,[],[],optimset('MaxFunEvals',10000,'MaxIter',1000));
 
 save('acc_temp','x','to');
@@ -115,12 +115,9 @@ b=[A.X(4) A.X(5) A.X(6)]';
 
 aconv_temp_lin=zeros(size(a));
 for i=1:length(a(:,1))
-    aux = T * ((K^-1) + [ x(1)*(t_imu(i)-to) 0                  0 ;                  ...
-                          0                  x(2)*(t_imu(i)-to) 0 ;                  ...
-                          0                  0                  x(3)*(t_imu(i)-to) ] ...
-          ) * (a(i,:)'- (b + [x(4)*(t_imu(i)-to); ...
-                                 x(5)*(t_imu(i)-to); ...
-                                 x(6)*(t_imu(i)-to)] )) ;
+    aux = T *(K^-1)* (a(i,:)'- (b + [0; ...
+                                 0; ...
+                                 x(1)*(t_imu(i)-to)] )) ;
     aconv_temp_lin(i,:)=aux';
 end
 
