@@ -55,7 +55,7 @@ Por lo tanto
 a_T \approx 3.6\times10^{-2}m^{s-2}
 \end{equation}
 
-Para que el t\'ermino de la aceleraci\'on de Coreolis sea comparable con la aceleraci\'on de transporte las velocidades del cuadric\'optero relativas a la Tierra deber\'ian ser del orden de cientos de metros por segundo, condici\'on que evidentemente no se cumple, por lo tanto este t\'ermino puede ser despreciado. 
+Para que el t\'ermino de la aceleraci\'on de Coriolis sea comparable con la aceleraci\'on de transporte las velocidades del cuadric\'optero relativas a la Tierra deber\'ian ser del orden de cientos de metros por segundo, condici\'on que evidentemente no se cumple, por lo tanto este t\'ermino puede ser despreciado. 
 
 La aceleraci\'on relativa al sistema de la Tierra difiere de  aproximadamente $3.6\times10^{-2}ms^{-2}$ de la aceleraci\'on medida en un sistema verdaderamente inercial. Por otra parte la resoluci\'on del aceler\'ometro utilizado es de $4mg\approx 4.81\times10^{-2}ms^{-2}$. Con el sensor elegido para trabajar es imposible distinguir entre ambas aceleraciones, por dicho motivo parece razonable despreciar el t\'ermino de la aceleraci\'on que corresponde a la aceleraci\'on de transporte. Esto nos permite afirmar que la Tierra puede aproximarse como un sistema de referencia inercial y por lo tanto se cumple que:
 
@@ -257,7 +257,7 @@ Operando se puede reescribir la primer cardinal de la siguiente forma:
 v_{q_y} \omega_{q_z} - v_{q_z} \omega_{q_y}	\\
 v_{q_z} \omega_{q_x} - v_{q_z} \omega_{q_z}\\
 v_{q_x} \omega_{q_y} - v_{q_y} \omega_{q_x}\\
-\end{array}\right) + \vec{F}_{ext} 
+\end{array}\right) + \frac{\vec{F}_{ext} }{M}
 \label{vpuntos}
 \end{equation}
 
@@ -271,7 +271,7 @@ La segunda cardinal para un sistema de part\'iculas toma la forma:
 \end{equation}
 
 Donde $L_Q$ y $M_Q$ son el momento angular y el torque respecto del punto Q.
-Asumiendo simetr\'ia del sistema, se puede considerar que el centro de masa del sistema se encuentra en el centro de la esfera principal del mismo. Esto no es completamente cierto ya que existen algunas asimetr\'ias en el sistema, a modo de ejemplo se puede nombrar que la bater\'ia del UAV queda por fuera de la esfera y los apoyos tambi\'en, sin embargo en una primera aproximaci\'on del modelo se asume la simetr\'ia respecto al plano que intersecta la esfera en elecuador. Realizada dicha supocici\'on y planteando la segunda cardinal en el centro de masa obtenemos una expresi\'on m\'as sencilla:
+Asumiendo simetr\'ia del sistema, se puede considerar que el centro de masa del sistema se encuentra en el centro de la esfera principal del mismo. Esto no es completamente cierto ya que existen algunas asimetr\'ias en el sistema, a modo de ejemplo se puede nombrar que la bater\'ia del UAV queda por fuera de la esfera y los apoyos tambi\'en, sin embargo en una primera aproximaci\'on del modelo se asume la simetr\'ia respecto al plano que intersecta la esfera en el ecuador. Realizada dicha suposici\'on y planteando la segunda cardinal en el centro de masa obtenemos una expresi\'on m\'as sencilla:
 
 \begin{equation}
 \frac{d\vec{L_G}}{dt} =M_G^{ext}
@@ -292,7 +292,7 @@ Donde $M_i$, $G_i$, $\Pi_{Q}$ y $\vec{\Omega_i}$ son la masa de cada r\'igido, s
 Asumiendo que los cuatro motores son id\'enticos podemos escribir el momento angular del cuadric\'optero sin los motores como:
 
 \begin{equation}
-\vec{L_{O\prime}} = (M-4 M_m)(\vec{O\prime-O\prime})\times\vec{V_O\prime}+\Pi_{O\prime_q}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}\vec{w_q}=\Pi_{O\prime_q}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}\vec{\omega_q}
+\vec{L_{O\prime}} = (M-4 M_m)(\vec{O\prime-O})\times\vec{V_O\prime}+\Pi_{O\prime_q}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}\vec{w_q}=\Pi_{O\prime_q}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}\vec{\omega_q}
 \end{equation}
 
 Para el c\'alculo del momento \'angular del motor 1 respecto del punto $O\prime$ supondremos por simplicidad que el motor se compone de elementos de masa discretos. En este caso, por definici\'on de momento angular tenemos que:
