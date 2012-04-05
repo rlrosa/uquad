@@ -68,11 +68,9 @@ Ta=[1 -ayza azya;
    axza 1 -azxa;
    -axya ayxa 1];
 
-Ka_1 = (Ka^-1) + [ AT.x(1)*(t_imu-a_to) 0                    0 ;                      ...
-                   0                    AT.x(2)*(t_imu-a_to) 0 ;                      ...
-                   0                    0                    AT.x(3)*(t_imu-a_to) ] ;
+Ka_1 = (Ka^-1);
                
-bat = ba + [AT.x(4); AT.x(5); AT.x(6)]*(t_imu-a_to);
+bat = ba + [0;0; AT.x(1)]*(t_imu-a_to);
 
 aconv=zeros(size(a));
 for i=1:length(a(:,1))
