@@ -362,23 +362,20 @@ int imu_comm_load_calib(imu_t *imu, const char *path)
     {
 	// TK_inv
 	retval = uquad_mat_load(imu->calib.m_lin[i].TK_inv, calib_file);
-	if(retval != ERROR_OK)
-	{
-	    err_log("Failed to load TK_inv matrix!");
-	    break;
-	}		    
+	err_propagate(retval);
 
 	// b
 	retval = uquad_mat_load(imu->calib.m_lin[i].b, calib_file);
-	if(retval != ERROR_OK)
-	{
-	    err_log("Failed to load b matrix!");
-	    break;
-	}
+	err_propagate(retval);
     }
 
     //load z temp
-    fscanf(calib_file,"%f",&ftmp);
+    retval = fscanf(calib_file,"%f",&ftmp);
+    if(retval <= 0)
+    {
+	err_check(ERROR_READ, "Failed to read z_temp");
+    }
+    retval = ERROR_OK;// clear fscanf match count
     imu->calib.z_temp = (double) ftmp;
 
     fclose(calib_file);

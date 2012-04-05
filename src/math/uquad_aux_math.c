@@ -797,7 +797,10 @@ int uquad_mat_load(uquad_mat_t *m, FILE *input)
 	input = stdin;
     for(i=0; i < m->r*m->c; i++)
     {
-	fscanf(input,"%f",&ftmp);
+	if(fscanf(input,"%f",&ftmp) <= 0)
+	{
+	    err_check(ERROR_READ, "Failed to load data!");
+	}
 	m->m_full[i] = (double) ftmp;
     }
     if(i < m->r*m->c)
