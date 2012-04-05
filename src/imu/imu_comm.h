@@ -167,7 +167,8 @@ typedef struct imu_calibration{
     struct timeval timestamp_file; // time at which calib was read.
     uquad_bool_t calib_file_ready; // calibration was read from file.
 
-    imu_raw_t null_est;       // null estimates gathered this run.
+    imu_raw_t null_est;            // null estimates gathered this run.
+    imu_data_t null_est_data;      // null estimates, converted
     struct timeval timestamp_estim;// time at which null estimate finished.
     uquad_bool_t calib_estim_ready;// null estimates are ready.
     int calibration_counter;       // current number of frames available for calibration.

@@ -15,6 +15,7 @@ imu_status_t imu_comm_get_status(imu_t *imu){
 /** 
  * Allocates memory required for matrices
  * used by struct
+ * Sets all data to zeros.
  *
  * @param imu_data
  *
@@ -22,6 +23,7 @@ imu_status_t imu_comm_get_status(imu_t *imu){
  */
 int imu_data_alloc(imu_data_t *imu_data)
 {
+    int retval = ERROR_OK;
     imu_data->acc = uquad_mat_alloc(3,1);
     imu_data->gyro = uquad_mat_alloc(3,1);
     imu_data->magn = uquad_mat_alloc(3,1);
@@ -29,8 +31,19 @@ int imu_data_alloc(imu_data_t *imu_data)
        imu_data->acc == NULL ||
        imu_data->acc == NULL)
     {
+	uquad_mat_free(imu_data->acc);
+	uquad_mat_free(imu_data->gyro);
+	uquad_mat_free(imu_data->magn);
 	err_propagate(ERROR_MALLOC);
     }
+    // initialize data to zeros
+    retval = uquad_mat_zeros(imu_data->acc);
+    err_propagate(retval);
+    retval = uquad_mat_zeros(imu_data->gyro);
+    err_propagate(retval);
+    retval = uquad_mat_zeros(imu_data->magn);
+    err_propagate(retval);
+
     return ERROR_OK;
 }
 
@@ -45,6 +58,60 @@ void imu_data_free(imu_data_t *imu_data)
     uquad_mat_free(imu_data->acc);
     uquad_mat_free(imu_data->gyro);
     uquad_mat_free(imu_data->magn);
+}
+
+/** 
+ * Copies the data in src to dest.
+ * Must previously allocate mem for dest.
+ * 
+ * @param src 
+ * @param dest 
+ * 
+ * @return 
+ */
+int imu_comm_copy_data(imu_data_t *src, imu_data_t *dest)
+{
+    int retval = ERROR_OK;
+    if(src == NULL || dest == NULL)
+	err_check(ERROR_NULL_POINTER,"NULL pointer arg is not valid.");
+    dest->T_us = src->T_us;
+    retval = uquad_mat_copy(dest->acc,src->acc);
+    err_propagate(retval);
+    uquad_mat_copy(dest->gyro,src->gyro);
+    err_propagate(retval);
+    uquad_mat_copy(dest->magn,src->magn);
+    err_propagate(retval);
+    dest->temp = src->temp;
+    dest->alt = src->alt;
+    dest->timestamp = src->timestamp;
+    return ERROR_OK;
+}
+
+/** 
+ * Copies the data in src to dest.
+ * Must previously allocate mem for dest.
+ * 
+ * @param src 
+ * @param dest 
+ * 
+ * @return 
+ */
+int imu_comm_copy_frame(imu_raw_t *src, imu_raw_t *dest)
+{
+    int i;
+    if(src == NULL || dest == NULL)
+	err_check(ERROR_NULL_POINTER,"NULL pointer arg is not valid.");
+    dest->T_us = src->T_us;
+    for (i=0; i<3; ++i)
+	dest->acc[i] = src->acc[i];
+    for (i=0; i<3; ++i)
+	dest->gyro[i] = src->gyro[i];
+    for (i=0; i<3; ++i)
+	dest->magn[i] = src->magn[i];
+    dest->temp = src->temp;
+    dest->pres = src->pres;
+    dest->timestamp = src->timestamp;
+    return ERROR_OK;
 }
 
 /**
@@ -254,16 +321,17 @@ int imu_comm_alloc_calib_lin(imu_t *imu)
  * 
  * @return 
  */
-int imu_comm_free_calib_lin(imu_t *imu)
+int imu_comm_free_calib(imu_calib_t calib)
 {
     int i;
     for (i = 0; i < 3; ++i)
     {
 	// TK_inv
-	uquad_mat_free(imu->calib.m_lin[i].TK_inv);
+	uquad_mat_free(calib.m_lin[i].TK_inv);
 	// b
-	uquad_mat_free(imu->calib.m_lin[i].b);
+	uquad_mat_free(calib.m_lin[i].b);
     }
+    imu_data_free(&calib.null_est_data);
     return ERROR_OK;
 }
 
@@ -330,6 +398,8 @@ int imu_comm_init_calibration(imu_t *imu)
 {
     int retval = ERROR_OK;
     retval = imu_comm_alloc_calib_lin(imu);
+    err_propagate(retval);
+    retval = imu_data_alloc(&imu->calib.null_est_data);
     err_propagate(retval);
     /// load calibration parameters from file
     retval = imu_comm_load_calib(imu, IMU_DEFAULT_CALIB_PATH);
@@ -409,7 +479,7 @@ int imu_comm_deinit(imu_t *imu){
     // ignore answer and keep dying, leftovers are not reliable
     imu_data_free(&imu->tmp_avg);
     //TODO chec if more to free
-    imu_comm_free_calib_lin(imu);
+    imu_comm_free_calib(imu->calib);
     uquad_mat_free(m3x3);
     uquad_mat_free(m3x1_0);
     uquad_mat_free(m3x1_1);
@@ -578,17 +648,21 @@ static struct timeval calibration_start_time;
  */
 int imu_comm_calibration_finish(imu_t *imu){
     int retval = ERROR_OK, i;
+    imu_data_t imu_data_tmp;
     if(imu->status != IMU_COMM_STATE_CALIBRATING){
 	err_check(ERROR_IMU_STATUS,"Cannot finish calibration, IMU is not calibrating!");
     }
     if(imu->calib.calibration_counter != 0){
 	err_check(ERROR_IMU_STATUS,"Not enough samples gathered!");
     }
+    retval = imu_data_alloc(&imu_data_tmp);
+    err_propagate(retval);
 
     struct timeval tv_end, tv_diff;
     gettimeofday(&tv_end,NULL);
     retval = uquad_timeval_substract(&tv_diff,tv_end,calibration_start_time);
     if(retval < 0){
+	imu_data_free(&imu_data_tmp);
 	err_check(ERROR_FAIL,"Calibration duration should not be negative!");
     }
     //TODO check if calib took too long, and refuse it if so
@@ -610,11 +684,21 @@ int imu_comm_calibration_finish(imu_t *imu){
 
     imu->calib.calibration_counter = -1;
     imu->calib.timestamp_estim = tv_end;
+
+    // update offset estimation
+    retval = imu_comm_raw2data(imu,
+			       &imu->calib.null_est,
+			       &imu_data_tmp);
+    if(retval != ERROR_OK)
+	imu_data_free(&imu_data_tmp);
+    err_propagate(retval);
+
+    imu_comm_copy_data(&imu_data_tmp, &imu->calib.null_est_data);
+    imu_data_free(&imu_data_tmp);
+    err_propagate(retval);
+
     imu->calib.calib_estim_ready = true;
     imu->status = IMU_COMM_STATE_RUNNING;
-
-    //TODO implement
-    //retval = imu_comm_calbration_fix(imu);
 
     return ERROR_OK;
 }
@@ -662,33 +746,6 @@ int imu_comm_calibration_continue(imu_t *imu){
 	err_propagate(retval);
     }
 
-    return ERROR_OK;
-}
-
-/** 
- * Copies the data in src to dest.
- * Must previously allocate mem for dest.
- * 
- * @param src 
- * @param dest 
- * 
- * @return 
- */
-int imu_comm_copy_frame(imu_raw_t *src, imu_raw_t *dest)
-{
-    int i;
-    if(src == NULL || dest == NULL)
-	err_check(ERROR_NULL_POINTER,"NULL pointer arg is not valid.");
-    dest->T_us = src->T_us;
-    for (i=0; i<3; ++i)
-	dest->acc[i] = src->acc[i];
-    for (i=0; i<3; ++i)
-	dest->gyro[i] = src->gyro[i];
-    for (i=0; i<3; ++i)
-	dest->magn[i] = src->magn[i];
-    dest->temp = src->temp;
-    dest->pres = src->pres;
-    dest->timestamp = src->timestamp;
     return ERROR_OK;
 }
 
@@ -1156,6 +1213,9 @@ static int imu_comm_gyro_convert(imu_t *imu, int16_t *raw, uquad_mat_t *gyro)
     int retval = ERROR_OK;
     retval = imu_comm_convert_lin(imu, raw, gyro, imu->calib.m_lin + 1);
     err_propagate(retval);
+    // compensate for temperature by using startup-offset
+    retval = uquad_mat_sub(gyro,gyro,imu->calib.null_est_data.gyro);
+    err_propagate(retval);
     return retval;
 }
 
@@ -1364,33 +1424,6 @@ int imu_comm_get_data_latest_unread(imu_t *imu, imu_data_t *data){
 
     imu->unread_data -= 1;
     return retval;
-}
-
-/** 
- * Copies the data in src to dest.
- * Must previously allocate mem for dest.
- * 
- * @param src 
- * @param dest 
- * 
- * @return 
- */
-int imu_comm_copy_data(imu_data_t *src, imu_data_t *dest)
-{
-    int i;
-    if(src == NULL || dest == NULL)
-	err_check(ERROR_NULL_POINTER,"NULL pointer arg is not valid.");
-    dest->T_us = src->T_us;
-    for (i=0; i<3; ++i)
-	dest->acc[i] = src->acc[i];
-    for (i=0; i<3; ++i)
-	dest->gyro[i] = src->gyro[i];
-    for (i=0; i<3; ++i)
-	dest->magn[i] = src->magn[i];
-    dest->temp = src->temp;
-    dest->alt = src->alt;
-    dest->timestamp = src->timestamp;
-    return ERROR_OK;
 }
 
 /** 

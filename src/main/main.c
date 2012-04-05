@@ -14,8 +14,8 @@
 #endif
 
 #define W_SP_STEP 1.0L
-#define W_SP_INC  '+'
-#define W_SP_DEC  '-'
+#define W_SP_INC  'i'
+#define W_SP_DEC  'k'
 
 #define USE_GPS 0
 
@@ -857,7 +857,9 @@ int main(int argc, char *argv[]){
 	    if(read){
 		retval = fread(tmp_buff,1,1,stdin);
 		if(retval<=0)
-		    fprintf(stdout,"\nNo user input!!\n\n");
+		{
+		    err_log("No user input!!");
+		}
 		else
 		{
 		    gettimeofday(&tv_tmp,NULL);
@@ -866,7 +868,6 @@ int main(int argc, char *argv[]){
 		    {
 			err_log("Absurd timing!");
 		    }
-		    log_tv_only(log_tv, tv_diff);
 		    retval = ERROR_OK; // clear error
 		    dtmp = 0.0;
 		    switch(tmp_buff[0])
@@ -880,19 +881,24 @@ int main(int argc, char *argv[]){
 		    default:
 			break;
 		    }
-		    for(i = 0; i < MOT_C; ++i)
-			pp->sp->w->m_full[i] += dtmp;
+		    if(dtmp != 0.0)
+		    {
+			for(i = 0; i < MOT_C; ++i)
+			    pp->sp->w->m_full[i] += dtmp;
+			// display on screen
+			log_tv_only(stdout,tv_diff);
+			log_double(stdout,"Current w_sp",pp->sp->w->m_full[0]);
+			fflush(stdout);
+		    }
 		    // save to log file
+		    log_tv_only(log_tv, tv_diff);
 		    log_double(log_tv,"Current w_sp",pp->sp->w->m_full[0]);
-		    // display on screen
-		    err_log_double("Current w_sp",pp->sp->w->m_full[0]);
 		}
 	    }
 	    retval = ERROR_OK;
 	}
-	fflush(stdout);
     }
-
+    // never gets here
     return 0;
 }
     
