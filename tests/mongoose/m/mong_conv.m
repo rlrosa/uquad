@@ -8,6 +8,8 @@ end
 
 AT=load('acc_temp','x','to');
 a_to = AT.to;
+GT=load('gyro_temp','x','to');
+g_to = GT.to;
 
 if(~exist('t_imu','var'))
 %   fprintf('Calibración sin compensación por temperatura\nSe debe pasar como último parámetro el vector de temperaturas\n');
@@ -84,6 +86,7 @@ Kg=[kgx 0 0;
     0 0 kgz];
 
 bg=[bgx; bgy; bgz];
+bgt =bg+[GT.x(1);GT.x(2);GT.x(3)]*(t_imu-g_to);
 
 Tg=[1    -gayza gazya;
     gaxza 1    -gazxa;
@@ -91,8 +94,8 @@ Tg=[1    -gayza gazya;
 
 wconv=zeros(size(w));
 for i=1:length(w(:,1))
-    auxg=Tg*(Kg^(-1))*(w(i,:)'-bg);
-    wconv(i,:)=pi/180*auxg';
+    auxg=Tg*(Kg^(-1))*(w(i,:)'-bgt);
+    wconv(i,:)=auxg';
 end
 
 
