@@ -6,39 +6,39 @@
 \chapter{Linelizaci\'on y puntos de operaci\'on}
 \label{chap:linealizacion}
 
-Independientemente del sistema bajo estudio, a la hora de elegir la t\'ecnica de control a utilizar se plantean diversas posibilidades. Parece razonable intentar resolverel problema planteado utilizando las t\'ecnicas m\'as sencillas que se disponen, al menos en una primera aproximaci\'on. En caso de que dicha soluci\'on no fuese satisfactoria se puede optar por una t\'ecnia con un mayor grado de complejidad.\\ 
+Independientemente del sistema bajo estudio, a la hora de elegir la t\'ecnica de control a utilizar se plantean diversas posibilidades. Parece razonable intentar resolver el problema planteado utilizando las t\'ecnicas m\'as sencillas que se disponen, al menos en una primera aproximaci\'on. En caso de que dicha soluci\'on no fuese satisfactoria se puede optar por una t\'ecnia con un mayor grado de complejidad.\\ 
 
 Las t\'ecnicas de control m\'as sencillas y con las que se tiene mayor experiencia se basan en el estudio de sistemas lineales invariantes en el tiempo (SLIT). Sin embargo el MVE obtenido en el cap\'tulo \ref{chap:modelo} es no lineal. Se propone entonces resolver el problema del control del cuadric\'optero aproximando el sistema por un sistema lineal invariante en el tiempo. Es claro que el sistema no puede ser linealizado en cualquier trayectoria o punto de operaci\'on. En  este cap\'itulo nos concentraremos en determinar bajo que condiciones es posible aproximar el sistema por un modelo lineal.
 
 \section{Concepto general}
 Consideremos un sistema que se rige por la siguiente evoluci\'on de su vector de estados. 
 \begin{equation}
-\dot{x(t)}=f(X(t),u(t))
+\dot{x}(t)=f(x(t),u(t))
 \end{equation}
 
-Donde $x(t)$ es el vector de estados del sistema y $u(t)$ el vector de las entradas. Supongamos en una primera instancia que tanto $x(t)$ y $u(t)$ son de dimensi\'on uno. Consideremos adem\'as el punto de operaci\'on definido por $x^*(t)$ y $u^*(t)$. Si realizamos un desarrollo de Taylor de \'orden uno en torno al punto de operaci\'on se tiene que:
+Donde $x(t)$ es el vector de estados del sistema y $u(t)$ el vector de las entradas. Supongamos en una primera instancia que tanto $x(t)$ como $u(t)$ son de dimensi\'on uno. Consideremos adem\'as el punto de operaci\'on definido por $x^*(t)$ y $u^*(t)$. Si realizamos un desarrollo de Taylor de \'orden uno en torno al punto de operaci\'on se tiene que:
 \begin{equation}
 \dot{x}(t)=f(x(t),u(t))=f(x^*(t),u^*(t))+\frac{\partial f}{\partial x}\vert_{u=u^*}^{x=x^*}(x(t)-x^*(t))+\frac{\partial f}{\partial u}\vert_{u=u^*}^{x=x^*}(u(t)-u^*)
 \end{equation}
 
-Si definimos $\tilde{x}(t)=x(t)-x^*(t)$ y $\tilde{u}(t)-u^*(t)$ tenemos que:
+Si definimos $\tilde{x}(t)=x(t)-x^*(t)$ y $\tilde{u}(t)=u(t)-u^*(t)$ tenemos que:
 
 \begin{equation}
 \dot{\tilde{x}}(t)=\frac{\partial f}{\partial x}\vert_{u=u^*}^{x=x^*}\tilde{x}(t)+\frac{\partial f}{\partial u}\vert_{u=u^*}^{x=x^*}\tilde{u}(t)
 \end{equation}
 
-Este mismo concepto puede generalizarse en caso de que tanto el vector de estados como las entradas sean vectores de dimensi\'on mayor a uno, n y m respectivamente. En este caso lo que se tiene es que:
+Este mismo concepto puede generalizarse en caso en el cual el vector de estados y el vector de entradas tienen dimension n y m respectivamente.
 \begin{equation}
-\dot{\tilde{X}}(t)=A(t)\tilde{X}(t)+B(t)\tilde{u}(t)
+\dot{\tilde{X}}(t)=A(t)\tilde{X}(t)+B(t)\tilde{U}(t)
 \end{equation}
-Donde $A(t)$ es una matriz de $n \times n$ y $B(t)$ es de $n \times m$, tales que $a_{ij}= \frac{\partial f_i}{\partial x_j}\vert_{u=u^*}^{x=x^*}$ y  $b_{ij}= \frac{\partial f_i}{\partial u_j}\vert_{u=u^*}^{x=x^*}$
+Donde $A(t)$ es una matriz de $n \times n$ y $B(t)$ es de $n \times m$, tales que $a_{ij}= \frac{\partial f_i}{\partial X_j}\vert_{U=U^*}^{X=X^*}$ y  $b_{ij}= \frac{\partial f_i}{\partial U_j}\vert_{U=U^*}^{X=X^*}$
 
 En el caso en que todos los coeficientes de las matrices A y B son constantes podemos afirmar que estamos en presencia de un sistema lineal invariante en el tiempo. 
 
 \section{Puntos de operaci\'on}
 Lo que buscamos ahora es encontrar las trayectorias que permiten que la linealizaci\'on de nuestro sistema en torno a estas resulte en un sistema invariante en el tiempo.\\
 
-Para lograr este cometido, se debe cumplir que todos los elementos de las matrices \ref{eq:Agenerica} y \ref{eq:Bgenerica} sean constantes. Se desprende del an\'alisis de dichas matrices que los puntos de operaci\'on que cumplen esta condici\'on quedan restrictos a un subconjunto tal que: 
+Para lograr este cometido, se debe cumplir que todos los elementos de las matrices \ref{eq:Agenerica} y \ref{eq:Bgenerica} sean constantes. Dichas matrices corresponden a la linealizaci\'on del MVE en torno a una trayectoria gen\'erica. Se desprende del an\'alisis de dichas matrices que los puntos de operaci\'on que cumplen esta condici\'on quedan restrictos a un subconjunto tal que: 
 
 \begin{equation}
 \dot{\psi}=\dot{\varphi}=\dot{\theta}=\dot{v}_{qx}=\dot{v}_{qy}=\dot{v}_{qz}=\dot{\omega}_{qx}=\dot{\omega}_{qy}=\dot{\omega}_{qz}=\dot{\omega}_1=\dot{\omega}_2=\dot{\omega}_3=\dot{\omega}_4=0
@@ -70,7 +70,7 @@ En los tres casos se tienen que cumplir las restricciones de  \ref{eq:slit}.
 
 Cada una de las trayectorias posibles tiene adem\'as sus particularidades, a continuaci\'on nos encargaremos justamente de determinar las restricciones espec\'ificas de cada trayectoria posible. 
 
-\subsubsection{Hovering}
+\subsection{Hovering}
 En el caso del reposo mec\'anico no solo debe cumplirse las condiciones establecidas en \ref{eq:slit} si no que adem\'as las velocidades del centro de masa y las velocidades angulares deben ser iguales a cero.
 
 \begin{equation}
@@ -100,9 +100,9 @@ Se deduce adem\'as que:
 \omega_1=\omega_2=\omega_3=\omega_4=334.28 rad/s
 \end{equation}
 
-\subsubsection{Vuelo en linea recta a velocidad constante}
+\subsection{Vuelo en linea recta a velocidad constante}
 
-Para lograr el vuelo en linea recta a velocidad constante se tienen que cumplir las condiciones de \ref{eq:slit} al igual que en el caso anterior. La particularidad del vuelo en linea recta es que la velocidad del centro de masa es una constante distinta de cero. Queda claro que lo que tenemos es que:
+Para lograr el vuelo en linea recta a velocidad constante se tienen que cumplir las condiciones de \ref{eq:slit} al igual que en el caso anterior. La particularidad del vuelo en linea recta es que la velocidad del centro de masa es una constante distinta de cero. 
 \begin{equation}
 \label{eq:recta}
 \left(\begin{array}{c}
@@ -117,7 +117,7 @@ v_{qz}\\
 \end{array}\right)=0
 \end{equation}
 
-Al imponer que $\vec{\omega}=0$ la ecuaci\'on \ref{eq:euler} se verifica trivialmente y las ecuaciones \ref{eq:vpuntos} y \ref{eq:omegas} quedan id\'enticas al caso del sistema en reposo. Por lo tanto, tendremos tambi\'en para el movimiento en linea recta que:
+Al imponer que $\vec{\omega}_q=0$ la ecuaci\'on \ref{eq:euler} se verifica trivialmente y las ecuaciones \ref{eq:vpuntos} y \ref{eq:omegas} quedan id\'enticas al caso del sistema en reposo. Por lo tanto, tendremos tambi\'en para el movimiento en linea recta que:
 \begin{equation}
 \varphi=0 \quad \psi=0 \quad \omega_1=\omega_2=\omega_3=\omega_4 = 334.28 rad/s
 \end{equation}
@@ -130,7 +130,7 @@ Hasta aqu\'i no hemos considerado la ecuaci\'on que relaciona las velocidades li
 \end{array}
 \end{equation} 
 
-El vuelo en linea recta nos ofrece la posibilidad de fijar los restantes 4 par\'ametros de la trayectoria. Estos par\'ametros ser\'an determinados por el generador de trayectorias con el objetivo de realizar alguna maniobra en particular. 
+El vuelo en linea recta nos ofrece la posibilidad de fijar los restantes 4 par\'ametros de la trayectoria. Estos par\'ametros ser\'an determinados por el generador de trayectorias con el objetivo de realizar una recta en particular. 
 
 \subsection{Vuelo en c\'irculos}
 
