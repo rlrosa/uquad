@@ -544,12 +544,14 @@ int main(int argc, char *argv[]){
 #if LOG_IMU_RAW
 	    err_imu= imu_comm_print_raw(&imu_frame, log_imu_raw);
 	    log_n_jump(err_imu,end_imu,"could not print new raw frame...");
+	    fflush(log_imu_raw);
 #endif // LOG_IMU_RAW
 #if LOG_IMU_DATA
 	    err_imu = imu_comm_raw2data(imu, &imu_frame, &imu_data);
 	    log_n_jump(err_imu,end_imu,"could not convert new raw...");
 	    err_imu = imu_comm_print_data(&imu_data, log_imu_data);
 	    log_n_jump(err_imu,end_imu,"could not print new data...");
+	    fflush(log_imu_data);
 #endif // LOG_IMU_DATA
 #endif // LOG_IMU_RAW || LOG_IMU_DATA
 
@@ -735,10 +737,12 @@ int main(int argc, char *argv[]){
 #if DEBUG_KALMAN_INPUT
 	log_tv_only(log_kalman_in,tv_tmp);
 	retval = imu_comm_print_data(&imu_data, log_kalman_in);
+	fflush(log_kalman_in);
 #endif //DEBUG_KALMAN_INPUT
 #if DEBUG_X_HAT
 	retval = uquad_mat_transpose(x_hat_T, kalman->x_hat);
 	uquad_mat_dump(x_hat_T,log_x_hat);
+	fflush(log_x_hat);
 #endif //DEBUG_X_HAT
 #endif //DEBUG
 	if(!(runs_kalman > STARTUP_KALMAN))
@@ -804,6 +808,7 @@ int main(int argc, char *argv[]){
 		retval = uquad_mat_transpose(wt,w);
 		log_n_continue(retval,"Failed to transpose!");
 		uquad_mat_dump(wt,log_w);
+		fflush(log_w);
 		retval = gettimeofday(&tv_last_ramp,NULL);
 		log_n_continue(retval,"Failed to update ramp timer!");
 		continue;
@@ -827,6 +832,7 @@ int main(int argc, char *argv[]){
 	retval = uquad_mat_transpose(wt,w);
 	log_tv_only(log_w_ctrl,tv_diff);
 	uquad_mat_dump(wt,log_w_ctrl);
+	fflush(log_w_ctrl);
 #endif
 
 	/// -- -- -- -- -- -- -- --
@@ -843,6 +849,7 @@ int main(int argc, char *argv[]){
 	    log_tv_only(log_w,tv_diff);
 	    retval = uquad_mat_transpose(wt,mot->w_curr);
 	    uquad_mat_dump(wt,log_w);
+	    fflush(log_w);
 #endif
 	    tv_last_m_cmd = tv_tmp;
 	}
@@ -893,6 +900,7 @@ int main(int argc, char *argv[]){
 		    // save to log file
 		    log_tv_only(log_tv, tv_diff);
 		    log_double(log_tv,"Current w_sp",pp->sp->w->m_full[0]);
+		    fflush(log_tv);
 		}
 	    }
 	    retval = ERROR_OK;
