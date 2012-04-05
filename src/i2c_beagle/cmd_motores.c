@@ -31,7 +31,7 @@
 #define MIN_SPEED                 45  // i2c
 
 #define DEBUG                     0
-#define CHECK_STDIN               0
+#define CHECK_STDIN               1
 #if DEBUG
 #define LOG_VELS                  1
 #endif
@@ -45,6 +45,12 @@
 #define UQUAD_MOT_I2C_REG_VEL     0xA2
 #define MOT_SELECTED              1
 #define MOT_NOT_SELECTED          0
+
+/// Startup parameters
+#define RAMP_START                50
+#define RAMP_END                  70
+#define START_JITTER              25
+#define STARTUP_SWAP              0
 
 #define OK                        0
 #define NOT_OK                    -1
@@ -247,12 +253,15 @@ int uquad_mot_set_speed_all(int i2c_dev, __u8 *v, int swap_order){
 
 #define STARTUPS 1 // send startup command repeatedly
 int uquad_mot_startup_all(int i2c_file){
-    int i, watchdog = 0, enable_counts = 0;
+    int i, j, watchdog = 0, enable_counts = 0;
+    __u8 tmp_vel[MOT_COUNT]; __u8 ramp = 0;
+#if STARTUP_SWAP
     if(uquad_mot_set_speed_all(i2c_file, NULL,1) < 0)
     {
 	backtrace();
 	return NOT_OK;
     }
+#endif
     while(uquad_mot_enable_all(i2c_file) < 0 || ++enable_counts < STARTUPS)
     {
 	usleep(400);
@@ -264,6 +273,19 @@ int uquad_mot_startup_all(int i2c_file){
 	}
     }	    
     sleep_ms(420);
+    for(ramp = RAMP_START; ramp < RAMP_END; ramp++)
+    {
+	for(j = 0; j < 2*ramp; ++j)
+	{
+	    if(j!=0)
+		usleep(1235);
+	    for(i = 0; i < MOT_COUNT; ++i)
+		tmp_vel[i] = (!(j%7))?
+		    ramp-START_JITTER:
+		    ramp+START_JITTER;
+	    uquad_mot_set_speed_all(i2c_file, tmp_vel,0);
+	}
+    }
     return OK;
 }
 
