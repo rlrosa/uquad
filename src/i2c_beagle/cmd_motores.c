@@ -31,7 +31,7 @@
 #define MIN_SPEED                 45  // i2c
 
 #define DEBUG                     0
-#define CHECK_STDIN               1
+#define CHECK_STDIN               0
 #if DEBUG
 #define LOG_VELS                  1
 #endif
