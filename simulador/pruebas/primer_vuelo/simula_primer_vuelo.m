@@ -19,17 +19,17 @@ vq1=0; vq2=0; vq3=0;
 
 psis=0; phi=0;  
 
-w1=298.086701308402;
-w2=298.086701308402;
-w3=298.086701308402;
-w4=298.086701308402;
+w1=316.103650939028;
+w2=316.103650939028;
+w3=316.103650939028;
+w4=316.103650939028;
 
 
 A=eval(A);
 B=eval(B);
     
 Q=diag([1 1e3 1e3 1e3 1 1 1 1]);%Pesos de z,psi,phi,theta, vqz wqx,wqy,wqz
-R=diag(100*[1 1 1 1]); %Pesos de w1 w2 w3 w4;
+R=diag(1e-2*[1 1 1 1]); %Pesos de w1 w2 w3 w4;
 
 [K,S,E]=lqrd(A,B,Q,R,10e-3);
 
@@ -39,7 +39,7 @@ assignin('base','K',K);
 %% Inicialización
 assignin('base','g',9.81); %Constante gravitacional
 assignin('base','L',0.29); %Largo de los brazos del quadcopter en metros
-assignin('base','M',1.541); %Masa del quadcopter en kilogramos
+assignin('base','M',1.741); %Masa del quadcopter en kilogramos
 %Elementos relevantes del tensor de inercia en kilogramos metros cuadrados
 assignin('base','Ixx',2.32e-2);
 assignin('base','Iyy',2.32e-2);
