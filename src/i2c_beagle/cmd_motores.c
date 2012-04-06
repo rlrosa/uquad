@@ -47,8 +47,8 @@
 #define MOT_NOT_SELECTED          0
 
 /// Startup parameters
-#define RAMP_START                50
-#define RAMP_END                  70
+#define RAMP_START                30
+#define RAMP_END                  50
 #define START_JITTER              25
 #define STARTUP_SWAP              0
 
