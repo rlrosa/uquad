@@ -1,5 +1,5 @@
 %%Esta parte calcula la matriz de realimentacion
-
+assignin('base','Ts',1e-2)
 Matrices=load('linealizacion.mat');
 A=Matrices.A;
 B=Matrices.B;
@@ -24,15 +24,25 @@ w2=298.086701308402;
 w3=298.086701308402;
 w4=298.086701308402;
 
+% w1=290;
+% w2=290;
+% w3=290;
+% w4=290;
 
 A=eval(A);
 B=eval(B);
-    
-Q=diag([1 1e3 1e3 1e3 1 1 1 1]);%Pesos de z,psi,phi,theta, vqz wqx,wqy,wqz
-R=diag(100*[1 1 1 1]); %Pesos de w1 w2 w3 w4;
 
-[K,S,E]=lqrd(A,B,Q,R,10e-3);
+%AZ = zeros(8,4);  
+C = eye(8,8);
+Z = zeros(8,8);
+BZ = zeros(8,4);
 
+%Q=diag([1 1e2 1e2 1e2 1 1 1 1 1 1 1 1 1 1 1 1]);%Pesos de z,psi,phi,theta, vqz wqx,wqy,wqz
+Q=diag([1 1e2 1e2 1e2 1 1 1 1]);
+R=1e-2*diag([1 1 1 1]); %Pesos de w1 w2 w3 w4;
+
+%[K,S,E]=lqrd([A Z; C Z],[B;BZ],Q,R,10e-3);
+[K,S,E]=lqrd([A],[B],Q,R,10e-3);
 save('K','K');
 assignin('base','K',K);
 
@@ -45,12 +55,12 @@ assignin('base','Ixx',2.32e-2);
 assignin('base','Iyy',2.32e-2);
 assignin('base','Izz',4.37e-2);
 assignin('base','Izzm',1.54e-5);
-assignin('base','Ts',5e-2)
+
 
 
 %Tiempo de simulación.
 ti=0;
-tf=30;
+tf=120;
 
 t=linspace(ti,tf,(tf-ti)*10);
 
@@ -71,12 +81,12 @@ assignin('base','wq30',X0(12));
 
 
 %Este es el setpoint de altura
-assignin('base','setpoint',1);
+assignin('base','setpoint',0);
 
 %Defino el setpoint de las velocidade angulares
-  w = zeros(4,length(t));
-  w(:,:) =334.279741754537;
-
+    w = zeros(4,length(t));
+    w(:,:) =298.279741754537;
+    %w(:,:) =290;
   
 %Simulo el sistema  
 [t,X,Y]=sim('primer_vuelo',[ti tf],[],[t',w(1,:)',w(2,:)',w(3,:)',w(4,:)']);
