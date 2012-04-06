@@ -19,10 +19,10 @@ vq1=0; vq2=0; vq3=0;
 
 psis=0; phi=0;  
 
-w1=298.086701308402;
-w2=298.086701308402;
-w3=298.086701308402;
-w4=298.086701308402;
+w1=316.103650939028;
+w2=316.103650939028;
+w3=316.103650939028;
+w4=316.103650939028;
 
 % w1=290;
 % w2=290;
@@ -31,6 +31,7 @@ w4=298.086701308402;
 
 A=eval(A);
 B=eval(B);
+
 
 %AZ = zeros(8,4);  
 C = eye(8,8);
@@ -49,7 +50,7 @@ assignin('base','K',K);
 %% Inicialización
 assignin('base','g',9.81); %Constante gravitacional
 assignin('base','L',0.29); %Largo de los brazos del quadcopter en metros
-assignin('base','M',1.541); %Masa del quadcopter en kilogramos
+assignin('base','M',1.741); %Masa del quadcopter en kilogramos
 %Elementos relevantes del tensor de inercia en kilogramos metros cuadrados
 assignin('base','Ixx',2.32e-2);
 assignin('base','Iyy',2.32e-2);
@@ -85,8 +86,8 @@ assignin('base','setpoint',0);
 
 %Defino el setpoint de las velocidade angulares
     w = zeros(4,length(t));
-    w(:,:) =298.279741754537;
-    %w(:,:) =290;
+    w(:,:) =316.103650939028
+    
   
 %Simulo el sistema  
 [t,X,Y]=sim('primer_vuelo',[ti tf],[],[t',w(1,:)',w(2,:)',w(3,:)',w(4,:)']);
