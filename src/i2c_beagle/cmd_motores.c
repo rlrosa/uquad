@@ -31,7 +31,6 @@
 #define MIN_SPEED                 45  // i2c
 
 #define DEBUG                     0
-#define CHECK_STDIN               0
 #if DEBUG
 #define LOG_VELS                  1
 #endif
@@ -47,8 +46,8 @@
 #define MOT_NOT_SELECTED          0
 
 /// Startup parameters
-#define RAMP_START                50
-#define RAMP_END                  70
+#define RAMP_START                30
+#define RAMP_END                  50
 #define START_JITTER              25
 #define STARTUP_SWAP              0
 
@@ -383,7 +382,7 @@ int uquad_read(void){
     tv.tv_sec = 0;
     tv.tv_usec = 0;
 
-#if CHECK_STDIN
+#ifdef CHECK_STDIN
     /// get speed data from stdin
     retval = select(STDIN_FILENO+1, &rfds, NULL, NULL, &tv);
     // Don't rely on the value of tv now!
