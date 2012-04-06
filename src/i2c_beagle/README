@@ -6,25 +6,15 @@ to verify syntax.
 # Compiling
 To compile do:
    make
-That will generate a executable called cmd
+That will generate a executable called cmd. this target will communicate via kernel msg queues, it will not read from stdin.
 
-# Running
-To run do
+To build a target that will read from stdin in, do
+   make stdin
+To run do using stdin, do:
    ./cmd v0 v1 v2 v3
 If no arguments are given, all motors will be enabled. Else, vi can be either 0/1 to disable/enable each motor.
+This target will targets arguments such as "50 60 70 90", setting motor speeds v0=50, v1=60, etc.
 
-To change motor speed, write to mot_control.file or to stdin.
-Examples:
-- Using mot_control.file:
-   ./cmd &
-   # startup motors
-   echo "50 50 50 50" >> mot_control.file
-   # stop motors
-   echo "0 0 0 0" >> mot_control.file
-   # note the >>, if only > is used, then each echo will clear the file, and the program will not work.
-- Using stdin
-   ./cmd
-   # startup motors
-   50 50 50 50
-   # stop motors
-   0 0 0 0
+To build a fake target, that does not requiere i2c and is usefull for debugging/testing, do:
+   make pc_test
+This target will communicate via kernel msg queues, and will NOT write to i2c, but will still answer as if it were writing.
