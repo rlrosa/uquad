@@ -12,7 +12,7 @@ syms dX x y z vq1 vq2 vq3 psis phi theta wq1 wq2 wq3 T1 T2 T3 T4 w1 w2 w3 w4 dw1
 
 %Valores de las constantes del sistema
 L=0.29;
-M=1.541;
+M=1.741;
 Ixx=2.32e-02;
 Iyy=2.32e-02;
 Izz=4.37e-02;
