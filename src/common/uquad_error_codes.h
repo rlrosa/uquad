@@ -30,6 +30,7 @@ ERROR_IO_DEV_NOT_FOUND,
 ERROR_GPS,
 ERROR_GPS_OPEN,
 ERROR_GPS_STREAM,
+ERROR_GPS_NO_UPDATES,
 ERROR_MATH_MAX_DIM,
 ERROR_MATH_MAT_DIM,
 ERROR_MATH_VEC_LEN,
@@ -96,6 +97,18 @@ ERROR_TIMING
 #define log_tv_only(log,tv) fprintf(log,"%ld.%06ld\t",tv.tv_sec, tv.tv_usec)
 
 /**
+ * Print int to log ended by tab
+ * 
+ */
+#define log_int_only(log,db) fprintf(log,"%d\t",db)
+
+/**
+ * Print double to log ended by tab
+ * 
+ */
+#define log_double_only(log,db) fprintf(log,"%lf\t",db)
+
+/**
  * If @retval is an error, then propagate error without printing anything.
  * 
  */
@@ -132,6 +145,13 @@ ERROR_TIMING
  *
  */
 #define cleanup_if(retval) if(retval != ERROR_OK) {fprintf(stderr,"backtrace:%s:%d\n",__FILE__,__LINE__);goto cleanup;}
+
+/**
+ * If @retval is an error, jump to cleanup.
+ * Usefull in init routines, allows cleaning up.
+ *
+ */
+#define cleanup_if_null(ptr) if(ptr == NULL) {fprintf(stderr,"%s:%s:%d: Null pointer!\n",__TIME__,__FILE__,__LINE__);goto cleanup;}
 
 /**
  * If @retval is an error, jump to cleanup.

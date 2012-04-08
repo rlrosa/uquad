@@ -16,12 +16,12 @@ int main(void)
     
     gps = gps_comm_init();
     if(gps == NULL){
-	err_log("GPS test failed.");
+	FREE_N_DIE_IF_ERROR(ERROR_MALLOC,"GPS test failed.");
     }
 
     io = io_init();
     if(io == NULL){
-	err_log("GPS test failed.");
+	FREE_N_DIE_IF_ERROR(ERROR_MALLOC,"GPS test failed.");
     }
 
     // add GPS
@@ -37,8 +37,10 @@ int main(void)
     /// -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
     uquad_bool_t read = false,write = false;
     uquad_bool_t reg_gps = true, reg_stdin = true;
+    uquad_mat_t *pos = NULL;
+    pos = uquad_mat_alloc(3,1);
+    double speed, climb;
     unsigned char tmp_buff[2];
-    struct gps_fix_t gps_fix;
     //    poll_n_read:
     while(1){
         ret = io_poll(io);
@@ -49,27 +51,17 @@ int main(void)
             FREE_N_DIE_IF_ERROR(ret,"io_dev_ready() error");
             if(read){
                 ret = gps_comm_read(gps);
-                if(ret != ERROR_OK){
+                if(ret != ERROR_OK)
+		{
                     fprintf(stdout,"\nGPS missed frame?\n\n");
-                }else{
-                    ret = gps_comm_read(gps);
-                    if(ret != ERROR_OK){
-                        fprintf(stdout,"\nGPS had no data!\n\n");
-		    }else{
-			//gps_fix = gps_comm_get_data(gps);
-			fprintf(stdout,"fix mode:%d\n",gps_comm_get_status(gps));
-			if(gps_comm_get_status(gps)){
-			    gps_fix = gps_comm_get_data(gps);
-			    fprintf(stdout,"\tlat:%f\n\tlon:%f\n\talt:%f\n\ttimestamp:%f\n\n",
-				   gps_fix.latitude,
-				   gps_fix.longitude,
-				   gps_fix.altitude,
-				   gps_fix.time);
-			}else{
-			    printf("\n");
-			}
-
-		    }
+		    continue;
+                }
+		else
+		{
+		    //gps_fix = gps_comm_get_data(gps);
+		    ret = gps_comm_get_data(gps, pos, &speed, &climb);
+		    log_n_continue(ret, "Failed to get data!");
+		    gps_comm_dump(gps, stdout);
                 }
             }
         }

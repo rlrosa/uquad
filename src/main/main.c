@@ -1,15 +1,16 @@
 #include <uquad_error_codes.h> // DEBUG is defined here
 #if DEBUG // The following define will affect includes
-#define TIMING 0
-#define TIMING_KALMAN 0
-#define TIMING_IMU 0
-#define TIMING_IO 0
-#define LOG_W 1
-#define LOG_W_CTRL 1
-#define LOG_IMU_RAW 1
-#define LOG_IMU_DATA 1
-#define LOG_IMU_AVG 1
-#define DEBUG_X_HAT 1
+#define TIMING             0
+#define TIMING_KALMAN      0
+#define TIMING_IMU         0
+#define TIMING_IO          0
+#define LOG_W              1
+#define LOG_W_CTRL         1
+#define LOG_IMU_RAW        1
+#define LOG_IMU_DATA       1
+#define LOG_IMU_AVG        1
+#define DEBUG_X_HAT        1
+#define LOG_GPS            1
 #define DEBUG_KALMAN_INPUT 1
 #endif
 
@@ -62,6 +63,7 @@
 #define LOG_IMU_AVG_NAME   "imu_avg"
 #define LOG_X_HAT_NAME     "x_hat"
 #define LOG_KALMAN_IN_NAME "kalman_in"
+#define LOG_GPS_NAME       "gps"
 #define LOG_TV_NAME        "tv"
 
 /**
@@ -109,6 +111,9 @@ uquad_mat_t *x_hat_T = NULL;
 #if DEBUG_KALMAN_INPUT
 FILE *log_kalman_in = NULL;
 #endif //DEBUG_KALMAN_INPUT
+#if LOG_GPS && USE_GPS
+FILE *log_gps = NULL;
+#endif // LOG_GPS && USE_GPS
 #endif //DEBUG
 FILE *log_tv = NULL;
 
@@ -186,6 +191,9 @@ void quit()
 #if DEBUG_KALMAN_INPUT
     uquad_logger_remove(log_kalman_in);
 #endif
+#if LOG_GPS && USE_GPS
+    uquad_logger_remove(log_gps);
+#endif //LOG_GPS && USE_GPS
 #endif //DEBUG
     uquad_logger_remove(log_tv);
 
@@ -386,6 +394,14 @@ int main(int argc, char *argv[]){
 	quit();
     }
 #endif
+#if LOG_GPS && USE_GPS
+    log_gps = uquad_logger_add(LOG_GPS_NAME);
+    if(log_gps == NULL)
+    {
+	err_log("Failed open kalman_in log!");
+	quit();
+    }
+#endif //LOG_GPS && USE_GPS
 #endif //DEBUG
     log_tv = uquad_logger_add(LOG_TV_NAME);
     if(log_tv == NULL)
@@ -434,7 +450,6 @@ int main(int argc, char *argv[]){
     uquad_bool_t gps_update = false;
 #if USE_GPS
     uquad_bool_t reg_gps = (gps == NULL)?false:true;
-    struct timeval tv_gps_diff;
 #endif
     int runs_imu = 0, runs_kalman = 0;
     int err_imu = ERROR_OK, err_gps = ERROR_OK;
@@ -654,21 +669,18 @@ int main(int argc, char *argv[]){
 	    {
 		err_gps = gps_comm_read(gps);
 		log_n_jump(err_gps,end_gps,"GPS had no data!");
-		if(gps_comm_get_status(gps))
-		{
-		    if(runs >= STARTUP_RUNS)
-			// ignore startup data
-			gps_update = true;
-		    gettimeofday(&tv_tmp,NULL);
-		    err_gps = uquad_timeval_substract(&tv_gps_diff,tv_tmp,tv_gps_last);
-		    gettimeofday(&tv_gps_last,NULL);
-		    fprintf(stdout,"\tlat:%f\n\tlon:%f\n\talt:%f\n\ttimestamp:%f\t%ld.%06ld\n\n",
-			    gps->fix.latitude,
-			    gps->fix.longitude,
-			    gps->fix.altitude,
-			    gps->fix.time,
-			    tv_gps_diff.tv_sec,tv_gps_diff.tv_usec);
-		}
+		if(runs_imu >= STARTUP_RUNS)
+		    // ignore startup data
+		    gps_update = true;
+		else
+		    goto end_gps;
+		gettimeofday(&tv_tmp,NULL);
+		err_gps = uquad_timeval_substract(&tv_diff,tv_tmp,tv_gps_last);
+#if LOG_GPS
+		log_tv_only(log_gps, tv_diff);
+		gps_comm_dump(gps, log_gps);
+#endif
+		tv_gps_last = tv_tmp;
 	    }
 	    end_gps:;
 	    // will jump here if something went wrong during GPS reading
