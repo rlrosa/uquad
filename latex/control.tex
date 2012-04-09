@@ -89,7 +89,7 @@ Al tener un tiempo de respuesta r\'apido (en relaci\'on a las constantes del sis
 
 Por otra parte, el problema LQR tiene una versi\'on de horizonte finito y una versi\'on de horizonte finito. A lo largo del tiempo iremos cambiando el setpoint del sistema cada ciertos intervalos de tiempo. Por dicho motivo, el horizonte de nuestro sistema es en sentido estricto de horizonte finito. Sin embargo, las constantes de tiempo involucradas nos permiten asumir que se trata de un sistema de horizonte infinito, lo cual nos permite simplificar las ecuaciones con las que se trabaja.\\
 
-\section{Discretizaci\'on del sistema}
+\subsection{Discretizaci\'on del sistema}
 
 Como se explic\'o en el cap\'itulo \ref{chap:linealizacion} se trabjar\'a con tres tipos de trayectoria: hovering, vuelos en linea recta y c\'irculos. En cada uno de estos casos tenemos un sistema lineal de la forma 
 \begin{equation}
@@ -115,6 +115,38 @@ J_{dlqr} = \sum_0^\infty x_k^T Q x_k + u_k^T R u_k
 
 En el trabajo realizado en \ref{bib:lqr-discreto} se propone un algoritmo iterativo para obtener la matriz de realimentaci\'on que minimiza $J_{dlqr}$. Debido a las pequeñas diferencias encontradas entre este algor\'itmo y la funci\'on \emph{lqrd} de \emph{MatLab}  se opt\'o por reproducir exactamente dicho algor\'itmo.
 
+\subsection{Agregado de integradores}
+
+El esquema de la figura \ref{fig:bloque} funciona a la perfecci\'on solamente en el caso en que la caracterizaci\'on del sistema sea perfecta. Los valores de setpoint fueron determinados anal\'iticamente en funci\'on de los par\'ametros determinados, de forma que por ejemplo, para la trayectoria de hovering la velocidad angular de los motores es aquella que produce una fuerza igual al peso del sistema. Errores en la caracterizaci\'on del sistema llevan a que el punto ( o trayectoria) de equilibrio no sea posible. Supongamos que el valor de $\omega^*$ para la trayectoria de hovering es inferior al realmente necesario para mantener al sistema en un punto. Supongamos adem\'as que inicialmente $X = X^*$. En este caso la entrada al sistema es la velocidad angular $\omega^*$, sin embargo estamos suponiendo que esta fuerza no es suficiente para mantener al sistema en equilibrio, por lo tanto la posici\'on vertical disminuye. Esto produce un aumento en la velocidad angular hasta que para cierto valor de altura la entrada al sistema es aquella que produce el equilibrio. En este caso se obtiene un nuevo punto de equilibrio distinto al deseado. \\
+
+Realizando diversas pruebas se ha comprobado que seg\'un el nivel de bater\'ia disponible un mismo comando $i^2c$ corresponde a distintos valores de velocidad angular. Para resolver este problema se plantea el camino de medir el voltaje en la bater\'ia durante el vuelo, sin embargo este camino no parece pr\'actico ya que se deber\'ia caracterizar la relaci\'on entre velocidad angular y comando $i^2c$ para todos (varios de) los valores de voltaje en el que puede operar la bater\'ia. Este camino no parece pertinente, quedando incluso sujeto a la exactitud con la cual se realizan las medidas.\\
+
+Surge entonces la necesidad de agregar al controlador cierta robustez frente a errores de caracterizaci\'on del sistema o frente a variaciones del mismo, por ejemplo la tensi\'on de la bater\'ia o un cambio en la masa del sistema\footnote{Para realizar pruebas se disponen de bater\'ias de diverso tamaño (y peso), no parece pr\'actico modificar constantemente la masa del sistema seg\'un la bater\'ia con la que se realiza una determinada prueba. \\ 
+Asimismo, la robustez frente a la variaci\'on de la masa es fundamental si se planea utilizar el cuadric\'optero por ejemplo para transportar alguna carga \'util}.\\
+
+El camino a explorar es el de agregar un bloque integrador. El esquema de controlador es ahora el de la figura \ref{fig:bloque2}. Para explicar la utilidad del mismo, continuaremos trabajando con el ejemplo de una trayectoria de hovering en la cual $\omega^*$ est\'a subestimado. En dichas condiciones se obtiene un nuevo punto de equilibro con altura inferior a la deseada. Si realimentamos la integral de la diferencia de altura tenemos una entrada que aumenta hasta que la diferencia de altura sea cero. En este punto el valor de entrada correspondiente al t\'ermino proporcional es cero. Por otra parte el t\'ermino correspondiente a la integral no se modificar\'a ya que una vez alcanzado el punto deseado se integra una funci\'on que vale cero.\\
+
+El agregado de un bloque integrador lo podemos entender como una ampliaci\'on del vector de estados. La salida del bloque integrador verifica que $\dot{X}_I = X$. Donde $X_I$ corresponde a los estados integrados. La din\'amica del sistema puede ser escrita de la siguiente forma:
+
+\begin{equation}
+\label{eq:integrador}
+\left(\begin{array}{c}
+\dot{X}\\
+\dot{X}_I
+\end{array}\right) = \left( \begin{array}{cc}
+A & 0\\
+Id & 0
+\end{array}\right)\left(\begin{array}{c}
+X\\
+X_I
+\end{array}\right) + \left(\begin{array}{c}
+B\\
+0
+\end{array}\right)U
+\end{equation}  
+ 
+En la ecuaci\'on \ref{eq:integrador} lo que se obtiene es un nuevo sistema lineal de mayor dimensi\'on. Por lo tanto todos los conceptos desarrollados hasta este punto continuan siendo v\'alidos. 
+ 
 \section{Controlabilidad y observabilidad}
 
 Los conceptos de controlabilidad y observabilidad son fundamentales para asegurar la estabilidad del sistema en lazo cerrado controlado con la t\'ecnica de LQR.\\
