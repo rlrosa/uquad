@@ -1,4 +1,37 @@
-% function kalman_main(imu_file)
+% -------------------------------------------------------------------------
+% Modelo fisico
+% -------------------------------------------------------------------------
+% d(x)/dt     = vqx*cos(phi)*cos(theta)+vqy*(cos(theta)*sin(phi)*sin(psi)-cos(phi)*sin(theta))+vqz*(sin(psi)*sin(theta)+cos(psi)*cos(theta)*sin(phi))
+% d(y)/dt     = vqx*cos(phi)*sin(theta)+vqy*(sin(theta)*sin(phi)*sin(psi)+cos(psi)*cos(theta))+vqz*(cos(psi)*sin(theta)*sin(phi)-cos(theta)*sin(psi))
+% d(z)/dt     = -vqx*sin(phi)+vqy*cos(phi)*sin(psi)+vqz*cos(psi)*cos(psi)
+% d(psi)/dt   = wqx+wqz*tan(fi)*cos(psi)+wqy*tan(fi)*sin(psi);
+% d(phi)/dt   = wqy*cos(psi)-wqz*sin(psi);
+% d(theta)/dt = wqz*cos(psi)/cos(fi)+wqy*sin(psi)/cos(fi);
+% d(vqx)/dt   = vqy*wqz-vqz*wqy+g*sin(phi)
+% d(vqy)/dt   = vqz*wqx-vqx*wqz-g*cos(phi)*sin(psi)
+% d(vqz)/dt   = vqx*wqy-vqy*wqx-g*cos(phi)*cos(psi)+1/M*(TM(1)+TM(2)+TM(3)+TM(4))
+% d(wqx)/dt   = ( wqy*wqz*(Iyy-Izz)+wqy*Izzm*(w1-w2+w3-w4)+L*(T2-T4) )/Ixx;
+% d(wqy)/dt   = ( wqx*wqz*(Izz-Ixx)+wqx*Izzm*(w1-w2+w3-w4)+L*(T3-T1) )/Iyy;
+% d(wqz)/dt   = ( -Izzm*(dw1-dw2+dw3-dw4)+Q1-Q2+Q3-Q4 )/Izz;
+% 
+% -------------------------------------------------------------------------
+% Estado
+% -------------------------------------------------------------------------
+% x = [x y z psi phi tehta vqx vqy vqz wqx wqy wqz]
+% 
+% -------------------------------------------------------------------------
+% Kalman
+% -------------------------------------------------------------------------
+% A partir de los datos del gyro se hace un Kalman para la estimación de la
+% velocidad angular en las 3 direcciones. A partir de los datos del
+% magnetometro, convertidos a angulos de euler en mong_conv se estiman los
+% angulos con el mismo filtro de kalman.
+% A su vez con los datos de los acelerometros y los otros estados estimados
+% se hallan las velocidades referenciadas al quad (vq) y por ultimo se
+% incluye la estimacion de la posicion absoluta del quad, utilizando
+% unicamente el modelo fisico. No se realiza correcion con ningun sensor a
+% los estados x, y, z (posicion absoluta)
+% -------------------------------------------------------------------------
 
 %% Load data
 
@@ -119,9 +152,9 @@ end
 
 %% Plots
 
-figure; 
-    plot(-w_control(:,1)-w_control(:,3)+w_control(:,2)+w_control(:,4),'r','linewidth',3); 
-    title('diferencia entre velocidades angulares (adelante+atras)-(derecha+izquierda)'); 
-    legend('Giro en z')
+% figure; 
+%     plot(w_control(:,1)+w_control(:,3)-w_control(:,2)-w_control(:,4),'r','linewidth',3); 
+%     title('diferencia entre velocidades angulares (adelante+atras)-(derecha+izquierda)'); 
+%     legend('Giro en z')
 plot_main(x_hat,z,T);
 plot_w(w_control,T(kalman_startup+1:end));
