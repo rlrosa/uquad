@@ -36,10 +36,7 @@
 %% Load data
 
 % Imu
-% if(~exist('imu_file','var'))
-    % imu_file = '../../../Escritorio/imu_raw.log';
-    imu_file = 'tests/main/logs/4abril_manana_2/imu_raw.log';
-% end
+imu_file = 'tests/main/logs/2012_04_06_1_1_izquierda/imu_raw.log';
 [acrud,wcrud,mcrud,~,bcrud,~,~,T]=mong_read(imu_file,0,1);
 avg = 1;
 startup_runs = 200;
@@ -80,20 +77,24 @@ for i = 1:3
   w(:,i) = w(:,i) - w_calib_mean(i);
 end
 
-% % Gps
-% % gps_file = '~/Escritorio/car/01.log';
-% % [easting, northing, elevation, utmzone, sat, lat, lon, dop] = ...
-% %     gpxlogger_xml_handler(gps_file, 1);
-% % save('kalman/gps','easting','northing','elevation','utmzone','sat','lat','lon','dop');
-% GPS = load('kalman/gps.mat');
-% easting = GPS.easting; northing = GPS.northing; elevation = GPS.elevation; 
-% utmzone = GPS.utmzone; sat = GPS.sat; lat = GPS.lat; lon = GPS.lon; dop = GPS.dop;
+% Gps
+% gps_file = '~/Escritorio/car/01.log';
+% [easting, northing, elevation, utmzone, sat, lat, lon, dop] = ...
+%     gpxlogger_xml_handler(gps_file, 1);
+% save('kalman/gps','easting','northing','elevation','utmzone','sat','lat','lon','dop');
+GPS       = load('kalman/gps.mat');
+easting   = GPS.easting; northing = GPS.northing; elevation = GPS.elevation; 
+utmzone   = GPS.utmzone; sat = GPS.sat; lat = GPS.lat; lon = GPS.lon; dop = GPS.dop;
+easting   = easting - mean(easting);
+northing  = northing - mean(northing);
+elevation = elevation - mean(elevation);
 
 %% Constantes, entradas, observaciones e inicialización
 
 % Constantes
 N       = size(a,1);         % Cantidad de muestras de las observaciones
 Ns      = 12;                % N states: cantidad de variables de estado
+Ngps    = 3;                 % N gps: cantidad de variables corregidas por gps
 Nc      = 8;                 % N control states: Cantidad de estados a controlar
 % w_idle  = 109;               %     se controla z,psi,phi,theta,vqz,wqx,wqy,wqz
 w_hover = 316.10;
@@ -118,24 +119,31 @@ w_control      = zeros(N-kalman_startup,4);
 w_control(1,:) = w_hover*ones(size(w_control(1,:)));
 x_hat_partial  = zeros(N,8);
 
+P_gps          = 1*eye(Ngps);
+gps_count      = 0;
+gps_index      = 2;
+
 %% Kalman
 
 for i=2:N
     wc_i = i-kalman_startup;
+    gps_count = gps_count + 1;
 
     % Kalman
     if(i > kalman_startup + 1)
       % Use control output as current w
-      [x_hat(i,:),P] = kalman_imu(x_hat(i-1,:),P,T(i),w_control(wc_i - 1,:)',z(i,:)');
+      [x_hat(i,:),P] = kalman_imu(x_hat(i-1,:),P,T(i)-T(i-1),w_control(wc_i - 1,:)',z(i,:)');
     else
       % Use set point w as current w
-      [x_hat(i,:),P] = kalman_imu(x_hat(i-1,:),P,T(i),sp_w,z(i,:)');
+      [x_hat(i,:),P] = kalman_imu(x_hat(i-1,:),P,T(i)-T(i-1),sp_w,z(i,:)');
     end
    
-%     if gps_available
-%         [aux,P_gps]    = kalman_gps(x_hat(i-1,1:3),P_gps,[easting(i) northing(i) elevation(i)]);
-%         x_hat(i-1,1:3) = aux;
-%     end
+    if gps_count == 100
+        [aux,P_gps]    = kalman_gps(x_hat(gps_index-1,1:3),P_gps,[northing(gps_index);easting(gps_index);elevation(gps_index)]);
+        x_hat(gps_index-1,1:3) = aux;
+        gps_index = gps_index + 1;
+        gps_count = 0;
+    end
     
     % Control
     x_hat_partial(i,:) = [x_hat(i,3), x_hat(i,4), x_hat(i,5), x_hat(i,6), ...
@@ -162,5 +170,6 @@ end
 %     plot(w_control(:,1)+w_control(:,3)-w_control(:,2)-w_control(:,4),'r','linewidth',3); 
 %     title('diferencia entre velocidades angulares (adelante+atras)-(derecha+izquierda)'); 
 %     legend('Giro en z')
-plot_main(x_hat,z,T);
-plot_w(w_control,T(kalman_startup+1:end));
+
+plot_main(x_hat,T,z,T);
+plot_w([T(kalman_startup+1:end) w_control]);
