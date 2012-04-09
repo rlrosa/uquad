@@ -39,24 +39,14 @@ clc
 
 %% Observaciones y constantes
 
-% [acrud,wcrud,mcrud,tcrud,bcrud,~,~,T]=mong_read('log-zparriba4',0);
-% [acrud,wcrud,mcrud,tcrud,bcrud,~,~,T]=mong_read('imu_raw_7.log',0,1);
+file = './tests/mongoose/acc/logs_zparriba/z00y45.txt';
+[acrud,wcrud,mcrud,~,bcrud,~,~,T]=mong_read(file,0);
+% file = 'tests/main/logs/4abril_manana_2/imu_raw.log';
+% [acrud,wcrud,mcrud,~,bcrud,~,~,T]=mong_read(file,0,1);
 
-% file = '../../../Escritorio/imu_raw.log';
-file = './tests/mongoose/acc/logs_zparriba/z00y00.txt';
-[acrud,wcrud,mcrud,~,bcrud,~,~,T]=mong_read(file,1);
 [a,w,euler] = mong_conv(acrud,wcrud,mcrud,0);
-b=altitud(bcrud);
-
-% Test contra c - Descomentar esto para ver como se porta con datos
-% promediados por la imu como entradas.
-% %T = ones(size(T))*13000/1e6;% Debug, T cte
-% xhat = load('./src/build/test/kalman_test/imu_data.log');
-% a = xhat(:,4:6);
-% w = xhat(:,7:9);
-% euler = xhat(:,10:12);
-% b = xhat(:,end);
-% T = xhat(:,3)/1e6;
+b0 = mean(bcrud(1:512));
+b  = altitud(bcrud,b0);
 
 N  = size(a,1);         % Cantidad de muestras de las observaciones
 Ns = 12;                % N states: cantidad de variables de estado
@@ -69,19 +59,16 @@ Iyy  = 2.32e-2;         % Tensor de inercia del quad - según y
 Izz  = 4.37e-2;         % Tensor de inercia del quad - según z
 Izzm = 1.54e-5;         % Tensor de inercia de los motores - segun z
 L    = 0.29;            % Largo en metros del los brazos del quad
-M    = 1.541;           % Masa del Quad en kg
+M    = 1.741;           % Masa del Quad en kg
 g    = 9.81;            % Aceleracion gravitatoria
-
-% sigma_a = load('acc','sigma');sigma_a=sigma_a.sigma;
-% sigma_w = load('gyro','sigma');sigma_w=sigma_w.sigma;
-% sigma_m = load('mag','sigma');sigma_m=sigma_m.sigma;
 
 %% Entradas
 
-w  = 298.0867*ones(N,4);  % Velocidades angulares de los motores en rad/s. Cada columna corresponde con 1 motor
-dw = zeros(N,4);        % Derivada de w. Cada columna corresponde a 1 motor
-TM = drive(w);          % Fuerzas ejercidas por los motores en N. Cada columna corresponde a 1 motor.
-D  = drag(w);           % Torque de Drag ejercido por los motores en N*m. Cada columna corresponde a cada motor
+w_hover = 298.0867;
+w       = w_hover*ones(N,4);  % Velocidades angulares de los motores en rad/s. Cada columna corresponde con 1 motor
+dw      = zeros(N,4);         % Derivada de w. Cada columna corresponde a 1 motor
+TM      = drive(w);           % Fuerzas ejercidas por los motores en N. Cada columna corresponde a 1 motor.
+D       = drag(w);            % Torque de Drag ejercido por los motores en N*m. Cada columna corresponde a cada motor
     
 %% Kalman
      
@@ -100,7 +87,7 @@ f = @(x,y,z,psi,phi,theta,vqx,vqy,vqz,wqx,wqy,wqz,w,dw,TM,D,T) [ ...
     ...   
     wqx   + T*( wqy*wqz*(Iyy-Izz)+wqy*Izzm*(w(1)-w(2)+w(3)-w(4))+L*(TM(2)-TM(4)) )/Ixx ;
     wqy   + T*( wqx*wqz*(Izz-Ixx)+wqx*Izzm*(w(1)-w(2)+w(3)-w(4))+L*(TM(3)-TM(1)) )/Iyy;
-    wqz   + T*( -Izzm*(dw(1)-dw(2)+dw(3)-dw(4))+D(1)-D(2)+D(3)-D(4) )/Izz ...
+    wqz   + T*( -Izzm*(dw(1)-dw(2)+dw(3)-dw(4))-(D(1)-D(2)+D(3)-D(4)) )/Izz ...
     ];
 
 h = @(z,psi,phi,theta,vqx,vqy,vqz,wqx,wqy,wqz,TM) [ ... 
@@ -119,7 +106,8 @@ h = @(z,psi,phi,theta,vqx,vqy,vqz,wqx,wqy,wqz,TM) [ ...
 F = @(psi,phi,theta,vqx,vqy,vqz,wqx,wqy,wqz,w,T) ...
 	[ ... 
     1, 0, 0,                          T*(vqz*(cos(psi)*sin(theta) - cos(theta)*sin(phi)*sin(psi)) + vqy*cos(psi)*cos(theta)*sin(phi)), T*(vqy*(sin(phi)*sin(theta) + cos(phi)*cos(theta)*sin(psi)) - vqx*cos(theta)*sin(phi) + vqz*cos(phi)*cos(psi)*cos(theta)), -T*(vqy*(cos(phi)*cos(theta) + sin(phi)*sin(psi)*sin(theta)) - vqz*(cos(theta)*sin(psi) - cos(psi)*sin(phi)*sin(theta)) + vqx*cos(phi)*sin(theta)), T*cos(phi)*cos(theta), -T*(cos(phi)*sin(theta) - cos(theta)*sin(phi)*sin(psi)),  T*(sin(psi)*sin(theta) + cos(psi)*cos(theta)*sin(phi)),                                                       0,                                                            0,                        0 ;
-    0, 1, 0, -T*(vqy*(cos(theta)*sin(psi) - cos(psi)*sin(phi)*sin(theta)) + vqz*(cos(psi)*cos(theta) + sin(phi)*sin(psi)*sin(theta))),                         T*(vqz*cos(phi)*cos(psi)*sin(theta) - vqx*sin(phi)*sin(theta) + vqy*cos(phi)*sin(psi)*sin(theta)),  T*(vqz*(sin(psi)*sin(theta) + cos(psi)*cos(theta)*sin(phi)) - vqy*(cos(psi)*sin(theta) - cos(theta)*sin(phi)*sin(psi)) + vqx*cos(phi)*cos(theta)), T*cos(phi)*sin(theta),  T*(cos(psi)*cos(theta) + sin(phi)*sin(psi)*sin(theta)), -T*(cos(theta)*sin(psi) - cos(psi)*sin(phi)*sin(theta)),                                                       0,                                                            0,                        0 ;    0, 0, 1,                                                                      T*(vqy*cos(phi)*cos(psi) - 2*vqz*cos(psi)*sin(psi)),                                                                                 -T*(vqx*cos(phi) + vqy*sin(phi)*sin(psi)),                                                                                                                                                  0,           -T*sin(phi),                                     T*cos(phi)*sin(psi),                                            T*cos(psi)^2,                                                       0,                                                            0,                        0 ;
+    0, 1, 0, -T*(vqy*(cos(theta)*sin(psi) - cos(psi)*sin(phi)*sin(theta)) + vqz*(cos(psi)*cos(theta) + sin(phi)*sin(psi)*sin(theta))),                         T*(vqz*cos(phi)*cos(psi)*sin(theta) - vqx*sin(phi)*sin(theta) + vqy*cos(phi)*sin(psi)*sin(theta)),  T*(vqz*(sin(psi)*sin(theta) + cos(psi)*cos(theta)*sin(phi)) - vqy*(cos(psi)*sin(theta) - cos(theta)*sin(phi)*sin(psi)) + vqx*cos(phi)*cos(theta)), T*cos(phi)*sin(theta),  T*(cos(psi)*cos(theta) + sin(phi)*sin(psi)*sin(theta)), -T*(cos(theta)*sin(psi) - cos(psi)*sin(phi)*sin(theta)),                                                       0,                                                            0,                        0 ;
+    0, 0, 1,                                                                      T*(vqy*cos(phi)*cos(psi) - 2*vqz*cos(psi)*sin(psi)),                                                                                 -T*(vqx*cos(phi) + vqy*sin(phi)*sin(psi)),                                                                                                                                                  0,           -T*sin(phi),                                     T*cos(phi)*sin(psi),                                            T*cos(psi)^2,                                                       0,                                                            0,                        0 ;
     0, 0, 0,                                                                    T*(wqy*cos(psi)*tan(phi) - wqz*sin(psi)*tan(phi)) + 1,                                                         T*(wqz*cos(psi)*(tan(phi)^2 + 1) + wqy*sin(psi)*(tan(phi)^2 + 1)),                                                                                                                                                  0,                     0,                                                       0,                                                       0,                                                       T,                                          T*sin(psi)*tan(phi),      T*cos(psi)*tan(phi) ;
     0, 0, 0,                                                                                         -T*(wqz*cos(psi) + wqy*sin(psi)),                                                                                                                         1,                                                                                                                                                  0,                     0,                                                       0,                                                       0,                                                       0,                                                   T*cos(psi),              -T*sin(psi) ;
     0, 0, 0,                                                                    T*((wqy*cos(psi))/cos(phi) - (wqz*sin(psi))/cos(phi)),                                               T*((wqz*cos(psi)*sin(phi))/cos(phi)^2 + (wqy*sin(phi)*sin(psi))/cos(phi)^2),                                                                                                                                                  1,                     0,                                                       0,                                                       0,                                                       0,                                        (T*sin(psi))/cos(phi),    (T*cos(psi))/cos(phi) ;
@@ -145,8 +133,11 @@ H = @() ...
     0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0
     ];
 
-Q = diag(.1*[100 100 100 100 100 100 100 100 100 10 10 10]);
-R = diag(1000*[.1 .1 .1 100 100 100 10 10 10 10]);
+% Q = diag(.1*[100 100 100 100 100 100 100 100 100 10 10 10]);
+% R = diag(1000*[.1 .1 .1 100 100 100 10 10 10 10]);
+
+Q = diag(1*[100 100 100 1 1 1 10 10 10 1 1 1]);
+R = diag(100*[100 100 100 100 100 100 1 1 1 100]);
 
 P = 1*eye(Ns);
 x_hat=zeros(N,Ns);
@@ -191,63 +182,6 @@ for i=2:N
 end
 
 
-% %% Plots
-% 
-% figure()
+%% Plots
 
-subplot(221)
-    plot([x_hat(1:end,1)],'b')
-    hold on; grid
-    plot([x_hat(1:end,2)],'r')
-    plot(b,'k')
-    plot([x_hat(1:end,3)],'g')
-    legend('x','y','z')
-    hold off    
-
-subplot(222)
-    plot(z(:,1),'k')
-    hold on; grid
-    plot(z(:,2),'k')
-    plot(z(:,3),'k')    
-    plot([x_hat(1:end,4)],'b')
-    plot([x_hat(1:end,5)],'r')
-    plot([x_hat(1:end,6)],'g')
-    legend('\psi','\phi','\theta','\psi','\phi','\theta')
-    hold off    
-    
-subplot(223)
-    plot([x_hat(1:end,7)],'b')
-    hold on; grid
-    plot([x_hat(1:end,8)],'r')
-    plot([x_hat(1:end,9)],'g')
-    legend('v_{qx}','v_{qy}','v_{qz}')
-    hold off
-
-subplot(224)
-    plot(z(:,7),'k')
-    hold on; grid
-    plot(z(:,8),'k')
-    plot(z(:,9),'k')    
-    plot([x_hat(1:end,10)],'b')
-    plot([x_hat(1:end,11)],'r')
-    plot([x_hat(1:end,12)],'g')
-    legend('w_x','w_y','w_z','w_x','w_y','w_z')
-    hold off
-    
-% figure()
-% subplot(211)
-%     plot(z(:,1)-[x_hat(1:end,4)],'b')
-%     hold on; grid
-%     plot(z(:,2)-[x_hat(1:end,5)],'r')
-%     plot(z(:,3)-[x_hat(1:end,6)],'g')    
-%     legend('\psi','\phi','\theta')
-%     title('Errores en angulos')
-%     hold off
-% subplot(212)
-%     plot(z(:,7)-[x_hat(1:end,10)],'b')
-%     hold on; grid
-%     plot(z(:,8)-[x_hat(1:end,11)],'r')
-%     plot(z(:,9)-[x_hat(1:end,12)],'g')    
-%     legend('w_x','w_y','w_z')
-%     title('Errores en velocidades angulares')
-%     hold off
+plot_main(x_hat,z,T);
