@@ -48,7 +48,7 @@ cp imu/imu_calib.txt build/main/
 cp build/logger/logger build/main
 
 # prepare motor command
-cp i2c_beagle/cmd${pc_test} build/main/
+cp i2c_beagle/cmd${pc_test} build/main/cmd
 
 # set up stderr logger
 if ! [ -a build/main/${err_pipe} ];
