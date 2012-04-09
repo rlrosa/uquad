@@ -54,7 +54,7 @@ bcrud = bcrud(startup_runs:end,:);
 T = T(startup_runs:end);
 
 % p0 and theta0 is estimated form first imu_calib samples
-[a_calib,~,euler_calib] = mong_conv(acrud(1:imu_calib,:),wcrud(1:imu_calib,:),mcrud(1:imu_calib,:),0);
+[a_calib,w_calib,euler_calib] = mong_conv(acrud(1:imu_calib,:),wcrud(1:imu_calib,:),mcrud(1:imu_calib,:),0);
 theta0                  = mean(euler_calib(:,3));
 b0                      = mean(bcrud(1:imu_calib));
 
@@ -74,6 +74,12 @@ T     = T(imu_calib:end,:);
 [a,w,euler] = mong_conv(acrud,wcrud,mcrud,0);
 b=altitud(bcrud,b0);
 
+% gyro offset comp
+w_calib_mean = mean(w_calib);
+for i = 1:3
+  w(:,i) = w(:,i) - w_calib_mean(i);
+end
+
 % % Gps
 % % gps_file = '~/Escritorio/car/01.log';
 % % [easting, northing, elevation, utmzone, sat, lat, lon, dop] = ...
@@ -90,7 +96,7 @@ N       = size(a,1);         % Cantidad de muestras de las observaciones
 Ns      = 12;                % N states: cantidad de variables de estado
 Nc      = 8;                 % N control states: Cantidad de estados a controlar
 % w_idle  = 109;               %     se controla z,psi,phi,theta,vqz,wqx,wqy,wqz
-w_hover = 298.0867;
+w_hover = 316.10;
 w_max   = 387.0; 
 w_min   = 109.0; 
 K       = load('K.mat');K = K.K;

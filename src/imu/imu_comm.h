@@ -15,8 +15,8 @@
 /// Default path for calibration file.
 #define IMU_DEFAULT_CALIB_PATH "imu_calib.txt"
 
-#define IMU_COMM_PRINT_DATA_FORMAT "%d\t%d\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\n"
-#define IMU_COMM_PRINT_RAW_FORMAT "%d\t%d\t%u\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%u\t%u\n"
+#define IMU_COMM_PRINT_DATA_FORMAT "%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\n"
+#define IMU_COMM_PRINT_RAW_FORMAT "%u\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%u\t%u\n"
 
 /**
  * Setting this define to 1 will make imu_comm
@@ -163,7 +163,10 @@ typedef struct imu_calibration_lin_model{
  */
 typedef struct imu_calibration{
     imu_calib_lin_t m_lin[3];      // {acc,gyro,magn}.
-    uquad_mat_t *t_off;            // Temp offset {x,y,z} (m/(s^2°C))
+    uquad_mat_t *acc_t_off;        // acc temp offset {x,y,z}  [m/(s^2°C)]
+    double acc_to;                 // acc calibration temp
+    uquad_mat_t *gyro_t_off;       // gyro temp offset {x,y,z} [rad/(s)]
+    double gyro_to;                // gyro calibration temp
     struct timeval timestamp_file; // time at which calib was read.
     uquad_bool_t calib_file_ready; // calibration was read from file.
 

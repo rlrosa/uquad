@@ -50,7 +50,8 @@ int main(int argc, char *argv[]){
     unsigned char tmp[2];
     char * device;
     fd_set rfds;
-    struct timeval tv;
+    struct timeval tv, tv_start, tv_diff, tv_tmp;
+    gettimeofday(&tv_start,NULL);
 
     // Catch signals
     signal(SIGINT, uquad_sig_handler);
@@ -177,6 +178,9 @@ int main(int argc, char *argv[]){
 		retval = imu_comm_get_raw_latest_unread(imu,&raw);
 		if(retval == ERROR_OK)
 		{
+		    gettimeofday(&tv_tmp,NULL);
+		    uquad_timeval_substract(&tv_diff, tv_tmp, tv_start);
+		    log_tv_only(log_imu_raw, tv_diff);
 		    retval = imu_comm_print_raw(&raw,log_imu_raw);
 		    quit_if(retval);
 		}
@@ -190,6 +194,9 @@ int main(int argc, char *argv[]){
 #endif // PRINT_RAW
 		if(retval == ERROR_OK)
 		{
+		    gettimeofday(&tv_tmp,NULL);
+		    uquad_timeval_substract(&tv_diff, tv_tmp, tv_start);
+		    log_tv_only(log_imu_data, tv_diff);
 		    retval = imu_comm_print_data(&data,log_imu_data);
 		    quit_if(retval);
 		}
@@ -199,6 +206,9 @@ int main(int argc, char *argv[]){
 		if(imu_comm_avg_ready(imu)){
 		    retval = imu_comm_get_avg(imu,&data);
 		    quit_if(retval);
+		    gettimeofday(&tv_tmp,NULL);
+		    uquad_timeval_substract(&tv_diff, tv_tmp, tv_start);
+		    log_tv_only(log_imu_avg, tv_diff);
 		    retval = imu_comm_print_data(&data,log_imu_avg);
 		    quit_if(retval);
 		}

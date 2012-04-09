@@ -49,11 +49,11 @@ fs = 100;
 
 
 [a,w,m,t_imu,~,fecha,ind]=mong_read...
-    (['tests/mongoose/temperaturomometro/data_secador/1/imu_raw.log'],1,1);
- a = a(6320:end,:);
- w = w(6320:end,:);
- m = m(6320:end,:);
- t_imu=t_imu(6320:end,:);
+    (['tests/mongoose/temperaturomometro/data_abril/imu_raw.log'],0,1);
+a = a(2.26e4:4.8e5,:);
+w = w(2.26e4:4.8e5,:);
+m = m(2.26e4:4.8e5,:);
+t_imu=t_imu(2.26e4:4.8e5,:);
 
 [aconv,wconv,mconv]=mong_conv(a,w,m,0);
 t_imu=t_imu/10;
@@ -96,7 +96,7 @@ N            = size(w_crudas,1);
 w_teoricos   = [zeros(N,1) zeros(N,1) zeros(N,1)];
 temperaturas = mean(vec2mat(t_imu,avr),2);
 
-x0_lin=[0 0 0];
+x0_lin=[0 0 0 0 0 0];
 [x,RESNORM,RESIDUAL,EXITFLAG]=lsqnonlin(@temp_gyro_cost,x0_lin,[],[],optimset('MaxFunEvals',10000,'MaxIter',1000));
 
 save('gyro_temp','x','to');
@@ -117,7 +117,7 @@ wconv_temp_lin=zeros(size(w));
 for i=1:length(w(:,1))
     aux = T *(K^-1)* (w(i,:)'- (b + [x(1); ...
                                  x(2); ...
-                                 x(3)]*(t_imu(i)-to))) ;
+                                 x(3)]*(t_imu(i)-to)+[x(4);x(5);x(6)])) ;
     wconv_temp_lin(i,:)=aux';
 end
 
@@ -141,8 +141,9 @@ figure
     plot(moving_avg(t_imu,20),moving_avg(wconv_temp_lin(:,2),20),'*m');
     plot(t_imu,wconv_avg(:,3),'b*')
     plot(moving_avg(t_imu,20),moving_avg(wconv_temp_lin(:,3),20),'*y');
-    axis([15 30 -11 1]); xlabel('Temperatura'); ylabel('Aceleracion en m/s^2');
-    legend('ax sin compensar','ax compensada','ay sin compensar','ay compensada','az sin compensar','az compensada')
+    axis tight; xlabel('Temperatura'); ylabel('Velocidad angular en rad/s');
+    legend('wx sin compensar','wx compensada','wy sin compensar', ...
+      'wy compensada', 'wz sin compensar','wz compensada')
         
 figure()
 subplot(211)
