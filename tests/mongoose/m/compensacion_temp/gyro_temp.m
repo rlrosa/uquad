@@ -49,7 +49,7 @@ fs = 100;
 
 
 [a,w,m,t_imu,~,fecha,ind]=mong_read...
-    (['tests/mongoose/temperaturomometro/data_abril/imu_raw.log'],1,1);
+    (['tests/mongoose/temperaturomometro/data_abril/imu_raw.log'],0,1);
 a = a(2.26e4:4.8e5,:);
 w = w(2.26e4:4.8e5,:);
 m = m(2.26e4:4.8e5,:);
@@ -141,8 +141,9 @@ figure
     plot(moving_avg(t_imu,20),moving_avg(wconv_temp_lin(:,2),20),'*m');
     plot(t_imu,wconv_avg(:,3),'b*')
     plot(moving_avg(t_imu,20),moving_avg(wconv_temp_lin(:,3),20),'*y');
-    axis([15 30 -11 1]); xlabel('Temperatura'); ylabel('Aceleracion en m/s^2');
-    legend('ax sin compensar','ax compensada','ay sin compensar','ay compensada','az sin compensar','az compensada')
+    axis tight; xlabel('Temperatura'); ylabel('Velocidad angular en rad/s');
+    legend('wx sin compensar','wx compensada','wy sin compensar', ...
+      'wy compensada', 'wz sin compensar','wz compensada')
         
 figure()
 subplot(211)
