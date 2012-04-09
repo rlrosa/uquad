@@ -15,8 +15,8 @@
 /// Default path for calibration file.
 #define IMU_DEFAULT_CALIB_PATH "imu_calib.txt"
 
-#define IMU_COMM_PRINT_DATA_FORMAT "%d\t%d\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\n"
-#define IMU_COMM_PRINT_RAW_FORMAT "%d\t%d\t%u\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%u\t%u\n"
+#define IMU_COMM_PRINT_DATA_FORMAT "%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\n"
+#define IMU_COMM_PRINT_RAW_FORMAT "%u\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%u\t%u\n"
 
 /**
  * Setting this define to 1 will make imu_comm

@@ -554,9 +554,17 @@ int main(int argc, char *argv[]){
 	    imu_update = false; // data may not be of direct use, may be calib
 
 #if LOG_IMU_RAW || LOG_IMU_DATA
+	    err_imu = gettimeofday(&tv_tmp,NULL);
+	    err_log_std(err_imu);
+	    err_imu = uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
+	    if(err_imu < 0)
+	    {
+		err_log("Timing error!");
+	    }
 	    err_imu = imu_comm_get_raw_latest(imu,&imu_frame);
 	    log_n_jump(err_imu,end_imu,"could not get new frame...");
 #if LOG_IMU_RAW
+	    log_tv_only(log_imu_raw,tv_diff);
 	    err_imu= imu_comm_print_raw(&imu_frame, log_imu_raw);
 	    log_n_jump(err_imu,end_imu,"could not print new raw frame...");
 	    fflush(log_imu_raw);
@@ -564,6 +572,7 @@ int main(int argc, char *argv[]){
 #if LOG_IMU_DATA
 	    err_imu = imu_comm_raw2data(imu, &imu_frame, &imu_data);
 	    log_n_jump(err_imu,end_imu,"could not convert new raw...");
+	    log_tv_only(log_imu_raw,tv_diff);
 	    err_imu = imu_comm_print_data(&imu_data, log_imu_data);
 	    log_n_jump(err_imu,end_imu,"could not print new data...");
 	    fflush(log_imu_data);
@@ -747,7 +756,8 @@ int main(int argc, char *argv[]){
 
 #if DEBUG
 #if DEBUG_KALMAN_INPUT
-	log_tv_only(log_kalman_in,tv_tmp);
+	retval = uquad_timeval_substract(&tv_diff,tv_last_kalman,tv_start);
+	log_tv_only(log_kalman_in,tv_diff);
 	retval = imu_comm_print_data(&imu_data, log_kalman_in);
 	fflush(log_kalman_in);
 #endif //DEBUG_KALMAN_INPUT
@@ -810,12 +820,7 @@ int main(int argc, char *argv[]){
 			runs_kalman*(MOT_W_STARTUP_RANGE/STARTUP_KALMAN);
 		retval = mot_set_vel_rads(mot, w);
 		log_n_continue(retval,"Failed to set motor speed!");
-		retval = uquad_timeval_substract(&tv_diff,tv_tmp,tv_last_ramp);
-		if(retval < 0)
-		{
-		    err_log("Absurd ramp timing!");
-		    continue;
-		}
+		uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
 		log_tv_only(log_w,tv_diff);
 		retval = uquad_mat_transpose(wt,w);
 		log_n_continue(retval,"Failed to transpose!");
@@ -842,6 +847,7 @@ int main(int argc, char *argv[]){
 	log_n_continue(retval,"Control failed!");
 #if DEBUG && LOG_W_CTRL
 	retval = uquad_mat_transpose(wt,w);
+	uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
 	log_tv_only(log_w_ctrl,tv_diff);
 	uquad_mat_dump(wt,log_w_ctrl);
 	fflush(log_w_ctrl);
@@ -858,6 +864,7 @@ int main(int argc, char *argv[]){
 	    retval = mot_set_vel_rads(mot, w);
 	    log_n_continue(retval,"Failed to set motor speed!");
 #if DEBUG && LOG_W
+	    uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
 	    log_tv_only(log_w,tv_diff);
 	    retval = uquad_mat_transpose(wt,mot->w_curr);
 	    uquad_mat_dump(wt,log_w);

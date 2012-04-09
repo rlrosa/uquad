@@ -1207,6 +1207,7 @@ static int imu_comm_acc_convert(imu_t *imu, int16_t *raw, uquad_mat_t *acc, doub
     retval = imu_comm_convert_lin(imu, raw, acc, imu->calib.m_lin);    
     err_propagate(retval);
     // temperature correction
+#warning "Aca no va la temp de la calib en lugar de la promedio del init?"
     retval = uquad_mat_scalar_mul(m3x1_0,
 				  imu->calib.t_off,
 				  temp - imu->calib.null_est_data.temp);
@@ -1724,9 +1725,8 @@ int imu_comm_print_data(imu_data_t *data, FILE *stream){
     if(stream == NULL){
 	stream = stdout;
     }
+    log_tv_only(stream,data->timestamp);
     fprintf(stream,IMU_COMM_PRINT_DATA_FORMAT,
-	    (int)data->timestamp.tv_sec,
-	    (int)data->timestamp.tv_usec,
 	    data->T_us,
 	    data->acc->m_full[0],
 	    data->acc->m_full[1],
@@ -1755,9 +1755,8 @@ int imu_comm_print_raw(imu_raw_t *frame, FILE *stream){
 	stream = stdout;
     }
 
+    log_tv_only(stream,frame->timestamp);
     fprintf(stream,IMU_COMM_PRINT_RAW_FORMAT,
-	    (int)frame->timestamp.tv_sec,
-	    (int)frame->timestamp.tv_usec,
 	    frame->T_us,
 	    frame->acc[0],
 	    frame->acc[1],
