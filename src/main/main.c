@@ -572,7 +572,7 @@ int main(int argc, char *argv[]){
 #if LOG_IMU_DATA
 	    err_imu = imu_comm_raw2data(imu, &imu_frame, &imu_data);
 	    log_n_jump(err_imu,end_imu,"could not convert new raw...");
-	    log_tv_only(log_imu_raw,tv_diff);
+	    log_tv_only(log_imu_data,tv_diff);
 	    err_imu = imu_comm_print_data(&imu_data, log_imu_data);
 	    log_n_jump(err_imu,end_imu,"could not print new data...");
 	    fflush(log_imu_data);
@@ -641,14 +641,17 @@ int main(int argc, char *argv[]){
 		goto end_imu;
 	    }
 
+	    gettimeofday(&tv_tmp,NULL);
+
 	    err_imu = imu_comm_get_avg_unread(imu,&imu_data);
 	    log_n_jump(err_imu,end_imu,"IMU did not have new avg!");
 #if LOG_IMU_AVG
+	    uquad_timeval_substract(&tv_diff, tv_tmp, tv_start);
+	    log_tv_only(log_imu_avg, tv_diff);
 	    err_imu = imu_comm_print_data(&imu_data, log_imu_avg);
 	    log_n_jump(err_imu,end_imu,"Failed to log imu avg!");
 #endif // LOG_IMU_AVG
 
-	    gettimeofday(&tv_tmp,NULL);
 	    err_imu = uquad_timeval_substract(&tv_diff,tv_tmp,tv_last_imu);
 	    if(err_imu < 0)
 	    {
@@ -684,7 +687,7 @@ int main(int argc, char *argv[]){
 		else
 		    goto end_gps;
 		gettimeofday(&tv_tmp,NULL);
-		err_gps = uquad_timeval_substract(&tv_diff,tv_tmp,tv_gps_last);
+		err_gps = uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
 #if LOG_GPS
 		log_tv_only(log_gps, tv_diff);
 		gps_comm_dump(gps, log_gps);
@@ -710,9 +713,8 @@ int main(int argc, char *argv[]){
 	/// -- -- -- -- -- -- -- --
 	/// Update state estimation
 	/// -- -- -- -- -- -- -- --
-	gettimeofday(&tv_tmp,NULL);
+	gettimeofday(&tv_tmp,NULL); // will be used to set tv_last_kalman
 	retval = uquad_timeval_substract(&tv_diff,tv_tmp,tv_last_kalman);
-	tv_tmp = tv_diff; // will be used for logging
 	if(retval < 0)
 	{
 	    log_n_continue(ERROR_TIMING,"Absurd timing!");
@@ -738,8 +740,6 @@ int main(int argc, char *argv[]){
 	    }
 	    tv_diff.tv_usec = (retval > 0) ? TS_MAX:TS_MIN;
 	}
-	/// Mark time when we run Kalman
-	gettimeofday(&tv_last_kalman,NULL);
 	if(runs_kalman > STARTUP_KALMAN)
 	    // use real w
 	    retval = uquad_kalman(kalman,
@@ -747,16 +747,20 @@ int main(int argc, char *argv[]){
 				  &imu_data,
 				  tv_diff.tv_usec);
 	else
+	{
 	    // use w from setpoint
 	    retval = uquad_kalman(kalman,
 				  pp->sp->w,
 				  &imu_data,
 				  tv_diff.tv_usec);
+	}
 	log_n_continue(retval,"Kalman update failed");
+	/// Mark time when we run Kalman
+	tv_last_kalman = tv_tmp;
 
 #if DEBUG
 #if DEBUG_KALMAN_INPUT
-	retval = uquad_timeval_substract(&tv_diff,tv_last_kalman,tv_start);
+	uquad_timeval_substract(&tv_diff,tv_last_kalman,tv_start);
 	log_tv_only(log_kalman_in,tv_diff);
 	retval = imu_comm_print_data(&imu_data, log_kalman_in);
 	fflush(log_kalman_in);
