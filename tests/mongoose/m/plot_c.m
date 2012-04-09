@@ -11,9 +11,20 @@ kin_cut  = kin(end-length(x_hat_c)+1:end,:);
 
 z        = kin2z([ones(length(kin_cut),1) kin_cut]);
 
+if(mean(kin(:,1)) < .1)
+  % logs con delta tiempos
+  kin(1,1) = 0; % bug, era enorme.
+  t = cumsum(kin(:,1));
+else
+  % logs con t desde ./main
+  t = kin(:,1);
+end
+t_z     = t(length(t) - length(z) + 1:end);
+t_x_hat = t(length(t) - length(x_hat_c) + 1:end);
+
 % timestamp kin coincide con x_hat_c, por eso x_hat_c no tiene.
-plot_main(x_hat_c,kin(:,1), ...
-  z,kin_cut(:,1));
+plot_main(x_hat_c,t_x_hat, ...
+  z,t_z);
 
 plot_w(wlog)
 

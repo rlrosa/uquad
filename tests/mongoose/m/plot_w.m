@@ -7,6 +7,11 @@ red    = [178,34,34]/256;
 width  = 2;
 
 t = w(:,1);
+if(mean(t) < .1)
+  % logs con delta tiempos
+  t(1) = 0; % bug, era enorme
+  t = cumsum(t);
+end
 w_control = w(:,2:end);
 
 figure()
