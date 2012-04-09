@@ -163,7 +163,10 @@ typedef struct imu_calibration_lin_model{
  */
 typedef struct imu_calibration{
     imu_calib_lin_t m_lin[3];      // {acc,gyro,magn}.
-    uquad_mat_t *t_off;            // Temp offset {x,y,z} (m/(s^2°C))
+    uquad_mat_t *acc_t_off;        // acc temp offset {x,y,z}  [m/(s^2°C)]
+    double acc_to;                 // acc calibration temp
+    uquad_mat_t *gyro_t_off;       // gyro temp offset {x,y,z} [rad/(s)]
+    double gyro_to;                // gyro calibration temp
     struct timeval timestamp_file; // time at which calib was read.
     uquad_bool_t calib_file_ready; // calibration was read from file.
 
