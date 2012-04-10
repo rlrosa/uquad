@@ -176,7 +176,7 @@ int io_dev_ready(io_t * io, int fd, uquad_bool_t * read, uquad_bool_t * write){
 int io_deinit(io_t * io){
     int retval;
     io_dev_t * dev, * dev_next;
-    if(!io_dev_list_empty(io)){
+    if((io != NULL) && !io_dev_list_empty(io)){
 	// Free all registered devices
 	retval = io_get_dev_list(io,&dev);
 	err_propagate(retval);
