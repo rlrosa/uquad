@@ -519,34 +519,31 @@ int uquad_mat_inv(uquad_mat_t *Minv, uquad_mat_t *M, uquad_mat_t *Meye, uquad_ma
 
     if(Meye == NULL)
     {
-	Meye= uquad_mat_alloc(M->r,M->c);
+	Meye = uquad_mat_alloc(M->r,M->c);
 	if(Meye == NULL)
 	{
-	    err_log("Could not allocate aux mem for inv.");
 	    retval = ERROR_MALLOC;
-	    goto cleanup;
+	    cleanup_log_if(retval,"Could not allocate aux mem for inv.");
 	}
-	uquad_mat_eye(Meye);
 	local_Meye = true;
     }
+    retval = uquad_mat_eye(Meye);
+    cleanup_if(retval);
+
 
     if(Maux == NULL)
     {
 	Maux = uquad_mat_alloc(M->r,(M->c)<<1);
 	if(Maux == NULL)
 	{
-	    err_log("Could not allocate aux mem for inv.");
 	    retval = ERROR_MALLOC;
-	    goto cleanup;
+	    cleanup_log_if(retval,"Could not allocate aux mem for inv.");
 	}
 	local_Maux = true;
     }
 
     retval = uquad_solve_lin(M, Meye, Minv, Maux);
-    if(retval != ERROR_OK)
-    {
-	goto cleanup;
-    }
+    cleanup_if(retval);
 
     cleanup:
     if(local_Meye)
