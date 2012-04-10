@@ -757,7 +757,81 @@ int uquad_mat_int(uquad_mat_t *B, uquad_mat_t *A, double ti, double tf, double s
     return ERROR_OK;
 }
 
+/**
+ * Builds a rotation matrix R from phi,psi,theta, and performs Vr = R*V
+ *
+ *   R_psi:
+ *   +-                        -+
+ *   |  1,     0,         0     |
+ *   |                          |
+ *   |  0,  cos(psi), sin(psi)  |
+ *   |                          |
+ *   |  0, -sin(psi), cos(psi)  |
+ *   +-                        -+
+ *
+ *   R_phi:
+ *   +-                        -+
+ *   |  cos(phi), 0, -sin(phi)  |
+ *   |                          |
+ *   |      0,    1,     0      |
+ *   |                          |
+ *   |  sin(phi), 0,  cos(phi)  |
+ *   +-                        -+
+ *
+ *   R_theta:
+ *   +-                            -+
+ *   |   cos(theta), sin(theta), 0  |
+ *   |                              |
+ *   |  -sin(theta), cos(theta), 0  |
+ *   |                              |
+ *   |       0,           0,     1  |
+ *   +-                            -+
+ *
+ *   R = R_psi*R_phi*R_theta:
+ *   +-                                                                                                                           -+
+ *   |                  cos(phi) cos(theta),                                cos(phi) sin(theta),                    -sin(phi)      |
+ *   |                                                                                                                             |
+ *   |  cos(theta) sin(phi) sin(psi) - cos(psi) sin(theta), cos(psi) cos(theta) + sin(phi) sin(psi) sin(theta), cos(phi) sin(psi)  |
+ *   |                                                                                                                             |
+ *   |  sin(psi) sin(theta) + cos(psi) cos(theta) sin(phi), cos(psi) sin(phi) sin(theta) - cos(theta) sin(psi), cos(phi) cos(psi)  |
+ *   +-                                                                                                                           -+
+ *
+ * @param Vr
+ * @param V
+ * @param phi
+ * @param psi
+ * @param theta
+ *
+ * @return
+ */
+int uquad_mat_rotate(uquad_mat_t *Vr, uquad_mat_t *V, double phi, double psi, double theta)
+{
+    int retval;
+    uquad_mat_t *R = uquad_mat_alloc(3,3);
+    if(R == NULL)
+    {
+	cleanup_log_if(ERROR_MALLOC,"Failed to allocate rotation matrix");
+    }
 
+    R->m[0][0] = cos(phi)*cos(theta);
+    R->m[0][1] = cos(phi)*sin(theta);
+    R->m[0][2] = -sin(phi);
+
+    R->m[1][0] = cos(theta)*sin(psi)*sin(phi) - cos(psi)*sin(theta);
+    R->m[1][1] = cos(psi)*cos(theta) + sin(psi)*sin(phi)*sin(theta);
+    R->m[1][2] = cos(phi)*sin(psi);
+
+    R->m[2][0] = sin(psi)*sin(theta) + cos(psi)*cos(theta)*sin(phi);
+    R->m[2][1] = cos(psi)*sin(phi)*sin(theta) - cos(theta)*sin(psi);
+    R->m[2][2] = cos(psi)*cos(phi);
+
+    retval = uquad_mat_prod(Vr,R,V);
+    cleanup_log_if(retval,"Failed to rotate vector!");
+
+    cleanup:
+    uquad_mat_free(R);
+    return retval;
+}
 
 /** 
  * Will load matrix from text file.

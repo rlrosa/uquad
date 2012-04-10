@@ -13,6 +13,7 @@ enum test_type{
     MATRIX_DIV_K,
     LIN_SOLVE,
     MATRIX_EXP,
+    ROTATE,
     TEST_COUNT
 };
 
@@ -21,6 +22,22 @@ int retval;
 int r1,c1,r2,c2,l,i,j;
 float tmp;
 double k;
+
+#define DO_CONTINUE 'y'
+uquad_bool_t ask_continue()
+{
+    unsigned char ans;
+    printf("Continue? (%c/n)\n",DO_CONTINUE);
+    while(1)
+    {
+	ans = getchar();
+	if(ans != '\n')
+	    break;
+    }
+    return (ans == DO_CONTINUE)?
+	true:
+	false;
+}
 
 void matrix_stdin(uquad_mat_t *m)
 {
@@ -259,11 +276,55 @@ int mat_exp_test(void)
     return ERROR_OK;
 }
 
+int mat_rot_test(void)
+{
+    int retval;
+
+    uquad_mat_t *V    = uquad_mat_alloc(3,1);
+    uquad_mat_t *Vr   = uquad_mat_alloc(3,1);
+    uquad_mat_t *angs = uquad_mat_alloc(3,1);
+    if(V == NULL || Vr == NULL || angs == NULL)
+    {
+	cleanup_log_if(ERROR_MALLOC,"Failed to allocate mem for test!");
+    }
+
+    for(;;)
+    {
+	printf("Vector V:\n");
+	retval = uquad_mat_load(V, NULL);
+	cleanup_if(retval);
+
+	printf("psi, phi, theta [deg]:\n");
+	retval = uquad_mat_load(angs, NULL);
+	cleanup_if(retval);
+
+	retval = uquad_mat_rotate(Vr,
+				  V,
+				  deg2rad(angs->m_full[0]),
+				  deg2rad(angs->m_full[1]),
+				  deg2rad(angs->m_full[2]));
+	cleanup_if(retval);
+
+	printf("\nVr:\n\n");
+	uquad_mat_dump(Vr,0);
+    
+	if(!ask_continue())
+	    break;
+    }
+
+    cleanup:
+    uquad_mat_free(V);
+    uquad_mat_free(Vr);
+    uquad_mat_free(angs);
+    return retval;
+}
+
+
 int main(void){
     int retval = ERROR_OK;
     enum test_type sel_test;
     int cmd;
-    printf("Select test:\n\t%d:Matrix product\n\t%d:Matrix det\n\t%d:Matrix inv\n\t%d:Matrix add\n\t%d:Matrix sub\n\t%d:Matrix mul k\n\t%d:Matrix div k\n\t%d:Linear system\n\t%d:Expnential Matrix\n",
+    printf("Select test:\n\t%d:Matrix product\n\t%d:Matrix det\n\t%d:Matrix inv\n\t%d:Matrix add\n\t%d:Matrix sub\n\t%d:Matrix mul k\n\t%d:Matrix div k\n\t%d:Linear system\n\t%d:Expnential Matrix\n\t%d:Rotate\n",
 	   MATRIX_PROD,
 	   MATRIX_DET,
 	   MATRIX_INV,
@@ -272,7 +333,8 @@ int main(void){
 	   MATRIX_MUL_K,
 	   MATRIX_DIV_K,
 	   LIN_SOLVE,
-	   MATRIX_EXP);
+	   MATRIX_EXP,
+	   ROTATE);
     scanf("%d",&cmd);
     if(cmd<0 || cmd > TEST_COUNT)
     {
@@ -304,6 +366,9 @@ int main(void){
 	break;
     case MATRIX_EXP:
 	retval = mat_exp_test();
+	break;
+    case ROTATE:
+	retval = mat_rot_test();
 	break;
     default:
 	err_check(ERROR_FAIL,"This shouldn't happen.");
