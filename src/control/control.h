@@ -7,9 +7,14 @@
 #include <path_planner.h>
 
 #define STATES_CONTROLLED 8
+#define CTRL_INTEGRAL     1
 
 typedef struct ctrl{
     uquad_mat_t *K;
+#if CTRL_INTEGRAL
+    uquad_mat_t *K_int; // Integral gain
+    uquad_mat_t *x_int; // Integral term
+#endif
 }ctrl_t;
 
 ctrl_t *control_init(void);

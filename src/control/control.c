@@ -4,19 +4,49 @@
 
 uquad_mat_t *tmp_sub_sp_x;
 uquad_mat_t *tmp_x_hat_partial;
+uquad_mat_t *w_tmp;
+
+#if CTRL_INTEGRAL
+int control_clear_int(ctrl_t * ctrl)
+{
+    int retval;
+    retval = uquad_mat_zeros(ctrl->x_int);
+    err_propagate(retval);
+    return retval;
+}
+#endif
+
 ctrl_t *control_init(void)
 {
     ctrl_t *ctrl = (ctrl_t *)malloc(sizeof(ctrl_t));
     mem_alloc_check(ctrl);
+
     ctrl->K = uquad_mat_alloc(4,STATES_CONTROLLED);
     tmp_sub_sp_x = uquad_mat_alloc(12,1);
+    w_tmp = uquad_mat_alloc(4,1);
     tmp_x_hat_partial = uquad_mat_alloc(STATES_CONTROLLED,1);
-    if(ctrl->K == NULL || tmp_sub_sp_x == NULL || tmp_x_hat_partial == NULL)
+    if(ctrl->K == NULL || tmp_sub_sp_x == NULL ||
+       tmp_x_hat_partial == NULL || w_tmp == NULL)
     {
-	err_log("Failed to allocate gain matrix!");
-	control_deinit(ctrl);
-	return NULL;
+	cleanup_log_if(ERROR_MALLOC,"Failed to allocate aux mem!");
     }
+
+
+#if CTRL_INTEGRAL
+    int retval;
+    ctrl->K_int = uquad_mat_alloc(4,STATES_CONTROLLED);
+    ctrl->x_int = uquad_mat_alloc(STATES_CONTROLLED,1);
+    if(ctrl->x_int == NULL || ctrl->K_int == NULL)
+    {
+	cleanup_log_if(ERROR_MALLOC,"Failed to allocate aux mem!");
+    }
+    retval = control_clear_int(ctrl);
+    cleanup_log_if(retval, "Failed to clear integral term!");
+
+#warning "K_int set to 0!"
+    retval = uquad_mat_zeros(ctrl->K_int);
+    cleanup_log_if(retval, "Failed to clear integral gain");
+#endif
 
     // GOOD MATRIX ?
 
@@ -94,6 +124,10 @@ ctrl_t *control_init(void)
     */
 
     return ctrl;
+
+    cleanup:
+    control_deinit(ctrl);
+    return NULL;
 }
 
 int control(ctrl_t *ctrl, uquad_mat_t *w, uquad_mat_t *x, set_point_t *sp)
@@ -121,6 +155,16 @@ int control(ctrl_t *ctrl, uquad_mat_t *w, uquad_mat_t *x, set_point_t *sp)
     err_propagate(retval);
     retval = uquad_mat_add(w,sp->w,w);
     err_propagate(retval);
+
+#if CTRL_INTEGRAL
+    retval = uquad_mat_add(ctrl->x_int, ctrl->x_int, tmp_x_hat_partial);
+    err_propagate(retval);
+    retval = uquad_mat_prod(w_tmp, ctrl->K_int, ctrl->x_int);
+    err_propagate(retval);
+    retval = uquad_mat_add(w, w, w_tmp);
+    err_propagate(retval);
+#endif
+
     return ERROR_OK;
 }
 
@@ -134,6 +178,11 @@ void control_deinit(ctrl_t *ctrl)
     uquad_mat_free(ctrl->K);
     uquad_mat_free(tmp_sub_sp_x);
     uquad_mat_free(tmp_x_hat_partial);
+    uquad_mat_free(w_tmp);
+#if CTRL_INTEGRAL
+    uquad_mat_free(ctrl->K_int);
+    uquad_mat_free(ctrl->x_int);
+#endif
     free(ctrl);
 }
 
