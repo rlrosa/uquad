@@ -526,9 +526,11 @@ int uquad_mat_inv(uquad_mat_t *Minv, uquad_mat_t *M, uquad_mat_t *Meye, uquad_ma
 	    retval = ERROR_MALLOC;
 	    goto cleanup;
 	}
-	uquad_mat_eye(Meye);
 	local_Meye = true;
     }
+    retval = uquad_mat_eye(Meye);
+    cleanup_if(retval);
+
 
     if(Maux == NULL)
     {
