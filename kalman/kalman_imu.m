@@ -7,7 +7,7 @@ Iyy  = 2.32e-2; % Tensor de inercia del quad - según y
 Izz  = 4.37e-2; % Tensor de inercia del quad - según z
 Izzm = 1.54e-5; % Tensor de inercia de los motores - segun z
 L    = 0.29;    % Largo en metros del los brazos del quad
-M    = 1.541;   % Masa del Quad en kg
+M    = 1.741;   % Masa del Quad en kg
 g    = 9.81;    % Aceleracion gravitatoria
 Ns   = 12;      % Largo del vector de estados
 

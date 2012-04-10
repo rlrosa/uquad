@@ -1,4 +1,4 @@
-function plot_w(w_control,T)
+function plot_w(w)
 
 green  = [34,139,34]/256;
 yellow = [218,165,32]/256;
@@ -6,10 +6,13 @@ blue   = [0,0,128]/256;
 red    = [178,34,34]/256;
 width  = 2;
 
-% t = cumsum(T);
-T = mean(T);
-t = 0:T:T*(length(w_control)-1);
-fprintf('Ojo que el tiempo en el plot de w considera un periodo promedio, no esta del todo bien\n')
+t = w(:,1);
+if(mean(t) < .1)
+  % logs con delta tiempos
+  t(1) = 0; % bug, era enorme
+  t = cumsum(t);
+end
+w_control = w(:,2:end);
 
 figure()
     hold on
@@ -22,7 +25,7 @@ figure()
     title('\fontsize{16}Velocidad angular de los motores');
     handle = legend('adelante','izquierda','atras','derecha');
     set(handle, 'Box', 'off','location','northwest');
-    xlabel('\fontsize{13}Tiempo [s]')
+    xlabel('\fontsize{13}Tiempo desde ./main [s]')
     ylabel('\fontsize{13}\omega motores [rad/s]')
     grid
     hold off

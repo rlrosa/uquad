@@ -332,7 +332,8 @@ int imu_comm_free_calib(imu_calib_t calib)
 	uquad_mat_free(calib.m_lin[i].b);
     }
     imu_data_free(&calib.null_est_data);
-    uquad_mat_free(calib.t_off);
+    uquad_mat_free(calib.acc_t_off);
+    uquad_mat_free(calib.gyro_t_off);
     return ERROR_OK;
 }
 
@@ -359,6 +360,10 @@ int imu_comm_load_calib(imu_t *imu, const char *path)
 	err_check(ERROR_OPEN,"Failed to open calib file!");
     }
 
+    /// -- -- -- -- -- -- -- -- -- -- -- --
+    /// Load linear model parameters
+    /// -- -- -- -- -- -- -- -- -- -- -- --
+
     for (i = 0; i < 3; ++i)
     {
 	// TK_inv
@@ -370,18 +375,51 @@ int imu_comm_load_calib(imu_t *imu, const char *path)
 	err_propagate(retval);
     }
 
-    //load z temp
+    /// -- -- -- -- -- -- -- -- -- -- -- --
+    /// load temperature compensation parameters
+    /// -- -- -- -- -- -- -- -- -- -- -- --
+
+    /// -- -- -- -- --
+    /// accelerometer
+    /// -- -- -- -- --
+    // load z temp
     retval = fscanf(calib_file,"%lf",&dtmp);
     if(retval <= 0)
     {
 	err_check(ERROR_READ, "Failed to read z_temp");
     }
+
     m3x1_0->m_full[0] = 0.0;
     m3x1_0->m_full[1] = 0.0;
     m3x1_0->m_full[2] = dtmp;
-    retval = uquad_mat_prod(imu->calib.t_off,
+    retval = uquad_mat_prod(imu->calib.acc_t_off,
 			    imu->calib.m_lin[0].TK_inv,
 			    m3x1_0);
+    err_propagate(retval);
+    // load acc calibration temp
+    retval = fscanf(calib_file,"%lf",&dtmp);
+    if(retval <= 0)
+    {
+	err_check(ERROR_READ, "Failed to read acc_to");
+    }
+    imu->calib.acc_to = dtmp;
+
+    /// -- -- -- -- --
+    /// gyro
+    /// -- -- -- -- --
+    // load temp dep coefficients
+    retval = uquad_mat_load(m3x1_0, calib_file);
+    err_propagate(retval);
+    retval = uquad_mat_prod(imu->calib.gyro_t_off,
+			    imu->calib.m_lin[1].TK_inv,
+			    m3x1_0);
+    err_propagate(retval);
+    // load temp indep offset
+    retval = uquad_mat_load(m3x1_0, calib_file);
+    err_propagate(retval);
+    retval = uquad_mat_add(imu->calib.m_lin[1].b,
+			   imu->calib.m_lin[1].b,
+			   m3x1_0);
     err_propagate(retval);
 
     fclose(calib_file);
@@ -404,8 +442,9 @@ int imu_comm_init_calibration(imu_t *imu)
     err_propagate(retval);
     retval = imu_data_alloc(&imu->calib.null_est_data);
     err_propagate(retval);
-    imu->calib.t_off = uquad_mat_alloc(3,1);
-    if(imu->calib.t_off == NULL)
+    imu->calib.acc_t_off = uquad_mat_alloc(3,1);
+    imu->calib.gyro_t_off = uquad_mat_alloc(3,1);
+    if((imu->calib.acc_t_off == NULL) || (imu->calib.gyro_t_off == NULL))
     {
 	err_check(ERROR_MALLOC, "Failed to allocate temp offset!");
     }
@@ -1208,10 +1247,10 @@ static int imu_comm_acc_convert(imu_t *imu, int16_t *raw, uquad_mat_t *acc, doub
     err_propagate(retval);
     // temperature correction
     retval = uquad_mat_scalar_mul(m3x1_0,
-				  imu->calib.t_off,
-				  temp - imu->calib.null_est_data.temp);
+				  imu->calib.acc_t_off,
+				  temp - imu->calib.acc_to);
     err_propagate(retval);
-    retval = uquad_mat_add(acc, acc, m3x1_0);
+    retval = uquad_mat_sub(acc, acc, m3x1_0);
     err_propagate(retval);
     return retval;  
 }
@@ -1222,16 +1261,24 @@ static int imu_comm_acc_convert(imu_t *imu, int16_t *raw, uquad_mat_t *acc, doub
  *
  *@param imu 
  *@param data Raw gyro data.
- *@param gyro_reading Rate in rad/s
+ *@param gyro Rate in rad/s
+ *@param temp current temperature in °C
  *
  *@return error code
  */
-static int imu_comm_gyro_convert(imu_t *imu, int16_t *raw, uquad_mat_t *gyro)
+static int imu_comm_gyro_convert(imu_t *imu, int16_t *raw, uquad_mat_t *gyro, double temp)
 {
     int retval = ERROR_OK;
     retval = imu_comm_convert_lin(imu, raw, gyro, imu->calib.m_lin + 1);
     err_propagate(retval);
-    // compensate for temperature by using startup-offset
+    // temperature compensation
+    retval = uquad_mat_scalar_mul(m3x1_0,
+				  imu->calib.gyro_t_off,
+				  temp - imu->calib.gyro_to);
+    err_propagate(retval);
+    retval = uquad_mat_sub(gyro, gyro, m3x1_0);
+
+    // compensate startup-offset
     retval = uquad_mat_sub(gyro,gyro,imu->calib.null_est_data.gyro);
     err_propagate(retval);
     return retval;
@@ -1329,7 +1376,7 @@ int imu_comm_raw2data(imu_t *imu, imu_raw_t *raw, imu_data_t *data){
     err_propagate(retval);
 
     // Convert gyroscope readings
-    retval = imu_comm_gyro_convert(imu, raw->gyro, data->gyro);
+    retval = imu_comm_gyro_convert(imu, raw->gyro, data->gyro, data->temp);
     err_propagate(retval);
 
     // Convert magnetometer readings
@@ -1724,9 +1771,8 @@ int imu_comm_print_data(imu_data_t *data, FILE *stream){
     if(stream == NULL){
 	stream = stdout;
     }
+    log_tv_only(stream,data->timestamp);
     fprintf(stream,IMU_COMM_PRINT_DATA_FORMAT,
-	    (int)data->timestamp.tv_sec,
-	    (int)data->timestamp.tv_usec,
 	    data->T_us,
 	    data->acc->m_full[0],
 	    data->acc->m_full[1],
@@ -1755,9 +1801,8 @@ int imu_comm_print_raw(imu_raw_t *frame, FILE *stream){
 	stream = stdout;
     }
 
+    log_tv_only(stream,frame->timestamp);
     fprintf(stream,IMU_COMM_PRINT_RAW_FORMAT,
-	    (int)frame->timestamp.tv_sec,
-	    (int)frame->timestamp.tv_usec,
 	    frame->T_us,
 	    frame->acc[0],
 	    frame->acc[1],
