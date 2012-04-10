@@ -37,9 +37,9 @@ int main(void)
     /// -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
     uquad_bool_t read = false,write = false;
     uquad_bool_t reg_gps = true, reg_stdin = true;
-    uquad_mat_t *pos = NULL;
+    uquad_mat_t *pos = NULL, *vel = NULL;
     pos = uquad_mat_alloc(3,1);
-    double speed, climb;
+    vel = uquad_mat_alloc(3,1);
     unsigned char tmp_buff[2];
     //    poll_n_read:
     while(1){
@@ -59,7 +59,7 @@ int main(void)
 		else
 		{
 		    //gps_fix = gps_comm_get_data(gps);
-		    ret = gps_comm_get_data(gps, pos, &speed, &climb);
+		    ret = gps_comm_get_data(gps, pos, NULL, NULL);
 		    log_n_continue(ret, "Failed to get data!");
 		    gps_comm_dump(gps, stdout);
                 }
