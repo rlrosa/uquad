@@ -1,3 +1,9 @@
+% ----------------------------------------------------------------------- %
+% Para hacer un control de las 12 variables de estado hay q comentar la
+% parte donde se recortan las matrices, agregar un valr a theta y poner una
+% Q de 12 x 12
+% ----------------------------------------------------------------------- %
+
 %%Esta parte calcula la matriz de realimentacion
 assignin('base','Ts',1e-2)
 Matrices=load('linealizacion.mat');
@@ -17,7 +23,7 @@ wq1=0; wq2=0; wq3=0;
 
 vq1=0; vq2=0; vq3=0;
 
-psis=0; phi=0;  
+psis=0; phi=0; %theta=-pi/2;  
 
 w1=316.103650939028;
 w2=316.103650939028;
@@ -40,11 +46,12 @@ BZ = zeros(8,4);
 
 %Q=diag([1 1e2 1e2 1e2 1 1 1 1 1 1 1 1 1 1 1 1]);%Pesos de z,psi,phi,theta, vqz wqx,wqy,wqz
 Q=diag([1 1e2 1e2 1e2 1 1 1 1]);
+% Q=diag([1 1 1 1e2 1e2 1e2 1 1 1 1 1 1]);
 R=1e-2*diag([1 1 1 1]); %Pesos de w1 w2 w3 w4;
 
 %[K,S,E]=lqrd([A Z; C Z],[B;BZ],Q,R,10e-3);
 [K,S,E]=lqrd([A],[B],Q,R,10e-3);
-save('K','K');
+save('K4x8','K');
 assignin('base','K',K);
 
 %% Inicialización
