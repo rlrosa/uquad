@@ -18,8 +18,6 @@
 #define W_SP_INC  'i'
 #define W_SP_DEC  'k'
 
-#define USE_GPS 0
-
 #include <uquad_types.h>
 #include <macros_misc.h>
 #include <uquad_aux_io.h>
@@ -87,6 +85,9 @@ static gps_t *gps;
 uquad_mat_t *w, *wt;
 uquad_mat_t *x;
 imu_data_t imu_data;
+#if USE_GPS
+gps_comm_data_t *gps_dat;
+#endif
 /// Logs
 #if DEBUG
 #if LOG_IMU_RAW
@@ -166,6 +167,9 @@ void quit()
     uquad_mat_free(imu_data.acc);
     uquad_mat_free(imu_data.gyro);
     uquad_mat_free(imu_data.magn);
+#if USE_GPS
+    gps_comm_data_free(gps_dat);
+#endif
 
     // Logs
 #if DEBUG
@@ -329,6 +333,15 @@ int main(int argc, char *argv[]){
 	err_log("Cannot run without x or w, aborting...");
 	quit();
     }
+
+#if USE_GPS
+    gps_dat = gps_comm_data_alloc();
+    if(gps_dat == NULL)
+    {
+	err_log("Failed to allocate GPS!...");
+	quit();
+    }
+#endif
 
     /// Logs
 #if DEBUG
@@ -686,11 +699,15 @@ int main(int argc, char *argv[]){
 		    gps_update = true;
 		else
 		    goto end_gps;
+		// Use latest IMU update to estimate speed from GPS datatetas
+		err_gps = gps_comm_get_data_unread(gps, gps_dat, &imu_data);
+		log_n_jump(err_gps,end_gps,"Failed to get GPS data!");
+		
 		gettimeofday(&tv_tmp,NULL);
 		err_gps = uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
 #if LOG_GPS
 		log_tv_only(log_gps, tv_diff);
-		gps_comm_dump(gps, log_gps);
+		gps_comm_dump(gps, gps_dat, log_gps);
 #endif
 		tv_gps_last = tv_tmp;
 	    }
