@@ -81,9 +81,46 @@ void pp_deinit(path_planner_t *pp)
 /* Where phi=exp(A*Ts) and gama=int(exp(A*s),0,Ts) */
 int pp_update_K(path_planner_t *pp)
 {
-    double norm;
     uquad_mat_t *phi = NULL;
     uquad_mat_t *gamma = NULL;
+    
+    //Discretization of the system;
+    phi = uquad_mat_alloc(pp->A->r,pp->A->c);
+    gamma = uquad_mat_alloc(pp->B->r,pp->B->c);
+    pp_disc(phi, gamma, pp->A, pp->B, pp->Ts);
+    
+    //Obtains feedback matrix  
+    pp_lqr(pp->K, phi, gamma, pp->Q, pp->R);
+    return ERROR_OK;
+}
+/*Returns the discrete form of a system \dot{x} = AX+BU*/
+int pp_disc(uquad_mat_t *phi,uquad_mat_t *gamma,uquad_mat_t *A,uquad_mat_t *B, double Ts)
+{
+    uquad_mat_t *aux0 = NULL;
+    uquad_mat_t *aux1 = NULL;
+    
+    phi = uquad_mat_alloc(A->r,A->c);
+    gamma = uquad_mat_alloc(B->r,B->c);
+    aux0 = uquad_mat_alloc(A->r+B->c,A->c+B->c);
+    aux1 = uquad_mat_alloc(A->r+B->c,A->c+B->c);
+
+    uquad_mat_set_subm(aux0, 0,0,A);
+    uquad_mat_set_subm(aux0, 0,A->c,B);
+    uquad_mat_scalar_mul(aux0,aux0,Ts); 
+    uquad_mat_exp(aux1,aux0);
+    
+    uquad_mat_get_subm(phi,0,0,aux1);
+    uquad_mat_get_subm(gamma,0,A->c,aux1);
+
+    //Cleaning
+    uquad_mat_free(aux0);
+    uquad_mat_free(aux1);
+
+}
+ //Solving riccati equation. Algorithm by Anders Friis Sorensen    
+int pp_lqr(uquad_mat_t *K, uquad_mat_t *A, uquad_mat_t *B, uquad_mat_t *Q, uquad_mat_t *R)
+{
+    int norm;
     uquad_mat_t *aux0 = NULL;
     uquad_mat_t *aux1 = NULL;
     uquad_mat_t *aux2 = NULL;
@@ -93,63 +130,40 @@ int pp_update_K(path_planner_t *pp)
     uquad_mat_t *k = NULL;
     uquad_mat_t *Bt = NULL;
 
-    phi = uquad_mat_alloc(pp->A->r,pp->A->c);
-    gamma = uquad_mat_alloc(pp->B->r,pp->B->c);
-    aux0 = uquad_mat_alloc(pp->A->r,pp->A->c);
+    P = uquad_mat_alloc(Q->r,Q->r);
+    k = uquad_mat_alloc(K->r,K->c);
 
-    //Discretization of the system;
-    
-    uquad_mat_scalar_mul(aux0,pp->A,pp->Ts); 
-    uquad_mat_exp(phi,aux0);
-      
-    uquad_mat_free(aux0);
-    aux0 = uquad_mat_alloc(pp->B->r,pp->B->c);
-    aux1 = uquad_mat_alloc(pp->B->r,pp->B->c);
+    uquad_mat_copy(P,Q);
+    uquad_mat_copy(k,K);
 
-    uquad_mat_exp(aux0,pp->A);
-    uquad_mat_int(aux1,aux0,0,pp->Ts,1e-3);
-    uquad_mat_prod(gamma,aux1,pp->B);
-    
-    //Cleaning
-    uquad_mat_free(aux0);
-    uquad_mat_free(aux1);
-
-    //Solving riccati equation TODO escribir la ecuación
-
-    P = uquad_mat_alloc(pp->Q->r,pp->Q->r);
-    k = uquad_mat_alloc(pp->K->r,pp->K->c);
-
-    uquad_mat_copy(P,pp->Q);
-    uquad_mat_copy(k,pp->K);
-
-    Bt = uquad_mat_alloc(pp->B->c,pp->B->r);
+    Bt = uquad_mat_alloc(B->c,B->r);
    
-    uquad_mat_transpose(Bt,pp->B);
+    uquad_mat_transpose(Bt,B);
     norm=1;
     while (norm>1e-5)
     {
-	 aux0 = uquad_mat_alloc(pp->B->r,pp->B->c);
-	 aux1 = uquad_mat_alloc(pp->R->r,pp->R->c);
-	 aux2 = uquad_mat_alloc(pp->R->r,pp->R->c);
-	 aux3 = uquad_mat_alloc(pp->R->r,pp->R->c);
-	 aux4 = uquad_mat_alloc(2*pp->R->r,2*pp->R->c);
+        aux0 = uquad_mat_alloc(B->r,B->c);
+	aux1 = uquad_mat_alloc(R->r,R->c);
+        aux2 = uquad_mat_alloc(R->r,R->c);
+	aux3 = uquad_mat_alloc(R->r,R->c);
+	aux4 = uquad_mat_alloc(2*R->r,2*R->c);
 
-	uquad_mat_copy(k,pp->K);
+	uquad_mat_copy(k,K);
 
 	//Performs K=-(R+B'*P*B)^(-1)*B'*P*A; 
-	uquad_mat_prod(aux0,P,pp->B);
+	uquad_mat_prod(aux0,P,B);
 	uquad_mat_prod(aux1,Bt,aux0);
-	uquad_mat_add(aux1,aux1,pp->R);
+	uquad_mat_add(aux1,aux1,R);
 	uquad_mat_inv(aux2,aux1,aux3,aux4);
 	
 	uquad_mat_free(aux0);
 	uquad_mat_free(aux1);
-	aux0 = uquad_mat_alloc(pp->R->r,pp->Q->c);
-	aux1 = uquad_mat_alloc(pp->R->r,pp->Q->c);
+	aux0 = uquad_mat_alloc(R->r,Q->c);
+	aux1 = uquad_mat_alloc(R->r,Q->c);
 	uquad_mat_prod(aux0,aux2,Bt);
 	uquad_mat_prod(aux1,aux0,P);
-	uquad_mat_prod(aux0,aux1,pp->A);
-	uquad_mat_scalar_mul(pp->K,aux0,-1);
+	uquad_mat_prod(aux0,aux1,A);
+	uquad_mat_scalar_mul(K,aux0,-1);
 	
 	uquad_mat_free(aux0);
 	uquad_mat_free(aux1);
@@ -158,25 +172,25 @@ int pp_update_K(path_planner_t *pp)
 	uquad_mat_free(aux4);
 
 	//Performs P=Q+K'*R*K+(A+B*K)'*P*(A+B*K);
-	aux0 = uquad_mat_alloc(pp->K->c,pp->K->r);
-	aux1 = uquad_mat_alloc(pp->K->c,pp->K->r);
-	aux2 = uquad_mat_alloc(pp->Q->r,pp->Q->c);
-	aux3 = uquad_mat_alloc(pp->Q->r,pp->Q->c);
+	aux0 = uquad_mat_alloc(K->c,K->r);
+	aux1 = uquad_mat_alloc(K->c,K->r);
+	aux2 = uquad_mat_alloc(Q->r,Q->c);
+	aux3 = uquad_mat_alloc(Q->r,Q->c);
 
 	//K'*R*K'
-	uquad_mat_transpose(aux0,pp->K);
-	uquad_mat_prod(aux1,aux0,pp->R);
-	uquad_mat_prod(aux2,aux1,pp->K);
+	uquad_mat_transpose(aux0,K);
+	uquad_mat_prod(aux1,aux0,R);
+	uquad_mat_prod(aux2,aux1,K);
 	
 	uquad_mat_free(aux0);
 	uquad_mat_free(aux1);
 
 	//A+B*K
-	uquad_mat_prod(aux3,pp->B,pp->K);
-	uquad_mat_add(aux3,aux3,pp->A);
+	uquad_mat_prod(aux3,B,K);
+	uquad_mat_add(aux3,aux3,A);
 	
-	aux0 = uquad_mat_alloc(pp->Q->c,pp->Q->r);
-	aux1 = uquad_mat_alloc(pp->K->c,pp->K->r);
+	aux0 = uquad_mat_alloc(Q->c,Q->r);
+	aux1 = uquad_mat_alloc(K->c,K->r);
 
 	uquad_mat_transpose(aux0,aux3);
 	uquad_mat_prod(aux1,aux0,P);
@@ -185,7 +199,7 @@ int pp_update_K(path_planner_t *pp)
 	uquad_mat_free(aux1);
 	uquad_mat_free(aux3);
 
-	uquad_mat_add(P,P,pp->Q);
+	uquad_mat_add(P,P,Q);
 	uquad_mat_add(P,P,aux2);
 	uquad_mat_add(P,P,aux0);
 
@@ -193,7 +207,6 @@ int pp_update_K(path_planner_t *pp)
 	uquad_mat_free(aux1);
     }
 
-    uquad_mat_scalar_mul(pp->K,pp->K,-1);
-
-    return ERROR_OK;
+    uquad_mat_scalar_mul(K,K,-1);
 }
+

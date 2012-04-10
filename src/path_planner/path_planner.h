@@ -39,6 +39,8 @@ void pp_deinit(path_planner_t *pp);
 
 int pp_update_K(path_planner_t *pp);
 
+int pp_lqr(uquad_mat_t *K, uquad_mat_t *phi, uquad_mat_t *gamma, uquad_mat_t *Q, uquad_mat_t *R);
+int pp_disc(uquad_mat_t *phi,uquad_mat_t *gamma,uquad_mat_t *A,uquad_mat_t *B, double Ts);
 #endif //PATH_PLANNER_H
 
  

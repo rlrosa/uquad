@@ -92,7 +92,7 @@ Model {
       Name		      "w"
     }
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.292"
+    ComputedModelVersion    "1.296"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -123,9 +123,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "pater"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Thu Apr  5 19:08:14 2012"
-  RTWModifiedTimeStamp	  255553686
-  ModelVersionFormat	  "1.%<AutoIncrement:292>"
+  LastModifiedDate	  "Tue Apr 10 10:40:12 2012"
+  RTWModifiedTimeStamp	  255955210
+  ModelVersionFormat	  "1.%<AutoIncrement:296>"
   ConfigurationManager	  "None"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -948,7 +948,7 @@ Model {
     ShowPageBoundaries	    off
     ZoomFactor		    "100"
     ReportName		    "simulink-default.rpt"
-    SIDHighWatermark	    "1912"
+    SIDHighWatermark	    "1923"
     Block {
       BlockType		      Inport
       Name		      "w1"
@@ -990,10 +990,25 @@ Model {
       DisplayOption	      "bar"
     }
     Block {
+      BlockType		      DiscreteIntegrator
+      Name		      "Discrete-Time\nIntegrator"
+      SID		      "1913"
+      Ports		      [1, 1]
+      Position		      [560, 649, 595, 681]
+      IntegratorMethod	      "Integration: Forward Euler"
+      ExternalReset	      "none"
+      InitialConditionSource  "internal"
+      SampleTime	      "Ts"
+      UpperSaturationLimit    "15"
+      LowerSaturationLimit    "-15"
+      ICPrevOutput	      "DiscIntNeverNeededParam"
+      ICPrevScaledInput	      "DiscIntNeverNeededParam"
+    }
+    Block {
       BlockType		      Gain
       Name		      "Gain"
       SID		      "370"
-      Position		      [610, 595, 640, 625]
+      Position		      [760, 595, 790, 625]
       Gain		      "K"
       Multiplication	      "Matrix(K*u) (u vector)"
       ParamDataTypeStr	      "Inherit: Inherit via internal rule"
@@ -1023,6 +1038,16 @@ Model {
       Ports		      [4, 1]
       Position		      [545, 22, 575, 138]
       ShowName		      off
+      DisplayOption	      "bar"
+    }
+    Block {
+      BlockType		      Mux
+      Name		      "Mux2"
+      SID		      "1914"
+      Ports		      [2, 1]
+      Position		      [675, 632, 680, 688]
+      ShowName		      off
+      Inputs		      "2"
       DisplayOption	      "bar"
     }
     Block {
@@ -9091,7 +9116,7 @@ Model {
 	    Block {
 	      BlockType		      SubSystem
 	      Name		      "Fuerza Motor2"
-	      SID		      "1904"
+	      SID		      "1915"
 	      Ports		      [1, 1]
 	      Position		      [90, 117, 205, 193]
 	      MinAlgLoopOccurrences   off
@@ -9104,7 +9129,7 @@ Model {
 	      System {
 		Name			"Fuerza Motor2"
 		Location		[0, 53, 1366, 768]
-		Open			off
+		Open			on
 		ModelBrowserVisibility	off
 		ModelBrowserWidth	200
 		ScreenColor		"white"
@@ -9119,14 +9144,14 @@ Model {
 		Block {
 		  BlockType		  Inport
 		  Name			  "w"
-		  SID			  "1905"
-		  Position		  [75, 233, 105, 247]
+		  SID			  "1916"
+		  Position		  [45, 298, 75, 312]
 		  IconDisplay		  "Port number"
 		}
 		Block {
 		  BlockType		  Sum
 		  Name			  "Add"
-		  SID			  "1906"
+		  SID			  "1917"
 		  Ports			  [2, 1]
 		  Position		  [525, 206, 555, 239]
 		  InputSameDT		  off
@@ -9136,24 +9161,17 @@ Model {
 		Block {
 		  BlockType		  Sum
 		  Name			  "Add1"
-		  SID			  "1907"
+		  SID			  "1922"
 		  Ports			  [2, 1]
-		  Position		  [160, 231, 190, 264]
+		  Position		  [130, 286, 160, 319]
 		  InputSameDT		  off
 		  OutDataTypeStr	  "Inherit: Inherit via internal rule"
 		  SaturateOnIntegerOverflow off
 		}
 		Block {
-		  BlockType		  Constant
-		  Name			  "Constant"
-		  SID			  "1908"
-		  Position		  [75, 275, 105, 305]
-		  Value			  "15.2"
-		}
-		Block {
 		  BlockType		  Gain
 		  Name			  "Gain"
-		  SID			  "1909"
+		  SID			  "1918"
 		  Position		  [410, 152, 460, 188]
 		  Gain			  "4.60160135072435e-05"
 		  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
@@ -9163,7 +9181,7 @@ Model {
 		Block {
 		  BlockType		  Gain
 		  Name			  "Gain1"
-		  SID			  "1910"
+		  SID			  "1919"
 		  Position		  [420, 200, 450, 230]
 		  Gain			  " -0.001038227262737266741675"
 		  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
@@ -9173,7 +9191,7 @@ Model {
 		Block {
 		  BlockType		  Product
 		  Name			  "Product"
-		  SID			  "1911"
+		  SID			  "1920"
 		  Ports			  [2, 1]
 		  Position		  [330, 152, 360, 183]
 		  InputSameDT		  off
@@ -9181,9 +9199,16 @@ Model {
 		  SaturateOnIntegerOverflow off
 		}
 		Block {
+		  BlockType		  Constant
+		  Name			  "constant"
+		  SID			  "1923"
+		  Position		  [45, 350, 75, 380]
+		  Value			  "15.2"
+		}
+		Block {
 		  BlockType		  Outport
 		  Name			  "T"
-		  SID			  "1912"
+		  SID			  "1921"
 		  Position		  [590, 213, 620, 227]
 		  IconDisplay		  "Port number"
 		}
@@ -9217,29 +9242,29 @@ Model {
 		Line {
 		  SrcBlock		  "w"
 		  SrcPort		  1
+		  Points		  [35, 0]
 		  DstBlock		  "Add1"
 		  DstPort		  1
 		}
 		Line {
-		  SrcBlock		  "Constant"
+		  SrcBlock		  "constant"
 		  SrcPort		  1
-		  Points		  [15, 0; 0, -35]
+		  Points		  [35, 0]
 		  DstBlock		  "Add1"
 		  DstPort		  2
 		}
 		Line {
 		  SrcBlock		  "Add1"
 		  SrcPort		  1
-		  Points		  [60, 0; 0, -35]
+		  Points		  [75, 0; 0, -90]
 		  Branch {
-		    Points		    [0, -35]
+		    Points		    [0, -40]
 		    Branch {
-		    Points		    [0, -20]
+		    Points		    [0, -15]
 		    DstBlock		    "Product"
 		    DstPort		    1
 		    }
 		    Branch {
-		    Points		    [0, -5]
 		    DstBlock		    "Product"
 		    DstPort		    2
 		    }
@@ -10823,13 +10848,6 @@ Model {
       DstPort		      2
     }
     Line {
-      SrcBlock		      "Sum4"
-      SrcPort		      1
-      Points		      [40, 0; 0, -95]
-      DstBlock		      "Gain"
-      DstPort		      1
-    }
-    Line {
       SrcBlock		      "Sum3"
       SrcPort		      1
       Points		      [20, 0]
@@ -10860,7 +10878,7 @@ Model {
       Labels		      [0, 0]
       SrcBlock		      "Gain"
       SrcPort		      1
-      Points		      [0, -20; -395, 0; 0, -60; 55, 0; 0, -30; -115, 0]
+      Points		      [0, -20; -545, 0; 0, -60; 55, 0; 0, -30; -115, 0]
       DstBlock		      "Demux"
       DstPort		      1
     }
@@ -11138,6 +11156,34 @@ Model {
       SrcPort		      1
       DstBlock		      "N"
       DstPort		      1
+    }
+    Line {
+      SrcBlock		      "Mux2"
+      SrcPort		      1
+      Points		      [60, 0]
+      DstBlock		      "Gain"
+      DstPort		      1
+    }
+    Line {
+      SrcBlock		      "Sum4"
+      SrcPort		      1
+      Points		      [0, -40; 10, 0]
+      Branch {
+	DstBlock		"Discrete-Time\nIntegrator"
+	DstPort			1
+      }
+      Branch {
+	Points			[0, -20]
+	DstBlock		"Mux2"
+	DstPort			1
+      }
+    }
+    Line {
+      SrcBlock		      "Discrete-Time\nIntegrator"
+      SrcPort		      1
+      Points		      [30, 0; 0, 10]
+      DstBlock		      "Mux2"
+      DstPort		      2
     }
     Annotation {
       Position		      [632, 572]
