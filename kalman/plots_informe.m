@@ -93,3 +93,34 @@ subplot(313)
     title('\fontsize{15}\omega_{qz} [rad/s]');  
     xlabel('\fontsize{12}Tiempo [s]');
     hold off
+    
+%% tests/main/logs/2012_04_06_1_6_divino/imu_raw.log
+
+figure;
+subplot(311)    
+    hold on; grid
+    plot(T,180/pi*z(:,3),'*-','color',green1,'markersize',msize)
+    plot(T,180/pi*x_hat(1:end,6),'color',green2,'linewidth',width)  
+    handle = legend('\fontsize{15}\theta_{imu}','\fontsize{15}\theta_{est}');
+    set(handle, 'Box', 'on','location','northeast','orientation','horizontal');
+    title('\fontsize{15}Angulo \theta [^o]')
+    xlabel('\fontsize{12}Tiempo [s]');
+    axis tight; hold off
+subplot(312)
+    hold on; grid
+    plot(T,180/pi*z(:,2),'*-','color',red1,'markersize',msize)
+    plot(T,180/pi*x_hat(1:end,5),'color',red2,'linewidth',width)
+    handle = legend('\fontsize{15}\phi_{imu}','\fontsize{15}\phi_{est}');
+    set(handle, 'Box', 'on','location','northeast','orientation','horizontal');
+    title('\fontsize{15}Angulo \phi [^o]')
+    xlabel('\fontsize{12}Tiempo [s]');
+    axis tight; hold off
+subplot(313)
+    hold on; grid
+    plot(T,180/pi*z(:,1),'*-','color',blue1,'markersize',msize)
+    plot(T,180/pi*x_hat(1:end,4),'color',blue2,'linewidth',width)
+    handle = legend('\fontsize{15}\psi_{imu}','\fontsize{15}\psi_{est}');
+    set(handle, 'Box', 'on','location','northeast','orientation','horizontal');
+    title('\fontsize{15}Angulo \psi [^o]')
+    xlabel('\fontsize{12}Tiempo [s]');
+    axis tight; hold off
