@@ -811,7 +811,11 @@ int main(int argc, char *argv[]){
 		    continue;
 		}
 		retval = ERROR_OK;
+		// save to error log
 		err_log_tv("Kalman startup completed in ", tv_diff);
+		// save to RET log, add end of line
+		log_tv_only(log_tv,tv_diff);
+		log_tv(log_tv, "Kalman startup completed in ", tv_diff);
 		++runs_kalman; // so re-entry doesn't happen
 	    }
 	    else
