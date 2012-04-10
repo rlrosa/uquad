@@ -1,4 +1,4 @@
-function expA=uquad_exp(A);
+function expA=uquad_exp(A)
 
 n=length(A(:,1));
 
