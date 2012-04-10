@@ -302,7 +302,8 @@ int mat_rot_test(void)
 				  V,
 				  deg2rad(angs->m_full[0]),
 				  deg2rad(angs->m_full[1]),
-				  deg2rad(angs->m_full[2]));
+				  deg2rad(angs->m_full[2]),
+				  NULL);
 	cleanup_if(retval);
 
 	printf("\nVr:\n\n");
