@@ -1,58 +1,82 @@
 function [x_hat,P] = kalman_gps(x_hat,P,z)
 
+% -------------------------------------------------------------------------
+% function [x_hat,P] = kalman_gps(x_hat,P,z)
+% -------------------------------------------------------------------------
+% Cosas que estan mal o mas o menos
+%   -h y H no deben depender de x_. La solucion para esto es incluir los 
+%    angulos de euler en el vecotor de estados de este kalman y no 
+%    actualizarlos. No corregirlos con ninguna observacion. Pero me parece 
+%    que es lo mismo que hacer lo que esta. Revisarlo por las dudas
+% -------------------------------------------------------------------------
+
 %% Constantes
 
-% Ixx  = 2.32e-2; % Tensor de inercia del quad - según x
-% Iyy  = 2.32e-2; % Tensor de inercia del quad - según y
-% Izz  = 4.37e-2; % Tensor de inercia del quad - según z
-% Izzm = 1.54e-5; % Tensor de inercia de los motores - segun z
-% L    = 0.29;    % Largo en metros del los brazos del quad
-% M    = 1.541;   % Masa del Quad en kg
-% g    = 9.81;    % Aceleracion gravitatoria
+Ns   = 6;       % Largo del vector de estados
 
-Ns   = 3;       % Largo del vector de estados
-
-Q = diag(1*[100 100 100]);
-R = diag(100*[100 100 100]);
-
-%% Entradas
-
-% dw = zeros(4);  % Derivada de w. Cada columna corresponde a 1 motor
-% TM = drive(u);  % Fuerzas ejercidas por los motores en N. Cada columna corresponde a 1 motor.
-% D  = drag(u);   % Torque de Drag ejercido por los motores en N*m. Cada columna corresponde a cada motor
+Q = diag(1*[100 100 100 100 100 100]);
+R = diag(1*[1 1 100000 1 1 100000]);
 
 %% Funciones
-     
-f = @(x,y,z) [ ...
-    x ;
-    y ;
-    z ...
+
+Rx = @(psi) [...
+    1 0        0        ;
+    0 cos(psi) -sin(psi) ;
+    0 sin(psi) cos(psi) ...
     ];
 
-h = @(x,y,z) [ ... 
+Ry = @(phi) [...
+    cos(phi)  0 sin(phi)   ;
+    0         1     0      ;
+    -sin(phi) 0 cos(phi) ...
+    ];
+
+Rz = @(theta) [...
+    cos(theta) -sin(theta) 0 ;
+    sin(theta) cos(theta)  0 ;
+    0          0           1 ...
+    ];
+
+f = @(x,y,z,vqx,vqy,vqz) [ ...
+    x   ;
+    y   ;
+    z   ;
+    vqx ;
+    vqy ;
+    vqz ...
+    ];
+
+h = @(x,y,z,psi,phi,theta,vqx,vqy,vqz) [ ... 
     x ;
     y ;
-    z ...
+    z ;
+    Rz(theta)*Ry(phi)*Rx(psi)*[vqx;vqy;vqz] ...
     ];
 
 F = @() ...
     eye(Ns);
- 
-H = @() ...
-    eye(Ns);
 
+H = @(psi,phi,theta) [...
+    1, 0, 0,                   0,                                                  0,                                                  0 ;
+    0, 1, 0,                   0,                                                  0,                                                  0 ;
+    0, 0, 1,                   0,                                                  0,                                                  0 ;
+    0, 0, 0, cos(phi)*cos(theta), cos(theta)*sin(phi)*sin(psi) - cos(psi)*sin(theta), sin(psi)*sin(theta) + cos(psi)*cos(theta)*sin(phi) ;
+    0, 0, 0, cos(phi)*sin(theta), cos(psi)*cos(theta) + sin(phi)*sin(psi)*sin(theta), cos(psi)*sin(phi)*sin(theta) - cos(theta)*sin(psi) ;
+    0, 0, 0,           -sin(phi),                                  cos(phi)*sin(psi),                                  cos(phi)*cos(psi) ...
+    ];
+ 
 %% Kalman
 
 % Predict
-x_   = f(x_hat(1),x_hat(2),x_hat(3));
+x_   = f(x_hat(1),x_hat(2),x_hat(3),x_hat(7),x_hat(8),x_hat(9));
 
 Fk_1 = F();
 
 P_   = Fk_1 * P * Fk_1'+ Q; 
 
 % Update
-yk         = z - h(x_(1),x_(2),x_(3));
-Hk         = H();
+yk         = z - h(x_(1),x_(2),x_(3),x_hat(4),x_hat(5),x_hat(6),x_(4),x_(5),x_(6));
+Hk         = H(x_hat(4), x_hat(5), x_hat(6)); % OJO TODO H deberia depender solo de x_
 Sk         = Hk*P_*Hk' + R;
 Kk         = P_*Hk'*Sk^-1;
 x_hat      = x_ + Kk*yk;
