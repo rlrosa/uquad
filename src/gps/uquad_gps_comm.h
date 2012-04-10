@@ -16,12 +16,22 @@ typedef struct utm{
 typedef struct gps{
     gpsd_t *gpsd;             // GPSD interface
     int fix;                  // Fix type.
-    uquad_mat_t *pos;         // Position {x,y,z}  [m]
-    double speed;             // Speed over ground [m/s]
-    double climb;             // Vertical speed    [m/s]
-    utm_t utm;                // UTM coordinates (matches {x,y})
+
+    uquad_mat_t *pos;         // Position             {x,y,z}  [m]
+    uquad_mat_t *pos_ep;      // Position uncertainty {x,y,z}  [m]
+
+    double speed;             // Speed over ground             [m/s]
+    double speed_ep;          // Speed uncertainty             [m/s]
+    double climb;             // Vertical speed                [m/s]
+    double climb_ep;          // Vertical speed uncertainty    [m/s]
+
+    double track;             // Course Made Good (rel. to N)  [rad]
+    double track_ep;          // CMG uncertainty               [rad]
+
     struct timeval timestamp; // Time of update
     uquad_bool_t unread_data; // Unread data is available
+    // Aux structures
+    utm_t utm;                // UTM coordinates - used to calculate pos[0:1]
 }gps_t;
 
 /** 

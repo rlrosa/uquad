@@ -21,6 +21,9 @@ gps_t *  gps_comm_init(void){
     gps->pos = uquad_mat_alloc(3,1);
     cleanup_if_null(gps->gpsd);
 
+    gps->pos_ep = uquad_mat_alloc(3,1);
+    cleanup_if_null(gps->gpsd);
+
     m1x3 = uquad_mat_alloc(1,3);
     cleanup_if_null(m1x3);    
 
@@ -54,6 +57,7 @@ void  gps_comm_deinit(gps_t * gps){
 	return;
     }
     uquad_mat_free(gps->pos);
+    uquad_mat_free(gps->pos_ep);
     uquad_mat_free(m1x3);
 
     retval = gps_stream(gps->gpsd, GPS_COMM_STREAM_FLAGS_DIS, NULL);
@@ -160,8 +164,17 @@ int gps_comm_read(gps_t *gps){
     gps->pos->m_full[1] = gps->utm.northing;
     gps->pos->m_full[2] = gps_fix.altitude;
 
+    gps->pos_ep->m_full[0] = gps_fix.epx;
+    gps->pos_ep->m_full[1] = gps_fix.epy;
+    gps->pos_ep->m_full[2] = gps_fix.epv;
+
     gps->speed = gps_fix.speed;
+    gps->speed_ep = gps_fix.eps;
     gps->climb = gps_fix.climb;
+    gps->climb_ep = gps_fix.epc;
+
+    gps->track = deg2rad(gps_fix.track);
+    gps->track_ep = deg2rad(gps_fix.epd);
 
     gps->unread_data = true;
     return ERROR_OK;
