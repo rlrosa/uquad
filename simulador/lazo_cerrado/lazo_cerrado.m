@@ -465,7 +465,7 @@ assignin('base','indice',1);
 assignin('base','xs',0);
 assignin('base','ys',0);
 assignin('base','zs',0);
-assignin('base','thetas',1);
+assignin('base','thetas',0);
 
 function pushbutton1_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton1 (see GCBO)
@@ -1156,7 +1156,7 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 set(hObject,'String','10');
-var=str2double(get(hObject,'String'));
+var=1e-3*str2double(get(hObject,'String'));
     assignin('base','Ts',var)
 
 

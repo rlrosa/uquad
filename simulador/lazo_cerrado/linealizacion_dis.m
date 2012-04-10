@@ -30,37 +30,34 @@ if modo=='hov'
 
     psis=0; phi=0;   
 
-    w1=298.086701308402;
-    w2=298.086701308402;
-    w3=298.086701308402;
-    w4=298.086701308402;
+    w1 = 316.103650939028;
+    w2 = 316.103650939028;
+    w3 = 316.103650939028;
+    w4 = 316.103650939028;
 
     theta=setpoint(4);
     
     Ah=eval(A);
-    %Ah=exp(A*Ts);
-    %syms s;
-    %aux=exp(A*s);
     
-    %Bh=int(aux,0,Ts)*eval(B);
     Bh=eval(B);
     %% Construcción de la matriz K método LQR para hovering
-
-    %Por ahora hay dos opciones para trabajar. No se todavía cual es mejor
-    if lqrm==0
-        Qp=diag([1 1 1 1e3 1e3 1 1 1 1 1 1 1]);
-        %Rp=diag([0.01 0.01 0.01 0.01]);
-        %Qp = diag([1 1 100 1 1 1 1 1 1 1 1 1]);
-        
-        Rp = diag([1e-2 1e-2 1e-2 1e-2]);
-        [K,S,E]=lqrd(Ah,Bh,Qp,Rp,Ts);
-        
-    else
-        Qp2=diag([100 100 100 1 1 1 100 100 100 1 1 1]);
-        Rp2=diag([1 1 1 1]);
-        [K,S,E]=lqr(Ah,Bh,Qp2,Rp2);
-    end
-
+    %C = zeros(4,12);
+%     C(1,1)=1;
+%     C(2,2)=1;
+%     C(3,3)=1;
+%     C(4,6)=1;
+%     Cz = zeros(4,4);
+    C = eye(size(Ah));
+    Z = zeros(12,12);
+    
+    BZ = zeros(12,4);
+       
+    Q=diag([1 1 1 1e3 1e3 1e3 1 1 1 1 1 1 1e-0 1e-0 1e-0 1e-0 1e-0 1e-0 1e-0 1e-0 1e-0 1e-0 1e-0 1e-0]);
+    R = diag([1e-2 1e-2 1e-2 1e-2]);
+    
+    %[K,S,E]=lqrd([Ah Z; C Cz],[Bh;BZ],Q,R,Ts);
+    K = uquad_dlqr([Ah Z; C Z],[Bh;BZ],Q,R);
+    
 %% Linealización vuelo en linea recta
 
 elseif modo=='rec'

@@ -17,7 +17,7 @@ function [t,X,Y]=sim_lazo_cerrado(ti,tf,setpoint,modo)
 %% Inicialización
 assignin('base','g',9.81); %Constante gravitacional
 assignin('base','L',0.29); %Largo de los brazos del quadcopter en metros
-assignin('base','M',1.541); %Masa del quadcopter en kilogramos
+assignin('base','M',1.741); %Masa del quadcopter en kilogramos
 %Elementos relevantes del tensor de inercia en kilogramos metros cuadrados
 assignin('base','Ixx',2.32e-2);
 assignin('base','Iyy',2.32e-2);
@@ -62,7 +62,7 @@ if modo=='hov'
 
     %Defino el setpoint de las velocidade angulares
     w = zeros(4,length(t));
-    w(:,:) =298.086701308402;
+    w(:,:) =316.103650939028;
    
    
     
@@ -116,7 +116,7 @@ if modo=='cir'
     assignin('base','K', K);
     
 else
-    K= linealizacion(modo,setpoint,0);
+    K= linealizacion_dis(modo,setpoint,0);
     assignin('base','K', K);
 
 
