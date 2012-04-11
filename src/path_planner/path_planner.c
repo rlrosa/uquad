@@ -112,7 +112,7 @@ int pp_update_K(path_planner_t *pp)
     retval = uquad_mat_set_subm(Aext,STATES_CONTROLLED,0,A);
     cleanup_if(retval);
     retval = uquad_mat_set_subm(Bext,0,0,B);
-
+    cleanup_if(retval);
     //Discretization of the system;
     phi = uquad_mat_alloc(Aext->r,Aext->c);
     gamma = uquad_mat_alloc(Bext->r,Bext->c);
@@ -203,7 +203,7 @@ int pp_lqr(uquad_mat_t *K, uquad_mat_t *A, uquad_mat_t *B, uquad_mat_t *Q, uquad
     aux1 = uquad_mat_alloc(R->r,R->c);
     aux2 = uquad_mat_alloc(R->r,R->c);
     aux3 = uquad_mat_alloc(R->r,R->c);
-    aux4 = uquad_mat_alloc(2*R->r,2*R->c);
+    aux4 = uquad_mat_alloc(R->r,2*R->c);
     aux5 = uquad_mat_alloc(R->r,Q->c);
     aux6 = uquad_mat_alloc(R->r,Q->c);
     aux7 = uquad_mat_alloc(K->c,K->r);
