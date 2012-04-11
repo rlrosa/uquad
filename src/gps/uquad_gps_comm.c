@@ -227,18 +227,35 @@ int gps_comm_get_data(gps_t *gps, gps_comm_data_t *gps_data, imu_data_t *imu_dat
     }
     uquad_mat_copy(gps_data->pos, gps->pos);
     err_propagate(retval);
-    if((gps->vel_ok) && (imu_data != NULL))
+    if(gps->vel_ok)
     {
-	m3x1->m_full[0] = gps->speed*sin(gps->track);
-	m3x1->m_full[1] = -gps->speed*cos(gps->track);//TODO verify!
-	m3x1->m_full[2] = gps->climb;
-	retval = uquad_mat_rotate(gps_data->vel,
-				  m3x1,
-				  imu_data->magn->m_full[0],
-				  imu_data->magn->m_full[1],
-				  imu_data->magn->m_full[2],
-				  m3x3);
-	err_propagate(retval);
+#if GPS_COMM_DATA_NON_INERTIAL_VEL
+	if(imu_data != NULL)
+	{
+	    m3x1->m_full[0] = gps->speed*sin(gps->track);
+	    m3x1->m_full[1] = -gps->speed*cos(gps->track);//TODO verify!
+	    m3x1->m_full[2] = gps->climb;
+	    retval = uquad_mat_rotate(gps_data->vel,
+				      m3x1,
+				      imu_data->magn->m_full[0],
+				      imu_data->magn->m_full[1],
+				      imu_data->magn->m_full[2],
+				      m3x3);
+	    err_propagate(retval);
+	}
+	else
+	{
+	    err_check(ERROR_GPS_SYS_REF,"Cannot convert to non-inertial frame without IMU!");
+	}
+#else
+	if(imu_data != NULL)
+	{
+	    err_log("WARN: Vels are inertial, will ignore IMU!");
+	}
+	gps_data->vel->m_full[0] = gps->speed*sin(gps->track);
+	gps_data->vel->m_full[1] = -gps->speed*cos(gps->track);//TODO verify!
+	gps_data->vel->m_full[2] = gps->climb;
+#endif
     }
     return ERROR_OK;
 }
