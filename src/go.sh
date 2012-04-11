@@ -71,9 +71,13 @@ else
 fi
 
 # run logger for errors
+echo Launching err logger...
 (cd build/main; ./logger ${err_pipe} &)
 
 # run main
+echo ""
+echo Running main...
+echo ""
 (cd build/main; ./main ${serial_port} 2> ${err_pipe};echo "Main finished!";)
 
 # kill everything. Muaha, ha.
