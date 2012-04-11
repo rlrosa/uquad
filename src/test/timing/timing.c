@@ -24,11 +24,21 @@ void uquad_sig_handler(int signal_num){
 }
 
 
-int main(void){
+int main(int argc, char *argv[])
+{
     int retval;
     int counter = 0;
+    int sleep_time_us;
     struct timeval tv_diff,t1,t2;
     
+    if(argc < 2)
+	sleep_time_us = 0;
+    else
+	sleep_time_us = atoi(argv[1]);
+
+    
+
+    err_log_num("Using sleep of:",sleep_time_us);
 
     log_time = uquad_logger_add(TIME_LOG_NAME);
     if(log_time == NULL)
@@ -66,9 +76,8 @@ int main(void){
 	    err_log_std("Failed to get t2!");
 	    quit_if(ERROR_FAIL);
 	}
-#if LOOP_SLEEP_US
-	usleep(LOOP_SLEEP_US);
-#endif
+	if(sleep_time_us > 0)
+	    usleep(sleep_time_us);
     }
 
     // never gets here
