@@ -4,6 +4,7 @@
 #include <gpsd.h>
 #include <uquad_aux_math.h>
 #include <stdio.h>
+#include <imu_comm.h>
 
 typedef struct gps_data_t gpsd_t;
 
@@ -13,25 +14,44 @@ typedef struct utm{
     int zone;
 }utm_t;
 
+/**
+ * This is the data that we are currently using.
+ * GPSD offers more data, that may eventually be used.
+ */
+typedef struct gps_comm_data{
+    uquad_mat_t *pos; // Position (inertial system)     {x,y,z}     [m]
+    uquad_mat_t *vel; // Speed    (non-inertial system) {vx,vy,vz}  [m/s]
+}gps_comm_data_t;
+
 typedef struct gps{
-    gpsd_t *gpsd;             // GPSD interface
-    int fix;                  // Fix type.
+    gpsd_t *gpsd;                // GPSD interface
+    int fix;                     // Fix type.
 
-    uquad_mat_t *pos;         // Position             {x,y,z}  [m]
-    uquad_mat_t *pos_ep;      // Position uncertainty {x,y,z}  [m]
+    uquad_mat_t *pos;            // Position (inertial system)     {x,y,z}     [m]
+    uquad_mat_t *pos_ep;         // Position uncertainty           {x,y,z}     [m]
 
-    double speed;             // Speed over ground             [m/s]
-    double speed_ep;          // Speed uncertainty             [m/s]
-    double climb;             // Vertical speed                [m/s]
-    double climb_ep;          // Vertical speed uncertainty    [m/s]
+    gps_comm_data_t *gps_data;   // GPS data
+    gps_comm_data_t *gps_data_ep;// GPS data uncertainty
 
-    double track;             // Course Made Good (rel. to N)  [rad]
-    double track_ep;          // CMG uncertainty               [rad]
+    struct timeval timestamp;    // Time of update
+    uquad_bool_t unread_data;    // Unread data is available, at least pos
+    uquad_bool_t pos_ep_ok;      // pos_ep has valid data
+    uquad_bool_t vel_ok;         // speed/climb has valid data
+    uquad_bool_t vel_ep_ok;      // speed/climb uncertainty is valid
 
-    struct timeval timestamp; // Time of update
-    uquad_bool_t unread_data; // Unread data is available
     // Aux structures
-    utm_t utm;                // UTM coordinates - used to calculate pos[0:1]
+    utm_t utm;                   // UTM coordinates - used to calculate pos[0:1]
+
+    double lat;
+    double lon;
+
+    double speed;                // Speed over ground             [m/s]
+    double speed_ep;             // Speed uncertainty             [m/s]
+    double climb;                // Vertical speed                [m/s]
+    double climb_ep;             // Vertical speed uncertainty    [m/s]
+
+    double track;                // Course Made Good (rel. to N)  [rad]
+    double track_ep;             // CMG uncertainty               [rad]
 }gps_t;
 
 /** 
@@ -39,7 +59,7 @@ typedef struct gps{
  * 
  * @return Pointer to structure, or NULL if something went wrong.
  */
-gps_t *  gps_comm_init(void);
+gps_t *gps_comm_init(void);
 
 /** 
  * Frees memory used for gps data structure, and closes connection to daemon.
@@ -88,25 +108,47 @@ int gps_comm_read(gps_t *gps);
 /** 
  * Returns info from the GPS.
  * Look at the declaration of gps_t for more info.
+ * NOTE: Must only request vel data if gps->vel_ok, otherwise, vel must be NULL.
  *
  * @param gps 
- * @param pos
- * @param speed 
- * @param climb 
+ * @param pos answer, absolute position [m]
+ * @param vel NULL or answer, relative to quadcopter frame (non-inertial) [m/s]
+ * @param imu_data IMU info to convert climb/speed/true_north to vx,vy,vz
  * 
  * @return error code
  */
-int gps_comm_get_data(gps_t *gps, uquad_mat_t *pos, double *speed, double *climb);
+int gps_comm_get_data(gps_t *gps, gps_comm_data_t *gps_data, imu_data_t *imu_data);
+
+/** 
+ * Same as gps_comm_get_data, except that only unread data will be considered
+ * 
+ * @param gps 
+ * @param pos 
+ * @param vel 
+ * @param imu_data 
+ * 
+ * @return 
+ */
+int gps_comm_get_data_unread(gps_t *gps, gps_comm_data_t *gps_data, imu_data_t *imu_data);
 
 /** 
  * Prints data from last gps_read, with timestamp
  * Format:
- *     timestamp speed climb x y z
+ *     timestamp fix x y z vx vy vz lat lon speed climb track vel_ok
  * 
+ * Description:
+ *   - timestamp: is the moment the beagleboard received the data from the GPS.
+ *   - fix: Fix type, should be 3D.
+ *   - x,y,z: Absolute position.
+ *   - vx, vy, vz: Speed relative to inertial frame.
+ *   - lat, lon: Raw position data
+ *   - speed, climb, track: Raw speed data
+ *   - vel_ok: Speed data is valid
+ *
  * @param gps 
  * @param stream 
  */
-void gps_comm_dump(gps_t *gps, FILE *stream);
+void gps_comm_dump(gps_t *gps, gps_comm_data_t *gps_data, FILE *stream);
 
 //#define sa         6378137.000000L
 //#define sb         6356752.314245L
@@ -127,5 +169,22 @@ void gps_comm_dump(gps_t *gps, FILE *stream);
  * @return 
  */
 int gps_comm_deg2utm(utm_t *utm, double lat, double lon);
+
+/**
+ * Allocates mem for gps_comm_data_t structure.
+ *
+ *
+ * @return Pointer to data or NULL if failure.
+ */
+gps_comm_data_t *gps_comm_data_alloc(void);
+
+/**
+ * Allocates mem for gps_comm_data_t structure.
+ *
+ * @param gps_data Structure to free (may be NULL)
+ *
+ * @return
+ */
+void gps_comm_data_free(gps_comm_data_t *gps_data);
 
 #endif //UQUAD_GPS_COMM_H

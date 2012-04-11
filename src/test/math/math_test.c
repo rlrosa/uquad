@@ -1,7 +1,7 @@
 #include <uquad_aux_math.h>
+#include <macros_misc.h>
 #include <stdlib.h>
-
-#define wait_for_enter while(fread(tmp,1,1,stdin) == 0)
+#include <unistd.h>
 
 enum test_type{
     MATRIX_PROD = 0,
@@ -39,14 +39,12 @@ uquad_bool_t ask_continue()
 	false;
 }
 
-void matrix_stdin(uquad_mat_t *m)
+int matrix_stdin(uquad_mat_t *m)
 {
     printf("Enter rows and columns of matrix, row wise:\n");    
     retval = uquad_mat_load(m,stdin);
-    if(retval != ERROR_OK)
-    {
-	err_log("WARN:Could not load matrix from stdin");
-    }
+    err_check(retval,"WARN:Could not load matrix from stdin");
+    return retval;
 }
 
 static int alloc_counter = 1;
@@ -73,8 +71,10 @@ int alloc_m1_m2(void)
 static int counter = 1;
 int load_m(uquad_mat_t *m)
 {
+    int retval;
     printf("Matrix %d\n",counter);
-    matrix_stdin(m);
+    retval = matrix_stdin(m);
+    err_propagate(retval);
     printf("Matrix %d is :\n",counter);
     uquad_mat_dump(m,NULL);
     counter++;
@@ -92,6 +92,8 @@ int load_m1_m2(void)
 
 int mat_inv_test(void)
 {
+    int retval = ERROR_OK;
+    uquad_mat_t *maux1,*maux2;
     if(alloc_m(&m1) != ERROR_OK)
     {
 	err_check(ERROR_FAIL,"Could not allocate mem, cannot continue");
@@ -109,11 +111,39 @@ int mat_inv_test(void)
 	err_check(ERROR_FAIL,"Failed loading data");
     }
 
+    printf("Will use (NULL,NULL) mem:\n");
+    sleep(2);
     retval = uquad_mat_inv(mr,m1,NULL,NULL);
     err_propagate(retval);
 
     printf("inv(A):\n");
     uquad_mat_dump(mr,NULL);
+
+    printf("Will use (aux,NULL) mem:\n");
+    sleep(2);
+    maux1 = uquad_mat_alloc(mr->r,mr->c);
+    maux2 = uquad_mat_alloc(mr->r,(mr->c)<<1);
+    
+    retval = uquad_mat_inv(mr,m1,maux1,NULL);
+    cleanup_log_if(retval, "Failed (aux,NULL) test!)");
+    uquad_mat_dump(mr,NULL);
+
+    printf("Will use (NULL,aux) mem:\n");
+    sleep(2);
+    retval = uquad_mat_inv(mr,m1,NULL,maux2);
+    cleanup_log_if(retval, "Failed (NULL,aux) test!)");
+    uquad_mat_dump(mr,NULL);
+
+    printf("Will use (aux1,aux2) mem:\n");
+    sleep(2);
+    retval = uquad_mat_inv(mr,m1,maux1,maux2);
+    cleanup_log_if(retval, "Failed (aux1,aux2) test!)");
+    uquad_mat_dump(mr,NULL);
+
+    cleanup:
+    uquad_mat_free(maux1);
+    uquad_mat_free(maux2);
+
     return ERROR_OK;
 }
 
@@ -302,7 +332,8 @@ int mat_rot_test(void)
 				  V,
 				  deg2rad(angs->m_full[0]),
 				  deg2rad(angs->m_full[1]),
-				  deg2rad(angs->m_full[2]));
+				  deg2rad(angs->m_full[2]),
+				  NULL);
 	cleanup_if(retval);
 
 	printf("\nVr:\n\n");

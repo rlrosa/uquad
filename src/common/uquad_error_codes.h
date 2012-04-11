@@ -31,6 +31,8 @@ ERROR_GPS,
 ERROR_GPS_OPEN,
 ERROR_GPS_STREAM,
 ERROR_GPS_NO_UPDATES,
+ERROR_GPS_NO_VEL,
+ERROR_GPS_SYS_REF,
 ERROR_MATH_MAX_DIM,
 ERROR_MATH_MAT_DIM,
 ERROR_MATH_VEC_LEN,
@@ -77,6 +79,8 @@ ERROR_TIMING
  *
  */
 #define log_double(log,msg,dbl) fprintf(log,"%s:%s:%d: %s: %lf\n",__TIME__,__FILE__,__LINE__,msg,dbl)
+
+#define log_eol(log) fprintf(log,"\n")
 
 /**
  * Print timeval message with unsigned long to stderr

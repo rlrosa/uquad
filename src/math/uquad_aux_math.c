@@ -519,34 +519,31 @@ int uquad_mat_inv(uquad_mat_t *Minv, uquad_mat_t *M, uquad_mat_t *Meye, uquad_ma
 
     if(Meye == NULL)
     {
-	Meye= uquad_mat_alloc(M->r,M->c);
+	Meye = uquad_mat_alloc(M->r,M->c);
 	if(Meye == NULL)
 	{
-	    err_log("Could not allocate aux mem for inv.");
 	    retval = ERROR_MALLOC;
-	    goto cleanup;
+	    cleanup_log_if(retval,"Could not allocate aux mem for inv.");
 	}
-	uquad_mat_eye(Meye);
 	local_Meye = true;
     }
+    retval = uquad_mat_eye(Meye);
+    cleanup_if(retval);
+
 
     if(Maux == NULL)
     {
 	Maux = uquad_mat_alloc(M->r,(M->c)<<1);
 	if(Maux == NULL)
 	{
-	    err_log("Could not allocate aux mem for inv.");
 	    retval = ERROR_MALLOC;
-	    goto cleanup;
+	    cleanup_log_if(retval,"Could not allocate aux mem for inv.");
 	}
 	local_Maux = true;
     }
 
     retval = uquad_solve_lin(M, Meye, Minv, Maux);
-    if(retval != ERROR_OK)
-    {
-	goto cleanup;
-    }
+    cleanup_if(retval);
 
     cleanup:
     if(local_Meye)
@@ -801,16 +798,24 @@ int uquad_mat_int(uquad_mat_t *B, uquad_mat_t *A, double ti, double tf, double s
  * @param phi
  * @param psi
  * @param theta
+ * @param R NULL or aux mem for rotation, avoids malloc/free
  *
  * @return
  */
-int uquad_mat_rotate(uquad_mat_t *Vr, uquad_mat_t *V, double phi, double psi, double theta)
+int uquad_mat_rotate(uquad_mat_t *Vr, uquad_mat_t *V,
+		     double phi, double psi, double theta,
+		     uquad_mat_t *R)
 {
     int retval;
-    uquad_mat_t *R = uquad_mat_alloc(3,3);
+    uquad_bool_t local_mem = false;
     if(R == NULL)
     {
-	cleanup_log_if(ERROR_MALLOC,"Failed to allocate rotation matrix");
+	local_mem = true;
+	R = uquad_mat_alloc(3,3);
+	if(R == NULL)
+	{
+	    cleanup_log_if(ERROR_MALLOC,"Failed to allocate rotation matrix");
+	}
     }
 
     R->m[0][0] = cos(phi)*cos(theta);
@@ -829,7 +834,8 @@ int uquad_mat_rotate(uquad_mat_t *Vr, uquad_mat_t *V, double phi, double psi, do
     cleanup_log_if(retval,"Failed to rotate vector!");
 
     cleanup:
-    uquad_mat_free(R);
+    if(local_mem)
+	uquad_mat_free(R);
     return retval;
 }
 

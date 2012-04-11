@@ -23,16 +23,20 @@ then
 else
     serial_port=/dev/ttyS1
 fi
+echo Will connect to IMU at ${serial_port}
 if [ $2 ];
 then
     pc_test="pc_test"
+    echo Using fake motor driver
 else
     pc_test=""
+    echo Using REAL motor driver
 fi
 
 err_pipe=err.p
 
 # configure serial port
+echo Configuring ${serial_port} for IMU
 stty -F ${serial_port} 115200 -echo raw
 sleep 0.5
 
@@ -48,7 +52,7 @@ cp imu/imu_calib.txt build/main/
 cp build/logger/logger build/main
 
 # prepare motor command
-cp i2c_beagle/cmd${pc_test} build/main/cmd
+mv i2c_beagle/cmd${pc_test} build/main/cmd
 
 # set up stderr logger
 if ! [ -a build/main/${err_pipe} ];
@@ -57,7 +61,14 @@ then
 fi
 
 # run network check, kill cmd if network fails
-(cd ../scripts; ./check_net.sh &)
+x=`uname -a | grep "x86_64"`
+if [ "$x" = "" ]; then
+    echo Setting up check_net.sh
+    (cd ../scripts; ./check_net.sh &)
+    echo check_net.sh running...
+else
+    echo WARNING! check_net.sh will not be used, assuming this is not a beagleboard
+fi
 
 # run logger for errors
 (cd build/main; ./logger ${err_pipe} &)

@@ -7,7 +7,8 @@
 #define GPS_COMM_STREAM_FLAGS_ENA WATCH_ENABLE | WATCH_JSON
 #define GPS_COMM_STREAM_FLAGS_DIS WATCH_DISABLE
 
-static uquad_mat_t *m1x3 = NULL;
+static uquad_mat_t *m3x1 = NULL;
+static uquad_mat_t *m3x3 = NULL;
 
 gps_t *  gps_comm_init(void){
     gps_t * gps;
@@ -20,12 +21,17 @@ gps_t *  gps_comm_init(void){
 
     gps->pos = uquad_mat_alloc(3,1);
     cleanup_if_null(gps->gpsd);
-
+    retval = uquad_mat_zeros(gps->pos);
+    cleanup_if(retval);
     gps->pos_ep = uquad_mat_alloc(3,1);
     cleanup_if_null(gps->gpsd);
+    uquad_mat_zeros(gps->pos_ep);
+    cleanup_if(retval);
 
-    m1x3 = uquad_mat_alloc(1,3);
-    cleanup_if_null(m1x3);    
+    m3x1 = uquad_mat_alloc(3,1);
+    cleanup_if_null(m3x1);
+    m3x3 = uquad_mat_alloc(3,3);
+    cleanup_if_null(m3x3);
 
     // Initialize data structure and open connection
     // Use default host/port (NULL/0)
@@ -58,7 +64,8 @@ void  gps_comm_deinit(gps_t * gps){
     }
     uquad_mat_free(gps->pos);
     uquad_mat_free(gps->pos_ep);
-    uquad_mat_free(m1x3);
+    uquad_mat_free(m3x1);
+    uquad_mat_free(m3x3);
 
     retval = gps_stream(gps->gpsd, GPS_COMM_STREAM_FLAGS_DIS, NULL);
     if(retval < 0)
@@ -158,64 +165,155 @@ int gps_comm_read(gps_t *gps){
     gettimeofday(&gps->timestamp,NULL);
     gps->fix = gps_comm_get_fix_mode(gps);
     gps_fix = gps->gpsd->fix;
-    retval = gps_comm_deg2utm(&gps->utm, gps_fix.latitude, gps_fix.longitude);
+    gps->lat = gps_fix.latitude;
+    gps->lon = gps_fix.longitude;
+
+    retval = gps_comm_deg2utm(&gps->utm, gps->lat, gps->lon);
     err_propagate(retval);
     gps->pos->m_full[0] = gps->utm.easting;
     gps->pos->m_full[1] = gps->utm.northing;
     gps->pos->m_full[2] = gps_fix.altitude;
 
-    gps->pos_ep->m_full[0] = gps_fix.epx;
-    gps->pos_ep->m_full[1] = gps_fix.epy;
-    gps->pos_ep->m_full[2] = gps_fix.epv;
+    if(isnan(gps_fix.epx) ||
+       isnan(gps_fix.epy) ||
+       isnan(gps_fix.epv))
+    {
+	gps->pos_ep_ok = false;
+    }
+    else
+    {
+	gps->unread_data = true;
+	gps->pos_ep_ok = true;
+	gps->pos_ep->m_full[0] = gps_fix.epx;
+	gps->pos_ep->m_full[1] = gps_fix.epy;
+	gps->pos_ep->m_full[2] = gps_fix.epv;
+    }
 
-    gps->speed = gps_fix.speed;
-    gps->speed_ep = gps_fix.eps;
-    gps->climb = gps_fix.climb;
-    gps->climb_ep = gps_fix.epc;
-
-    gps->track = deg2rad(gps_fix.track);
-    gps->track_ep = deg2rad(gps_fix.epd);
-
-    gps->unread_data = true;
+    if(isnan(gps_fix.speed) ||
+       isnan(gps_fix.climb) ||
+       isnan(gps_fix.track))
+    {
+	gps->vel_ok = false;
+    }
+    else
+    {
+	gps->vel_ok = true;
+	gps->speed = gps_fix.speed;
+	gps->climb = gps_fix.climb;
+	gps->track = deg2rad(gps_fix.track);
+	if(isnan(gps_fix.eps) ||
+	   isnan(gps_fix.epc) ||
+	   isnan(gps_fix.epd))
+	{
+	    gps->vel_ep_ok = false;
+	}
+	else
+	{
+	    gps->vel_ep_ok = true;
+	    gps->speed_ep = gps_fix.eps;
+	    gps->climb_ep = gps_fix.epc;
+	    gps->track_ep = deg2rad(gps_fix.epd);
+	}
+    }
     return ERROR_OK;
 }
 
-int gps_comm_get_data(gps_t *gps, uquad_mat_t *pos, double *speed, double *climb)
+int gps_comm_get_data(gps_t *gps, gps_comm_data_t *gps_data, imu_data_t *imu_data)
 {
     int retval = ERROR_OK;
-    if(pos == NULL || speed == NULL || climb == NULL)
+    if(gps_data == NULL)
     {
 	err_check(ERROR_NULL_POINTER,"Invalid argument!");
     }
-    uquad_mat_copy(pos, gps->pos);
+    uquad_mat_copy(gps_data->pos, gps->pos);
     err_propagate(retval);
-    *speed = gps->speed;
-    *climb = gps->climb;
+    if((gps->vel_ok) && (imu_data != NULL))
+    {
+	m3x1->m_full[0] = gps->speed*sin(gps->track);
+	m3x1->m_full[1] = -gps->speed*cos(gps->track);//TODO verify!
+	m3x1->m_full[2] = gps->climb;
+	retval = uquad_mat_rotate(gps_data->vel,
+				  m3x1,
+				  imu_data->magn->m_full[0],
+				  imu_data->magn->m_full[1],
+				  imu_data->magn->m_full[2],
+				  m3x3);
+	err_propagate(retval);
+    }
     return ERROR_OK;
 }
 
-int gps_comm_get_data_unread(gps_t *gps, uquad_mat_t *pos, double *speed, double *climb)
+int gps_comm_get_data_unread(gps_t *gps, gps_comm_data_t *gps_data, imu_data_t *imu_data)
 {
     int retval = ERROR_OK;
     if(!gps->unread_data)
     {
 	err_check(ERROR_GPS_NO_UPDATES,"NO new data!");
     }
-    retval = gps_comm_get_data(gps, pos, speed, climb);
+    retval = gps_comm_get_data(gps, gps_data, imu_data);
     err_propagate(retval);
     gps->unread_data = false;
     return ERROR_OK;
 }
 
-void gps_comm_dump(gps_t *gps, FILE *stream)
+void gps_comm_dump(gps_t *gps, gps_comm_data_t *gps_data, FILE *stream)
 {
-    int retval = ERROR_OK;
-    retval = uquad_mat_transpose(m1x3, gps->pos);
-    log_n_jump(retval,gps_comm_dump_end,"Failed to dump gps data!");    
+    int i;
+    if(stream == NULL)
+	stream = stdout;
+
+    // timestamp
     log_tv_only(stream,gps->timestamp);
+    // fix type
     log_int_only(stream, gps->fix);
-    log_double_only(stream,gps->speed);
-    log_double_only(stream,gps->climb);
-    uquad_mat_dump(m1x3, stream);
-    gps_comm_dump_end:;
+    // position
+    for(i = 0; i < 3; ++i)
+	log_double_only(stream,gps_data->pos->m_full[i]);
+    // vel
+    for(i = 0; i < 3; ++i)
+	log_double_only(stream,(gps->vel_ok)?
+			gps_data->vel->m_full[i]:
+			NAN);
+    // raw data
+    log_double_only(stream, gps->lat);
+    log_double_only(stream, gps->lon);
+    log_double_only(stream, (gps->vel_ok)?gps->speed:NAN);
+    log_double_only(stream, (gps->vel_ok)?gps->climb:NAN);
+    log_double_only(stream, (gps->vel_ok)?gps->track:NAN);
+    log_int_only(stream, gps->vel_ok);
+    log_eol(stream);
+}
+
+gps_comm_data_t *gps_comm_data_alloc(void)
+{
+    int retval;
+    gps_comm_data_t *gps_data = (gps_comm_data_t *)malloc(sizeof(gps_comm_data_t));
+    mem_alloc_check(gps_data);
+    if(gps_data == NULL)
+    {
+	cleanup_log_if(ERROR_MALLOC, "Failed to allocate gps_comm_data_t!");
+    }
+    gps_data->pos = uquad_mat_alloc(3,1);
+    gps_data->vel = uquad_mat_alloc(3,1);
+    if(gps_data->pos == NULL || gps_data->vel == NULL)
+    {
+	cleanup_log_if(ERROR_MALLOC, "Failed to allocate gps_comm_data_t!");
+    }
+    retval = uquad_mat_zeros(gps_data->pos);
+    cleanup_if(retval);
+    retval = uquad_mat_zeros(gps_data->vel);
+    return gps_data;
+
+    cleanup:
+    gps_comm_data_free(gps_data);
+    return NULL;
+}
+
+void gps_comm_data_free(gps_comm_data_t *gps_data)
+{
+    if(gps_data != NULL)
+    {
+	uquad_mat_free(gps_data->pos);
+	uquad_mat_free(gps_data->vel);
+    }
 }
