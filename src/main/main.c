@@ -699,8 +699,8 @@ int main(int argc, char *argv[]){
 		    gps_update = true;
 		else
 		    goto end_gps;
-		// Use latest IMU update to estimate speed from GPS datatetas
-		err_gps = gps_comm_get_data_unread(gps, gps_dat, &imu_data);
+		// Use latest IMU update to estimate speed from GPS data
+		err_gps = gps_comm_get_data_unread(gps, gps_dat, NULL);
 		log_n_jump(err_gps,end_gps,"Failed to get GPS data!");
 		
 		gettimeofday(&tv_tmp,NULL);
@@ -868,7 +868,7 @@ int main(int argc, char *argv[]){
 	/// -- -- -- -- -- -- -- --
 	gettimeofday(&tv_tmp,NULL);
 	uquad_timeval_substract(&tv_diff,tv_tmp,tv_last_m_cmd);
-	retval = control(ctrl, w, kalman->x_hat, pp->sp);
+	retval = control(ctrl, w, kalman->x_hat, pp->sp, (double)tv_diff.tv_usec);
 	log_n_continue(retval,"Control failed!");
 #if DEBUG && LOG_W_CTRL
 	retval = uquad_mat_transpose(wt,w);

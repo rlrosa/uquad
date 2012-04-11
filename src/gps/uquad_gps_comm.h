@@ -6,6 +6,8 @@
 #include <stdio.h>
 #include <imu_comm.h>
 
+#define GPS_COMM_DATA_NON_INERTIAL_VEL 0 // Convert vel to non-inertial sys
+
 typedef struct gps_data_t gpsd_t;
 
 typedef struct utm{
@@ -19,8 +21,8 @@ typedef struct utm{
  * GPSD offers more data, that may eventually be used.
  */
 typedef struct gps_comm_data{
-    uquad_mat_t *pos; // Position (inertial system)     {x,y,z}     [m]
-    uquad_mat_t *vel; // Speed    (non-inertial system) {vx,vy,vz}  [m/s]
+    uquad_mat_t *pos; // Position (inertial system) {x,y,z}     [m]
+    uquad_mat_t *vel; // Speed    (inertial system) {vx,vy,vz}  [m/s]
 }gps_comm_data_t;
 
 typedef struct gps{
@@ -108,11 +110,10 @@ int gps_comm_read(gps_t *gps);
 /** 
  * Returns info from the GPS.
  * Look at the declaration of gps_t for more info.
- * NOTE: Must only request vel data if gps->vel_ok, otherwise, vel must be NULL.
+ * NOTE: If GPS_COMM_DATA_NON_INERTIAL_VEL, imu_data must be NULL.
  *
  * @param gps 
- * @param pos answer, absolute position [m]
- * @param vel NULL or answer, relative to quadcopter frame (non-inertial) [m/s]
+ * @param gps_data Answer. Vel only valid if gps->vel_ok
  * @param imu_data IMU info to convert climb/speed/true_north to vx,vy,vz
  * 
  * @return error code
@@ -123,8 +124,7 @@ int gps_comm_get_data(gps_t *gps, gps_comm_data_t *gps_data, imu_data_t *imu_dat
  * Same as gps_comm_get_data, except that only unread data will be considered
  * 
  * @param gps 
- * @param pos 
- * @param vel 
+ * @param gps_data
  * @param imu_data 
  * 
  * @return 
@@ -139,7 +139,7 @@ int gps_comm_get_data_unread(gps_t *gps, gps_comm_data_t *gps_data, imu_data_t *
  * Description:
  *   - timestamp: is the moment the beagleboard received the data from the GPS.
  *   - fix: Fix type, should be 3D.
- *   - x,y,z: Absolute position.
+ *   - x,y,z: Position relative to inertial frame.
  *   - vx, vy, vz: Speed relative to inertial frame.
  *   - lat, lon: Raw position data
  *   - speed, climb, track: Raw speed data

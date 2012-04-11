@@ -15,11 +15,7 @@ if(~exist('t_imu','var'))
 %   fprintf('Calibración sin compensación por temperatura\nSe debe pasar como último parámetro el vector de temperaturas\n');
   t_imu = a_to;
 else
-    if length(t_imu)>512
-        t_imu = mean(t_imu(1:512))/10;
-    else
-        t_imu = mean(t_imu)/10;
-    end
+  t_imu = t_imu/10;
 end
 
 fs=100;
@@ -72,10 +68,9 @@ Ta=[1 -ayza azya;
 
 Ka_1 = (Ka^-1);
                
-bat = ba + [0;0; AT.x(1)]*(t_imu-a_to);
-
 aconv=zeros(size(a));
 for i=1:length(a(:,1))
+    bat = ba + [0;0; AT.x(1)]*(t_imu(i)-a_to);
     aux=Ta*(Ka_1)*(a(i,:)'-bat);
     aconv(i,:)=aux';
 end
@@ -86,7 +81,6 @@ Kg=[kgx 0 0;
     0 0 kgz];
 
 bg=[bgx; bgy; bgz];
-bgt =bg+[GT.x(1);GT.x(2);GT.x(3)]*(t_imu-g_to);
 
 Tg=[1    -gayza gazya;
     gaxza 1    -gazxa;
@@ -94,6 +88,7 @@ Tg=[1    -gayza gazya;
 
 wconv=zeros(size(w));
 for i=1:length(w(:,1))
+    bgt =bg+[GT.x(1);GT.x(2);GT.x(3)]*(t_imu(i)-g_to);
     auxg=Tg*(Kg^(-1))*(w(i,:)'-bgt);
     wconv(i,:)=auxg';
 end
