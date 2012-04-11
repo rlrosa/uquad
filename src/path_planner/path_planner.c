@@ -196,7 +196,6 @@ int pp_lqr(uquad_mat_t *K, uquad_mat_t *A, uquad_mat_t *B, uquad_mat_t *Q, uquad
 	cleanup_if(retval);
 	retval = uquad_mat_add(aux1,aux1,R);
 	cleanup_if(retval);
-	#warning "uquad_mat_inv is allocating"
 	retval = uquad_mat_inv(aux2,aux1,aux3,aux4);  
 	cleanup_if(retval);
 	
