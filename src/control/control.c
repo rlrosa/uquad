@@ -162,7 +162,7 @@ ctrl_t *control_init(void)
     return NULL;
 }
 
-int control(ctrl_t *ctrl, uquad_mat_t *w, uquad_mat_t *x, set_point_t *sp)
+int control(ctrl_t *ctrl, uquad_mat_t *w, uquad_mat_t *x, set_point_t *sp, double T_us)
 {
     int retval = ERROR_OK;
     if(ctrl == NULL || w == NULL || x == NULL || sp == NULL)
@@ -189,6 +189,8 @@ int control(ctrl_t *ctrl, uquad_mat_t *w, uquad_mat_t *x, set_point_t *sp)
     err_propagate(retval);
 
 #if CTRL_INTEGRAL
+    retval = uquad_mat_scalar_mul(tmp_x_hat_partial, NULL, T_us/1000000);
+    err_propagate(retval);
     retval = uquad_mat_add(ctrl->x_int, ctrl->x_int, tmp_x_hat_partial);
     err_propagate(retval);
     retval = uquad_mat_prod(w_tmp, ctrl->K_int, ctrl->x_int);

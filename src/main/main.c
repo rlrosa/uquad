@@ -868,7 +868,7 @@ int main(int argc, char *argv[]){
 	/// -- -- -- -- -- -- -- --
 	gettimeofday(&tv_tmp,NULL);
 	uquad_timeval_substract(&tv_diff,tv_tmp,tv_last_m_cmd);
-	retval = control(ctrl, w, kalman->x_hat, pp->sp);
+	retval = control(ctrl, w, kalman->x_hat, pp->sp, (double)tv_diff.tv_usec);
 	log_n_continue(retval,"Control failed!");
 #if DEBUG && LOG_W_CTRL
 	retval = uquad_mat_transpose(wt,w);
