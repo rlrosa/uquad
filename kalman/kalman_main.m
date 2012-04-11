@@ -33,30 +33,55 @@
 % los estados x, y, z (posicion absoluta)
 % -------------------------------------------------------------------------
 
-%% Load data
+%% Config
+use_gps      = 1;  % Use kalman_gps
+use_fake_gps = 0;  % Feed kalman_gps with fake data (only if use_gps)
+use_fake_T   = 1;  % Ignore real timestamps from log, use average
+use_8_st     = 0;  % Control only 8 states (ignore x,y,vqx,vqy)
+
+%% Load IMU data
 
 % Imu
 imu_file = 'tests/main/logs/2012_04_06_1_6_divino/imu_raw.log';
-[acrud,wcrud,mcrud,~,bcrud,~,~,T]=mong_read(imu_file,0,1);
+[acrud,wcrud,mcrud,tcrud,bcrud,~,~,T]=mong_read(imu_file,0,1);
 avg = 1;
 startup_runs = 200;
 imu_calib = 512;
 kalman_startup = 200;
 
-% Gps
-% gps_file = '~/Escritorio/car/01.log';
-% [easting, northing, elevation, utmzone, sat, lat, lon, dop] = ...
-%     gpxlogger_xml_handler(gps_file, 1);
-% save('kalman/gps','easting','northing','elevation','utmzone','sat','lat','lon','dop');
-GPS       = load('kalman/gps.mat');
-easting   = GPS.easting; northing = GPS.northing; elevation = GPS.elevation; 
-utmzone   = GPS.utmzone; sat = GPS.sat; lat = GPS.lat; lon = GPS.lon; dop = GPS.dop;
-westing   = -(easting - mean(easting));
-northing  = northing - mean(northing);
-elevation = elevation - mean(elevation);
-vx_gps    = zeros(size(easting));
-vy_gps    = zeros(size(easting));
-vz_gps    = zeros(size(easting));
+% Fake T
+if(use_fake_T)
+  T = [1:length(T)]'*mean(diff(T));
+end
+
+%% Load GPS data
+if(use_gps)
+
+  % Gps
+  % gps_file = '~/Escritorio/car/01.log';
+  % [easting, northing, elevation, utmzone, sat, lat, lon, dop] = ...
+  %     gpxlogger_xml_handler(gps_file, 1);
+  % save('kalman/gps','easting','northing','elevation','utmzone','sat','lat','lon','dop');
+  GPS       = load('kalman/gps.mat');
+  easting   = GPS.easting; northing = GPS.northing; elevation = GPS.elevation;
+  utmzone   = GPS.utmzone; sat = GPS.sat; lat = GPS.lat; lon = GPS.lon; dop = GPS.dop;
+  westing   = -(easting - mean(easting));
+  northing  = northing - mean(northing);
+  elevation = elevation - mean(elevation);
+  vx_gps    = zeros(size(easting));
+  vy_gps    = zeros(size(easting));
+  vz_gps    = zeros(size(easting));
+
+  if(use_fake_gps)
+    % Fake input, clear relevant data
+    easting = zeros(size(easting));
+    northing = zeros(size(northing));
+    elevation = zeros(size(elevation));
+    vx_gps = zeros(size(vx_gps));
+    vy_gps = zeros(size(vy_gps));
+    vz_gps = zeros(size(vz_gps));
+  end
+end
 
 %% Re-calibrate sensors
 
@@ -85,7 +110,7 @@ mcrud = mcrud(imu_calib:end,:);
 bcrud = bcrud(imu_calib:end,:);
 T     = T(imu_calib:end,:);
 
-[a,w,euler] = mong_conv(acrud,wcrud,mcrud,0);
+[a,w,euler] = mong_conv(acrud,wcrud,mcrud,0,tcrud);
 b=altitud(bcrud,b0);
 
 % gyro offset comp
@@ -104,10 +129,14 @@ Ngps    = 6;                 % N gps: cantidad de variables corregidas por gps
 w_hover = 316.10;
 w_max   = 387.0; 
 w_min   = 109.0; 
-% K       = load('K4x8.mat');K = K.K;
-K       = load('K4x12.mat');K = K.K;
-% sp_x    = [0;0;0;theta0;0;0;0;0];
-sp_x    = [0;0;0;0;0;theta0;0;0;0;0;0;0];
+if(use_8_st)
+  K       = load('K4x8.mat');K = K.K;
+  sp_x    = [0;0;0;theta0;0;0;0;0];
+else
+  K       = load('K4x12.mat');K = K.K;
+  sp_x    = [0;0;0;0;0;theta0;0;0;0;0;0;0];
+end
+
 sp_w    = ones(4,1)*w_hover;
 
 % Entradas
@@ -123,7 +152,11 @@ x_hat          = zeros(N,Ns);
 P              = 1*eye(Ns);
 w_control      = zeros(N-kalman_startup,4);
 w_control(1,:) = w_hover*ones(size(w_control(1,:)));
-% x_hat_partial  = zeros(N,8);
+if(use_8_st)
+  x_hat_partial  = zeros(N,8);
+else
+  x_hat_partial  = zeros(N,Ns);
+end
 
 P_gps          = 1*eye(Ngps);
 gps_index      = 1;
@@ -143,25 +176,30 @@ for i=2:N
     end
    
     % Kalman GPS
-    if mod(i,100) == 0
-        [aux,P_gps]  = kalman_gps(x_hat(i-1,1:9),P_gps,...
-            [northing(gps_index); westing(gps_index); elevation(gps_index); ...
-            vx_gps(gps_index); vy_gps(gps_index); vz_gps(gps_index)]);
-        x_hat(i,1:3) = aux(1:3);
-        x_hat(i,7:9) = aux(4:6);
-        gps_index    = gps_index + 1;
+    if(use_gps)
+      if mod(i,100) == 0
+          [aux,P_gps]  = kalman_gps(x_hat(i-1,1:9),P_gps,...
+              [northing(gps_index); westing(gps_index); elevation(gps_index); ...
+              vx_gps(gps_index); vy_gps(gps_index); vz_gps(gps_index)]);
+          x_hat(i,1:3) = aux(1:3);
+          x_hat(i,7:9) = aux(4:6);
+          gps_index    = gps_index + 1;
+      end
     end
     
     % Control
-%     x_hat_partial(i,:) = [x_hat(i,3), x_hat(i,4), x_hat(i,5), x_hat(i,6), ...
-%         x_hat(i,9), x_hat(i,10), x_hat(i,11), x_hat(i,12)];
+    if(use_8_st)
+      x_hat_partial(i,:) = [x_hat(i,3), x_hat(i,4), x_hat(i,5), x_hat(i,6), ...
+          x_hat(i,9), x_hat(i,10), x_hat(i,11), x_hat(i,12)];
+    else
+      x_hat_partial(i,:) = x_hat(i,:);
+    end
 
     % First kalman_startup samples will not be used for control
     if~(i > kalman_startup + 1)
       continue;
     end
-%     w_control(wc_i,:) = (sp_w + K*(sp_x - x_hat_partial(i,:)'))';
-    w_control(wc_i,:) = (sp_w + K*(sp_x - x_hat(i,:)'))';
+    w_control(wc_i,:) = (sp_w + K*(sp_x - x_hat_partial(i,:)'))';
     for j=1:4
       if(w_control(wc_i,j) < w_min)
         w_control(wc_i,j) = w_min;
