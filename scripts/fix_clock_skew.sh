@@ -1,3 +1,3 @@
 #!/bin/bash
 
-(cd src; find . -exec touch {} \;)
+(cd ../src; find . -exec touch {} \;)
