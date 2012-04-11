@@ -273,13 +273,13 @@ void gps_comm_dump(gps_t *gps, gps_comm_data_t *gps_data, FILE *stream)
     for(i = 0; i < 3; ++i)
 	log_double_only(stream,(gps->vel_ok)?
 			gps_data->vel->m_full[i]:
-			NAN);
+			0);
     // raw data
     log_double_only(stream, gps->lat);
     log_double_only(stream, gps->lon);
-    log_double_only(stream, (gps->vel_ok)?gps->speed:NAN);
-    log_double_only(stream, (gps->vel_ok)?gps->climb:NAN);
-    log_double_only(stream, (gps->vel_ok)?gps->track:NAN);
+    log_double_only(stream, (gps->vel_ok)?gps->speed:0);
+    log_double_only(stream, (gps->vel_ok)?gps->climb:0);
+    log_double_only(stream, (gps->vel_ok)?gps->track:0);
     log_int_only(stream, gps->vel_ok);
     log_eol(stream);
 }
