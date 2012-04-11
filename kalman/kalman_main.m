@@ -90,10 +90,11 @@ acrud = acrud(startup_runs:end,:);
 wcrud = wcrud(startup_runs:end,:);
 mcrud = mcrud(startup_runs:end,:);
 bcrud = bcrud(startup_runs:end,:);
+tcrud = tcrud(startup_runs:end,:);
 T = T(startup_runs:end);
 
 % p0 and theta0 is estimated form first imu_calib samples
-[a_calib,w_calib,euler_calib] = mong_conv(acrud(1:imu_calib,:),wcrud(1:imu_calib,:),mcrud(1:imu_calib,:),0);
+[a_calib,w_calib,euler_calib] = mong_conv(acrud(1:imu_calib,:),wcrud(1:imu_calib,:),mcrud(1:imu_calib,:),0,tcrud(1:imu_calib));
 theta0                  = mean(euler_calib(:,3));
 b0                      = mean(bcrud(1:imu_calib));
 
@@ -102,12 +103,13 @@ acrud(:,1) = moving_avg(acrud(:,1),avg); acrud(:,2) = moving_avg(acrud(:,2),avg)
 wcrud(:,1) = moving_avg(wcrud(:,1),avg); wcrud(:,2) = moving_avg(wcrud(:,2),avg); wcrud(:,3) = moving_avg(wcrud(:,3),avg);
 mcrud(:,1) = moving_avg(mcrud(:,1),avg); mcrud(:,2) = moving_avg(mcrud(:,2),avg); mcrud(:,3) = moving_avg(mcrud(:,3),avg);
 bcrud      = moving_avg(bcrud,avg);
-
+tcrud      = moving_avg(tcrud,avg);
 % first imu_calib values are not used for kalman/control/etc
 acrud = acrud(imu_calib:end,:);
 wcrud = wcrud(imu_calib:end,:);
 mcrud = mcrud(imu_calib:end,:);
 bcrud = bcrud(imu_calib:end,:);
+tcrud = tcrud(imu_calib:end,:);
 T     = T(imu_calib:end,:);
 
 [a,w,euler] = mong_conv(acrud,wcrud,mcrud,0,tcrud);
