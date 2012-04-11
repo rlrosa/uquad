@@ -1,5 +1,17 @@
 function [x_hat,P] = kalman_imu(x_hat,P,T,u,z)
 
+% -------------------------------------------------------------------------
+% function [x_hat,P] = kalman_imu(x_hat,P,T,u,z)
+% -------------------------------------------------------------------------
+% Cosas que estan mal o mas o menos
+%   -h no debe depender de la entrada. Solo debe depender de x_. Creo que
+%    no pasa nada igual. Revisarlo. La solución sería incluir en el vector
+%    de estados a las derivadas de vqx, vqy y vqz y cambiar la ecuación de
+%    vqz para que no dependa de la entrada TM (o sea de w). Del modelo
+%    físico se puede deducir otra fórmula para la predicción de vqz.
+%    obviamente también cambiaría H.
+% -------------------------------------------------------------------------
+
 %% Constantes
 
 Ixx  = 2.32e-2; % Tensor de inercia del quad - según x

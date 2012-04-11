@@ -496,8 +496,8 @@ int uquad_mat_get_diag(double v[],uquad_mat_t *m,int n)
  * Requires aux memory, two matrices. If not supplied, will allocate and
  * free after finishing.
  * 
- * @param Minv Input.
- * @param M Result.
+ * @param Minv Result.
+ * @param M Input.
  * @param Meye NULL or auxiliary matrix, size of M.
  * @param Maux NULL or auxiliary matrix, size of [M:M]
  * 
@@ -716,9 +716,9 @@ double uquad_mat_norm(uquad_mat_t *A)
 	err_check(ERROR_NULL_POINTER, "Cannot load, must allocate memory previously.");
     }
     int i;
-    int n = A->c;
     double norm=0;
-    for (i=0;i<n*n;i++)
+    int len = A->c*A->r;
+    for (i=0; i<len; i++)
     {
 	norm+=A->m_full[i]*A->m_full[i];
     }

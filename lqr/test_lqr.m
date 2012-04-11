@@ -16,7 +16,7 @@ w1=334.28; w2=334.28; w3=334.28; w4=334.28;
 Ah=eval(A);
 Bh=eval(B);
 
-Q=diag([1 1 1 1 1 1 1 1 1 1 1 1]);
+Q=diag([1 1 1 1e2 1e2 1e2 1 1 1 1 1 1]);
 R=diag([1 1 1 1]);
 
 %K_u=uquad_lqr(Ah,Bh,Q,R);

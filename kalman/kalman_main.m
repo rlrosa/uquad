@@ -36,12 +36,29 @@
 %% Load data
 
 % Imu
-imu_file = 'tests/main/logs/2012_04_06_1_1_izquierda/imu_raw.log';
+imu_file = 'tests/main/logs/2012_04_06_1_6_divino/imu_raw.log';
 [acrud,wcrud,mcrud,~,bcrud,~,~,T]=mong_read(imu_file,0,1);
 avg = 1;
 startup_runs = 200;
 imu_calib = 512;
 kalman_startup = 200;
+
+% Gps
+% gps_file = '~/Escritorio/car/01.log';
+% [easting, northing, elevation, utmzone, sat, lat, lon, dop] = ...
+%     gpxlogger_xml_handler(gps_file, 1);
+% save('kalman/gps','easting','northing','elevation','utmzone','sat','lat','lon','dop');
+GPS       = load('kalman/gps.mat');
+easting   = GPS.easting; northing = GPS.northing; elevation = GPS.elevation; 
+utmzone   = GPS.utmzone; sat = GPS.sat; lat = GPS.lat; lon = GPS.lon; dop = GPS.dop;
+westing   = -(easting - mean(easting));
+northing  = northing - mean(northing);
+elevation = elevation - mean(elevation);
+vx_gps    = zeros(size(easting));
+vy_gps    = zeros(size(easting));
+vz_gps    = zeros(size(easting));
+
+%% Re-calibrate sensors
 
 % startup_runs samples are discarded
 acrud = acrud(startup_runs:end,:);
@@ -77,31 +94,20 @@ for i = 1:3
   w(:,i) = w(:,i) - w_calib_mean(i);
 end
 
-% Gps
-% gps_file = '~/Escritorio/car/01.log';
-% [easting, northing, elevation, utmzone, sat, lat, lon, dop] = ...
-%     gpxlogger_xml_handler(gps_file, 1);
-% save('kalman/gps','easting','northing','elevation','utmzone','sat','lat','lon','dop');
-GPS       = load('kalman/gps.mat');
-easting   = GPS.easting; northing = GPS.northing; elevation = GPS.elevation; 
-utmzone   = GPS.utmzone; sat = GPS.sat; lat = GPS.lat; lon = GPS.lon; dop = GPS.dop;
-easting   = easting - mean(easting);
-northing  = northing - mean(northing);
-elevation = elevation - mean(elevation);
-
 %% Constantes, entradas, observaciones e inicialización
 
 % Constantes
 N       = size(a,1);         % Cantidad de muestras de las observaciones
 Ns      = 12;                % N states: cantidad de variables de estado
-Ngps    = 3;                 % N gps: cantidad de variables corregidas por gps
-Nc      = 8;                 % N control states: Cantidad de estados a controlar
-% w_idle  = 109;               %     se controla z,psi,phi,theta,vqz,wqx,wqy,wqz
+Ngps    = 6;                 % N gps: cantidad de variables corregidas por gps
+% w_idle  = 109;
 w_hover = 316.10;
 w_max   = 387.0; 
 w_min   = 109.0; 
-K       = load('K.mat');K = K.K;
-sp_x    = [0;0;0;theta0;0;0;0;0];
+% K       = load('K4x8.mat');K = K.K;
+K       = load('K4x12.mat');K = K.K;
+% sp_x    = [0;0;0;theta0;0;0;0;0];
+sp_x    = [0;0;0;0;0;theta0;0;0;0;0;0;0];
 sp_w    = ones(4,1)*w_hover;
 
 % Entradas
@@ -117,19 +123,17 @@ x_hat          = zeros(N,Ns);
 P              = 1*eye(Ns);
 w_control      = zeros(N-kalman_startup,4);
 w_control(1,:) = w_hover*ones(size(w_control(1,:)));
-x_hat_partial  = zeros(N,8);
+% x_hat_partial  = zeros(N,8);
 
 P_gps          = 1*eye(Ngps);
-gps_count      = 0;
-gps_index      = 2;
+gps_index      = 1;
 
 %% Kalman
 
 for i=2:N
     wc_i = i-kalman_startup;
-    gps_count = gps_count + 1;
-
-    % Kalman
+    
+    % Kalman inercial
     if(i > kalman_startup + 1)
       % Use control output as current w
       [x_hat(i,:),P] = kalman_imu(x_hat(i-1,:),P,T(i)-T(i-1),w_control(wc_i - 1,:)',z(i,:)');
@@ -138,22 +142,26 @@ for i=2:N
       [x_hat(i,:),P] = kalman_imu(x_hat(i-1,:),P,T(i)-T(i-1),sp_w,z(i,:)');
     end
    
-    if gps_count == 100
-        [aux,P_gps]    = kalman_gps(x_hat(gps_index-1,1:3),P_gps,[northing(gps_index);easting(gps_index);elevation(gps_index)]);
-        x_hat(gps_index-1,1:3) = aux;
-        gps_index = gps_index + 1;
-        gps_count = 0;
+    % Kalman GPS
+    if mod(i,100) == 0
+        [aux,P_gps]  = kalman_gps(x_hat(i-1,1:9),P_gps,...
+            [northing(gps_index); westing(gps_index); elevation(gps_index); ...
+            vx_gps(gps_index); vy_gps(gps_index); vz_gps(gps_index)]);
+        x_hat(i,1:3) = aux(1:3);
+        x_hat(i,7:9) = aux(4:6);
+        gps_index    = gps_index + 1;
     end
     
     % Control
-    x_hat_partial(i,:) = [x_hat(i,3), x_hat(i,4), x_hat(i,5), x_hat(i,6), ...
-        x_hat(i,9), x_hat(i,10), x_hat(i,11), x_hat(i,12)];
+%     x_hat_partial(i,:) = [x_hat(i,3), x_hat(i,4), x_hat(i,5), x_hat(i,6), ...
+%         x_hat(i,9), x_hat(i,10), x_hat(i,11), x_hat(i,12)];
 
     % First kalman_startup samples will not be used for control
     if~(i > kalman_startup + 1)
       continue;
     end
-    w_control(wc_i,:) = (sp_w + K*(sp_x - x_hat_partial(i,:)'))';
+%     w_control(wc_i,:) = (sp_w + K*(sp_x - x_hat_partial(i,:)'))';
+    w_control(wc_i,:) = (sp_w + K*(sp_x - x_hat(i,:)'))';
     for j=1:4
       if(w_control(wc_i,j) < w_min)
         w_control(wc_i,j) = w_min;
