@@ -845,12 +845,14 @@ int main(int argc, char *argv[]){
 			runs_kalman*(MOT_W_STARTUP_RANGE/STARTUP_KALMAN);
 		retval = mot_set_vel_rads(mot, w);
 		log_n_continue(retval,"Failed to set motor speed!");
+#if LOG_W
 		uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
 		log_tv_only(log_w,tv_diff);
 		retval = uquad_mat_transpose(wt,w);
 		log_n_continue(retval,"Failed to transpose!");
 		uquad_mat_dump(wt,log_w);
 		fflush(log_w);
+#endif // LOG_W
 		retval = gettimeofday(&tv_last_ramp,NULL);
 		log_n_continue(retval,"Failed to update ramp timer!");
 		continue;
