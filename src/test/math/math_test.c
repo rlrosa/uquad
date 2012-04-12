@@ -328,7 +328,8 @@ int mat_rot_test(void)
 	retval = uquad_mat_load(angs, NULL);
 	cleanup_if(retval);
 
-	retval = uquad_mat_rotate(Vr,
+	retval = uquad_mat_rotate(true,
+				  Vr,
 				  V,
 				  deg2rad(angs->m_full[0]),
 				  deg2rad(angs->m_full[1]),
