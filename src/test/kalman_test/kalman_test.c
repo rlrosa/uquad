@@ -5,6 +5,7 @@
 #include <sys/types.h>
 #include <unistd.h> // For STDIN_FILENO
 #include <stdio.h>
+#include <uquad_gps_comm.h>
 #include "uquad_kalman.h"
 
 #define EXIT_CHAR 'q'
@@ -77,7 +78,7 @@ int main(int argc, char *argv[]){
     // do stuff...
     uquad_mat_t* tmp4print = uquad_mat_alloc(1,12);
     imu_data_t data;
-    uquad_bool_t do_sleep = false;
+    //    uquad_bool_t do_sleep = false;
     int read_will_not_lock;
     int imu_fd;
     data.acc = uquad_mat_alloc(3,1);
@@ -94,7 +95,18 @@ int main(int argc, char *argv[]){
 	imu_ready = false;
     struct timeval tv_last_kalman, tv_diff, tv_tmp;
 
+    uquad_bool_t gps_update;
+    int gps_counter = 0;
+    gps_comm_data_t* gps_dat;
+    gps_dat = gps_comm_data_alloc();
+    retval = uquad_mat_zeros(gps_dat -> pos);
+    err_propagate(retval);
+    retval = uquad_mat_zeros(gps_dat -> vel);
+    err_propagate(retval);
+
     while(1){
+	gps_counter++;
+	gps_update = (gps_counter % 100 == 0);
 	// Run loop until user presses any key or velociraptors chew through the power cable
 	FD_SET(STDIN_FILENO,&rfds);
 	FD_SET(imu_fd,&rfds);
@@ -106,7 +118,7 @@ int main(int argc, char *argv[]){
 	}else{
 	    // Read from IMU
 	    if(FD_ISSET(imu_fd,&rfds)){
-		do_sleep = false;
+		//		do_sleep = false;
 		retval = imu_comm_read(imu, &imu_ready);
 		if(!imu_ready){
 		    //		    printf("Not enough data available...\n");
@@ -144,8 +156,16 @@ int main(int argc, char *argv[]){
 			    err_check(ERROR_FAIL, "Negative time is not valid!");
 			}
 			//			retval = uquad_kalman(kalman_io_data, w, &data, tv_diff.tv_usec);
-			retval = uquad_kalman(kalman_io_data, w, &data, 13000.0);
+			retval = uquad_kalman(kalman_io_data, 
+					      w, &data, 13000.0);
 			err_propagate(retval);
+
+			if(gps_update)
+			{
+			    retval = uquad_kalman_gps(kalman_io_data, 
+						      gps_dat);
+			    err_propagate(retval);
+			}
 
 			retval = uquad_mat_transpose(tmp4print,kalman_io_data->x_hat);
 			err_propagate(retval);

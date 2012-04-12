@@ -689,7 +689,7 @@ int H_gps(uquad_mat_t* Hx, kalman_io_t* kalman_io_data)
 int uquad_kalman_gps(kalman_io_t* kalman_io_data, gps_comm_data_t* gps_i_data)
 {
     int retval;
-    if(Fk_1==NULL)
+    if(Fk_1_gps==NULL)
     {
 	// Auxiliaries for prediction
 	fx_gps     = uquad_mat_alloc(6,1);
