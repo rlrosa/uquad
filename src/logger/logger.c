@@ -15,6 +15,7 @@
 
 #define NEW_LINE_LEN PATH_MAX
 
+#define LINE_PER_FLUSH 10
 #define READER_TIMEOUT 15 // sec
 
 #define LOG_STD_ERR 1
@@ -33,7 +34,10 @@ void quit(void)
     if(pipe_f != NULL)
 	fclose(pipe_f);
     if(log_file != NULL)
+    {
+	fflush(log_file);
 	fclose(log_file);
+    }
     exit(0);
 }
 
@@ -51,6 +55,7 @@ int main(int argc, char *argv[])
     char log_name[PATH_MAX];
     int itmp;
     size_t len;
+    int line_count = 0, log_fd;
 
     // Catch signals
     signal(SIGINT, uquad_sig_handler);
@@ -102,6 +107,12 @@ int main(int argc, char *argv[])
 	err_log_stderr("Failed to open log file!");
 	quit();
     }
+    log_fd = fileno(log_file);
+    if(log_fd < 0)
+    {
+	err_log_std(ERROR_IO);
+	quit();
+    }
 
     gettimeofday(&tv_old,NULL);
     for(;;)
@@ -116,7 +127,11 @@ int main(int argc, char *argv[])
 		err_log("TIMING: absurd!");
 	    }
 	    fprintf(log_file,"%s",new_line);
-	    fflush(log_file);
+	    if(line_count++ > LINE_PER_FLUSH)
+	    {
+		fdatasync(log_fd);
+		line_count = 0;
+	    }
 	    gettimeofday(&tv_old,NULL);	
 	}
 	else
