@@ -18,5 +18,11 @@ typedef UQUAD_BOOL uquad_bool_t;
 #define LENGTH  0.29L	   // Largo en metros del los brazos del quad
 #define MASA    1.741L	   // Masa del Quad en kg
 #define PI      3.1415926L
+#define F_B1    4.6016e-05L //Coeficiente cuadrático de la fuerza
+#define F_B2    -0.0010L    //Coeficiente lineal de la fuerza
+#define M_D1    3.4734e-6L  //Coeficiente cuadrático del torque
+#define M_D2    -1.3205e-4L //Coeficiente lineal del torque
+#define LENGTH_STATE_VECTOR 12//Tamaño del vector de estados  
+#define LENGTH_INPUT 4//Tamaño del vector de entradass  
 
 #endif

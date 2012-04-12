@@ -5,6 +5,8 @@
 
 typedef enum path_type{
     HOVER = 0,
+    STRAIGHT,
+    CIRCULAR,
     PATH_TYPE_COUNT
 }path_type_t;
 
@@ -43,4 +45,4 @@ int pp_lqr(uquad_mat_t *K, uquad_mat_t *phi, uquad_mat_t *gamma, uquad_mat_t *Q,
 int pp_disc(uquad_mat_t *phi,uquad_mat_t *gamma,uquad_mat_t *A,uquad_mat_t *B, double Ts);
 #endif //PATH_PLANNER_H
 
- 
+int pp_lin_model(uquad_mat_t *A, uquad_mat_t *B, path_type_t pt, set_point_t *sp);
