@@ -19,7 +19,7 @@
 #define WAIT_COUNTER_MAX 10
 #define IMU_COMM_TEST_EOL_LIM 128
 
-#define PRINT_RAW  0
+#define PRINT_RAW  1
 #define PRINT_DATA 1
 #define PRINT_AVG  1
 
@@ -172,7 +172,6 @@ int main(int argc, char *argv[]){
 		{
 		    printf("Calibration completed!\nPress enter to continue...");
 		    calibrating = false;
-		    wait_for_enter;
 		}
 #if PRINT_RAW
 		retval = imu_comm_get_raw_latest_unread(imu,&raw);

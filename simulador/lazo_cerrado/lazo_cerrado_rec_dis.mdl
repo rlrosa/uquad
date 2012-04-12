@@ -92,7 +92,7 @@ Model {
       Name		      "w"
     }
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.276"
+    ComputedModelVersion    "1.279"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -123,9 +123,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "pater"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Tue Apr  3 19:12:04 2012"
-  RTWModifiedTimeStamp	  255381114
-  ModelVersionFormat	  "1.%<AutoIncrement:276>"
+  LastModifiedDate	  "Tue Apr 10 13:49:16 2012"
+  RTWModifiedTimeStamp	  255966546
+  ModelVersionFormat	  "1.%<AutoIncrement:279>"
   ConfigurationManager	  "None"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -948,7 +948,7 @@ Model {
     ShowPageBoundaries	    off
     ZoomFactor		    "100"
     ReportName		    "simulink-default.rpt"
-    SIDHighWatermark	    "1790"
+    SIDHighWatermark	    "2202"
     Block {
       BlockType		      Inport
       Name		      "w1"
@@ -990,10 +990,25 @@ Model {
       DisplayOption	      "bar"
     }
     Block {
+      BlockType		      DiscreteIntegrator
+      Name		      "Discrete-Time\nIntegrator"
+      SID		      "1791"
+      Ports		      [1, 1]
+      Position		      [585, 624, 620, 656]
+      IntegratorMethod	      "Integration: Forward Euler"
+      ExternalReset	      "none"
+      InitialConditionSource  "internal"
+      SampleTime	      "Ts"
+      UpperSaturationLimit    "15"
+      LowerSaturationLimit    "-15"
+      ICPrevOutput	      "DiscIntNeverNeededParam"
+      ICPrevScaledInput	      "DiscIntNeverNeededParam"
+    }
+    Block {
       BlockType		      Gain
       Name		      "Gain"
       SID		      "370"
-      Position		      [610, 595, 640, 625]
+      Position		      [840, 610, 870, 640]
       Gain		      "K"
       Multiplication	      "Matrix(K*u) (u vector)"
       ParamDataTypeStr	      "Inherit: Inherit via internal rule"
@@ -1023,6 +1038,16 @@ Model {
       Ports		      [4, 1]
       Position		      [545, 22, 575, 138]
       ShowName		      off
+      DisplayOption	      "bar"
+    }
+    Block {
+      BlockType		      Mux
+      Name		      "Mux2"
+      SID		      "1792"
+      Ports		      [2, 1]
+      Position		      [700, 597, 705, 653]
+      ShowName		      off
+      Inputs		      "2"
       DisplayOption	      "bar"
     }
     Block {
@@ -1092,7 +1117,7 @@ Model {
       System {
 	Name			"Setpoint"
 	Location		[0, 53, 1366, 768]
-	Open			on
+	Open			off
 	ModelBrowserVisibility	off
 	ModelBrowserWidth	200
 	ScreenColor		"white"
@@ -3213,7 +3238,7 @@ Model {
     Block {
       BlockType		      SubSystem
       Name		      "Subsystem1"
-      SID		      "1261"
+      SID		      "1793"
       Ports		      [4, 12]
       Position		      [535, 194, 895, 521]
       MinAlgLoopOccurrences   off
@@ -3226,7 +3251,7 @@ Model {
       System {
 	Name			"Subsystem1"
 	Location		[1, 82, 1367, 821]
-	Open			off
+	Open			on
 	ModelBrowserVisibility	off
 	ModelBrowserWidth	200
 	ScreenColor		"white"
@@ -3241,7 +3266,7 @@ Model {
 	Block {
 	  BlockType		  Inport
 	  Name			  "w1"
-	  SID			  "1266"
+	  SID			  "1794"
 	  Position		  [25, 353, 55, 367]
 	  IconDisplay		  "Port number"
 	  OutMin		  "109"
@@ -3250,7 +3275,7 @@ Model {
 	Block {
 	  BlockType		  Inport
 	  Name			  "w2"
-	  SID			  "1268"
+	  SID			  "1795"
 	  Position		  [25, 378, 55, 392]
 	  Port			  "2"
 	  IconDisplay		  "Port number"
@@ -3260,7 +3285,7 @@ Model {
 	Block {
 	  BlockType		  Inport
 	  Name			  "w3"
-	  SID			  "1269"
+	  SID			  "1796"
 	  Position		  [25, 408, 55, 422]
 	  Port			  "3"
 	  IconDisplay		  "Port number"
@@ -3270,7 +3295,7 @@ Model {
 	Block {
 	  BlockType		  Inport
 	  Name			  "w4"
-	  SID			  "1271"
+	  SID			  "1797"
 	  Position		  [25, 433, 55, 447]
 	  Port			  "4"
 	  IconDisplay		  "Port number"
@@ -3280,7 +3305,7 @@ Model {
 	Block {
 	  BlockType		  SubSystem
 	  Name			  "Cinemática"
-	  SID			  "865"
+	  SID			  "1798"
 	  Ports			  [6, 6]
 	  Position		  [910, 92, 1175, 468]
 	  MinAlgLoopOccurrences	  off
@@ -3308,14 +3333,14 @@ Model {
 	    Block {
 	      BlockType		      Inport
 	      Name		      "vq1"
-	      SID		      "866"
+	      SID		      "1799"
 	      Position		      [100, 243, 130, 257]
 	      IconDisplay	      "Port number"
 	    }
 	    Block {
 	      BlockType		      Inport
 	      Name		      "vq2"
-	      SID		      "867"
+	      SID		      "1800"
 	      Position		      [100, 283, 130, 297]
 	      Port		      "2"
 	      IconDisplay	      "Port number"
@@ -3323,7 +3348,7 @@ Model {
 	    Block {
 	      BlockType		      Inport
 	      Name		      "vq3"
-	      SID		      "868"
+	      SID		      "1801"
 	      Position		      [100, 323, 130, 337]
 	      Port		      "3"
 	      IconDisplay	      "Port number"
@@ -3331,7 +3356,7 @@ Model {
 	    Block {
 	      BlockType		      Inport
 	      Name		      "wq1"
-	      SID		      "869"
+	      SID		      "1802"
 	      Position		      [100, 493, 130, 507]
 	      Port		      "4"
 	      IconDisplay	      "Port number"
@@ -3339,7 +3364,7 @@ Model {
 	    Block {
 	      BlockType		      Inport
 	      Name		      "wq2"
-	      SID		      "870"
+	      SID		      "1803"
 	      Position		      [100, 568, 130, 582]
 	      Port		      "5"
 	      IconDisplay	      "Port number"
@@ -3347,7 +3372,7 @@ Model {
 	    Block {
 	      BlockType		      Inport
 	      Name		      "wq3"
-	      SID		      "871"
+	      SID		      "1804"
 	      Position		      [100, 643, 130, 657]
 	      Port		      "6"
 	      IconDisplay	      "Port number"
@@ -3355,7 +3380,7 @@ Model {
 	    Block {
 	      BlockType		      SubSystem
 	      Name		      "Posiciones"
-	      SID		      "872"
+	      SID		      "1805"
 	      Ports		      [6, 3]
 	      Position		      [385, 115, 585, 345]
 	      MinAlgLoopOccurrences   off
@@ -3383,14 +3408,14 @@ Model {
 		Block {
 		  BlockType		  Inport
 		  Name			  "theta"
-		  SID			  "873"
+		  SID			  "1806"
 		  Position		  [100, 128, 130, 142]
 		  IconDisplay		  "Port number"
 		}
 		Block {
 		  BlockType		  Inport
 		  Name			  "phi"
-		  SID			  "874"
+		  SID			  "1807"
 		  Position		  [100, 203, 130, 217]
 		  Port			  "2"
 		  IconDisplay		  "Port number"
@@ -3398,7 +3423,7 @@ Model {
 		Block {
 		  BlockType		  Inport
 		  Name			  "psi"
-		  SID			  "875"
+		  SID			  "1808"
 		  Position		  [100, 278, 130, 292]
 		  Port			  "3"
 		  IconDisplay		  "Port number"
@@ -3406,7 +3431,7 @@ Model {
 		Block {
 		  BlockType		  Inport
 		  Name			  "vq1"
-		  SID			  "876"
+		  SID			  "1809"
 		  Position		  [100, 353, 130, 367]
 		  Port			  "4"
 		  IconDisplay		  "Port number"
@@ -3414,7 +3439,7 @@ Model {
 		Block {
 		  BlockType		  Inport
 		  Name			  "vq2"
-		  SID			  "877"
+		  SID			  "1810"
 		  Position		  [100, 413, 130, 427]
 		  Port			  "5"
 		  IconDisplay		  "Port number"
@@ -3422,7 +3447,7 @@ Model {
 		Block {
 		  BlockType		  Inport
 		  Name			  "vq3"
-		  SID			  "878"
+		  SID			  "1811"
 		  Position		  [100, 493, 130, 507]
 		  Port			  "6"
 		  IconDisplay		  "Port number"
@@ -3430,7 +3455,7 @@ Model {
 		Block {
 		  BlockType		  SubSystem
 		  Name			  "Subsystem3"
-		  SID			  "879"
+		  SID			  "1812"
 		  Ports			  [6, 1]
 		  Position		  [575, 122, 730, 223]
 		  LibraryVersion	  "1.225"
@@ -3459,14 +3484,14 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "theta"
-		    SID			    "880"
+		    SID			    "1813"
 		    Position		    [85, 73, 115, 87]
 		    IconDisplay		    "Port number"
 		    }
 		    Block {
 		    BlockType		    Inport
 		    Name		    "phi"
-		    SID			    "881"
+		    SID			    "1814"
 		    Position		    [85, 233, 115, 247]
 		    Port		    "2"
 		    IconDisplay		    "Port number"
@@ -3474,7 +3499,7 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "psi"
-		    SID			    "882"
+		    SID			    "1815"
 		    Position		    [85, 428, 115, 442]
 		    Port		    "3"
 		    IconDisplay		    "Port number"
@@ -3482,7 +3507,7 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "vq1"
-		    SID			    "883"
+		    SID			    "1816"
 		    Position		    [85, 588, 115, 602]
 		    Port		    "4"
 		    IconDisplay		    "Port number"
@@ -3490,7 +3515,7 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "vq2"
-		    SID			    "884"
+		    SID			    "1817"
 		    Position		    [85, 638, 115, 652]
 		    Port		    "5"
 		    IconDisplay		    "Port number"
@@ -3498,7 +3523,7 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "vq3"
-		    SID			    "885"
+		    SID			    "1818"
 		    Position		    [85, 688, 115, 702]
 		    Port		    "6"
 		    IconDisplay		    "Port number"
@@ -3506,7 +3531,7 @@ Model {
 		    Block {
 		    BlockType		    Sum
 		    Name		    "Add"
-		    SID			    "886"
+		    SID			    "1819"
 		    Ports		    [2, 1]
 		    Position		    [580, 457, 610, 488]
 		    InputSameDT		    off
@@ -3516,7 +3541,7 @@ Model {
 		    Block {
 		    BlockType		    DiscreteIntegrator
 		    Name		    "Integrator"
-		    SID			    "1311"
+		    SID			    "1820"
 		    Ports		    [3, 1, 0, 0, 1]
 		    Position		    [1065, 210, 1120, 290]
 		    IntegratorMethod	    "Integration: Forward Euler"
@@ -3537,7 +3562,7 @@ Model {
 		    Block {
 		    BlockType		    Product
 		    Name		    "Product"
-		    SID			    "888"
+		    SID			    "1821"
 		    Ports		    [2, 1]
 		    Position		    [480, 212, 510, 243]
 		    InputSameDT		    off
@@ -3547,7 +3572,7 @@ Model {
 		    Block {
 		    BlockType		    Product
 		    Name		    "Product of\nElements"
-		    SID			    "889"
+		    SID			    "1822"
 		    Ports		    [3, 1]
 		    Position		    [775, 60, 805, 90]
 		    Inputs		    "3"
@@ -3559,7 +3584,7 @@ Model {
 		    Block {
 		    BlockType		    Product
 		    Name		    "Product of\nElements1"
-		    SID			    "890"
+		    SID			    "1823"
 		    Ports		    [3, 1]
 		    Position		    [475, 265, 505, 295]
 		    Inputs		    "3"
@@ -3571,7 +3596,7 @@ Model {
 		    Block {
 		    BlockType		    Product
 		    Name		    "Product of\nElements2"
-		    SID			    "891"
+		    SID			    "1824"
 		    Ports		    [3, 1]
 		    Position		    [480, 490, 510, 520]
 		    Inputs		    "3"
@@ -3583,7 +3608,7 @@ Model {
 		    Block {
 		    BlockType		    Product
 		    Name		    "Product1"
-		    SID			    "892"
+		    SID			    "1825"
 		    Ports		    [2, 1]
 		    Position		    [775, 237, 805, 268]
 		    InputSameDT		    off
@@ -3593,7 +3618,7 @@ Model {
 		    Block {
 		    BlockType		    Product
 		    Name		    "Product2"
-		    SID			    "893"
+		    SID			    "1826"
 		    Ports		    [2, 1]
 		    Position		    [485, 437, 515, 468]
 		    InputSameDT		    off
@@ -3603,7 +3628,7 @@ Model {
 		    Block {
 		    BlockType		    Product
 		    Name		    "Product3"
-		    SID			    "894"
+		    SID			    "1827"
 		    Ports		    [2, 1]
 		    Position		    [800, 467, 830, 498]
 		    InputSameDT		    off
@@ -3613,7 +3638,7 @@ Model {
 		    Block {
 		    BlockType		    Sum
 		    Name		    "Subtract1"
-		    SID			    "895"
+		    SID			    "1828"
 		    Ports		    [2, 1]
 		    Position		    [575, 227, 605, 258]
 		    Inputs		    "+-"
@@ -3624,7 +3649,7 @@ Model {
 		    Block {
 		    BlockType		    Sum
 		    Name		    "Sum of\nElements"
-		    SID			    "896"
+		    SID			    "1829"
 		    Ports		    [3, 1]
 		    Position		    [980, 205, 1010, 235]
 		    Inputs		    "3"
@@ -3635,14 +3660,14 @@ Model {
 		    Block {
 		    BlockType		    Trigonometry
 		    Name		    "Trigonometric\nFunction"
-		    SID			    "897"
+		    SID			    "1830"
 		    Ports		    [1, 1]
 		    Position		    [230, 65, 260, 95]
 		    }
 		    Block {
 		    BlockType		    Trigonometry
 		    Name		    "Trigonometric\nFunction1"
-		    SID			    "898"
+		    SID			    "1831"
 		    Ports		    [1, 1]
 		    Position		    [230, 150, 260, 180]
 		    Operator		    "cos"
@@ -3650,14 +3675,14 @@ Model {
 		    Block {
 		    BlockType		    Trigonometry
 		    Name		    "Trigonometric\nFunction2"
-		    SID			    "899"
+		    SID			    "1832"
 		    Ports		    [1, 1]
 		    Position		    [230, 225, 260, 255]
 		    }
 		    Block {
 		    BlockType		    Trigonometry
 		    Name		    "Trigonometric\nFunction3"
-		    SID			    "900"
+		    SID			    "1833"
 		    Ports		    [1, 1]
 		    Position		    [230, 310, 260, 340]
 		    Operator		    "cos"
@@ -3665,14 +3690,14 @@ Model {
 		    Block {
 		    BlockType		    Trigonometry
 		    Name		    "Trigonometric\nFunction4"
-		    SID			    "901"
+		    SID			    "1834"
 		    Ports		    [1, 1]
 		    Position		    [230, 420, 260, 450]
 		    }
 		    Block {
 		    BlockType		    Trigonometry
 		    Name		    "Trigonometric\nFunction5"
-		    SID			    "902"
+		    SID			    "1835"
 		    Ports		    [1, 1]
 		    Position		    [230, 505, 260, 535]
 		    Operator		    "cos"
@@ -3680,14 +3705,14 @@ Model {
 		    Block {
 		    BlockType		    Constant
 		    Name		    "x0"
-		    SID			    "903"
+		    SID			    "1836"
 		    Position		    [35, 715, 65, 745]
 		    Value		    "x0"
 		    }
 		    Block {
 		    BlockType		    Outport
 		    Name		    "x"
-		    SID			    "904"
+		    SID			    "1837"
 		    Position		    [1225, 243, 1255, 257]
 		    IconDisplay		    "Port number"
 		    }
@@ -3938,7 +3963,7 @@ Model {
 		Block {
 		  BlockType		  SubSystem
 		  Name			  "Subsystem4"
-		  SID			  "905"
+		  SID			  "1838"
 		  Ports			  [6, 1]
 		  Position		  [575, 272, 730, 373]
 		  LibraryVersion	  "1.225"
@@ -3967,14 +3992,14 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "theta"
-		    SID			    "906"
+		    SID			    "1839"
 		    Position		    [85, 73, 115, 87]
 		    IconDisplay		    "Port number"
 		    }
 		    Block {
 		    BlockType		    Inport
 		    Name		    "phi"
-		    SID			    "907"
+		    SID			    "1840"
 		    Position		    [85, 233, 115, 247]
 		    Port		    "2"
 		    IconDisplay		    "Port number"
@@ -3982,7 +4007,7 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "psi"
-		    SID			    "908"
+		    SID			    "1841"
 		    Position		    [85, 428, 115, 442]
 		    Port		    "3"
 		    IconDisplay		    "Port number"
@@ -3990,7 +4015,7 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "vq1"
-		    SID			    "909"
+		    SID			    "1842"
 		    Position		    [85, 588, 115, 602]
 		    Port		    "4"
 		    IconDisplay		    "Port number"
@@ -3998,7 +4023,7 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "vq2"
-		    SID			    "910"
+		    SID			    "1843"
 		    Position		    [85, 638, 115, 652]
 		    Port		    "5"
 		    IconDisplay		    "Port number"
@@ -4006,7 +4031,7 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "vq3"
-		    SID			    "911"
+		    SID			    "1844"
 		    Position		    [85, 688, 115, 702]
 		    Port		    "6"
 		    IconDisplay		    "Port number"
@@ -4014,7 +4039,7 @@ Model {
 		    Block {
 		    BlockType		    Sum
 		    Name		    "Add"
-		    SID			    "912"
+		    SID			    "1845"
 		    Ports		    [2, 1]
 		    Position		    [565, 227, 595, 258]
 		    InputSameDT		    off
@@ -4024,7 +4049,7 @@ Model {
 		    Block {
 		    BlockType		    DiscreteIntegrator
 		    Name		    "Integrator"
-		    SID			    "1328"
+		    SID			    "1846"
 		    Ports		    [3, 1, 0, 0, 1]
 		    Position		    [1065, 199, 1095, 231]
 		    IntegratorMethod	    "Integration: Forward Euler"
@@ -4045,7 +4070,7 @@ Model {
 		    Block {
 		    BlockType		    Product
 		    Name		    "Product"
-		    SID			    "914"
+		    SID			    "1847"
 		    Ports		    [2, 1]
 		    Position		    [480, 212, 510, 243]
 		    InputSameDT		    off
@@ -4055,7 +4080,7 @@ Model {
 		    Block {
 		    BlockType		    Product
 		    Name		    "Product of\nElements"
-		    SID			    "915"
+		    SID			    "1848"
 		    Ports		    [3, 1]
 		    Position		    [775, 60, 805, 90]
 		    Inputs		    "3"
@@ -4067,7 +4092,7 @@ Model {
 		    Block {
 		    BlockType		    Product
 		    Name		    "Product of\nElements1"
-		    SID			    "916"
+		    SID			    "1849"
 		    Ports		    [3, 1]
 		    Position		    [475, 265, 505, 295]
 		    Inputs		    "3"
@@ -4079,7 +4104,7 @@ Model {
 		    Block {
 		    BlockType		    Product
 		    Name		    "Product of\nElements2"
-		    SID			    "917"
+		    SID			    "1850"
 		    Ports		    [3, 1]
 		    Position		    [480, 490, 510, 520]
 		    Inputs		    "3"
@@ -4091,7 +4116,7 @@ Model {
 		    Block {
 		    BlockType		    Product
 		    Name		    "Product1"
-		    SID			    "918"
+		    SID			    "1851"
 		    Ports		    [2, 1]
 		    Position		    [775, 237, 805, 268]
 		    InputSameDT		    off
@@ -4101,7 +4126,7 @@ Model {
 		    Block {
 		    BlockType		    Product
 		    Name		    "Product2"
-		    SID			    "919"
+		    SID			    "1852"
 		    Ports		    [2, 1]
 		    Position		    [485, 437, 515, 468]
 		    InputSameDT		    off
@@ -4111,7 +4136,7 @@ Model {
 		    Block {
 		    BlockType		    Product
 		    Name		    "Product3"
-		    SID			    "920"
+		    SID			    "1853"
 		    Ports		    [2, 1]
 		    Position		    [800, 467, 830, 498]
 		    InputSameDT		    off
@@ -4121,7 +4146,7 @@ Model {
 		    Block {
 		    BlockType		    Sum
 		    Name		    "Subtract1"
-		    SID			    "921"
+		    SID			    "1854"
 		    Ports		    [2, 1]
 		    Position		    [575, 462, 605, 493]
 		    Inputs		    "+-"
@@ -4132,7 +4157,7 @@ Model {
 		    Block {
 		    BlockType		    Sum
 		    Name		    "Sum of\nElements"
-		    SID			    "922"
+		    SID			    "1855"
 		    Ports		    [3, 1]
 		    Position		    [980, 205, 1010, 235]
 		    Inputs		    "3"
@@ -4143,14 +4168,14 @@ Model {
 		    Block {
 		    BlockType		    Trigonometry
 		    Name		    "Trigonometric\nFunction"
-		    SID			    "923"
+		    SID			    "1856"
 		    Ports		    [1, 1]
 		    Position		    [230, 65, 260, 95]
 		    }
 		    Block {
 		    BlockType		    Trigonometry
 		    Name		    "Trigonometric\nFunction1"
-		    SID			    "924"
+		    SID			    "1857"
 		    Ports		    [1, 1]
 		    Position		    [230, 150, 260, 180]
 		    Operator		    "cos"
@@ -4158,14 +4183,14 @@ Model {
 		    Block {
 		    BlockType		    Trigonometry
 		    Name		    "Trigonometric\nFunction2"
-		    SID			    "925"
+		    SID			    "1858"
 		    Ports		    [1, 1]
 		    Position		    [230, 225, 260, 255]
 		    }
 		    Block {
 		    BlockType		    Trigonometry
 		    Name		    "Trigonometric\nFunction3"
-		    SID			    "926"
+		    SID			    "1859"
 		    Ports		    [1, 1]
 		    Position		    [230, 310, 260, 340]
 		    Operator		    "cos"
@@ -4173,14 +4198,14 @@ Model {
 		    Block {
 		    BlockType		    Trigonometry
 		    Name		    "Trigonometric\nFunction4"
-		    SID			    "927"
+		    SID			    "1860"
 		    Ports		    [1, 1]
 		    Position		    [230, 420, 260, 450]
 		    }
 		    Block {
 		    BlockType		    Trigonometry
 		    Name		    "Trigonometric\nFunction5"
-		    SID			    "928"
+		    SID			    "1861"
 		    Ports		    [1, 1]
 		    Position		    [230, 505, 260, 535]
 		    Operator		    "cos"
@@ -4188,20 +4213,20 @@ Model {
 		    Block {
 		    BlockType		    UnaryMinus
 		    Name		    "Unary Minus"
-		    SID			    "929"
+		    SID			    "1862"
 		    Position		    [865, 470, 895, 500]
 		    }
 		    Block {
 		    BlockType		    Constant
 		    Name		    "y0"
-		    SID			    "930"
+		    SID			    "1863"
 		    Position		    [45, 725, 75, 755]
 		    Value		    "y0"
 		    }
 		    Block {
 		    BlockType		    Outport
 		    Name		    "y"
-		    SID			    "931"
+		    SID			    "1864"
 		    Position		    [1125, 213, 1155, 227]
 		    IconDisplay		    "Port number"
 		    }
@@ -4459,7 +4484,7 @@ Model {
 		Block {
 		  BlockType		  SubSystem
 		  Name			  "Subsystem5"
-		  SID			  "932"
+		  SID			  "1865"
 		  Ports			  [5, 1]
 		  Position		  [575, 409, 730, 511]
 		  LibraryVersion	  "1.225"
@@ -4488,14 +4513,14 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "phi"
-		    SID			    "933"
+		    SID			    "1866"
 		    Position		    [85, 233, 115, 247]
 		    IconDisplay		    "Port number"
 		    }
 		    Block {
 		    BlockType		    Inport
 		    Name		    "psi"
-		    SID			    "934"
+		    SID			    "1867"
 		    Position		    [85, 428, 115, 442]
 		    Port		    "2"
 		    IconDisplay		    "Port number"
@@ -4503,7 +4528,7 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "vq1"
-		    SID			    "935"
+		    SID			    "1868"
 		    Position		    [85, 588, 115, 602]
 		    Port		    "3"
 		    IconDisplay		    "Port number"
@@ -4511,7 +4536,7 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "vq2"
-		    SID			    "936"
+		    SID			    "1869"
 		    Position		    [85, 638, 115, 652]
 		    Port		    "4"
 		    IconDisplay		    "Port number"
@@ -4519,7 +4544,7 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "vq3"
-		    SID			    "937"
+		    SID			    "1870"
 		    Position		    [85, 688, 115, 702]
 		    Port		    "5"
 		    IconDisplay		    "Port number"
@@ -4527,7 +4552,7 @@ Model {
 		    Block {
 		    BlockType		    DiscreteIntegrator
 		    Name		    "Integrator"
-		    SID			    "1330"
+		    SID			    "1871"
 		    Ports		    [3, 1, 0, 0, 1]
 		    Position		    [1070, 229, 1100, 261]
 		    IntegratorMethod	    "Integration: Forward Euler"
@@ -4548,7 +4573,7 @@ Model {
 		    Block {
 		    BlockType		    Product
 		    Name		    "Product"
-		    SID			    "939"
+		    SID			    "1872"
 		    Ports		    [2, 1]
 		    Position		    [620, 192, 650, 223]
 		    InputSameDT		    off
@@ -4558,7 +4583,7 @@ Model {
 		    Block {
 		    BlockType		    Product
 		    Name		    "Product of\nElements"
-		    SID			    "940"
+		    SID			    "1873"
 		    Ports		    [3, 1]
 		    Position		    [620, 310, 650, 340]
 		    Inputs		    "3"
@@ -4570,7 +4595,7 @@ Model {
 		    Block {
 		    BlockType		    Product
 		    Name		    "Product of\nElements1"
-		    SID			    "941"
+		    SID			    "1874"
 		    Ports		    [3, 1]
 		    Position		    [780, 565, 810, 595]
 		    Inputs		    "3"
@@ -4582,7 +4607,7 @@ Model {
 		    Block {
 		    BlockType		    Sum
 		    Name		    "Sum of\nElements"
-		    SID			    "942"
+		    SID			    "1875"
 		    Ports		    [3, 1]
 		    Position		    [980, 205, 1010, 235]
 		    Inputs		    "3"
@@ -4593,14 +4618,14 @@ Model {
 		    Block {
 		    BlockType		    Trigonometry
 		    Name		    "Trigonometric\nFunction2"
-		    SID			    "943"
+		    SID			    "1876"
 		    Ports		    [1, 1]
 		    Position		    [230, 225, 260, 255]
 		    }
 		    Block {
 		    BlockType		    Trigonometry
 		    Name		    "Trigonometric\nFunction3"
-		    SID			    "944"
+		    SID			    "1877"
 		    Ports		    [1, 1]
 		    Position		    [230, 310, 260, 340]
 		    Operator		    "cos"
@@ -4608,14 +4633,14 @@ Model {
 		    Block {
 		    BlockType		    Trigonometry
 		    Name		    "Trigonometric\nFunction4"
-		    SID			    "945"
+		    SID			    "1878"
 		    Ports		    [1, 1]
 		    Position		    [230, 420, 260, 450]
 		    }
 		    Block {
 		    BlockType		    Trigonometry
 		    Name		    "Trigonometric\nFunction5"
-		    SID			    "946"
+		    SID			    "1879"
 		    Ports		    [1, 1]
 		    Position		    [230, 505, 260, 535]
 		    Operator		    "cos"
@@ -4623,20 +4648,20 @@ Model {
 		    Block {
 		    BlockType		    UnaryMinus
 		    Name		    "Unary Minus"
-		    SID			    "947"
+		    SID			    "1880"
 		    Position		    [730, 195, 760, 225]
 		    }
 		    Block {
 		    BlockType		    Constant
 		    Name		    "z0"
-		    SID			    "948"
+		    SID			    "1881"
 		    Position		    [55, 730, 85, 760]
 		    Value		    "z0"
 		    }
 		    Block {
 		    BlockType		    Outport
 		    Name		    "z"
-		    SID			    "949"
+		    SID			    "1882"
 		    Position		    [1125, 213, 1155, 227]
 		    IconDisplay		    "Port number"
 		    }
@@ -4784,14 +4809,14 @@ Model {
 		Block {
 		  BlockType		  Outport
 		  Name			  "x"
-		  SID			  "950"
+		  SID			  "1883"
 		  Position		  [925, 168, 955, 182]
 		  IconDisplay		  "Port number"
 		}
 		Block {
 		  BlockType		  Outport
 		  Name			  "y"
-		  SID			  "951"
+		  SID			  "1884"
 		  Position		  [925, 318, 955, 332]
 		  Port			  "2"
 		  IconDisplay		  "Port number"
@@ -4799,7 +4824,7 @@ Model {
 		Block {
 		  BlockType		  Outport
 		  Name			  "z"
-		  SID			  "952"
+		  SID			  "1885"
 		  Position		  [925, 453, 955, 467]
 		  Port			  "3"
 		  IconDisplay		  "Port number"
@@ -4946,7 +4971,7 @@ Model {
 	    Block {
 	      BlockType		      SubSystem
 	      Name		      "Ángulos De Euler"
-	      SID		      "953"
+	      SID		      "1886"
 	      Ports		      [3, 3]
 	      Position		      [390, 460, 580, 690]
 	      MinAlgLoopOccurrences   off
@@ -4974,14 +4999,14 @@ Model {
 		Block {
 		  BlockType		  Inport
 		  Name			  "wq1"
-		  SID			  "954"
+		  SID			  "1887"
 		  Position		  [80, 153, 110, 167]
 		  IconDisplay		  "Port number"
 		}
 		Block {
 		  BlockType		  Inport
 		  Name			  "wq2"
-		  SID			  "955"
+		  SID			  "1888"
 		  Position		  [80, 233, 110, 247]
 		  Port			  "2"
 		  IconDisplay		  "Port number"
@@ -4989,7 +5014,7 @@ Model {
 		Block {
 		  BlockType		  Inport
 		  Name			  "wq3"
-		  SID			  "956"
+		  SID			  "1889"
 		  Position		  [90, 393, 120, 407]
 		  Port			  "3"
 		  IconDisplay		  "Port number"
@@ -4997,7 +5022,7 @@ Model {
 		Block {
 		  BlockType		  SubSystem
 		  Name			  "Subsystem"
-		  SID			  "957"
+		  SID			  "1890"
 		  Ports			  [4, 1]
 		  Position		  [490, 315, 645, 410]
 		  MinAlgLoopOccurrences	  off
@@ -5025,14 +5050,14 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "psi"
-		    SID			    "958"
+		    SID			    "1891"
 		    Position		    [45, 18, 75, 32]
 		    IconDisplay		    "Port number"
 		    }
 		    Block {
 		    BlockType		    Inport
 		    Name		    "phi"
-		    SID			    "959"
+		    SID			    "1892"
 		    Position		    [45, 103, 75, 117]
 		    Port		    "2"
 		    IconDisplay		    "Port number"
@@ -5040,7 +5065,7 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "wq2"
-		    SID			    "960"
+		    SID			    "1893"
 		    Position		    [45, 173, 75, 187]
 		    Port		    "3"
 		    IconDisplay		    "Port number"
@@ -5048,7 +5073,7 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "wq3"
-		    SID			    "961"
+		    SID			    "1894"
 		    Position		    [40, 283, 70, 297]
 		    Port		    "4"
 		    IconDisplay		    "Port number"
@@ -5056,7 +5081,7 @@ Model {
 		    Block {
 		    BlockType		    Product
 		    Name		    "Divide"
-		    SID			    "962"
+		    SID			    "1895"
 		    Ports		    [2, 1]
 		    Position		    [645, 97, 675, 128]
 		    Inputs		    "*/"
@@ -5068,7 +5093,7 @@ Model {
 		    Block {
 		    BlockType		    DiscreteIntegrator
 		    Name		    "Integrator"
-		    SID			    "1317"
+		    SID			    "1896"
 		    Ports		    [2, 1]
 		    Position		    [715, 97, 745, 128]
 		    IntegratorMethod	    "Integration: Forward Euler"
@@ -5088,7 +5113,7 @@ Model {
 		    Block {
 		    BlockType		    Product
 		    Name		    "Product"
-		    SID			    "964"
+		    SID			    "1897"
 		    Ports		    [2, 1]
 		    Position		    [435, 87, 465, 118]
 		    InputSameDT		    off
@@ -5098,7 +5123,7 @@ Model {
 		    Block {
 		    BlockType		    Product
 		    Name		    "Product1"
-		    SID			    "965"
+		    SID			    "1898"
 		    Ports		    [2, 1]
 		    Position		    [435, 172, 465, 203]
 		    InputSameDT		    off
@@ -5108,7 +5133,7 @@ Model {
 		    Block {
 		    BlockType		    Sum
 		    Name		    "Sum"
-		    SID			    "966"
+		    SID			    "1899"
 		    Ports		    [2, 1]
 		    Position		    [540, 95, 560, 115]
 		    ShowName		    off
@@ -5121,7 +5146,7 @@ Model {
 		    Block {
 		    BlockType		    Trigonometry
 		    Name		    "Trigonometric\nFunction"
-		    SID			    "967"
+		    SID			    "1900"
 		    Ports		    [1, 1]
 		    Position		    [245, 105, 275, 135]
 		    Operator		    "cos"
@@ -5129,14 +5154,14 @@ Model {
 		    Block {
 		    BlockType		    Trigonometry
 		    Name		    "Trigonometric\nFunction1"
-		    SID			    "968"
+		    SID			    "1901"
 		    Ports		    [1, 1]
 		    Position		    [250, 195, 280, 225]
 		    }
 		    Block {
 		    BlockType		    Trigonometry
 		    Name		    "Trigonometric\nFunction2"
-		    SID			    "969"
+		    SID			    "1902"
 		    Ports		    [1, 1]
 		    Position		    [250, 265, 280, 295]
 		    Operator		    "cos"
@@ -5144,14 +5169,14 @@ Model {
 		    Block {
 		    BlockType		    Constant
 		    Name		    "theta0"
-		    SID			    "970"
+		    SID			    "1903"
 		    Position		    [30, 335, 60, 365]
 		    Value		    "theta0"
 		    }
 		    Block {
 		    BlockType		    Outport
 		    Name		    "theta"
-		    SID			    "971"
+		    SID			    "1904"
 		    Position		    [780, 108, 810, 122]
 		    IconDisplay		    "Port number"
 		    }
@@ -5255,7 +5280,7 @@ Model {
 		Block {
 		  BlockType		  SubSystem
 		  Name			  "Subsystem1"
-		  SID			  "972"
+		  SID			  "1905"
 		  Ports			  [4, 1]
 		  Position		  [490, 90, 645, 170]
 		  MinAlgLoopOccurrences	  off
@@ -5283,14 +5308,14 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "phi"
-		    SID			    "973"
+		    SID			    "1906"
 		    Position		    [115, 203, 145, 217]
 		    IconDisplay		    "Port number"
 		    }
 		    Block {
 		    BlockType		    Inport
 		    Name		    "wq3"
-		    SID			    "974"
+		    SID			    "1907"
 		    Position		    [115, 273, 145, 287]
 		    Port		    "2"
 		    IconDisplay		    "Port number"
@@ -5298,7 +5323,7 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "wq2"
-		    SID			    "975"
+		    SID			    "1908"
 		    Position		    [115, 333, 145, 347]
 		    NamePlacement	    "alternate"
 		    Port		    "3"
@@ -5307,7 +5332,7 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "wq1"
-		    SID			    "976"
+		    SID			    "1909"
 		    Position		    [115, 398, 145, 412]
 		    Port		    "4"
 		    IconDisplay		    "Port number"
@@ -5315,7 +5340,7 @@ Model {
 		    Block {
 		    BlockType		    Sum
 		    Name		    "Add"
-		    SID			    "977"
+		    SID			    "1910"
 		    Ports		    [2, 1]
 		    Position		    [540, 97, 570, 128]
 		    InputSameDT		    off
@@ -5325,7 +5350,7 @@ Model {
 		    Block {
 		    BlockType		    DiscreteIntegrator
 		    Name		    "Integrator"
-		    SID			    "1315"
+		    SID			    "1911"
 		    Ports		    [2, 1]
 		    Position		    [875, 227, 905, 258]
 		    IntegratorMethod	    "Integration: Forward Euler"
@@ -5345,7 +5370,7 @@ Model {
 		    Block {
 		    BlockType		    Product
 		    Name		    "Product"
-		    SID			    "979"
+		    SID			    "1912"
 		    Ports		    [2, 1]
 		    Position		    [675, 217, 705, 248]
 		    InputSameDT		    off
@@ -5355,7 +5380,7 @@ Model {
 		    Block {
 		    BlockType		    Product
 		    Name		    "Product1"
-		    SID			    "980"
+		    SID			    "1913"
 		    Ports		    [2, 1]
 		    Position		    [435, 87, 465, 118]
 		    InputSameDT		    off
@@ -5365,7 +5390,7 @@ Model {
 		    Block {
 		    BlockType		    Product
 		    Name		    "Product2"
-		    SID			    "981"
+		    SID			    "1914"
 		    Ports		    [2, 1]
 		    Position		    [435, 37, 465, 68]
 		    InputSameDT		    off
@@ -5375,7 +5400,7 @@ Model {
 		    Block {
 		    BlockType		    Sum
 		    Name		    "Sum"
-		    SID			    "982"
+		    SID			    "1915"
 		    Ports		    [2, 1]
 		    Position		    [815, 235, 835, 255]
 		    ShowName		    off
@@ -5388,14 +5413,14 @@ Model {
 		    Block {
 		    BlockType		    Trigonometry
 		    Name		    "Trigonometric\nFunction"
-		    SID			    "983"
+		    SID			    "1916"
 		    Ports		    [1, 1]
 		    Position		    [305, 50, 335, 80]
 		    }
 		    Block {
 		    BlockType		    Trigonometry
 		    Name		    "Trigonometric\nFunction2"
-		    SID			    "984"
+		    SID			    "1917"
 		    Ports		    [1, 1]
 		    Position		    [490, 230, 520, 260]
 		    Operator		    "tan"
@@ -5403,7 +5428,7 @@ Model {
 		    Block {
 		    BlockType		    Trigonometry
 		    Name		    "Trigonometric\nFunction3"
-		    SID			    "985"
+		    SID			    "1918"
 		    Ports		    [1, 1]
 		    Position		    [300, 150, 330, 180]
 		    Operator		    "cos"
@@ -5411,14 +5436,14 @@ Model {
 		    Block {
 		    BlockType		    Constant
 		    Name		    "psi0"
-		    SID			    "986"
+		    SID			    "1919"
 		    Position		    [90, 430, 120, 460]
 		    Value		    "psi0"
 		    }
 		    Block {
 		    BlockType		    Outport
 		    Name		    "psi"
-		    SID			    "987"
+		    SID			    "1920"
 		    Position		    [1040, 238, 1070, 252]
 		    IconDisplay		    "Port number"
 		    }
@@ -5538,7 +5563,7 @@ Model {
 		Block {
 		  BlockType		  SubSystem
 		  Name			  "Subsystem2"
-		  SID			  "988"
+		  SID			  "1921"
 		  Ports			  [3, 1]
 		  Position		  [490, 197, 640, 283]
 		  MinAlgLoopOccurrences	  off
@@ -5566,14 +5591,14 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "psi"
-		    SID			    "989"
+		    SID			    "1922"
 		    Position		    [40, 23, 70, 37]
 		    IconDisplay		    "Port number"
 		    }
 		    Block {
 		    BlockType		    Inport
 		    Name		    "wq2"
-		    SID			    "990"
+		    SID			    "1923"
 		    Position		    [25, 188, 55, 202]
 		    Port		    "2"
 		    IconDisplay		    "Port number"
@@ -5581,7 +5606,7 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "wq3"
-		    SID			    "991"
+		    SID			    "1924"
 		    Position		    [25, 248, 55, 262]
 		    Port		    "3"
 		    IconDisplay		    "Port number"
@@ -5589,7 +5614,7 @@ Model {
 		    Block {
 		    BlockType		    DiscreteIntegrator
 		    Name		    "Integrator"
-		    SID			    "1316"
+		    SID			    "1925"
 		    Ports		    [2, 1]
 		    Position		    [400, 132, 430, 163]
 		    IntegratorMethod	    "Integration: Forward Euler"
@@ -5609,7 +5634,7 @@ Model {
 		    Block {
 		    BlockType		    Product
 		    Name		    "Product"
-		    SID			    "993"
+		    SID			    "1926"
 		    Ports		    [2, 1]
 		    Position		    [240, 82, 270, 113]
 		    InputSameDT		    off
@@ -5619,7 +5644,7 @@ Model {
 		    Block {
 		    BlockType		    Product
 		    Name		    "Product1"
-		    SID			    "994"
+		    SID			    "1927"
 		    Ports		    [2, 1]
 		    Position		    [240, 152, 270, 183]
 		    InputSameDT		    off
@@ -5629,7 +5654,7 @@ Model {
 		    Block {
 		    BlockType		    Sum
 		    Name		    "Subtract"
-		    SID			    "995"
+		    SID			    "1928"
 		    Ports		    [2, 1]
 		    Position		    [320, 122, 350, 153]
 		    Inputs		    "+-"
@@ -5640,7 +5665,7 @@ Model {
 		    Block {
 		    BlockType		    Trigonometry
 		    Name		    "Trigonometric\nFunction"
-		    SID			    "996"
+		    SID			    "1929"
 		    Ports		    [1, 1]
 		    Position		    [130, 20, 160, 50]
 		    Operator		    "cos"
@@ -5648,21 +5673,21 @@ Model {
 		    Block {
 		    BlockType		    Trigonometry
 		    Name		    "Trigonometric\nFunction1"
-		    SID			    "997"
+		    SID			    "1930"
 		    Ports		    [1, 1]
 		    Position		    [125, 115, 155, 145]
 		    }
 		    Block {
 		    BlockType		    Constant
 		    Name		    "phi0"
-		    SID			    "998"
+		    SID			    "1931"
 		    Position		    [25, 280, 55, 310]
 		    Value		    "phi0"
 		    }
 		    Block {
 		    BlockType		    Outport
 		    Name		    "phi"
-		    SID			    "999"
+		    SID			    "1932"
 		    Position		    [455, 133, 485, 147]
 		    IconDisplay		    "Port number"
 		    }
@@ -5748,14 +5773,14 @@ Model {
 		Block {
 		  BlockType		  Outport
 		  Name			  "psi"
-		  SID			  "1000"
+		  SID			  "1933"
 		  Position		  [900, 123, 930, 137]
 		  IconDisplay		  "Port number"
 		}
 		Block {
 		  BlockType		  Outport
 		  Name			  "phi"
-		  SID			  "1001"
+		  SID			  "1934"
 		  Position		  [900, 233, 930, 247]
 		  Port			  "2"
 		  IconDisplay		  "Port number"
@@ -5763,7 +5788,7 @@ Model {
 		Block {
 		  BlockType		  Outport
 		  Name			  "theta"
-		  SID			  "1002"
+		  SID			  "1935"
 		  Position		  [900, 353, 930, 367]
 		  Port			  "3"
 		  IconDisplay		  "Port number"
@@ -5868,14 +5893,14 @@ Model {
 	    Block {
 	      BlockType		      Outport
 	      Name		      "x"
-	      SID		      "1003"
+	      SID		      "1936"
 	      Position		      [990, 148, 1020, 162]
 	      IconDisplay	      "Port number"
 	    }
 	    Block {
 	      BlockType		      Outport
 	      Name		      "y"
-	      SID		      "1004"
+	      SID		      "1937"
 	      Position		      [990, 223, 1020, 237]
 	      Port		      "2"
 	      IconDisplay	      "Port number"
@@ -5883,7 +5908,7 @@ Model {
 	    Block {
 	      BlockType		      Outport
 	      Name		      "z"
-	      SID		      "1005"
+	      SID		      "1938"
 	      Position		      [990, 298, 1020, 312]
 	      Port		      "3"
 	      IconDisplay	      "Port number"
@@ -5891,7 +5916,7 @@ Model {
 	    Block {
 	      BlockType		      Outport
 	      Name		      "psi"
-	      SID		      "1006"
+	      SID		      "1939"
 	      Position		      [990, 493, 1020, 507]
 	      Port		      "4"
 	      IconDisplay	      "Port number"
@@ -5899,7 +5924,7 @@ Model {
 	    Block {
 	      BlockType		      Outport
 	      Name		      "phi"
-	      SID		      "1007"
+	      SID		      "1940"
 	      Position		      [990, 568, 1020, 582]
 	      Port		      "5"
 	      IconDisplay	      "Port number"
@@ -5907,7 +5932,7 @@ Model {
 	    Block {
 	      BlockType		      Outport
 	      Name		      "theta"
-	      SID		      "1008"
+	      SID		      "1941"
 	      Position		      [990, 643, 1020, 657]
 	      Port		      "6"
 	      IconDisplay	      "Port number"
@@ -6016,7 +6041,7 @@ Model {
 	Block {
 	  BlockType		  SubSystem
 	  Name			  "Dinámica"
-	  SID			  "1009"
+	  SID			  "1942"
 	  Ports			  [14, 6]
 	  Position		  [435, 101, 700, 464]
 	  MinAlgLoopOccurrences	  off
@@ -6044,14 +6069,14 @@ Model {
 	    Block {
 	      BlockType		      Inport
 	      Name		      "psi"
-	      SID		      "1010"
+	      SID		      "1943"
 	      Position		      [70, 188, 100, 202]
 	      IconDisplay	      "Port number"
 	    }
 	    Block {
 	      BlockType		      Inport
 	      Name		      "phi"
-	      SID		      "1011"
+	      SID		      "1944"
 	      Position		      [70, 218, 100, 232]
 	      Port		      "2"
 	      IconDisplay	      "Port number"
@@ -6059,7 +6084,7 @@ Model {
 	    Block {
 	      BlockType		      Inport
 	      Name		      "T1"
-	      SID		      "1012"
+	      SID		      "1945"
 	      Position		      [70, 248, 100, 262]
 	      Port		      "3"
 	      IconDisplay	      "Port number"
@@ -6067,7 +6092,7 @@ Model {
 	    Block {
 	      BlockType		      Inport
 	      Name		      "T2"
-	      SID		      "1013"
+	      SID		      "1946"
 	      Position		      [70, 278, 100, 292]
 	      Port		      "4"
 	      IconDisplay	      "Port number"
@@ -6075,7 +6100,7 @@ Model {
 	    Block {
 	      BlockType		      Inport
 	      Name		      "T3"
-	      SID		      "1014"
+	      SID		      "1947"
 	      Position		      [70, 308, 100, 322]
 	      Port		      "5"
 	      IconDisplay	      "Port number"
@@ -6083,7 +6108,7 @@ Model {
 	    Block {
 	      BlockType		      Inport
 	      Name		      "T4"
-	      SID		      "1015"
+	      SID		      "1948"
 	      Position		      [70, 338, 100, 352]
 	      Port		      "6"
 	      IconDisplay	      "Port number"
@@ -6091,7 +6116,7 @@ Model {
 	    Block {
 	      BlockType		      Inport
 	      Name		      "M1"
-	      SID		      "1016"
+	      SID		      "1949"
 	      Position		      [70, 668, 100, 682]
 	      Port		      "7"
 	      IconDisplay	      "Port number"
@@ -6099,7 +6124,7 @@ Model {
 	    Block {
 	      BlockType		      Inport
 	      Name		      "M2"
-	      SID		      "1017"
+	      SID		      "1950"
 	      Position		      [70, 693, 100, 707]
 	      Port		      "8"
 	      IconDisplay	      "Port number"
@@ -6107,7 +6132,7 @@ Model {
 	    Block {
 	      BlockType		      Inport
 	      Name		      "M3"
-	      SID		      "1018"
+	      SID		      "1951"
 	      Position		      [70, 718, 100, 732]
 	      Port		      "9"
 	      IconDisplay	      "Port number"
@@ -6115,7 +6140,7 @@ Model {
 	    Block {
 	      BlockType		      Inport
 	      Name		      "M4"
-	      SID		      "1019"
+	      SID		      "1952"
 	      Position		      [70, 743, 100, 757]
 	      Port		      "10"
 	      IconDisplay	      "Port number"
@@ -6123,7 +6148,7 @@ Model {
 	    Block {
 	      BlockType		      Inport
 	      Name		      "w1"
-	      SID		      "1020"
+	      SID		      "1953"
 	      Position		      [70, 568, 100, 582]
 	      Port		      "11"
 	      IconDisplay	      "Port number"
@@ -6131,7 +6156,7 @@ Model {
 	    Block {
 	      BlockType		      Inport
 	      Name		      "w2"
-	      SID		      "1021"
+	      SID		      "1954"
 	      Position		      [70, 593, 100, 607]
 	      Port		      "12"
 	      IconDisplay	      "Port number"
@@ -6139,7 +6164,7 @@ Model {
 	    Block {
 	      BlockType		      Inport
 	      Name		      "w3"
-	      SID		      "1022"
+	      SID		      "1955"
 	      Position		      [70, 618, 100, 632]
 	      Port		      "13"
 	      IconDisplay	      "Port number"
@@ -6147,7 +6172,7 @@ Model {
 	    Block {
 	      BlockType		      Inport
 	      Name		      "w4"
-	      SID		      "1023"
+	      SID		      "1956"
 	      Position		      [70, 643, 100, 657]
 	      Port		      "14"
 	      IconDisplay	      "Port number"
@@ -6155,7 +6180,7 @@ Model {
 	    Block {
 	      BlockType		      SubSystem
 	      Name		      "Velocidades angulares en el sistema del cuadricoptero"
-	      SID		      "1024"
+	      SID		      "1957"
 	      Ports		      [12, 3]
 	      Position		      [510, 459, 700, 766]
 	      MinAlgLoopOccurrences   off
@@ -6183,14 +6208,14 @@ Model {
 		Block {
 		  BlockType		  Inport
 		  Name			  "T1"
-		  SID			  "1025"
+		  SID			  "1958"
 		  Position		  [30, 203, 60, 217]
 		  IconDisplay		  "Port number"
 		}
 		Block {
 		  BlockType		  Inport
 		  Name			  "T2"
-		  SID			  "1026"
+		  SID			  "1959"
 		  Position		  [30, 123, 60, 137]
 		  Port			  "2"
 		  IconDisplay		  "Port number"
@@ -6198,7 +6223,7 @@ Model {
 		Block {
 		  BlockType		  Inport
 		  Name			  "T3"
-		  SID			  "1027"
+		  SID			  "1960"
 		  Position		  [30, 258, 60, 272]
 		  Port			  "3"
 		  IconDisplay		  "Port number"
@@ -6206,7 +6231,7 @@ Model {
 		Block {
 		  BlockType		  Inport
 		  Name			  "T4"
-		  SID			  "1028"
+		  SID			  "1961"
 		  Position		  [30, 78, 60, 92]
 		  Port			  "4"
 		  IconDisplay		  "Port number"
@@ -6214,7 +6239,7 @@ Model {
 		Block {
 		  BlockType		  Inport
 		  Name			  "w1"
-		  SID			  "1029"
+		  SID			  "1962"
 		  Position		  [30, 318, 60, 332]
 		  Port			  "5"
 		  IconDisplay		  "Port number"
@@ -6222,7 +6247,7 @@ Model {
 		Block {
 		  BlockType		  Inport
 		  Name			  "w2"
-		  SID			  "1030"
+		  SID			  "1963"
 		  Position		  [30, 363, 60, 377]
 		  Port			  "6"
 		  IconDisplay		  "Port number"
@@ -6230,7 +6255,7 @@ Model {
 		Block {
 		  BlockType		  Inport
 		  Name			  "w3"
-		  SID			  "1031"
+		  SID			  "1964"
 		  Position		  [30, 438, 60, 452]
 		  Port			  "7"
 		  IconDisplay		  "Port number"
@@ -6238,7 +6263,7 @@ Model {
 		Block {
 		  BlockType		  Inport
 		  Name			  "w4"
-		  SID			  "1032"
+		  SID			  "1965"
 		  Position		  [30, 508, 60, 522]
 		  Port			  "8"
 		  IconDisplay		  "Port number"
@@ -6246,7 +6271,7 @@ Model {
 		Block {
 		  BlockType		  Inport
 		  Name			  "M1"
-		  SID			  "1033"
+		  SID			  "1966"
 		  Position		  [30, 558, 60, 572]
 		  Port			  "9"
 		  IconDisplay		  "Port number"
@@ -6254,7 +6279,7 @@ Model {
 		Block {
 		  BlockType		  Inport
 		  Name			  "M2"
-		  SID			  "1034"
+		  SID			  "1967"
 		  Position		  [30, 588, 60, 602]
 		  Port			  "10"
 		  IconDisplay		  "Port number"
@@ -6262,7 +6287,7 @@ Model {
 		Block {
 		  BlockType		  Inport
 		  Name			  "M3"
-		  SID			  "1035"
+		  SID			  "1968"
 		  Position		  [30, 618, 60, 632]
 		  Port			  "11"
 		  IconDisplay		  "Port number"
@@ -6270,7 +6295,7 @@ Model {
 		Block {
 		  BlockType		  Inport
 		  Name			  "M4"
-		  SID			  "1036"
+		  SID			  "1969"
 		  Position		  [30, 648, 60, 662]
 		  Port			  "12"
 		  IconDisplay		  "Port number"
@@ -6278,7 +6303,7 @@ Model {
 		Block {
 		  BlockType		  SubSystem
 		  Name			  "Subsystem10"
-		  SID			  "1037"
+		  SID			  "1970"
 		  Ports			  [8, 1]
 		  Position		  [445, 254, 630, 381]
 		  MinAlgLoopOccurrences	  off
@@ -6306,14 +6331,14 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "wq1"
-		    SID			    "1038"
+		    SID			    "1971"
 		    Position		    [15, 538, 45, 552]
 		    IconDisplay		    "Port number"
 		    }
 		    Block {
 		    BlockType		    Inport
 		    Name		    "wq3"
-		    SID			    "1039"
+		    SID			    "1972"
 		    Position		    [15, 598, 45, 612]
 		    Port		    "2"
 		    IconDisplay		    "Port number"
@@ -6321,7 +6346,7 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "T1"
-		    SID			    "1040"
+		    SID			    "1973"
 		    Position		    [15, 653, 45, 667]
 		    Port		    "3"
 		    IconDisplay		    "Port number"
@@ -6329,7 +6354,7 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "T3"
-		    SID			    "1041"
+		    SID			    "1974"
 		    Position		    [15, 688, 45, 702]
 		    Port		    "4"
 		    IconDisplay		    "Port number"
@@ -6337,7 +6362,7 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "w1"
-		    SID			    "1042"
+		    SID			    "1975"
 		    Position		    [15, 833, 45, 847]
 		    Port		    "5"
 		    IconDisplay		    "Port number"
@@ -6345,7 +6370,7 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "w2"
-		    SID			    "1043"
+		    SID			    "1976"
 		    Position		    [15, 868, 45, 882]
 		    Port		    "6"
 		    IconDisplay		    "Port number"
@@ -6353,7 +6378,7 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "w3"
-		    SID			    "1044"
+		    SID			    "1977"
 		    Position		    [15, 898, 45, 912]
 		    Port		    "7"
 		    IconDisplay		    "Port number"
@@ -6361,7 +6386,7 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "w4"
-		    SID			    "1045"
+		    SID			    "1978"
 		    Position		    [15, 933, 45, 947]
 		    Port		    "8"
 		    IconDisplay		    "Port number"
@@ -6369,7 +6394,7 @@ Model {
 		    Block {
 		    BlockType		    Gain
 		    Name		    "1/Iyy"
-		    SID			    "1046"
+		    SID			    "1979"
 		    Position		    [940, 550, 970, 580]
 		    Gain		    "1/Iyy"
 		    ParamDataTypeStr	    "Inherit: Inherit via internal rule"
@@ -6379,7 +6404,7 @@ Model {
 		    Block {
 		    BlockType		    DiscreteIntegrator
 		    Name		    "Integrator"
-		    SID			    "1331"
+		    SID			    "1980"
 		    Ports		    [3, 1, 0, 0, 1]
 		    Position		    [1005, 549, 1035, 581]
 		    IntegratorMethod	    "Integration: Forward Euler"
@@ -6400,7 +6425,7 @@ Model {
 		    Block {
 		    BlockType		    Gain
 		    Name		    "Izz-Ixx"
-		    SID			    "1048"
+		    SID			    "1981"
 		    Position		    [690, 555, 720, 585]
 		    Gain		    "Izz-Ixx"
 		    ParamDataTypeStr	    "Inherit: Inherit via internal rule"
@@ -6410,7 +6435,7 @@ Model {
 		    Block {
 		    BlockType		    Gain
 		    Name		    "Izzm"
-		    SID			    "1049"
+		    SID			    "1982"
 		    Position		    [675, 820, 705, 850]
 		    Gain		    "Izzm"
 		    ParamDataTypeStr	    "Inherit: Inherit via internal rule"
@@ -6420,7 +6445,7 @@ Model {
 		    Block {
 		    BlockType		    Gain
 		    Name		    "L"
-		    SID			    "1050"
+		    SID			    "1983"
 		    Position		    [330, 675, 360, 705]
 		    Gain		    "L"
 		    ParamDataTypeStr	    "Inherit: Inherit via internal rule"
@@ -6430,7 +6455,7 @@ Model {
 		    Block {
 		    BlockType		    Product
 		    Name		    "Product"
-		    SID			    "1051"
+		    SID			    "1984"
 		    Ports		    [2, 1]
 		    Position		    [145, 552, 175, 583]
 		    InputSameDT		    off
@@ -6440,7 +6465,7 @@ Model {
 		    Block {
 		    BlockType		    Product
 		    Name		    "Product2"
-		    SID			    "1052"
+		    SID			    "1985"
 		    Ports		    [2, 1]
 		    Position		    [540, 817, 570, 848]
 		    InputSameDT		    off
@@ -6450,7 +6475,7 @@ Model {
 		    Block {
 		    BlockType		    Sum
 		    Name		    "Subtract"
-		    SID			    "1053"
+		    SID			    "1986"
 		    Ports		    [2, 1]
 		    Position		    [215, 672, 245, 703]
 		    Inputs		    "+-"
@@ -6461,7 +6486,7 @@ Model {
 		    Block {
 		    BlockType		    Sum
 		    Name		    "Sum of\nElements"
-		    SID			    "1054"
+		    SID			    "1987"
 		    Ports		    [4, 1]
 		    Position		    [255, 901, 285, 954]
 		    Inputs		    "+|-|+|-|"
@@ -6472,7 +6497,7 @@ Model {
 		    Block {
 		    BlockType		    Sum
 		    Name		    "Sum of\nElements1"
-		    SID			    "1055"
+		    SID			    "1988"
 		    Ports		    [3, 1]
 		    Position		    [855, 550, 885, 580]
 		    Inputs		    "3"
@@ -6483,14 +6508,14 @@ Model {
 		    Block {
 		    BlockType		    Constant
 		    Name		    "wq20"
-		    SID			    "1056"
+		    SID			    "1989"
 		    Position		    [15, 960, 45, 990]
 		    Value		    "wq20"
 		    }
 		    Block {
 		    BlockType		    Outport
 		    Name		    "wq2"
-		    SID			    "1057"
+		    SID			    "1990"
 		    Position		    [1090, 558, 1120, 572]
 		    IconDisplay		    "Port number"
 		    }
@@ -6639,7 +6664,7 @@ Model {
 		Block {
 		  BlockType		  SubSystem
 		  Name			  "Subsystem11"
-		  SID			  "1058"
+		  SID			  "1991"
 		  Ports			  [10, 1]
 		  Position		  [445, 414, 630, 546]
 		  MinAlgLoopOccurrences	  off
@@ -6667,14 +6692,14 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "wq1"
-		    SID			    "1059"
+		    SID			    "1992"
 		    Position		    [15, 538, 45, 552]
 		    IconDisplay		    "Port number"
 		    }
 		    Block {
 		    BlockType		    Inport
 		    Name		    "wq2"
-		    SID			    "1060"
+		    SID			    "1993"
 		    Position		    [15, 598, 45, 612]
 		    Port		    "2"
 		    IconDisplay		    "Port number"
@@ -6682,7 +6707,7 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "w1"
-		    SID			    "1061"
+		    SID			    "1994"
 		    Position		    [15, 833, 45, 847]
 		    Port		    "3"
 		    IconDisplay		    "Port number"
@@ -6690,7 +6715,7 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "w2"
-		    SID			    "1062"
+		    SID			    "1995"
 		    Position		    [15, 868, 45, 882]
 		    Port		    "4"
 		    IconDisplay		    "Port number"
@@ -6698,7 +6723,7 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "w3"
-		    SID			    "1063"
+		    SID			    "1996"
 		    Position		    [15, 898, 45, 912]
 		    Port		    "5"
 		    IconDisplay		    "Port number"
@@ -6706,7 +6731,7 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "w4"
-		    SID			    "1064"
+		    SID			    "1997"
 		    Position		    [15, 933, 45, 947]
 		    Port		    "6"
 		    IconDisplay		    "Port number"
@@ -6714,7 +6739,7 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "M1"
-		    SID			    "1065"
+		    SID			    "1998"
 		    Position		    [30, 343, 60, 357]
 		    Port		    "7"
 		    IconDisplay		    "Port number"
@@ -6722,7 +6747,7 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "M2"
-		    SID			    "1066"
+		    SID			    "1999"
 		    Position		    [30, 373, 60, 387]
 		    Port		    "8"
 		    IconDisplay		    "Port number"
@@ -6730,7 +6755,7 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "M3"
-		    SID			    "1067"
+		    SID			    "2000"
 		    Position		    [30, 403, 60, 417]
 		    Port		    "9"
 		    IconDisplay		    "Port number"
@@ -6738,7 +6763,7 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "M4"
-		    SID			    "1068"
+		    SID			    "2001"
 		    Position		    [30, 433, 60, 447]
 		    Port		    "10"
 		    IconDisplay		    "Port number"
@@ -6746,7 +6771,7 @@ Model {
 		    Block {
 		    BlockType		    Gain
 		    Name		    "1/Izz"
-		    SID			    "1069"
+		    SID			    "2002"
 		    Position		    [940, 550, 970, 580]
 		    Gain		    "1/Izz"
 		    ParamDataTypeStr	    "Inherit: Inherit via internal rule"
@@ -6756,10 +6781,9 @@ Model {
 		    Block {
 		    BlockType		    Reference
 		    Name		    "Discrete Derivative"
-		    SID			    "1329"
+		    SID			    "2003"
 		    Ports		    [1, 1]
 		    Position		    [535, 812, 595, 848]
-		    LibraryVersion	    "1.225"
 		    SourceBlock		    "simulink/Discrete/Discrete Derivative"
 		    SourceType		    "Discrete Derivative"
 		    ShowPortLabels	    "FromPortIcon"
@@ -6786,7 +6810,7 @@ Model {
 		    Block {
 		    BlockType		    DiscreteIntegrator
 		    Name		    "Integrator"
-		    SID			    "1323"
+		    SID			    "2004"
 		    Ports		    [2, 1]
 		    Position		    [1010, 557, 1040, 588]
 		    IntegratorMethod	    "Integration: Forward Euler"
@@ -6806,7 +6830,7 @@ Model {
 		    Block {
 		    BlockType		    Gain
 		    Name		    "Ixx-Iyy"
-		    SID			    "1072"
+		    SID			    "2005"
 		    Position		    [690, 550, 720, 580]
 		    Gain		    "Ixx-Iyy"
 		    ParamDataTypeStr	    "Inherit: Inherit via internal rule"
@@ -6816,7 +6840,7 @@ Model {
 		    Block {
 		    BlockType		    Gain
 		    Name		    "Izzm"
-		    SID			    "1073"
+		    SID			    "2006"
 		    Position		    [675, 815, 705, 845]
 		    Gain		    "Izzm"
 		    ParamDataTypeStr	    "Inherit: Inherit via internal rule"
@@ -6826,7 +6850,7 @@ Model {
 		    Block {
 		    BlockType		    Product
 		    Name		    "Product"
-		    SID			    "1074"
+		    SID			    "2007"
 		    Ports		    [2, 1]
 		    Position		    [145, 547, 175, 578]
 		    InputSameDT		    off
@@ -6836,7 +6860,7 @@ Model {
 		    Block {
 		    BlockType		    Sum
 		    Name		    "Subtract"
-		    SID			    "1075"
+		    SID			    "2008"
 		    Ports		    [3, 1]
 		    Position		    [850, 549, 880, 581]
 		    Inputs		    "++-"
@@ -6847,7 +6871,7 @@ Model {
 		    Block {
 		    BlockType		    Sum
 		    Name		    "Sum of\nElements"
-		    SID			    "1076"
+		    SID			    "2009"
 		    Ports		    [4, 1]
 		    Position		    [255, 801, 285, 854]
 		    Inputs		    "+|-|+|-|"
@@ -6858,7 +6882,7 @@ Model {
 		    Block {
 		    BlockType		    Sum
 		    Name		    "Sum of\nElements1"
-		    SID			    "1077"
+		    SID			    "2010"
 		    Ports		    [4, 1]
 		    Position		    [195, 366, 255, 499]
 		    Inputs		    "-|+|-|+|"
@@ -6869,14 +6893,14 @@ Model {
 		    Block {
 		    BlockType		    Constant
 		    Name		    "wq30"
-		    SID			    "1078"
+		    SID			    "2011"
 		    Position		    [15, 960, 45, 990]
 		    Value		    "wq30"
 		    }
 		    Block {
 		    BlockType		    Outport
 		    Name		    "wq3"
-		    SID			    "1079"
+		    SID			    "2012"
 		    Position		    [1090, 558, 1120, 572]
 		    IconDisplay		    "Port number"
 		    }
@@ -6903,7 +6927,7 @@ Model {
 		    Line {
 		    SrcBlock		    "w4"
 		    SrcPort		    1
-		    Points		    [190, 0]
+		    Points		    [190, 0; 0, -90]
 		    DstBlock		    "Sum of\nElements"
 		    DstPort		    4
 		    }
@@ -7015,7 +7039,7 @@ Model {
 		Block {
 		  BlockType		  SubSystem
 		  Name			  "Subsystem9"
-		  SID			  "1080"
+		  SID			  "2013"
 		  Ports			  [8, 1]
 		  Position		  [445, 74, 630, 201]
 		  MinAlgLoopOccurrences	  off
@@ -7043,14 +7067,14 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "wq2"
-		    SID			    "1081"
+		    SID			    "2014"
 		    Position		    [15, 538, 45, 552]
 		    IconDisplay		    "Port number"
 		    }
 		    Block {
 		    BlockType		    Inport
 		    Name		    "wq3"
-		    SID			    "1082"
+		    SID			    "2015"
 		    Position		    [15, 598, 45, 612]
 		    Port		    "2"
 		    IconDisplay		    "Port number"
@@ -7058,7 +7082,7 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "T4"
-		    SID			    "1083"
+		    SID			    "2016"
 		    Position		    [15, 653, 45, 667]
 		    Port		    "3"
 		    IconDisplay		    "Port number"
@@ -7066,7 +7090,7 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "T2"
-		    SID			    "1084"
+		    SID			    "2017"
 		    Position		    [15, 688, 45, 702]
 		    Port		    "4"
 		    IconDisplay		    "Port number"
@@ -7074,7 +7098,7 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "w1"
-		    SID			    "1085"
+		    SID			    "2018"
 		    Position		    [15, 833, 45, 847]
 		    Port		    "5"
 		    IconDisplay		    "Port number"
@@ -7082,7 +7106,7 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "w2"
-		    SID			    "1086"
+		    SID			    "2019"
 		    Position		    [15, 868, 45, 882]
 		    Port		    "6"
 		    IconDisplay		    "Port number"
@@ -7090,7 +7114,7 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "w3"
-		    SID			    "1087"
+		    SID			    "2020"
 		    Position		    [15, 898, 45, 912]
 		    Port		    "7"
 		    IconDisplay		    "Port number"
@@ -7098,7 +7122,7 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "w4"
-		    SID			    "1088"
+		    SID			    "2021"
 		    Position		    [15, 933, 45, 947]
 		    Port		    "8"
 		    IconDisplay		    "Port number"
@@ -7106,7 +7130,7 @@ Model {
 		    Block {
 		    BlockType		    Gain
 		    Name		    "1/Ixx"
-		    SID			    "1089"
+		    SID			    "2022"
 		    Position		    [940, 550, 970, 580]
 		    Gain		    "1/Ixx"
 		    ParamDataTypeStr	    "Inherit: Inherit via internal rule"
@@ -7116,7 +7140,7 @@ Model {
 		    Block {
 		    BlockType		    DiscreteIntegrator
 		    Name		    "Integrator"
-		    SID			    "1321"
+		    SID			    "2023"
 		    Ports		    [2, 1]
 		    Position		    [1005, 557, 1035, 588]
 		    IntegratorMethod	    "Integration: Forward Euler"
@@ -7136,7 +7160,7 @@ Model {
 		    Block {
 		    BlockType		    Gain
 		    Name		    "Iyy-Izz"
-		    SID			    "1091"
+		    SID			    "2024"
 		    Position		    [690, 555, 720, 585]
 		    Gain		    "Iyy-Izz"
 		    ParamDataTypeStr	    "Inherit: Inherit via internal rule"
@@ -7146,7 +7170,7 @@ Model {
 		    Block {
 		    BlockType		    Gain
 		    Name		    "Izzm"
-		    SID			    "1092"
+		    SID			    "2025"
 		    Position		    [675, 820, 705, 850]
 		    Gain		    "Izzm"
 		    ParamDataTypeStr	    "Inherit: Inherit via internal rule"
@@ -7156,7 +7180,7 @@ Model {
 		    Block {
 		    BlockType		    Gain
 		    Name		    "L"
-		    SID			    "1093"
+		    SID			    "2026"
 		    Position		    [330, 675, 360, 705]
 		    Gain		    "L"
 		    ParamDataTypeStr	    "Inherit: Inherit via internal rule"
@@ -7166,7 +7190,7 @@ Model {
 		    Block {
 		    BlockType		    Product
 		    Name		    "Product"
-		    SID			    "1094"
+		    SID			    "2027"
 		    Ports		    [2, 1]
 		    Position		    [145, 552, 175, 583]
 		    InputSameDT		    off
@@ -7176,7 +7200,7 @@ Model {
 		    Block {
 		    BlockType		    Product
 		    Name		    "Product2"
-		    SID			    "1095"
+		    SID			    "2028"
 		    Ports		    [2, 1]
 		    Position		    [540, 817, 570, 848]
 		    InputSameDT		    off
@@ -7186,7 +7210,7 @@ Model {
 		    Block {
 		    BlockType		    Sum
 		    Name		    "Subtract"
-		    SID			    "1096"
+		    SID			    "2029"
 		    Ports		    [2, 1]
 		    Position		    [215, 672, 245, 703]
 		    Inputs		    "+-"
@@ -7197,7 +7221,7 @@ Model {
 		    Block {
 		    BlockType		    Sum
 		    Name		    "Sum of\nElements"
-		    SID			    "1097"
+		    SID			    "2030"
 		    Ports		    [4, 1]
 		    Position		    [255, 869, 285, 901]
 		    Inputs		    "+|-|+|-"
@@ -7208,7 +7232,7 @@ Model {
 		    Block {
 		    BlockType		    Sum
 		    Name		    "Sum of\nElements1"
-		    SID			    "1098"
+		    SID			    "2031"
 		    Ports		    [3, 1]
 		    Position		    [855, 550, 885, 580]
 		    Inputs		    "3"
@@ -7219,14 +7243,14 @@ Model {
 		    Block {
 		    BlockType		    Constant
 		    Name		    "wq10"
-		    SID			    "1099"
+		    SID			    "2032"
 		    Position		    [15, 955, 45, 985]
 		    Value		    "wq10"
 		    }
 		    Block {
 		    BlockType		    Outport
 		    Name		    "wq1"
-		    SID			    "1100"
+		    SID			    "2033"
 		    Position		    [1090, 558, 1120, 572]
 		    IconDisplay		    "Port number"
 		    }
@@ -7374,14 +7398,14 @@ Model {
 		Block {
 		  BlockType		  Outport
 		  Name			  "wq1"
-		  SID			  "1101"
+		  SID			  "2034"
 		  Position		  [1015, 133, 1045, 147]
 		  IconDisplay		  "Port number"
 		}
 		Block {
 		  BlockType		  Outport
 		  Name			  "wq2"
-		  SID			  "1102"
+		  SID			  "2035"
 		  Position		  [1015, 313, 1045, 327]
 		  Port			  "2"
 		  IconDisplay		  "Port number"
@@ -7389,7 +7413,7 @@ Model {
 		Block {
 		  BlockType		  Outport
 		  Name			  "wq3"
-		  SID			  "1103"
+		  SID			  "2036"
 		  Position		  [1015, 458, 1045, 472]
 		  Port			  "3"
 		  IconDisplay		  "Port number"
@@ -7605,7 +7629,7 @@ Model {
 	    Block {
 	      BlockType		      SubSystem
 	      Name		      "Velocidades en el sistema del cuadricóptero"
-	      SID		      "1104"
+	      SID		      "2037"
 	      Ports		      [9, 3]
 	      Position		      [505, 93, 700, 367]
 	      MinAlgLoopOccurrences   off
@@ -7633,14 +7657,14 @@ Model {
 		Block {
 		  BlockType		  Inport
 		  Name			  "wq1"
-		  SID			  "1105"
+		  SID			  "2038"
 		  Position		  [70, 73, 100, 87]
 		  IconDisplay		  "Port number"
 		}
 		Block {
 		  BlockType		  Inport
 		  Name			  "wq2"
-		  SID			  "1106"
+		  SID			  "2039"
 		  Position		  [70, 153, 100, 167]
 		  Port			  "2"
 		  IconDisplay		  "Port number"
@@ -7648,7 +7672,7 @@ Model {
 		Block {
 		  BlockType		  Inport
 		  Name			  "wq3"
-		  SID			  "1107"
+		  SID			  "2040"
 		  Position		  [70, 228, 100, 242]
 		  Port			  "3"
 		  IconDisplay		  "Port number"
@@ -7656,7 +7680,7 @@ Model {
 		Block {
 		  BlockType		  Inport
 		  Name			  "psi"
-		  SID			  "1108"
+		  SID			  "2041"
 		  Position		  [70, 303, 100, 317]
 		  Port			  "4"
 		  IconDisplay		  "Port number"
@@ -7664,7 +7688,7 @@ Model {
 		Block {
 		  BlockType		  Inport
 		  Name			  "phi"
-		  SID			  "1109"
+		  SID			  "2042"
 		  Position		  [70, 373, 100, 387]
 		  Port			  "5"
 		  IconDisplay		  "Port number"
@@ -7672,7 +7696,7 @@ Model {
 		Block {
 		  BlockType		  Inport
 		  Name			  "T1"
-		  SID			  "1110"
+		  SID			  "2043"
 		  Position		  [70, 443, 100, 457]
 		  Port			  "6"
 		  IconDisplay		  "Port number"
@@ -7680,7 +7704,7 @@ Model {
 		Block {
 		  BlockType		  Inport
 		  Name			  "T2"
-		  SID			  "1111"
+		  SID			  "2044"
 		  Position		  [70, 503, 100, 517]
 		  Port			  "7"
 		  IconDisplay		  "Port number"
@@ -7688,7 +7712,7 @@ Model {
 		Block {
 		  BlockType		  Inport
 		  Name			  "T3"
-		  SID			  "1112"
+		  SID			  "2045"
 		  Position		  [70, 563, 100, 577]
 		  Port			  "8"
 		  IconDisplay		  "Port number"
@@ -7696,7 +7720,7 @@ Model {
 		Block {
 		  BlockType		  Inport
 		  Name			  "T4"
-		  SID			  "1113"
+		  SID			  "2046"
 		  Position		  [70, 638, 100, 652]
 		  Port			  "9"
 		  IconDisplay		  "Port number"
@@ -7704,7 +7728,7 @@ Model {
 		Block {
 		  BlockType		  SubSystem
 		  Name			  "Subsystem6"
-		  SID			  "1114"
+		  SID			  "2047"
 		  Ports			  [5, 1]
 		  Position		  [475, 152, 665, 298]
 		  MinAlgLoopOccurrences	  off
@@ -7732,14 +7756,14 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "phi"
-		    SID			    "1115"
+		    SID			    "2048"
 		    Position		    [15, 223, 45, 237]
 		    IconDisplay		    "Port number"
 		    }
 		    Block {
 		    BlockType		    Inport
 		    Name		    "wq2"
-		    SID			    "1116"
+		    SID			    "2049"
 		    Position		    [15, 538, 45, 552]
 		    Port		    "2"
 		    IconDisplay		    "Port number"
@@ -7747,7 +7771,7 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "wq3"
-		    SID			    "1117"
+		    SID			    "2050"
 		    Position		    [15, 598, 45, 612]
 		    Port		    "3"
 		    IconDisplay		    "Port number"
@@ -7755,7 +7779,7 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "vq2"
-		    SID			    "1118"
+		    SID			    "2051"
 		    Position		    [15, 653, 45, 667]
 		    Port		    "4"
 		    IconDisplay		    "Port number"
@@ -7763,7 +7787,7 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "vq3"
-		    SID			    "1119"
+		    SID			    "2052"
 		    Position		    [15, 693, 45, 707]
 		    Port		    "5"
 		    IconDisplay		    "Port number"
@@ -7771,7 +7795,7 @@ Model {
 		    Block {
 		    BlockType		    Sum
 		    Name		    "Add"
-		    SID			    "1120"
+		    SID			    "2053"
 		    Ports		    [2, 1]
 		    Position		    [610, 291, 640, 324]
 		    InputSameDT		    off
@@ -7781,7 +7805,7 @@ Model {
 		    Block {
 		    BlockType		    DiscreteIntegrator
 		    Name		    "Integrator"
-		    SID			    "1318"
+		    SID			    "2054"
 		    Ports		    [2, 1]
 		    Position		    [700, 297, 730, 328]
 		    IntegratorMethod	    "Integration: Forward Euler"
@@ -7801,7 +7825,7 @@ Model {
 		    Block {
 		    BlockType		    Product
 		    Name		    "Product"
-		    SID			    "1122"
+		    SID			    "2055"
 		    Ports		    [2, 1]
 		    Position		    [190, 537, 220, 568]
 		    InputSameDT		    off
@@ -7811,7 +7835,7 @@ Model {
 		    Block {
 		    BlockType		    Product
 		    Name		    "Product1"
-		    SID			    "1123"
+		    SID			    "2056"
 		    Ports		    [2, 1]
 		    Position		    [190, 652, 220, 683]
 		    InputSameDT		    off
@@ -7821,7 +7845,7 @@ Model {
 		    Block {
 		    BlockType		    Sum
 		    Name		    "Subtract"
-		    SID			    "1124"
+		    SID			    "2057"
 		    Ports		    [2, 1]
 		    Position		    [335, 582, 365, 613]
 		    Inputs		    "+-"
@@ -7832,14 +7856,14 @@ Model {
 		    Block {
 		    BlockType		    Trigonometry
 		    Name		    "Trigonometric\nFunction4"
-		    SID			    "1125"
+		    SID			    "2058"
 		    Ports		    [1, 1]
 		    Position		    [165, 215, 195, 245]
 		    }
 		    Block {
 		    BlockType		    Gain
 		    Name		    "gravedad"
-		    SID			    "1126"
+		    SID			    "2059"
 		    Position		    [350, 215, 380, 245]
 		    Gain		    "g"
 		    ParamDataTypeStr	    "Inherit: Inherit via internal rule"
@@ -7849,14 +7873,14 @@ Model {
 		    Block {
 		    BlockType		    Constant
 		    Name		    "vq10"
-		    SID			    "1127"
+		    SID			    "2060"
 		    Position		    [15, 720, 45, 750]
 		    Value		    "vq10"
 		    }
 		    Block {
 		    BlockType		    Outport
 		    Name		    "vq1"
-		    SID			    "1128"
+		    SID			    "2061"
 		    Position		    [805, 298, 835, 312]
 		    IconDisplay		    "Port number"
 		    }
@@ -7954,7 +7978,7 @@ Model {
 		Block {
 		  BlockType		  SubSystem
 		  Name			  "Subsystem7"
-		  SID			  "1129"
+		  SID			  "2062"
 		  Ports			  [10, 1]
 		  Position		  [475, 502, 670, 653]
 		  MinAlgLoopOccurrences	  off
@@ -7982,14 +8006,14 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "wq1"
-		    SID			    "1130"
+		    SID			    "2063"
 		    Position		    [15, 538, 45, 552]
 		    IconDisplay		    "Port number"
 		    }
 		    Block {
 		    BlockType		    Inport
 		    Name		    "wq2"
-		    SID			    "1131"
+		    SID			    "2064"
 		    Position		    [15, 598, 45, 612]
 		    Port		    "2"
 		    IconDisplay		    "Port number"
@@ -7997,7 +8021,7 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "T1"
-		    SID			    "1132"
+		    SID			    "2065"
 		    Position		    [15, 803, 45, 817]
 		    Port		    "3"
 		    IconDisplay		    "Port number"
@@ -8005,7 +8029,7 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "T2"
-		    SID			    "1133"
+		    SID			    "2066"
 		    Position		    [15, 853, 45, 867]
 		    Port		    "4"
 		    IconDisplay		    "Port number"
@@ -8013,7 +8037,7 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "T3"
-		    SID			    "1134"
+		    SID			    "2067"
 		    Position		    [15, 898, 45, 912]
 		    Port		    "5"
 		    IconDisplay		    "Port number"
@@ -8021,7 +8045,7 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "T4"
-		    SID			    "1135"
+		    SID			    "2068"
 		    Position		    [15, 943, 45, 957]
 		    Port		    "6"
 		    IconDisplay		    "Port number"
@@ -8029,7 +8053,7 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "vq1"
-		    SID			    "1136"
+		    SID			    "2069"
 		    Position		    [15, 653, 45, 667]
 		    Port		    "7"
 		    IconDisplay		    "Port number"
@@ -8037,7 +8061,7 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "vq2"
-		    SID			    "1137"
+		    SID			    "2070"
 		    Position		    [15, 693, 45, 707]
 		    Port		    "8"
 		    IconDisplay		    "Port number"
@@ -8045,7 +8069,7 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "phi"
-		    SID			    "1138"
+		    SID			    "2071"
 		    Position		    [15, 248, 45, 262]
 		    Port		    "9"
 		    IconDisplay		    "Port number"
@@ -8053,7 +8077,7 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "psi"
-		    SID			    "1139"
+		    SID			    "2072"
 		    Position		    [15, 328, 45, 342]
 		    Port		    "10"
 		    IconDisplay		    "Port number"
@@ -8061,7 +8085,7 @@ Model {
 		    Block {
 		    BlockType		    Gain
 		    Name		    "1/M"
-		    SID			    "1140"
+		    SID			    "2073"
 		    Position		    [455, 870, 485, 900]
 		    Gain		    "1/M"
 		    ParamDataTypeStr	    "Inherit: Inherit via internal rule"
@@ -8071,7 +8095,7 @@ Model {
 		    Block {
 		    BlockType		    DiscreteIntegrator
 		    Name		    "Integrator"
-		    SID			    "1320"
+		    SID			    "2074"
 		    Ports		    [2, 1]
 		    Position		    [755, 357, 785, 388]
 		    IntegratorMethod	    "Integration: Forward Euler"
@@ -8091,7 +8115,7 @@ Model {
 		    Block {
 		    BlockType		    Product
 		    Name		    "Product"
-		    SID			    "1142"
+		    SID			    "2075"
 		    Ports		    [2, 1]
 		    Position		    [190, 537, 220, 568]
 		    InputSameDT		    off
@@ -8101,7 +8125,7 @@ Model {
 		    Block {
 		    BlockType		    Product
 		    Name		    "Product1"
-		    SID			    "1143"
+		    SID			    "2076"
 		    Ports		    [2, 1]
 		    Position		    [190, 652, 220, 683]
 		    InputSameDT		    off
@@ -8111,7 +8135,7 @@ Model {
 		    Block {
 		    BlockType		    Product
 		    Name		    "Product2"
-		    SID			    "1144"
+		    SID			    "2077"
 		    Ports		    [2, 1]
 		    Position		    [265, 247, 295, 278]
 		    InputSameDT		    off
@@ -8121,7 +8145,7 @@ Model {
 		    Block {
 		    BlockType		    Sum
 		    Name		    "Subtract"
-		    SID			    "1145"
+		    SID			    "2078"
 		    Ports		    [2, 1]
 		    Position		    [335, 582, 365, 613]
 		    Inputs		    "+-"
@@ -8132,7 +8156,7 @@ Model {
 		    Block {
 		    BlockType		    Sum
 		    Name		    "Sum of\nElements"
-		    SID			    "1146"
+		    SID			    "2079"
 		    Ports		    [4, 1]
 		    Position		    [175, 867, 205, 898]
 		    Inputs		    "4"
@@ -8143,7 +8167,7 @@ Model {
 		    Block {
 		    BlockType		    Sum
 		    Name		    "Sum of\nElements1"
-		    SID			    "1147"
+		    SID			    "2080"
 		    Ports		    [3, 1]
 		    Position		    [640, 350, 670, 380]
 		    Inputs		    "3"
@@ -8154,7 +8178,7 @@ Model {
 		    Block {
 		    BlockType		    Trigonometry
 		    Name		    "Trigonometric\nFunction1"
-		    SID			    "1148"
+		    SID			    "2081"
 		    Ports		    [1, 1]
 		    Position		    [165, 320, 195, 350]
 		    Operator		    "cos"
@@ -8162,7 +8186,7 @@ Model {
 		    Block {
 		    BlockType		    Trigonometry
 		    Name		    "Trigonometric\nFunction6"
-		    SID			    "1149"
+		    SID			    "2082"
 		    Ports		    [1, 1]
 		    Position		    [165, 240, 195, 270]
 		    Operator		    "cos"
@@ -8170,7 +8194,7 @@ Model {
 		    Block {
 		    BlockType		    Gain
 		    Name		    "gravedad"
-		    SID			    "1150"
+		    SID			    "2083"
 		    Position		    [350, 240, 380, 270]
 		    Gain		    "-g"
 		    ParamDataTypeStr	    "Inherit: Inherit via internal rule"
@@ -8180,14 +8204,14 @@ Model {
 		    Block {
 		    BlockType		    Constant
 		    Name		    "vq30"
-		    SID			    "1151"
+		    SID			    "2084"
 		    Position		    [15, 970, 45, 1000]
 		    Value		    "vq30"
 		    }
 		    Block {
 		    BlockType		    Outport
 		    Name		    "vq3"
-		    SID			    "1152"
+		    SID			    "2085"
 		    Position		    [845, 358, 875, 372]
 		    IconDisplay		    "Port number"
 		    }
@@ -8345,7 +8369,7 @@ Model {
 		Block {
 		  BlockType		  SubSystem
 		  Name			  "Subsystem8"
-		  SID			  "1153"
+		  SID			  "2086"
 		  Ports			  [6, 1]
 		  Position		  [475, 320, 665, 465]
 		  MinAlgLoopOccurrences	  off
@@ -8373,14 +8397,14 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "phi"
-		    SID			    "1154"
+		    SID			    "2087"
 		    Position		    [15, 223, 45, 237]
 		    IconDisplay		    "Port number"
 		    }
 		    Block {
 		    BlockType		    Inport
 		    Name		    "wq3"
-		    SID			    "1155"
+		    SID			    "2088"
 		    Position		    [15, 538, 45, 552]
 		    Port		    "2"
 		    IconDisplay		    "Port number"
@@ -8388,7 +8412,7 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "wq1"
-		    SID			    "1156"
+		    SID			    "2089"
 		    Position		    [15, 493, 45, 507]
 		    Port		    "3"
 		    IconDisplay		    "Port number"
@@ -8396,7 +8420,7 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "vq3"
-		    SID			    "1157"
+		    SID			    "2090"
 		    Position		    [15, 598, 45, 612]
 		    Port		    "4"
 		    IconDisplay		    "Port number"
@@ -8404,7 +8428,7 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "vq1"
-		    SID			    "1158"
+		    SID			    "2091"
 		    Position		    [15, 693, 45, 707]
 		    Port		    "5"
 		    IconDisplay		    "Port number"
@@ -8412,7 +8436,7 @@ Model {
 		    Block {
 		    BlockType		    Inport
 		    Name		    "psi"
-		    SID			    "1159"
+		    SID			    "2092"
 		    Position		    [15, 303, 45, 317]
 		    Port		    "6"
 		    IconDisplay		    "Port number"
@@ -8420,7 +8444,7 @@ Model {
 		    Block {
 		    BlockType		    Sum
 		    Name		    "Add"
-		    SID			    "1160"
+		    SID			    "2093"
 		    Ports		    [2, 1]
 		    Position		    [610, 287, 640, 318]
 		    InputSameDT		    off
@@ -8430,7 +8454,7 @@ Model {
 		    Block {
 		    BlockType		    DiscreteIntegrator
 		    Name		    "Integrator"
-		    SID			    "1319"
+		    SID			    "2094"
 		    Ports		    [2, 1]
 		    Position		    [705, 287, 735, 318]
 		    IntegratorMethod	    "Integration: Forward Euler"
@@ -8450,7 +8474,7 @@ Model {
 		    Block {
 		    BlockType		    Product
 		    Name		    "Product"
-		    SID			    "1162"
+		    SID			    "2095"
 		    Ports		    [2, 1]
 		    Position		    [190, 537, 220, 568]
 		    InputSameDT		    off
@@ -8460,7 +8484,7 @@ Model {
 		    Block {
 		    BlockType		    Product
 		    Name		    "Product1"
-		    SID			    "1163"
+		    SID			    "2096"
 		    Ports		    [2, 1]
 		    Position		    [190, 652, 220, 683]
 		    InputSameDT		    off
@@ -8470,7 +8494,7 @@ Model {
 		    Block {
 		    BlockType		    Product
 		    Name		    "Product2"
-		    SID			    "1164"
+		    SID			    "2097"
 		    Ports		    [2, 1]
 		    Position		    [265, 222, 295, 253]
 		    InputSameDT		    off
@@ -8480,7 +8504,7 @@ Model {
 		    Block {
 		    BlockType		    Sum
 		    Name		    "Subtract"
-		    SID			    "1165"
+		    SID			    "2098"
 		    Ports		    [2, 1]
 		    Position		    [335, 582, 365, 613]
 		    Inputs		    "+-"
@@ -8491,14 +8515,14 @@ Model {
 		    Block {
 		    BlockType		    Trigonometry
 		    Name		    "Trigonometric\nFunction1"
-		    SID			    "1166"
+		    SID			    "2099"
 		    Ports		    [1, 1]
 		    Position		    [165, 295, 195, 325]
 		    }
 		    Block {
 		    BlockType		    Trigonometry
 		    Name		    "Trigonometric\nFunction4"
-		    SID			    "1167"
+		    SID			    "2100"
 		    Ports		    [1, 1]
 		    Position		    [165, 215, 195, 245]
 		    Operator		    "cos"
@@ -8506,7 +8530,7 @@ Model {
 		    Block {
 		    BlockType		    Gain
 		    Name		    "gravedad"
-		    SID			    "1168"
+		    SID			    "2101"
 		    Position		    [350, 215, 380, 245]
 		    Gain		    "-g"
 		    ParamDataTypeStr	    "Inherit: Inherit via internal rule"
@@ -8516,14 +8540,14 @@ Model {
 		    Block {
 		    BlockType		    Constant
 		    Name		    "vq20"
-		    SID			    "1169"
+		    SID			    "2102"
 		    Position		    [15, 720, 45, 750]
 		    Value		    "vq20"
 		    }
 		    Block {
 		    BlockType		    Outport
 		    Name		    "vq2"
-		    SID			    "1170"
+		    SID			    "2103"
 		    Position		    [805, 298, 835, 312]
 		    IconDisplay		    "Port number"
 		    }
@@ -8643,14 +8667,14 @@ Model {
 		Block {
 		  BlockType		  Outport
 		  Name			  "vq1"
-		  SID			  "1171"
+		  SID			  "2104"
 		  Position		  [790, 213, 820, 227]
 		  IconDisplay		  "Port number"
 		}
 		Block {
 		  BlockType		  Outport
 		  Name			  "vq2"
-		  SID			  "1172"
+		  SID			  "2105"
 		  Position		  [800, 388, 830, 402]
 		  Port			  "2"
 		  IconDisplay		  "Port number"
@@ -8658,7 +8682,7 @@ Model {
 		Block {
 		  BlockType		  Outport
 		  Name			  "vq3"
-		  SID			  "1173"
+		  SID			  "2106"
 		  Position		  [800, 573, 830, 587]
 		  Port			  "3"
 		  IconDisplay		  "Port number"
@@ -8843,14 +8867,14 @@ Model {
 	    Block {
 	      BlockType		      Outport
 	      Name		      "vq1"
-	      SID		      "1174"
+	      SID		      "2107"
 	      Position		      [1000, 128, 1030, 142]
 	      IconDisplay	      "Port number"
 	    }
 	    Block {
 	      BlockType		      Outport
 	      Name		      "vq2"
-	      SID		      "1175"
+	      SID		      "2108"
 	      Position		      [1000, 218, 1030, 232]
 	      Port		      "2"
 	      IconDisplay	      "Port number"
@@ -8858,7 +8882,7 @@ Model {
 	    Block {
 	      BlockType		      Outport
 	      Name		      "vq3"
-	      SID		      "1176"
+	      SID		      "2109"
 	      Position		      [1000, 308, 1030, 322]
 	      Port		      "3"
 	      IconDisplay	      "Port number"
@@ -8866,7 +8890,7 @@ Model {
 	    Block {
 	      BlockType		      Outport
 	      Name		      "wq1"
-	      SID		      "1177"
+	      SID		      "2110"
 	      Position		      [980, 493, 1010, 507]
 	      Port		      "4"
 	      IconDisplay	      "Port number"
@@ -8874,7 +8898,7 @@ Model {
 	    Block {
 	      BlockType		      Outport
 	      Name		      "wq2"
-	      SID		      "1178"
+	      SID		      "2111"
 	      Position		      [980, 583, 1010, 597]
 	      Port		      "5"
 	      IconDisplay	      "Port number"
@@ -8882,7 +8906,7 @@ Model {
 	    Block {
 	      BlockType		      Outport
 	      Name		      "wq3"
-	      SID		      "1179"
+	      SID		      "2112"
 	      Position		      [975, 673, 1005, 687]
 	      Port		      "6"
 	      IconDisplay	      "Port number"
@@ -9078,9 +9102,9 @@ Model {
 	Block {
 	  BlockType		  SubSystem
 	  Name			  "Fuerzas y Torques"
-	  SID			  "1180"
+	  SID			  "2113"
 	  Ports			  [4, 8]
-	  Position		  [140, 32, 260, 223]
+	  Position		  [140, 37, 260, 228]
 	  MinAlgLoopOccurrences	  off
 	  PropExecContextOutsideSubsystem off
 	  RTWSystemCode		  "Auto"
@@ -9091,7 +9115,7 @@ Model {
 	  System {
 	    Name		    "Fuerzas y Torques"
 	    Location		    [0, 53, 1366, 768]
-	    Open		    off
+	    Open		    on
 	    ModelBrowserVisibility  off
 	    ModelBrowserWidth	    200
 	    ScreenColor		    "white"
@@ -9106,14 +9130,14 @@ Model {
 	    Block {
 	      BlockType		      Inport
 	      Name		      "w1"
-	      SID		      "1181"
+	      SID		      "2114"
 	      Position		      [25, 53, 55, 67]
 	      IconDisplay	      "Port number"
 	    }
 	    Block {
 	      BlockType		      Inport
 	      Name		      "w2"
-	      SID		      "1182"
+	      SID		      "2115"
 	      Position		      [15, 148, 45, 162]
 	      Port		      "2"
 	      IconDisplay	      "Port number"
@@ -9121,7 +9145,7 @@ Model {
 	    Block {
 	      BlockType		      Inport
 	      Name		      "w3"
-	      SID		      "1183"
+	      SID		      "2116"
 	      Position		      [15, 238, 45, 252]
 	      Port		      "3"
 	      IconDisplay	      "Port number"
@@ -9129,7 +9153,7 @@ Model {
 	    Block {
 	      BlockType		      Inport
 	      Name		      "w4"
-	      SID		      "1184"
+	      SID		      "2117"
 	      Position		      [15, 343, 45, 357]
 	      Port		      "4"
 	      IconDisplay	      "Port number"
@@ -9137,7 +9161,7 @@ Model {
 	    Block {
 	      BlockType		      SubSystem
 	      Name		      "Fuerza Motor1"
-	      SID		      "1185"
+	      SID		      "2118"
 	      Ports		      [1, 1]
 	      Position		      [90, 22, 205, 98]
 	      MinAlgLoopOccurrences   off
@@ -9165,14 +9189,14 @@ Model {
 		Block {
 		  BlockType		  Inport
 		  Name			  "w"
-		  SID			  "1186"
+		  SID			  "2119"
 		  Position		  [170, 168, 200, 182]
 		  IconDisplay		  "Port number"
 		}
 		Block {
 		  BlockType		  Sum
 		  Name			  "Add"
-		  SID			  "1187"
+		  SID			  "2120"
 		  Ports			  [2, 1]
 		  Position		  [525, 206, 555, 239]
 		  InputSameDT		  off
@@ -9182,9 +9206,9 @@ Model {
 		Block {
 		  BlockType		  Gain
 		  Name			  "Gain"
-		  SID			  "1188"
+		  SID			  "2121"
 		  Position		  [410, 152, 460, 188]
-		  Gain			  "3.5296e-5"
+		  Gain			  "4.60160135072435e-05"
 		  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
 		  OutDataTypeStr	  "Inherit: Inherit via internal rule"
 		  SaturateOnIntegerOverflow off
@@ -9192,9 +9216,9 @@ Model {
 		Block {
 		  BlockType		  Gain
 		  Name			  "Gain1"
-		  SID			  "1189"
-		  Position		  [420, 205, 450, 235]
-		  Gain			  "-4.9293e-4"
+		  SID			  "2122"
+		  Position		  [420, 200, 450, 230]
+		  Gain			  " -0.001038227262737266741675"
 		  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
 		  OutDataTypeStr	  "Inherit: Inherit via internal rule"
 		  SaturateOnIntegerOverflow off
@@ -9202,7 +9226,7 @@ Model {
 		Block {
 		  BlockType		  Product
 		  Name			  "Product"
-		  SID			  "1190"
+		  SID			  "2123"
 		  Ports			  [2, 1]
 		  Position		  [330, 152, 360, 183]
 		  InputSameDT		  off
@@ -9212,7 +9236,7 @@ Model {
 		Block {
 		  BlockType		  Outport
 		  Name			  "T"
-		  SID			  "1191"
+		  SID			  "2124"
 		  Position		  [590, 213, 620, 227]
 		  IconDisplay		  "Port number"
 		}
@@ -9248,7 +9272,7 @@ Model {
 		  SrcPort		  1
 		  Points		  [55, 0]
 		  Branch {
-		    Points		    [0, 45]
+		    Points		    [0, 40]
 		    DstBlock		    "Gain1"
 		    DstPort		    1
 		  }
@@ -9267,7 +9291,7 @@ Model {
 	    Block {
 	      BlockType		      SubSystem
 	      Name		      "Fuerza Motor2"
-	      SID		      "1192"
+	      SID		      "2196"
 	      Ports		      [1, 1]
 	      Position		      [90, 117, 205, 193]
 	      MinAlgLoopOccurrences   off
@@ -9295,14 +9319,14 @@ Model {
 		Block {
 		  BlockType		  Inport
 		  Name			  "w"
-		  SID			  "1193"
+		  SID			  "2197"
 		  Position		  [170, 168, 200, 182]
 		  IconDisplay		  "Port number"
 		}
 		Block {
 		  BlockType		  Sum
 		  Name			  "Add"
-		  SID			  "1194"
+		  SID			  "2198"
 		  Ports			  [2, 1]
 		  Position		  [525, 206, 555, 239]
 		  InputSameDT		  off
@@ -9312,9 +9336,9 @@ Model {
 		Block {
 		  BlockType		  Gain
 		  Name			  "Gain"
-		  SID			  "1195"
+		  SID			  "2199"
 		  Position		  [410, 152, 460, 188]
-		  Gain			  "3.5296e-5"
+		  Gain			  "4.60160135072435e-05"
 		  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
 		  OutDataTypeStr	  "Inherit: Inherit via internal rule"
 		  SaturateOnIntegerOverflow off
@@ -9322,9 +9346,9 @@ Model {
 		Block {
 		  BlockType		  Gain
 		  Name			  "Gain1"
-		  SID			  "1196"
-		  Position		  [420, 205, 450, 235]
-		  Gain			  "-4.9293e-4"
+		  SID			  "2200"
+		  Position		  [420, 200, 450, 230]
+		  Gain			  " -0.001038227262737266741675"
 		  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
 		  OutDataTypeStr	  "Inherit: Inherit via internal rule"
 		  SaturateOnIntegerOverflow off
@@ -9332,7 +9356,7 @@ Model {
 		Block {
 		  BlockType		  Product
 		  Name			  "Product"
-		  SID			  "1197"
+		  SID			  "2201"
 		  Ports			  [2, 1]
 		  Position		  [330, 152, 360, 183]
 		  InputSameDT		  off
@@ -9342,7 +9366,7 @@ Model {
 		Block {
 		  BlockType		  Outport
 		  Name			  "T"
-		  SID			  "1198"
+		  SID			  "2202"
 		  Position		  [590, 213, 620, 227]
 		  IconDisplay		  "Port number"
 		}
@@ -9378,7 +9402,7 @@ Model {
 		  SrcPort		  1
 		  Points		  [55, 0]
 		  Branch {
-		    Points		    [0, 45]
+		    Points		    [0, 40]
 		    DstBlock		    "Gain1"
 		    DstPort		    1
 		  }
@@ -9397,9 +9421,9 @@ Model {
 	    Block {
 	      BlockType		      SubSystem
 	      Name		      "Fuerza Motor3"
-	      SID		      "1199"
+	      SID		      "2134"
 	      Ports		      [1, 1]
-	      Position		      [90, 207, 205, 283]
+	      Position		      [85, 207, 200, 283]
 	      MinAlgLoopOccurrences   off
 	      PropExecContextOutsideSubsystem off
 	      RTWSystemCode	      "Auto"
@@ -9425,14 +9449,14 @@ Model {
 		Block {
 		  BlockType		  Inport
 		  Name			  "w"
-		  SID			  "1200"
+		  SID			  "2135"
 		  Position		  [170, 168, 200, 182]
 		  IconDisplay		  "Port number"
 		}
 		Block {
 		  BlockType		  Sum
 		  Name			  "Add"
-		  SID			  "1201"
+		  SID			  "2136"
 		  Ports			  [2, 1]
 		  Position		  [525, 206, 555, 239]
 		  InputSameDT		  off
@@ -9442,9 +9466,9 @@ Model {
 		Block {
 		  BlockType		  Gain
 		  Name			  "Gain"
-		  SID			  "1202"
+		  SID			  "2137"
 		  Position		  [410, 152, 460, 188]
-		  Gain			  "3.5296e-5"
+		  Gain			  "4.60160135072435e-05"
 		  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
 		  OutDataTypeStr	  "Inherit: Inherit via internal rule"
 		  SaturateOnIntegerOverflow off
@@ -9452,9 +9476,9 @@ Model {
 		Block {
 		  BlockType		  Gain
 		  Name			  "Gain1"
-		  SID			  "1203"
-		  Position		  [420, 205, 450, 235]
-		  Gain			  "-4.9293e-4"
+		  SID			  "2138"
+		  Position		  [420, 200, 450, 230]
+		  Gain			  " -0.001038227262737266741675"
 		  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
 		  OutDataTypeStr	  "Inherit: Inherit via internal rule"
 		  SaturateOnIntegerOverflow off
@@ -9462,7 +9486,7 @@ Model {
 		Block {
 		  BlockType		  Product
 		  Name			  "Product"
-		  SID			  "1204"
+		  SID			  "2139"
 		  Ports			  [2, 1]
 		  Position		  [330, 152, 360, 183]
 		  InputSameDT		  off
@@ -9472,7 +9496,7 @@ Model {
 		Block {
 		  BlockType		  Outport
 		  Name			  "T"
-		  SID			  "1205"
+		  SID			  "2140"
 		  Position		  [590, 213, 620, 227]
 		  IconDisplay		  "Port number"
 		}
@@ -9508,7 +9532,7 @@ Model {
 		  SrcPort		  1
 		  Points		  [55, 0]
 		  Branch {
-		    Points		    [0, 45]
+		    Points		    [0, 40]
 		    DstBlock		    "Gain1"
 		    DstPort		    1
 		  }
@@ -9527,9 +9551,9 @@ Model {
 	    Block {
 	      BlockType		      SubSystem
 	      Name		      "Fuerza Motor4"
-	      SID		      "1206"
+	      SID		      "2141"
 	      Ports		      [1, 1]
-	      Position		      [95, 312, 210, 388]
+	      Position		      [85, 312, 200, 388]
 	      MinAlgLoopOccurrences   off
 	      PropExecContextOutsideSubsystem off
 	      RTWSystemCode	      "Auto"
@@ -9555,14 +9579,14 @@ Model {
 		Block {
 		  BlockType		  Inport
 		  Name			  "w"
-		  SID			  "1207"
+		  SID			  "2142"
 		  Position		  [170, 168, 200, 182]
 		  IconDisplay		  "Port number"
 		}
 		Block {
 		  BlockType		  Sum
 		  Name			  "Add"
-		  SID			  "1208"
+		  SID			  "2143"
 		  Ports			  [2, 1]
 		  Position		  [525, 206, 555, 239]
 		  InputSameDT		  off
@@ -9572,9 +9596,9 @@ Model {
 		Block {
 		  BlockType		  Gain
 		  Name			  "Gain"
-		  SID			  "1209"
+		  SID			  "2144"
 		  Position		  [410, 152, 460, 188]
-		  Gain			  "3.5296e-5"
+		  Gain			  "4.60160135072435e-05"
 		  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
 		  OutDataTypeStr	  "Inherit: Inherit via internal rule"
 		  SaturateOnIntegerOverflow off
@@ -9582,9 +9606,9 @@ Model {
 		Block {
 		  BlockType		  Gain
 		  Name			  "Gain1"
-		  SID			  "1210"
-		  Position		  [420, 205, 450, 235]
-		  Gain			  "-4.9293e-4"
+		  SID			  "2145"
+		  Position		  [420, 200, 450, 230]
+		  Gain			  " -0.001038227262737266741675"
 		  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
 		  OutDataTypeStr	  "Inherit: Inherit via internal rule"
 		  SaturateOnIntegerOverflow off
@@ -9592,7 +9616,7 @@ Model {
 		Block {
 		  BlockType		  Product
 		  Name			  "Product"
-		  SID			  "1211"
+		  SID			  "2146"
 		  Ports			  [2, 1]
 		  Position		  [330, 152, 360, 183]
 		  InputSameDT		  off
@@ -9602,7 +9626,7 @@ Model {
 		Block {
 		  BlockType		  Outport
 		  Name			  "T"
-		  SID			  "1212"
+		  SID			  "2147"
 		  Position		  [590, 213, 620, 227]
 		  IconDisplay		  "Port number"
 		}
@@ -9638,7 +9662,7 @@ Model {
 		  SrcPort		  1
 		  Points		  [55, 0]
 		  Branch {
-		    Points		    [0, 45]
+		    Points		    [0, 40]
 		    DstBlock		    "Gain1"
 		    DstPort		    1
 		  }
@@ -9657,7 +9681,7 @@ Model {
 	    Block {
 	      BlockType		      SubSystem
 	      Name		      "Torque Motor1"
-	      SID		      "1213"
+	      SID		      "2148"
 	      Ports		      [1, 1]
 	      Position		      [90, 401, 205, 479]
 	      MinAlgLoopOccurrences   off
@@ -9685,14 +9709,14 @@ Model {
 		Block {
 		  BlockType		  Inport
 		  Name			  "w"
-		  SID			  "1214"
+		  SID			  "2149"
 		  Position		  [25, 43, 55, 57]
 		  IconDisplay		  "Port number"
 		}
 		Block {
 		  BlockType		  Sum
 		  Name			  "Add"
-		  SID			  "1215"
+		  SID			  "2150"
 		  Ports			  [2, 1]
 		  Position		  [380, 81, 410, 114]
 		  InputSameDT		  off
@@ -9702,7 +9726,7 @@ Model {
 		Block {
 		  BlockType		  Gain
 		  Name			  "Gain"
-		  SID			  "1216"
+		  SID			  "2151"
 		  Position		  [265, 27, 315, 63]
 		  Gain			  "3.4734e-6"
 		  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
@@ -9712,7 +9736,7 @@ Model {
 		Block {
 		  BlockType		  Gain
 		  Name			  "Gain1"
-		  SID			  "1217"
+		  SID			  "2152"
 		  Position		  [275, 80, 305, 110]
 		  Gain			  "-1.3205e-4"
 		  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
@@ -9722,7 +9746,7 @@ Model {
 		Block {
 		  BlockType		  Product
 		  Name			  "Product"
-		  SID			  "1218"
+		  SID			  "2153"
 		  Ports			  [2, 1]
 		  Position		  [185, 27, 215, 58]
 		  InputSameDT		  off
@@ -9732,7 +9756,7 @@ Model {
 		Block {
 		  BlockType		  Outport
 		  Name			  "M"
-		  SID			  "1219"
+		  SID			  "2154"
 		  Position		  [445, 88, 475, 102]
 		  IconDisplay		  "Port number"
 		}
@@ -9787,7 +9811,7 @@ Model {
 	    Block {
 	      BlockType		      SubSystem
 	      Name		      "Torque Motor2"
-	      SID		      "1220"
+	      SID		      "2155"
 	      Ports		      [1, 1]
 	      Position		      [90, 511, 205, 589]
 	      MinAlgLoopOccurrences   off
@@ -9815,14 +9839,14 @@ Model {
 		Block {
 		  BlockType		  Inport
 		  Name			  "w"
-		  SID			  "1221"
+		  SID			  "2156"
 		  Position		  [25, 43, 55, 57]
 		  IconDisplay		  "Port number"
 		}
 		Block {
 		  BlockType		  Sum
 		  Name			  "Add"
-		  SID			  "1222"
+		  SID			  "2157"
 		  Ports			  [2, 1]
 		  Position		  [380, 81, 410, 114]
 		  InputSameDT		  off
@@ -9832,7 +9856,7 @@ Model {
 		Block {
 		  BlockType		  Gain
 		  Name			  "Gain"
-		  SID			  "1223"
+		  SID			  "2158"
 		  Position		  [265, 27, 315, 63]
 		  Gain			  "3.4734e-6"
 		  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
@@ -9842,7 +9866,7 @@ Model {
 		Block {
 		  BlockType		  Gain
 		  Name			  "Gain1"
-		  SID			  "1224"
+		  SID			  "2159"
 		  Position		  [275, 80, 305, 110]
 		  Gain			  "-1.3205e-4"
 		  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
@@ -9852,7 +9876,7 @@ Model {
 		Block {
 		  BlockType		  Product
 		  Name			  "Product"
-		  SID			  "1225"
+		  SID			  "2160"
 		  Ports			  [2, 1]
 		  Position		  [185, 27, 215, 58]
 		  InputSameDT		  off
@@ -9862,7 +9886,7 @@ Model {
 		Block {
 		  BlockType		  Outport
 		  Name			  "M"
-		  SID			  "1226"
+		  SID			  "2161"
 		  Position		  [445, 88, 475, 102]
 		  IconDisplay		  "Port number"
 		}
@@ -9917,7 +9941,7 @@ Model {
 	    Block {
 	      BlockType		      SubSystem
 	      Name		      "Torque Motor3"
-	      SID		      "1227"
+	      SID		      "2162"
 	      Ports		      [1, 1]
 	      Position		      [90, 606, 205, 684]
 	      MinAlgLoopOccurrences   off
@@ -9945,14 +9969,14 @@ Model {
 		Block {
 		  BlockType		  Inport
 		  Name			  "w"
-		  SID			  "1228"
+		  SID			  "2163"
 		  Position		  [25, 43, 55, 57]
 		  IconDisplay		  "Port number"
 		}
 		Block {
 		  BlockType		  Sum
 		  Name			  "Add"
-		  SID			  "1229"
+		  SID			  "2164"
 		  Ports			  [2, 1]
 		  Position		  [380, 81, 410, 114]
 		  InputSameDT		  off
@@ -9962,7 +9986,7 @@ Model {
 		Block {
 		  BlockType		  Gain
 		  Name			  "Gain"
-		  SID			  "1230"
+		  SID			  "2165"
 		  Position		  [265, 27, 315, 63]
 		  Gain			  "3.4734e-6"
 		  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
@@ -9972,7 +9996,7 @@ Model {
 		Block {
 		  BlockType		  Gain
 		  Name			  "Gain1"
-		  SID			  "1231"
+		  SID			  "2166"
 		  Position		  [275, 80, 305, 110]
 		  Gain			  "-1.3205e-4"
 		  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
@@ -9982,7 +10006,7 @@ Model {
 		Block {
 		  BlockType		  Product
 		  Name			  "Product"
-		  SID			  "1232"
+		  SID			  "2167"
 		  Ports			  [2, 1]
 		  Position		  [185, 27, 215, 58]
 		  InputSameDT		  off
@@ -9992,7 +10016,7 @@ Model {
 		Block {
 		  BlockType		  Outport
 		  Name			  "M"
-		  SID			  "1233"
+		  SID			  "2168"
 		  Position		  [445, 88, 475, 102]
 		  IconDisplay		  "Port number"
 		}
@@ -10047,7 +10071,7 @@ Model {
 	    Block {
 	      BlockType		      SubSystem
 	      Name		      "Torque Motor4"
-	      SID		      "1234"
+	      SID		      "2169"
 	      Ports		      [1, 1]
 	      Position		      [90, 696, 205, 774]
 	      MinAlgLoopOccurrences   off
@@ -10075,14 +10099,14 @@ Model {
 		Block {
 		  BlockType		  Inport
 		  Name			  "w"
-		  SID			  "1235"
+		  SID			  "2170"
 		  Position		  [25, 43, 55, 57]
 		  IconDisplay		  "Port number"
 		}
 		Block {
 		  BlockType		  Sum
 		  Name			  "Add"
-		  SID			  "1236"
+		  SID			  "2171"
 		  Ports			  [2, 1]
 		  Position		  [380, 81, 410, 114]
 		  InputSameDT		  off
@@ -10092,7 +10116,7 @@ Model {
 		Block {
 		  BlockType		  Gain
 		  Name			  "Gain"
-		  SID			  "1237"
+		  SID			  "2172"
 		  Position		  [265, 27, 315, 63]
 		  Gain			  "3.4734e-6"
 		  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
@@ -10102,7 +10126,7 @@ Model {
 		Block {
 		  BlockType		  Gain
 		  Name			  "Gain1"
-		  SID			  "1238"
+		  SID			  "2173"
 		  Position		  [275, 80, 305, 110]
 		  Gain			  "-1.3205e-4"
 		  ParamDataTypeStr	  "Inherit: Inherit via internal rule"
@@ -10112,7 +10136,7 @@ Model {
 		Block {
 		  BlockType		  Product
 		  Name			  "Product"
-		  SID			  "1239"
+		  SID			  "2174"
 		  Ports			  [2, 1]
 		  Position		  [185, 27, 215, 58]
 		  InputSameDT		  off
@@ -10122,7 +10146,7 @@ Model {
 		Block {
 		  BlockType		  Outport
 		  Name			  "M"
-		  SID			  "1240"
+		  SID			  "2175"
 		  Position		  [445, 88, 475, 102]
 		  IconDisplay		  "Port number"
 		}
@@ -10177,14 +10201,14 @@ Model {
 	    Block {
 	      BlockType		      Outport
 	      Name		      "T1"
-	      SID		      "1241"
+	      SID		      "2176"
 	      Position		      [230, 53, 260, 67]
 	      IconDisplay	      "Port number"
 	    }
 	    Block {
 	      BlockType		      Outport
 	      Name		      "T2"
-	      SID		      "1242"
+	      SID		      "2177"
 	      Position		      [230, 148, 260, 162]
 	      Port		      "2"
 	      IconDisplay	      "Port number"
@@ -10192,7 +10216,7 @@ Model {
 	    Block {
 	      BlockType		      Outport
 	      Name		      "T3"
-	      SID		      "1243"
+	      SID		      "2178"
 	      Position		      [230, 238, 260, 252]
 	      Port		      "3"
 	      IconDisplay	      "Port number"
@@ -10200,7 +10224,7 @@ Model {
 	    Block {
 	      BlockType		      Outport
 	      Name		      "T4"
-	      SID		      "1244"
+	      SID		      "2179"
 	      Position		      [230, 343, 260, 357]
 	      Port		      "4"
 	      IconDisplay	      "Port number"
@@ -10208,7 +10232,7 @@ Model {
 	    Block {
 	      BlockType		      Outport
 	      Name		      "M1"
-	      SID		      "1245"
+	      SID		      "2180"
 	      Position		      [230, 433, 260, 447]
 	      Port		      "5"
 	      IconDisplay	      "Port number"
@@ -10216,7 +10240,7 @@ Model {
 	    Block {
 	      BlockType		      Outport
 	      Name		      "M2"
-	      SID		      "1246"
+	      SID		      "2181"
 	      Position		      [230, 543, 260, 557]
 	      Port		      "6"
 	      IconDisplay	      "Port number"
@@ -10224,7 +10248,7 @@ Model {
 	    Block {
 	      BlockType		      Outport
 	      Name		      "M3"
-	      SID		      "1247"
+	      SID		      "2182"
 	      Position		      [230, 638, 260, 652]
 	      Port		      "7"
 	      IconDisplay	      "Port number"
@@ -10232,7 +10256,7 @@ Model {
 	    Block {
 	      BlockType		      Outport
 	      Name		      "M4"
-	      SID		      "1248"
+	      SID		      "2183"
 	      Position		      [230, 728, 260, 742]
 	      Port		      "8"
 	      IconDisplay	      "Port number"
@@ -10256,12 +10280,12 @@ Model {
 	      SrcPort		      1
 	      Points		      [15, 0]
 	      Branch {
-		DstBlock		"Fuerza Motor2"
+		Points			[0, 395]
+		DstBlock		"Torque Motor2"
 		DstPort			1
 	      }
 	      Branch {
-		Points			[0, 395]
-		DstBlock		"Torque Motor2"
+		DstBlock		"Fuerza Motor2"
 		DstPort			1
 	      }
 	    }
@@ -10270,12 +10294,12 @@ Model {
 	      SrcPort		      1
 	      Points		      [10, 0]
 	      Branch {
-		DstBlock		"Fuerza Motor3"
+		Points			[0, 400]
+		DstBlock		"Torque Motor3"
 		DstPort			1
 	      }
 	      Branch {
-		Points			[0, 400]
-		DstBlock		"Torque Motor3"
+		DstBlock		"Fuerza Motor3"
 		DstPort			1
 	      }
 	    }
@@ -10284,12 +10308,12 @@ Model {
 	      SrcPort		      1
 	      Points		      [5, 0]
 	      Branch {
-		DstBlock		"Fuerza Motor4"
+		Points			[0, 385]
+		DstBlock		"Torque Motor4"
 		DstPort			1
 	      }
 	      Branch {
-		Points			[0, 385]
-		DstBlock		"Torque Motor4"
+		DstBlock		"Fuerza Motor4"
 		DstPort			1
 	      }
 	    }
@@ -10346,14 +10370,14 @@ Model {
 	Block {
 	  BlockType		  Outport
 	  Name			  "x"
-	  SID			  "1262"
+	  SID			  "2184"
 	  Position		  [1395, 123, 1425, 137]
 	  IconDisplay		  "Port number"
 	}
 	Block {
 	  BlockType		  Outport
 	  Name			  "y"
-	  SID			  "1263"
+	  SID			  "2185"
 	  Position		  [1395, 183, 1425, 197]
 	  Port			  "2"
 	  IconDisplay		  "Port number"
@@ -10361,7 +10385,7 @@ Model {
 	Block {
 	  BlockType		  Outport
 	  Name			  "z"
-	  SID			  "1264"
+	  SID			  "2186"
 	  Position		  [1395, 243, 1425, 257]
 	  Port			  "3"
 	  IconDisplay		  "Port number"
@@ -10369,7 +10393,7 @@ Model {
 	Block {
 	  BlockType		  Outport
 	  Name			  "psi"
-	  SID			  "1265"
+	  SID			  "2187"
 	  Position		  [1395, 303, 1425, 317]
 	  Port			  "4"
 	  IconDisplay		  "Port number"
@@ -10377,7 +10401,7 @@ Model {
 	Block {
 	  BlockType		  Outport
 	  Name			  "phi"
-	  SID			  "1267"
+	  SID			  "2188"
 	  Position		  [1395, 363, 1425, 377]
 	  Port			  "5"
 	  IconDisplay		  "Port number"
@@ -10385,7 +10409,7 @@ Model {
 	Block {
 	  BlockType		  Outport
 	  Name			  "theta"
-	  SID			  "1270"
+	  SID			  "2189"
 	  Position		  [1395, 423, 1425, 437]
 	  Port			  "6"
 	  IconDisplay		  "Port number"
@@ -10393,7 +10417,7 @@ Model {
 	Block {
 	  BlockType		  Outport
 	  Name			  "vq1"
-	  SID			  "1272"
+	  SID			  "2190"
 	  Position		  [1395, 483, 1425, 497]
 	  Port			  "7"
 	  IconDisplay		  "Port number"
@@ -10401,7 +10425,7 @@ Model {
 	Block {
 	  BlockType		  Outport
 	  Name			  "vq2"
-	  SID			  "1273"
+	  SID			  "2191"
 	  Position		  [1395, 523, 1425, 537]
 	  Port			  "8"
 	  IconDisplay		  "Port number"
@@ -10409,7 +10433,7 @@ Model {
 	Block {
 	  BlockType		  Outport
 	  Name			  "vq3"
-	  SID			  "1274"
+	  SID			  "2192"
 	  Position		  [1395, 573, 1425, 587]
 	  Port			  "9"
 	  IconDisplay		  "Port number"
@@ -10417,7 +10441,7 @@ Model {
 	Block {
 	  BlockType		  Outport
 	  Name			  "wq1"
-	  SID			  "1275"
+	  SID			  "2193"
 	  Position		  [1395, 633, 1425, 647]
 	  Port			  "10"
 	  IconDisplay		  "Port number"
@@ -10425,7 +10449,7 @@ Model {
 	Block {
 	  BlockType		  Outport
 	  Name			  "wq2"
-	  SID			  "1276"
+	  SID			  "2194"
 	  Position		  [1395, 688, 1425, 702]
 	  Port			  "11"
 	  IconDisplay		  "Port number"
@@ -10433,7 +10457,7 @@ Model {
 	Block {
 	  BlockType		  Outport
 	  Name			  "wq3"
-	  SID			  "1277"
+	  SID			  "2195"
 	  Position		  [1395, 748, 1425, 762]
 	  Port			  "12"
 	  IconDisplay		  "Port number"
@@ -10495,7 +10519,7 @@ Model {
 	  SrcPort		  1
 	  Points		  [25, 0]
 	  Branch {
-	    Points		    [0, -280]
+	    Points		    [0, -275]
 	    DstBlock		    "Fuerzas y Torques"
 	    DstPort		    2
 	  }
@@ -10510,7 +10534,7 @@ Model {
 	  SrcPort		  1
 	  Points		  [50, 0]
 	  Branch {
-	    Points		    [0, -265]
+	    Points		    [0, -260]
 	    DstBlock		    "Fuerzas y Torques"
 	    DstPort		    3
 	  }
@@ -10525,7 +10549,7 @@ Model {
 	  SrcPort		  1
 	  Points		  [75, 0; 0, -10]
 	  Branch {
-	    Points		    [0, -235]
+	    Points		    [0, -230]
 	    DstBlock		    "Fuerzas y Torques"
 	    DstPort		    4
 	  }
@@ -10552,56 +10576,56 @@ Model {
 	Line {
 	  SrcBlock		  "Fuerzas y Torques"
 	  SrcPort		  1
-	  Points		  [130, 0; 0, 130]
+	  Points		  [130, 0; 0, 125]
 	  DstBlock		  "Dinámica"
 	  DstPort		  3
 	}
 	Line {
 	  SrcBlock		  "Fuerzas y Torques"
 	  SrcPort		  2
-	  Points		  [110, 0; 0, 130]
+	  Points		  [110, 0; 0, 125]
 	  DstBlock		  "Dinámica"
 	  DstPort		  4
 	}
 	Line {
 	  SrcBlock		  "Fuerzas y Torques"
 	  SrcPort		  3
-	  Points		  [100, 0; 0, 130]
+	  Points		  [100, 0; 0, 125]
 	  DstBlock		  "Dinámica"
 	  DstPort		  5
 	}
 	Line {
 	  SrcBlock		  "Fuerzas y Torques"
 	  SrcPort		  4
-	  Points		  [90, 0; 0, 130]
+	  Points		  [90, 0; 0, 125]
 	  DstBlock		  "Dinámica"
 	  DstPort		  6
 	}
 	Line {
 	  SrcBlock		  "Fuerzas y Torques"
 	  SrcPort		  5
-	  Points		  [45, 0; 0, 130]
+	  Points		  [45, 0; 0, 125]
 	  DstBlock		  "Dinámica"
 	  DstPort		  7
 	}
 	Line {
 	  SrcBlock		  "Fuerzas y Torques"
 	  SrcPort		  6
-	  Points		  [35, 0; 0, 130]
+	  Points		  [35, 0; 0, 125]
 	  DstBlock		  "Dinámica"
 	  DstPort		  8
 	}
 	Line {
 	  SrcBlock		  "Fuerzas y Torques"
 	  SrcPort		  7
-	  Points		  [20, 0; 0, 130]
+	  Points		  [20, 0; 0, 125]
 	  DstBlock		  "Dinámica"
 	  DstPort		  9
 	}
 	Line {
 	  SrcBlock		  "Fuerzas y Torques"
 	  SrcPort		  8
-	  Points		  [5, 0; 0, 130]
+	  Points		  [5, 0; 0, 125]
 	  DstBlock		  "Dinámica"
 	  DstPort		  10
 	}
@@ -10610,7 +10634,7 @@ Model {
 	  SrcPort		  1
 	  Points		  [15, 0]
 	  Branch {
-	    Points		    [0, -300]
+	    Points		    [0, -295]
 	    DstBlock		    "Fuerzas y Torques"
 	    DstPort		    1
 	  }
@@ -10967,13 +10991,6 @@ Model {
       DstPort		      2
     }
     Line {
-      SrcBlock		      "Sum4"
-      SrcPort		      1
-      Points		      [40, 0; 0, -95]
-      DstBlock		      "Gain"
-      DstPort		      1
-    }
-    Line {
       SrcBlock		      "Sum3"
       SrcPort		      1
       Points		      [20, 0]
@@ -11004,7 +11021,7 @@ Model {
       Labels		      [0, 0]
       SrcBlock		      "Gain"
       SrcPort		      1
-      Points		      [0, -20; -395, 0; 0, -60; 55, 0; 0, -30; -115, 0]
+      Points		      [0, -60; -785, 0; 0, -95]
       DstBlock		      "Demux"
       DstPort		      1
     }
@@ -11219,13 +11236,13 @@ Model {
       SrcPort		      1
       Points		      [60, 0]
       Branch {
-	Points			[0, 25]
-	DstBlock		"Subsystem1"
+	Points			[0, -180]
+	DstBlock		"Mux1"
 	DstPort			1
       }
       Branch {
-	Points			[0, -180]
-	DstBlock		"Mux1"
+	Points			[0, 25]
+	DstBlock		"Subsystem1"
 	DstPort			1
       }
     }
@@ -11234,12 +11251,12 @@ Model {
       SrcPort		      1
       Points		      [50, 0; 0, 55; 20, 0]
       Branch {
-	DstBlock		"Subsystem1"
+	Points			[0, -255]
+	DstBlock		"Mux1"
 	DstPort			2
       }
       Branch {
-	Points			[0, -255]
-	DstBlock		"Mux1"
+	DstBlock		"Subsystem1"
 	DstPort			2
       }
     }
@@ -11248,12 +11265,12 @@ Model {
       SrcPort		      1
       Points		      [5, 0; 0, 85; 50, 0]
       Branch {
-	DstBlock		"Subsystem1"
+	Points			[0, -305]
+	DstBlock		"Mux1"
 	DstPort			3
       }
       Branch {
-	Points			[0, -305]
-	DstBlock		"Mux1"
+	DstBlock		"Subsystem1"
 	DstPort			3
       }
     }
@@ -11262,12 +11279,12 @@ Model {
       SrcPort		      1
       Points		      [50, 0]
       Branch {
-	DstBlock		"Subsystem1"
+	Points			[0, -355]
+	DstBlock		"Mux1"
 	DstPort			4
       }
       Branch {
-	Points			[0, -355]
-	DstBlock		"Mux1"
+	DstBlock		"Subsystem1"
 	DstPort			4
       }
     }
@@ -11282,6 +11299,32 @@ Model {
       SrcPort		      1
       DstBlock		      "N"
       DstPort		      1
+    }
+    Line {
+      SrcBlock		      "Discrete-Time\nIntegrator"
+      SrcPort		      1
+      DstBlock		      "Mux2"
+      DstPort		      2
+    }
+    Line {
+      SrcBlock		      "Mux2"
+      SrcPort		      1
+      DstBlock		      "Gain"
+      DstPort		      1
+    }
+    Line {
+      SrcBlock		      "Sum4"
+      SrcPort		      1
+      Points		      [25, 0; 0, -65; 25, 0]
+      Branch {
+	DstBlock		"Discrete-Time\nIntegrator"
+	DstPort			1
+      }
+      Branch {
+	Points			[0, -30]
+	DstBlock		"Mux2"
+	DstPort			1
+      }
     }
     Annotation {
       Position		      [632, 572]

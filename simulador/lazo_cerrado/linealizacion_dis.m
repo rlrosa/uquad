@@ -19,6 +19,7 @@ Matrices = load('linealizacion.mat');
 
 A=Matrices.A;
 B=Matrices.B;
+Ac = Matrices.Acirc;
      
 Ts=evalin('base','Ts');
 %% Linealización en Hovering
@@ -41,12 +42,7 @@ if modo=='hov'
     
     Bh=eval(B);
     %% Construcción de la matriz K método LQR para hovering
-    %C = zeros(4,12);
-%     C(1,1)=1;
-%     C(2,2)=1;
-%     C(3,3)=1;
-%     C(4,6)=1;
-%     Cz = zeros(4,4);
+
     C = eye(size(Ah));
     Z = zeros(12,12);
     
@@ -70,31 +66,30 @@ elseif modo=='rec'
     psis=0; phi=0; theta=setpoint(4);
 
 
-    w1=334.279741754537;
-    w2=334.279741754537;
-    w3=334.279741754537;
-    w4=334.279741754537;
+    w1 = 316.103650939028;
+    w2 = 316.103650939028;
+    w3 = 316.103650939028;
+    w4 = 316.103650939028;
     
-    %No voy a realimentar la posición. Me interesa controlar la velocidad
-    %solamente
     Ar=eval(A);
-    Ar=Ar(4:12,4:12);
-    
     Br=eval(B);
-    Br=Br(4:12,:);
+    
     
    
     %% Construcción de la matriz K método LQR para linea recta
-    if lqrm==0
-        %Qp=diag([1 1 1 100 100 100 1 1 1 1 1 1]);
-        Qp=diag([100 100 100 1 1 1 1 1 1]); %Sin las posiciones
-        Rp=diag([0.1 0.1 0.1 0.1]);
-        [K,S,E]=lqrd(Ar,Br,Qp,Rp,Ts);  
-    else
-        Qp2=diag([1 1 1 100 100 100 1 1 1]);
-        Rp2=diag([1 1 1 1]);
-        [K,S,E]=lqr(Ar,Br,Qp2,Rp2);
-    end
+    
+        
+    C = eye(size(Ar));
+    Z = zeros(12,12);
+    
+    BZ = zeros(12,4);
+       
+    Q=diag([1 1 1 1e3 1e3 1e3 1 1 1 1 1 1 1 1 1 1e-0 1e-0 1e-0 1e-0 1e-0 1e-0 1e-0 1e-0 1e-0]);
+    R = diag([1e-2 1e-2 1e-2 1e-2]);
+    
+    %[K,S,E]=lqrd([Ah Z; C Cz],[Bh;BZ],Q,R,Ts);
+    K = uquad_dlqr([Ar Z; C Z],[Br;BZ],Q,R);
+   
 %% Linealización círculos
 
 elseif modo=='cir'
@@ -106,23 +101,25 @@ elseif modo=='cir'
     wq1=setpoint(6); wq2=setpoint(7); wq3=setpoint(8);
     
     w1=setpoint(9); w2=setpoint(10); w3=setpoint(11); w4=setpoint(12);
-        
-    %No voy a realimentar la posición. Me interesa controlar la velocidad
-    %solamente. Tampoco me interesa theta
-    Ac=A(4:12,4:12);
-    Ac=eval(Ac);
-    Ac(3,:)=[];
-    Ac(:,3)=[];
     
-    Bc=B(4:12,:);
-    Bc=eval(Bc);
-    Bc(3,:)=[];
+    x =vq1/wq3*cos(phi);
+    y = vq1/wq3*sin(phi)*sin(psis);
+    z = vq1/wq3*sin(phi)*cos(psis);
+    
+    %Ac=A(4:12,4:12);
+    Ac=eval(Ac);
+    %Ac(3,:)=[];
+    %Ac(:,3)=[];
+    
+    %Bc=B(4:12,:);
+    Bc=eval(B);
+    %Bc(3,:)=[];
     %% Construcción de la matriz K método LQR para circulos
     if lqrm==0
-        Qp=diag([1 1 1e2 1e2 1e5 1 1 1e2]);
-        
-        Rp=diag([1 1 1 1]);
-        [K,S,E]=lqr(Ac,Bc,Qp,Rp);  
+        %Qp=diag([1 1 1e2 1e2 1e5 1 1 1e2]);
+        Qp = diag([1 1 1 1e2 1e2 1e2 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1]);
+        Rp=diag([1e-2 1e-2 1e-2 1e-2]);
+        K=uquad_dlqr([Ac zeros(12);eye(12) zeros(12)],[Bc; zeros(12,4)],Qp,Rp);  
     else
         Qp2=diag([1 1 10 10 10 1 1 1]);
         Rp2=diag([1 1 1 1]);

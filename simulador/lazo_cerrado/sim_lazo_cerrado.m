@@ -89,7 +89,7 @@ elseif modo=='rec';
  
     %Defino el setpoint de las velocidade angulares
     w = zeros(4,length(t));
-    w(:,:) =334.279741754537;
+    w(:,:) =316.103650939028;
 
 %% Setpoint para circulos
 
@@ -112,12 +112,19 @@ assignin('base','N',N)
 assignin('base','setpoint',setpoint)
 
 if modo=='cir'
-    K=linealizacion(modo,[setpoint w(:,1)'],0);
+    K=linealizacion_dis(modo,[setpoint w(:,1)'],0);
     assignin('base','K', K);
+    
+    %TODO: Poder calcular el centro del círculo automáticamente
+    assignin('base','xc',0);
+    assignin('base','yc',0);
+    assignin('base','zc',0);
+        
     
 else
     K= linealizacion_dis(modo,setpoint,0);
     assignin('base','K', K);
+    
 
 
 end
