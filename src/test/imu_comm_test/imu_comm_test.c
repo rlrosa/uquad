@@ -19,12 +19,15 @@
 #define WAIT_COUNTER_MAX 10
 #define IMU_COMM_TEST_EOL_LIM 128
 
-#define PRINT_RAW  1
+#define PRINT_RAW  0
 #define PRINT_DATA 1
-#define PRINT_AVG  1
+#define PRINT_AVG  0
 
 #define TIMING_DEBUG   1
 #define TIMING_ERR_MAX 0
+
+#define PRINT_LOOP          1         // Stop reading from IMU, and loop in printing
+#define PRINT_LOOP_DELAY_US (1000*10) // Match IMU sampling freq
 
 static imu_t *imu = NULL;
 static FILE *log_imu_raw = NULL;
@@ -183,23 +186,37 @@ int main(int argc, char *argv[]){
 		    calibrating = false;
 		}
 #if TIMING_DEBUG
-		gettimeofday(&tv_tmp,NULL);
-		uquad_timeval_substract(&tv_diff, tv_tmp, tv_old);
-		retval = uquad_timeval_substract(&tv_tmp2, tv_diff, tv_max);
-		if(retval > 0)
+#if PRINT_LOOP
+		err_log("Entering print loop");
+		while(1)
 		{
-		    tv_max = tv_diff;
-		    err_log_tv("Current max delay:",tv_max);
-		}
-		if(tv_diff.tv_sec > 0)
-		{
-		    if(err_count++ > TIMING_ERR_MAX)
+		    retval = imu_comm_get_data_latest(imu,&data);
+		    quit_if(retval);
+		    retval = imu_comm_print_data(&data,log_imu_data);
+		    quit_if(retval);
+		    usleep(PRINT_LOOP_DELAY_US);
+#endif // PRINT_LOOP
+
+		    gettimeofday(&tv_tmp,NULL);
+		    uquad_timeval_substract(&tv_diff, tv_tmp, tv_old);
+		    retval = uquad_timeval_substract(&tv_tmp2, tv_diff, tv_max);
+		    if(retval > 0)
 		    {
-			err_log_num("Out of range!:",err_count);
-			quit();
+			tv_max = tv_diff;
+			err_log_tv("Current max delay:",tv_max);
 		    }
+		    if(tv_diff.tv_sec > 0)
+		    {
+			if(err_count++ > TIMING_ERR_MAX)
+			{
+			    err_log_num("Out of range!:",err_count);
+			    quit();
+			}
+		    }
+		    tv_old = tv_tmp;
+#if PRINT_LOOP
 		}
-		tv_old = tv_tmp;
+#endif // PRINT_LOOP
 #endif
 #if PRINT_RAW
 		retval = imu_comm_get_raw_latest_unread(imu,&raw);
