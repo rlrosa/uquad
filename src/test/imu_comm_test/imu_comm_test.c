@@ -23,10 +23,15 @@
 #define PRINT_DATA 1
 #define PRINT_AVG  1
 
+#define TIMING_DEBUG   1
+#define TIMING_ERR_MAX 0
+
 static imu_t *imu = NULL;
 static FILE *log_imu_raw = NULL;
 static FILE *log_imu_data = NULL;
 static FILE *log_imu_avg = NULL;
+
+static struct timeval tv_max;
 
 void quit()
 {
@@ -36,6 +41,7 @@ void quit()
     uquad_logger_remove(log_imu_raw);
     uquad_logger_remove(log_imu_data);
     uquad_logger_remove(log_imu_avg);
+    err_log_tv("Max delay:",tv_max);
     printf("Exit successful!\n");
     exit(0);
 }
@@ -47,11 +53,14 @@ void uquad_sig_handler(int signal_num){
 
 int main(int argc, char *argv[]){
     int retval;
+    int err_count = 0;
+    int loop_count = 0;
     unsigned char tmp[2];
     char * device;
     fd_set rfds;
-    struct timeval tv, tv_start, tv_diff, tv_tmp;
+    struct timeval tv, tv_start, tv_diff, tv_tmp, tv_tmp2, tv_old;
     gettimeofday(&tv_start,NULL);
+    memset(&tv_max,0,sizeof(struct timeval));
 
     // Catch signals
     signal(SIGINT, uquad_sig_handler);
@@ -171,8 +180,32 @@ int main(int argc, char *argv[]){
 		if(calibrating)
 		{
 		    printf("Calibration completed!\nPress enter to continue...");
+		    gettimeofday(&tv_old,NULL);
 		    calibrating = false;
 		}
+#if TIMING_DEBUG
+		gettimeofday(&tv_tmp,NULL);
+		uquad_timeval_substract(&tv_diff, tv_tmp, tv_old);
+		retval = uquad_timeval_substract(&tv_tmp2, tv_diff, tv_max);
+		if(retval > 0)
+		{
+		    tv_max = tv_diff;
+		}
+		if(tv_diff.tv_sec > 0)
+		{
+		    if(err_count++ > TIMING_ERR_MAX)
+		    {
+			err_log_num("Out of range!:",err_count);
+			quit();
+		    }
+		}
+		tv_old = tv_tmp;
+		if(loop_count++ == 50)
+		{
+		    err_log_tv("Current max delay:",tv_max);
+		    loop_count = 0;
+		}
+#endif
 #if PRINT_RAW
 		retval = imu_comm_get_raw_latest_unread(imu,&raw);
 		if(retval == ERROR_OK)
@@ -180,8 +213,9 @@ int main(int argc, char *argv[]){
 		    gettimeofday(&tv_tmp,NULL);
 		    uquad_timeval_substract(&tv_diff, tv_tmp, tv_start);
 		    log_tv_only(log_imu_raw, tv_diff);
-		    retval = imu_comm_print_raw(&raw,log_imu_raw);
-		    quit_if(retval);
+		    log_eol(log_imu_raw);
+		    //		    retval = imu_comm_print_raw(&raw,log_imu_raw);
+		    //		    quit_if(retval);
 		}
 #endif
 #if PRINT_DATA
