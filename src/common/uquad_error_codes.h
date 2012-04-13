@@ -88,6 +88,7 @@ ERROR_TIMING
 #define log_double(log,msg,dbl) fprintf(log,"%s:%s:%d: %s: %lf\n",__TIME__,__FILE__,__LINE__,msg,dbl)
 
 #define log_eol(log) fprintf(log,"\n")
+#define log_tab(log) fprintf(log,"\t")
 
 /**
  * Print timeval message with unsigned long to stderr
