@@ -1,46 +1,167 @@
 #include <uquad_logger.h>
 #include <uquad_error_codes.h>
+#include <uquad_aux_time.h>
 #include <sys/stat.h> // for mkfifo()
 #include <limits.h>   // for PATH_MAX
 #include <stdlib.h>
+#include <fcntl.h>    // for open()
 #include <time.h>
+
+#define LINE_PER_FLUSH 10
+#define READER_TIMEOUT 15 // sec
+#define READ_SIZE      256
+
+void uquad_logger_read(int pipefd, char *pipe_name)
+{
+    int retval = ERROR_OK,
+	itmp,
+	log_fd = -1,
+	buff_index = 0;
+    char log_name[PATH_MAX];
+    char buff[READ_SIZE];
+    FILE *log_file  = NULL;
+    char *new_line = NULL;
+    struct timeval
+	tv_old,
+	tv_new,
+	tv_diff;
+    log_name[0] = '\0';
+
+    strcpy(log_name, pipe_name);
+    itmp = strlen(log_name);
+    if(itmp < 2 ||
+       log_name[itmp-1] != 'p' ||
+       log_name[itmp-2] != '.')
+    {
+	cleanup_log_if(ERROR_INVALID_PIPE_NAME,"Wrong pipe extension!");
+    }
+    log_name[itmp-1] = 'l';
+    log_name[itmp]   = 'o';
+    log_name[itmp+1] = 'g';
+    log_name[itmp+2] = '\0';
+
+    log_fd = open(log_name,O_WRONLY | O_CREAT | O_NONBLOCK | S_IRUSR | S_IWUSR);
+    if(log_fd < 0)
+    {
+	err_log_stderr("Failed to open log file!");
+	cleanup_if(ERROR_IO);
+    }
+
+    gettimeofday(&tv_old,NULL);
+    for(;;)
+    {
+	retval = read(pipefd, (void *)buff, READ_SIZE - buff_index);
+	if(retval > 0)
+	{
+	    buff_index += retval;
+	    retval = write(log_fd, buff, buff_index);
+	    if(retval < 0)
+	    {
+		err_log_stderr("Failed to write to log file!");
+	    }
+	    else
+	    {
+		buff_index -= retval;
+	    }
+	    fdatasync(log_fd);
+	    gettimeofday(&tv_old,NULL);	
+	}
+	else
+	{
+	    gettimeofday(&tv_new,NULL);
+	    retval = uquad_timeval_substract(&tv_diff,tv_new,tv_old);
+	    if(tv_diff.tv_sec > READER_TIMEOUT)
+	    {
+		if(tv_diff.tv_sec > READER_TIMEOUT)
+		{
+		    cleanup_log_if(ERROR_READ_TIMEOUT,"Logger timed out!");
+		}
+		err_log("Closing logger..");
+		goto cleanup;
+	    }
+	}
+    }
+    cleanup:
+    err_log_str("Closing logger:",log_name);
+    if(log_file != NULL)
+    {
+	retval = fclose(log_file);
+	if(retval < 0)
+	{
+	    err_log_stderr("Failed to close log file!");
+	}
+	retval = close(pipefd);
+	if(retval < 0)
+	{
+	    err_log_stderr("Failed to close READ end of pipe");
+	}
+    }
+    if(new_line != NULL)
+	free(new_line);
+    exit(0);
+}
 
 FILE *uquad_logger_add(char *path)
 {
     int itmp, retval = ERROR_OK;
     char str[PATH_MAX];
-    char sys_cmd[PATH_MAX+21];
     FILE *pipe_f;
+    int pipefd[2];
+    pid_t pid;
     strcpy(str,path);
     itmp = strlen(str);
     str[itmp] = '.';
     str[itmp+1] = 'p';
     str[itmp+2] = '\0';
-    retval = mkfifo(str,DEF_PERM);
-    if(retval != ERROR_OK && errno != EEXIST)
+
+    /// Create pipe for IPC
+    retval = pipe(pipefd);
+    if(retval < 0)
     {
-	err_log("Failed to create pipe!");
+	err_log_stderr("Failed to create pipe()!");
 	return NULL;
     }
 
     /// Launch logger, will read from pipe
-    sprintf(sys_cmd,"./logger %s > /dev/null &",str);
-    system(sys_cmd);
-
-    pipe_f = fopen(str, "w");
-    if(pipe_f == NULL)
+    pid = fork();
+    if(pid == 0)
     {
-	err_log("Failed to open pipe!");
+	/// Child - Reads from pipe
+	// Close write end of pipe
+	close(pipefd[1]);
+	uquad_logger_read(pipefd[0], str);
 	return NULL;
     }
-    return pipe_f;
+    else
+    {
+	/// Parent - Writes to pipe
+	// Close read end of pipe
+	close(pipefd[0]);
+	// Get file descriptor to pass upstream
+	pipe_f = fdopen(pipefd[1], "w");
+	if(pipe_f == NULL)
+	{
+	    err_log_stderr("Failed to open write end of pipe!");
+	    return NULL;
+	}
+	return pipe_f;	
+    }
 }
 
 void uquad_logger_remove(FILE *pipe_f)
 {
     if(pipe_f != NULL)
     {
-	fclose(pipe_f);
+	int pipefd = fileno(pipe_f);
+	if(pipefd < 0)
+	{
+	    err_log_stderr("Failed to get pipefd to close write end of pipe!");
+	}
+	else
+	{
+	    close(pipefd);
+	}
+	//	fclose(pipe_f);
     }
     return;
 }
