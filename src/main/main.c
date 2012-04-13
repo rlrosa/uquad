@@ -947,6 +947,7 @@ int main(int argc, char *argv[]){
 	    int ind; uquad_mat_t *xm = kalman->x_hat; int len = xm->r*xm->c;
 	    for(ind = 0; ind < len; ++ind)
 		log_double_only(log_bukake,xm->m_full[ind]);
+	    fdatasync(fileno(log_bukake));
 	    retval = uquad_mat_transpose(wt,mot->w_curr);
 	    uquad_mat_dump(wt,log_bukake);
 	    fdatasync(fileno(log_bukake));
