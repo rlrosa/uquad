@@ -34,16 +34,21 @@
 % -------------------------------------------------------------------------
 
 %% Config
-use_gps      = 1;  % Use kalman_gps
-use_fake_gps = 0;  % Feed kalman_gps with fake data (only if use_gps)
-use_fake_T   = 1;  % Ignore real timestamps from log, use average
-use_8_st     = 0;  % Control only 8 states (ignore x,y,vqx,vqy)
+
+use_n_states = 2; % Regulates number of variables to control. Can be:
+                    % 0: uses 8 states      -> [z psi phi tehta vqz wqx wqy wqz]
+                    % 1: uses all 12 states -> [x y z psi phi tehta vqx vqy vqz wqx wqy wqz]
+                    % 2: uses all 12 states and their integrals
+use_gps      = 1; % Use kalman_gps
+use_fake_gps = 0; % Feed kalman_gps with fake data (only if use_gps)
+use_fake_T   = 1; % Ignore real timestamps from log, use average
 
 %% Load IMU data
 
 % Imu
 imu_file = 'tests/main/logs/2012_04_06_1_6_divino/imu_raw.log';
 [acrud,wcrud,mcrud,tcrud,bcrud,~,~,T]=mong_read(imu_file,0,1);
+
 avg = 1;
 startup_runs = 200;
 imu_calib = 512;
@@ -124,27 +129,33 @@ end
 %% Constantes, entradas, observaciones e inicialización
 
 % Constantes
-N       = size(a,1);         % Cantidad de muestras de las observaciones
-Ns      = 12;                % N states: cantidad de variables de estado
-Ngps    = 6;                 % N gps: cantidad de variables corregidas por gps
-% w_idle  = 109;
-w_hover = 316.10;
+N       = size(a,1); % Cantidad de muestras de las observaciones
+Ns      = 12;        % N states: cantidad de variables de estado de Kalman
+Ngps    = 6;         % N gps: cantidad de variables corregidas por gps
+w_hover = 316.10;    % At this velocity, motor's force equals weight
 w_max   = 387.0; 
 w_min   = 109.0; 
-if(use_8_st)
-  K       = load('K4x8.mat');K = K.K;
-  sp_x    = [0;0;0;theta0;0;0;0;0];
-else
-  K       = load('K4x12.mat');K = K.K;
-  sp_x    = [0;0;0;0;0;theta0;0;0;0;0;0;0];
-end
 
+if(use_n_states == 0)
+    K    = load('K4x8.mat');K = K.K;
+    sp_x = [0;0;0;theta0;0;0;0;0];
+    Nctl = 8;
+elseif(use_n_states == 1)
+    K    = load('K4x12.mat');K = K.K;
+    sp_x = [0;0;0;0;0;theta0;0;0;0;0;0;0];
+    Nctl = 12;
+elseif(use_n_states == 2)
+    K    = load('K4x24');
+    sp_x = [0;0;0;0;0;theta0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0];
+    Nctl = 24;
+    x_hat_integrals = zeros(1,Ns);
+end
 sp_w    = ones(4,1)*w_hover;
 
 % Entradas
-dw      = zeros(N,4);        % Derivada de w. Cada columna corresponde a 1 motor
-TM      = drive(w);          % Fuerzas ejercidas por los motores en N. Cada columna corresponde a 1 motor.
-D       = drag(w);           % Torque de Drag ejercido por los motores en N*m. Cada columna corresponde a cada motor
+dw = zeros(N,4);        % Derivada de w. Cada columna corresponde a 1 motor
+TM = drive(w);          % Fuerzas ejercidas por los motores en N. Cada columna corresponde a 1 motor.
+D  = drag(w);           % Torque de Drag ejercido por los motores en N*m. Cada columna corresponde a cada motor
     
 % Observaciones
 z  = [euler a w b];     
@@ -154,12 +165,7 @@ x_hat          = zeros(N,Ns);
 P              = 1*eye(Ns);
 w_control      = zeros(N-kalman_startup,4);
 w_control(1,:) = w_hover*ones(size(w_control(1,:)));
-if(use_8_st)
-  x_hat_partial  = zeros(N,8);
-else
-  x_hat_partial  = zeros(N,Ns);
-end
-
+x_hat_ctl      = zeros(N,Nctl);
 P_gps          = 1*eye(Ngps);
 gps_index      = 1;
 
@@ -190,26 +196,29 @@ for i=2:N
     end
     
     % Control
-    if(use_8_st)
-      x_hat_partial(i,:) = [x_hat(i,3), x_hat(i,4), x_hat(i,5), x_hat(i,6), ...
-          x_hat(i,9), x_hat(i,10), x_hat(i,11), x_hat(i,12)];
-    else
-      x_hat_partial(i,:) = x_hat(i,:);
+    if(use_n_states == 0)
+        x_hat_ctl(i,:) = [x_hat(i,3), x_hat(i,4), x_hat(i,5), x_hat(i,6), ...
+            x_hat(i,9), x_hat(i,10), x_hat(i,11), x_hat(i,12)];
+    elseif(use_n_states == 1)
+        x_hat_ctl(i,:) = x_hat(i,:);
+    elseif(use_n_states == 2)
+        x_hat_integrals = x_hat_integrals + (T(i)-T(i-1))*x_hat(i,:);
+        x_hat_ctl(i,:)  = [x_hat(i,:) x_hat_integrals];
     end
 
     % First kalman_startup samples will not be used for control
     if~(i > kalman_startup + 1)
-      continue;
+          continue;
     end
-    w_control(wc_i,:) = (sp_w + K*(sp_x - x_hat_partial(i,:)'))';
-    for j=1:4
-      if(w_control(wc_i,j) < w_min)
-        w_control(wc_i,j) = w_min;
-      end
-      if (w_control(wc_i,j) > w_max)
-        w_control(wc_i,j) = w_max;
-      end
-    end    
+    w_control(wc_i,:) = (sp_w + K*(sp_x - x_hat_ctl(i,:)'))';
+	for j=1:4
+        if(w_control(wc_i,j) < w_min)
+            w_control(wc_i,j) = w_min;
+        end
+        if (w_control(wc_i,j) > w_max)
+            w_control(wc_i,j) = w_max;
+        end
+	end    
 end
 
 %% Plots
