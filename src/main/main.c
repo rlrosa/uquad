@@ -415,13 +415,13 @@ int main(int argc, char *argv[]){
 	quit();
     }
 #endif //LOG_GPS && USE_GPS
-#endif //DEBUG
     log_tv = uquad_logger_add(LOG_TV_NAME);
     if(log_tv == NULL)
     {
 	err_log("Failed to open tv_log!");
 	quit();
     }
+#endif //DEBUG
 
     /// -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
     /// Register IO devices
@@ -840,9 +840,11 @@ int main(int argc, char *argv[]){
 		retval = ERROR_OK;
 		// save to error log
 		err_log_tv("Kalman startup completed in ", tv_diff);
+#if DEBUG
 		// save to RET log, add end of line
 		log_tv_only(log_tv,tv_diff);
 		log_tv(log_tv, "Kalman startup completed in ", tv_diff);
+#endif
 		++runs_kalman; // so re-entry doesn't happen
 	    }
 	    else
@@ -953,10 +955,12 @@ int main(int argc, char *argv[]){
 			log_double(stdout,"Current w_sp",pp->sp->w->m_full[0]);
 			fflush(stdout);
 		    }
+#if DEBUG
 		    // save to log file
 		    log_tv_only(log_tv, tv_diff);
 		    log_double(log_tv,"Current w_sp",pp->sp->w->m_full[0]);
 		    fflush(log_tv);
+#endif
 		}
 	    }
 	    retval = ERROR_OK;
