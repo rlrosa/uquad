@@ -4,14 +4,20 @@
 #define TIMING_KALMAN      0
 #define TIMING_IMU         0
 #define TIMING_IO          0
-#define LOG_W              1
-#define LOG_W_CTRL         1
-#define LOG_IMU_RAW        1
-#define LOG_IMU_DATA       1
-#define LOG_IMU_AVG        1
-#define DEBUG_X_HAT        1
-#define LOG_GPS            1
-#define DEBUG_KALMAN_INPUT 1
+#define LOG_W              0
+#define LOG_W_CTRL         0
+#define LOG_IMU_RAW        0
+#define LOG_IMU_DATA       0
+#define LOG_IMU_AVG        0
+#define DEBUG_X_HAT        0
+#define LOG_GPS            0
+#define DEBUG_KALMAN_INPUT 0
+#define LOG_TV             0
+#define LOG_BUKAKE         1
+#endif
+
+#if LOG_BUKAKE
+#define LOG_BUKAKE_STDOUT  1
 #endif
 
 #define W_SP_STEP 1.0L
@@ -63,6 +69,7 @@
 #define LOG_KALMAN_IN_NAME "kalman_in"
 #define LOG_GPS_NAME       "gps"
 #define LOG_TV_NAME        "tv"
+#define LOG_BUKAKE_NAME    "buk"
 
 /**
  * Frequency at which motor controller is updated
@@ -115,8 +122,13 @@ FILE *log_kalman_in = NULL;
 #if LOG_GPS && USE_GPS
 FILE *log_gps = NULL;
 #endif // LOG_GPS && USE_GPS
-#endif //DEBUG
+#if LOG_BUKAKE && !LOG_BUKAKE_STDOUT
+FILE *log_bukake = NULL;
+#endif //LOG_BUKAKE
+#if LOG_TV
 FILE *log_tv = NULL;
+#endif // LOG_TV
+#endif //DEBUG
 
 /** 
  * Clean up and close
@@ -198,8 +210,17 @@ void quit()
 #if LOG_GPS && USE_GPS
     uquad_logger_remove(log_gps);
 #endif //LOG_GPS && USE_GPS
-#endif //DEBUG
+#if LOG_BUKAKE
+#if !LOG_BUKAKE_STDOUT
+    uquad_logger_remove(log_bukake);
+#else
+#define log_bukake stdout
+#endif // !LOG_BUKAKE_STDOUT
+#endif // LOG_BUKAKE
+#if LOG_TV
     uquad_logger_remove(log_tv);
+#endif // LOG_TV
+#endif //DEBUG
 
     //TODO deinit everything?
     exit(retval);
@@ -415,12 +436,22 @@ int main(int argc, char *argv[]){
 	quit();
     }
 #endif //LOG_GPS && USE_GPS
+#if LOG_BUKAKE && !LOG_BUKAKE_STDOUT
+    log_bukake = uquad_logger_add(LOG_BUKAKE_NAME);
+    if(log_bukake == NULL)
+    {
+	err_log("Failed open kalman_in log!");
+	quit();
+    }
+#endif //LOG_BUKAKE && !LOG_BUKAKE_STDOUT
+#if LOG_TV
     log_tv = uquad_logger_add(LOG_TV_NAME);
     if(log_tv == NULL)
     {
 	err_log("Failed to open tv_log!");
 	quit();
     }
+#endif // LOG_TV
 #endif //DEBUG
 
     /// -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
@@ -840,11 +871,11 @@ int main(int argc, char *argv[]){
 		retval = ERROR_OK;
 		// save to error log
 		err_log_tv("Kalman startup completed in ", tv_diff);
-#if DEBUG
+#if LOG_TV
 		// save to RET log, add end of line
 		log_tv_only(log_tv,tv_diff);
 		log_tv(log_tv, "Kalman startup completed in ", tv_diff);
-#endif
+#endif // LOG_TV
 		++runs_kalman; // so re-entry doesn't happen
 	    }
 	    else
@@ -909,6 +940,17 @@ int main(int argc, char *argv[]){
 	    uquad_mat_dump(wt,log_w);
 	    fflush(log_w);
 #endif
+
+#if LOG_BUKAKE
+	    uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
+	    log_tv_only(log_bukake,tv_diff);
+	    int ind; uquad_mat_t *xm = kalman->x_hat; int len = xm->r*xm->c;
+	    for(ind = 0; ind < len; ++ind)
+		log_double_only(log_bukake,xm->m_full[ind]);
+	    retval = uquad_mat_transpose(wt,mot->w_curr);
+	    uquad_mat_dump(wt,log_bukake);
+	    fdatasync(fileno(log_bukake));
+#endif
 	    tv_last_m_cmd = tv_tmp;
 	}
 
@@ -955,7 +997,7 @@ int main(int argc, char *argv[]){
 			log_double(stdout,"Current w_sp",pp->sp->w->m_full[0]);
 			fflush(stdout);
 		    }
-#if DEBUG
+#if LOG_TV
 		    // save to log file
 		    log_tv_only(log_tv, tv_diff);
 		    log_double(log_tv,"Current w_sp",pp->sp->w->m_full[0]);
