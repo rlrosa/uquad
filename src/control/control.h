@@ -7,7 +7,7 @@
 #include <path_planner.h>
 
 #define STATES_CONTROLLED 8
-#define CTRL_INTEGRAL     1
+#define CTRL_INTEGRAL     0
 
 typedef struct ctrl{
     uquad_mat_t *K;

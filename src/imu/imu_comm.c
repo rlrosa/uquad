@@ -114,6 +114,7 @@ int imu_comm_copy_frame(imu_raw_t *src, imu_raw_t *dest)
     return ERROR_OK;
 }
 
+#if !IMU_COMM_FAKE     // If reading from a log file, we have nothing to send to it
 /**
  * Sends command to the IMU over serial line.
  *
@@ -123,7 +124,6 @@ int imu_comm_copy_frame(imu_raw_t *src, imu_raw_t *dest)
  *@return error code
  */
 static int imu_comm_send_cmd(imu_t *imu, unsigned char cmd){
-#if !IMU_COMM_FAKE     // If reading from a log file, we have nothing to send to it
     static unsigned char buff[2] = "X\n";
     buff[0] = cmd;
     int retval;
@@ -135,7 +135,6 @@ static int imu_comm_send_cmd(imu_t *imu, unsigned char cmd){
 	err_log_stderr("Write error: Failed to send cmd to IMU");
 	err_propagate(ERROR_WRITE);
     }
-#endif //!IMU_COMM_FAKE
     return ERROR_OK;
 }
 
@@ -178,6 +177,7 @@ int imu_comm_resume(imu_t *imu){
     imu->status = IMU_COMM_STATE_RUNNING;
     return ERROR_OK;
 }
+#endif //!IMU_COMM_FAKE
 
 /** 
  * Marks estimated calibration as NOT set.

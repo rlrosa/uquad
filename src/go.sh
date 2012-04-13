@@ -63,9 +63,14 @@ fi
 # run network check, kill cmd if network fails
 x=`uname -a | grep "x86_64"`
 if [ "$x" = "" ]; then
-    echo Setting up check_net.sh
-    (cd ../scripts; ./check_net.sh &)
-    echo check_net.sh running...
+    x=`ifconfig | grep wlan`
+    if [ ! "$x" = "" ]; then
+	echo Setting up check_net.sh
+	(cd ../scripts; ./check_net.sh &)
+	echo check_net.sh running...
+    else
+	echo Wireless network down, will not run check_net.sh
+    fi
 else
     echo WARNING! check_net.sh will not be used, assuming this is not a beagleboard
 fi

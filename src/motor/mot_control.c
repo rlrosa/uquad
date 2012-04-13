@@ -36,7 +36,7 @@ uquad_mot_t *mot_init(void)
     	err_log("Failed to run cmd!");
 	goto cleanup;
     }
-    sleep_ms(10);
+    sleep_ms(10); // Wait for cmd to startup
     m->kmsgq = uquad_kmsgq_init(MOT_SERVER_KEY, MOT_DRIVER_KEY);
     if(m->kmsgq == NULL)
     {
@@ -47,6 +47,7 @@ uquad_mot_t *mot_init(void)
     // initialize timer
     retval = gettimeofday(&m->last_set,NULL);
     cleanup_log_if(retval,"Failed to initialize timer");
+    usleep(MOT_UPDATE_MAX_US); // Wait before allowing cmds to be sent
 
     return m;
 

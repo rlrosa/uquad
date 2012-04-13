@@ -26,7 +26,7 @@
  * ascii log file.
  * 
  */
-#define IMU_COMM_FAKE 1
+#define IMU_COMM_FAKE                     0
 
 /**
  * Definition of default sampling period, in microseconds.
@@ -225,8 +225,10 @@ int imu_comm_deinit(imu_t *imu);
 
 imu_status_t imu_comm_get_status(imu_t *imu);
 
+#if !IMU_COMM_FAKE
 int imu_comm_stop(imu_t *imu);
 int imu_comm_resume(imu_t *imu);
+#endif
 
 int imu_data_alloc(imu_data_t *imu_data);
 void imu_data_free(imu_data_t *imu_data);

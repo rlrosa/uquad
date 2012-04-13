@@ -24,6 +24,14 @@ int uquad_timeval_substract (struct timeval * result, struct timeval x, struct t
     if(x.tv_sec > y.tv_sec)
 	// 1 if diff is positive
 	return 1;
+    // second match, check usec
+    if(x.tv_usec < y.tv_usec)
+	// -1 if diff is negative
+	return -1;
+    if(x.tv_usec > y.tv_usec)
+	// 1 if diff is positive
+	return 1;
+
     // 0 if equal
     return 0;
 }

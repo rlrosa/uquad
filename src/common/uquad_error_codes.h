@@ -51,6 +51,7 @@ ERROR_KQ_ACK_TOO_MANY,
 ERROR_KQ_ACK_MORE,
 ERROR_KQ_NO_ACKS_AVAIL,
 ERROR_KQ_SEND,
+ERROR_IPC,
 ERROR_MOT_SATURATE,
 ERROR_TIMING
 };
@@ -67,6 +68,12 @@ ERROR_TIMING
  * 
  */
 #define err_log_num(msg,num) fprintf(stderr,"%s:%s:%d: %s(%d)\n",__TIME__,__FILE__,__LINE__,msg,num)
+
+/**
+ * Print error message with number to stderr
+ * 
+ */
+#define err_log_str(msg,str) fprintf(stderr,"%s:%s:%d: %s(%s)\n",__TIME__,__FILE__,__LINE__,msg,str)
 
 /**
  * Print error message with double to stderr
