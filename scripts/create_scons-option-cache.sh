@@ -1,5 +1,8 @@
+#!/bin/bash
 cd submodules/gpsd/
 rm .scons-option-cache;touch .scons-option-cache
+echo "ncurses = False" >> .scons-option-cache
+echo "shared = False" >> .scons-option-cache
 echo "libgpsmm = False" >>  .scons-option-cache
 echo "libQgpsmm = False" >> .scons-option-cache
 echo "python = False" >> .scons-option-cache

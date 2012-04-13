@@ -52,7 +52,7 @@ int main(void)
         if(reg_gps){
             ret = io_dev_ready(io,gps_comm_get_fd(gps),&read,&write);
             FREE_N_DIE_IF_ERROR(ret,"io_dev_ready() error");
-            if(read){
+            if(read){		
                 ret = gps_comm_read(gps);
                 if(ret != ERROR_OK)
 		{
@@ -61,10 +61,16 @@ int main(void)
                 }
 		else
 		{
-		    //gps_fix = gps_comm_get_data(gps);
-		    ret = gps_comm_get_data(gps, gps_data, NULL);
-		    log_n_continue(ret, "Failed to get data!");
-		    gps_comm_dump(gps, gps_data, stdout);
+		    if(gps_comm_3dfix(gps))
+		    {
+			ret = gps_comm_get_data(gps, gps_data, NULL);
+			log_n_continue(ret, "Failed to get data!");
+			gps_comm_dump(gps, gps_data, stdout);
+		    }
+		    else
+		    {
+			err_log("Ignoring GPS data, no 3D fix!");
+		    }
                 }
             }
         }

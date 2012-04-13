@@ -86,6 +86,15 @@ void  gps_comm_deinit(gps_t *gps);
 int gps_comm_get_fix_mode(gps_t *gps);
 
 /** 
+ * Returns true iif GPS has 3D fix
+ * 
+ * @param gps 
+ * 
+ * @return 
+ */
+uquad_bool_t gps_comm_3dfix(gps_t *gps);
+
+/** 
  * Return file descriptor to allow reading only if new data is available.
  * 
  * @param gps 

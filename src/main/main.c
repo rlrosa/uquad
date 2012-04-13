@@ -269,7 +269,9 @@ int main(int argc, char *argv[]){
     int retval = ERROR_OK, i;
     char * device_imu;
     double ts_jitter_rate = 0, dtmp;
+#if LOG_IMU_RAW || LOG_IMU_DATA
     imu_raw_t imu_frame;
+#endif // LOG_IMU_RAW || LOG_IMU_DATA
 
     // Catch signals
     signal(SIGINT, uquad_sig_handler);
@@ -725,7 +727,7 @@ int main(int argc, char *argv[]){
 	    {
 		err_gps = gps_comm_read(gps);
 		log_n_jump(err_gps,end_gps,"GPS had no data!");
-		if(runs_imu >= STARTUP_RUNS)
+		if(runs_imu >= STARTUP_RUNS && gps_comm_3dfix(gps))
 		    // ignore startup data
 		    gps_update = true;
 		else
@@ -947,6 +949,7 @@ int main(int argc, char *argv[]){
 	    int ind; uquad_mat_t *xm = kalman->x_hat; int len = xm->r*xm->c;
 	    for(ind = 0; ind < len; ++ind)
 		log_double_only(log_bukake,xm->m_full[ind]);
+	    fdatasync(fileno(log_bukake));
 	    retval = uquad_mat_transpose(wt,mot->w_curr);
 	    uquad_mat_dump(wt,log_bukake);
 	    fdatasync(fileno(log_bukake));
