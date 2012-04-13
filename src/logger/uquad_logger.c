@@ -12,6 +12,8 @@
 #define LINE_PER_FLUSH 10
 #define READER_TIMEOUT 25 // sec
 #define READ_SIZE      256
+#define BUFF_SIZE      32
+#define FLUSH_SIZE     (BUFF_SIZE - READ_SIZE)
 #define IO_STUCK_US    10000
 
 void uquad_logger_read(int pipefd, char *pipe_name)
@@ -21,7 +23,7 @@ void uquad_logger_read(int pipefd, char *pipe_name)
 	log_fd = -1,
 	buff_index = 0;
     char log_name[PATH_MAX];
-    char buff[READ_SIZE];
+    char buff[BUFF_SIZE];
     FILE *log_file  = NULL;
     char *new_line = NULL;
     uquad_bool_t write_ok, read_ok;
@@ -74,9 +76,10 @@ void uquad_logger_read(int pipefd, char *pipe_name)
 	if(read_ok)
 	{
 	    gettimeofday(&tv_pre,NULL);
-	    retval = read(pipefd, (void *)buff, READ_SIZE - buff_index);
+	    retval = read(pipefd, (void *)(buff+buff_index), READ_SIZE);
 	    if(retval > 0)
 	    {
+		buff_index += retval;
 #if DEBUG
 		gettimeofday(&tv_new,NULL);
 		retval = uquad_timeval_substract(&tv_diff, tv_new, tv_pre);
@@ -85,7 +88,8 @@ void uquad_logger_read(int pipefd, char *pipe_name)
 		    err_log_tv("read() got stuck!",tv_diff);
 		}
 #endif
-		buff_index += retval;
+		if(buff_index < FLUSH_SIZE)
+		    continue;
 		retval = check_io_locks(log_fd,NULL,NULL,&write_ok);
 		if(retval != ERROR_OK)
 		{
