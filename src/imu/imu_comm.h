@@ -26,7 +26,7 @@
  * ascii log file.
  * 
  */
-#define IMU_COMM_FAKE 1
+#define IMU_COMM_FAKE                     0
 
 /**
  * Definition of default sampling period, in microseconds.
