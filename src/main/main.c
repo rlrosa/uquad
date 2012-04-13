@@ -269,7 +269,9 @@ int main(int argc, char *argv[]){
     int retval = ERROR_OK, i;
     char * device_imu;
     double ts_jitter_rate = 0, dtmp;
+#if LOG_IMU_RAW || LOG_IMU_DATA
     imu_raw_t imu_frame;
+#endif // LOG_IMU_RAW || LOG_IMU_DATA
 
     // Catch signals
     signal(SIGINT, uquad_sig_handler);

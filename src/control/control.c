@@ -197,6 +197,8 @@ int control(ctrl_t *ctrl, uquad_mat_t *w, uquad_mat_t *x, set_point_t *sp, doubl
     err_propagate(retval);
     retval = uquad_mat_add(w, w, w_tmp);
     err_propagate(retval);
+#else
+    T_us = T_us; // just to avoid warning
 #endif
 
     return ERROR_OK;
