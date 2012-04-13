@@ -145,7 +145,7 @@ sp_w    = ones(4,1)*w_hover;
 dw      = zeros(N,4);        % Derivada de w. Cada columna corresponde a 1 motor
 TM      = drive(w);          % Fuerzas ejercidas por los motores en N. Cada columna corresponde a 1 motor.
 D       = drag(w);           % Torque de Drag ejercido por los motores en N*m. Cada columna corresponde a cada motor
-
+    
 % Observaciones
 z  = [euler a w b];     
 

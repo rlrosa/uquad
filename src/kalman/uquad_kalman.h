@@ -2,6 +2,7 @@
 #define UQUAD_KALMAN_H
 #include <uquad_aux_math.h>
 #include <imu_comm.h>
+#include <uquad_gps_comm.h>
 
 #define STATE_COUNT       12
 
@@ -30,15 +31,18 @@ typedef struct kalman_io {
     uquad_mat_t *u;
     double T;
     uquad_mat_t *z;
+    uquad_mat_t *x_;
     uquad_mat_t *R;
     uquad_mat_t *Q;
     uquad_mat_t *P;
-    uquad_mat_t *x_;
+    uquad_mat_t *R_gps;
+    uquad_mat_t *Q_gps;
+    uquad_mat_t *P_gps;
 } kalman_io_t;
 
 int uquad_kalman(kalman_io_t * kalman_io_data, uquad_mat_t* w, imu_data_t* data, double T);
+int uquad_kalman_gps(kalman_io_t* kalman_io_data, gps_comm_data_t* gps_i_data);
 kalman_io_t* kalman_init();
-
 void kalman_deinit(kalman_io_t *kalman_io_data);
 
 #endif

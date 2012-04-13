@@ -758,11 +758,21 @@ int main(int argc, char *argv[]){
 	    tv_diff.tv_usec = (retval > 0) ? TS_MAX:TS_MIN;
 	}
 	if(runs_kalman > STARTUP_KALMAN)
+	{
 	    // use real w
 	    retval = uquad_kalman(kalman,
 				  mot->w_curr,
 				  &imu_data,
 				  tv_diff.tv_usec);
+	    log_n_continue(retval,"Inertial Kalman update failed");
+#if USE_GPS
+	    if(gps_update)
+	    {
+		retval = uquad_kalman_gps(kalman, gps_dat);
+		log_n_continue(retval,"GPS Kalman update failed");
+	    }
+#endif // USE_GPS
+	}
 	else
 	{
 	    // use w from setpoint
@@ -770,8 +780,8 @@ int main(int argc, char *argv[]){
 				  pp->sp->w,
 				  &imu_data,
 				  tv_diff.tv_usec);
+	    log_n_continue(retval,"Inertial Kalman update failed");
 	}
-	log_n_continue(retval,"Kalman update failed");
 	/// Mark time when we run Kalman
 	tv_last_kalman = tv_tmp;
 

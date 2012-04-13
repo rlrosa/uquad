@@ -116,38 +116,58 @@ Como se puede ver en el esquema mostrado en la figura \ref{fig:diagrama_kalman},
 % TODO hablar de Q y R. capaz poner 2 ejemplos de lo mismo q den bien distinto
 
 
-\section{Resultados}
+\section{Resultados Kalman inercial}
+
+\subsection{Simulación de vuelo}
+\subsubsection{Hovering}
+Se presentan algunos resultados de la implementación del filtro de Kalman como estimador del vector de estados. Se seteó como entrada una velocidad angular en los motores calculada para equiulibrar la fuerza del peso de cuadricóptero, simulando una situación de vuelo donde el mismo queda suspenbdido en el aire.\\
+
+\begin{figure} [h!]
+\centering
+  \subfloat[Velocidad angular referenciada al cuadricóptero]{\label{fig:wq}
+    \includegraphics[width=0.47\textwidth]{./pics_kalman/wq.pdf}} \hspace{10pt}
+  \subfloat[Orientación del cuadricóptero según ángulos de euler]{\label{fig:euler} 
+    \includegraphics[width=0.47\textwidth]{./pics_kalman/euler.pdf}}
+  \caption{}
+  \label{fig:posyvel}
+\end{figure}
+
+En la figura \ref{fig:wq} se muestra la estimación de las velocidades angulares, junto con las medidas del giróscopo. Se puede ver claramente que la estimación del estado sigue a las medidas del giróscopo, suavizándolas y logrando robustez frente a ruidos inherentes al sensor.\\
+
+Por otro lado en la figura \ref{fig:euler} se muestra la orientación obtenida, junto con la orientación obtenida de los acelerómetros y magnetómetros de la IMU. \\
+
+Del resto de las variables de estado, $x$, $y$, $z$, $v_{qx}$, $v_{qy}$ y $v_{qz}$, la única que tiene realimentación, considerando una estimación de estado puramente inercial, es $z$. El resto quedan determinadas únicamente por el modelo físico, en el cual se basa la etapa de predicción del filtro de Kalman. Dicho de otro modo, la etapa de actualización/corrección del filtro no surte efecto sobre dichas variables de estado.\\
+
+\begin{figure} [h!]
+\centering
+  \subfloat[Estimación de la posición]{\label{fig:pos}
+    \includegraphics[width=0.47\textwidth]{./pics_kalman/pos.pdf}} \hspace{10pt}
+  \subfloat[Estimación de la velocidad lineal en el sistema no inercial del cuadricóptero]{\label{fig:vq} 
+    \includegraphics[width=0.47\textwidth]{./pics_kalman/vq.pdf}}
+  \caption{}
+  \label{fig:posyvel}
+\end{figure}
+
+Como se puede ver en la figura \ref{fig:posyvel}, la estimación de los estados que no tienen realimentación directa resulta claramente peor que el resto. De hecho, lo que ocurre por ejemplo en las velocides lineales según $x$ e $y$, es que la observación (dato obtenido del sensor) es la derivada de la variable de estado, y por ello es que se observa el carácter creciente (en valor absoluto) en la estimación del estado, causado por la integración en el tiempo del valor de aceleración otorgado por la IMU. La posición según $z$, en cambio, tiene realimentación directa del barómetro. En la figura \ref{fig:pos} se muestra en negro los datos obtenidos de dicho sensor, y sobre ellos la estimación de la altura $z$.
+
+\subsubsection{Situación imposible}
+
+a 45 grados quieto en el aire es imposible.\\
+la medida tira una cosa y la prediccion\\
+kalman hace algo en el medio\\
 
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=0.8\textwidth]{./pics_kalman/pos.pdf}
-	\caption{Psoción}
-	\label{fig:pos}
-\end{figure}
-\begin{figure}[h!]
-	\centering
-	\includegraphics[width=0.8\textwidth]{./pics_kalman/euler.pdf}
-	\caption{Ángulos de Euler}
-	\label{fig:euler}
-\end{figure}
-\begin{figure}[h!]
-	\centering
-	\includegraphics[width=0.8\textwidth]{./pics_kalman/vq.pdf}
-	\caption{Velocidad lineal}
-	\label{fig:vq}
-\end{figure}
-\begin{figure}[h!]
-	\centering
-	\includegraphics[width=1\textwidth]{./pics_kalman/wq.pdf}
-	\caption{Velocidad angular}
-	\label{fig:wq}
-\end{figure}
-\begin{figure}[h!]
-	\centering
-	\includegraphics[width=0.8\textwidth]{./pics_kalman/45.pdf}
+	\includegraphics[width=0.6\textwidth]{./pics_kalman/45.pdf}
 	\caption{Euler a 45 grados}
 	\label{fig:45}
 \end{figure}
+
+\subsection{Vuelo real}
+
+Terrible ruido vieja\\
+es de vital importancia analizar el comportamiento del filtro sobre una situación real de vuelo ya que en este caso las medidas de los sensores serán más ruidosas.\\
+
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=1\textwidth]{./pics_kalman/andando.pdf}
@@ -156,7 +176,10 @@ Como se puede ver en el esquema mostrado en la figura \ref{fig:diagrama_kalman},
 \end{figure}
 
 
+anda rico\\
+vos ves\\
 
 
+\section{Resultados Kalman inercial + GPS}
 
 \end{document}

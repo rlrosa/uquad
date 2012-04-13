@@ -101,8 +101,9 @@ double uquad_mat_norm( uquad_mat_t *A);
 int uquad_mat_int(uquad_mat_t *B, uquad_mat_t *A, double ti, double tf, double step);
 int uquad_mat_mirror_rows(uquad_mat_t *H, uquad_mat_t *S, int n);
 
-int uquad_mat_rotate(uquad_mat_t *Vr, uquad_mat_t *V,
-		     double phi, double psi, double theta,
+int uquad_mat_rotate(uquad_bool_t from_inertial, 
+		     uquad_mat_t *Vr, uquad_mat_t *V,
+		     double psi, double phi, double theta,
 		     uquad_mat_t *R);
 
 uquad_mat_t *uquad_mat_alloc(int r, int c);
