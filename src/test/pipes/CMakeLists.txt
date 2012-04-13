@@ -11,3 +11,10 @@ add_executable (${reader_bin} reader)
 
 # Set required libraries
 target_link_libraries(${reader_bin} uquad_time uquad_io)
+
+# Forker module
+set(forker_bin forker)
+add_executable (${forker_bin} forker)
+
+# Set required libraries
+target_link_libraries(${forker_bin} uquad_logger)
