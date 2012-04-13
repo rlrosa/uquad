@@ -2,8 +2,8 @@
 # The extension is already found. Any number of sources could be listed here.
 add_library (uquad_logger uquad_logger)
 
-add_dependencies(uquad_logger uquad_time)
-add_dependencies(uquad_logger uquad_io)
+target_link_libraries(uquad_logger uquad_time)
+target_link_libraries(uquad_logger uquad_io)
 
 # Add an executable which will read out data from pipes
 set(logger logger)
