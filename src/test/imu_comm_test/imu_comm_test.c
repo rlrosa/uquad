@@ -54,7 +54,6 @@ void uquad_sig_handler(int signal_num){
 int main(int argc, char *argv[]){
     int retval;
     int err_count = 0;
-    int loop_count = 0;
     unsigned char tmp[2];
     char * device;
     fd_set rfds;
@@ -190,6 +189,7 @@ int main(int argc, char *argv[]){
 		if(retval > 0)
 		{
 		    tv_max = tv_diff;
+		    err_log_tv("Current max delay:",tv_max);
 		}
 		if(tv_diff.tv_sec > 0)
 		{
@@ -200,11 +200,6 @@ int main(int argc, char *argv[]){
 		    }
 		}
 		tv_old = tv_tmp;
-		if(loop_count++ == 50)
-		{
-		    err_log_tv("Current max delay:",tv_max);
-		    loop_count = 0;
-		}
 #endif
 #if PRINT_RAW
 		retval = imu_comm_get_raw_latest_unread(imu,&raw);
