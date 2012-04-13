@@ -1,6 +1,8 @@
 #include <uquad_logger.h>
 #include <uquad_error_codes.h>
 #include <uquad_aux_time.h>
+#include <uquad_types.h>
+#include <uquad_aux_io.h>
 #include <sys/stat.h> // for mkfifo()
 #include <limits.h>   // for PATH_MAX
 #include <stdlib.h>
@@ -8,8 +10,9 @@
 #include <time.h>
 
 #define LINE_PER_FLUSH 10
-#define READER_TIMEOUT 15 // sec
+#define READER_TIMEOUT 25 // sec
 #define READ_SIZE      256
+#define IO_STUCK_US    10000
 
 void uquad_logger_read(int pipefd, char *pipe_name)
 {
@@ -21,9 +24,13 @@ void uquad_logger_read(int pipefd, char *pipe_name)
     char buff[READ_SIZE];
     FILE *log_file  = NULL;
     char *new_line = NULL;
+    uquad_bool_t write_ok, read_ok;
     struct timeval
 	tv_old,
 	tv_new,
+#if DEBUG
+	tv_pre,
+#endif
 	tv_diff;
     log_name[0] = '\0';
 
@@ -57,35 +64,77 @@ void uquad_logger_read(int pipefd, char *pipe_name)
     gettimeofday(&tv_old,NULL);
     for(;;)
     {
-	retval = read(pipefd, (void *)buff, READ_SIZE - buff_index);
-	if(retval > 0)
+	retval = check_io_locks(pipefd,NULL,&read_ok,NULL);
+	if(retval != ERROR_OK)
 	{
-	    buff_index += retval;
-	    retval = write(log_fd, buff, buff_index);
-	    if(retval < 0)
+	    err_log("logger failed to check_io_locks(read)!");
+	    sleep_ms(1);
+	    continue;
+	}
+	if(read_ok)
+	{
+	    gettimeofday(&tv_pre,NULL);
+	    retval = read(pipefd, (void *)buff, READ_SIZE - buff_index);
+	    if(retval > 0)
 	    {
-		err_log_stderr("Failed to write to log file!");
+#if DEBUG
+		gettimeofday(&tv_new,NULL);
+		retval = uquad_timeval_substract(&tv_diff, tv_new, tv_pre);
+		if(in_range_us(tv_diff,0,IO_STUCK_US) != 0)
+		{
+		    err_log_tv("read() got stuck!",tv_diff);
+		}
+#endif
+		buff_index += retval;
+		retval = check_io_locks(log_fd,NULL,NULL,&write_ok);
+		if(retval != ERROR_OK)
+		{
+		    err_log("logger failed to check_io_locks(write)!");
+		}
+		if(write_ok)
+		{
+		    gettimeofday(&tv_pre,NULL);
+		    retval = write(log_fd, buff, buff_index);
+		    if(retval < 0)
+		    {
+			err_log_stderr("Failed to write to log file!");
+		    }
+		    else
+		    {
+			buff_index -= retval;
+#if DEBUG
+			gettimeofday(&tv_new,NULL);
+			retval = uquad_timeval_substract(&tv_diff, tv_new, tv_pre);
+			if(in_range_us(tv_diff,0,IO_STUCK_US) != 0)
+			{
+			    err_log_tv("write() got stuck!",tv_diff);
+			}
+#endif
+		    }
+		    fdatasync(log_fd);
+		    gettimeofday(&tv_old,NULL);
+		}
 	    }
 	    else
 	    {
-		buff_index -= retval;
+		gettimeofday(&tv_new,NULL);
+		retval = uquad_timeval_substract(&tv_diff,tv_new,tv_old);
+		if(tv_diff.tv_sec > READER_TIMEOUT)
+		{
+		    if(tv_diff.tv_sec > READER_TIMEOUT)
+		    {
+			cleanup_log_if(ERROR_READ_TIMEOUT,"Logger timed out!");
+		    }
+		    err_log("Closing logger..");
+		    goto cleanup;
+		}
+		sleep_ms(1);
 	    }
-	    fdatasync(log_fd);
-	    gettimeofday(&tv_old,NULL);	
 	}
 	else
 	{
-	    gettimeofday(&tv_new,NULL);
-	    retval = uquad_timeval_substract(&tv_diff,tv_new,tv_old);
-	    if(tv_diff.tv_sec > READER_TIMEOUT)
-	    {
-		if(tv_diff.tv_sec > READER_TIMEOUT)
-		{
-		    cleanup_log_if(ERROR_READ_TIMEOUT,"Logger timed out!");
-		}
-		err_log("Closing logger..");
-		goto cleanup;
-	    }
+	    // !read_ok
+	    sleep_ms(1);
 	}
     }
     cleanup:
