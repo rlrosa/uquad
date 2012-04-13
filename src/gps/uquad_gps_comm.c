@@ -145,6 +145,13 @@ int gps_comm_get_fix_mode(gps_t *gps){
     return gps->gpsd->fix.mode;
 }
 
+uquad_bool_t gps_comm_3dfix(gps_t *gps)
+{
+    return (gps_comm_get_fix_mode(gps) >= MODE_3D)?
+	true:
+	false;
+}
+
 int gps_comm_get_fd(gps_t *gps){
     return gps->gpsd->gps_fd;
 }
@@ -153,14 +160,9 @@ int gps_comm_read(gps_t *gps){
     int retval;
     struct gps_fix_t gps_fix;
     retval = gps_read(gps->gpsd);
-    if(retval == -1){
-	err_check(ERROR_IO,"New data from expected, but none found...\nWas select(gps_fd) called before gps_comm_read()?");
-    }
-    retval = gps_comm_get_fix_mode(gps);
-    if(retval < MODE_3D)
+    if(retval == -1)
     {
-	err_log_num("Fix:",retval);
-	err_check(ERROR_GPS,"3D fix NOT available!");
+	err_check(ERROR_IO,"New data from expected, but none found...\nWas select(gps_fd) called before gps_comm_read()?");
     }
     gettimeofday(&gps->timestamp,NULL);
     gps->fix = gps_comm_get_fix_mode(gps);
@@ -225,6 +227,11 @@ int gps_comm_get_data(gps_t *gps, gps_comm_data_t *gps_data, imu_data_t *imu_dat
     {
 	err_check(ERROR_NULL_POINTER,"Invalid argument!");
     }
+    if(!gps_comm_3dfix(gps))
+    {
+	err_check(ERROR_GPS_NO_3D,"Will not accept data, 3D fix not available!");
+    }
+
     uquad_mat_copy(gps_data->pos, gps->pos);
     err_propagate(retval);
     if(gps->vel_ok)

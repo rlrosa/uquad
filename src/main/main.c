@@ -727,7 +727,7 @@ int main(int argc, char *argv[]){
 	    {
 		err_gps = gps_comm_read(gps);
 		log_n_jump(err_gps,end_gps,"GPS had no data!");
-		if(runs_imu >= STARTUP_RUNS)
+		if(runs_imu >= STARTUP_RUNS && gps_comm_3dfix(gps))
 		    // ignore startup data
 		    gps_update = true;
 		else
