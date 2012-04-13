@@ -40,11 +40,18 @@ void uquad_logger_read(int pipefd, char *pipe_name)
     log_name[itmp+1] = 'g';
     log_name[itmp+2] = '\0';
 
+    retval = remove(log_name);
+    if(retval < 0 && errno != ENOENT)
+    {
+	err_log_stderr("Failed to open log file!");
+	cleanup_if(ERROR_OPEN);
+    }
+
     log_fd = open(log_name,O_WRONLY | O_CREAT | O_NONBLOCK | S_IRUSR | S_IWUSR);
     if(log_fd < 0)
     {
 	err_log_stderr("Failed to open log file!");
-	cleanup_if(ERROR_IO);
+	cleanup_if(ERROR_OPEN);
     }
 
     gettimeofday(&tv_old,NULL);
