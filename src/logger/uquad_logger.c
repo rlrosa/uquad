@@ -11,10 +11,11 @@
 
 #define LINE_PER_FLUSH 10
 #define READER_TIMEOUT 25 // sec
-#define READ_SIZE      256
-#define BUFF_SIZE      32
+#define READ_SIZE      128
+#define BUFF_SIZE      (READ_SIZE<<8)
 #define FLUSH_SIZE     (BUFF_SIZE - READ_SIZE)
 #define IO_STUCK_US    10000
+#define IO_FAIL_SLP_US 500
 
 void uquad_logger_read(int pipefd, char *pipe_name)
 {
@@ -70,7 +71,7 @@ void uquad_logger_read(int pipefd, char *pipe_name)
 	if(retval != ERROR_OK)
 	{
 	    err_log("logger failed to check_io_locks(read)!");
-	    sleep_ms(1);
+	    usleep(IO_FAIL_SLP_US);
 	    continue;
 	}
 	if(read_ok)
@@ -132,13 +133,13 @@ void uquad_logger_read(int pipefd, char *pipe_name)
 		    err_log("Closing logger..");
 		    goto cleanup;
 		}
-		sleep_ms(1);
+		usleep(IO_FAIL_SLP_US);
 	    }
 	}
 	else
 	{
 	    // !read_ok
-	    sleep_ms(1);
+	    usleep(IO_FAIL_SLP_US);
 	}
     }
     cleanup:
