@@ -348,12 +348,10 @@ int main(int argc, char *argv[]){
     w = uquad_mat_alloc(4,1);        // Current angular speed [rad/s]
     wt = uquad_mat_alloc(1,4);        // tranpose(w)
     x = uquad_mat_alloc(1,12);   // State vector
-    imu_data.acc = uquad_mat_alloc(3,1);
-    imu_data.gyro = uquad_mat_alloc(3,1);
-    imu_data.magn = uquad_mat_alloc(3,1);
+    retval = imu_data_alloc(&imu_data);
+    quit_if(retval);
 
-    if( x == NULL || w == NULL || wt == NULL ||
-	imu_data.acc == NULL || imu_data.gyro == NULL || imu_data.magn == NULL)
+    if( x == NULL || w == NULL || wt == NULL)
     {
 	err_log("Cannot run without x or w, aborting...");
 	quit();
