@@ -17,13 +17,12 @@
 #define IO_STUCK_US    10000
 #define IO_FAIL_SLP_US 500
 
-void uquad_logger_read(int pipefd, char *pipe_name)
+void uquad_logger_read(int pipefd, char *log_name, char *path)
 {
     int retval = ERROR_OK,
-	itmp,
 	log_fd = -1,
 	buff_index = 0;
-    char log_name[PATH_MAX];
+    char file_name[PATH_MAX];
     char buff[BUFF_SIZE];
     FILE *log_file  = NULL;
     char *new_line = NULL;
@@ -35,29 +34,21 @@ void uquad_logger_read(int pipefd, char *pipe_name)
 	tv_pre,
 #endif
 	tv_diff;
-    log_name[0] = '\0';
-
-    strcpy(log_name, pipe_name);
-    itmp = strlen(log_name);
-    if(itmp < 2 ||
-       log_name[itmp-1] != 'p' ||
-       log_name[itmp-2] != '.')
+    retval = sprintf(file_name,"%s%s.log",path,log_name);
+    if(retval < 0)
     {
-	cleanup_log_if(ERROR_INVALID_PIPE_NAME,"Wrong pipe extension!");
+	err_log_stderr("Failed to create full log name!");
+	cleanup_if(ERROR_FAIL);
     }
-    log_name[itmp-1] = 'l';
-    log_name[itmp]   = 'o';
-    log_name[itmp+1] = 'g';
-    log_name[itmp+2] = '\0';
 
-    retval = remove(log_name);
+    retval = remove(file_name);
     if(retval < 0 && errno != ENOENT)
     {
 	err_log_stderr("Failed to open log file!");
 	cleanup_if(ERROR_OPEN);
     }
 
-    log_fd = open(log_name,O_WRONLY | O_CREAT | O_NONBLOCK | S_IRUSR | S_IWUSR);
+    log_fd = open(file_name,O_WRONLY | O_CREAT | O_NONBLOCK | S_IRUSR | S_IWUSR);
     if(log_fd < 0)
     {
 	err_log_stderr("Failed to open log file!");
@@ -143,7 +134,7 @@ void uquad_logger_read(int pipefd, char *pipe_name)
 	}
     }
     cleanup:
-    err_log_str("Closing logger:",log_name);
+    err_log_str("Closing logger:",file_name);
     if(log_file != NULL)
     {
 	retval = fclose(log_file);
@@ -162,18 +153,18 @@ void uquad_logger_read(int pipefd, char *pipe_name)
     exit(0);
 }
 
-FILE *uquad_logger_add(char *path)
+FILE *uquad_logger_add(char *log_name, char *path)
 {
-    int itmp, retval = ERROR_OK;
-    char str[PATH_MAX];
+    int retval = ERROR_OK;
     FILE *pipe_f;
     int pipefd[2];
     pid_t pid;
-    strcpy(str,path);
-    itmp = strlen(str);
-    str[itmp] = '.';
-    str[itmp+1] = 'p';
-    str[itmp+2] = '\0';
+
+    if(path == NULL || log_name == NULL)
+    {
+	err_log("Invalid arguments!");
+	return NULL;
+    }
 
     /// Create pipe for IPC
     retval = pipe(pipefd);
@@ -190,7 +181,7 @@ FILE *uquad_logger_add(char *path)
 	/// Child - Reads from pipe
 	// Close write end of pipe
 	close(pipefd[1]);
-	uquad_logger_read(pipefd[0], str);
+	uquad_logger_read(pipefd[0], log_name, path);
 	return NULL;
     }
     else

@@ -4,16 +4,16 @@
 #define TIMING_KALMAN      0
 #define TIMING_IMU         0
 #define TIMING_IO          0
-#define LOG_W              0
-#define LOG_W_CTRL         0
-#define LOG_IMU_RAW        0
-#define LOG_IMU_DATA       0
-#define LOG_IMU_AVG        0
-#define DEBUG_X_HAT        0
+#define LOG_W              1
+#define LOG_W_CTRL         1
+#define LOG_IMU_RAW        1
+#define LOG_IMU_DATA       1
+#define LOG_IMU_AVG        1
+#define DEBUG_X_HAT        1
 #define LOG_GPS            0
-#define DEBUG_KALMAN_INPUT 0
-#define LOG_TV             0
-#define LOG_BUKAKE         1
+#define DEBUG_KALMAN_INPUT 1
+#define LOG_TV             1
+#define LOG_BUKAKE         0
 #endif
 
 #define GPS_FAKE           1 // Simulate GPS data (use zeros)
@@ -42,7 +42,7 @@
 #include <sys/signal.h>   // for SIGINT and SIGQUIT
 #include <unistd.h>       // for STDIN_FILENO
 
-#define UQUAD_HOW_TO   "./main <imu_device>"
+#define UQUAD_HOW_TO   "./main <imu_device> /path/to/log/"
 #define MAX_ERRORS     20
 #define STARTUP_RUNS   200
 #define STARTUP_KALMAN 200
@@ -56,10 +56,12 @@
  * be unacceptable.
  *
  */
-#define TS_JITTER          2000L      // Max jitter accepted
+#define TS_JITTER          2000L // Max jitter accepted
+#define TS_ERROR_WAIT      10    // Wait 10 errors before logging again
 #define TS_MAX             (TS_DEFAULT_US + TS_JITTER)
 #define TS_MIN             (TS_DEFAULT_US - TS_JITTER)
-#define TS_JITTER_RATE_MAX 1.0 // Warning display threshold
+
+#define LOG_DIR_DEFAULT    "/media/sda1/"
 
 #define LOG_W_NAME         "w"
 #define LOG_W_CTRL_NAME    "w_ctrl"
@@ -268,9 +270,18 @@ void uquad_sig_handler(int signal_num){
 }
 
 int main(int argc, char *argv[]){
-    int retval = ERROR_OK, i;
-    char * device_imu;
-    double ts_jitter_rate = 0, dtmp;
+    int
+	retval = ERROR_OK,
+	i;
+    char
+	*device_imu,
+	*log_path;
+    double
+	dtmp;
+    unsigned long
+	kalman_loops = 0,
+	ts_error_wait = 0;
+
 #if LOG_IMU_RAW || LOG_IMU_DATA
     imu_raw_t imu_frame;
 #endif // LOG_IMU_RAW || LOG_IMU_DATA
@@ -287,6 +298,10 @@ int main(int argc, char *argv[]){
     else
     {
 	device_imu = argv[1];
+	if(argc < 3)
+	    log_path = LOG_DIR_DEFAULT;
+	else
+	    log_path   = argv[2];
     }
 
     /// -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
@@ -369,7 +384,7 @@ int main(int argc, char *argv[]){
     /// Logs
 #if DEBUG
 #if LOG_IMU_RAW
-    log_imu_raw = uquad_logger_add(LOG_IMU_RAW_NAME);
+    log_imu_raw = uquad_logger_add(LOG_IMU_RAW_NAME, log_path);
     if(log_imu_raw == NULL)
     {
 	err_log("Failed to open log_imu_raw!");
@@ -377,7 +392,7 @@ int main(int argc, char *argv[]){
     }
 #endif //LOG_IMU_RAW
 #if LOG_IMU_DATA
-    log_imu_data = uquad_logger_add(LOG_IMU_DATA_NAME);
+    log_imu_data = uquad_logger_add(LOG_IMU_DATA_NAME, log_path);
     if(log_imu_data == NULL)
     {
 	err_log("Failed to open log_imu_data!");
@@ -385,7 +400,7 @@ int main(int argc, char *argv[]){
     }
 #endif //LOG_IMU_DATA
 #if LOG_IMU_AVG
-    log_imu_avg = uquad_logger_add(LOG_IMU_AVG_NAME);
+    log_imu_avg = uquad_logger_add(LOG_IMU_AVG_NAME, log_path);
     if(log_imu_avg == NULL)
     {
 	err_log("Failed to open log_imu_avg!");
@@ -393,7 +408,7 @@ int main(int argc, char *argv[]){
     }
 #endif //LOG_IMU_AVG
 #if LOG_W
-    log_w = uquad_logger_add(LOG_W_NAME);
+    log_w = uquad_logger_add(LOG_W_NAME, log_path);
     if(log_w == NULL)
     {
 	err_log("Failed to open log_w!");
@@ -401,7 +416,7 @@ int main(int argc, char *argv[]){
     }
 #endif //LOG_W
 #if LOG_W_CTRL
-    log_w_ctrl = uquad_logger_add(LOG_W_CTRL_NAME);
+    log_w_ctrl = uquad_logger_add(LOG_W_CTRL_NAME, log_path);
     if(log_w_ctrl == NULL)
     {
 	err_log("Failed to open log_w_ctrl!");
@@ -409,7 +424,7 @@ int main(int argc, char *argv[]){
     }
 #endif //LOG_W_CTRL
 #if DEBUG_X_HAT
-    log_x_hat = uquad_logger_add(LOG_X_HAT_NAME);
+    log_x_hat = uquad_logger_add(LOG_X_HAT_NAME, log_path);
     if(log_x_hat == NULL)
     {
 	err_log("Failed to open x_hat!");
@@ -423,7 +438,7 @@ int main(int argc, char *argv[]){
     }
 #endif //DEBUG_X_HAT
 #if DEBUG_KALMAN_INPUT
-    log_kalman_in = uquad_logger_add(LOG_KALMAN_IN_NAME);
+    log_kalman_in = uquad_logger_add(LOG_KALMAN_IN_NAME, log_path);
     if(log_kalman_in == NULL)
     {
 	err_log("Failed open kalman_in log!");
@@ -431,7 +446,7 @@ int main(int argc, char *argv[]){
     }
 #endif
 #if LOG_GPS && USE_GPS
-    log_gps = uquad_logger_add(LOG_GPS_NAME);
+    log_gps = uquad_logger_add(LOG_GPS_NAME, log_path);
     if(log_gps == NULL)
     {
 	err_log("Failed open kalman_in log!");
@@ -439,7 +454,7 @@ int main(int argc, char *argv[]){
     }
 #endif //LOG_GPS && USE_GPS
 #if LOG_BUKAKE && !LOG_BUKAKE_STDOUT
-    log_bukake = uquad_logger_add(LOG_BUKAKE_NAME);
+    log_bukake = uquad_logger_add(LOG_BUKAKE_NAME, log_path);
     if(log_bukake == NULL)
     {
 	err_log("Failed open kalman_in log!");
@@ -447,7 +462,7 @@ int main(int argc, char *argv[]){
     }
 #endif //LOG_BUKAKE && !LOG_BUKAKE_STDOUT
 #if LOG_TV
-    log_tv = uquad_logger_add(LOG_TV_NAME);
+    log_tv = uquad_logger_add(LOG_TV_NAME, log_path);
     if(log_tv == NULL)
     {
 	err_log("Failed to open tv_log!");
@@ -797,18 +812,23 @@ int main(int argc, char *argv[]){
 #endif
 	/// Check sampling period jitter
 	retval = in_range_us(tv_diff, TS_MIN, TS_MAX);
-	static unsigned long kalman_loops = 0;
-	kalman_loops = (kalman_loops+1)%65536;// avoid overflow
+	kalman_loops = (kalman_loops+1)%32768;// avoid overflow
 	if(retval != 0)
 	{
-	    static unsigned long ts_errors = 0;
-	    ts_jitter_rate = 100*((double)ts_errors++/(kalman_loops+1));
-	    if(ts_jitter_rate > TS_JITTER_RATE_MAX)
+	    if(ts_error_wait == 0)
 	    {
-		fprintf(stderr,"Jitter rate: %0.2lf%%\t",ts_jitter_rate);
+		// Avoid saturating log
 		err_log_tv("TS supplied to Kalman out of range!:",tv_diff);
+		ts_error_wait = TS_ERROR_WAIT;
 	    }
+	    ts_error_wait--;
+	    /// Lie to kalman, avoid large drifts
 	    tv_diff.tv_usec = (retval > 0) ? TS_MAX:TS_MIN;
+	}
+	else
+	{
+	    // Print next T_s error immediately
+	    ts_error_wait = 0;
 	}
 	if(runs_kalman > STARTUP_KALMAN)
 	{
