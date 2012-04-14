@@ -89,7 +89,7 @@ static uquad_mot_t *mot;
 static io_t *io;
 static ctrl_t *ctrl;
 static path_planner_t *pp;
-#if USE_GPS
+#if USE_GPS && !GPS_FAKE
 static gps_t *gps;
 #endif
 /// Global var
@@ -155,7 +155,7 @@ void quit()
 	err_log("Could not close IMU correctly!");
     }
 
-#if USE_GPS
+#if USE_GPS && !GPS_FAKE
     /// GPS
     gps_comm_deinit(gps);
 #endif
@@ -321,7 +321,7 @@ int main(int argc, char *argv[]){
 	quit_log_if(ERROR_FAIL,"imu init failed!");
     }
 
-#if USE_GPS
+#if USE_GPS && !GPS_FAKE
     /// GPS
     gps = gps_comm_init();
     if(gps == NULL)
@@ -480,7 +480,7 @@ int main(int argc, char *argv[]){
     quit_log_if(retval,"Failed to get imu fds!!");
     retval = io_add_dev(io,imu_fds);
     quit_log_if(retval,"Failed to add imu to dev list");
-#if USE_GPS
+#if USE_GPS && !GPS_FAKE
     // gps
     int gps_fds;
     if(gps != NULL)
