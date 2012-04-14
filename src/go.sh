@@ -48,19 +48,17 @@ cp imu/imu_calib.txt build/main/
 mv i2c_beagle/cmd${pc_test} build/main/cmd
 
 # run network check, kill cmd if network fails
-x=`uname -a | grep "x86_64"`
-if [ "$x" = "" ]; then
-    x=`ifconfig | grep wlan`
-    if [ ! "$x" = "" ]; then
-	echo Setting up check_net.sh
-	(cd ../scripts; ./check_net.sh &)
-	echo check_net.sh running...
-    else
-	echo Wireless network down, will not run check_net.sh
-    fi
-else
-    echo WARNING! check_net.sh will not be used, assuming this is not a beagleboard
-fi
+echo Setting up check_net.sh
+(cd ../scripts; ./check_net.sh &)
+# wait for check net to start, or not
+timer=3
+while [ $timer -gt 0 ];
+do
+    echo "Wait ${timer} for check_net.sh..."
+    sleep 1
+    timer=$(( $timer - 1 ))
+done
+sleep 1
 
 # run main
 echo ""
