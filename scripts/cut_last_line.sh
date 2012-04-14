@@ -8,4 +8,4 @@ else
     work_dir=`pwd`
 fi
 
-(cd ${work_dir}; ls | grep '.log' | xargs -I '{}' sed -ie '$d' '{}')
+(cd ${work_dir}; ls | grep '.log' | xargs -I '{}' sed -i '$d' '{}')
