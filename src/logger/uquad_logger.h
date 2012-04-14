@@ -10,7 +10,7 @@
  * -- -- -- -- -- -- -- -- -- -- -- --
  */
 #define DEF_PERM 0666
-FILE *uquad_logger_add(char *path);
+FILE *uquad_logger_add(char *log_name, char *path);
 void uquad_logger_remove(FILE *pipe_f);
 
 /**

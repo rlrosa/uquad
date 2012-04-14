@@ -597,9 +597,11 @@ static uint8_t previous_sync_char = IMU_FRAME_INIT_CHAR;
  *
  *@return error code, sync achieved iif ERROR_OK
  */
-static int imu_comm_get_sync_init(imu_t *imu){
+static int imu_comm_get_sync_init(imu_t *imu, uquad_bool_t *sync_ok){
     int retval;//,i;
     unsigned char tmp = 'X';// Anything diff from IMU_FRAME_INIT_CHAR
+    *sync_ok = false;
+    static int fail_count = 0;
 #if IMU_COMM_FAKE
     retval = fread(&tmp,IMU_INIT_END_SIZE,1,imu->device);
 #else
@@ -614,7 +616,7 @@ static int imu_comm_get_sync_init(imu_t *imu){
     {
 	if(retval > 0)
 	{
-	    // Match either of the init chars
+	    // Match of either the init chars
 	    if((tmp|IMU_FRAME_INIT_DIFF) == IMU_FRAME_INIT_CHAR_ALT)
 	    {
 		// Check if skipped frame
@@ -627,12 +629,24 @@ static int imu_comm_get_sync_init(imu_t *imu){
 		{
 		    err_log("Skipped frame!");
 		}
+		*sync_ok = true;
 		return ERROR_OK;
 	    }
 	    else
 	    {
+		/**
+		 * When starting up, its ok to miss a couple of char
+		 * until sync is achieved, no need to log a bunch of
+		 * scary errors.
+		 *
+		 */
 		// wrong init char
-		err_check(ERROR_READ_SKIP,"Wrong sync init char!");
+		if(fail_count > IMU_SYNC_FAIL_MAX)
+		{
+		    err_check(ERROR_READ_SKIP,"Wrong sync init char!");
+		}
+		fail_count++;
+		return ERROR_OK;
 	    }
 	}
 	else
@@ -1019,9 +1033,10 @@ int imu_comm_read(imu_t *imu, uquad_bool_t *ready){
 	gettimeofday(&tv_init,NULL);//TODO testing
 #endif
 	// sync by getting init frame char
-	retval = imu_comm_get_sync_init(imu);
+	retval = imu_comm_get_sync_init(imu,&ok);
 	err_propagate(retval);
-	status++;
+	if(ok)
+	    status++;
 
 #if TIMING_IMU
 	gettimeofday(&tv_end,NULL);//TODO testing

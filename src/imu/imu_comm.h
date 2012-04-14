@@ -43,6 +43,7 @@
 #define IMU_INIT_END_SIZE                 1
 #define IMU_DEFAULT_FRAME_SIZE_BYTES      30
 #define IMU_DEFAULT_FRAME_SIZE_DATA_BYTES IMU_DEFAULT_FRAME_SIZE_BYTES - 6 // init,end,time
+#define IMU_SYNC_FAIL_MAX                 IMU_DEFAULT_FRAME_SIZE_BYTES
 
 #define IMU_FRAME_BUFF_SIZE               32
 

@@ -426,29 +426,23 @@ kalman_io_t* kalman_init()
     kalman_io_data->P_gps = uquad_mat_alloc(6,6);
 
     retval = uquad_mat_zeros(kalman_io_data->x_hat);
-    if(retval != ERROR_OK)
-	return NULL;
+    cleanup_if(retval);
+    retval = uquad_mat_zeros(kalman_io_data->x_);
+    cleanup_if(retval);
     retval = uquad_mat_zeros(kalman_io_data->u);
-    if(retval != ERROR_OK)
-	return NULL;
+    cleanup_if(retval);
     retval = uquad_mat_zeros(kalman_io_data->Q);
-    if(retval != ERROR_OK)
-	return NULL;
+    cleanup_if(retval);
     retval = uquad_mat_zeros(kalman_io_data->R);
-    if(retval != ERROR_OK)
-	return NULL;
+    cleanup_if(retval);
     retval = uquad_mat_zeros(kalman_io_data->P);
-    if(retval != ERROR_OK)
-	return NULL;
+    cleanup_if(retval);
     retval = uquad_mat_zeros(kalman_io_data->Q_gps);
-    if(retval != ERROR_OK)
-	return NULL;
+    cleanup_if(retval);
     retval = uquad_mat_zeros(kalman_io_data->R_gps);
-    if(retval != ERROR_OK)
-	return NULL;
+    cleanup_if(retval);
     retval = uquad_mat_zeros(kalman_io_data->P_gps);
-    if(retval != ERROR_OK)
-	return NULL;
+    cleanup_if(retval);
  
     kalman_io_data->Q->m[0][0] = 100;
     kalman_io_data->Q->m[1][1] = 100;
@@ -508,7 +502,16 @@ kalman_io_t* kalman_init()
     kalman_io_data->P_gps->m[4][4] = 1;
     kalman_io_data->P_gps->m[5][5] = 1;
 
+    /// Initilization
+    retval = uquad_mat_zeros(kalman_io_data->x_hat);
+    cleanup_if(retval);
+    retval = uquad_mat_zeros(kalman_io_data->x_);
+    cleanup_if(retval);
+
     return kalman_io_data;
+    cleanup:
+    kalman_deinit(kalman_io_data);
+    return NULL;
 }
 
 int uquad_kalman(kalman_io_t * kalman_io_data, uquad_mat_t* w, imu_data_t* data, double T)

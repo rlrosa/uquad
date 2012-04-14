@@ -3,10 +3,11 @@
 #include <uquad_aux_time.h>
 #include <uquad_types.h>
 #include <uquad_aux_io.h>
-#include <sys/stat.h> // for mkfifo()
-#include <limits.h>   // for PATH_MAX
+#include <sys/stat.h>   // for mkfifo()
+#include <limits.h>     // for PATH_MAX
 #include <stdlib.h>
-#include <fcntl.h>    // for open()
+#include <fcntl.h>      // for open()
+#include <sys/signal.h> // for SIGINT, SIGQUIT and SIGPIPE
 #include <time.h>
 
 #define LINE_PER_FLUSH 10
@@ -14,16 +15,23 @@
 #define READ_SIZE      128
 #define BUFF_SIZE      (READ_SIZE<<8)
 #define FLUSH_SIZE     (BUFF_SIZE - READ_SIZE)
-#define IO_STUCK_US    10000
+#define IO_STUCK_S     1
 #define IO_FAIL_SLP_US 500
 
-void uquad_logger_read(int pipefd, char *pipe_name)
+uquad_bool_t die = false;
+
+void uquad_logger_die(int signal)
+{
+    err_log_num("logger caught signal, will finish and die...",signal);
+    die = true;
+}
+
+void uquad_logger_read(int pipefd, char *log_name, char *path)
 {
     int retval = ERROR_OK,
-	itmp,
 	log_fd = -1,
 	buff_index = 0;
-    char log_name[PATH_MAX];
+    char file_name[PATH_MAX];
     char buff[BUFF_SIZE];
     FILE *log_file  = NULL;
     char *new_line = NULL;
@@ -35,29 +43,21 @@ void uquad_logger_read(int pipefd, char *pipe_name)
 	tv_pre,
 #endif
 	tv_diff;
-    log_name[0] = '\0';
-
-    strcpy(log_name, pipe_name);
-    itmp = strlen(log_name);
-    if(itmp < 2 ||
-       log_name[itmp-1] != 'p' ||
-       log_name[itmp-2] != '.')
+    retval = sprintf(file_name,"%s%s.log",path,log_name);
+    if(retval < 0)
     {
-	cleanup_log_if(ERROR_INVALID_PIPE_NAME,"Wrong pipe extension!");
+	err_log_stderr("Failed to create full log name!");
+	cleanup_if(ERROR_FAIL);
     }
-    log_name[itmp-1] = 'l';
-    log_name[itmp]   = 'o';
-    log_name[itmp+1] = 'g';
-    log_name[itmp+2] = '\0';
 
-    retval = remove(log_name);
+    retval = remove(file_name);
     if(retval < 0 && errno != ENOENT)
     {
 	err_log_stderr("Failed to open log file!");
 	cleanup_if(ERROR_OPEN);
     }
 
-    log_fd = open(log_name,O_WRONLY | O_CREAT | O_NONBLOCK | S_IRUSR | S_IWUSR);
+    log_fd = open(file_name,O_WRONLY | O_CREAT | O_NONBLOCK | S_IRUSR | S_IWUSR);
     if(log_fd < 0)
     {
 	err_log_stderr("Failed to open log file!");
@@ -84,7 +84,7 @@ void uquad_logger_read(int pipefd, char *pipe_name)
 #if DEBUG
 		gettimeofday(&tv_new,NULL);
 		retval = uquad_timeval_substract(&tv_diff, tv_new, tv_pre);
-		if(in_range_us(tv_diff,0,IO_STUCK_US) != 0)
+		if(tv_diff.tv_sec > 0)
 		{
 		    err_log_tv("read() got stuck!",tv_diff);
 		}
@@ -110,7 +110,7 @@ void uquad_logger_read(int pipefd, char *pipe_name)
 #if DEBUG
 			gettimeofday(&tv_new,NULL);
 			retval = uquad_timeval_substract(&tv_diff, tv_new, tv_pre);
-			if(in_range_us(tv_diff,0,IO_STUCK_US) != 0)
+			if(tv_diff.tv_sec > 0)
 			{
 			    err_log_tv("write() got stuck!",tv_diff);
 			}
@@ -124,13 +124,12 @@ void uquad_logger_read(int pipefd, char *pipe_name)
 	    {
 		gettimeofday(&tv_new,NULL);
 		retval = uquad_timeval_substract(&tv_diff,tv_new,tv_old);
-		if(tv_diff.tv_sec > READER_TIMEOUT)
+		if(tv_diff.tv_sec > READER_TIMEOUT || die)
 		{
 		    if(tv_diff.tv_sec > READER_TIMEOUT)
 		    {
 			cleanup_log_if(ERROR_READ_TIMEOUT,"Logger timed out!");
 		    }
-		    err_log("Closing logger..");
 		    goto cleanup;
 		}
 		usleep(IO_FAIL_SLP_US);
@@ -143,9 +142,14 @@ void uquad_logger_read(int pipefd, char *pipe_name)
 	}
     }
     cleanup:
-    err_log_str("Closing logger:",log_name);
+    err_log_str("Closing logger:",file_name);
     if(log_file != NULL)
     {
+	retval = fflush(log_file);
+	if(retval < 0)
+	{
+	    err_log_stderr("Failed to flush log file!");
+	}
 	retval = fclose(log_file);
 	if(retval < 0)
 	{
@@ -162,18 +166,18 @@ void uquad_logger_read(int pipefd, char *pipe_name)
     exit(0);
 }
 
-FILE *uquad_logger_add(char *path)
+FILE *uquad_logger_add(char *log_name, char *path)
 {
-    int itmp, retval = ERROR_OK;
-    char str[PATH_MAX];
+    int retval = ERROR_OK;
     FILE *pipe_f;
     int pipefd[2];
     pid_t pid;
-    strcpy(str,path);
-    itmp = strlen(str);
-    str[itmp] = '.';
-    str[itmp+1] = 'p';
-    str[itmp+2] = '\0';
+
+    if(path == NULL || log_name == NULL)
+    {
+	err_log("Invalid arguments!");
+	return NULL;
+    }
 
     /// Create pipe for IPC
     retval = pipe(pipefd);
@@ -190,7 +194,11 @@ FILE *uquad_logger_add(char *path)
 	/// Child - Reads from pipe
 	// Close write end of pipe
 	close(pipefd[1]);
-	uquad_logger_read(pipefd[0], str);
+	// Let logger finish before dying.
+	signal(SIGINT, uquad_logger_die);
+	signal(SIGQUIT,uquad_logger_die);
+	signal(SIGPIPE,uquad_logger_die);
+	uquad_logger_read(pipefd[0], log_name, path);
 	return NULL;
     }
     else
