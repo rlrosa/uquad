@@ -92,7 +92,7 @@ Model {
       Name		      "w"
     }
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.279"
+    ComputedModelVersion    "1.282"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -123,9 +123,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "pater"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Tue Apr 10 13:49:16 2012"
-  RTWModifiedTimeStamp	  255966546
-  ModelVersionFormat	  "1.%<AutoIncrement:279>"
+  LastModifiedDate	  "Fri Apr 13 21:30:55 2012"
+  RTWModifiedTimeStamp	  256253424
+  ModelVersionFormat	  "1.%<AutoIncrement:282>"
   ConfigurationManager	  "None"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -906,6 +906,9 @@ Model {
       SampleTime	      "-1"
     }
     Block {
+      BlockType		      Terminator
+    }
+    Block {
       BlockType		      TransportDelay
       DelayTime		      "1"
       InitialOutput	      "0"
@@ -948,7 +951,7 @@ Model {
     ShowPageBoundaries	    off
     ZoomFactor		    "100"
     ReportName		    "simulink-default.rpt"
-    SIDHighWatermark	    "2202"
+    SIDHighWatermark	    "2212"
     Block {
       BlockType		      Inport
       Name		      "w1"
@@ -990,11 +993,21 @@ Model {
       DisplayOption	      "bar"
     }
     Block {
+      BlockType		      Demux
+      Name		      "Demux1"
+      SID		      "2208"
+      Ports		      [1, 12]
+      Position		      [470, 610, 485, 720]
+      ShowName		      off
+      Outputs		      "12"
+      DisplayOption	      "bar"
+    }
+    Block {
       BlockType		      DiscreteIntegrator
       Name		      "Discrete-Time\nIntegrator"
-      SID		      "1791"
+      SID		      "2209"
       Ports		      [1, 1]
-      Position		      [585, 624, 620, 656]
+      Position		      [585, 609, 620, 641]
       IntegratorMethod	      "Integration: Forward Euler"
       ExternalReset	      "none"
       InitialConditionSource  "internal"
@@ -1051,15 +1064,23 @@ Model {
       DisplayOption	      "bar"
     }
     Block {
-      BlockType		      Gain
-      Name		      "N"
-      SID		      "397"
-      Position		      [210, 690, 240, 720]
-      Gain		      "N"
-      Multiplication	      "Matrix(K*u) (u vector)"
-      ParamDataTypeStr	      "Inherit: Inherit via internal rule"
-      OutDataTypeStr	      "Inherit: Inherit via internal rule"
-      SaturateOnIntegerOverflow	off
+      BlockType		      Mux
+      Name		      "Mux4"
+      SID		      "2210"
+      Ports		      [8, 1]
+      Position		      [505, 643, 520, 727]
+      ShowName		      off
+      Inputs		      "8"
+      DisplayOption	      "bar"
+    }
+    Block {
+      BlockType		      Mux
+      Name		      "Mux5"
+      SID		      "2211"
+      Ports		      [4, 1]
+      Position		      [525, 606, 535, 644]
+      ShowName		      off
+      DisplayOption	      "bar"
     }
     Block {
       BlockType		      Saturate
@@ -1106,7 +1127,7 @@ Model {
       Name		      "Setpoint"
       SID		      "1779"
       Ports		      [0, 1]
-      Position		      [15, 690, 55, 750]
+      Position		      [15, 675, 55, 735]
       MinAlgLoopOccurrences   off
       PropExecContextOutsideSubsystem off
       RTWSystemCode	      "Auto"
@@ -6927,7 +6948,7 @@ Model {
 		    Line {
 		    SrcBlock		    "w4"
 		    SrcPort		    1
-		    Points		    [190, 0; 0, -90]
+		    Points		    [190, 0]
 		    DstBlock		    "Sum of\nElements"
 		    DstPort		    4
 		    }
@@ -10783,13 +10804,19 @@ Model {
       Name		      "Sum4"
       SID		      "399"
       Ports		      [3, 1]
-      Position		      [490, 695, 510, 715]
+      Position		      [410, 695, 430, 715]
       ShowName		      off
       IconShape		      "round"
       Inputs		      "+--"
       InputSameDT	      off
       OutDataTypeStr	      "Inherit: Inherit via internal rule"
       SaturateOnIntegerOverflow	off
+    }
+    Block {
+      BlockType		      Terminator
+      Name		      "Terminator"
+      SID		      "2212"
+      Position		      [595, 675, 615, 695]
     }
     Block {
       BlockType		      TransportDelay
@@ -10979,14 +11006,13 @@ Model {
     Line {
       SrcBlock		      "Setpoint"
       SrcPort		      1
-      Points		      [0, -15]
       DstBlock		      "Transport\nDelay"
       DstPort		      1
     }
     Line {
       SrcBlock		      "Mux"
       SrcPort		      1
-      Points		      [40, 0; 0, 115; -900, 0]
+      Points		      [-40, 0; 0, 115; -900, 0]
       DstBlock		      "Sum4"
       DstPort		      2
     }
@@ -11007,13 +11033,6 @@ Model {
       SrcBlock		      "Sum1"
       SrcPort		      1
       DstBlock		      "Saturation1"
-      DstPort		      1
-    }
-    Line {
-      SrcBlock		      "N"
-      SrcPort		      1
-      Points		      [20, 0; 0, -25]
-      DstBlock		      "Sum4"
       DstPort		      1
     }
     Line {
@@ -11209,7 +11228,7 @@ Model {
       SrcPort		      1
       Points		      [100, 0]
       Branch {
-	Points			[185, 0]
+	Points			[105, 0]
 	DstBlock		"Sum4"
 	DstPort			3
       }
@@ -11295,33 +11314,113 @@ Model {
       DstPort		      1
     }
     Line {
-      SrcBlock		      "Zero-Order\nHold"
-      SrcPort		      1
-      DstBlock		      "N"
-      DstPort		      1
-    }
-    Line {
-      SrcBlock		      "Discrete-Time\nIntegrator"
-      SrcPort		      1
-      DstBlock		      "Mux2"
-      DstPort		      2
-    }
-    Line {
       SrcBlock		      "Mux2"
       SrcPort		      1
       DstBlock		      "Gain"
       DstPort		      1
     }
     Line {
-      SrcBlock		      "Sum4"
+      SrcBlock		      "Mux4"
       SrcPort		      1
-      Points		      [25, 0; 0, -65; 25, 0]
+      DstBlock		      "Terminator"
+      DstPort		      1
+    }
+    Line {
+      SrcBlock		      "Demux1"
+      SrcPort		      12
+      DstBlock		      "Mux4"
+      DstPort		      8
+    }
+    Line {
+      SrcBlock		      "Demux1"
+      SrcPort		      11
+      DstBlock		      "Mux4"
+      DstPort		      7
+    }
+    Line {
+      SrcBlock		      "Demux1"
+      SrcPort		      10
+      DstBlock		      "Mux4"
+      DstPort		      6
+    }
+    Line {
+      SrcBlock		      "Demux1"
+      SrcPort		      9
+      DstBlock		      "Mux4"
+      DstPort		      5
+    }
+    Line {
+      SrcBlock		      "Demux1"
+      SrcPort		      8
+      DstBlock		      "Mux4"
+      DstPort		      4
+    }
+    Line {
+      SrcBlock		      "Demux1"
+      SrcPort		      7
+      DstBlock		      "Mux4"
+      DstPort		      3
+    }
+    Line {
+      SrcBlock		      "Demux1"
+      SrcPort		      5
+      DstBlock		      "Mux4"
+      DstPort		      2
+    }
+    Line {
+      SrcBlock		      "Demux1"
+      SrcPort		      4
+      DstBlock		      "Mux4"
+      DstPort		      1
+    }
+    Line {
+      SrcBlock		      "Demux1"
+      SrcPort		      6
+      Points		      [10, 0; 0, -20]
+      DstBlock		      "Mux5"
+      DstPort		      4
+    }
+    Line {
+      SrcBlock		      "Demux1"
+      SrcPort		      3
+      DstBlock		      "Mux5"
+      DstPort		      3
+    }
+    Line {
+      SrcBlock		      "Demux1"
+      SrcPort		      2
+      DstBlock		      "Mux5"
+      DstPort		      2
+    }
+    Line {
+      SrcBlock		      "Demux1"
+      SrcPort		      1
+      DstBlock		      "Mux5"
+      DstPort		      1
+    }
+    Line {
+      SrcBlock		      "Mux5"
+      SrcPort		      1
+      DstBlock		      "Discrete-Time\nIntegrator"
+      DstPort		      1
+    }
+    Line {
+      SrcBlock		      "Discrete-Time\nIntegrator"
+      SrcPort		      1
+      Points		      [30, 0; 0, 15]
+      DstBlock		      "Mux2"
+      DstPort		      2
+    }
+    Line {
+      SrcBlock		      "Zero-Order\nHold"
+      SrcPort		      1
+      Points		      [20, 0; 0, -40; 160, 0]
       Branch {
-	DstBlock		"Discrete-Time\nIntegrator"
+	DstBlock		"Demux1"
 	DstPort			1
       }
       Branch {
-	Points			[0, -30]
+	Points			[0, -55]
 	DstBlock		"Mux2"
 	DstPort			1
       }
