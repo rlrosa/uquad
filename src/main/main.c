@@ -523,7 +523,6 @@ int main(int argc, char *argv[]){
 	tv_last_imu,
 	tv_gps_last,
 	tv_start;
-    gettimeofday(&tv_gps_last,NULL);
     gettimeofday(&tv_start,NULL);
     gettimeofday(&tv_last_ramp,NULL);
     gettimeofday(&tv_last_kalman,NULL);
@@ -571,7 +570,7 @@ int main(int argc, char *argv[]){
 	// reset error/update indicators
 	imu_update = false;
 	err_imu = ERROR_OK;
-	gps_update = false;
+	//gps_update = false; // This is cleared within the loop
 	err_gps = ERROR_OK;
 	retval = ERROR_OK;
 
@@ -669,6 +668,8 @@ int main(int argc, char *argv[]){
 		++runs_imu;
 		if(runs_imu == STARTUP_RUNS)
 		{
+		    err_imu = gettimeofday(&tv_gps_last,NULL);
+		    err_log_std(err_imu);
 		    err_imu = gettimeofday(&tv_last_imu,NULL);
 		    err_log_std(err_imu);
 		    err_imu = uquad_timeval_substract(&tv_diff,tv_last_imu,tv_start);
@@ -736,7 +737,7 @@ int main(int argc, char *argv[]){
 	/// -- -- -- -- -- -- -- --
 	/// Check GPS updates
 	/// -- -- -- -- -- -- -- --
-	if(reg_gps)
+	if(reg_gps && !gps_update)
 	{
 	    err_gps = io_dev_ready(io,gps_fds,&read,&write);
 	    if(read)
@@ -764,30 +765,41 @@ int main(int argc, char *argv[]){
 	    // will jump here if something went wrong during GPS reading
 	}
 #else // GPS_FAKE
-	gettimeofday(&tv_tmp,NULL);
-	retval = uquad_timeval_substract(&tv_diff, tv_tmp, tv_gps_last);
-	if(tv_diff.tv_sec > 1 && (runs_imu > STARTUP_RUNS))
+	if(!gps_update)
 	{
-	    // gps_dat is set to 0 when allocated, so just use it.
-	    gps_update = true;
-	    tv_gps_last = tv_tmp;
-	    if(pp->pt != HOVER)
+	    gettimeofday(&tv_tmp,NULL);
+	    retval = uquad_timeval_substract(&tv_diff, tv_tmp, tv_gps_last);
+	    if(tv_diff.tv_sec > 1 && (runs_imu > STARTUP_RUNS))
 	    {
-		quit_log_if(ERROR_GPS, "Fake GPS does not make sense if not hovering!");
+		// gps_dat is set to 0 when allocated, so just use it.
+		gps_update = true;
+		tv_gps_last = tv_tmp;
+		if(pp->pt != HOVER)
+		{
+		    quit_log_if(ERROR_GPS, "Fake GPS does not make sense if not hovering!");
+		}
 	    }
+	    else
+	    {
+		gps_update = false;
+	    }
+	    retval = ERROR_OK; // clear retval
 	}
-	else
-	{
-	    gps_update = false;
-	}
-	retval = ERROR_OK; // clear retval
 #endif // GPS_FAKE
 #endif // USE_GPS
 
 	/// -- -- -- -- -- -- -- --
 	/// check if new data
 	/// -- -- -- -- -- -- -- --
-	if(!imu_update && !gps_update)
+	if(!imu_update)
+	    /**
+	     * We don't check gps_update here.
+	     * If gps_update && !imu_update, then
+	     * wait until imu_update to avoid unstable T_s.
+	     *   T_gps = 1s
+	     *   T_imu = 10ms
+	     * so use approx. that T_gps+T_imu ~ T_gps.
+	     */
 	    continue;
 
 #if IMU_COMM_FAKE
@@ -838,13 +850,6 @@ int main(int argc, char *argv[]){
 				  &imu_data,
 				  tv_diff.tv_usec);
 	    log_n_continue(retval,"Inertial Kalman update failed");
-#if USE_GPS
-	    if(gps_update)
-	    {
-		retval = uquad_kalman_gps(kalman, gps_dat);
-		log_n_continue(retval,"GPS Kalman update failed");
-	    }
-#endif // USE_GPS
 	}
 	else
 	{
@@ -857,6 +862,15 @@ int main(int argc, char *argv[]){
 	}
 	/// Mark time when we run Kalman
 	tv_last_kalman = tv_tmp;
+#if USE_GPS
+	if(gps_update)
+	{
+	    retval = uquad_kalman_gps(kalman, gps_dat);
+	    log_n_continue(retval,"GPS Kalman update failed");
+	    gps_update = false; // Clear gps status
+	}
+#endif // USE_GPS
+
 
 #if DEBUG
 #if DEBUG_KALMAN_INPUT
