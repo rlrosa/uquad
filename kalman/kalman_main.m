@@ -202,7 +202,7 @@ for i=2:N
     elseif(use_n_states == 1)
         x_hat_ctl(i,:) = x_hat(i,:);
     elseif(use_n_states == 2)
-        x_hat_integrals = x_hat_integrals + (T(i)-T(i-1))*x_hat(i,:);
+        x_hat_integrals = x_hat_integrals + (T(i)-T(i-1))*(x_hat(i,:)-sp_x(13:end)');
         x_hat_ctl(i,:)  = [x_hat(i,:) x_hat_integrals];
     end
 
