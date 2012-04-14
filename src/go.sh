@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash -E
 # Run main and whatever is required
 # -E: Exit immediately if a command exits with a non-zero status.
 #     ERR trap is inherited by shell functions.
