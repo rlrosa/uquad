@@ -1,36 +1,33 @@
 #!/bin/bash
 
-if [ -f build ];
+EXPECTED_ARGS=2
+
+if [ $# -ne $EXPECTED_ARGS ]
 then
-    echo build dir not found!
-    exit
+  echo "Usage: ./`basename $0` </abs/path/src/> <dest_rel>"
+  exit $E_BADARGS
 fi
 
-if [ -f build/main ];
+if [ ! -e $1 ];
 then
-    echo main dir not found!
+    echo "Cannot find logs in ${1}"
+    echo "Aborting..."
     exit
-fi
+fi  
 
 cd ../tests/main/logs
-if [ -e $1 ];
+if [ -e $2 ];
 then
-    echo Would overwrite logs! Aborting...!
+    echo "Would overwrite logs!"
+    echo "Aborting..."
 else
-    mkdir $1
-    cd $1
-    mv ../../../../src/build/main/err.log .
-    mv ../../../../src/build/main/imu_data.log .
-    mv ../../../../src/build/main/imu_raw.log .
-    mv ../../../../src/build/main/imu_avg.log .
-    mv ../../../../src/build/main/w.log .
-    mv ../../../../src/build/main/w_ctrl.log .
-    mv ../../../../src/build/main/cmd_rx.log .
-    mv ../../../../src/build/main/cmd_tx.log .
-    mv ../../../../src/build/main/cmd_output.log .
-    mv ../../../../src/build/main/x_hat.log .
-    mv ../../../../src/build/main/kalman_in.log .
-    mv ../../../../src/build/main/tv.log .
+    mkdir $2
+    cd $2
+    dest_dir=`pwd`
+    # Copy logs
+    ls ${1}/ | grep '.log' | xargs -I '{}' mv -v ${1}'{}' .
+    # Remove last line
+    ls | grep '.log' | xargs -I '{}' sed -i '$d' '{}'
     cd ../
     echo success!
 fi
