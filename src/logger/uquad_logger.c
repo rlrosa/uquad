@@ -3,10 +3,11 @@
 #include <uquad_aux_time.h>
 #include <uquad_types.h>
 #include <uquad_aux_io.h>
-#include <sys/stat.h> // for mkfifo()
-#include <limits.h>   // for PATH_MAX
+#include <sys/stat.h>   // for mkfifo()
+#include <limits.h>     // for PATH_MAX
 #include <stdlib.h>
-#include <fcntl.h>    // for open()
+#include <fcntl.h>      // for open()
+#include <sys/signal.h> // for SIGINT, SIGQUIT and SIGPIPE
 #include <time.h>
 
 #define LINE_PER_FLUSH 10
@@ -16,6 +17,14 @@
 #define FLUSH_SIZE     (BUFF_SIZE - READ_SIZE)
 #define IO_STUCK_S     1
 #define IO_FAIL_SLP_US 500
+
+uquad_bool_t die = false;
+
+void uquad_logger_die(int signal)
+{
+    err_log_num("logger caught signal, will finish and die...",signal);
+    die = true;
+}
 
 void uquad_logger_read(int pipefd, char *log_name, char *path)
 {
@@ -115,13 +124,12 @@ void uquad_logger_read(int pipefd, char *log_name, char *path)
 	    {
 		gettimeofday(&tv_new,NULL);
 		retval = uquad_timeval_substract(&tv_diff,tv_new,tv_old);
-		if(tv_diff.tv_sec > READER_TIMEOUT)
+		if(tv_diff.tv_sec > READER_TIMEOUT || die)
 		{
 		    if(tv_diff.tv_sec > READER_TIMEOUT)
 		    {
 			cleanup_log_if(ERROR_READ_TIMEOUT,"Logger timed out!");
 		    }
-		    err_log("Closing logger..");
 		    goto cleanup;
 		}
 		usleep(IO_FAIL_SLP_US);
@@ -137,6 +145,11 @@ void uquad_logger_read(int pipefd, char *log_name, char *path)
     err_log_str("Closing logger:",file_name);
     if(log_file != NULL)
     {
+	retval = fflush(log_file);
+	if(retval < 0)
+	{
+	    err_log_stderr("Failed to flush log file!");
+	}
 	retval = fclose(log_file);
 	if(retval < 0)
 	{
@@ -181,6 +194,10 @@ FILE *uquad_logger_add(char *log_name, char *path)
 	/// Child - Reads from pipe
 	// Close write end of pipe
 	close(pipefd[1]);
+	// Let logger finish before dying.
+	signal(SIGINT, uquad_logger_die);
+	signal(SIGQUIT,uquad_logger_die);
+	signal(SIGPIPE,uquad_logger_die);
 	uquad_logger_read(pipefd[0], log_name, path);
 	return NULL;
     }
