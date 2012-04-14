@@ -7,6 +7,24 @@ kin      = load([path 'kalman_in.log']);
 imu_data = load([path 'imu_data.log']);
 x_hat_c  = load([path 'x_hat.log'    ]);
 wlog     = load([path 'w.log'        ]);
+
+lens     = [length(kin)      ...
+            length(imu_data) ...
+            length(x_hat_c)  ...
+            length(wlog)];
+if(sum(diff(lens)) ~= 0)
+  len_min = min(lens);
+  fprintf('WARN: Will trim by:\n\tkin:\t\t%d\n\timu_data:\t%d\n\tx_hat:\t\t%d\n\tw:\t\t%d\n\t\n', ...
+    length(kin)      - len_min, ...
+    length(imu_data) - len_min, ...
+    length(x_hat_c)  - len_min, ...
+    length(wlog)     - len_min);    
+  kin      = kin     (1:len_min,:);
+  imu_data = imu_data(len_min:end-len_min+1,:);
+  x_hat_c  = x_hat_c (1:len_min,:);
+  wlog     = wlog    (1:len_min,:);
+end
+
 kin_cut  = kin(end-length(x_hat_c)+1:end,:);
 
 z        = kin2z([ones(length(kin_cut),1) kin_cut]);
