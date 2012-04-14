@@ -16,6 +16,8 @@
 #define LOG_BUKAKE         1
 #endif
 
+#define GPS_FAKE           1 // Simulate GPS data (use zeros)
+
 #if LOG_BUKAKE
 #define LOG_BUKAKE_STDOUT  1
 #endif
@@ -179,7 +181,7 @@ void quit()
     uquad_mat_free(imu_data.acc);
     uquad_mat_free(imu_data.gyro);
     uquad_mat_free(imu_data.magn);
-#if USE_GPS
+#if USE_GPS && !GPS_FAKE
     gps_comm_data_free(gps_dat);
 #endif
 
@@ -494,7 +496,7 @@ int main(int argc, char *argv[]){
 	imu_update = false,
 	reg_stdin = true;
     uquad_bool_t gps_update = false;
-#if USE_GPS
+#if USE_GPS && !GPS_FAKE
     uquad_bool_t reg_gps = (gps == NULL)?false:true;
 #endif
     int runs_imu = 0, runs_kalman = 0;
@@ -717,6 +719,7 @@ int main(int argc, char *argv[]){
 	}//if(read)
 
 #if USE_GPS
+#if !GPS_FAKE
 	/// -- -- -- -- -- -- -- --
 	/// Check GPS updates
 	/// -- -- -- -- -- -- -- --
@@ -741,13 +744,32 @@ int main(int argc, char *argv[]){
 #if LOG_GPS
 		log_tv_only(log_gps, tv_diff);
 		gps_comm_dump(gps, gps_dat, log_gps);
-#endif
+#endif // LOG_GPS
 		tv_gps_last = tv_tmp;
 	    }
 	    end_gps:;
 	    // will jump here if something went wrong during GPS reading
 	}
-#endif
+#else // GPS_FAKE
+	gettimeofday(&tv_tmp,NULL);
+	retval = uquad_timeval_substract(&tv_diff, tv_tmp, tv_gps_last);
+	if(tv_diff.tv_sec > 1 && (runs_imu > STARTUP_RUNS))
+	{
+	    // gps_dat is set to 0 when allocated, so just use it.
+	    gps_update = true;
+	    tv_gps_last = tv_tmp;
+	    if(pp->pt != HOVER)
+	    {
+		quit_log_if(ERROR_GPS, "Fake GPS does not make sense if not hovering!");
+	    }
+	}
+	else
+	{
+	    gps_update = false;
+	}
+	retval = ERROR_OK; // clear retval
+#endif // GPS_FAKE
+#endif // USE_GPS
 
 	/// -- -- -- -- -- -- -- --
 	/// check if new data
