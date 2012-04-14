@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -E
 # Check if comm with server is running, if not, kill cmd.
 
 # wait for cmd startup

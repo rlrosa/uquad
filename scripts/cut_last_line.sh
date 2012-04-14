@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -E
 # Will remove last line from *.log in $1 or current directory
 
 if [ $1 ];

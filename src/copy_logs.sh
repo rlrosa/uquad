@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -E
 
 EXPECTED_ARGS=2
 

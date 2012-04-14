@@ -1,5 +1,7 @@
-#!/bin/bash
+#!/bin/bash -e
 # Run main and whatever is required
+# -E: Exit immediately if a command exits with a non-zero status.
+#     ERR trap is inherited by shell functions.
 # Args:
 #   ./go.sh <serial_port> <do_pc_test>
 
