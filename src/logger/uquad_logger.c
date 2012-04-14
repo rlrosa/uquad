@@ -14,7 +14,7 @@
 #define READ_SIZE      128
 #define BUFF_SIZE      (READ_SIZE<<8)
 #define FLUSH_SIZE     (BUFF_SIZE - READ_SIZE)
-#define IO_STUCK_US    10000
+#define IO_STUCK_S     1
 #define IO_FAIL_SLP_US 500
 
 void uquad_logger_read(int pipefd, char *log_name, char *path)
@@ -75,7 +75,7 @@ void uquad_logger_read(int pipefd, char *log_name, char *path)
 #if DEBUG
 		gettimeofday(&tv_new,NULL);
 		retval = uquad_timeval_substract(&tv_diff, tv_new, tv_pre);
-		if(in_range_us(tv_diff,0,IO_STUCK_US) != 0)
+		if(tv_diff.tv_sec > 0)
 		{
 		    err_log_tv("read() got stuck!",tv_diff);
 		}
@@ -101,7 +101,7 @@ void uquad_logger_read(int pipefd, char *log_name, char *path)
 #if DEBUG
 			gettimeofday(&tv_new,NULL);
 			retval = uquad_timeval_substract(&tv_diff, tv_new, tv_pre);
-			if(in_range_us(tv_diff,0,IO_STUCK_US) != 0)
+			if(tv_diff.tv_sec > 0)
 			{
 			    err_log_tv("write() got stuck!",tv_diff);
 			}
