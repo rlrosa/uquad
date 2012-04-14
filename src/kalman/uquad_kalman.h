@@ -6,6 +6,21 @@
 
 #define STATE_COUNT       12
 
+typedef enum STATE_VECTOR{
+    SV_X = 0,
+    SV_Y,
+    SV_Z,
+    SV_PSI,
+    SV_PHI,
+    SV_THETA,
+    SV_VQX,
+    SV_VQY,
+    SV_VQZ,
+    SV_WQX,
+    SV_WQY,
+    SV_WQZ
+}STATE_VECTOR_T;
+
 /**
  * Kalman struct description:
  *

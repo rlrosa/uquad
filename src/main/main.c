@@ -916,7 +916,11 @@ int main(int argc, char *argv[]){
 		}
 		retval = imu_comm_raw2data(imu, &imu->calib.null_est, &imu_data);
 		quit_log_if(retval,"Failed to correct setpoint!");
-		pp->sp->x->m_full[5] = imu_data.magn->m_full[2];
+		pp->sp->x->m_full[SV_THETA] = imu_data.magn->m_full[2];
+		/// Start kalman from calibration value
+		kalman->x_hat->m_full[SV_PSI]   = imu_data.magn->m_full[0];
+		kalman->x_hat->m_full[SV_PHI]   = imu_data.magn->m_full[1];
+		kalman->x_hat->m_full[SV_THETA] = imu_data.magn->m_full[2];
 		retval = imu_comm_print_data(&imu_data, stderr);
 		if(retval != ERROR_OK)
 		{
