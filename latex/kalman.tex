@@ -116,11 +116,12 @@ Como se puede ver en el esquema mostrado en la figura \ref{fig:diagrama_kalman},
 % TODO hablar de Q y R. capaz poner 2 ejemplos de lo mismo q den bien distinto
 
 
-\section{Resultados Kalman inercial}
+\section{Resultados: Kalman inercial}
 
 \subsection{Simulación de vuelo}
 \subsubsection{Hovering}
-Se presentan algunos resultados de la implementación del filtro de Kalman como estimador del vector de estados. Se seteó como entrada una velocidad angular en los motores calculada para equiulibrar la fuerza del peso de cuadricóptero, simulando una situación de vuelo donde el mismo queda suspenbdido en el aire.\\
+La trayectoria de \emph{Hovering} consiste en que el cuadricóptero permanezca suspendido en el aire en el lugar. Para simular esta situación se setea como entrada una velocidad angular en los motores calculada para equiulibrar la fuerza del peso de cuadricóptero.
+Se presentan a continuación algunos resultados de la implementación del filtro de Kalman como estimador del vector de estados.\\
 
 \begin{figure} [h!]
 \centering
@@ -132,9 +133,9 @@ Se presentan algunos resultados de la implementación del filtro de Kalman como 
   \label{fig:posyvel}
 \end{figure}
 
-En la figura \ref{fig:wq} se muestra la estimación de las velocidades angulares, junto con las medidas del giróscopo. Se puede ver claramente que la estimación del estado sigue a las medidas del giróscopo, suavizándolas y logrando robustez frente a ruidos inherentes al sensor.\\
+En la figura \ref{fig:wq} se muestra la estimación de las velocidades angulares, junto con las medidas del giróscopo. Se puede ver claramente que la estimación del estado sigue a las medidas del giróscopo, suavizándolas y logrando robustez frente a ruidos inherentes al sensor.
 
-Por otro lado en la figura \ref{fig:euler} se muestra la orientación obtenida, junto con la orientación obtenida de los acelerómetros y magnetómetros de la IMU. \\
+Por otro lado en la figura \ref{fig:euler} se muestra tanto la orientación estimada por el filtro de Kalman, como la deducida directamente a partir de las medidas de los acelerómetros y magnetómetros de la IMU. Nuevamente se puede apreciar el buen comportamiento del filtro, suavizando notoriamente las medidas otorgadas por la imu. Además resulta intersante analizar el transitorio de la estimación del estado, es decir, el tiempo que el filtro tarda en estimar al estado. En este caso el estimador tarda aproximadamente 7 segundos en pasar de $\theta = 0$ hasta $\theta = 170$, lo cual sin duda es un tiempo totalmente inaceptable en vuelo. Este es uno de los casos más extremos ya que el ángulo $\theta$ es cercano a 180 grados. De todas maneras es un problema muy facilmente solucionable ya que esta etapa de \emph{calentamiento} del filtro puede realizarse antes de que el cuadricóptero levante vuelo.\\
 
 Del resto de las variables de estado, $x$, $y$, $z$, $v_{qx}$, $v_{qy}$ y $v_{qz}$, la única que tiene realimentación, considerando una estimación de estado puramente inercial, es $z$. El resto quedan determinadas únicamente por el modelo físico, en el cual se basa la etapa de predicción del filtro de Kalman. Dicho de otro modo, la etapa de actualización/corrección del filtro no surte efecto sobre dichas variables de estado.\\
 
@@ -152,9 +153,7 @@ Como se puede ver en la figura \ref{fig:posyvel}, la estimación de los estados 
 
 \subsubsection{Situación imposible}
 
-a 45 grados quieto en el aire es imposible.\\
-la medida tira una cosa y la prediccion\\
-kalman hace algo en el medio\\
+Se simula una situación donde todos los motores se setean a una velocidad $w_{hover}$, como en el caso anterior, pero en esta oportunidad el cuadricóptero se dispone con un ángulo de $\varphi = 45^o$. Claramente es una situación de vuelo imposible ya que con esa velocidad en los motores el cuadicóptero no podría quedarse quieto en un lugar. Se puede analizar la estimación de la orientación obtenida por el filtro en la figura \ref{fig:45}.
 
 \begin{figure}[h!]
 	\centering
@@ -163,10 +162,11 @@ kalman hace algo en el medio\\
 	\label{fig:45}
 \end{figure}
 
+Lo que sucede en esta situación es que la predicción de la orientación realizada en el filtro de Kalman no coincide con las medidas otorgadas por los sensores. El desempeño del filtro en este caso estará determinado por la relación entre el peso que se le de a la observación y el que se le de a la predicción. En este caso el peso de la predicción es lo suficientemente grande como para que el filtro estime un estado distinto al que otorgan los sensores.
+
 \subsection{Vuelo real}
 
-Terrible ruido vieja\\
-es de vital importancia analizar el comportamiento del filtro sobre una situación real de vuelo ya que en este caso las medidas de los sensores serán más ruidosas.\\
+Si bien las simulaciones resultan importantes para analizar el comportamiento del filtro en diferentes situaciones, se presenta la limitación de poder simular situaciones de vuelo real. Además al estar prendidos lo motres se generan vibraciones e interferencias que provocan un aumento en el ruido de las medidas obtenidas mediante los sensores. Por estos motivos es de vital importancia analizar el comportamiento del filtro sobre una situación real de vuelo.\\
 
 \begin{figure}[h!]
 	\centering
@@ -175,8 +175,10 @@ es de vital importancia analizar el comportamiento del filtro sobre una situaci�
 	\label{fig:andando}
 \end{figure}
 
+En la figura \ref{fig:andando} se muestra los resultados de la estimación de la orientación del cuadricóptero. Se observa claramente un aumento del ruido de las medidas respecto a los casos simulados, llegando a picos de hasta 50 grados. De todas maneras se puede corroborar el buen funcionamiento del filtro.\\
 
 anda rico\\
+
 vos ves\\
 
 
