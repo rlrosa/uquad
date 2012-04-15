@@ -8,7 +8,8 @@ if [ ! "$x" = "" ]; then
     echo "No connection, detected, will not control cmd..."
     exit
 fi
-sleep 5
+echo "check_net.sh running..."
+sleep 1
 
 # check connections
 while(true);
@@ -20,5 +21,5 @@ do
 	kill -9 `pidof -s cmd`
 	exit
     fi
-    sleep 5
+    sleep 1
 done
