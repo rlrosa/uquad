@@ -1,15 +1,14 @@
-function [t,X,Y]=sim_lazo_cerrado(ti,tf,setpoint,modo)
+function [t,X,Y]=sim_lazo_cerrado(ti,tf,set,modo)
 %function [t,X,Y]=sim_lazo_cerrado(ti,tf,X0,setpoint,modo)
 %--------------------------------------------------------------------------
 %Esta es la propia así que la voy a comentar bien.
-%   -ti y tf son escalares que corresponden al tiempo
-%   -X0 es un vector horizontal de 12 variables que corresponde a las
-%   condiciones iniciales
-%	-modo es un string que corresponde al modo de vuelo:
+%    -ti y tf son escalares que corresponden al tiempo
+% 	 -modo es un string que corresponde al modo de vuelo:
 %        *hov para hovering
-%         *rec para recta   
-%Setpoint de hovering: [Xs;Ys;Zs;THETAs]
-%Setpoint de la linea recta: [Vqxs;Vqys;Vqzs;THETAs]
+%        *rec para recta 
+%            
+%Setpoint de hovering: [xs;ys;zs;thetas]
+%Setpoint de la linea recta: [vqxs;vqys;vqzs;thetass]
 %--------------------------------------------------------------------------
 
 
@@ -23,113 +22,45 @@ assignin('base','Ixx',2.32e-2);
 assignin('base','Iyy',2.32e-2);
 assignin('base','Izz',4.37e-2);
 assignin('base','Izzm',1.54e-5);
-%assignin('base','Ts',5e-2)
+
 %Tiempo de simulación.
 t=linspace(ti,tf,(tf-ti)*10);
 
-% %Condiciones iniciales
-% 
-% assignin('base','x0',X0(1));assignin('base','y0',X0(2)); 
-% assignin('base','z0',X0(3));
-% 
-% assignin('base','psi0',X0(4));assignin('base','phi0',X0(5));
-% assignin('base','theta0',X0(6));
-% 
-% assignin('base','vq10',X0(7));assignin('base','vq20',X0(8));
-% assignin('base','vq30',X0(9));
-% 
-% assignin('base','wq10',X0(10));assignin('base','wq20',X0(11));
-% assignin('base','wq30',X0(12));
-
-
 %% Setpoint para hovering
-
 if modo=='hov'
+        
+    setpoint = [set(1) set(2) set(3) 0 0 set(4) 0 0 0 0 0 0];
     
-    %Setpoint x,y,z,theta;
-    N= [1 0 0 0; %x 
-        0 1 0 0; %y
-        0 0 1 0; %z
-        0 0 0 0; %psi   
-        0 0 0 0; %phi
-        0 0 0 1; %theta
-        0 0 0 0; %vq1
-        0 0 0 0; %vq2
-        0 0 0 0; %vq3
-        0 0 0 0; %wq1
-        0 0 0 0; %wq2
-        0 0 0 0];%wq3
-
-    %Defino el setpoint de las velocidade angulares
     w = zeros(4,length(t));
-    w(:,:) =316.103650939028;
-   
-   
-    
-    
-    
+    w(:,:) =calc_omega(evalin('base','M')*evalin('base','g')/4);
 
 %% Setpoint para linea recta
-
 elseif modo=='rec';
          
-    %setpoint x y z vq1, vq2,vq3,theta
-    N =[1 0 0 0 0 0 0;  
-        0 1 0 0 0 0 0;
-        0 0 1 0 0 0 0; 
-        0 0 0 0 0 0 0;
-        0 0 0 0 0 0 0;
-        0 0 0 0 0 0 1;
-        0 0 0 1 0 0 0;
-        0 0 0 0 1 0 0;
-        0 0 0 0 0 1 0;
-        0 0 0 0 0 0 0;
-        0 0 0 0 0 0 0;
-        0 0 0 0 0 0 0];
- 
-    %Defino el setpoint de las velocidade angulares
+    setpoint = [ 0; 0; set(4); set(1); set(2); set(3); 0; 0; 0]; % The positions are set in the simulink model as the integral of the speeds
+    
     w = zeros(4,length(t));
-    w(:,:) =316.103650939028;
+    w(:,:) =calc_omega(evalin('base','M')*g/4);
 
 %% Setpoint para circulos
-
 elseif modo=='cir';
          
-    G=trim_circ(setpoint(1),setpoint(2))
-   
-    N =eye(12);
-    %Defino el setpoint de las velocidades angulares
-    w=[G(9);G(10);G(11);G(12)]*ones(1,length(t));
-    setpoint = [ G(1) G(2) G(3) G(4) G(5) G(6) G(7) G(8)];
- 
+    %Returns psi, \dot{theta},angular speeds and angular speeds of the
+    %rotors
+    G=trim_circ(set(1),set(2))       
     
+    w=[G(4);G(5);G(6);G(7)]*ones(1,length(t));
+    setpoint = [ 0; -evalin('base','R')*cos(G(1)); evalin('base','R')*sin(G(1)); G(1); 0; set(1); 0; 0; G(2); 0; G(3)]; %theta is set in the simulink model as the integral of the angular speed 
     
 end
 %% Simulo el sistema
 
-
-assignin('base','N',N)
 assignin('base','setpoint',setpoint)
 
-if modo=='cir'
-    K=linealizacion_dis(modo,[setpoint w(:,1)'],0);
-    assignin('base','K', K);
+K=linealizacion_dis(modo,setpoint, w(:,1)');
+assignin('base','K', K);
     
-    %TODO: Poder calcular el centro del círculo automáticamente
-    assignin('base','xc',0);
-    assignin('base','yc',0);
-    assignin('base','zc',0);
-        
-    
-else
-    K= linealizacion_dis(modo,setpoint,0);
-    assignin('base','K', K);
-    
-
-
-end
-%modelo=['lazo_cerrado_' modo];
-modelo=['lazo_cerrado_' modo '_dis'];
+modelo=['lazo_cerrado_' modo];
 [t,X,Y]=sim(modelo,[ti tf],[],[t',w(1,:)',w(2,:)',w(3,:)',w(4,:)']);
 
 

@@ -89,7 +89,7 @@ static uquad_mot_t *mot;
 static io_t *io;
 static ctrl_t *ctrl;
 static path_planner_t *pp;
-#if USE_GPS
+#if USE_GPS && !GPS_FAKE
 static gps_t *gps;
 #endif
 /// Global var
@@ -155,7 +155,7 @@ void quit()
 	err_log("Could not close IMU correctly!");
     }
 
-#if USE_GPS
+#if USE_GPS && !GPS_FAKE
     /// GPS
     gps_comm_deinit(gps);
 #endif
@@ -321,7 +321,7 @@ int main(int argc, char *argv[]){
 	quit_log_if(ERROR_FAIL,"imu init failed!");
     }
 
-#if USE_GPS
+#if USE_GPS && !GPS_FAKE
     /// GPS
     gps = gps_comm_init();
     if(gps == NULL)
@@ -480,7 +480,7 @@ int main(int argc, char *argv[]){
     quit_log_if(retval,"Failed to get imu fds!!");
     retval = io_add_dev(io,imu_fds);
     quit_log_if(retval,"Failed to add imu to dev list");
-#if USE_GPS
+#if USE_GPS && !GPS_FAKE
     // gps
     int gps_fds;
     if(gps != NULL)
@@ -525,7 +525,6 @@ int main(int argc, char *argv[]){
 	tv_start;
     gettimeofday(&tv_start,NULL);
     gettimeofday(&tv_last_ramp,NULL);
-    gettimeofday(&tv_last_kalman,NULL);
 #if TIMING
     struct timeval
 	tv_pgm,
@@ -672,6 +671,8 @@ int main(int argc, char *argv[]){
 		    err_log_std(err_imu);
 		    err_imu = gettimeofday(&tv_last_imu,NULL);
 		    err_log_std(err_imu);
+		    tv_gps_last    = tv_last_imu;
+		    tv_last_kalman = tv_last_imu;
 		    err_imu = uquad_timeval_substract(&tv_diff,tv_last_imu,tv_start);
 		    if(err_imu < 0)
 		    {
@@ -811,36 +812,44 @@ int main(int argc, char *argv[]){
 	/// Update state estimation
 	/// -- -- -- -- -- -- -- --
 	gettimeofday(&tv_tmp,NULL); // will be used to set tv_last_kalman
-	retval = uquad_timeval_substract(&tv_diff,tv_tmp,tv_last_kalman);
-	if(retval < 0)
+	if(runs_kalman == 0)
 	{
-	    log_n_continue(ERROR_TIMING,"Absurd timing!");
-	}
-#if TIMING && TIMING_KALMAN
-	gettimeofday(&tv_pgm,NULL);
-	printf("KALMAN:\t%ld\t\t%ld.%06ld\n", tv_diff.tv_usec,
-	       tv_pgm.tv_sec - tv_start.tv_sec,
-	       tv_pgm.tv_usec);
-#endif
-	/// Check sampling period jitter
-	retval = in_range_us(tv_diff, TS_MIN, TS_MAX);
-	kalman_loops = (kalman_loops+1)%32768;// avoid overflow
-	if(retval != 0)
-	{
-	    if(ts_error_wait == 0)
-	    {
-		// Avoid saturating log
-		err_log_tv("TS supplied to Kalman out of range!:",tv_diff);
-		ts_error_wait = TS_ERROR_WAIT;
-	    }
-	    ts_error_wait--;
-	    /// Lie to kalman, avoid large drifts
-	    tv_diff.tv_usec = (retval > 0) ? TS_MAX:TS_MIN;
+	    // First time here, use fake timestamp
+	    tv_diff.tv_usec = TS_DEFAULT_US;
 	}
 	else
 	{
-	    // Print next T_s error immediately
-	    ts_error_wait = 0;
+	    retval = uquad_timeval_substract(&tv_diff,tv_tmp,tv_last_kalman);
+	    if(retval < 0)
+	    {
+		log_n_continue(ERROR_TIMING,"Absurd timing!");
+	    }
+#if TIMING && TIMING_KALMAN
+	    gettimeofday(&tv_pgm,NULL);
+	    printf("KALMAN:\t%ld\t\t%ld.%06ld\n", tv_diff.tv_usec,
+		   tv_pgm.tv_sec - tv_start.tv_sec,
+		   tv_pgm.tv_usec);
+#endif
+	    /// Check sampling period jitter
+	    retval = in_range_us(tv_diff, TS_MIN, TS_MAX);
+	    kalman_loops = (kalman_loops+1)%32768;// avoid overflow
+	    if(retval != 0)
+	    {
+		if(ts_error_wait == 0)
+		{
+		    // Avoid saturating log
+		    err_log_tv("TS supplied to Kalman out of range!:",tv_diff);
+		    ts_error_wait = TS_ERROR_WAIT;
+		}
+		ts_error_wait--;
+		/// Lie to kalman, avoid large drifts
+		tv_diff.tv_usec = (retval > 0) ? TS_MAX:TS_MIN;
+	    }
+	    else
+	    {
+		// Print next T_s error immediately
+		ts_error_wait = 0;
+	    }
 	}
 	if(runs_kalman > STARTUP_KALMAN)
 	{
@@ -907,7 +916,11 @@ int main(int argc, char *argv[]){
 		}
 		retval = imu_comm_raw2data(imu, &imu->calib.null_est, &imu_data);
 		quit_log_if(retval,"Failed to correct setpoint!");
-		pp->sp->x->m_full[5] = imu_data.magn->m_full[2];
+		pp->sp->x->m_full[SV_THETA] = imu_data.magn->m_full[2];
+		/// Start kalman from calibration value
+		kalman->x_hat->m_full[SV_PSI]   = imu_data.magn->m_full[0];
+		kalman->x_hat->m_full[SV_PHI]   = imu_data.magn->m_full[1];
+		kalman->x_hat->m_full[SV_THETA] = imu_data.magn->m_full[2];
 		retval = imu_comm_print_data(&imu_data, stderr);
 		if(retval != ERROR_OK)
 		{
@@ -917,8 +930,8 @@ int main(int argc, char *argv[]){
 	    }
 	    if(runs_kalman == STARTUP_KALMAN)
 	    {
-		gettimeofday(&tv_last_m_cmd,NULL);
-		retval = uquad_timeval_substract(&tv_diff,tv_last_m_cmd,tv_start);
+		gettimeofday(&tv_tmp,NULL);
+		retval = uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
 		if(retval < 0)
 		{
 		    err_log("Absurd Kalman startup time!");
@@ -952,6 +965,8 @@ int main(int argc, char *argv[]){
 		uquad_mat_dump(wt,log_w);
 		fflush(log_w);
 #endif // LOG_W
+		tv_last_ramp  = tv_tmp;
+		tv_last_m_cmd = tv_tmp;
 		retval = gettimeofday(&tv_last_ramp,NULL);
 		log_n_continue(retval,"Failed to update ramp timer!");
 		continue;

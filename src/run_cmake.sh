@@ -1,3 +1,5 @@
+#!/bin/bash -E
+
 cd build
 dest_platform=
 debug=

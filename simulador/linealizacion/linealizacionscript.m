@@ -62,4 +62,4 @@ dXcirc(1:3,1)= [vq1+wq2*z-wq3*y;
 A3primeras=[diff(dXcirc,x) diff(dXcirc,y) diff(dXcirc,z)  diff(dXcirc,psis) diff(dXcirc,phi) diff(dXcirc,theta) diff(dXcirc,vq1) diff(dXcirc,vq2) diff(dXcirc,vq3)  diff(dXcirc,wq1) diff(dXcirc,wq2) diff(dXcirc,wq3)];
 Acirc=[A3primeras;A(4:12,1:12)];
 
-save('./simulador/lazo_cerrado/linealizacion','A','B','Acirc'); 
+save('./simulador/lazo_cerrado/linealizacion','A','B','Acirc','-mat'); 
