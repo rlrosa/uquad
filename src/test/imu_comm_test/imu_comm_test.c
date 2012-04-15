@@ -19,20 +19,26 @@
 #define WAIT_COUNTER_MAX 10
 #define IMU_COMM_TEST_EOL_LIM 128
 
-#define PRINT_RAW  0
-#define PRINT_DATA 1
+#define PRINT_RAW  1
+#define PRINT_DATA 0
 #define PRINT_AVG  0
 
 #define TIMING_DEBUG   1
 #define TIMING_ERR_MAX 0
 
-#define PRINT_LOOP          1         // Stop reading from IMU, and loop in printing
+#define PRINT_LOOP          0         // Stop reading from IMU, and loop in printing
 #define PRINT_LOOP_DELAY_US (1000*10) // Match IMU sampling freq
 
 static imu_t *imu = NULL;
+#if PRINT_RAW
 static FILE *log_imu_raw = NULL;
+#endif // PRINT_RAW
+#if PRINT_DATA
 static FILE *log_imu_data = NULL;
+#endif // PRINT_DATA
+#if PRINT_AVG
 static FILE *log_imu_avg = NULL;
+#endif // PRINT_AVG
 
 static struct timeval tv_max;
 
@@ -41,9 +47,15 @@ void quit()
     // Deinit structure & close connection
     (void) imu_comm_deinit(imu);
     // Close log files, if any
+#if PRINT_RAW
     uquad_logger_remove(log_imu_raw);
+#endif // PRINT_RAW
+#if PRINT_DATA
     uquad_logger_remove(log_imu_data);
+#endif // PRINT_DATA
+#if PRINT_AVG
     uquad_logger_remove(log_imu_avg);
+#endif
     err_log_tv("Max delay:",tv_max);
     printf("Exit successful!\n");
     exit(0);
@@ -77,7 +89,8 @@ int main(int argc, char *argv[]){
     {
 	device = argv[1];
     }
-   
+
+#if PRINT_RAW
     // Setup raw frame log
     log_imu_raw = uquad_logger_add("imu_raw");
     if(log_imu_raw == NULL)
@@ -85,7 +98,9 @@ int main(int argc, char *argv[]){
 	err_log("Failed to create frame log file...");
 	quit();
     }
+#endif
 
+#if PRINT_DATA
     // Setup data log
     log_imu_data = uquad_logger_add("imu_data");
     if(log_imu_data == NULL)
@@ -93,7 +108,9 @@ int main(int argc, char *argv[]){
 	err_log("Failed to create data log file...");
 	quit();
     }
+#endif
 
+#if PRINT_AVG
     // Setup avg log
     log_imu_avg = uquad_logger_add("imu_avg");
     if(log_imu_avg == NULL)
@@ -101,6 +118,7 @@ int main(int argc, char *argv[]){
 	err_log("Failed to create avg log file...");
 	quit();
     }
+#endif
 
     // Initialize structure
     imu = imu_comm_init(device);
@@ -127,6 +145,7 @@ int main(int argc, char *argv[]){
     retval = imu_comm_get_fds(imu, &imu_fd);
     FD_ZERO(&rfds);
     printf("Options:\n'q' to abort,\n'c' to calibrate\n's' to display current calibration\n\n");
+    gettimeofday(&tv_old,NULL);
     while(1){
 	if(do_sleep){
 	    printf("Waiting...\n");
@@ -167,6 +186,32 @@ int main(int argc, char *argv[]){
 		    continue;
 		sample_count++;
 
+#if TIMING_DEBUG
+		gettimeofday(&tv_tmp,NULL);
+		uquad_timeval_substract(&tv_diff, tv_tmp, tv_old);
+		retval = uquad_timeval_substract(&tv_tmp2, tv_diff, tv_max);
+		if(retval > 0)
+		{
+		    tv_max = tv_diff;
+		    err_log_tv("Current max delay:",tv_max);
+		}
+		if(tv_diff.tv_sec > 0)
+		{
+		    if(++err_count > TIMING_ERR_MAX)
+		    {
+			err_log_num("Out of range!:",err_count);
+			quit();
+		    }
+		}
+		retval = imu_comm_get_raw_latest_unread(imu,&raw);
+		quit_if(retval);
+		retval = imu_comm_print_raw(&raw,log_imu_raw);
+		quit_if(retval);
+		tv_old = tv_tmp;
+		continue;
+#endif
+
+
 		if(imu_comm_get_status(imu) == IMU_COMM_STATE_CALIBRATING)
 		    // if calibrating, then data should not be used.
 		    continue;
@@ -185,39 +230,6 @@ int main(int argc, char *argv[]){
 		    gettimeofday(&tv_old,NULL);
 		    calibrating = false;
 		}
-#if TIMING_DEBUG
-#if PRINT_LOOP
-		err_log("Entering print loop");
-		while(1)
-		{
-		    retval = imu_comm_get_data_latest(imu,&data);
-		    quit_if(retval);
-		    retval = imu_comm_print_data(&data,log_imu_data);
-		    quit_if(retval);
-		    usleep(PRINT_LOOP_DELAY_US);
-#endif // PRINT_LOOP
-
-		    gettimeofday(&tv_tmp,NULL);
-		    uquad_timeval_substract(&tv_diff, tv_tmp, tv_old);
-		    retval = uquad_timeval_substract(&tv_tmp2, tv_diff, tv_max);
-		    if(retval > 0)
-		    {
-			tv_max = tv_diff;
-			err_log_tv("Current max delay:",tv_max);
-		    }
-		    if(tv_diff.tv_sec > 0)
-		    {
-			if(err_count++ > TIMING_ERR_MAX)
-			{
-			    err_log_num("Out of range!:",err_count);
-			    quit();
-			}
-		    }
-		    tv_old = tv_tmp;
-#if PRINT_LOOP
-		}
-#endif // PRINT_LOOP
-#endif
 #if PRINT_RAW
 		retval = imu_comm_get_raw_latest_unread(imu,&raw);
 		if(retval == ERROR_OK)
