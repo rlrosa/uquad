@@ -1,4 +1,4 @@
-function [kin, imu_data, x_hat_c, wlog, kin_cut, z] = plot_c(path)
+% function [kin, imu_data, x_hat_c, wlog, kin_cut, z] = plot_c(path)
 % -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 % function [kin, imu_data, x_hat_c, wlog, kin_cut, z] = plot_c(path)
 % -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
@@ -51,7 +51,7 @@ plot_main(x_hat_c,t_x_hat, ...
 
 plot_w(wlog)
 
-figure; 
-    plot(wlog(:,2)+wlog(:,4)-wlog(:,3)-wlog(:,5),'r','linewidth',3); 
-    title('diferencia entre velocidades angulares (adelante+atras)-(derecha+izquierda)'); 
-    legend('Giro en z')
+% figure; 
+%     plot(wlog(:,2)+wlog(:,4)-wlog(:,3)-wlog(:,5),'r','linewidth',3); 
+%     title('diferencia entre velocidades angulares (adelante+atras)-(derecha+izquierda)'); 
+%     legend('Giro en z')
