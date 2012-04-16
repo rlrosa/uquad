@@ -85,10 +85,10 @@ elseif modo=='cir'
     Aext = [Ac Z1;Id Z2];
     Bext = [Bc;ZB];
     % Construcción de la matriz K método LQR para circulos
-    Q = diag([1 1 1 1e3 1e3 1e3 1 1 1 1 1 1 1e-4 1e-4 1e-4 1e-4]);
+    Q = diag([1 1 1 1e3 1e3 1e3 1 1 1 1 1 1 1 1 1e-3 1]);
     R=diag([1e-2 1e-2 1e-2 1e-2]);
-    %K=uquad_dlqr(Aext,Bext,Q,R);  
-    K =lqr(Ac,Bc,Q,R);
+    K=uquad_dlqr(Aext,Bext,Q,R);  
+    
      
 end
  

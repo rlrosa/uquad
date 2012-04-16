@@ -20,7 +20,7 @@ Model {
       BusObject		      ""
       Name		      "w4"
     }
-    NumRootOutports	    13
+    NumRootOutports	    15
     Outport {
       BusObject		      ""
       BusOutputAsStruct	      "off"
@@ -87,8 +87,18 @@ Model {
       BusOutputAsStruct	      "off"
       Name		      "noise"
     }
+    Outport {
+      BusObject		      ""
+      BusOutputAsStruct	      "off"
+      Name		      "noise1"
+    }
+    Outport {
+      BusObject		      ""
+      BusOutputAsStruct	      "off"
+      Name		      "noise2"
+    }
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.250"
+    ComputedModelVersion    "1.259"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -119,9 +129,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "pater"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Sat Apr 14 20:04:14 2012"
-  RTWModifiedTimeStamp	  256334635
-  ModelVersionFormat	  "1.%<AutoIncrement:250>"
+  LastModifiedDate	  "Mon Apr 16 17:34:54 2012"
+  RTWModifiedTimeStamp	  256497180
+  ModelVersionFormat	  "1.%<AutoIncrement:259>"
   ConfigurationManager	  "None"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -934,7 +944,7 @@ Model {
     ShowPageBoundaries	    off
     ZoomFactor		    "100"
     ReportName		    "simulink-default.rpt"
-    SIDHighWatermark	    "2448"
+    SIDHighWatermark	    "2451"
     Block {
       BlockType		      Inport
       Name		      "w1"
@@ -1143,7 +1153,7 @@ Model {
       System {
 	Name			"Setpoint"
 	Location		[0, 53, 1366, 768]
-	Open			off
+	Open			on
 	ModelBrowserVisibility	off
 	ModelBrowserWidth	200
 	ScreenColor		"white"
@@ -1247,7 +1257,7 @@ Model {
 	  Name			  "xq,yq,zq"
 	  SID			  "2445"
 	  Position		  [55, 150, 85, 180]
-	  Value			  "[setpoint(1);setpoint(2);setpoint(3)]"
+	  Value			  "[setpoint(3);setpoint(2);setpoint(1)]"
 	}
 	Block {
 	  BlockType		  Outport
@@ -11469,6 +11479,22 @@ Model {
       Port		      "13"
       IconDisplay	      "Port number"
     }
+    Block {
+      BlockType		      Outport
+      Name		      "noise1"
+      SID		      "2450"
+      Position		      [320, 618, 350, 632]
+      Port		      "14"
+      IconDisplay	      "Port number"
+    }
+    Block {
+      BlockType		      Outport
+      Name		      "noise2"
+      SID		      "2451"
+      Position		      [830, 763, 860, 777]
+      Port		      "15"
+      IconDisplay	      "Port number"
+    }
     Line {
       SrcBlock		      "Subsystem1"
       SrcPort		      1
@@ -11835,20 +11861,6 @@ Model {
       }
     }
     Line {
-      SrcBlock		      "Mux2"
-      SrcPort		      1
-      Points		      [40, 0]
-      DstBlock		      "Gain"
-      DstPort		      1
-    }
-    Line {
-      SrcBlock		      "Discrete-Time\nIntegrator"
-      SrcPort		      1
-      Points		      [0, 20; 95, 0]
-      DstBlock		      "Mux2"
-      DstPort		      2
-    }
-    Line {
       SrcBlock		      "Gain"
       SrcPort		      1
       Points		      [0, -35; -675, 0; 0, -115]
@@ -11865,9 +11877,16 @@ Model {
     Line {
       SrcBlock		      "Product"
       SrcPort		      1
-      Points		      [20, 0; 0, 50; -460, 0; 0, 45; -380, 0]
-      DstBlock		      "Vector\nConcatenate"
-      DstPort		      1
+      Points		      [20, 0; 0, 50; -435, 0]
+      Branch {
+	Points			[-25, 0; 0, 45; -380, 0]
+	DstBlock		"Vector\nConcatenate"
+	DstPort			1
+      }
+      Branch {
+	DstBlock		"noise2"
+	DstPort			1
+      }
     }
     Line {
       SrcBlock		      "Sum7"
@@ -11942,20 +11961,6 @@ Model {
     }
     Line {
       SrcBlock		      "Demux1"
-      SrcPort		      6
-      Points		      [10, 0; 0, -30]
-      DstBlock		      "Mux5"
-      DstPort		      4
-    }
-    Line {
-      SrcBlock		      "Demux1"
-      SrcPort		      3
-      Points		      [15, 0; 0, -10]
-      DstBlock		      "Mux5"
-      DstPort		      3
-    }
-    Line {
-      SrcBlock		      "Demux1"
       SrcPort		      2
       Points		      [5, 0; 0, -10]
       DstBlock		      "Mux5"
@@ -11984,14 +11989,50 @@ Model {
     Line {
       SrcBlock		      "Setpoint"
       SrcPort		      1
-      DstBlock		      "Sum7"
-      DstPort		      1
+      Points		      [170, 0]
+      Branch {
+	DstBlock		"Sum7"
+	DstPort			1
+      }
+      Branch {
+	Points			[0, -65]
+	DstBlock		"noise1"
+	DstPort			1
+      }
     }
     Line {
       SrcBlock		      "Mux3"
       SrcPort		      1
       DstBlock		      "noise"
       DstPort		      1
+    }
+    Line {
+      SrcBlock		      "Mux2"
+      SrcPort		      1
+      Points		      [40, 0]
+      DstBlock		      "Gain"
+      DstPort		      1
+    }
+    Line {
+      SrcBlock		      "Discrete-Time\nIntegrator"
+      SrcPort		      1
+      Points		      [45, 0; 0, 35]
+      DstBlock		      "Mux2"
+      DstPort		      2
+    }
+    Line {
+      SrcBlock		      "Demux1"
+      SrcPort		      6
+      Points		      [10, 0; 0, -30]
+      DstBlock		      "Mux5"
+      DstPort		      4
+    }
+    Line {
+      SrcBlock		      "Demux1"
+      SrcPort		      3
+      Points		      [15, 0; 0, -10]
+      DstBlock		      "Mux5"
+      DstPort		      3
     }
     Annotation {
       Position		      [809, 665]
