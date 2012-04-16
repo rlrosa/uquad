@@ -155,9 +155,11 @@ void quit()
 	err_log("Could not close IMU correctly!");
     }
 
-#if USE_GPS && !GPS_FAKE
-    /// GPS
+#if USE_GPS
+    gps_comm_data_free(gps_dat);
+#if !GPS_FAKE
     gps_comm_deinit(gps);
+#endif // !GPS_FAKE
 #endif
 
     /// Kalman
@@ -509,9 +511,6 @@ int main(int argc, char *argv[]){
 	imu_update = false,
 	reg_stdin = true;
     uquad_bool_t gps_update = false;
-#if USE_GPS && !GPS_FAKE
-    uquad_bool_t reg_gps = (gps == NULL)?false:true;
-#endif
     int runs_imu = 0, runs_kalman = 0;
     int err_imu = ERROR_OK, err_gps = ERROR_OK;
     unsigned char tmp_buff[2];
@@ -525,6 +524,10 @@ int main(int argc, char *argv[]){
 	tv_start;
     gettimeofday(&tv_start,NULL);
     gettimeofday(&tv_last_ramp,NULL);
+#if USE_GPS && !GPS_FAKE
+    uquad_bool_t reg_gps = (gps == NULL)?false:true;
+    gettimeofday(&tv_gps_last,NULL);
+#endif
 #if TIMING
     struct timeval
 	tv_pgm,
