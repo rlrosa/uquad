@@ -362,7 +362,7 @@ int main(int argc, char *argv[]){
     /// Global vars
     w = uquad_mat_alloc(4,1);        // Current angular speed [rad/s]
     wt = uquad_mat_alloc(1,4);        // tranpose(w)
-    x = uquad_mat_alloc(1,12);   // State vector
+    x = uquad_mat_alloc(1,STATE_COUNT);   // State vector
     retval = imu_data_alloc(&imu_data);
     quit_if(retval);
 
@@ -430,7 +430,7 @@ int main(int argc, char *argv[]){
 	err_log("Failed to open x_hat!");
 	quit();
     }
-    x_hat_T = uquad_mat_alloc(1,12);
+    x_hat_T = uquad_mat_alloc(1,STATE_COUNT);
     if(x_hat_T == NULL)
     {
 	err_log("Failed alloc x_hat_T!");

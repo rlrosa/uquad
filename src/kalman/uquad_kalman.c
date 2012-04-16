@@ -67,7 +67,7 @@ uquad_mat_t* IKH_gps  = NULL;
 int H_init()
 {
     int retval;
-    H = uquad_mat_alloc(10,12);
+    H = uquad_mat_alloc(10,STATE_COUNT);
     retval = uquad_mat_zeros(H);
     err_propagate(retval);
     H->m[0][3]=1;
@@ -414,13 +414,13 @@ kalman_io_t* kalman_init()
 {
     int retval;
     kalman_io_t* kalman_io_data = (kalman_io_t*)malloc(sizeof(kalman_io_t));
-    kalman_io_data->x_hat = uquad_mat_alloc(12,1);    
-    kalman_io_data->x_    = uquad_mat_alloc(12,1);
+    kalman_io_data->x_hat = uquad_mat_alloc(STATE_COUNT,1);
+    kalman_io_data->x_    = uquad_mat_alloc(STATE_COUNT,1);
     kalman_io_data->u     = uquad_mat_alloc(4,1);
     kalman_io_data->z     = uquad_mat_alloc(10,1);
-    kalman_io_data->Q     = uquad_mat_alloc(12,12);
+    kalman_io_data->Q     = uquad_mat_alloc(STATE_COUNT,STATE_COUNT);
     kalman_io_data->R     = uquad_mat_alloc(10,10);
-    kalman_io_data->P     = uquad_mat_alloc(12,12);
+    kalman_io_data->P     = uquad_mat_alloc(STATE_COUNT,STATE_COUNT);
     kalman_io_data->Q_gps = uquad_mat_alloc(6,6);
     kalman_io_data->R_gps = uquad_mat_alloc(6,6);
     kalman_io_data->P_gps = uquad_mat_alloc(6,6);
@@ -519,29 +519,29 @@ int uquad_kalman(kalman_io_t * kalman_io_data, uquad_mat_t* w, imu_data_t* data,
     int retval;
     if(Fk_1==NULL)
     {
-	Fk_1   = uquad_mat_alloc(12,12);
-	Fk_1_T = uquad_mat_alloc(12,12);
-	mtmp   = uquad_mat_alloc(12,12);
-	P_     = uquad_mat_alloc(12,12);      
+	Fk_1   = uquad_mat_alloc(STATE_COUNT,STATE_COUNT);
+	Fk_1_T = uquad_mat_alloc(STATE_COUNT,STATE_COUNT);
+	mtmp   = uquad_mat_alloc(STATE_COUNT,STATE_COUNT);
+	P_     = uquad_mat_alloc(STATE_COUNT,STATE_COUNT);
 	retval = H_init();
 	err_propagate(retval);
-	Fx = uquad_mat_alloc(12,12);
-	fx = uquad_mat_alloc(12,1);
+	Fx = uquad_mat_alloc(STATE_COUNT,STATE_COUNT);
+	fx = uquad_mat_alloc(STATE_COUNT,1);
 	hx = uquad_mat_alloc(10,1);
 
 	// Auxiliares para el update
 	yk = uquad_mat_alloc(10,1);
-	HT   = uquad_mat_alloc(12,10);
-	HP_  = uquad_mat_alloc(10,12);
+	HT   = uquad_mat_alloc(STATE_COUNT,10);
+	HP_  = uquad_mat_alloc(10,STATE_COUNT);
 	HP_H = uquad_mat_alloc(10,10);
 	Sk   = uquad_mat_alloc(10,10);
-	P_HT = uquad_mat_alloc(12,10);
-	Kk   = uquad_mat_alloc(12,10);
-	Kkyk = uquad_mat_alloc(12,1);
-	KkH  = uquad_mat_alloc(12,12);
-	IKH  = uquad_mat_alloc(12,12);
+	P_HT = uquad_mat_alloc(STATE_COUNT,10);
+	Kk   = uquad_mat_alloc(STATE_COUNT,10);
+	Kkyk = uquad_mat_alloc(STATE_COUNT,1);
+	KkH  = uquad_mat_alloc(STATE_COUNT,STATE_COUNT);
+	IKH  = uquad_mat_alloc(STATE_COUNT,STATE_COUNT);
 	Sk_1 = uquad_mat_alloc(10,10);
-	I    = uquad_mat_alloc(12,12);
+	I    = uquad_mat_alloc(STATE_COUNT,STATE_COUNT);
     }
 
     retval = store_data(kalman_io_data, w, data, T);

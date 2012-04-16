@@ -22,7 +22,7 @@ ctrl_t *control_init(void)
     mem_alloc_check(ctrl);
 
     ctrl->K = uquad_mat_alloc(4,STATES_CONTROLLED);
-    tmp_sub_sp_x = uquad_mat_alloc(12,1);
+    tmp_sub_sp_x = uquad_mat_alloc(STATE_COUNT,1);
     w_tmp = uquad_mat_alloc(4,1);
     tmp_x_hat_partial = uquad_mat_alloc(STATES_CONTROLLED,1);
     if(ctrl->K == NULL || tmp_sub_sp_x == NULL ||

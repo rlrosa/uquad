@@ -21,7 +21,7 @@ set_point_t *setpoint_init(void)
     set_point_t *sp = (set_point_t *)malloc(sizeof(set_point_t));
     mem_alloc_check(sp);
     memset(sp,0,sizeof(set_point_t));
-    sp->x = uquad_mat_alloc(12,1);
+    sp->x = uquad_mat_alloc(STATE_COUNT,1);
     mem_alloc_check(sp->x);
     sp->w = uquad_mat_alloc(4,1);
     mem_alloc_check(sp->w);

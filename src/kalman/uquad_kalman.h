@@ -4,8 +4,6 @@
 #include <imu_comm.h>
 #include <uquad_gps_comm.h>
 
-#define STATE_COUNT       12
-
 typedef enum STATE_VECTOR{
     SV_X = 0,
     SV_Y,

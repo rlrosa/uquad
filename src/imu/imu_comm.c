@@ -1001,7 +1001,7 @@ typedef enum read_status{
     INIT_SYNC_DONE,
     READ_FRAME_DONE,
     END_SYNC_DONE,
-    STATE_COUNT
+    READ_STATE_COUNT
 } read_status_t;
 #if TIMING_IMU
 static struct timeval tv_init, tv_end, tv_diff;
