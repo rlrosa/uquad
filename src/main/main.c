@@ -611,6 +611,10 @@ int main(int argc, char *argv[]){
 		goto end_imu;
 	    }
 	    imu_update = false; // data may not be of direct use, may be calib
+#if IMU_COMM_FAKE
+	    // simulate delay (no delay when reading from txt)
+	    sleep_ms(10);
+#endif
 
 #if LOG_IMU_RAW || LOG_IMU_DATA
 	    err_imu = gettimeofday(&tv_tmp,NULL);
@@ -803,10 +807,36 @@ int main(int argc, char *argv[]){
 	     */
 	    continue;
 
-#if IMU_COMM_FAKE
-	// simulate delay (no delay when reading from txt)
-	sleep_ms(10);
-#endif
+	/// -- -- -- -- -- -- -- --
+	/// Startup Kalman estimator
+	/// -- -- -- -- -- -- -- --
+	if(runs_kalman == 0)
+	{
+	    /**
+	     * Use current IMU calibration to set
+	     * yaw == 0, this will keep us looking forward
+	     * when hovering.
+	     */
+	    if(pp->pt != HOVER)
+	    {
+		quit_log_if(retval,"ERR: theta (Yaw) set to IMU calibration"\
+			    "is only valid when in HOVER mode");
+	    }
+	    retval = imu_comm_raw2data(imu, &imu->calib.null_est, &imu_data);
+	    quit_log_if(retval,"Failed to correct setpoint!");
+	    pp->sp->x->m_full[SV_THETA] = imu_data.magn->m_full[2];
+	    /// Start kalman from calibration value
+	    kalman->x_hat->m_full[SV_PSI]   = imu_data.magn->m_full[0];
+	    kalman->x_hat->m_full[SV_PHI]   = imu_data.magn->m_full[1];
+	    kalman->x_hat->m_full[SV_THETA] = imu_data.magn->m_full[2];
+	    retval = imu_comm_print_data(&imu_data, stderr);
+	    if(retval != ERROR_OK)
+	    {
+		err_log("Failed to print IMU calibration!");
+	    }
+	    retval = ERROR_OK;// ignore error
+	    fflush(stderr);
+	}
 
 	/// -- -- -- -- -- -- -- --
 	/// Update state estimation
@@ -898,36 +928,9 @@ int main(int argc, char *argv[]){
 	{
 	    /**
 	     * Startup:
-	     *   - Kalman estimator.
 	     *   - Ramp motors.
 	     */
 	    ++runs_kalman;
-	    if(runs_kalman == 1)
-	    {
-		/**
-		 * Use current IMU calibration to set
-		 * yaw == 0, this will keep us looking forward
-		 * when hovering.
-		 */
-		if(pp->pt != HOVER)
-		{
-		    quit_log_if(retval,"ERR: theta (Yaw) set to IMU calibration"\
-				"is only valid when in HOVER mode");
-		}
-		retval = imu_comm_raw2data(imu, &imu->calib.null_est, &imu_data);
-		quit_log_if(retval,"Failed to correct setpoint!");
-		pp->sp->x->m_full[SV_THETA] = imu_data.magn->m_full[2];
-		/// Start kalman from calibration value
-		kalman->x_hat->m_full[SV_PSI]   = imu_data.magn->m_full[0];
-		kalman->x_hat->m_full[SV_PHI]   = imu_data.magn->m_full[1];
-		kalman->x_hat->m_full[SV_THETA] = imu_data.magn->m_full[2];
-		retval = imu_comm_print_data(&imu_data, stderr);
-		if(retval != ERROR_OK)
-		{
-		    err_log("Failed to print IMU calibration!");
-		}
-		retval = ERROR_OK;// ignore error
-	    }
 	    if(runs_kalman == STARTUP_KALMAN)
 	    {
 		gettimeofday(&tv_tmp,NULL);
