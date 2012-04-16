@@ -5,9 +5,11 @@
 #include <uquad_error_codes.h>
 #include <uquad_aux_math.h>
 #include <path_planner.h>
+#include <uquad_types.h>
 
-#define STATES_CONTROLLED 8
-#define CTRL_INTEGRAL     0
+#define CTRL_INTEGRAL       0
+#define CTRL_MAT_K_NAME     "K.txt"
+#define CTRL_MAT_K_INT_NAME "K_int.txt"
 
 typedef struct ctrl{
     uquad_mat_t *K;
