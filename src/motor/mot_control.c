@@ -36,7 +36,7 @@ uquad_mot_t *mot_init(void)
     	err_log("Failed to run cmd!");
 	goto cleanup;
     }
-    sleep_ms(10); // Wait for cmd to startup
+    sleep(3); // Wait for cmd to startup
     m->kmsgq = uquad_kmsgq_init(MOT_SERVER_KEY, MOT_DRIVER_KEY);
     if(m->kmsgq == NULL)
     {
