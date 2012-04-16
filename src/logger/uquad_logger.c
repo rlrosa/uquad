@@ -11,7 +11,6 @@
 #include <time.h>
 
 #define LINE_PER_FLUSH 10
-#define READER_TIMEOUT 25 // sec
 #define READ_SIZE      128
 #define BUFF_SIZE      (READ_SIZE<<8)
 #define FLUSH_SIZE     (BUFF_SIZE - READ_SIZE)
@@ -122,17 +121,24 @@ void uquad_logger_read(int pipefd, char *log_name, char *path)
 	    }
 	    else
 	    {
-		gettimeofday(&tv_new,NULL);
-		retval = uquad_timeval_substract(&tv_diff,tv_new,tv_old);
-		if(tv_diff.tv_sec > READER_TIMEOUT || die)
+		if(retval < 0)
 		{
-		    if(tv_diff.tv_sec > READER_TIMEOUT)
+		    err_log_std("logger read error!");
+		    usleep(IO_FAIL_SLP_US);
+		}
+		else
+		{
+		    /// Parent closed pipe, work is done.
+		    if(buff_index > 0)
 		    {
-			cleanup_log_if(ERROR_READ_TIMEOUT,"Logger timed out!");
+			retval = write(log_fd, buff, buff_index);
+			if(retval < 0)
+			{
+			    err_log_stderr("Failed to write to log file!");
+			}
 		    }
 		    goto cleanup;
 		}
-		usleep(IO_FAIL_SLP_US);
 	    }
 	}
 	else

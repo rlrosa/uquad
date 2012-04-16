@@ -6,6 +6,8 @@
 #include <signal.h> // for SIGINT, SIGQUIT
 #include <limits.h> // for PATH_MAX
 
+#define READ_STDIN 0
+
 #define USAGE					\
     "Not enough arguments!\n"			\
     "Usage:\n\t./forker pipe_name"
@@ -29,9 +31,8 @@ int main(int argc, char *argv[])
 {
     //    struct timeval tv_new,tv_old,tv_diff;
     char *pipe_name;
-    int retval;
-    ssize_t read;
-    size_t len;
+    int
+	retval;
 
     // Catch signals
     signal(SIGINT, uquad_sig_handler);
@@ -47,7 +48,7 @@ int main(int argc, char *argv[])
 	pipe_name = argv[1];
     }
 
-    log_file = uquad_logger_add(pipe_name);
+    log_file = uquad_logger_add(pipe_name,"./");
     if(log_file == NULL)
     {
 	quit_log_if(ERROR_OPEN,"Failed to start pipe!");
@@ -56,6 +57,9 @@ int main(int argc, char *argv[])
     //    gettimeofday(&tv_old,NULL);
     for(;;)
     {
+#if READ_STDIN
+	ssize_t read;
+	size_t len;
 	read = getline(&new_line, &len, stdin);
 	if(read < 0)
 	{
@@ -69,7 +73,21 @@ int main(int argc, char *argv[])
 	    quit_log_if(ERROR_IO,"Failed to write log logger, terminating...");
 	}
 	fflush(log_file);
+#else
+	int i;
+	for(i=0; i < 10; ++i)
+	{
+	    retval = fprintf(log_file,"%d\n",i);
+	    if(retval < 0)
+	    {
+		err_log_stderr("fprintf");
+		quit_log_if(ERROR_IO,"Failed to write log logger, terminating...");
+	    }
+	    fflush(log_file);
+	}
+	break;
+#endif
     }
-    // Never gets here
-    return ERROR_FAIL;
+    quit();
+    return 0;
 }
