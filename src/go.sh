@@ -46,8 +46,8 @@ cp imu/imu_calib.txt build/main/
 
 # use correct control gain
 cp control/K.txt          build/main/
-cp control/K_int.txt      build/main/
 cp control/K_full.txt     build/main/
+cp control/K_int.txt      build/main/
 cp control/K_int_full.txt build/main/
 
 # prepare motor command

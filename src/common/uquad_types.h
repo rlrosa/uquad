@@ -10,24 +10,25 @@
 #endif //UQUAD_BOOL
 typedef UQUAD_BOOL uquad_bool_t;
 
-#define GRAVITY           9.81L	    // Aceleracion gravitatoria
-#define IXX               0.0232L   // Tensor de inercia del quad - según x
-#define IYY               0.0232L   // Tensor de inercia del quad - según y
-#define IZZ               0.0437L   // Tensor de inercia del quad - según z
-#define IZZM              0.0000154L// Tensor de inercia de los motores - segun z
-#define LENGTH            0.29L	    // Largo en metros del los brazos del quad
+#define GRAVITY           9.81L	      // Aceleracion gravitatoria
+#define IXX               0.0232L     // Tensor de inercia del quad - según x
+#define IYY               0.0232L     // Tensor de inercia del quad - según y
+#define IZZ               0.0437L     // Tensor de inercia del quad - según z
+#define IZZM              0.0000154L  // Tensor de inercia de los motores - segun z
+#define LENGTH            0.29L	      // Largo en metros del los brazos del quad
 #define PI                3.1415926L
-#define F_B1              4.6016e-05L          // Coeficiente cuadrático de la fuerza
-#define F_B2              -0.0010L             // Coeficiente lineal de la fuerza
-#define M_D1              3.4734e-6L           // Coeficiente cuadrático del torque
-#define M_D2              -1.3205e-4L    // Coeficiente lineal del torque
+#define F_B1              4.6016e-05L // Coeficiente cuadrático de la fuerza
+#define F_B2              -0.0010L    // Coeficiente lineal de la fuerza
+#define M_D1              3.4734e-6L  // Coeficiente cuadrático del torque
+#define M_D2              -1.3205e-4L // Coeficiente lineal del torque
 //#define MASA              1.741L    // Masa del Quad en kg
-#define MOT_W_HOVER       316.10L // rad/s
+#define MOT_W_HOVER       316.10L     // rad/s
 #define MASA              ((MOT_W_HOVER*MOT_W_HOVER*F_B1 \
 			    + MOT_W_HOVER*F_B2)*4/GRAVITY)
 #define STATE_COUNT       12
-#define STATES_CONTROLLED 8
+#define STATES_CONTROLLED 12          // May only be either 8 or 12
+#define FULL_CONTROL      (STATES_CONTROLLED == STATE_COUNT)
 
-#define LENGTH_INPUT 4//Tamaño del vector de entradass  
+#define LENGTH_INPUT      4           // Tamaño del vector de entradass  
 
 #endif

@@ -8,8 +8,13 @@
 #include <uquad_types.h>
 
 #define CTRL_INTEGRAL       0
+#if FULL_CONTROL
+#define CTRL_MAT_K_NAME     "K_full.txt"
+#define CTRL_MAT_K_INT_NAME "K_int_full.txt"
+#else
 #define CTRL_MAT_K_NAME     "K.txt"
 #define CTRL_MAT_K_INT_NAME "K_int.txt"
+#endif // FULL_CONTROL
 
 typedef struct ctrl{
     uquad_mat_t *K;
@@ -19,6 +24,14 @@ typedef struct ctrl{
 #endif
 }ctrl_t;
 
+/**
+ * Allocate mem for ctrl, and loads gain from file.
+ * File must have (in order):
+ *   - Proportional gain matrix.
+ *   - Integral gain matrix.
+ *
+ * @return
+ */
 ctrl_t *control_init(void);
 
 /** 

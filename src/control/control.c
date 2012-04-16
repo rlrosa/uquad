@@ -26,12 +26,33 @@ ctrl_t *control_init(void)
     ctrl->K = uquad_mat_alloc(4,STATES_CONTROLLED);
     tmp_sub_sp_x = uquad_mat_alloc(STATE_COUNT,1);
     w_tmp = uquad_mat_alloc(4,1);
-    tmp_x_hat_partial = uquad_mat_alloc(STATES_CONTROLLED,1);
-    if(ctrl->K == NULL || tmp_sub_sp_x == NULL ||
-       tmp_x_hat_partial == NULL || w_tmp == NULL)
+    if(ctrl->K == NULL || tmp_sub_sp_x == NULL || w_tmp == NULL)
     {
 	cleanup_log_if(ERROR_MALLOC,"Failed to allocate aux mem!");
     }
+#if !FULL_CONTROL
+    tmp_x_hat_partial = uquad_mat_alloc(STATES_CONTROLLED,1);
+    if(tmp_x_hat_partial == NULL)
+    {
+	cleanup_log_if(ERROR_MALLOC,"Failed to allocate aux mem!");
+    }
+#endif
+
+    file_mat = fopen(CTRL_MAT_K_NAME,"r");
+    if(file_mat == NULL)
+    {
+	err_log_str("Failed to open:",CTRL_MAT_K_NAME);
+	cleanup_if(ERROR_FAIL);
+    }
+
+    retval = uquad_mat_load(ctrl->K, file_mat);
+    if(retval != ERROR_OK)
+    {
+	err_log_str("Failed to load gain matrix. Check size...",CTRL_MAT_K_NAME);
+	cleanup_if(retval);
+    }
+    fclose(file_mat);
+    file_mat = NULL;
 
 #if CTRL_INTEGRAL
     ctrl->K_int = uquad_mat_alloc(4,STATES_CONTROLLED);
@@ -43,32 +64,28 @@ ctrl_t *control_init(void)
     retval = control_clear_int(ctrl);
     cleanup_log_if(retval, "Failed to clear integral term!");
 
-    file_mat = fopen(CTRL_MAT_K_INT_NAME,"r");
+    file_mat = fopen(CTRL_MAT_K_NAME,"r");
     if(file_mat == NULL)
     {
-	err_log_stderr("Failed to open K_int.txt!:");
+	err_log_str("Failed to open:",CTRL_MAT_K_INT_NAME);
 	cleanup_if(ERROR_FAIL);
     }
 
     retval = uquad_mat_load(ctrl->K_int, file_mat);
-    fclose(file_mat);
-    cleanup_if(retval);
-#endif // CTRL_INTEGRAL
-
-    file_mat = fopen(CTRL_MAT_K_NAME,"r");
-    if(file_mat == NULL)
+    if(retval != ERROR_OK)
     {
-	err_log_stderr("Failed to open K.txt!:");
-	cleanup_if(ERROR_FAIL);
+	err_log_str("Failed to load gain matrix. Check size...",CTRL_MAT_K_INT_NAME);
+	cleanup_if(retval);
     }
-
-    retval = uquad_mat_load(ctrl->K, file_mat);
-    fclose(file_mat);
-    cleanup_if(retval);
+#endif // CTRL_INTEGRAL
+    if(file_mat != NULL)
+	fclose(file_mat);
 
     return ctrl;
 
     cleanup:
+    if(file_mat != NULL)
+	fclose(file_mat);
     control_deinit(ctrl);
     return NULL;
 }
@@ -84,6 +101,7 @@ int control(ctrl_t *ctrl, uquad_mat_t *w, uquad_mat_t *x, set_point_t *sp, doubl
     retval = uquad_mat_sub(tmp_sub_sp_x, sp->x, x);
     err_propagate(retval);
 
+#if !FULL_CONTROL
     /// only using part of the state vector
     tmp_x_hat_partial->m_full[0] = tmp_sub_sp_x->m_full[2];  // z
     tmp_x_hat_partial->m_full[1] = tmp_sub_sp_x->m_full[3];  // psi
@@ -96,14 +114,25 @@ int control(ctrl_t *ctrl, uquad_mat_t *w, uquad_mat_t *x, set_point_t *sp, doubl
 
     retval = uquad_mat_prod(w, ctrl->K, tmp_x_hat_partial);
     err_propagate(retval);
+#else
+    // Control all states
+    retval = uquad_mat_prod(w, ctrl->K, tmp_sub_sp_x);
+    err_propagate(retval);
+#endif // FULL_CONTROL
+
     retval = uquad_mat_add(w,sp->w,w);
     err_propagate(retval);
 
 #if CTRL_INTEGRAL
+#if !FULL_CONTROL
     retval = uquad_mat_scalar_mul(tmp_x_hat_partial, NULL, T_us/1000000);
     err_propagate(retval);
     retval = uquad_mat_add(ctrl->x_int, ctrl->x_int, tmp_x_hat_partial);
     err_propagate(retval);
+#else
+    retval = uquad_mat_scalar_mul(tmp_sub_sp_x, NULL, T_us/1000000);
+    retval = uquad_mat_add(ctrl->x_int, ctrl->x_int, tmp_sub_sp_x);
+#endif // !FULL_CONTROL
     retval = uquad_mat_prod(w_tmp, ctrl->K_int, ctrl->x_int);
     err_propagate(retval);
     retval = uquad_mat_add(w, w, w_tmp);
@@ -124,8 +153,10 @@ void control_deinit(ctrl_t *ctrl)
     }
     uquad_mat_free(ctrl->K);
     uquad_mat_free(tmp_sub_sp_x);
-    uquad_mat_free(tmp_x_hat_partial);
     uquad_mat_free(w_tmp);
+#if !FULL_CONTROL
+    uquad_mat_free(tmp_x_hat_partial);
+#endif // !FULL_CONTROL
 #if CTRL_INTEGRAL
     uquad_mat_free(ctrl->K_int);
     uquad_mat_free(ctrl->x_int);
