@@ -520,8 +520,10 @@ int main(int argc, char *argv[]){
 	tv_last_imu,
 	tv_gps_last,
 	tv_start;
-    gettimeofday(&tv_start,NULL);
-    gettimeofday(&tv_last_ramp,NULL);
+    retval = gettimeofday(&tv_start,NULL);
+    err_log_std(retval);
+    retval = gettimeofday(&tv_last_ramp,NULL);
+    err_log_std(retval);
 #if USE_GPS
     uquad_bool_t gps_update = false;
     retval = gettimeofday(&tv_gps_last,NULL);
@@ -544,6 +546,9 @@ int main(int argc, char *argv[]){
     int count_err = 0, count_ok = FIXED;
     retval = ERROR_OK;
     //    poll_n_read:
+    gettimeofday(&tv_tmp,NULL);
+    uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
+    err_log_tv("Entering while:",tv_diff);
     while(1){
 	if((runs_imu > STARTUP_RUNS) &&
 	   (retval != ERROR_OK  ||
@@ -620,7 +625,7 @@ int main(int argc, char *argv[]){
 	    imu_update = false; // data may not be of direct use, may be calib
 #if IMU_COMM_FAKE
 	    // simulate delay (no delay when reading from txt)
-	    sleep_ms(10);
+	    usleep(TS_DEFAULT_US);
 #endif
 
 #if LOG_IMU_RAW || LOG_IMU_DATA
@@ -813,7 +818,6 @@ int main(int argc, char *argv[]){
 	     * so use approx. that T_gps+T_imu ~ T_gps.
 	     */
 	    continue;
-
 	/// -- -- -- -- -- -- -- --
 	/// Startup Kalman estimator
 	/// -- -- -- -- -- -- -- --
@@ -829,6 +833,11 @@ int main(int argc, char *argv[]){
 		quit_log_if(retval,"ERR: theta (Yaw) set to IMU calibration"\
 			    "is only valid when in HOVER mode");
 	    }
+	    gettimeofday(&tv_tmp,NULL);
+	    retval = uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
+	    err_log_tv((retval < 0)?"Absurd IMU calibration time!":
+		       "IMU calibration completed:",
+		       tv_diff);
 	    retval = imu_comm_raw2data(imu, &imu->calib.null_est, &imu_data);
 	    quit_log_if(retval,"Failed to correct setpoint!");
 	    pp->sp->x->m_full[SV_THETA] = imu_data.magn->m_full[2];
