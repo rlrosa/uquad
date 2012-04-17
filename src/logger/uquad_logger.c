@@ -56,7 +56,7 @@ void uquad_logger_read(int pipefd, char *log_name, char *path)
 	cleanup_if(ERROR_OPEN);
     }
 
-    log_fd = open(file_name,O_WRONLY | O_CREAT | O_NONBLOCK | S_IRUSR | S_IWUSR);
+    log_fd = open(file_name,O_RDWR | O_CREAT | O_NONBLOCK | S_IRUSR | S_IWUSR);
     if(log_fd < 0)
     {
 	err_log_stderr("Failed to open log file!");
@@ -225,18 +225,14 @@ FILE *uquad_logger_add(char *log_name, char *path)
 
 void uquad_logger_remove(FILE *pipe_f)
 {
+    int retval;
     if(pipe_f != NULL)
     {
-	int pipefd = fileno(pipe_f);
-	if(pipefd < 0)
+	retval = fclose(pipe_f);
+	if(retval < 0)
 	{
-	    err_log_stderr("Failed to get pipefd to close write end of pipe!");
+	    err_log_stderr("Failed to close log file!");
 	}
-	else
-	{
-	    close(pipefd);
-	}
-	//	fclose(pipe_f);
     }
     return;
 }
