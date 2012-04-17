@@ -3,6 +3,8 @@
 
 #include <stdio.h>
 
+#define LOGGER_DEBUG 0
+
 /**
  * -- -- -- -- -- -- -- -- -- -- -- --
  * Logging via pipe, separates worker
