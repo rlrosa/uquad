@@ -46,7 +46,7 @@ if modo=='hov'
     
     %Construcción de la matriz K método LQR para hovering
       
-    Q=diag([1 1 1 1e3 1e3 1e3 1 1 1 1 1 1 1 1 1 1 ]);
+    Q=diag([1 1 1 1e3 1e3 1e3 1 1 1 1 1 1 1 1 1 1]);
     R = diag([1e-2 1e-2 1e-2 1e-2]);
     
     K = uquad_dlqr(Aext,Bext,Q,R);
@@ -87,8 +87,7 @@ elseif modo=='cir'
     % Construcción de la matriz K método LQR para circulos
     Q = diag([1 1 1 1e3 1e3 1e3 1 1 1 1 1 1 1 1 1e-3 1]);
     R=diag([1e-2 1e-2 1e-2 1e-2]);
-    K=uquad_dlqr(Aext,Bext,Q,R);  
-    
+    K=uquad_dlqr(Aext,Bext,Q,R);      
      
 end
  
