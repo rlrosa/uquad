@@ -92,7 +92,7 @@ int main(int argc, char *argv[]){
 
 #if PRINT_RAW
     // Setup raw frame log
-    log_imu_raw = uquad_logger_add("imu_raw");
+    log_imu_raw = uquad_logger_add("imu_raw","./");
     if(log_imu_raw == NULL)
     {
 	err_log("Failed to create frame log file...");
@@ -102,7 +102,7 @@ int main(int argc, char *argv[]){
 
 #if PRINT_DATA
     // Setup data log
-    log_imu_data = uquad_logger_add("imu_data");
+    log_imu_data = uquad_logger_add("imu_data","./");
     if(log_imu_data == NULL)
     {
 	err_log("Failed to create data log file...");
@@ -112,7 +112,7 @@ int main(int argc, char *argv[]){
 
 #if PRINT_AVG
     // Setup avg log
-    log_imu_avg = uquad_logger_add("imu_avg");
+    log_imu_avg = uquad_logger_add("imu_avg","./");
     if(log_imu_avg == NULL)
     {
 	err_log("Failed to create avg log file...");

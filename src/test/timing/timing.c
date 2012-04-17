@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
 
     err_log_num("Using sleep of:",sleep_time_us);
 
-    log_time = uquad_logger_add(TIME_LOG_NAME);
+    log_time = uquad_logger_add(TIME_LOG_NAME,"./");
     if(log_time == NULL)
     {
 	quit_log_if(ERROR_IO, "Failed to add time log!");

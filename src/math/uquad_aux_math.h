@@ -92,6 +92,9 @@ void uquad_mat_dump(uquad_mat_t *m, FILE *output);
 int uquad_mat_eye(uquad_mat_t *m);
 int uquad_mat_zeros(uquad_mat_t *m);
 
+int uquad_mat_diag(uquad_mat_t *m, double *diag);
+int uquad_mat_get_diag(double v[],uquad_mat_t *m,int n);
+
 int uquad_mat_get_subm(uquad_mat_t *S, int r, int c, uquad_mat_t *A);
 int uquad_mat_set_subm(uquad_mat_t *A, int r, int c, uquad_mat_t *S);
 int uquad_mat_copy(uquad_mat_t *dest, uquad_mat_t *src);
