@@ -98,7 +98,7 @@ Model {
       Name		      "noise2"
     }
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.259"
+    ComputedModelVersion    "1.261"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -129,9 +129,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "pater"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Mon Apr 16 17:34:54 2012"
-  RTWModifiedTimeStamp	  256497180
-  ModelVersionFormat	  "1.%<AutoIncrement:259>"
+  LastModifiedDate	  "Mon Apr 16 19:05:42 2012"
+  RTWModifiedTimeStamp	  256503940
+  ModelVersionFormat	  "1.%<AutoIncrement:261>"
   ConfigurationManager	  "None"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -1257,7 +1257,7 @@ Model {
 	  Name			  "xq,yq,zq"
 	  SID			  "2445"
 	  Position		  [55, 150, 85, 180]
-	  Value			  "[setpoint(3);setpoint(2);setpoint(1)]"
+	  Value			  "[setpoint(1);setpoint(2);setpoint(3)]"
 	}
 	Block {
 	  BlockType		  Outport
@@ -1359,7 +1359,7 @@ Model {
       System {
 	Name			"Subsystem"
 	Location		[0, 53, 1366, 768]
-	Open			off
+	Open			on
 	ModelBrowserVisibility	off
 	ModelBrowserWidth	200
 	ScreenColor		"white"
@@ -1803,20 +1803,6 @@ Model {
 	  DstPort		  2
 	}
 	Line {
-	  SrcBlock		  "Create 3x3 Matrix"
-	  SrcPort		  1
-	  Points		  [95, 0; 0, 180]
-	  DstBlock		  "Product"
-	  DstPort		  1
-	}
-	Line {
-	  SrcBlock		  "Create 3x3 Matrix2"
-	  SrcPort		  1
-	  Points		  [105, 0; 0, -205]
-	  DstBlock		  "Product"
-	  DstPort		  3
-	}
-	Line {
 	  SrcBlock		  "theta"
 	  SrcPort		  1
 	  Points		  [5, 0; 0, 25; 15, 0; 0, 10; 90, 0]
@@ -1830,6 +1816,20 @@ Model {
 	    DstBlock		    "Trigonometric\nFunction1"
 	    DstPort		    1
 	  }
+	}
+	Line {
+	  SrcBlock		  "Create 3x3 Matrix2"
+	  SrcPort		  1
+	  Points		  [210, 0; 0, -255]
+	  DstBlock		  "Product"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "Create 3x3 Matrix"
+	  SrcPort		  1
+	  Points		  [190, 0; 0, 230]
+	  DstBlock		  "Product"
+	  DstPort		  3
 	}
       }
     }
