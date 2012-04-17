@@ -35,18 +35,18 @@
 
 %% Config
 
-use_n_states = 2; % Regulates number of variables to control. Can be:
+use_n_states = 1; % Regulates number of variables to control. Can be:
                     % 0: uses 8 states      -> [z psi phi tehta vqz wqx wqy wqz]
                     % 1: uses all 12 states -> [x y z psi phi tehta vqx vqy vqz wqx wqy wqz]
                     % 2: uses all 12 states and their integrals
 use_gps      = 1; % Use kalman_gps
-use_fake_gps = 0; % Feed kalman_gps with fake data (only if use_gps)
-use_fake_T   = 1; % Ignore real timestamps from log, use average
+use_fake_gps = 1; % Feed kalman_gps with fake data (only if use_gps)
+use_fake_T   = 0; % Ignore real timestamps from log, use average
 
 %% Load IMU data
 
 % Imu
-imu_file = 'tests/main/logs/2012_04_06_1_6_divino/imu_raw.log';
+imu_file = 'tests/main/logs/2012_04_16_1_1_arranco_loquito/imu_raw.log';
 [acrud,wcrud,mcrud,tcrud,bcrud,~,~,T]=mong_read(imu_file,0,1);
 
 avg = 1;
@@ -100,8 +100,11 @@ T = T(startup_runs:end);
 
 % p0 and theta0 is estimated form first imu_calib samples
 [a_calib,w_calib,euler_calib] = mong_conv(acrud(1:imu_calib,:),wcrud(1:imu_calib,:),mcrud(1:imu_calib,:),0,tcrud(1:imu_calib));
+psi0                    = mean(euler_calib(:,1));
+phi0                    = mean(euler_calib(:,2));
 theta0                  = mean(euler_calib(:,3));
 b0                      = mean(bcrud(1:imu_calib));
+
 
 % averages are used
 acrud(:,1) = moving_avg(acrud(:,1),avg); acrud(:,2) = moving_avg(acrud(:,2),avg); acrud(:,3) = moving_avg(acrud(:,3),avg);
@@ -141,7 +144,7 @@ if(use_n_states == 0)
     sp_x = [0;0;0;theta0;0;0;0;0];
     Nctl = 8;
 elseif(use_n_states == 1)
-    K    = load('K4x12.mat');K = K.K;
+    K    = load('src/control/K_full.txt');
     sp_x = [0;0;0;0;0;theta0;0;0;0;0;0;0];
     Nctl = 12;
 elseif(use_n_states == 2)
@@ -168,6 +171,8 @@ w_control(1,:) = w_hover*ones(size(w_control(1,:)));
 x_hat_ctl      = zeros(N,Nctl);
 P_gps          = 1*eye(Ngps);
 gps_index      = 1;
+
+x_hat(1,4:6) = [psi0, phi0, theta0];
 
 %% Kalman
 
