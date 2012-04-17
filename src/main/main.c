@@ -754,7 +754,7 @@ int main(int argc, char *argv[]){
 	    {
 		err_gps = gps_comm_read(gps);
 		log_n_jump(err_gps,end_gps,"GPS had no data!");
-		if(runs_imu >= STARTUP_RUNS && gps_comm_3dfix(gps))
+		if((runs_kalman >= 1) && gps_comm_3dfix(gps))
 		    // ignore startup data
 		    gps_update = true;
 		else
@@ -779,7 +779,7 @@ int main(int argc, char *argv[]){
 	{
 	    gettimeofday(&tv_tmp,NULL);
 	    retval = uquad_timeval_substract(&tv_diff, tv_tmp, tv_gps_last);
-	    if(tv_diff.tv_sec > 1 && (runs_imu > STARTUP_RUNS))
+	    if( (runs_kalman > 0) && (tv_diff.tv_sec > 0) )
 	    {
 		// gps_dat is set to 0 when allocated, so just use it.
 		gps_update = true;
@@ -788,6 +788,8 @@ int main(int argc, char *argv[]){
 		{
 		    quit_log_if(ERROR_GPS, "Fake GPS does not make sense if not hovering!");
 		}
+		retval = uquad_timeval_substract(&tv_diff, tv_tmp, tv_start);
+		err_log_tv("GPS updated.",tv_diff);
 	    }
 	    else
 	    {
