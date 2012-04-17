@@ -1,4 +1,4 @@
-function [x_hat,P] = kalman_imu(x_hat,P,T,u,z)
+function [x_hat,P] = kalman_imu(x_hat,P,Q,R,T,u,z)
 
 % -------------------------------------------------------------------------
 % function [x_hat,P] = kalman_imu(x_hat,P,T,u,z)
@@ -22,12 +22,6 @@ L    = 0.29;    % Largo en metros del los brazos del quad
 M    = 1.741;   % Masa del Quad en kg
 g    = 9.81;    % Aceleracion gravitatoria
 Ns   = 12;      % Largo del vector de estados
-
-% Q = diag(.1*[100 100 100 100 100 100 100 100 100 10 10 10]); 
-% R = diag(1000*[.1 .1 .1 100 100 100 10 10 10 10]);           
-
-Q = diag(1*[100 100 100 1 1 1 10 10 10 1 1 1]);
-R = diag(100*[100 100 100 100 100 100 1 1 1 100]);
 
 %% Entradas
 

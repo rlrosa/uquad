@@ -35,18 +35,18 @@
 
 %% Config
 
-use_n_states = 2; % Regulates number of variables to control. Can be:
+use_n_states = 1; % Regulates number of variables to control. Can be:
                     % 0: uses 8 states      -> [z psi phi tehta vqz wqx wqy wqz]
                     % 1: uses all 12 states -> [x y z psi phi tehta vqx vqy vqz wqx wqy wqz]
                     % 2: uses all 12 states and their integrals
 use_gps      = 1; % Use kalman_gps
-use_fake_gps = 0; % Feed kalman_gps with fake data (only if use_gps)
-use_fake_T   = 1; % Ignore real timestamps from log, use average
+use_fake_gps = 1; % Feed kalman_gps with fake data (only if use_gps)
+use_fake_T   = 0; % Ignore real timestamps from log, use average
 
 %% Load IMU data
 
 % Imu
-imu_file = 'tests/main/logs/2012_04_06_1_6_divino/imu_raw.log';
+imu_file = 'tests/main/logs/2012_04_16_1_6_sp_z_1m_sin_integrador/imu_raw.log';
 [acrud,wcrud,mcrud,tcrud,bcrud,~,~,T]=mong_read(imu_file,0,1);
 
 avg = 1;
@@ -134,7 +134,11 @@ Ns      = 12;        % N states: cantidad de variables de estado de Kalman
 Ngps    = 6;         % N gps: cantidad de variables corregidas por gps
 w_hover = 316.10;    % At this velocity, motor's force equals weight
 w_max   = 387.0; 
-w_min   = 109.0; 
+w_min   = 109.0;
+Q_imu   = diag(1*[100 100 100 1 1 1 10 10 10 1 1 1]);
+R_imu   = diag(100*[100 100 100 100 100 100 1 1 1 100]);
+Q_gps   = diag(1*[100 100 100 100 100 100]);
+R_gps   = diag(1*[1 1 100000 1 1 100000]);
 
 if(use_n_states == 0)
     K    = load('K4x8.mat');K = K.K;
@@ -177,16 +181,16 @@ for i=2:N
     % Kalman inercial
     if(i > kalman_startup + 1)
       % Use control output as current w
-      [x_hat(i,:),P] = kalman_imu(x_hat(i-1,:),P,T(i)-T(i-1),w_control(wc_i - 1,:)',z(i,:)');
+      [x_hat(i,:),P] = kalman_imu(x_hat(i-1,:),P,Q_imu,R_imu,T(i)-T(i-1),w_control(wc_i - 1,:)',z(i,:)');
     else
       % Use set point w as current w
-      [x_hat(i,:),P] = kalman_imu(x_hat(i-1,:),P,T(i)-T(i-1),sp_w,z(i,:)');
+      [x_hat(i,:),P] = kalman_imu(x_hat(i-1,:),P,Q_imu,R_imu,T(i)-T(i-1),sp_w,z(i,:)');
     end
    
     % Kalman GPS
     if(use_gps)
       if mod(i,100) == 0
-          [aux,P_gps]  = kalman_gps(x_hat(i-1,1:9),P_gps,...
+          [aux,P_gps]  = kalman_gps(x_hat(i-1,1:9),P_gps,Q_gps,R_gps,...
               [northing(gps_index); westing(gps_index); elevation(gps_index); ...
               vx_gps(gps_index); vy_gps(gps_index); vz_gps(gps_index)]);
           x_hat(i,1:3) = aux(1:3);

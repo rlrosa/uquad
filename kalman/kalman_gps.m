@@ -1,4 +1,4 @@
-function [x_hat,P] = kalman_gps(x_hat,P,z)
+function [x_hat,P] = kalman_gps(x_hat,P,Q,R,z)
 
 % -------------------------------------------------------------------------
 % function [x_hat,P] = kalman_gps(x_hat,P,z)
@@ -12,30 +12,9 @@ function [x_hat,P] = kalman_gps(x_hat,P,z)
 
 %% Constantes
 
-Ns   = 6;       % Largo del vector de estados
-
-Q = diag(1*[100 100 100 100 100 100]);
-R = diag(1*[1 1 100000 1 1 100000]);
+Ns   = length(P);       % Largo del vector de estados
 
 %% Funciones
-
-Rx = @(psi) [...
-    1 0        0        ;
-    0 cos(psi) -sin(psi) ;
-    0 sin(psi) cos(psi) ...
-    ];
-
-Ry = @(phi) [...
-    cos(phi)  0 sin(phi)   ;
-    0         1     0      ;
-    -sin(phi) 0 cos(phi) ...
-    ];
-
-Rz = @(theta) [...
-    cos(theta) -sin(theta) 0 ;
-    sin(theta) cos(theta)  0 ;
-    0          0           1 ...
-    ];
 
 f = @(x,y,z,vqx,vqy,vqz) [ ...
     x   ;
@@ -50,7 +29,7 @@ h = @(x,y,z,psi,phi,theta,vqx,vqy,vqz) [ ...
     x ;
     y ;
     z ;
-    Rz(theta)*Ry(phi)*Rx(psi)*[vqx;vqy;vqz] ...
+    uquad_rotate([vqx;vqy;vqz],psi,phi,theta,0) ...
     ];
 
 F = @() ...
