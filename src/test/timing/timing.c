@@ -10,6 +10,8 @@
 #define TIME_LOG_NAME "time"
 #define LOOP_SLEEP_US 0
 
+#define TIME_INC_TEST 0
+
 FILE * log_time;
 
 void quit()
@@ -23,14 +25,26 @@ void uquad_sig_handler(int signal_num){
     quit();
 }
 
-
 int main(int argc, char *argv[])
 {
     int retval;
     int counter = 0;
     int sleep_time_us;
-    struct timeval tv_diff,t1,t2;
-    
+    struct timeval t1,t2, tv_diff;
+
+#if TIME_INC_TEST
+    struct timeval tv_start;
+    gettimeofday(&tv_start, NULL);
+    for(;;)
+    {
+	usleep(100);
+	gettimeofday(&t1,NULL);
+	uquad_timeval_substract(&tv_diff,t1,tv_start);
+	log_int_only(stderr, (tv_diff.tv_sec > 0));
+	err_log_tv("Dt:",tv_diff);
+    }
+#endif // TIME_INC_TEST
+
     if(argc < 2)
 	sleep_time_us = 0;
     else
