@@ -341,4 +341,5 @@ void gps_comm_data_free(gps_comm_data_t *gps_data)
 	uquad_mat_free(gps_data->pos);
 	uquad_mat_free(gps_data->vel);
     }
+    free(gps_data);
 }
