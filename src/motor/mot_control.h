@@ -16,8 +16,9 @@
 #define MOT_W_STARTUP_RANGE (MOT_W_HOVER - MOT_W_IDLE)
 #define MOT_C               4
 
-#define MOT_UPDATE_MAX_US   2000L // us
-#define MOT_WAIT_STARTUP_MS 420 // ms
+#define MOT_UPDATE_MAX_US   2000  // us
+#define MOT_WAIT_STARTUP_MS 420   // ms
+#define MOT_WAIT_STARTUP_S  3     // s
 
 #define START_MOTOR_CMD "./cmd > cmd_output.log &"
 #define KILL_MOTOR_CMD  "kill -INT `pidof -s cmd` > /dev/null &"

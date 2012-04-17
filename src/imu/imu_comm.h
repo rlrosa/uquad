@@ -62,6 +62,8 @@
 
 #define IMU_COMM_AVG_MAX_INTERVAL         2*IMU_FRAME_SAMPLE_AVG_COUNT //Too much...?
 
+#define IMU_COMM_STARTUP_T_MS             350
+
 /// ASCII 35, exits from menu and runs unit
 #define IMU_COMMAND_RUN                   '#'
 /// ASCII 36, stops sampling and shows menu

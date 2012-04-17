@@ -460,6 +460,8 @@ int imu_comm_init_calibration(imu_t *imu)
  *Initialize IMU struct and send default value to IMU, this
  *ensures starting from a know state.
  *
+ * NOTE: Takes IMU_COMM_STARTUP_T_MS to execute (sleeps).
+ *
  *@return error code
  */
 imu_t *imu_comm_init(const char *device){
@@ -497,8 +499,8 @@ imu_t *imu_comm_init(const char *device){
     retval = imu_comm_init_calibration(imu);
     cleanup_if(retval);
 
-    // Wait 300ms + a bit more for IMU to reset
-    sleep_ms(350);
+    // Wait 300ms + a bit more for IMU to reset (in case pgm cable is connected)
+    sleep_ms(IMU_COMM_STARTUP_T_MS);
     return imu;
 
     cleanup:
