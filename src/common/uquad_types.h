@@ -26,8 +26,6 @@ typedef UQUAD_BOOL uquad_bool_t;
 #define MASA              ((MOT_W_HOVER*MOT_W_HOVER*F_B1 \
 			    + MOT_W_HOVER*F_B2)*4/GRAVITY)
 #define STATE_COUNT       12
-#define STATES_CONTROLLED 12          // May only be either 8 or 12
-#define FULL_CONTROL      (STATES_CONTROLLED == STATE_COUNT)
 
 #define LENGTH_INPUT      4           // Tamaño del vector de entradass  
 

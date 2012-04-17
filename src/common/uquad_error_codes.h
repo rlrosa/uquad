@@ -5,8 +5,6 @@
 #include <errno.h>
 #include <string.h>
 
-#define DEBUG 1
-
 enum UQUAD_ERROR_CODES{
 ERROR_OK = 0,
 ERROR_FAIL,

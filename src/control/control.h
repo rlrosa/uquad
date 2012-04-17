@@ -6,8 +6,8 @@
 #include <uquad_aux_math.h>
 #include <path_planner.h>
 #include <uquad_types.h>
+#include <uquad_config.h>
 
-#define CTRL_INTEGRAL       0
 #if FULL_CONTROL
 #define CTRL_MAT_K_NAME     "K_full.txt"
 #define CTRL_MAT_K_INT_NAME "K_int_full.txt"

@@ -1,6 +1,7 @@
 #include <math.h>
 #include "uquad_kalman.h"
 #include <uquad_types.h>
+#include <uquad_config.h>
 
 uquad_mat_t* Fk_1 = NULL;
 uquad_mat_t* Fk_1_T = NULL;

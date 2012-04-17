@@ -1,4 +1,4 @@
-#include <uquad_error_codes.h> // DEBUG is defined here
+#include <uquad_config.h>
 #if DEBUG // The following define will affect includes
 #define TIMING             0
 #define TIMING_KALMAN      0
@@ -16,8 +16,6 @@
 #define LOG_BUKAKE         0
 #endif
 
-#define GPS_FAKE           1 // Simulate GPS data (use zeros)
-
 #if LOG_BUKAKE
 #define LOG_BUKAKE_STDOUT  1
 #endif
@@ -26,6 +24,7 @@
 #define W_SP_INC  'i'
 #define W_SP_DEC  'k'
 
+#include <uquad_error_codes.h>
 #include <uquad_types.h>
 #include <macros_misc.h>
 #include <uquad_aux_io.h>
@@ -155,13 +154,6 @@ void quit()
 	err_log("Could not close IMU correctly!");
     }
 
-#if USE_GPS
-    gps_comm_data_free(gps_dat);
-#if !GPS_FAKE
-    gps_comm_deinit(gps);
-#endif // !GPS_FAKE
-#endif
-
     /// Kalman
     kalman_deinit(kalman);
 
@@ -185,8 +177,11 @@ void quit()
     uquad_mat_free(imu_data.acc);
     uquad_mat_free(imu_data.gyro);
     uquad_mat_free(imu_data.magn);
-#if USE_GPS && !GPS_FAKE
+#if USE_GPS
     gps_comm_data_free(gps_dat);
+#if !GPS_FAKE
+    gps_comm_deinit(gps);
+#endif // !GPS_FAKE
 #endif
 
     // Logs
@@ -309,6 +304,91 @@ int main(int argc, char *argv[]){
     /// -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
     /// Init
     /// -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+    /// Logs
+#if DEBUG
+#if LOG_IMU_RAW
+    log_imu_raw = uquad_logger_add(LOG_IMU_RAW_NAME, log_path);
+    if(log_imu_raw == NULL)
+    {
+	err_log("Failed to open log_imu_raw!");
+	quit();
+    }
+#endif //LOG_IMU_RAW
+#if LOG_IMU_DATA
+    log_imu_data = uquad_logger_add(LOG_IMU_DATA_NAME, log_path);
+    if(log_imu_data == NULL)
+    {
+	err_log("Failed to open log_imu_data!");
+	quit();
+    }
+#endif //LOG_IMU_DATA
+#if LOG_IMU_AVG
+    log_imu_avg = uquad_logger_add(LOG_IMU_AVG_NAME, log_path);
+    if(log_imu_avg == NULL)
+    {
+	err_log("Failed to open log_imu_avg!");
+	quit();
+    }
+#endif //LOG_IMU_AVG
+#if LOG_W
+    log_w = uquad_logger_add(LOG_W_NAME, log_path);
+    if(log_w == NULL)
+    {
+	err_log("Failed to open log_w!");
+	quit();
+    }
+#endif //LOG_W
+#if LOG_W_CTRL
+    log_w_ctrl = uquad_logger_add(LOG_W_CTRL_NAME, log_path);
+    if(log_w_ctrl == NULL)
+    {
+	err_log("Failed to open log_w_ctrl!");
+	quit();
+    }
+#endif //LOG_W_CTRL
+#if DEBUG_X_HAT
+    log_x_hat = uquad_logger_add(LOG_X_HAT_NAME, log_path);
+    if(log_x_hat == NULL)
+    {
+	err_log("Failed to open x_hat!");
+	quit();
+    }
+#endif //DEBUG_X_HAT
+#if DEBUG_KALMAN_INPUT
+    log_kalman_in = uquad_logger_add(LOG_KALMAN_IN_NAME, log_path);
+    if(log_kalman_in == NULL)
+    {
+	err_log("Failed open kalman_in log!");
+	quit();
+    }
+#endif
+#if LOG_GPS && USE_GPS
+    log_gps = uquad_logger_add(LOG_GPS_NAME, log_path);
+    if(log_gps == NULL)
+    {
+	err_log("Failed open kalman_in log!");
+	quit();
+    }
+#endif //LOG_GPS && USE_GPS
+#if LOG_BUKAKE && !LOG_BUKAKE_STDOUT
+    log_bukake = uquad_logger_add(LOG_BUKAKE_NAME, log_path);
+    if(log_bukake == NULL)
+    {
+	err_log("Failed open kalman_in log!");
+	quit();
+    }
+#endif //LOG_BUKAKE && !LOG_BUKAKE_STDOUT
+#if LOG_TV
+    log_tv = uquad_logger_add(LOG_TV_NAME, log_path);
+    if(log_tv == NULL)
+    {
+	err_log("Failed to open tv_log!");
+	quit();
+    }
+#endif // LOG_TV
+#endif //DEBUG
+
     /// IO manager
     io = io_init();
     if(io==NULL)
@@ -374,6 +454,15 @@ int main(int argc, char *argv[]){
 	quit();
     }
 
+#if DEBUG_X_HAT
+    x_hat_T = uquad_mat_alloc(1,STATE_COUNT);
+    if(x_hat_T == NULL)
+    {
+	err_log("Failed alloc x_hat_T!");
+	quit();
+    }
+#endif // DEBUG_X_HAT
+
 #if USE_GPS
     gps_dat = gps_comm_data_alloc();
     if(gps_dat == NULL)
@@ -382,96 +471,6 @@ int main(int argc, char *argv[]){
 	quit();
     }
 #endif
-
-    /// Logs
-#if DEBUG
-#if LOG_IMU_RAW
-    log_imu_raw = uquad_logger_add(LOG_IMU_RAW_NAME, log_path);
-    if(log_imu_raw == NULL)
-    {
-	err_log("Failed to open log_imu_raw!");
-	quit();
-    }
-#endif //LOG_IMU_RAW
-#if LOG_IMU_DATA
-    log_imu_data = uquad_logger_add(LOG_IMU_DATA_NAME, log_path);
-    if(log_imu_data == NULL)
-    {
-	err_log("Failed to open log_imu_data!");
-	quit();
-    }
-#endif //LOG_IMU_DATA
-#if LOG_IMU_AVG
-    log_imu_avg = uquad_logger_add(LOG_IMU_AVG_NAME, log_path);
-    if(log_imu_avg == NULL)
-    {
-	err_log("Failed to open log_imu_avg!");
-	quit();
-    }
-#endif //LOG_IMU_AVG
-#if LOG_W
-    log_w = uquad_logger_add(LOG_W_NAME, log_path);
-    if(log_w == NULL)
-    {
-	err_log("Failed to open log_w!");
-	quit();
-    }
-#endif //LOG_W
-#if LOG_W_CTRL
-    log_w_ctrl = uquad_logger_add(LOG_W_CTRL_NAME, log_path);
-    if(log_w_ctrl == NULL)
-    {
-	err_log("Failed to open log_w_ctrl!");
-	quit();
-    }
-#endif //LOG_W_CTRL
-#if DEBUG_X_HAT
-    log_x_hat = uquad_logger_add(LOG_X_HAT_NAME, log_path);
-    if(log_x_hat == NULL)
-    {
-	err_log("Failed to open x_hat!");
-	quit();
-    }
-    x_hat_T = uquad_mat_alloc(1,STATE_COUNT);
-    if(x_hat_T == NULL)
-    {
-	err_log("Failed alloc x_hat_T!");
-	quit();
-    }
-#endif //DEBUG_X_HAT
-#if DEBUG_KALMAN_INPUT
-    log_kalman_in = uquad_logger_add(LOG_KALMAN_IN_NAME, log_path);
-    if(log_kalman_in == NULL)
-    {
-	err_log("Failed open kalman_in log!");
-	quit();
-    }
-#endif
-#if LOG_GPS && USE_GPS
-    log_gps = uquad_logger_add(LOG_GPS_NAME, log_path);
-    if(log_gps == NULL)
-    {
-	err_log("Failed open kalman_in log!");
-	quit();
-    }
-#endif //LOG_GPS && USE_GPS
-#if LOG_BUKAKE && !LOG_BUKAKE_STDOUT
-    log_bukake = uquad_logger_add(LOG_BUKAKE_NAME, log_path);
-    if(log_bukake == NULL)
-    {
-	err_log("Failed open kalman_in log!");
-	quit();
-    }
-#endif //LOG_BUKAKE && !LOG_BUKAKE_STDOUT
-#if LOG_TV
-    log_tv = uquad_logger_add(LOG_TV_NAME, log_path);
-    if(log_tv == NULL)
-    {
-	err_log("Failed to open tv_log!");
-	quit();
-    }
-#endif // LOG_TV
-#endif //DEBUG
 
     /// -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
     /// Register IO devices
@@ -510,7 +509,6 @@ int main(int argc, char *argv[]){
 	write = false,
 	imu_update = false,
 	reg_stdin = true;
-    uquad_bool_t gps_update = false;
     int runs_imu = 0, runs_kalman = 0;
     int err_imu = ERROR_OK, err_gps = ERROR_OK;
     unsigned char tmp_buff[2];
@@ -524,10 +522,14 @@ int main(int argc, char *argv[]){
 	tv_start;
     gettimeofday(&tv_start,NULL);
     gettimeofday(&tv_last_ramp,NULL);
-#if USE_GPS && !GPS_FAKE
+#if USE_GPS
+    uquad_bool_t gps_update = false;
+    retval = gettimeofday(&tv_gps_last,NULL);
+    err_log_std(retval);
+#if !GPS_FAKE
     uquad_bool_t reg_gps = (gps == NULL)?false:true;
-    gettimeofday(&tv_gps_last,NULL);
-#endif
+#endif // !GPS_FAKE
+#endif // USE_GPS
 #if TIMING
     struct timeval
 	tv_pgm,
@@ -551,7 +553,9 @@ int main(int argc, char *argv[]){
 	    count_ok = 0;
 	    if(count_err++ > MAX_ERRORS)
 	    {
-		err_log("Too many errors! Aborting...");
+		gettimeofday(&tv_tmp,NULL);
+		retval = uquad_timeval_substract(&tv_diff, tv_tmp, tv_start);
+		err_log_tv("Too many errors! Aborting...",tv_diff);
 		slow_land();
 		/// program ends here
 	    }
@@ -674,8 +678,6 @@ int main(int argc, char *argv[]){
 		++runs_imu;
 		if(runs_imu == STARTUP_RUNS)
 		{
-		    err_imu = gettimeofday(&tv_gps_last,NULL);
-		    err_log_std(err_imu);
 		    err_imu = gettimeofday(&tv_last_imu,NULL);
 		    err_log_std(err_imu);
 		    tv_gps_last    = tv_last_imu;
@@ -907,9 +909,12 @@ int main(int argc, char *argv[]){
 #if USE_GPS
 	if(gps_update)
 	{
+	    gettimeofday(&tv_tmp,NULL);
+	    retval = uquad_timeval_substract(&tv_diff, tv_tmp, tv_start);
 	    retval = uquad_kalman_gps(kalman, gps_dat);
 	    log_n_continue(retval,"GPS Kalman update failed");
 	    gps_update = false; // Clear gps status
+	    err_log_tv("GPS run!",tv_diff);
 	}
 #endif // USE_GPS
 

@@ -32,16 +32,15 @@ void uquad_logger_read(int pipefd, char *log_name, char *path)
 	buff_index = 0;
     char file_name[PATH_MAX];
     char buff[BUFF_SIZE];
-    FILE *log_file  = NULL;
     char *new_line = NULL;
     uquad_bool_t write_ok, read_ok;
     struct timeval
-	tv_old,
+#if LOGGER_DEBUG
 	tv_new,
-#if DEBUG
 	tv_pre,
-#endif
-	tv_diff;
+	tv_diff,
+#endif // LOGGER_DEBUG
+	tv_old;
     retval = sprintf(file_name,"%s%s.log",path,log_name);
     if(retval < 0)
     {
@@ -56,7 +55,7 @@ void uquad_logger_read(int pipefd, char *log_name, char *path)
 	cleanup_if(ERROR_OPEN);
     }
 
-    log_fd = open(file_name,O_WRONLY | O_CREAT | O_NONBLOCK | S_IRUSR | S_IWUSR);
+    log_fd = open(file_name,O_RDWR | O_CREAT | O_NONBLOCK | S_IRUSR | S_IWUSR);
     if(log_fd < 0)
     {
 	err_log_stderr("Failed to open log file!");
@@ -75,19 +74,21 @@ void uquad_logger_read(int pipefd, char *log_name, char *path)
 	}
 	if(read_ok)
 	{
+#if LOGGER_DEBUG
 	    gettimeofday(&tv_pre,NULL);
+#endif // LOGGER_DEBUG
 	    retval = read(pipefd, (void *)(buff+buff_index), READ_SIZE);
 	    if(retval > 0)
 	    {
 		buff_index += retval;
-#if DEBUG
+#if LOGGER_DEBUG
 		gettimeofday(&tv_new,NULL);
 		retval = uquad_timeval_substract(&tv_diff, tv_new, tv_pre);
 		if(tv_diff.tv_sec > 0)
 		{
 		    err_log_tv("read() got stuck!",tv_diff);
 		}
-#endif
+#endif // LOGGER_DEBUG
 		if(buff_index < FLUSH_SIZE)
 		    continue;
 		retval = check_io_locks(log_fd,NULL,NULL,&write_ok);
@@ -97,7 +98,9 @@ void uquad_logger_read(int pipefd, char *log_name, char *path)
 		}
 		if(write_ok)
 		{
+#if LOGGER_DEBUG
 		    gettimeofday(&tv_pre,NULL);
+#endif // LOGGER_DEBUG
 		    retval = write(log_fd, buff, buff_index);
 		    if(retval < 0)
 		    {
@@ -106,14 +109,14 @@ void uquad_logger_read(int pipefd, char *log_name, char *path)
 		    else
 		    {
 			buff_index -= retval;
-#if DEBUG
+#if LOGGER_DEBUG
 			gettimeofday(&tv_new,NULL);
 			retval = uquad_timeval_substract(&tv_diff, tv_new, tv_pre);
 			if(tv_diff.tv_sec > 0)
 			{
 			    err_log_tv("write() got stuck!",tv_diff);
 			}
-#endif
+#endif // LOGGER_DEBUG
 		    }
 		    fdatasync(log_fd);
 		    gettimeofday(&tv_old,NULL);
@@ -149,14 +152,9 @@ void uquad_logger_read(int pipefd, char *log_name, char *path)
     }
     cleanup:
     err_log_str("Closing logger:",file_name);
-    if(log_file != NULL)
+    if(log_fd > 0)
     {
-	retval = fflush(log_file);
-	if(retval < 0)
-	{
-	    err_log_stderr("Failed to flush log file!");
-	}
-	retval = fclose(log_file);
+	retval = close(log_fd);
 	if(retval < 0)
 	{
 	    err_log_stderr("Failed to close log file!");
@@ -225,18 +223,14 @@ FILE *uquad_logger_add(char *log_name, char *path)
 
 void uquad_logger_remove(FILE *pipe_f)
 {
+    int retval;
     if(pipe_f != NULL)
     {
-	int pipefd = fileno(pipe_f);
-	if(pipefd < 0)
+	retval = fclose(pipe_f);
+	if(retval < 0)
 	{
-	    err_log_stderr("Failed to get pipefd to close write end of pipe!");
+	    err_log_stderr("Failed to close log file!");
 	}
-	else
-	{
-	    close(pipefd);
-	}
-	//	fclose(pipe_f);
     }
     return;
 }

@@ -1147,7 +1147,7 @@ int imu_comm_read(imu_t *imu, uquad_bool_t *ready){
 	break;
     }
 
-#if DEBUG
+#if IMU_DEBUG
     if(*ready)
     {
 	/// -- -- -- -- -- -- -- -- -- -- -- --
@@ -1165,7 +1165,7 @@ int imu_comm_read(imu_t *imu, uquad_bool_t *ready){
 	printf("\n");//TODO testing
 #endif
     }
-#endif //DEBUG
+#endif // IMU_DEBUG
 
     return ERROR_OK;
 }
