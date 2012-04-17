@@ -32,7 +32,6 @@ void uquad_logger_read(int pipefd, char *log_name, char *path)
 	buff_index = 0;
     char file_name[PATH_MAX];
     char buff[BUFF_SIZE];
-    FILE *log_file  = NULL;
     char *new_line = NULL;
     uquad_bool_t write_ok, read_ok;
     struct timeval
@@ -149,14 +148,9 @@ void uquad_logger_read(int pipefd, char *log_name, char *path)
     }
     cleanup:
     err_log_str("Closing logger:",file_name);
-    if(log_file != NULL)
+    if(log_fd > 0)
     {
-	retval = fflush(log_file);
-	if(retval < 0)
-	{
-	    err_log_stderr("Failed to flush log file!");
-	}
-	retval = fclose(log_file);
+	retval = close(log_fd);
 	if(retval < 0)
 	{
 	    err_log_stderr("Failed to close log file!");
