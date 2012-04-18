@@ -403,7 +403,14 @@ int main(int argc, char *argv[]){
 	quit_log_if(ERROR_FAIL,"imu init failed!");
     }
 
-#if USE_GPS && !GPS_FAKE
+#if USE_GPS
+    gps_dat = gps_comm_data_alloc();
+    if(gps_dat == NULL)
+    {
+	err_log("Failed to allocate GPS!...");
+	quit();
+    }
+#if !GPS_FAKE
     /// GPS
     gps = gps_comm_init();
     if(gps == NULL)
@@ -417,14 +424,24 @@ int main(int argc, char *argv[]){
 	struct timeval tv_gps_init_t_out;
 	tv_gps_init_t_out.tv_sec = GPS_INIT_TOUT_S;
 	tv_gps_init_t_out.tv_usec = GPS_INIT_TOUT_US;
-	retval = gps_comm_wait_fix(gps,got_fix,&tv_gps_init_t_out);
+	retval = gps_comm_wait_fix(gps,&got_fix,&tv_gps_init_t_out);
 	quit_if(retval);
 	if(!got_fix)
 	{
 	    quit_log_if(ERROR_GPS,"Failed to get GPS fix!");
 	}
+	err_log("GPS fix ok.");
+	/**
+	 * Now get initial position from GPS.
+	 * This information will be used as startpoint for the kalman
+	 * estimator if no other GPS updates are received during IMU
+	 * warmup.
+	 */
+	retval = gps_comm_get_data_unread(gps, gps_dat, NULL);
+	quit_log_if(retval,"Failed to get initial position from GPS!");
     }
-#endif
+#endif // !GPS_FAKE
+#endif // USE_GPS
 
     /// Kalman
     kalman = kalman_init();
@@ -475,15 +492,6 @@ int main(int argc, char *argv[]){
 	quit();
     }
 #endif // DEBUG_X_HAT
-
-#if USE_GPS
-    gps_dat = gps_comm_data_alloc();
-    if(gps_dat == NULL)
-    {
-	err_log("Failed to allocate GPS!...");
-	quit();
-    }
-#endif
 
     /// -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
     /// Register IO devices
@@ -853,8 +861,32 @@ int main(int argc, char *argv[]){
 		       tv_diff);
 	    retval = imu_comm_raw2data(imu, &imu->calib.null_est, &imu_data);
 	    quit_log_if(retval,"Failed to correct setpoint!");
-	    pp->sp->x->m_full[SV_THETA] = imu_data.magn->m_full[2];
-	    /// Start kalman from calibration value
+	    /**
+	     * Startup:
+	     *  - Kalman estimator from calibration & GPS, if available.
+	     *  - If hovering, set initial position as setpoint. This will avoid
+	     *    rough movements on startup (setpoint will match current state).
+	     */
+	    if(pp->pt == HOVER)
+	    {
+#if USE_GPS
+		// Position
+		retval = uquad_mat_set_subm(pp->sp->x,SV_X,0,gps_dat->pos);
+		quit_log_if(retval, "Failed to initiate kalman pos estimator from GPS data!");
+#endif // USE_GPS
+		// Euler angles
+		pp->sp->x->m_full[SV_THETA] = imu_data.magn->m_full[2];
+	    }
+	    /// Startup kalman estimator
+#if USE_GPS
+	    // Position
+	    retval = uquad_mat_set_subm(kalman->x_hat,SV_X,0,gps_dat->pos);
+	    quit_log_if(retval, "Failed to initiate kalman pos estimator from GPS data!");
+	    // Velocity
+	    //	    retval = uquad_mat_set_subm(kalman->x_hat,SV_VQX,0,gps_dat->pos);
+	    //	    quit_log_if(retval, "Failed to initiate kalman vel estimator from GPS data!");
+#endif // USE_GPS
+	    // Euler angles
 	    kalman->x_hat->m_full[SV_PSI]   = imu_data.magn->m_full[0];
 	    kalman->x_hat->m_full[SV_PHI]   = imu_data.magn->m_full[1];
 	    kalman->x_hat->m_full[SV_THETA] = imu_data.magn->m_full[2];
