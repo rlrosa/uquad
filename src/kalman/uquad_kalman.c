@@ -451,16 +451,16 @@ kalman_io_t* kalman_init()
     kalman_io_data->Q->m[3][3] = 1;
     kalman_io_data->Q->m[4][4] = 1;
     kalman_io_data->Q->m[5][5] = 1;
-    kalman_io_data->Q->m[6][6] = 10;
-    kalman_io_data->Q->m[7][7] = 10;
-    kalman_io_data->Q->m[8][8] = 10;
-    kalman_io_data->Q->m[9][9] = 1;
-    kalman_io_data->Q->m[10][10] = 1;
-    kalman_io_data->Q->m[11][11] = 1;
+    kalman_io_data->Q->m[6][6] = 100;
+    kalman_io_data->Q->m[7][7] = 100;
+    kalman_io_data->Q->m[8][8] = 100;
+    kalman_io_data->Q->m[9][9] = 10;
+    kalman_io_data->Q->m[10][10] = 10;
+    kalman_io_data->Q->m[11][11] = 10;
 
-    kalman_io_data->R->m[0][0] = 10000;
-    kalman_io_data->R->m[1][1] = 10000;
-    kalman_io_data->R->m[2][2] = 10000;
+    kalman_io_data->R->m[0][0] = 1000;
+    kalman_io_data->R->m[1][1] = 1000;
+    kalman_io_data->R->m[2][2] = 1000;
     kalman_io_data->R->m[3][3] = 10000;
     kalman_io_data->R->m[4][4] = 10000;
     kalman_io_data->R->m[5][5] = 10000;
