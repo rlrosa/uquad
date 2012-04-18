@@ -170,7 +170,7 @@ void gps_comm_deinit(gps_t * gps){
     uquad_mat_free(m3x1);
     uquad_mat_free(m3x3);
 
-    uquad_mat_free(gps->pos);
+    uquad_mat_free(gps->pos0);
 
     retval = gps_stream(gps->gpsd, GPS_COMM_STREAM_FLAGS_DIS, NULL);
     if(retval < 0)
