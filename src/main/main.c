@@ -10,7 +10,7 @@
 #define LOG_IMU_DATA       1
 #define LOG_IMU_AVG        1
 #define DEBUG_X_HAT        1
-#define LOG_GPS            0
+#define LOG_GPS            1
 #define DEBUG_KALMAN_INPUT 1
 #define LOG_TV             1
 #define LOG_BUKAKE         0
@@ -410,6 +410,19 @@ int main(int argc, char *argv[]){
     {
 	err_log("WARN: GPS not available!");
 	//	quit_log_if(ERROR_FAIL,"gps init failed!");
+    }
+    else
+    {
+	uquad_bool_t got_fix;
+	struct timeval tv_gps_init_t_out;
+	tv_gps_init_t_out.tv_sec = GPS_INIT_TOUT_S;
+	tv_gps_init_t_out.tv_usec = GPS_INIT_TOUT_US;
+	retval = gps_comm_wait_fix(gps,got_fix,&tv_gps_init_t_out);
+	quit_if(retval);
+	if(!got_fix)
+	{
+	    quit_log_if(ERROR_GPS,"Failed to get GPS fix!");
+	}
     }
 #endif
 

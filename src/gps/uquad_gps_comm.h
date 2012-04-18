@@ -7,6 +7,7 @@
 #include <imu_comm.h>
 
 #define GPS_COMM_DATA_NON_INERTIAL_VEL 0 // Convert vel to non-inertial sys
+#define GPS_COMM_WAIT_FIX_SLEEP_MS     300
 
 typedef struct gps_data_t gpsd_t;
 
@@ -72,6 +73,18 @@ gps_t *gps_comm_init(void);
 void  gps_comm_deinit(gps_t *gps);
 
 /** 
+ * Waits for gps fix.
+ * If successful, then gps should have data ready to be read.
+ *
+ * @param gps
+ * @param got_fix Reports success/failure
+ * @param t_out If NULL, then will wait forever, else will only wait for t_out
+ *
+ * @return error code
+ */
+int gps_comm_wait_fix(gps_t *gps, uquad_bool_t *got_fix, struct timeval *t_out);
+
+/**
  * From gps.h, GPS fix mode.
  * We want 3D fix, for x,y,z to be valid.
  * 

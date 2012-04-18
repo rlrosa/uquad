@@ -3,6 +3,8 @@
 #include <gpsd.h>
 #include <math.h>
 #include <uquad_error_codes.h>
+#include <uquad_aux_time.h>
+#include <uquad_aux_io.h>
 
 #define GPS_COMM_STREAM_FLAGS_ENA WATCH_ENABLE | WATCH_JSON
 #define GPS_COMM_STREAM_FLAGS_DIS WATCH_DISABLE
@@ -53,9 +55,71 @@ gps_t *  gps_comm_init(void){
     cleanup:
     gps_comm_deinit(gps);
     return NULL;
-}   
+}
 
-void  gps_comm_deinit(gps_t * gps){
+int gps_comm_wait_fix(gps_t *gps, uquad_bool_t *got_fix, struct timeval *t_out)
+{
+    uquad_bool_t
+	read_ok;
+    int
+	retval = ERROR_OK;
+    struct timeval
+	tv_in,
+	tv_tmp,
+	tv_diff;
+    if(gps == NULL || got_fix == NULL)
+    {
+	err_check(ERROR_INVALID_ARG,"NULL pointer invalid arg!");
+    }
+    *got_fix = false;
+    retval = gettimeofday(&tv_in,NULL);
+    if(retval != 0)
+    {
+	err_check_std(ERROR_TIMING);
+    }
+    for(;;)
+    {
+	retval = check_io_locks(gps_comm_get_fd(gps),NULL,&read_ok,NULL);
+	err_propagate(retval);
+	if(read_ok)
+	{
+	    retval = gps_comm_read(gps);
+	    err_propagate(retval);
+	    if(gps_comm_3dfix(gps))
+	    {
+		*got_fix = true;
+		return ERROR_OK;
+	    }
+	    else
+	    {
+		sleep_ms(GPS_COMM_WAIT_FIX_SLEEP_MS);
+	    }
+	}
+
+	if(t_out != NULL)
+	{
+	    /// Check if timeout was exceeded
+	    retval = gettimeofday(&tv_tmp,NULL);
+	    if(retval != 0)
+	    {
+		err_check_std(ERROR_TIMING);
+	    }
+	    retval = uquad_timeval_substract(&tv_diff,tv_tmp,tv_in);
+	    if(retval <= 0)
+	    {
+		err_check(ERROR_TIMING,"Absurd timing!");
+	    }
+	    retval = uquad_timeval_substract(&tv_tmp,tv_diff,*t_out);
+	    if(retval > 0)
+	    {
+		err_log("Timed out waiting for GPS!");
+		return ERROR_OK;
+	    }
+	}
+    }
+}
+
+void gps_comm_deinit(gps_t * gps){
     int retval;
     if(gps == NULL)
     {
