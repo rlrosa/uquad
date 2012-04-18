@@ -42,6 +42,9 @@ typedef struct gps{
     uquad_bool_t vel_ok;         // speed/climb has valid data
     uquad_bool_t vel_ep_ok;      // speed/climb uncertainty is valid
 
+    // Starting point
+    uquad_mat_t *pos_0;          // Initial pos (inertial system)  {x,y,z}     [m]
+
     // Aux structures
     utm_t utm;                   // UTM coordinates - used to calculate pos[0:1]
 
@@ -75,6 +78,7 @@ void  gps_comm_deinit(gps_t *gps);
 /** 
  * Waits for gps fix.
  * If successful, then gps should have data ready to be read.
+ * Will set initial position.
  *
  * @param gps
  * @param got_fix Reports success/failure
@@ -83,6 +87,17 @@ void  gps_comm_deinit(gps_t *gps);
  * @return error code
  */
 int gps_comm_wait_fix(gps_t *gps, uquad_bool_t *got_fix, struct timeval *t_out);
+
+/**
+ * Returns position determined by GPS when pgm started.
+ * Must be called after gps_comm_wait_fx was successful.
+ *
+ * @param gps
+ * @param gps_dat Answer
+ *
+ * @return error code
+ */
+int gps_comm_get_0(gps_t *gps, gps_comm_data_t *gps_dat);
 
 /**
  * From gps.h, GPS fix mode.

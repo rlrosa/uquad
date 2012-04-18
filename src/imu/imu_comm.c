@@ -499,6 +499,10 @@ imu_t *imu_comm_init(const char *device){
     retval = imu_comm_init_calibration(imu);
     cleanup_if(retval);
 
+    // Mark initial altitud as unknown
+    imu->calib.p_z0 = -1;
+    imu->calib.z0 = -1;
+
     // Wait 300ms + a bit more for IMU to reset (in case pgm cable is connected)
     sleep_ms(IMU_COMM_STARTUP_T_MS);
     return imu;
@@ -761,6 +765,13 @@ int imu_comm_calibration_finish(imu_t *imu){
     imu_comm_copy_data(&imu_data_tmp, &imu->calib.null_est_data);
     imu_data_free(&imu_data_tmp);
     err_propagate(retval);
+
+    // If external altitud available, use it to determine p0
+    if(imu->calib.z0 >= 0)
+    {
+	imu->calib.p_z0 = ((double)imu->calib.null_est.pres)/
+	    pow(1 - imu->calib.z0/PRESS_K,PRESS_EXP_INV);
+    }
 
     imu->calib.calib_estim_ready = true;
     imu->status = IMU_COMM_STATE_RUNNING;
@@ -1340,7 +1351,6 @@ static int imu_comm_temp_convert(imu_t *imu, uint16_t *data, double *temp)
     return ERROR_OK;
 }
 
-#define PRESS_EXP  0.190294957183635L // 1/5.255 = 0.190294957183635
 /**
  * Convert raw pressure data to relative altitud.
  * The first call to this function will set a reference pressure, which
@@ -1356,13 +1366,39 @@ static int imu_comm_temp_convert(imu_t *imu, uint16_t *data, double *temp)
 static int imu_comm_pres_convert(imu_t *imu, uint32_t *data, double *alt)
 {
     double p0;
-    p0 = (imu_comm_calib_estim(imu))?
-	// we have a calibration, use it.
-	imu->calib.null_est.pres:
-	// if not, use default
-	IMU_P0_DEFAULT;
+    if(imu->calib.p_z0 >= 0)
+	p0 = imu->calib.p_z0;
+    else
+    {
+	p0 = (imu_comm_calib_estim(imu))?
+	    // we have a calibration, use it.
+	    imu->calib.null_est.pres:
+	    // if not, use default
+	    IMU_P0_DEFAULT;
+    }
 
-    *alt = 44330*(1- pow((((double)(*data))/p0),PRESS_EXP));
+    *alt = PRESS_K*(1- pow((((double)(*data))/p0),PRESS_EXP));
+    return ERROR_OK;
+}
+
+/**
+ * Set initial elevation.
+ * Must be called before calibration, and will be used to set
+ * reference pressure so that barometer data will match external
+ * information (GPS, etc).
+ *
+ * @param imu
+ * @param z0
+ *
+ * @return
+ */
+int imu_comm_set_z0(imu_t *imu, double z0)
+{
+    if(imu == NULL)
+    {
+	err_check(ERROR_NULL_POINTER,"Non null pointer required as arg...");
+    }
+    imu->calib.z0 = z0;
     return ERROR_OK;
 }
 

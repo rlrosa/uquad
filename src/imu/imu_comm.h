@@ -15,6 +15,10 @@
 /// Default path for calibration file.
 #define IMU_DEFAULT_CALIB_PATH     "imu_calib.txt"
 
+#define PRESS_EXP                  0.190294957183635L // 1/5.255 = 0.190294957183635
+#define PRESS_EXP_INV              5.255L
+#define PRESS_K                    44330.0
+
 #define IMU_DEBUG                  0
 
 #define IMU_COMM_PRINT_DATA_FORMAT "%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\n"
@@ -174,6 +178,8 @@ typedef struct imu_calibration{
     double gyro_to;                // gyro calibration temp
     struct timeval timestamp_file; // time at which calib was read.
     uquad_bool_t calib_file_ready; // calibration was read from file.
+    double z0;                     // External information regarding initial altitud [m]
+    double p_z0;                   // Initial pressure, from z0 and calib            [pa]
 
     imu_raw_t null_est;            // null estimates gathered this run.
     imu_data_t null_est_data;      // null estimates, converted
@@ -268,6 +274,8 @@ int imu_comm_print_calib(imu_calib_t *calib, FILE *stream);
 uquad_bool_t imu_comm_calib_file(imu_t *imu);
 uquad_bool_t imu_comm_calib_estim(imu_t *imu);
 int imu_comm_calib_save(imu_t *imu, const char *filename);
+
+int imu_comm_set_z0(imu_t *imu, double z0);
 
 int imu_comm_calibration_start(imu_t *imu);
 int imu_comm_calibration_abort(imu_t *imu);

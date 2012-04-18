@@ -424,6 +424,7 @@ int main(int argc, char *argv[]){
 	struct timeval tv_gps_init_t_out;
 	tv_gps_init_t_out.tv_sec = GPS_INIT_TOUT_S;
 	tv_gps_init_t_out.tv_usec = GPS_INIT_TOUT_US;
+	err_log("Waiting for GPS fix...");
 	retval = gps_comm_wait_fix(gps,&got_fix,&tv_gps_init_t_out);
 	quit_if(retval);
 	if(!got_fix)
@@ -431,6 +432,15 @@ int main(int argc, char *argv[]){
 	    quit_log_if(ERROR_GPS,"Failed to get GPS fix!");
 	}
 	err_log("GPS fix ok.");
+	retval = gps_comm_get_0(gps, gps_dat);
+	quit_if(retval);
+	if(imu == NULL)
+	{
+	    quit_log_if(ERROR_FAIL,"IMU must be initialized before gps!");
+	}
+	retval = imu_comm_set_z0(imu,gps_dat->pos->m_full[2]);
+	quit_if(retval);
+
 	/**
 	 * Now get initial position from GPS.
 	 * This information will be used as startpoint for the kalman
