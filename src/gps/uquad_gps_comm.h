@@ -7,6 +7,7 @@
 #include <imu_comm.h>
 
 #define GPS_COMM_DATA_NON_INERTIAL_VEL 0 // Convert vel to non-inertial sys
+#define GPS_COMM_WAIT_FIX_SLEEP_MS     300
 
 typedef struct gps_data_t gpsd_t;
 
@@ -41,6 +42,9 @@ typedef struct gps{
     uquad_bool_t vel_ok;         // speed/climb has valid data
     uquad_bool_t vel_ep_ok;      // speed/climb uncertainty is valid
 
+    // Starting point
+    uquad_mat_t *pos_0;          // Initial pos (inertial system)  {x,y,z}     [m]
+
     // Aux structures
     utm_t utm;                   // UTM coordinates - used to calculate pos[0:1]
 
@@ -72,6 +76,30 @@ gps_t *gps_comm_init(void);
 void  gps_comm_deinit(gps_t *gps);
 
 /** 
+ * Waits for gps fix.
+ * If successful, then gps should have data ready to be read.
+ * Will set initial position.
+ *
+ * @param gps
+ * @param got_fix Reports success/failure
+ * @param t_out If NULL, then will wait forever, else will only wait for t_out
+ *
+ * @return error code
+ */
+int gps_comm_wait_fix(gps_t *gps, uquad_bool_t *got_fix, struct timeval *t_out);
+
+/**
+ * Returns position determined by GPS when pgm started.
+ * Must be called after gps_comm_wait_fx was successful.
+ *
+ * @param gps
+ * @param gps_dat Answer
+ *
+ * @return error code
+ */
+int gps_comm_get_0(gps_t *gps, gps_comm_data_t *gps_dat);
+
+/**
  * From gps.h, GPS fix mode.
  * We want 3D fix, for x,y,z to be valid.
  * 

@@ -5,6 +5,14 @@
 #include <sys/ipc.h>
 #include <sys/msg.h>
 
+
+/**
+ * Allocates mem for motor controller, and launches driver module.
+ *
+ * NOTE: Takes MOT_WAIT_STARTUP_S secs + MOT_UPDATE_MAX_US usecs to init
+ *
+ * @return
+ */
 uquad_mot_t *mot_init(void)
 {
     int retval = ERROR_OK;
@@ -36,7 +44,7 @@ uquad_mot_t *mot_init(void)
     	err_log("Failed to run cmd!");
 	goto cleanup;
     }
-    sleep(3); // Wait for cmd to startup
+    sleep(MOT_WAIT_STARTUP_S); // Wait for cmd to startup
     m->kmsgq = uquad_kmsgq_init(MOT_SERVER_KEY, MOT_DRIVER_KEY);
     if(m->kmsgq == NULL)
     {

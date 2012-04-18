@@ -3,6 +3,8 @@
 #include <gpsd.h>
 #include <math.h>
 #include <uquad_error_codes.h>
+#include <uquad_aux_time.h>
+#include <uquad_aux_io.h>
 
 #define GPS_COMM_STREAM_FLAGS_ENA WATCH_ENABLE | WATCH_JSON
 #define GPS_COMM_STREAM_FLAGS_DIS WATCH_DISABLE
@@ -33,6 +35,8 @@ gps_t *  gps_comm_init(void){
     m3x3 = uquad_mat_alloc(3,3);
     cleanup_if_null(m3x3);
 
+    gps->pos_0 = NULL;
+
     // Initialize data structure and open connection
     // Use default host/port (NULL/0)
     retval = gps_open(NULL, 0, gps->gpsd);
@@ -53,9 +57,108 @@ gps_t *  gps_comm_init(void){
     cleanup:
     gps_comm_deinit(gps);
     return NULL;
-}   
+}
 
-void  gps_comm_deinit(gps_t * gps){
+int gps_comm_wait_fix(gps_t *gps, uquad_bool_t *got_fix, struct timeval *t_out)
+{
+    uquad_bool_t
+	read_ok;
+    int
+	retval = ERROR_OK;
+    struct timeval
+	tv_in,
+	tv_tmp,
+	tv_diff;
+    if(gps == NULL || got_fix == NULL)
+    {
+	err_check(ERROR_INVALID_ARG,"NULL pointer invalid arg!");
+    }
+    *got_fix = false;
+    retval = gettimeofday(&tv_in,NULL);
+    if(retval != 0)
+    {
+	err_check_std(ERROR_TIMING);
+    }
+    for(;;)
+    {
+	retval = check_io_locks(gps_comm_get_fd(gps),NULL,&read_ok,NULL);
+	err_propagate(retval);
+	if(read_ok)
+	{
+	    retval = gps_comm_read(gps);
+	    err_propagate(retval);
+	    if(gps_comm_3dfix(gps))
+	    {
+		gps_comm_data_t *gps_dat = gps_comm_data_alloc();
+		if(gps_dat == NULL)
+		{
+		    cleanup_if(ERROR_MALLOC);
+		}
+		else
+		{
+		    retval = gps_comm_get_data(gps,gps_dat,NULL);
+		    cleanup_if(retval);
+		    gps->pos_0    = uquad_mat_alloc(3,1);
+		    if(gps->pos_0 == NULL)
+		    {
+			cleanup_if(ERROR_MALLOC);
+		    }
+		    retval = uquad_mat_copy(gps->pos_0,gps_dat->pos);
+		    cleanup_if(retval);
+		}
+		cleanup:
+		gps_comm_data_free(gps_dat);
+		*got_fix = true;
+		return retval;
+	    }
+	    else
+	    {
+		sleep_ms(GPS_COMM_WAIT_FIX_SLEEP_MS);
+	    }
+	}
+
+	if(t_out != NULL)
+	{
+	    /// Check if timeout was exceeded
+	    retval = gettimeofday(&tv_tmp,NULL);
+	    if(retval != 0)
+	    {
+		err_check_std(ERROR_TIMING);
+	    }
+	    retval = uquad_timeval_substract(&tv_diff,tv_tmp,tv_in);
+	    if(retval <= 0)
+	    {
+		err_check(ERROR_TIMING,"Absurd timing!");
+	    }
+	    retval = uquad_timeval_substract(&tv_tmp,tv_diff,*t_out);
+	    if(retval > 0)
+	    {
+		err_log("Timed out waiting for GPS!");
+		return ERROR_OK;
+	    }
+	}
+    }
+}
+
+int gps_comm_get_0(gps_t *gps, gps_comm_data_t *gps_dat)
+{
+    int retval;
+    if(gps == NULL || gps_dat == NULL)
+    {
+	err_check(ERROR_INVALID_ARG,"Null pointer invalid arg!");
+    }
+    if(gps->pos_0 == NULL)
+    {
+	err_check(ERROR_GPS,"Start position not defined!");
+    }
+    retval = uquad_mat_copy(gps_dat->pos, gps->pos_0);
+    err_propagate(retval);
+    retval = uquad_mat_zeros(gps_dat->vel);
+    err_propagate(retval);
+    return ERROR_OK;
+}
+
+void gps_comm_deinit(gps_t * gps){
     int retval;
     if(gps == NULL)
     {
@@ -66,6 +169,8 @@ void  gps_comm_deinit(gps_t * gps){
     uquad_mat_free(gps->pos_ep);
     uquad_mat_free(m3x1);
     uquad_mat_free(m3x3);
+
+    uquad_mat_free(gps->pos_0);
 
     retval = gps_stream(gps->gpsd, GPS_COMM_STREAM_FLAGS_DIS, NULL);
     if(retval < 0)

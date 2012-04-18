@@ -53,6 +53,10 @@ cp control/K_int_full.txt build/main/
 # prepare motor command
 mv i2c_beagle/cmd${pc_test} build/main/cmd
 
+launch gpsd
+(cd ../scripts; ./start_gpsd.sh)
+sleep 1
+
 # run network check, kill cmd if network fails
 echo Setting up check_net.sh
 (cd ../scripts; ./check_net.sh &)

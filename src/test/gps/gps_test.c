@@ -13,10 +13,22 @@ int main(void)
     int ret;
     gps_t *gps;
     io_t *io;
-    
+    uquad_bool_t got_fix;
+    struct timeval t_out;
+
     gps = gps_comm_init();
     if(gps == NULL){
 	FREE_N_DIE_IF_ERROR(ERROR_MALLOC,"GPS test failed.");
+    }
+
+    err_log("Will attempt to get GPS fix...");
+    t_out.tv_usec = 0;
+    t_out.tv_sec  = 1;
+    ret = gps_comm_wait_fix(gps,&got_fix,&t_out);
+    FREE_N_DIE_IF_ERROR(ret,"Error waiting for gps!");
+    if(!got_fix)
+    {
+	FREE_N_DIE_IF_ERROR(ERROR_GPS,"Failed to get GPS fix!");
     }
 
     io = io_init();
@@ -70,6 +82,7 @@ int main(void)
 		    else
 		    {
 			err_log("Ignoring GPS data, no 3D fix!");
+			sleep_ms(250);
 		    }
                 }
             }

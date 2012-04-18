@@ -147,7 +147,7 @@ Q_gps   = diag(1*[100 100 100 100 100 100]);
 R_gps   = diag(1*[1 1 100000 1 1 100000]);
 
 if(use_n_states == 0)
-    K    = load('K4x8.mat');K = K.K;
+    K    = load('src/control/K.txt');
     sp_x = [0;0;0;theta0;0;0;0;0];
     Nctl = 8;
 elseif(use_n_states == 1)
@@ -155,6 +155,7 @@ elseif(use_n_states == 1)
     sp_x = [0;0;0;0;0;theta0;0;0;0;0;0;0];
     Nctl = 12;
 elseif(use_n_states == 2)
+    fprintf('WARN: Matrix != main\n');
     K    = load('K4x24');
     sp_x = [0;0;0;0;0;theta0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0];
     Nctl = 24;
@@ -186,14 +187,16 @@ x_hat(1,4:6) = [psi0, phi0, theta0];
 
 for i=2:N
     wc_i = i-kalman_startup;
+    Dt = T(i) - T(i-1);
+    Dt = min(Dt,12000e-6);Dt = max(8Dt,000e-6); % Matches C
     
     % Kalman inercial
     if(i > kalman_startup + 1)
       % Use control output as current w
-      [x_hat(i,:),P] = kalman_imu(x_hat(i-1,:),P,Q_imu,R_imu,T(i)-T(i-1),w_control(wc_i - 1,:)',z(i,:)', w_hover);
+      [x_hat(i,:),P] = kalman_imu(x_hat(i-1,:),P,Q_imu,R_imu,Dt,w_control(wc_i - 1,:)',z(i,:)', w_hover);
     else
       % Use set point w as current w
-      [x_hat(i,:),P] = kalman_imu(x_hat(i-1,:),P,Q_imu,R_imu,T(i)-T(i-1),sp_w,z(i,:)', w_hover);
+      [x_hat(i,:),P] = kalman_imu(x_hat(i-1,:),P,Q_imu,R_imu,Dt,sp_w,z(i,:)', w_hover);
     end
    
     % Kalman GPS
@@ -215,7 +218,7 @@ for i=2:N
     elseif(use_n_states == 1)
         x_hat_ctl(i,:) = x_hat(i,:);
     elseif(use_n_states == 2)
-        x_hat_integrals = x_hat_integrals + (T(i)-T(i-1))*(x_hat(i,:)-sp_x(13:end)');
+        x_hat_integrals = x_hat_integrals + (Dt)*(x_hat(i,:)-sp_x(13:end)');
         x_hat_ctl(i,:)  = [x_hat(i,:) x_hat_integrals];
     end
 
