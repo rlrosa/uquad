@@ -22,7 +22,7 @@ function varargout = lazo_cerrado(varargin)
 
 % Edit the above text to modify the response to help lazo_cerrado
 
-% Last Modified by GUIDE v2.5 14-Apr-2012 20:03:12
+% Last Modified by GUIDE v2.5 19-Apr-2012 10:11:40
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -447,8 +447,25 @@ function listbox1_Callback(hObject, eventdata, handles)
 
 % Hints: contents = cellstr(get(hObject,'String')) returns listbox1 contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from listbox1
-assignin('base','indice',get(handles.listbox1,'Value'));
+val = get(handles.listbox1,'Value');
+assignin('base','indice',val);
 
+switch val
+    case 1
+        assignin('base','xs',0);
+        assignin('base','ys',0);
+        assignin('base','zs',0);
+        assignin('base','thetas',0);
+    case 2
+        assignin('base','vq1s',1);
+        assignin('base','vq2s',0);
+        assignin('base','vq3s',0);
+        assignin('base','thetas',0);
+    case 3
+        assignin('base','vs',1);
+        assignin('base','thetaps',0.2);
+        
+end
 
 % --- Executes during object creation, after setting all properties.
 function listbox1_CreateFcn(hObject, eventdata, handles)
@@ -1358,3 +1375,69 @@ function figure1_WindowButtonDownFcn(hObject, eventdata, handles)
 % hObject    handle to figure1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes during object creation, after setting all properties.
+function uipanel30_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to uipanel30 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+
+% --- Executes on selection change in listbox2.
+function listbox2_Callback(hObject, eventdata, handles)
+% hObject    handle to listbox2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns listbox2 contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from listbox2
+assignin('base','control',get(handles.listbox2,'Value'));
+    
+
+% --- Executes during object creation, after setting all properties.
+function listbox2_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to listbox2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: listbox controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+assignin('base','control',1);
+
+
+% --- Executes on button press in pushbutton4.
+function pushbutton4_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton4 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+ctrl = evalin('base','control');
+K = evalin('base','K');
+switch ctrl    
+    case 1
+        Kp = K(:,1:12);
+        %Kp = num2str(Kp);
+        Ki = K(:,13:16);
+        save('./src/control/K_prop_full.txt','Kp','-ascii');
+        save('./src/control/K_int_full.txt','Ki','-ascii');
+    case 2
+        Kp = K(:,1:12);
+        save('./src/control/K_full.txt','Kp','-ascii');
+    case 3;
+        Kp = K(:,1:12);
+        Kp(:,7:8) = [];
+        Kp(:,1:2) = [];
+        Ki = K(:,13:16);
+        Ki(:,1:2) = [];
+        save('./src/control/K_prop.txt','Kp','-ascii');
+        save('./src/control/K_int.txt','Ki','-ascii');
+    case 4;
+        Kp = K(:,1:12);
+        Kp(:,7:8) = [];
+        Kp(:,1:2) = [];
+        save('./src/control/K.txt','Kp','-ascii');
+end

@@ -37,10 +37,10 @@ if modo=='hov'
 %% Setpoint para linea recta
 elseif modo=='rec';
          
-    setpoint = [ 0; 0; set(4); set(1); set(2); set(3); 0; 0; 0]; % The positions are set in the simulink model as the integral of the speeds
+    setpoint = [ 0 0 set(4) set(1) set(2) set(3) 0 0 0]; % The positions are set in the simulink model as the integral of the speeds
     
     w = zeros(4,length(t));
-    w(:,:) =calc_omega(evalin('base','M')*g/4);
+     w(:,:) =calc_omega(evalin('base','M')*evalin('base','g')/4);
 
 %% Setpoint para circulos
 elseif modo=='cir';
@@ -56,8 +56,17 @@ end
 %% Simulo el sistema
 
 assignin('base','setpoint',setpoint)
-
-K=linealizacion_dis(modo,setpoint, w(:,1)');
+ctrl = evalin('base','control');
+K=linealizacion_dis(modo,setpoint, w(:,1)',ctrl);
+switch evalin('base','control')
+    case 2
+        K = [K zeros(4,4)];
+        
+    case 3
+        K = [zeros(4,2) K(:,1:4) zeros(4,2) K(:,5:8) zeros(4,2) K(:,9:10)];
+    case 4
+        K = [zeros(4,2) K(:,1:4) zeros(4,2) K(:,5:8) zeros(4,4)];
+end
 assignin('base','K', K);
     
 modelo=['lazo_cerrado_' modo];

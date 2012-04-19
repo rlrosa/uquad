@@ -1,5 +1,5 @@
 Model {
-  Name			  "lazo_cerrado_rec_dis"
+  Name			  "lazo_cerrado_rec"
   Version		  7.6
   MdlSubVersion		  0
   GraphicalInterface {
@@ -92,7 +92,7 @@ Model {
       Name		      "w"
     }
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.282"
+    ComputedModelVersion    "1.293"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -104,7 +104,7 @@ Model {
       Type		      "Cell"
       Dimension		      2
       Cell		      "HDLSubsystem"
-      Cell		      "lazo_cerrado_rec_dis"
+      Cell		      "lazo_cerrado_rec"
       PropName		      "mdlProps"
     }
   }
@@ -123,9 +123,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "pater"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Fri Apr 13 21:30:55 2012"
-  RTWModifiedTimeStamp	  256253424
-  ModelVersionFormat	  "1.%<AutoIncrement:282>"
+  LastModifiedDate	  "Thu Apr 19 11:30:59 2012"
+  RTWModifiedTimeStamp	  256735068
+  ModelVersionFormat	  "1.%<AutoIncrement:293>"
   ConfigurationManager	  "None"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -936,7 +936,7 @@ Model {
     }
   }
   System {
-    Name		    "lazo_cerrado_rec_dis"
+    Name		    "lazo_cerrado_rec"
     Location		    [0, 53, 1366, 768]
     Open		    on
     ModelBrowserVisibility  off
@@ -1138,7 +1138,7 @@ Model {
       System {
 	Name			"Setpoint"
 	Location		[0, 53, 1366, 768]
-	Open			off
+	Open			on
 	ModelBrowserVisibility	off
 	ModelBrowserWidth	200
 	ScreenColor		"white"
@@ -1162,7 +1162,7 @@ Model {
 	  Name			  "Posicion inicial"
 	  SID			  "1781"
 	  Position		  [160, 295, 190, 325]
-	  Value			  "[x0;y0;z0]"
+	  Value			  "[x0; y0; z0]"
 	}
 	Block {
 	  BlockType		  Product
@@ -1220,7 +1220,7 @@ Model {
 	  Name			  "Velocidades"
 	  SID			  "1787"
 	  Position		  [160, 190, 190, 220]
-	  Value			  "[setpoint(1); setpoint(2); setpoint(3)]"
+	  Value			  "[setpoint(1) setpoint(2)  setpoint(3)]"
 	}
 	Block {
 	  BlockType		  Constant
@@ -1231,7 +1231,7 @@ Model {
 	}
 	Block {
 	  BlockType		  Outport
-	  Name			  "setpoint"
+	  Name			  "set"
 	  SID			  "1789"
 	  Position		  [505, 213, 535, 227]
 	  IconDisplay		  "Port number"
@@ -1253,7 +1253,7 @@ Model {
 	Line {
 	  SrcBlock		  "Vector\nConcatenate"
 	  SrcPort		  1
-	  DstBlock		  "setpoint"
+	  DstBlock		  "set"
 	  DstPort		  1
 	}
 	Line {
@@ -6805,6 +6805,7 @@ Model {
 		    SID			    "2003"
 		    Ports		    [1, 1]
 		    Position		    [535, 812, 595, 848]
+		    LibraryVersion	    "1.225"
 		    SourceBlock		    "simulink/Discrete/Discrete Derivative"
 		    SourceType		    "Discrete Derivative"
 		    ShowPortLabels	    "FromPortIcon"
@@ -10804,7 +10805,7 @@ Model {
       Name		      "Sum4"
       SID		      "399"
       Ports		      [3, 1]
-      Position		      [410, 695, 430, 715]
+      Position		      [405, 655, 425, 675]
       ShowName		      off
       IconShape		      "round"
       Inputs		      "+--"
@@ -10823,8 +10824,8 @@ Model {
       Name		      "Transport\nDelay"
       SID		      "1778"
       Ports		      [1, 1]
-      Position		      [105, 690, 135, 720]
-      InitialOutput	      "[x0;y0;z0;vq10;vq20;vq30;theta0]"
+      Position		      [95, 690, 125, 720]
+      InitialOutput	      "[x0 y0 z0 psi0 phi0 theta0 vq10 vq20 vq30 wq10 wq20 wq30]"
     }
     Block {
       BlockType		      ZeroOrderHold
@@ -11004,15 +11005,9 @@ Model {
       DstPort		      1
     }
     Line {
-      SrcBlock		      "Setpoint"
-      SrcPort		      1
-      DstBlock		      "Transport\nDelay"
-      DstPort		      1
-    }
-    Line {
       SrcBlock		      "Mux"
       SrcPort		      1
-      Points		      [-40, 0; 0, 115; -900, 0]
+      Points		      [-40, 0; 0, 115; -905, 0]
       DstBlock		      "Sum4"
       DstPort		      2
     }
@@ -11228,7 +11223,7 @@ Model {
       SrcPort		      1
       Points		      [100, 0]
       Branch {
-	Points			[105, 0]
+	Points			[100, 0]
 	DstBlock		"Sum4"
 	DstPort			3
       }
@@ -11306,12 +11301,6 @@ Model {
 	DstBlock		"Subsystem1"
 	DstPort			4
       }
-    }
-    Line {
-      SrcBlock		      "Transport\nDelay"
-      SrcPort		      1
-      DstBlock		      "Zero-Order\nHold"
-      DstPort		      1
     }
     Line {
       SrcBlock		      "Mux2"
@@ -11412,18 +11401,37 @@ Model {
       DstPort		      2
     }
     Line {
-      SrcBlock		      "Zero-Order\nHold"
+      SrcBlock		      "Sum4"
       SrcPort		      1
-      Points		      [20, 0; 0, -40; 160, 0]
+      Points		      [15, 0]
       Branch {
 	DstBlock		"Demux1"
 	DstPort			1
       }
       Branch {
-	Points			[0, -55]
+	Points			[0, -85; 240, 0]
 	DstBlock		"Mux2"
 	DstPort			1
       }
+    }
+    Line {
+      SrcBlock		      "Zero-Order\nHold"
+      SrcPort		      1
+      Points		      [185, 0; 0, -65]
+      DstBlock		      "Sum4"
+      DstPort		      1
+    }
+    Line {
+      SrcBlock		      "Setpoint"
+      SrcPort		      1
+      DstBlock		      "Transport\nDelay"
+      DstPort		      1
+    }
+    Line {
+      SrcBlock		      "Transport\nDelay"
+      SrcPort		      1
+      DstBlock		      "Zero-Order\nHold"
+      DstPort		      1
     }
     Annotation {
       Position		      [632, 572]
