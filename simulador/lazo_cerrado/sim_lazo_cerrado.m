@@ -40,7 +40,7 @@ elseif modo=='rec';
     setpoint = [ 0; 0; set(4); set(1); set(2); set(3); 0; 0; 0]; % The positions are set in the simulink model as the integral of the speeds
     
     w = zeros(4,length(t));
-    w(:,:) =calc_omega(evalin('base','M')*g/4);
+    w(:,:) =calc_omega(evalin('base','M')*evalin('base','g')/4);
 
 %% Setpoint para circulos
 elseif modo=='cir';
