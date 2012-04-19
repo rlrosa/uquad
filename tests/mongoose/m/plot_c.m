@@ -3,6 +3,17 @@
 % function [kin, imu_data, x_hat_c, wlog, kin_cut, z] = plot_c(path)
 % -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
+% path = 'tests/main/logs/2012_04_18_2_1_izq/';
+% path = 'tests/main/logs/2012_04_18_2_2_mejor/';
+% path = 'tests/main/logs/2012_04_18_2_3_tironeo_xy/';
+% path = 'tests/main/logs/2012_04_18_2_4/';
+% path = 'tests/main/logs/2012_04_18_2_5_la_mejor/';
+% path = 'tests/main/logs/2012_04_18_2_6/';
+% path = 'tests/main/logs/2012_04_18_2_7_setpoint_2m/';
+% path = 'tests/main/logs/2012_04_18_2_8_setpoint_2m/';
+% path = 'tests/main/logs/2012_04_18_2_9_setpoint_3m_piro_theta/';
+path = 'tests/main/logs/2012_04_18_2_10_setpoint_3m_paseo/';
+
 if(~exist('path','var'))
   path = 'src/build/main/';
   fprintf('Using default path: %s',path);
