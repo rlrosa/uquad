@@ -9,7 +9,7 @@ red2   = [178,34,34]/256;
 
 figure()
 subplot(221)
-    plot(T_z,z(:,end),'k*')
+    plot(T_z,z(:,10),'k*')
     hold on; grid
     plot(T_x_hat,x_hat(1:end,1),'color',blue2,'linewidth',2)
     plot(T_x_hat,x_hat(1:end,2),'color',red2,'linewidth',2)

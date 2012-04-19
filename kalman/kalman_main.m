@@ -37,8 +37,9 @@
 
 use_n_states = 0; % Regulates number of variables to control. Can be:
                     % 0: uses 8 states      -> [z psi phi tehta vqz wqx wqy wqz]
-                    % 1: uses all 12 states -> [x y z psi phi tehta vqx vqy vqz wqx wqy wqz]
-                    % 2: uses all 12 states and their integrals
+                    % 0: uses 8 states and their integrals
+                    % 2: uses all 12 states -> [x y z psi phi tehta vqx vqy vqz wqx wqy wqz]
+                    % 3: uses all 12 states and their integrals
 use_gps      = 0; % Use kalman_gps
 use_fake_gps = 0; % Feed kalman_gps with fake data (only if use_gps)
 use_fake_T   = 0; % Ignore real timestamps from log, use average
@@ -47,14 +48,14 @@ use_fake_T   = 0; % Ignore real timestamps from log, use average
 if(use_fake_gps && ~use_gps)
   error('Cannot use_fake_gps if use_gps is disabled!');
 end
-if(use_n_states > 0 && ~use_gps)
+if(use_n_states > 1 && ~use_gps)
   error('Full control should not be performed without GPS!');
 end
-if(use_n_states < 1 && use_gps)
+if(use_n_states < 2 && use_gps)
   warning('GPS data is being ignored, must control all states!');
 end
 %% Source
-% imu_file = 'tests/main/logs/2012_04_16_1_6_sp_z_1m_sin_integrador/imu_raw.log';
+ log_path = 'tests/main/logs/2012_04_18_2_5_la_mejor';
 if(~exist('log_path','var'))
   error('Must define a variable log_path to read from!');
 end
@@ -147,12 +148,12 @@ end
 
 % Constantes
 N       = size(a,1); % Cantidad de muestras de las observaciones
-Ns      = 12;        % N states: cantidad de variables de estado de Kalman
+Ns      = 15;        % N states: cantidad de variables de estado de Kalman
 Ngps    = 6;         % N gps: cantidad de variables corregidas por gps
 w_hover = 308.00;    % At this velocity, motor's force equals weight
 w_max   = 387.0; 
 w_min   = 109.0;
-Q_imu   = diag(1*[100 100 100 1 1 1 100 100 100 10 10 10]);
+Q_imu   = diag(1*[100 100 100 1 1 1 100 100 100 10 10 10 1 1 1]);
 % Q_imu   = diag(1*[100 100 100 1 1 1 10  10  10  1  1  1]);
 R_imu   = diag(100*[10  10  10  100 100 100 1 1 1 100]);
 % R_imu   = diag(100*[100 100 100 100 100 100 1 1 1 100]);
@@ -166,15 +167,25 @@ if(use_n_states == 0)
     sp_x = [0;0;0;theta0;0;0;0;0];
     Nctl = 8;
 elseif(use_n_states == 1)
+    Kp = load('src/control/K_prop.txt');
+    Ki = load('src/control/K_int.txt');
+    K = [Kp Ki];
+    sp_x = [0;0;0;0;0;theta0;0;0;0;0];
+    Nctl = 10;
+    x_hat_integrals = zeros(1,2);
+elseif(use_n_states == 2)
     K    = load('src/control/K_full.txt');
     sp_x = [0;0;0;0;0;theta0;0;0;0;0;0;0];
     Nctl = 12;
-elseif(use_n_states == 2)
+elseif(use_n_states == 3)
     fprintf('WARN: Matrix != main\n');
-    K    = load('K4x24');
-    sp_x = [0;0;0;0;0;theta0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0];
-    Nctl = 24;
-    x_hat_integrals = zeros(1,Ns);
+    Kp = load('src/control/K_prop_full.txt');
+    Ki = load('src/control/K_int_full.txt');
+    K = [Kp Ki];
+
+    sp_x = [0;0;0;0;0;theta0;0;0;0;0;0;0;0;0;0;0];
+    Nctl = 16;
+    x_hat_integrals = zeros(1,4);
 end
 sp_w    = ones(4,1)*w_hover;
 
@@ -242,10 +253,14 @@ for i=2:N
         x_hat_ctl(i,:) = [x_hat(i,3), x_hat(i,4), x_hat(i,5), x_hat(i,6), ...
             x_hat(i,9), x_hat(i,10), x_hat(i,11), x_hat(i,12)];
     elseif(use_n_states == 1)
-        x_hat_ctl(i,:) = x_hat(i,:);
+        x_hat_integrals = x_hat_integrals + (Dt)*([x_hat(i,3) x_hat(i,6)] -sp_x(9:end)');
+        x_hat_ctl(i,:) = [x_hat(i,3), x_hat(i,4), x_hat(i,5), x_hat(i,6), ...
+            x_hat(i,9), x_hat(i,10), x_hat(i,11), x_hat(i,12) x_hat_integrals];
     elseif(use_n_states == 2)
-        x_hat_integrals = x_hat_integrals + (Dt)*(x_hat(i,:)-sp_x(13:end)');
-        x_hat_ctl(i,:)  = [x_hat(i,:) x_hat_integrals];
+        x_hat_ctl(i,:) = x_hat(i,1:12);
+    elseif(use_n_states == 3)
+        x_hat_integrals = x_hat_integrals + (Dt)*([x_hat(i,1:3) x_hat(i,6)] -sp_x(13:end)');
+        x_hat_ctl(i,:)  = [x_hat(i,1:12) x_hat_integrals];
     end
 
     % First kalman_startup samples will not be used for control

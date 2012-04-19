@@ -123,7 +123,25 @@ for i=1:length(m(:,1))
       psi, ...
       phi, ...
       theta];
-end
+end  
+
+% k=0;
+% theta = zeros(size(euler(:,3)));
+% for i=3:length(euler(:,3))
+%     if (euler(i-1,3) < -pi/2) &  (euler(i,3) > pi/2)
+%         k=k-1;
+%     elseif (euler(i-1,3) > pi/2) &  (euler(i,3) < -pi/2)
+%         k = k+1;
+%     elseif (euler(i-2,3) < -pi/2) &  (euler(i-1,3) < pi/2) &(euler(i,3) > pi/2)
+%         k=k-1;
+%     elseif (euler(i-2,3) > pi/2) & (euler(i-1,3) > -pi/2) & (euler(i,3) < -pi/2)
+%     k = k+1;
+%     end
+% 
+%     theta(i,3) = 2*pi*k+euler(i,3);
+% end
+
+% euler(:,3) = theta(:,3);
 
 if plotear
     T=1/fs;
