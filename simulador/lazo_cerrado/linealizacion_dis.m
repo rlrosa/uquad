@@ -1,4 +1,4 @@
-function K=linealizacion_dis(modo,setpoint,w)
+function K=linealizacion_dis(modo,setpoint,w,ctrl)
 %--------------------------------------------------------------------------
 %Esta función recibe el modo de vuelo y el setpoint deseado y devuelve la
 %matriz de realimentación lqr
@@ -48,9 +48,7 @@ if modo=='hov'
       
     Q=diag([1 1 1 1e3 1e3 1e3 1 1 1 1 1 1 1 1 1 1]);
     R = diag([1e-2 1e-2 1e-2 1e-2]);
-    
-    K = uquad_dlqr(Aext,Bext,Q,R);
-    
+ 
 %% Linealización vuelo en linea recta
 elseif modo=='rec'
     
@@ -66,11 +64,9 @@ elseif modo=='rec'
        
     % Construcción de la matriz K método LQR para linea recta
            
-    Q=diag([1 1 1 1e3 1e3 1e3 1 1 1 1 1 1 1 1 1 1 1 1 1]);
+    Q=diag([1 1 1 1e3 1e3 1e3 1 1 1 1 1 1 1 1 1 1]);
     R = diag([1e-2 1e-2 1e-2 1e-2]);
-        
-    K = uquad_dlqr(Aext,Bext,Q,R);
-   
+              
 %% Linealización círculos
 elseif modo=='cir'
     
@@ -87,7 +83,50 @@ elseif modo=='cir'
     % Construcción de la matriz K método LQR para circulos
     Q = diag([1 1 1 1e3 1e3 1e3 1 1 1 1 1 1 1 1 1e-3 1]);
     R=diag([1e-2 1e-2 1e-2 1e-2]);
-    K=uquad_dlqr(Aext,Bext,Q,R);      
+         
      
 end
+
+ switch ctrl
+     case 2
+        Aext(13:16,:)= [];
+        Aext(:,13:16)= [];
+        Bext(13:16,:) = [];
+        Q(13:16,:) = [];
+        Q(:,13:16) = [];
+     case 3
+        Aext(13:14,:) = [];
+        Aext(:,13:14)= [];
+        Aext(7:8,:) = [];
+        Aext(:,7:8)= [];
+        Aext(1:2,:) = [];
+        Aext(:,1:2)= [];
+        Bext(13:14,:) = [];
+        Bext(7:8,:) = [];
+        Bext(1:2,:) = [];
+        Q(13:14,:) = [];
+        Q(:,13:14) = [];
+        Q(7:8,:) = [];
+        Q(:,7:8) = [];
+        Q(1:2,:) = [];
+        Q(:,1:2) = [];
+    case 4
+        Aext(13:16,:) = [];
+        Aext(:,13:16)= [];
+        Aext(7:8,:) = [];
+        Aext(:,7:8)= [];
+        Aext(1:2,:) = [];
+        Aext(:,1:2)= [];
+        Bext(13:16,:) = [];
+        Bext(7:8,:) = [];
+        Bext(1:2,:) = [];
+        Q(13:16,:) = [];
+        Q(:,13:16) = [];
+        Q(7:8,:) = [];
+        Q(:,7:8) = [];
+        Q(1:2,:) = [];
+        Q(:,1:2) = [];
+ end
+
+K=uquad_dlqr(Aext,Bext,Q,R); 
  

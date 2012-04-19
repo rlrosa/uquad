@@ -43,7 +43,7 @@
 
 #define UQUAD_HOW_TO   "./main <imu_device> /path/to/log/"
 #define MAX_ERRORS     20
-#define STARTUP_RUNS   200
+#define STARTUP_RUNS   800
 #define STARTUP_KALMAN 200
 #define FIXED          3
 
@@ -724,7 +724,7 @@ int main(int argc, char *argv[]){
 			log_n_jump(err_imu,end_imu,"Absurd IMU startup time!");
 		    }
 		    err_imu = ERROR_OK; // clear timing info
-		    err_log_tv("IMU startup completed in ", tv_diff);
+		    err_log_tv("IMU startup completed at ", tv_diff);
 		    ++runs_imu; // so re-entry doesn't happen
 		}
 		goto end_imu;
@@ -892,6 +892,7 @@ int main(int argc, char *argv[]){
 	    // Position
 	    retval = uquad_mat_set_subm(kalman->x_hat,SV_X,0,gps_dat->pos);
 	    quit_log_if(retval, "Failed to initiate kalman pos estimator from GPS data!");
+	    pp->sp->x->m_full[SV_Z] = 0;
 	    // Velocity
 	    //	    retval = uquad_mat_set_subm(kalman->x_hat,SV_VQX,0,gps_dat->pos);
 	    //	    quit_log_if(retval, "Failed to initiate kalman vel estimator from GPS data!");

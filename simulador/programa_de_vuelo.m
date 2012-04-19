@@ -5,9 +5,9 @@
 %Waypoints
 waypoints= [0 0 0 0;
             8 0 0 50;
-            25 20 30 100;
-            8 3 2 150;
-            3 4 20 200];
+            0 100 0 100];
+%             8 3 2 150;
+%             3 4 20 200];
 Nway=length(waypoints(:,1)); %Número de waypoints
 
 k=1; %Contador que dice cuantos waypoints recorrí.
@@ -18,7 +18,7 @@ r=0.2;  %Error aceptable
 t_p=0.5;  %Tiempo de paso      
 dis_min=1000*ones(Nway-1,1);  %Voy a usar esta variable para controlar si me estoy alejando
                             %o acercando a un waypoint 
-v=generador_rutas(waypoints);
+v=generador_rutas_rec(waypoints);
 
 X0=[0 0 0 0 0 0 0 0 0 0 0 0];
 assignin('base','x0',X0(1)); assignin('base','y0',X0(2));assignin('base','z0',X0(3));

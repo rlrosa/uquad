@@ -5,58 +5,31 @@ clc
 %% Cargo una serie de datos
 
 Ts = 1e-2; % frecuencia de muestreo
-datos_crudos = load('test_control/pater_data/imu_avg.log');
 
-ax = datos_crudos(:,4); ay = datos_crudos(:,5); az = datos_crudos(:,6);
-wx = datos_crudos(:,7); wy = datos_crudos(:,8); wz = datos_crudos(:,9);
+%datos_crudos = load('test_control/logs/quieto');
+%[aconv,wconv,euler] = mong_conv(datos_crudos(:,4:6),datos_crudos(:,7:9),datos_crudos(:,10:12),0);
+[a,w,m] = mong_read('test_control/logs/quieto2');
+[aconv,wconv,euler] = mong_conv(a,w,m,0);
 
-mm = datos_crudos(:,10:12);
+N = 10000; %Moving average size
+% t=[0:Ts:(length(euler(:,4)-1)*Ts];
 
-psi = zeros(length(ax),1);
-phi = zeros(length(ax),1);
-theta = zeros(length(ax),1);
+%% Ruido de Roll
 
-t=[0:Ts:(length(ax)-1)*Ts];
-%% Calcula los ángulos de Euler
+autocorr(euler(:,1));
+title('');
 
-for i=1:length(ax)
+noise_roll = 180/pi*[mean(euler(:,1)) std(euler(:,1))]; 
 
-    if (abs(ax(i))<9.72)
-        phi(i)=-180/pi*asin(ax(i)/9.81);
-        psi(i)=180/pi*atan2(ay(i),az(i));
-    elseif ax(i) > 0
-        phi(i)=-90;
-        psi(i)=0;
-    else 
-        phi(i)=90;
-        psi(i)=0;
-    end
-    
-    mrot = [ cosd(phi(i)), (sind(phi(i))*sind(psi(i))), cosd(psi(i))*sind(phi(i));
-                0, cosd(psi(i)),         -sind(psi(i));
-         -sind(phi(i)), cosd(phi(i))*sind(psi(i)), cosd(phi(i))*cosd(psi(i))]...
-            *mm(i,:)';
+%% Ruido de Pitch
 
-    theta(i)=180/pi*atan2(mrot(1),mrot(2))+9.78;    
+autocorr(euler(:,2));
+title('');
 
-end
+noise_pitch = 180/pi*[mean(euler(:,2)) std(euler(:,2))]; 
 
-%% Graficia y calcula las autocorrelaciones de los ángulos
+%% Ruido de Yaw
 
-figure;
-autocorr(psi)
-xlabel('Distancia entre muestras')
-ylabel('Autocorrelación de las muestras del ángulo de Roll')
-title('')
+autocorr(euler(:,3));
 
-figure;
-autocorr(phi)
-xlabel('Distancia entre muestras')
-ylabel('Autocorrelación de las muestras del ángulo de Pitch')
-title('')
 
-figure;
-autocorr(theta)
-xlabel('Distancia entre muestras')
-ylabel('Autocorrelación de las muestras del ángulo de Yaw')
-title('')
