@@ -10,6 +10,12 @@ Matrices=load('linealizacion.mat');
 A=Matrices.A;
 B=Matrices.B;
 
+A(:,7:8)=[];
+A(:,1:2)=[];
+A(7:8,:)=[];
+A(1:2,:)=[];
+B(7:8,:)=[];
+B(1:2,:)=[];
 
 wq1=0; wq2=0; wq3=0;
 
@@ -37,6 +43,7 @@ Q=diag([1 1e2 1e2 1e2 1 1 1 1]);
 R=1e-2*diag([1 1 1 1]); %Pesos de w1 w2 w3 w4;
 
 %[K,S,E]=lqrd([A Z; C Z],[B;BZ],Q,R,10e-3);
+
 [K,S,E]=lqrd([A],[B],Q,R,10e-3);
 save('K4x8','K');
 assignin('base','K',K);
