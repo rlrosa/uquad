@@ -246,8 +246,8 @@ int main(int argc, char *argv[]){
 		    uquad_timeval_substract(&tv_diff, tv_tmp, tv_start);
 		    log_tv_only(log_imu_raw, tv_diff);
 		    log_eol(log_imu_raw);
-		    //		    retval = imu_comm_print_raw(&raw,log_imu_raw);
-		    //		    quit_if(retval);
+		    retval = imu_comm_print_raw(&raw,log_imu_raw);
+		    quit_if(retval);
 		}
 #endif
 #if PRINT_DATA
