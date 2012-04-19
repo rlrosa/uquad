@@ -1,0 +1,39 @@
+# Test pgm stuff
+
+#include <sys/signal.h> // for SIGINT and SIGQUIT
+#include <uquad_error_codes.h>
+#include <uquad_types.h>
+
+#define USAGE ""
+
+void quit()
+{
+    // Cleanup goes here
+    printf("Exit successful!\n");
+    exit(0);
+}
+
+void uquad_sig_handler(int signal_num){
+    err_log_num("Caught signal:",signal_num);
+    quit();
+}
+
+int main(int argc, char *argv[])
+{
+    // Catch signals
+    signal(SIGINT, uquad_sig_handler);
+    signal(SIGQUIT, uquad_sig_handler);
+
+    int retval;
+
+    if(argc < 2)
+    {
+	err_log_str("Invalid arguments!",USAGE)
+	quit();
+    }
+    else
+    {
+	//var = argv[1];
+    }
+    quit();
+}
