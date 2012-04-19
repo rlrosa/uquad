@@ -98,6 +98,7 @@ end
 
 mconv = zeros(size(m));
 euler = zeros(size(m));
+n_vueltas=0;
 for i=1:length(m(:,1))
     auxm = Km*(m(i,:)'-bm);
     mconv(i,:)=auxm';
@@ -118,11 +119,44 @@ for i=1:length(m(:,1))
                                                  0,                                           cos(psi)/(cos(psi)^2 + sin(psi)^2),                                         -sin(psi)/(cos(psi)^2 + sin(psi)^2);
             -sin(phi)/(cos(phi)^2 + sin(phi)^2), (cos(phi)*sin(psi))/((cos(phi)^2 + sin(phi)^2)*(cos(psi)^2 + sin(psi)^2)), (cos(phi)*cos(psi))/((cos(phi)^2 + sin(phi)^2)*(cos(psi)^2 + sin(psi)^2))]...
             *auxm;
-    theta=-atan2(mrot(2),mrot(1))+0.17069; %9.78@deg;
+    theta=-atan2(mrot(2),mrot(1));%+0.17069; %9.78@deg;
+    
+    if ((i>1) && (abs(theta-euler(i-1,3)) >= pi))
+        theta = theta-fix((theta-euler(i-1,3)+pi)/(2*pi))*2*pi;
+        
+%         if((theta-euler(i-1,3)>0))
+%             n_vueltas = n_vueltas-1;
+%         else
+%             n_vueltas = n_vueltas+1;
+%         end
+%         theta = theta + n_vueltas*2*pi;
+%         if i==1399
+%             disp('a');
+%         end
+% 
+%         if(~exist('ref','var'))
+%             ref = euler(i-1,3);
+%         end
+%         [i;n_vueltas;theta;euler(i-1,3)]
+% 
+% 
+% if(i==810)
+%     disp('a')
+% end
+%     
+% 
+% 
+%         [i;(theta-ref+pi)/(2*pi)]
+%         theta = theta-fix((theta-ref+pi)/(2*pi))*2*pi;
+
+    end
+    
     euler(i,:)=[  ...
       psi, ...
       phi, ...
-      theta];
+      theta
+      ];
+  
 end  
 
 % k=0;
