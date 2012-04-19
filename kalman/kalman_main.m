@@ -35,7 +35,7 @@
 
 %% Config
 
-use_n_states = 1; % Regulates number of variables to control. Can be:
+use_n_states = 0; % Regulates number of variables to control. Can be:
                     % 0: uses 8 states      -> [z psi phi tehta vqz wqx wqy wqz]
                     % 1: uses all 12 states -> [x y z psi phi tehta vqx vqy vqz wqx wqy wqz]
                     % 2: uses all 12 states and their integrals
@@ -46,7 +46,7 @@ use_fake_T   = 0; % Ignore real timestamps from log, use average
 %% Load IMU data
 
 % Imu
-imu_file = 'tests/main/logs/2012_04_16_1_2_subio_derecho_8_states_no_int/imu_raw.log';
+imu_file = 'tests/main/logs/2012_04_18_1_3_descambiamos_theta/imu_raw.log';
 [acrud,wcrud,mcrud,tcrud,bcrud,~,~,T]=mong_read(imu_file,0,1);
 
 avg = 1;
@@ -148,6 +148,7 @@ R_gps   = diag(1*[1 1 100000 1 1 100000]);
 
 if(use_n_states == 0)
     K    = load('src/control/K.txt');
+%     K    = load('K4x8');K=K.K;
     sp_x = [0;0;0;theta0;0;0;0;0];
     Nctl = 8;
 elseif(use_n_states == 1)
@@ -188,7 +189,7 @@ x_hat(1,4:6) = [psi0, phi0, theta0];
 for i=2:N
     wc_i = i-kalman_startup;
     Dt = T(i) - T(i-1);
-    Dt = min(Dt,12000e-6);Dt = max(8Dt,000e-6); % Matches C
+    Dt = min(Dt,12000e-6);Dt = max(Dt,000e-6); % Matches C
     
     % Kalman inercial
     if(i > kalman_startup + 1)
