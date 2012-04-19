@@ -35,18 +35,35 @@
 
 %% Config
 
-use_n_states = 1; % Regulates number of variables to control. Can be:
+use_n_states = 0; % Regulates number of variables to control. Can be:
                     % 0: uses 8 states      -> [z psi phi tehta vqz wqx wqy wqz]
                     % 1: uses all 12 states -> [x y z psi phi tehta vqx vqy vqz wqx wqy wqz]
                     % 2: uses all 12 states and their integrals
-use_gps      = 1; % Use kalman_gps
-use_fake_gps = 1; % Feed kalman_gps with fake data (only if use_gps)
+use_gps      = 0; % Use kalman_gps
+use_fake_gps = 0; % Feed kalman_gps with fake data (only if use_gps)
 use_fake_T   = 0; % Ignore real timestamps from log, use average
+
+%% Sanity check
+if(use_fake_gps && ~use_gps)
+  error('Cannot use_fake_gps if use_gps is disabled!');
+end
+if(use_n_states > 0 && ~use_gps)
+  error('Full control should not be performed without GPS!');
+end
+if(use_n_states < 1 && use_gps)
+  warning('GPS data is being ignored, must control all states!');
+end
+%% Source
+% imu_file = 'tests/main/logs/2012_04_16_1_6_sp_z_1m_sin_integrador/imu_raw.log';
+if(~exist('log_path','var'))
+  error('Must define a variable log_path to read from!');
+end
+imu_file  = [log_path '/imu_raw.log'];
+gps_file  = [log_path '/gps.log'];
 
 %% Load IMU data
 
 % Imu
-%imu_file = 'tests/main/logs/2012_04_16_1_6_sp_z_1m_sin_integrador/imu_raw.log';
 [acrud,wcrud,mcrud,tcrud,bcrud,~,~,T]=mong_read(imu_file,0,1);
 
 avg = 1;
@@ -61,30 +78,28 @@ end
 
 %% Load GPS data
 if(use_gps)
-
-  % Gps
-  % gps_file = '~/Escritorio/car/01.log';
-  % [easting, northing, elevation, utmzone, sat, lat, lon, dop] = ...
-  %     gpxlogger_xml_handler(gps_file, 1);
-  % save('kalman/gps','easting','northing','elevation','utmzone','sat','lat','lon','dop');
-  GPS       = load('kalman/gps.mat');
-  easting   = GPS.easting; northing = GPS.northing; elevation = GPS.elevation;
-  utmzone   = GPS.utmzone; sat = GPS.sat; lat = GPS.lat; lon = GPS.lon; dop = GPS.dop;
-  westing   = -(easting - mean(easting));
-  northing  = northing - mean(northing);
-  elevation = elevation - mean(elevation);
-  vx_gps    = zeros(size(easting));
-  vy_gps    = zeros(size(easting));
-  vz_gps    = zeros(size(easting));
-
   if(use_fake_gps)
     % Fake input, clear relevant data
-    easting = zeros(size(easting));
-    northing = zeros(size(northing));
-    elevation = zeros(size(elevation));
-    vx_gps = zeros(size(vx_gps));
-    vy_gps = zeros(size(vy_gps));
-    vz_gps = zeros(size(vz_gps));
+    easting   = 0; westing = -easting;
+    northing  = 0;
+    elevation = 0;
+    vx_gps    = 0;
+    vy_gps    = 0;
+    vz_gps    = 0;
+    T_gps     = 10e-3;
+  else
+    % gps_file = '~/Escritorio/car/01.log';
+    % [easting, northing, elevation, utmzone, sat, lat, lon, dop] = ...
+    %     gpxlogger_xml_handler(gps_file, 1);
+    % save('kalman/gps','easting','northing','elevation','utmzone','sat','lat','lon','dop');
+    GPS       = load(gps_file);
+    T_gps     = GPS(:,1);
+    easting   = GPS(:,4); westing = -easting;
+    northing  = GPS(:,5);
+    elevation = GPS(:,6);
+    vx_gps    = GPS(:,7);
+    vy_gps    = GPS(:,8);
+    vz_gps    = GPS(:,9);
   end
 end
 
@@ -183,7 +198,7 @@ x_hat(1,4:6) = [psi0, phi0, theta0];
 for i=2:N
     wc_i = i-kalman_startup;
     Dt = T(i) - T(i-1);
-    Dt = min(Dt,12000e-6);Dt = max(8Dt,000e-6); % Matches C
+    Dt = min(Dt,12000e-6);Dt = max(Dt,000e-6); % Matches C
     
     % Kalman inercial
     if(i > kalman_startup + 1)
@@ -196,13 +211,24 @@ for i=2:N
    
     % Kalman GPS
     if(use_gps)
-      if mod(i,100) == 0
+      if(T(i) >= T_gps(gps_index))
           [aux,P_gps]  = kalman_gps(x_hat(i-1,1:9),P_gps,Q_gps,R_gps,...
               [northing(gps_index); westing(gps_index); elevation(gps_index); ...
               vx_gps(gps_index); vy_gps(gps_index); vz_gps(gps_index)]);
           x_hat(i,1:3) = aux(1:3);
           x_hat(i,7:9) = aux(4:6);
-          gps_index    = gps_index + 1;
+        if(~use_fake_gps)
+          gps_index = gps_index + 1;
+        else
+          % Fake gps is of size 1, so force gps_index==1 to always be true
+          if(length(T) <= i + 100)
+            % Call again after 100 samples at 10ms -> 1sec
+            T_gps = T(i+100);
+          else
+            % No more GPS
+            T_gps = inf;
+          end
+        end
       end
     end
     
