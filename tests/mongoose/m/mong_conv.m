@@ -13,7 +13,7 @@ g_to = GT.to;
 
 if(~exist('t_imu','var'))
 %   fprintf('Calibración sin compensación por temperatura\nSe debe pasar como último parámetro el vector de temperaturas\n');
-  t_imu = a_to;
+  t_imu = a_to*ones(length(a));
 else
   t_imu = t_imu/10;
 end
