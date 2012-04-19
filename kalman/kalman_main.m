@@ -35,13 +35,13 @@
 
 %% Config
 
-use_n_states = 0; % Regulates number of variables to control. Can be:
+use_n_states = 2; % Regulates number of variables to control. Can be:
                     % 0: uses 8 states      -> [z psi phi tehta vqz wqx wqy wqz]
                     % 0: uses 8 states and their integrals
                     % 2: uses all 12 states -> [x y z psi phi tehta vqx vqy vqz wqx wqy wqz]
                     % 3: uses all 12 states and their integrals
-use_gps      = 0; % Use kalman_gps
-use_fake_gps = 0; % Feed kalman_gps with fake data (only if use_gps)
+use_gps      = 1; % Use kalman_gps
+use_fake_gps = 1; % Feed kalman_gps with fake data (only if use_gps)
 use_fake_T   = 0; % Ignore real timestamps from log, use average
 
 %% Sanity check
@@ -237,7 +237,7 @@ for i=2:N
           gps_index = gps_index + 1;
         else
           % Fake gps is of size 1, so force gps_index==1 to always be true
-          if(length(T) <= i + 100)
+          if(length(T) >= i + 100)
             % Call again after 100 samples at 10ms -> 1sec
             T_gps = T(i+100);
           else
