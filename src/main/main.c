@@ -4,6 +4,7 @@
 #define TIMING_KALMAN      0
 #define TIMING_IMU         0
 #define TIMING_IO          0
+#define LOG_ERR            1
 #define LOG_W              1
 #define LOG_W_CTRL         1
 #define LOG_IMU_RAW        1
@@ -65,6 +66,7 @@
 #define LOG_W_NAME         "w"
 #define LOG_W_CTRL_NAME    "w_ctrl"
 
+#define LOG_ERR_NAME       "err"
 #define LOG_IMU_RAW_NAME   "imu_raw"
 #define LOG_IMU_DATA_NAME  "imu_data"
 #define LOG_IMU_AVG_NAME   "imu_avg"
@@ -100,6 +102,9 @@ gps_comm_data_t *gps_dat;
 #endif
 /// Logs
 #if DEBUG
+#if LOG_ERR
+FILE *log_err = NULL;
+#endif // LOG_ERR
 #if LOG_IMU_RAW
 FILE *log_imu_raw;
 #endif //LOG_IMU_RAW
@@ -186,6 +191,9 @@ void quit()
 
     // Logs
 #if DEBUG
+#if LOG_ERR
+    uquad_logger_remove(log_err);
+#endif // LOG_ERR
 #if LOG_IMU_RAW
     uquad_logger_remove(log_imu_raw);
 #endif //LOG_IMU_RAW
@@ -307,6 +315,21 @@ int main(int argc, char *argv[]){
 
     /// Logs
 #if DEBUG
+#if LOG_ERR
+    log_err = uquad_logger_add(LOG_ERR_NAME, log_path);
+    if(log_err == NULL)
+    {
+	err_log("Failed to open log_imu_raw!");
+	quit();
+    }
+    /**
+     * Re-route stderr to log file.
+     * This is required, since errors in uquad_error_codes.h use macros
+     * that log to stderr. We want errors in a log file, so in order to
+     * get every message from every module, to the log we need to re-define stderr.
+     */
+    stderr = log_err;
+#endif // LOG_ERR
 #if LOG_IMU_RAW
     log_imu_raw = uquad_logger_add(LOG_IMU_RAW_NAME, log_path);
     if(log_imu_raw == NULL)

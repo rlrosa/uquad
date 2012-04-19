@@ -167,8 +167,9 @@ int imu_comm_stop(imu_t *imu){
  */
 int imu_comm_resume(imu_t *imu){
     int retval;
-    if(imu->status == IMU_COMM_STATE_RUNNING){
-	printf("IMU already running.\n");
+    if(imu->status == IMU_COMM_STATE_RUNNING)
+    {
+	err_log("IMU already running.\n");
 	return ERROR_OK;
     }
     // Run IMU
@@ -241,9 +242,10 @@ static int imu_comm_connect(imu_t *imu, const char *device){
 #if IMU_COMM_FAKE
     // we don't want to write to the log file, just read.
     imu->device = fopen(device,"rb+");
-    if(imu->device == NULL){
-	fprintf(stderr,"Device %s not found.\n",device);
-	return ERROR_OPEN;
+    if(imu->device == NULL)
+    {
+	err_log_str("Device %s not found.\n",device);
+	err_propagate(ERROR_OPEN);
     }
 #else
     imu->device = open(device,O_RDWR | O_NOCTTY | O_NONBLOCK);
