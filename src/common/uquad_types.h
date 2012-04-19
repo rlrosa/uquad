@@ -22,7 +22,7 @@ typedef UQUAD_BOOL uquad_bool_t;
 #define M_D1              3.4734e-6L  // Coeficiente cuadrático del torque
 #define M_D2              -1.3205e-4L // Coeficiente lineal del torque
 //#define MASA              1.741L    // Masa del Quad en kg
-#define MOT_W_HOVER       308.00L     // rad/s
+#define MOT_W_HOVER       310.00L     // rad/s
 #define MASA              ((MOT_W_HOVER*MOT_W_HOVER*F_B1 \
 			    + MOT_W_HOVER*F_B2)*4/GRAVITY)
 #define STATE_COUNT       12

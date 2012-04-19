@@ -1,6 +1,8 @@
 #ifndef UQUAD_CONFIG_H
 #define UQUAD_CONFIG_H
 
+#include <uquad_types.h>
+
 #define DEBUG             1 // Show debug info
 
 #define GPS_FAKE          1 // Simulate GPS data (use zeros)
@@ -11,7 +13,7 @@
 #define FULL_CONTROL      0 // Control 12 states
 
 #if FULL_CONTROL
-#define STATES_CONTROLLED 12
+#define STATES_CONTROLLED STATE_COUNT
 #else
 #define STATES_CONTROLLED 8
 #endif

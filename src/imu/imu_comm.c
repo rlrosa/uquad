@@ -1215,7 +1215,8 @@ int convert_2_euler(imu_data_t *data)
     retval = uquad_mat_prod(m3x1_0,m3x3,data->magn);
     err_propagate(retval);
 
-    theta = -atan2(m3x1_0->m_full[1],m3x1_0->m_full[0]) + IMU_TH_DEADLOCK_ANG;//9.78;
+    theta = atan2(m3x1_0->m_full[0],m3x1_0->m_full[1]) + IMU_TH_DEADLOCK_ANG;//9.78;
+    //    theta = -atan2(m3x1_0->m_full[1],m3x1_0->m_full[0]) + IMU_TH_DEADLOCK_ANG;//9.78;
 
     data->magn->m_full[0]=psi;
     data->magn->m_full[1]=phi;
