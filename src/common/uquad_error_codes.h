@@ -1,9 +1,24 @@
 #ifndef UQUAD_ERROR_CODES_H
 #define UQUAD_ERROR_CODES_H
 
+/**
+ * If stderr has been re-routed, for example to
+ * log to a file and still be able to use the
+ * macros below, then enabling this will print
+ * everything that is considered an error to both:
+ *   - whatever stderr was re-reouted to
+ *   - stdout
+ * To re-route stderr, do something like:
+ *   FILE *log = fopen("log_file.log","w");
+ *   stderr    = log;
+ * The err_log("something") will log to log.
+ */
+#define REROUTE_STDERR 1
+
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
+#include <unistd.h>
 
 enum UQUAD_ERROR_CODES{
 ERROR_OK = 0,
@@ -55,36 +70,78 @@ ERROR_MOT_SATURATE,
 ERROR_TIMING
 };
 
+#define rerouted() (fileno(stderr)!=STDERR_FILENO)
+
 /**
  * Print error message to stderr
  * 
  */
-#define err_log(msg) fprintf(stderr,"%s:%s:%d: %s\n",__TIME__,__FILE__,__LINE__,msg)
-#define err_log_stderr(msg) fprintf(stderr,"%s:%s:%d: %s: %s\n",__TIME__,__FILE__,__LINE__,msg, strerror(errno))
+#define err_log(msg)							\
+    {									\
+	fprintf(stderr,"%s:%s:%d: %s\n",				\
+		__TIME__,__FILE__,__LINE__,msg);			\
+	if(REROUTE_STDERR && rerouted())				\
+	    fprintf(stdout,"%s:%s:%d: %s\n",				\
+		    __TIME__,__FILE__,__LINE__,msg);			\
+    }
+
+#define err_log_stderr(msg)						\
+    {									\
+	fprintf(stderr,"%s:%s:%d: %s: %s\n",				\
+		__TIME__,__FILE__,__LINE__,msg, strerror(errno));	\
+	if(REROUTE_STDERR && rerouted())				\
+	    fprintf(stdout,"%s:%s:%d: %s: %s\n",			\
+		    __TIME__,__FILE__,__LINE__,msg, strerror(errno));	\
+    }
 
 /**
  * Print error message with number to stderr
  * 
  */
-#define err_log_num(msg,num) fprintf(stderr,"%s:%s:%d: %s(%d)\n",__TIME__,__FILE__,__LINE__,msg,num)
+#define err_log_num(msg,num)						\
+    {									\
+	fprintf(stderr,"%s:%s:%d: %s(%d)\n",				\
+		__TIME__,__FILE__,__LINE__,msg,num);			\
+	if(REROUTE_STDERR && rerouted())				\
+	    fprintf(stdout,"%s:%s:%d: %s(%d)\n",			\
+		    __TIME__,__FILE__,__LINE__,msg,num);		\
+    }
 
 /**
  * Print error message with number to stderr
  * 
  */
-#define err_log_str(msg,str) fprintf(stderr,"%s:%s:%d: %s(%s)\n",__TIME__,__FILE__,__LINE__,msg,str)
+#define err_log_str(msg,str)						\
+    {									\
+	fprintf(stderr,"%s:%s:%d: %s(%s)\n",				\
+		__TIME__,__FILE__,__LINE__,msg,str);			\
+	if(REROUTE_STDERR && rerouted())				\
+	    fprintf(stdout,"%s:%s:%d: %s(%s)\n",			\
+		    __TIME__,__FILE__,__LINE__,msg,str);		\
+    }
 
 /**
  * Print error message with double to stderr
  *
  */
-#define err_log_double(msg,dbl) fprintf(stderr,"%s:%s:%d: %s: %lf\n",__TIME__,__FILE__,__LINE__,msg,dbl)
+#define err_log_double(msg,dbl)						\
+    {									\
+	fprintf(stderr,"%s:%s:%d: %s: %lf\n",				\
+	    __TIME__,__FILE__,__LINE__,msg,dbl);			\
+	if(REROUTE_STDERR && rerouted())				\
+	    fprintf(stdout,"%s:%s:%d: %s: %lf\n",			\
+		    __TIME__,__FILE__,__LINE__,msg,dbl);		\
+    }
 
 /**
  * Print error message with double to log
  *
  */
-#define log_double(log,msg,dbl) fprintf(log,"%s:%s:%d: %s: %lf\n",__TIME__,__FILE__,__LINE__,msg,dbl)
+#define log_double(log,msg,dbl)				\
+    {							\
+	fprintf(log,"%s:%s:%d: %s: %lf\n",		\
+		__TIME__,__FILE__,__LINE__,msg,dbl);	\
+    }
 
 #define log_eol(log) fprintf(log,"\n")
 #define log_tab(log) fprintf(log,"\t")
@@ -93,19 +150,35 @@ ERROR_TIMING
  * Print timeval message with unsigned long to stderr
  * 
  */
-#define err_log_tv(msg,tv) fprintf(stderr,"%s:%s:%d: %s(%ld.%06ld)\n",__TIME__,__FILE__,__LINE__,msg,tv.tv_sec, tv.tv_usec)
+#define err_log_tv(msg,tv)						\
+    {									\
+	fprintf(stderr,"%s:%s:%d: %s(%ld.%06ld)\n",			\
+		__TIME__,__FILE__,__LINE__,				\
+		msg,tv.tv_sec, tv.tv_usec);				\
+	if(REROUTE_STDERR && rerouted())				\
+	    fprintf(stdout,"%s:%s:%d: %s(%ld.%06ld)\n",			\
+		    __TIME__,__FILE__,__LINE__,				\
+		    msg,tv.tv_sec, tv.tv_usec);				\
+    }
 
 /**
  * Print timeval to log with unsigned long to log
  * 
  */
-#define log_tv(log,msg,tv) fprintf(log,"%s:%s:%d: %s(%ld.%06ld)\n",__TIME__,__FILE__,__LINE__,msg,tv.tv_sec, tv.tv_usec)
+#define log_tv(log,msg,tv)						\
+    {									\
+	fprintf(log,"%s:%s:%d: %s(%ld.%06ld)\n",			\
+		__TIME__,__FILE__,__LINE__,msg,tv.tv_sec, tv.tv_usec);	\
+    }
 
 /**
  * Print timeval to log with unsigned long to log, no '\n'
  * 
  */
-#define log_tv_only(log,tv) fprintf(log,"%ld.%06ld\t",tv.tv_sec, tv.tv_usec)
+#define log_tv_only(log,tv)					\
+    {								\
+	fprintf(log,"%ld.%06ld\t",tv.tv_sec, tv.tv_usec);	\
+    }
 
 /**
  * Print int to log ended by tab
@@ -123,25 +196,63 @@ ERROR_TIMING
  * If @retval is an error, then propagate error without printing anything.
  * 
  */
-#define err_propagate(retval) if(retval!=ERROR_OK){fprintf(stderr,"backtrace:%s:%d\n",__FILE__,__LINE__);return retval;}
+#define err_propagate(retval)			\
+    if(retval!=ERROR_OK)			\
+    {						\
+	fprintf(stderr,"backtrace:%s:%d\n",	\
+		__FILE__,__LINE__);		\
+	if(REROUTE_STDERR && rerouted())	\
+	    fprintf(stdout,"backtrace:%s:%d\n",	\
+		    __FILE__,__LINE__);		\
+	return retval;				\
+    }
 
 /**
  * If @retval is an error, then print @msg to stderr and propagate error.
  * 
  */
-#define err_check(retval,msg) if(retval!=ERROR_OK){fprintf(stderr,"%s:%s:%d: %s\n",__TIME__,__FILE__,__LINE__,msg);return retval;}
+#define err_check(retval,msg)						\
+    {									\
+	if(retval!=ERROR_OK)						\
+	{								\
+	    fprintf(stderr,"%s:%s:%d: %s\n",				\
+		    __TIME__,__FILE__,__LINE__,msg);			\
+	}								\
+	/* Check if stderr was re-routed, if so, log to stdout */	\
+	if(REROUTE_STDERR && rerouted())				\
+	    fprintf(stdout,"%s:%s:%d: %s\n",				\
+		    __TIME__,__FILE__,__LINE__,msg);			\
+	return retval;							\
+    }
 
 /**
  * If @retval is an error, then print strerr to stderr and propagate error.
  *
  */
-#define err_check_std(retval) if(retval!=ERROR_OK){fprintf(stderr,"%s:%s:%d: %s\n",__TIME__,__FILE__,__LINE__,strerror(errno));return retval;}
+#define err_check_std(retval)						\
+    if(retval!=ERROR_OK)						\
+    {									\
+	fprintf(stderr,"%s:%s:%d: %s\n",				\
+		__TIME__,__FILE__,__LINE__,strerror(errno));		\
+	if(REROUTE_STDERR && rerouted())				\
+	    fprintf(stdout,"%s:%s:%d: %s\n",				\
+		    __TIME__,__FILE__,__LINE__,strerror(errno));	\
+	return retval;							\
+    }
 
 /**
  * If @retval is an error, then print strerr to stderr.
  *
  */
-#define err_log_std(retval) if(retval!=ERROR_OK){fprintf(stderr,"%s:%s:%d: %s\n",__TIME__,__FILE__,__LINE__,strerror(errno));}
+#define err_log_std(retval)						\
+    if(retval!=ERROR_OK)						\
+    {									\
+	fprintf(stderr,"%s:%s:%d: %s\n",				\
+		__TIME__,__FILE__,__LINE__,strerror(errno));		\
+	if(REROUTE_STDERR && rerouted())				\
+	    fprintf(stdout,"%s:%s:%d: %s\n",				\
+		    __TIME__,__FILE__,__LINE__,strerror(errno));	\
+    }
 
 /**
  * If @retval is an error, call quit().
@@ -155,46 +266,97 @@ ERROR_TIMING
  * Usefull in init routines, allows cleaning up.
  *
  */
-#define cleanup_if(retval) if(retval != ERROR_OK) {fprintf(stderr,"backtrace:%s:%d\n",__FILE__,__LINE__);goto cleanup;}
+#define cleanup_if(retval)			\
+    if(retval != ERROR_OK)			\
+    {						\
+	fprintf(stderr,"backtrace:%s:%d\n",	\
+		__FILE__,__LINE__);		\
+	if(REROUTE_STDERR && rerouted())	\
+	    fprintf(stdout,"backtrace:%s:%d\n",	\
+		    __FILE__,__LINE__);		\
+	goto cleanup;				\
+    }
 
 /**
  * If @retval is an error, jump to cleanup.
  * Usefull in init routines, allows cleaning up.
  *
  */
-#define cleanup_if_null(ptr) if(ptr == NULL) {fprintf(stderr,"%s:%s:%d: Null pointer!\n",__TIME__,__FILE__,__LINE__);goto cleanup;}
+#define cleanup_if_null(ptr)				\
+    if(ptr == NULL)					\
+    {							\
+	fprintf(stderr,"%s:%s:%d: Null pointer!\n",	\
+		__TIME__,__FILE__,__LINE__);		\
+	if(REROUTE_STDERR && rerouted())		\
+	    fprintf(stdout,"%s:%s:%d: Null pointer!\n",	\
+		    __TIME__,__FILE__,__LINE__);	\
+	goto cleanup;					\
+    }
 
 /**
  * If @retval is an error, jump to cleanup.
  * Usefull in init routines, allows cleaning up.
  *
  */
-#define cleanup_log_if(retval,msg) if(retval != ERROR_OK) {fprintf(stderr,"%s:%d:\t%s\n",__FILE__,__LINE__,msg);goto cleanup;}
+#define cleanup_log_if(retval,msg)		\
+    if(retval != ERROR_OK)			\
+    {						\
+	fprintf(stderr,"%s:%d:\t%s\n",		\
+		__FILE__,__LINE__,msg);		\
+	if(REROUTE_STDERR && rerouted())	\
+	    fprintf(stdout,"%s:%d:\t%s\n",	\
+		    __FILE__,__LINE__,msg);	\
+	goto cleanup;				\
+    }
 
 /**
  * If @retval is an error, call quit().
  * Usefull in test programs, allows cleaning up.
  * 
  */
-#define quit_log_if(retval,msg) if(retval!=ERROR_OK){err_log(msg);quit();}
+#define quit_log_if(retval,msg)\
+    if(retval!=ERROR_OK)       \
+    {			       \
+	err_log(msg);	       \
+	quit();		       \
+    }
 
 /**
  * If @retval is an error, then got to the beginning of the loop
  * 
  */
-#define log_n_continue(retval,msg) if(retval!=ERROR_OK){err_log(msg);continue;}
+#define log_n_continue(retval,msg)\
+    if(retval!=ERROR_OK)	  \
+    {				  \
+	err_log(msg);		  \
+	continue;		  \
+    }
 
 /**
  * If @retval is an error, then log and jump to label
  * 
  */
-#define log_n_jump(retval,label,msg) if(retval!=ERROR_OK){err_log(msg);goto label;}
+#define log_n_jump(retval,label,msg)\
+    if(retval!=ERROR_OK)	    \
+    {				    \
+	err_log(msg);		    \
+	goto label;		    \
+    }
 
 /**
  * Verifies that malloc succeeded.
  * 
  */
-#define mem_alloc_check(pointer) if(pointer==NULL){fprintf(stderr,"%s:%s:%d: malloc failed\n",__TIME__,__FILE__,__LINE__);return NULL;}
+#define mem_alloc_check(pointer)			\
+    if(pointer==NULL)					\
+    {							\
+	fprintf(stderr,"%s:%s:%d: malloc failed\n",	\
+		__TIME__,__FILE__,__LINE__);		\
+	if(REROUTE_STDERR && rerouted())		\
+	    fprintf(stdout,"%s:%s:%d: malloc failed\n",	\
+		    __TIME__,__FILE__,__LINE__);	\
+	return NULL;					\
+    }
 
 /// No functions
 
