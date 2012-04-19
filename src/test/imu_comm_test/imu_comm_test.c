@@ -20,10 +20,10 @@
 #define IMU_COMM_TEST_EOL_LIM 128
 
 #define PRINT_RAW  1
-#define PRINT_DATA 0
+#define PRINT_DATA 1
 #define PRINT_AVG  0
 
-#define TIMING_DEBUG   1
+#define TIMING_DEBUG   0
 #define TIMING_ERR_MAX 0
 
 #define PRINT_LOOP          0         // Stop reading from IMU, and loop in printing
@@ -68,11 +68,19 @@ void uquad_sig_handler(int signal_num){
 
 int main(int argc, char *argv[]){
     int retval;
+#if TIMING_DEBUG
     int err_count = 0;
+    struct timeval tv_tmp2;
+#endif // TIMING_DEBUG
     unsigned char tmp[2];
     char * device;
     fd_set rfds;
-    struct timeval tv, tv_start, tv_diff, tv_tmp, tv_tmp2, tv_old;
+    struct timeval
+	tv,
+	tv_start,
+	tv_diff,
+	tv_tmp,
+	tv_old;
     gettimeofday(&tv_start,NULL);
     memset(&tv_max,0,sizeof(struct timeval));
 
@@ -226,7 +234,7 @@ int main(int argc, char *argv[]){
 
 		if(calibrating)
 		{
-		    printf("Calibration completed!\nPress enter to continue...");
+		    err_log("Calibration completed!");
 		    gettimeofday(&tv_old,NULL);
 		    calibrating = false;
 		}
@@ -237,9 +245,8 @@ int main(int argc, char *argv[]){
 		    gettimeofday(&tv_tmp,NULL);
 		    uquad_timeval_substract(&tv_diff, tv_tmp, tv_start);
 		    log_tv_only(log_imu_raw, tv_diff);
-		    log_eol(log_imu_raw);
-		    //		    retval = imu_comm_print_raw(&raw,log_imu_raw);
-		    //		    quit_if(retval);
+		    retval = imu_comm_print_raw(&raw,log_imu_raw);
+		    quit_if(retval);
 		}
 #endif
 #if PRINT_DATA
@@ -255,6 +262,7 @@ int main(int argc, char *argv[]){
 		    uquad_timeval_substract(&tv_diff, tv_tmp, tv_start);
 		    log_tv_only(log_imu_data, tv_diff);
 		    retval = imu_comm_print_data(&data,log_imu_data);
+		    retval = imu_comm_print_data(&data,stdout);
 		    quit_if(retval);
 		}
 #endif // PRINT_DATA

@@ -37,7 +37,7 @@
 
 use_n_states = 2; % Regulates number of variables to control. Can be:
                     % 0: uses 8 states      -> [z psi phi tehta vqz wqx wqy wqz]
-                    % 0: uses 8 states and their integrals
+                    % 1: uses 8 states and their integrals
                     % 2: uses all 12 states -> [x y z psi phi tehta vqx vqy vqz wqx wqy wqz]
                     % 3: uses all 12 states and their integrals
 use_gps      = 1; % Use kalman_gps
@@ -65,6 +65,7 @@ gps_file  = [log_path '/gps.log'];
 %% Load IMU data
 
 % Imu
+imu_file = 'tests/main/logs/2012_04_18_1_3_descambiamos_theta/imu_raw.log';
 [acrud,wcrud,mcrud,tcrud,bcrud,~,~,T]=mong_read(imu_file,0,1);
 
 avg = 1;
@@ -164,6 +165,7 @@ R_gps   = diag(1*[1 1 100000 1 1 100000]);
 
 if(use_n_states == 0)
     K    = load('src/control/K.txt');
+%     K    = load('K4x8');K=K.K;
     sp_x = [0;0;0;theta0;0;0;0;0];
     Nctl = 8;
 elseif(use_n_states == 1)
