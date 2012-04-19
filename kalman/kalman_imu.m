@@ -14,24 +14,20 @@ function [x_hat,P] = kalman_imu(x_hat,P,Q,R,T,u,z,w_hover)
 
 %% Constantes
 
-Ixx  = 2.32e-2; % Tensor de inercia del quad - según x
-Iyy  = 2.32e-2; % Tensor de inercia del quad - según y
-Izz  = 4.37e-2; % Tensor de inercia del quad - según z
-Izzm = 1.54e-5; % Tensor de inercia de los motores - segun z
-L    = 0.29;    % Largo en metros del los brazos del quad
-M    = 1.741;   % Masa del Quad en kg
-g    = 9.81;    % Aceleracion gravitatoria
-Ns   = 12;      % Largo del vector de estados
-
-F_B1 = 4.6016e-05;
-F_B2 = -0.0010;
-M    = (w_hover^2*F_B1 + w_hover*F_B2)*4/g;
+Ixx  = 2.32e-2;             % Tensor de inercia del quad - según x
+Iyy  = 2.32e-2;             % Tensor de inercia del quad - según y
+Izz  = 4.37e-2;             % Tensor de inercia del quad - según z
+Izzm = 1.54e-5;             % Tensor de inercia de los motores - segun z
+L    = 0.29;                % Largo en metros del los brazos del quad
+g    = 9.81;                % Aceleracion gravitatoria
+Ns   = 12;                  % Largo del vector de estados
+M    = drive(w_hover)*4/g;  % Masa del Quad en kg
 
 %% Entradas
 
-dw = zeros(4);  % Derivada de w. Cada columna corresponde a 1 motor
-TM = drive(u);  % Fuerzas ejercidas por los motores en N. Cada columna corresponde a 1 motor.
-D  = drag(u);   % Torque de Drag ejercido por los motores en N*m. Cada columna corresponde a cada motor
+dw = zeros(4);              % Derivada de w. Cada columna corresponde a 1 motor
+TM = drive(u);              % Fuerzas ejercidas por los motores en N. Cada columna corresponde a 1 motor.
+D  = drag(u);               % Torque de Drag ejercido por los motores en N*m. Cada columna corresponde a cada motor
 
 %% Funciones
      
@@ -63,9 +59,10 @@ h = @(z,psi,phi,theta,vqx,vqy,vqz,wqx,wqy,wqz,TM) [ ...
     wqx ; 
     wqy ; 
     wqz ;
-    z ...
+    z   ...
     ];
-
+%     uquad_rotate([vqx;vqy;vqz],psi,phi,theta,0,3) ...
+    
 F = @(psi,phi,theta,vqx,vqy,vqz,wqx,wqy,wqz,w,T) ...
 	[ ... 
     1, 0, 0,                          T*(vqz*(cos(psi)*sin(theta) - cos(theta)*sin(phi)*sin(psi)) + vqy*cos(psi)*cos(theta)*sin(phi)), T*(vqy*(sin(phi)*sin(theta) + cos(phi)*cos(theta)*sin(psi)) - vqx*cos(theta)*sin(phi) + vqz*cos(phi)*cos(psi)*cos(theta)), -T*(vqy*(cos(phi)*cos(theta) + sin(phi)*sin(psi)*sin(theta)) - vqz*(cos(theta)*sin(psi) - cos(psi)*sin(phi)*sin(theta)) + vqx*cos(phi)*sin(theta)), T*cos(phi)*cos(theta), -T*(cos(phi)*sin(theta) - cos(theta)*sin(phi)*sin(psi)),  T*(sin(psi)*sin(theta) + cos(psi)*cos(theta)*sin(phi)),                                                       0,                                                            0,                        0 ;
@@ -96,6 +93,21 @@ H = @() ...
     0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0
     ];
 
+% H = @(psi,phi,theta,vqx,vqy,vqz) ...
+%     [ ...
+%     0, 0, 0,                                             1,                                                              0, 0,                 0,                 0,                 0, 0, 0, 0
+%     0, 0, 0,                                             0,                                                              1, 0,                 0,                 0,                 0, 0, 0, 0
+%     0, 0, 0,                                             0,                                                              0, 1,                 0,                 0,                 0, 0, 0, 0
+%     0, 0, 0,                                             0,                                                              0, 0,                 0,                 0,                 0, 0, 0, 0
+%     0, 0, 0,                                             0,                                                              0, 0,                 0,                 0,                 0, 0, 0, 0
+%     0, 0, 0,                                             0,                                                              0, 0,                 0,                 0,                 0, 0, 0, 0
+%     0, 0, 0,                                             0,                                                              0, 0,                 0,                 0,                 0, 1, 0, 0
+%     0, 0, 0,                                             0,                                                              0, 0,                 0,                 0,                 0, 0, 1, 0
+%     0, 0, 0,                                             0,                                                              0, 0,                 0,                 0,                 0, 0, 0, 1
+%     0, 0, 1,                                             0,                                                              0, 0,                 0,                 0,                 0, 0, 0, 0
+%     0, 0, 0, vqy*cos(phi)*cos(psi) - vqz*cos(phi)*sin(psi), - vqx*cos(phi) - vqz*cos(psi)*sin(phi) - vqy*sin(phi)*sin(psi), 0, cos(phi)*cos(psi), cos(phi)*sin(psi), cos(phi)*cos(psi), 0, 0, 0
+%     ];
+ 
 %% Kalman
 
 % Predict
@@ -111,6 +123,7 @@ P_   = Fk_1 * P * Fk_1'+ Q;
 yk         = z - h(x_(3),x_(4),x_(5),x_(6),x_(7),x_(8),x_(9),x_(10), ...
     x_(11),x_(12),TM);
 Hk         = H();
+% Hk         = H(x_(4),x_(5),x_(6),x_(7),x_(8),x_(9));
 Sk         = Hk*P_*Hk' + R;
 Kk         = P_*Hk'*Sk^-1;
 x_hat      = x_ + Kk*yk;

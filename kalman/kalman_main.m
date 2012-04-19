@@ -152,8 +152,12 @@ Ngps    = 6;         % N gps: cantidad de variables corregidas por gps
 w_hover = 308.00;    % At this velocity, motor's force equals weight
 w_max   = 387.0; 
 w_min   = 109.0;
-Q_imu   = diag(1*[100 100 100 1 1 1 10 10 10 1 1 1]);
-R_imu   = diag(100*[100 100 100 100 100 100 1 1 1 100]);
+Q_imu   = diag(1*[100 100 100 1 1 1 100 100 100 10 10 10]);
+% Q_imu   = diag(1*[100 100 100 1 1 1 10  10  10  1  1  1]);
+R_imu   = diag(100*[10  10  10  100 100 100 1 1 1 100]);
+% R_imu   = diag(100*[100 100 100 100 100 100 1 1 1 100]);
+
+% R_imu   = diag(100*[100 100 100 100 102 100 1 1 1 100 10]);
 Q_gps   = diag(1*[100 100 100 100 100 100]);
 R_gps   = diag(1*[1 1 100000 1 1 100000]);
 
@@ -180,7 +184,8 @@ TM = drive(w);          % Fuerzas ejercidas por los motores en N. Cada columna c
 D  = drag(w);           % Torque de Drag ejercido por los motores en N*m. Cada columna corresponde a cada motor
     
 % Observaciones
-z  = [euler a w b];     
+z  = [euler a w b];
+% z  = [euler a w b [0;diff(b)]];
 
 % Inicialización
 x_hat          = zeros(N,Ns);

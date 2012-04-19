@@ -17,18 +17,34 @@ f = @(z,psi,phi,theta,vqz,wqx,wqy,wqz,w1,w2,w3,w4,dw1,dw2,dw3,dw4,TM1,TM2,TM3,TM
 
 F=jacobian(f(z,psi,phi,theta,vqz,wqx,wqy,wqz,w1,w2,w3,w4,dw1,dw2,dw3,dw4,TM1,TM2,TM3,TM4,D1,D2,D3,D4),[z,psi,phi,theta,vqz,wqx,wqy,wqz])
 
-h = @(z,psi,phi,theta,wqx,wqy,wqz,TM1,TM2,TM3,TM4) [ ... 
+% h = @(z,psi,phi,theta,wqx,wqy,wqz,TM1,TM2,TM3,TM4) [ ... 
+%     psi ; 
+%     phi ; 
+%     theta ; 
+%     1/M*(TM1+TM2+TM3+TM4);
+%     wqx ; 
+%     wqy ; 
+%     wqz ;
+%     z ...
+%     ];
+
+h = @(z,psi,phi,theta,vqx,vqy,vqz,wqx,wqy,wqz,TM1,TM2,TM3,TM4) [ ... 
     psi ; 
     phi ; 
     theta ; 
+    0;
+    0;
     1/M*(TM1+TM2+TM3+TM4);
     wqx ; 
     wqy ; 
     wqz ;
-    z ...
+    z   ;
+    -sin(phi)*vqx+cos(phi)*sin(psi)*vqy+cos(phi)*cos(psi)*vqz ...
     ];
 
-H=jacobian(h(z,psi,phi,theta,wqx,wqy,wqz,TM1,TM2,TM3,TM4),[z,psi,phi,theta,vqz,wqx,wqy,wqz])
+
+
+H=jacobian(h(z,psi,phi,theta,vqx,vqy,vqz,wqx,wqy,wqz,TM1,TM2,TM3,TM4),[x,y,z,psi,phi,theta,vqz,vqy,vqz,wqx,wqy,wqz])
 
 
 
