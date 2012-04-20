@@ -5,9 +5,14 @@ global mm mc
 
 %% Calibracion bola y conversion
 % Usa MgnCalibration.m y cost_bola.m
-fprintf('Cargando datos...\n')
-[~,~,mm,t,~,~,~,~] = ...
-  mong_read('tests/mongoose/magnetometro/data_marzo/imu_raw.log',0,1);
+
+% Calibracion con en el cubo
+% magn_file = 'tests/mongoose/magnetometro/data_marzo/imu_raw.log';
+
+% Calibracion adentro del quad
+magn_file = 'tests/mongoose/magnetometro/data_in_quad/imu_raw.log';
+fprintf('Cargando datos de %s...\n',magn_file)
+[~,~,mm,t,~,~,~,~] = mong_read(magn_file,0,1);
 [K,b] = MgnCalibration(mm);
 
 mc = zeros(size(mm));
