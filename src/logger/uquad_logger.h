@@ -4,7 +4,7 @@
 #include <stdio.h>
 
 #define LOGGER_DEBUG 0
-
+#define LOGGER_PERM  0666
 /**
  * -- -- -- -- -- -- -- -- -- -- -- --
  * Logging via pipe, separates worker

@@ -19,9 +19,10 @@
 #define WAIT_COUNTER_MAX 10
 #define IMU_COMM_TEST_EOL_LIM 128
 
-#define PRINT_RAW  1
-#define PRINT_DATA 1
-#define PRINT_AVG  0
+#define PRINT_RAW            1
+#define PRINT_DATA           0
+#define PRINT_AVG            0
+#define PRINT_DATA_ON_SCREEN 1
 
 #define TIMING_DEBUG   0
 #define TIMING_ERR_MAX 0
@@ -262,8 +263,10 @@ int main(int argc, char *argv[]){
 		    uquad_timeval_substract(&tv_diff, tv_tmp, tv_start);
 		    log_tv_only(log_imu_data, tv_diff);
 		    retval = imu_comm_print_data(&data,log_imu_data);
+#if PRINT_DATA_ON_SCREEN
 		    retval = imu_comm_print_data(&data,stdout);
 		    quit_if(retval);
+#endif // PRINT_ON_SCREEN
 		}
 #endif // PRINT_DATA
 
