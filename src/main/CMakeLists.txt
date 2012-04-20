@@ -13,9 +13,9 @@ target_link_libraries(${main_bin} kalman)
 target_link_libraries(${main_bin} control)
 target_link_libraries(${main_bin} path_planner)
 
-# To enable/disable GPS, set USE_GPS to 1/0
-set(USE_GPS 1)
+# To enable/disable GPS, set USE_GPS to 1/0 in src/CMakelists.txt
 if(${USE_GPS})
+  message("Main using GPS...")
   add_definitions(-DUSE_GPS=${USE_GPS})
   target_link_libraries(${main_bin} gps_comm)
 endif(${USE_GPS})
