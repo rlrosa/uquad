@@ -905,7 +905,10 @@ int imu_comm_read_frame_binary(imu_t *imu, imu_raw_t *new_frame, uquad_bool_t *d
     retval = check_io_locks(imu->device, NULL, &read_ok, NULL);
     if(read_ok)
     {
-	retval = read(imu->device,buff_tmp_8 + buff_index,1);
+	retval = read(imu->device,
+		      buff_tmp_8 + buff_index,
+		      (IMU_COMM_READ_1_BYTE)?
+		      1:IMU_DEFAULT_FRAME_SIZE_BYTES - 2 - buff_index);
 	if(retval < 0)
 	{
 		    err_log_stderr("Read error: no data! Restarting...");
@@ -913,7 +916,8 @@ int imu_comm_read_frame_binary(imu_t *imu, imu_raw_t *new_frame, uquad_bool_t *d
 		    err_propagate(ERROR_IO);
 	}
 
-	if(++buff_index == IMU_DEFAULT_FRAME_SIZE_BYTES-2)
+	buff_index += retval;
+	if(buff_index == IMU_DEFAULT_FRAME_SIZE_BYTES-2)
 	{
 	    // frame completed, now parse.
 	    buff_index = 0;
