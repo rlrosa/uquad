@@ -20,7 +20,7 @@
 #define IMU_COMM_TEST_EOL_LIM 128
 
 #define PRINT_RAW            1
-#define PRINT_DATA           0
+#define PRINT_DATA           1
 #define PRINT_AVG            0
 #define PRINT_DATA_ON_SCREEN 1
 
