@@ -34,7 +34,6 @@
  * format of the log file.
  */
 #define IMU_COMM_FAKE                     0
-
 /**
  * Definition of default sampling period, in microseconds.
  * Should match code running on IMU.
@@ -63,6 +62,7 @@
 
 #define IMU_TH_DEADLOCK_ACC               9.72L // m/s^2
 #define IMU_TH_DEADLOCK_ANG               0.17069L // rad
+#define IMU_COMM_THETA_CONT               1
 
 #define IMU_BYTES_T_US                    4
 
