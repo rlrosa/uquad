@@ -55,7 +55,7 @@ void uquad_logger_read(int pipefd, char *log_name, char *path)
 	cleanup_if(ERROR_OPEN);
     }
 
-    log_fd = open(file_name,O_RDWR | O_CREAT | O_NONBLOCK | S_IRUSR | S_IWUSR);
+    log_fd = open(file_name,O_RDWR | O_CREAT | O_NONBLOCK, LOGGER_PERM);
     if(log_fd < 0)
     {
 	err_log_stderr("Failed to open log file!");
