@@ -9,10 +9,10 @@
 #include <uquad_config.h>
 
 #if FULL_CONTROL
-#define CTRL_MAT_K_NAME     "K_full.txt"
+#define CTRL_MAT_K_NAME     "K_prop_full.txt"
 #define CTRL_MAT_K_INT_NAME "K_int_full.txt"
 #else
-#define CTRL_MAT_K_NAME     "K.txt"
+#define CTRL_MAT_K_NAME     "K_prop.txt"
 #define CTRL_MAT_K_INT_NAME "K_int.txt"
 #endif // FULL_CONTROL
 
