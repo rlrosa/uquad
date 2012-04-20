@@ -14,7 +14,7 @@ target_link_libraries(${main_bin} control)
 target_link_libraries(${main_bin} path_planner)
 
 # To enable/disable GPS, set USE_GPS to 1/0
-set(USE_GPS 1)
+set(USE_GPS 0)
 if(${USE_GPS})
   add_definitions(-DUSE_GPS=${USE_GPS})
   target_link_libraries(${main_bin} gps_comm)
