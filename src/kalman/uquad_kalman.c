@@ -22,6 +22,8 @@ uquad_mat_t* HT   = NULL;
 uquad_mat_t* HP_  = NULL;
 uquad_mat_t* HP_H = NULL;
 uquad_mat_t* Sk   = NULL;
+uquad_mat_t* Sk_aux1   = NULL;
+uquad_mat_t* Sk_aux2   = NULL;
 uquad_mat_t* P_HT = NULL;
 uquad_mat_t* Kk   = NULL;
 uquad_mat_t* Kkyk = NULL;
@@ -53,6 +55,8 @@ uquad_mat_t* HP__gps  = NULL;
 uquad_mat_t* HT_gps   = NULL;
 uquad_mat_t* HP_H_gps = NULL;
 uquad_mat_t* Sk_gps   = NULL;
+uquad_mat_t* Sk_gps_aux1 = NULL;
+uquad_mat_t* Sk_gps_aux2 = NULL;
 uquad_mat_t* Sk_1_gps = NULL;
 uquad_mat_t* P_HT_gps = NULL;
 uquad_mat_t* Kk_gps   = NULL;
@@ -144,6 +148,10 @@ int drive(uquad_mat_t* drive, uquad_mat_t* w)
 	w2 = uquad_mat_alloc(4,1);
 	tmp = uquad_mat_alloc(4,1);
 	tmp2 = uquad_mat_alloc(4,1);
+	if(w2 == NULL || tmp == NULL || tmp2 == NULL)
+	{
+	    err_check(ERROR_MALLOC,"Failed to allocate mem for drive()!");
+	}
     }
     double A1 = 4.60160135072435e-05;
     double A2 = -0.00103822726273726;
@@ -678,6 +686,11 @@ int uquad_kalman(kalman_io_t * kalman_io_data, uquad_mat_t* w, imu_data_t* data,
 	HP_  = uquad_mat_alloc(10,STATE_COUNT+STATE_BIAS);
 	HP_H = uquad_mat_alloc(10,10);
 	Sk   = uquad_mat_alloc(10,10);
+	if(Sk != NULL)
+	{
+	    Sk_aux1 = uquad_mat_alloc(Sk->r,Sk->c);
+	    Sk_aux2 = uquad_mat_alloc(Sk->r,Sk->c << 1);
+	}
 	P_HT = uquad_mat_alloc(STATE_COUNT+STATE_BIAS,10);
 	Kk   = uquad_mat_alloc(STATE_COUNT+STATE_BIAS,10);
 	Kkyk = uquad_mat_alloc(STATE_COUNT+STATE_BIAS,1);
@@ -717,8 +730,7 @@ int uquad_kalman(kalman_io_t * kalman_io_data, uquad_mat_t* w, imu_data_t* data,
     err_propagate(retval);
     retval = uquad_mat_add(Sk,HP_H,kalman_io_data -> R); // Sk
     err_propagate(retval);
-#warning "Kalman pide (y devuelve) memoria todo el tiempo!"
-    retval = uquad_mat_inv(Sk_1,Sk,NULL,NULL);
+    retval = uquad_mat_inv(Sk_1,Sk,Sk_aux1,Sk_aux2);
     err_propagate(retval);
     retval = uquad_mat_prod(P_HT,P_,HT);
     err_propagate(retval);
@@ -854,6 +866,11 @@ int uquad_kalman_gps(kalman_io_t* kalman_io_data, gps_comm_data_t* gps_i_data)
 	HT_gps        = uquad_mat_alloc(6,6);
 	HP_H_gps      = uquad_mat_alloc(6,6);
 	Sk_gps        = uquad_mat_alloc(6,6);
+	if(Sk_gps != NULL)
+	{
+	    Sk_gps_aux1 = uquad_mat_alloc(Sk_gps->r,Sk_gps->c);
+	    Sk_gps_aux2 = uquad_mat_alloc(Sk_gps->r,Sk_gps->c << 1);
+	}
 	Sk_1_gps      = uquad_mat_alloc(6,6);
 	P_HT_gps      = uquad_mat_alloc(6,6);
 	Kk_gps        = uquad_mat_alloc(6,6);
@@ -901,7 +918,7 @@ int uquad_kalman_gps(kalman_io_t* kalman_io_data, gps_comm_data_t* gps_i_data)
     err_propagate(retval);
     retval = uquad_mat_add(Sk_gps,HP_H_gps,kalman_io_data -> R_gps);
     err_propagate(retval);
-    retval = uquad_mat_inv(Sk_1_gps,Sk_gps,NULL,NULL);
+    retval = uquad_mat_inv(Sk_1_gps,Sk_gps,Sk_gps_aux1,Sk_gps_aux2);
     err_propagate(retval);
     retval = uquad_mat_prod(P_HT_gps,P__gps,HT_gps);
     err_propagate(retval);
@@ -944,6 +961,8 @@ void kalman_deinit(kalman_io_t *kalman_io_data)
     uquad_mat_free(HP_);
     uquad_mat_free(HP_H);
     uquad_mat_free(Sk);
+    uquad_mat_free(Sk_aux1);
+    uquad_mat_free(Sk_aux2);
     uquad_mat_free(P_HT);
     uquad_mat_free(Kk);
     uquad_mat_free(Kkyk);
@@ -981,6 +1000,8 @@ void kalman_deinit(kalman_io_t *kalman_io_data)
     uquad_mat_free(HT_gps  );
     uquad_mat_free(HP_H_gps);
     uquad_mat_free(Sk_gps  );
+    uquad_mat_free(Sk_gps_aux1);
+    uquad_mat_free(Sk_gps_aux2);
     uquad_mat_free(Sk_1_gps);
     uquad_mat_free(P_HT_gps);
     uquad_mat_free(Kk_gps  );
