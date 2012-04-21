@@ -23,9 +23,11 @@
 // Do NOT edit the following lines!
 // -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 #if FULL_CONTROL
-#define STATES_CONTROLLED STATE_COUNT
+#define STATES_CONTROLLED     STATE_COUNT
+#define STATES_INT_CONTROLLED 4
 #else
-#define STATES_CONTROLLED 8
+#define STATES_CONTROLLED     8
+#define STATES_INT_CONTROLLED 2
 #endif
 
 #if KALMAN_BIAS

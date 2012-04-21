@@ -10,6 +10,21 @@
 #endif //UQUAD_BOOL
 typedef UQUAD_BOOL uquad_bool_t;
 
+typedef enum STATE_VECTOR{
+    SV_X = 0,
+    SV_Y,
+    SV_Z,
+    SV_PSI,
+    SV_PHI,
+    SV_THETA,
+    SV_VQX,
+    SV_VQY,
+    SV_VQZ,
+    SV_WQX,
+    SV_WQY,
+    SV_WQZ
+}STATE_VECTOR_T;
+
 #define GRAVITY           9.81L	      // Aceleracion gravitatoria
 #define IXX               0.0232L     // Tensor de inercia del quad - según x
 #define IYY               0.0232L     // Tensor de inercia del quad - según y
