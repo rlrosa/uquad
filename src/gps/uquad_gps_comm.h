@@ -9,6 +9,9 @@
 #define GPS_COMM_DATA_NON_INERTIAL_VEL 0 // Convert vel to non-inertial sys
 #define GPS_COMM_WAIT_FIX_SLEEP_MS     300
 
+#define GPS_INIT_TOUT_S                60// GPS init timeout in sec
+#define GPS_INIT_TOUT_US               0 // GPS init timeout in sec
+
 typedef struct gps_data_t gpsd_t;
 
 typedef struct utm{

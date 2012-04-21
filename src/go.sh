@@ -42,13 +42,21 @@ sleep 0.5
 (cd build/main; make;)
 
 # use correct calibration file
-cp imu/imu_calib.txt build/main/
+if [ ! -e `pwd`/build/main/imu_calib.txt ];
+then
+    ln -s `pwd`/imu/imu_calib.txt `pwd`/build/main/imu_calib.txt
+fi
 
 # use correct control gain
-cp control/K.txt          build/main/
-cp control/K_full.txt     build/main/
-cp control/K_int.txt      build/main/
-cp control/K_int_full.txt build/main/
+for file in control/K*.txt
+do
+    file=${file##*/}
+    if [ ! -e `pwd`/build/main/${file} ];
+    then
+	ln -s `pwd`/control/${file} `pwd`/build/main/${file}
+	echo "Created link for ${file} in build/main"
+    fi
+done
 
 # prepare motor command
 mv i2c_beagle/cmd${pc_test} build/main/cmd

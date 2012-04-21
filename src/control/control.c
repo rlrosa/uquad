@@ -5,6 +5,7 @@
 uquad_mat_t *tmp_sub_sp_x;
 uquad_mat_t *tmp_x_hat_partial;
 uquad_mat_t *w_tmp;
+uquad_mat_t *x_int_tmp;
 
 #if CTRL_INTEGRAL
 int control_clear_int(ctrl_t * ctrl)
@@ -23,9 +24,9 @@ ctrl_t *control_init(void)
     ctrl_t *ctrl = (ctrl_t *)malloc(sizeof(ctrl_t));
     mem_alloc_check(ctrl);
 
-    ctrl->K = uquad_mat_alloc(4,STATES_CONTROLLED);
+    ctrl->K = uquad_mat_alloc(LENGTH_INPUT,STATES_CONTROLLED);
     tmp_sub_sp_x = uquad_mat_alloc(STATE_COUNT,1);
-    w_tmp = uquad_mat_alloc(4,1);
+    w_tmp = uquad_mat_alloc(LENGTH_INPUT,1);
     if(ctrl->K == NULL || tmp_sub_sp_x == NULL || w_tmp == NULL)
     {
 	cleanup_log_if(ERROR_MALLOC,"Failed to allocate aux mem!");
@@ -44,6 +45,11 @@ ctrl_t *control_init(void)
 	err_log_str("Failed to open:",CTRL_MAT_K_NAME);
 	cleanup_if(ERROR_FAIL);
     }
+    else
+    {
+	err_log_str("Loaded proportional gain matrix from:",
+		    CTRL_MAT_K_NAME);
+    }
 
     retval = uquad_mat_load(ctrl->K, file_mat);
     if(retval != ERROR_OK)
@@ -55,20 +61,26 @@ ctrl_t *control_init(void)
     file_mat = NULL;
 
 #if CTRL_INTEGRAL
-    ctrl->K_int = uquad_mat_alloc(4,STATES_CONTROLLED);
-    ctrl->x_int = uquad_mat_alloc(STATES_CONTROLLED,1);
-    if(ctrl->x_int == NULL || ctrl->K_int == NULL)
+    ctrl->K_int = uquad_mat_alloc(LENGTH_INPUT,STATES_INT_CONTROLLED);
+    ctrl->x_int = uquad_mat_alloc(STATES_INT_CONTROLLED,1);
+    x_int_tmp   = uquad_mat_alloc(STATES_INT_CONTROLLED,1);
+    if(ctrl->x_int == NULL || ctrl->K_int == NULL || x_int_tmp == NULL)
     {
 	cleanup_log_if(ERROR_MALLOC,"Failed to allocate aux mem!");
     }
     retval = control_clear_int(ctrl);
     cleanup_log_if(retval, "Failed to clear integral term!");
 
-    file_mat = fopen(CTRL_MAT_K_NAME,"r");
+    file_mat = fopen(CTRL_MAT_K_INT_NAME,"r");
     if(file_mat == NULL)
     {
 	err_log_str("Failed to open:",CTRL_MAT_K_INT_NAME);
 	cleanup_if(ERROR_FAIL);
+    }
+    else
+    {
+	err_log_str("Loaded integral gain matrix from:",
+		    CTRL_MAT_K_INT_NAME);
     }
 
     retval = uquad_mat_load(ctrl->K_int, file_mat);
@@ -98,7 +110,9 @@ int control(ctrl_t *ctrl, uquad_mat_t *w, uquad_mat_t *x, set_point_t *sp, doubl
 	err_check(ERROR_NULL_POINTER,"Inputs must be non NULL!");
     }
 
-    retval = uquad_mat_sub(tmp_sub_sp_x, sp->x, x);
+    retval = uquad_mat_get_subm(tmp_sub_sp_x,0,0,x);
+    err_propagate(retval);
+    retval = uquad_mat_sub(tmp_sub_sp_x, sp->x, tmp_sub_sp_x);
     err_propagate(retval);
 
 #if !FULL_CONTROL
@@ -124,20 +138,36 @@ int control(ctrl_t *ctrl, uquad_mat_t *w, uquad_mat_t *x, set_point_t *sp, doubl
     err_propagate(retval);
 
 #if CTRL_INTEGRAL
-#if !FULL_CONTROL
-    retval = uquad_mat_scalar_mul(tmp_x_hat_partial, NULL, T_us/1000000);
-    err_propagate(retval);
-    retval = uquad_mat_add(ctrl->x_int, ctrl->x_int, tmp_x_hat_partial);
-    err_propagate(retval);
-#else
-    retval = uquad_mat_scalar_mul(tmp_sub_sp_x, NULL, T_us/1000000);
-    retval = uquad_mat_add(ctrl->x_int, ctrl->x_int, tmp_sub_sp_x);
-#endif // !FULL_CONTROL
+    double ddelta;
+    /// SV_THETA
+    ddelta = uquad_min(tmp_sub_sp_x->m[SV_THETA][0]*T_us/1000000,
+		       CTRL_INT_DELTA_MAX_THETA);
+    ctrl->x_int->m[ctrl->x_int->r - 1][0] =
+	uquad_min(ddelta + ctrl->x_int->m[ctrl->x_int->r - 1][0],
+		  CTRL_INT_ACCUM_MAX_THETA);
+    /// SV_Z
+    ddelta = uquad_min(tmp_sub_sp_x->m[SV_Z    ][0]*T_us/1000000,
+		       CTRL_INT_DELTA_MAX_Z);
+    ctrl->x_int->m[ctrl->x_int->r - 2][0] =
+	uquad_min(ddelta + ctrl->x_int->m[ctrl->x_int->r - 2][0],
+		  CTRL_INT_ACCUM_MAX_Z);
+#if FULL_CONTROL
+    ddelta = uquad_min(tmp_sub_sp_x->m[SV_Y    ][0]*T_us/1000000,
+		       CTRL_INT_DELTA_MAX_Y);
+    ctrl->x_int->m[ctrl->x_int->r - 3][0] =
+	uquad_min(ddelta + ctrl->x_int->m[ctrl->x_int->r - 3][0],
+		  CTRL_INT_ACCUM_MAX_Y);
+    ddelta = uquad_min(tmp_sub_sp_x->m[SV_X    ][0]*T_us/1000000,
+		       CTRL_INT_DELTA_MAX_X);
+    ctrl->x_int->m[ctrl->x_int->r - 4][0] =
+	uquad_min(ddelta + ctrl->x_int->m[ctrl->x_int->r - 4][0],
+		  CTRL_INT_ACCUM_MAX_X);
+#endif // FULL_CONTROL
     retval = uquad_mat_prod(w_tmp, ctrl->K_int, ctrl->x_int);
     err_propagate(retval);
     retval = uquad_mat_add(w, w, w_tmp);
     err_propagate(retval);
-#else
+#else // CTRL_INTEGRAL
     T_us = T_us; // just to avoid warning
 #endif
 
@@ -160,6 +190,7 @@ void control_deinit(ctrl_t *ctrl)
 #if CTRL_INTEGRAL
     uquad_mat_free(ctrl->K_int);
     uquad_mat_free(ctrl->x_int);
+    uquad_mat_free(x_int_tmp);
 #endif
     free(ctrl);
 }

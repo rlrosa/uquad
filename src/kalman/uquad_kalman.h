@@ -4,23 +4,8 @@
 #include <imu_comm.h>
 #include <uquad_gps_comm.h>
 
-typedef enum STATE_VECTOR{
-    SV_X = 0,
-    SV_Y,
-    SV_Z,
-    SV_PSI,
-    SV_PHI,
-    SV_THETA,
-    SV_VQX,
-    SV_VQY,
-    SV_VQZ,
-    SV_WQX,
-    SV_WQY,
-    SV_WQZ
-}STATE_VECTOR_T;
-
 /**
- * Kalman struct description:
+ * Kalman struct description (matches uquad_types.h):
  *
  * x_hat: State vector
  *    [x         ] - m
@@ -35,6 +20,10 @@ typedef enum STATE_VECTOR{
  *    [wqx       ] - rad/s
  *    [wqy       ] - rad/s
  *    [wqz       ] - rad/s
+ * Acc bias estimation (iif KALMAN_BIAS)
+ *    [abx       ] - m/s^2
+ *    [aby       ] - m/s^2
+ *    [abz       ] - m/s^2
  *
  * T: Time since last sample, in us
  *

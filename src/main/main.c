@@ -249,7 +249,7 @@ void slow_land(void)
     w->m_full[3] = MOT_W_HOVER;
     for(i = 0; i < 5; ++i)
     {
-	retval = mot_set_vel_rads(mot, w);
+	retval = mot_set_vel_rads(mot, w, true);
 	if(retval != ERROR_OK)
 	    break;
 	else
@@ -258,7 +258,7 @@ void slow_land(void)
     sleep_ms(IDLE_TIME_MS);
     for(dtmp = MOT_W_HOVER;dtmp > MOT_W_IDLE;dtmp -= SLOW_LAND_STEP_W)
     {
-	retval = mot_set_vel_rads(mot, w);
+	retval = mot_set_vel_rads(mot, w, true);
 	if(retval != ERROR_OK)
 	{
 	    err_log("Failed to set speed when landing...");
@@ -518,7 +518,7 @@ int main(int argc, char *argv[]){
     }
 
 #if DEBUG_X_HAT
-    x_hat_T = uquad_mat_alloc(1,STATE_COUNT);
+    x_hat_T = uquad_mat_alloc(1,STATE_COUNT+STATE_BIAS);
     if(x_hat_T == NULL)
     {
 	err_log("Failed alloc x_hat_T!");
@@ -1018,6 +1018,7 @@ int main(int argc, char *argv[]){
 #endif //DEBUG_KALMAN_INPUT
 #if DEBUG_X_HAT
 	retval = uquad_mat_transpose(x_hat_T, kalman->x_hat);
+	quit_if(retval);
 	uquad_mat_dump(x_hat_T,log_x_hat);
 	fflush(log_x_hat);
 #endif //DEBUG_X_HAT
@@ -1056,7 +1057,7 @@ int main(int argc, char *argv[]){
 		for(i = 0; i < MOT_C; ++i)
 		    w->m_full[i] = MOT_W_IDLE +
 			runs_kalman*(MOT_W_STARTUP_RANGE/STARTUP_KALMAN);
-		retval = mot_set_vel_rads(mot, w);
+		retval = mot_set_vel_rads(mot, w, true);
 		log_n_continue(retval,"Failed to set motor speed!");
 #if LOG_W
 		uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
@@ -1103,7 +1104,7 @@ int main(int argc, char *argv[]){
 	if (tv_diff.tv_usec > MOT_UPDATE_T || tv_diff.tv_sec > 1)
 	{
 	    /// Update motor controller
-	    retval = mot_set_vel_rads(mot, w);
+	    retval = mot_set_vel_rads(mot, w, false);
 	    log_n_continue(retval,"Failed to set motor speed!");
 #if DEBUG && LOG_W
 	    uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);

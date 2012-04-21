@@ -22,6 +22,8 @@ uquad_mat_t* HT   = NULL;
 uquad_mat_t* HP_  = NULL;
 uquad_mat_t* HP_H = NULL;
 uquad_mat_t* Sk   = NULL;
+uquad_mat_t* Sk_aux1   = NULL;
+uquad_mat_t* Sk_aux2   = NULL;
 uquad_mat_t* P_HT = NULL;
 uquad_mat_t* Kk   = NULL;
 uquad_mat_t* Kkyk = NULL;
@@ -53,6 +55,8 @@ uquad_mat_t* HP__gps  = NULL;
 uquad_mat_t* HT_gps   = NULL;
 uquad_mat_t* HP_H_gps = NULL;
 uquad_mat_t* Sk_gps   = NULL;
+uquad_mat_t* Sk_gps_aux1 = NULL;
+uquad_mat_t* Sk_gps_aux2 = NULL;
 uquad_mat_t* Sk_1_gps = NULL;
 uquad_mat_t* P_HT_gps = NULL;
 uquad_mat_t* Kk_gps   = NULL;
@@ -68,12 +72,21 @@ uquad_mat_t* IKH_gps  = NULL;
 int H_init()
 {
     int retval;
-    H = uquad_mat_alloc(10,STATE_COUNT);
+    H = uquad_mat_alloc(10,STATE_COUNT+STATE_BIAS);
+    if(H == NULL)
+    {
+	err_check(ERROR_MALLOC, "Failed to allocate H()!");
+    }
     retval = uquad_mat_zeros(H);
     err_propagate(retval);
     H->m[0][3]=1;
     H->m[1][4]=1;
     H->m[2][5]=1;
+#if KALMAN_BIAS
+    H->m[3][12]=1;
+    H->m[4][13]=1;
+    H->m[5][14]=1;
+#endif // KALMAN_BIAS
     H->m[6][9]=1;
     H->m[7][10]=1;
     H->m[8][11]=1;
@@ -135,6 +148,10 @@ int drive(uquad_mat_t* drive, uquad_mat_t* w)
 	w2 = uquad_mat_alloc(4,1);
 	tmp = uquad_mat_alloc(4,1);
 	tmp2 = uquad_mat_alloc(4,1);
+	if(w2 == NULL || tmp == NULL || tmp2 == NULL)
+	{
+	    err_check(ERROR_MALLOC,"Failed to allocate mem for drive()!");
+	}
     }
     double A1 = 4.60160135072435e-05;
     double A2 = -0.00103822726273726;
@@ -163,8 +180,17 @@ int f(uquad_mat_t* fx, kalman_io_t* kalman_io_data)
     double wqx   = kalman_io_data -> x_hat -> m_full[9];
     double wqy   = kalman_io_data -> x_hat -> m_full[10];
     double wqz   = kalman_io_data -> x_hat -> m_full[11];
+    double abx   = 0;
+    double aby   = 0;
+    double abz   = 0;
     double T     = kalman_io_data -> T;
-  
+
+#if KALMAN_BIAS
+    abx   = kalman_io_data -> x_hat -> m_full[12];
+    aby   = kalman_io_data -> x_hat -> m_full[13];
+    abz   = kalman_io_data -> x_hat -> m_full[14];
+#endif // KALMAN_BIAS
+
     int retval;
     double* w    = kalman_io_data -> u -> m_full;
     uquad_mat_t* w_mat    = kalman_io_data -> u;
@@ -186,13 +212,19 @@ int f(uquad_mat_t* fx, kalman_io_t* kalman_io_data)
     fx->m_full[3]  = psi   + T*( wqx+wqz*tan(phi)*cos(psi)+wqy*tan(phi)*sin(psi));
     fx->m_full[4]  = phi   + T*( wqy*cos(psi)-wqz*sin(psi));
     fx->m_full[5]  = theta + T*( wqz*cos(psi)/cos(phi)+wqy*sin(psi)/cos(phi));
-    fx->m_full[6]  = vqx   + T*( vqy*wqz-vqz*wqy+GRAVITY*sin(phi));
-    fx->m_full[7]  = vqy   + T*( vqz*wqx-vqx*wqz-GRAVITY*cos(phi)*sin(psi));
-    fx->m_full[8]  = vqz   + T*( vqx*wqy-vqy*wqx-GRAVITY*cos(phi)*cos(psi)+1/MASA*(TM_vec[0]+TM_vec[1]+TM_vec[2]+TM_vec[3]));
+    fx->m_full[6]  = vqx   + T*( vqy*wqz-vqz*wqy+GRAVITY*sin(phi)+abx);
+    fx->m_full[7]  = vqy   + T*( vqz*wqx-vqx*wqz-GRAVITY*cos(phi)*sin(psi)+aby);
+    fx->m_full[8]  = vqz   + T*( vqx*wqy-vqy*wqx-GRAVITY*cos(phi)*cos(psi)+1/MASA*(TM_vec[0]+TM_vec[1]+TM_vec[2]+TM_vec[3])+abz);
     fx->m_full[9] = wqx   + T*( wqy*wqz*(IYY-IZZ)+wqy*IZZM*(w[0]-w[1]+w[2]-w[3])+LENGTH*(TM_vec[1]-TM_vec[3]) )/IXX ;
     fx->m_full[10] = wqy   + T*( wqx*wqz*(IZZ-IXX)+wqx*IZZM*(w[0]-w[1]+w[2]-w[3])+LENGTH*(TM_vec[2]-TM_vec[0]) )/IYY;
     // fx->m_full[11] = wqz   + T*( -IZZM*(dw[0]-dw[1]+dw[2]-dw[3])+D[0]-D[1]+D[2]-D[3] )/IZZ;
     fx->m_full[11] = wqz   - T*( D_vec[0]-D_vec[1]+D_vec[2]-D_vec[3] )/IZZ;
+#if KALMAN_BIAS
+    fx->m_full[12] = abx;
+    fx->m_full[13] = aby;
+    fx->m_full[14] = abz;
+#endif // KALMAN_BIAS
+
     return ERROR_OK;
 }
 
@@ -207,13 +239,21 @@ int h(uquad_mat_t* hx, kalman_io_t* kalman_io_data)
     retval = drive(TM,kalman_io_data->u);
     err_propagate(retval);
     double* TM_vec = TM -> m_full;
-
+    double
+	abx = 0,
+	aby = 0,
+	abz = 0;
+#if KALMAN_BIAS
+    abx = kalman_io_data -> x_ -> m_full[12];
+    aby = kalman_io_data -> x_ -> m_full[13];
+    abz = kalman_io_data -> x_ -> m_full[14];
+#endif
     hx->m_full[0]  = kalman_io_data -> x_ -> m_full[3];
     hx->m_full[1]  = kalman_io_data -> x_ -> m_full[4];
     hx->m_full[2]  = kalman_io_data -> x_ -> m_full[5];
-    hx->m_full[3]  = 0;
-    hx->m_full[4]  = 0;
-    hx->m_full[5]  = 1/MASA*(TM_vec[0]+TM_vec[1]+TM_vec[2]+TM_vec[3]);
+    hx->m_full[3]  = abx;
+    hx->m_full[4]  = aby;
+    hx->m_full[5]  = 1/MASA*(TM_vec[0]+TM_vec[1]+TM_vec[2]+TM_vec[3]) + abz;
     hx->m_full[6]  = kalman_io_data -> x_ -> m_full[9];
     hx->m_full[7]  = kalman_io_data -> x_ -> m_full[10];
     hx->m_full[8]  = kalman_io_data -> x_ -> m_full[11];
@@ -408,6 +448,106 @@ int F(uquad_mat_t* Fx, kalman_io_t* kalman_io_data)
     Fx->m[11][9] = 0;
     Fx->m[11][10] = 0;
     Fx->m[11][11] = 1;
+
+#if KALMAN_BIAS
+    Fx->m[0][12] = 0;
+    Fx->m[0][13] = 0;
+    Fx->m[0][14] = 0;
+
+    Fx->m[1][12] = 0;
+    Fx->m[1][13] = 0;
+    Fx->m[1][14] = 0;
+
+    Fx->m[2][12] = 0;
+    Fx->m[2][13] = 0;
+    Fx->m[2][14] = 0;
+
+    Fx->m[3][12] = T;
+    Fx->m[3][13] = 0;
+    Fx->m[3][14] = 0;
+
+    Fx->m[4][12] = 0;
+    Fx->m[4][13] = 0;
+    Fx->m[4][14] = 0;
+
+    Fx->m[5][12] = 0;
+    Fx->m[5][13] = 0;
+    Fx->m[5][14] = 0;
+
+    Fx->m[6][12] = T;
+    Fx->m[6][13] = 0;
+    Fx->m[6][14] = 0;
+
+    Fx->m[7][12] = 0;
+    Fx->m[7][13] = T;
+    Fx->m[7][14] = 0;
+
+    Fx->m[8][12] = 0;
+    Fx->m[8][13] = 0;
+    Fx->m[8][14] = T;
+
+    Fx->m[9][12] = 0;
+    Fx->m[9][13] = 0;
+    Fx->m[9][14] = 0;
+
+    Fx->m[10][12] = 0;
+    Fx->m[10][13] = 0;
+    Fx->m[10][14] = 0;
+
+    Fx->m[11][12] = 0;
+    Fx->m[11][13] = 0;
+    Fx->m[11][14] = 0;
+
+    Fx->m[12][0] = 0;
+    Fx->m[12][1] = 0;
+    Fx->m[12][2] = 0;
+    Fx->m[12][3] = 0;
+    Fx->m[12][4] = 0;
+    Fx->m[12][5] = 0;
+    Fx->m[12][6] = 0;
+    Fx->m[12][7] = 0;
+    Fx->m[12][8] = 0;
+    Fx->m[12][9] = 0;
+    Fx->m[12][10] = 0;
+    Fx->m[12][11] = 0;
+    Fx->m[12][12] = 1;
+    Fx->m[12][13] = 0;
+    Fx->m[12][14] = 0;
+
+    Fx->m[13][0] = 0;
+    Fx->m[13][1] = 0;
+    Fx->m[13][2] = 0;
+    Fx->m[13][3] = 0;
+    Fx->m[13][4] = 0;
+    Fx->m[13][5] = 0;
+    Fx->m[13][6] = 0;
+    Fx->m[13][7] = 0;
+    Fx->m[13][8] = 0;
+    Fx->m[13][9] = 0;
+    Fx->m[13][10] = 0;
+    Fx->m[13][11] = 0;
+    Fx->m[13][12] = 0;
+    Fx->m[13][13] = 1;
+    Fx->m[13][14] = 0;
+
+    Fx->m[14][0] = 0;
+    Fx->m[14][1] = 0;
+    Fx->m[14][2] = 0;
+    Fx->m[14][3] = 0;
+    Fx->m[14][4] = 0;
+    Fx->m[14][5] = 0;
+    Fx->m[14][6] = 0;
+    Fx->m[14][7] = 0;
+    Fx->m[14][8] = 0;
+    Fx->m[14][9] = 0;
+    Fx->m[14][10] = 0;
+    Fx->m[14][11] = 0;
+    Fx->m[14][12] = 0;
+    Fx->m[14][13] = 0;
+    Fx->m[14][14] = 1;
+
+#endif // KALMAN_BIAS
+
     return ERROR_OK;
 }
 
@@ -415,13 +555,13 @@ kalman_io_t* kalman_init()
 {
     int retval;
     kalman_io_t* kalman_io_data = (kalman_io_t*)malloc(sizeof(kalman_io_t));
-    kalman_io_data->x_hat = uquad_mat_alloc(STATE_COUNT,1);
-    kalman_io_data->x_    = uquad_mat_alloc(STATE_COUNT,1);
+    kalman_io_data->x_hat = uquad_mat_alloc(STATE_COUNT+STATE_BIAS,1);
+    kalman_io_data->x_    = uquad_mat_alloc(STATE_COUNT+STATE_BIAS,1);
     kalman_io_data->u     = uquad_mat_alloc(4,1);
     kalman_io_data->z     = uquad_mat_alloc(10,1);
-    kalman_io_data->Q     = uquad_mat_alloc(STATE_COUNT,STATE_COUNT);
+    kalman_io_data->Q     = uquad_mat_alloc(STATE_COUNT+STATE_BIAS,STATE_COUNT+STATE_BIAS);
     kalman_io_data->R     = uquad_mat_alloc(10,10);
-    kalman_io_data->P     = uquad_mat_alloc(STATE_COUNT,STATE_COUNT);
+    kalman_io_data->P     = uquad_mat_alloc(STATE_COUNT+STATE_BIAS,STATE_COUNT+STATE_BIAS);
     kalman_io_data->Q_gps = uquad_mat_alloc(6,6);
     kalman_io_data->R_gps = uquad_mat_alloc(6,6);
     kalman_io_data->P_gps = uquad_mat_alloc(6,6);
@@ -457,6 +597,11 @@ kalman_io_t* kalman_init()
     kalman_io_data->Q->m[9][9] = 10;
     kalman_io_data->Q->m[10][10] = 10;
     kalman_io_data->Q->m[11][11] = 10;
+#if KALMAN_BIAS
+    kalman_io_data->Q->m[12][12] = 1;
+    kalman_io_data->Q->m[13][13] = 1;
+    kalman_io_data->Q->m[14][14] = 1;
+#endif // KALMAN_BIAS
 
     kalman_io_data->R->m[0][0] = 1000;
     kalman_io_data->R->m[1][1] = 1000;
@@ -467,7 +612,7 @@ kalman_io_t* kalman_init()
     kalman_io_data->R->m[6][6] = 100;
     kalman_io_data->R->m[7][7] = 100;
     kalman_io_data->R->m[8][8] = 100;
-    kalman_io_data->R->m[9][9] = 10000;
+    kalman_io_data->R->m[9][9] = 1000;
 
     kalman_io_data->P->m[0][0] = 1;
     kalman_io_data->P->m[1][1] = 1;
@@ -481,6 +626,11 @@ kalman_io_t* kalman_init()
     kalman_io_data->P->m[9][9] = 1;
     kalman_io_data->P->m[10][10] = 1;
     kalman_io_data->P->m[11][11] = 1;
+#if KALMAN_BIAS
+    kalman_io_data->P->m[12][12] = 1;
+    kalman_io_data->P->m[13][13] = 1;
+    kalman_io_data->P->m[14][14] = 1;
+#endif // KALMAN_BIAS
 
     kalman_io_data->Q_gps->m[0][0] = 100;
     kalman_io_data->Q_gps->m[1][1] = 100;
@@ -520,29 +670,39 @@ int uquad_kalman(kalman_io_t * kalman_io_data, uquad_mat_t* w, imu_data_t* data,
     int retval;
     if(Fk_1==NULL)
     {
-	Fk_1   = uquad_mat_alloc(STATE_COUNT,STATE_COUNT);
-	Fk_1_T = uquad_mat_alloc(STATE_COUNT,STATE_COUNT);
-	mtmp   = uquad_mat_alloc(STATE_COUNT,STATE_COUNT);
-	P_     = uquad_mat_alloc(STATE_COUNT,STATE_COUNT);
+	Fk_1   = uquad_mat_alloc(STATE_COUNT+STATE_BIAS,STATE_COUNT+STATE_BIAS);
+	Fk_1_T = uquad_mat_alloc(STATE_COUNT+STATE_BIAS,STATE_COUNT+STATE_BIAS);
+	mtmp   = uquad_mat_alloc(STATE_COUNT+STATE_BIAS,STATE_COUNT+STATE_BIAS);
+	P_     = uquad_mat_alloc(STATE_COUNT+STATE_BIAS,STATE_COUNT+STATE_BIAS);
 	retval = H_init();
 	err_propagate(retval);
-	Fx = uquad_mat_alloc(STATE_COUNT,STATE_COUNT);
-	fx = uquad_mat_alloc(STATE_COUNT,1);
+	Fx = uquad_mat_alloc(STATE_COUNT+STATE_BIAS,STATE_COUNT+STATE_BIAS);
+	fx = uquad_mat_alloc(STATE_COUNT+STATE_BIAS+3,1);
 	hx = uquad_mat_alloc(10,1);
 
 	// Auxiliares para el update
 	yk = uquad_mat_alloc(10,1);
-	HT   = uquad_mat_alloc(STATE_COUNT,10);
-	HP_  = uquad_mat_alloc(10,STATE_COUNT);
+	HT   = uquad_mat_alloc(STATE_COUNT+STATE_BIAS,10);
+	HP_  = uquad_mat_alloc(10,STATE_COUNT+STATE_BIAS);
 	HP_H = uquad_mat_alloc(10,10);
 	Sk   = uquad_mat_alloc(10,10);
-	P_HT = uquad_mat_alloc(STATE_COUNT,10);
-	Kk   = uquad_mat_alloc(STATE_COUNT,10);
-	Kkyk = uquad_mat_alloc(STATE_COUNT,1);
-	KkH  = uquad_mat_alloc(STATE_COUNT,STATE_COUNT);
-	IKH  = uquad_mat_alloc(STATE_COUNT,STATE_COUNT);
+	if(Sk != NULL)
+	{
+	    Sk_aux1 = uquad_mat_alloc(Sk->r,Sk->c);
+	    Sk_aux2 = uquad_mat_alloc(Sk->r,Sk->c << 1);
+	}
+	P_HT = uquad_mat_alloc(STATE_COUNT+STATE_BIAS,10);
+	Kk   = uquad_mat_alloc(STATE_COUNT+STATE_BIAS,10);
+	Kkyk = uquad_mat_alloc(STATE_COUNT+STATE_BIAS,1);
+	KkH  = uquad_mat_alloc(STATE_COUNT+STATE_BIAS,STATE_COUNT+STATE_BIAS);
+	IKH  = uquad_mat_alloc(STATE_COUNT+STATE_BIAS,STATE_COUNT+STATE_BIAS);
 	Sk_1 = uquad_mat_alloc(10,10);
-	I    = uquad_mat_alloc(STATE_COUNT,STATE_COUNT);
+	I    = uquad_mat_alloc(STATE_COUNT+STATE_BIAS,STATE_COUNT+STATE_BIAS);
+    }
+
+    if (uquad_abs(data->magn->m_full[2] - kalman_io_data->x_hat->m_full[5]) >= PI)
+    {
+	data->magn->m_full[2] = data->magn->m_full[2]-fix((data->magn->m_full[2]-kalman_io_data->x_hat->m_full[SV_THETA]-PI)/(2*PI))*2*PI;
     }
 
     retval = store_data(kalman_io_data, w, data, T);
@@ -575,7 +735,7 @@ int uquad_kalman(kalman_io_t * kalman_io_data, uquad_mat_t* w, imu_data_t* data,
     err_propagate(retval);
     retval = uquad_mat_add(Sk,HP_H,kalman_io_data -> R); // Sk
     err_propagate(retval);
-    retval = uquad_mat_inv(Sk_1,Sk,NULL,NULL);
+    retval = uquad_mat_inv(Sk_1,Sk,Sk_aux1,Sk_aux2);
     err_propagate(retval);
     retval = uquad_mat_prod(P_HT,P_,HT);
     err_propagate(retval);
@@ -711,6 +871,11 @@ int uquad_kalman_gps(kalman_io_t* kalman_io_data, gps_comm_data_t* gps_i_data)
 	HT_gps        = uquad_mat_alloc(6,6);
 	HP_H_gps      = uquad_mat_alloc(6,6);
 	Sk_gps        = uquad_mat_alloc(6,6);
+	if(Sk_gps != NULL)
+	{
+	    Sk_gps_aux1 = uquad_mat_alloc(Sk_gps->r,Sk_gps->c);
+	    Sk_gps_aux2 = uquad_mat_alloc(Sk_gps->r,Sk_gps->c << 1);
+	}
 	Sk_1_gps      = uquad_mat_alloc(6,6);
 	P_HT_gps      = uquad_mat_alloc(6,6);
 	Kk_gps        = uquad_mat_alloc(6,6);
@@ -758,7 +923,7 @@ int uquad_kalman_gps(kalman_io_t* kalman_io_data, gps_comm_data_t* gps_i_data)
     err_propagate(retval);
     retval = uquad_mat_add(Sk_gps,HP_H_gps,kalman_io_data -> R_gps);
     err_propagate(retval);
-    retval = uquad_mat_inv(Sk_1_gps,Sk_gps,NULL,NULL);
+    retval = uquad_mat_inv(Sk_1_gps,Sk_gps,Sk_gps_aux1,Sk_gps_aux2);
     err_propagate(retval);
     retval = uquad_mat_prod(P_HT_gps,P__gps,HT_gps);
     err_propagate(retval);
@@ -801,6 +966,8 @@ void kalman_deinit(kalman_io_t *kalman_io_data)
     uquad_mat_free(HP_);
     uquad_mat_free(HP_H);
     uquad_mat_free(Sk);
+    uquad_mat_free(Sk_aux1);
+    uquad_mat_free(Sk_aux2);
     uquad_mat_free(P_HT);
     uquad_mat_free(Kk);
     uquad_mat_free(Kkyk);
@@ -838,6 +1005,8 @@ void kalman_deinit(kalman_io_t *kalman_io_data)
     uquad_mat_free(HT_gps  );
     uquad_mat_free(HP_H_gps);
     uquad_mat_free(Sk_gps  );
+    uquad_mat_free(Sk_gps_aux1);
+    uquad_mat_free(Sk_gps_aux2);
     uquad_mat_free(Sk_1_gps);
     uquad_mat_free(P_HT_gps);
     uquad_mat_free(Kk_gps  );

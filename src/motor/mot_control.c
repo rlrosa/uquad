@@ -107,34 +107,36 @@ int mot_rad2i2c(double w, int *i2c)
     return ERROR_OK;
 }
 
-int mot_set_vel_rads(uquad_mot_t *mot, uquad_mat_t *w)
+int mot_set_vel_rads(uquad_mot_t *mot, uquad_mat_t *w, uquad_bool_t force)
 {
     int i,retval;
     int itmp;
     
     for(i=0; i < MOT_C; ++i)
     {
-	if(w->m_full[i] < MOT_W_IDLE)
+	if(!force)
 	{
-	    /**
-	     * Setting speed to less than MOT_W_IDLE could
-	     * cause motors to stop.
-	     *
-	     */
-	    err_log_num("WARN:w out of range, setting min for motor:",i);
-	    w->m_full[i] =  MOT_W_IDLE;
+	    if(w->m_full[i] < MOT_W_MIN)
+	    {
+		/**
+		 * Setting speed to less than MOT_W_IDLE could
+		 * cause motors to stop.
+		 *
+		 */
+		err_log_num("WARN:w out of range, setting min for motor:",i);
+		w->m_full[i] =  MOT_W_MIN;
+	    }
+	    else if (w->m_full[i] > MOT_W_MAX)
+	    {
+		/**
+		 * Setting speed to more than MOT_MAX_W could
+		 * damage battery.
+		 *
+		 */
+		err_log_num("WARN:w out of range, setting max for motor:",i);
+		w->m_full[i] =  MOT_W_MAX;
+	    }
 	}
-	else if (w->m_full[i] > MOT_W_MAX)
-	{
-	    /**
-	     * Setting speed to more than MOT_MAX_W could
-	     * damage battery.
-	     *
-	     */
-	    err_log_num("WARN:w out of range, setting max for motor:",i);
-	    w->m_full[i] =  MOT_W_MAX;
-	}
-
 	retval = mot_rad2i2c(w->m_full[i],&itmp);
 	err_propagate(retval);
 	mot->i2c_target[i] = (uint8_t)itmp;

@@ -113,7 +113,13 @@ H = @() ...
 %     0, 0, 1,                                             0,                                                              0, 0,                 0,                 0,                 0, 0, 0, 0
 %     0, 0, 0, vqy*cos(phi)*cos(psi) - vqz*cos(phi)*sin(psi), - vqx*cos(phi) - vqz*cos(psi)*sin(phi) - vqy*sin(phi)*sin(psi), 0, cos(phi)*cos(psi), cos(phi)*sin(psi), cos(phi)*cos(psi), 0, 0, 0
 %     ];
- 
+
+%% Theta continuity
+
+if (abs(z(3)-x_hat(6)) >= pi)
+    z(3) = z(3)-fix((z(3)-x_hat(6)-pi)/(2*pi))*2*pi;
+end
+
 %% Kalman
 
 % Predict

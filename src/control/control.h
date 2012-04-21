@@ -9,12 +9,47 @@
 #include <uquad_config.h>
 
 #if FULL_CONTROL
-#define CTRL_MAT_K_NAME     "K_full.txt"
-#define CTRL_MAT_K_INT_NAME "K_int_full.txt"
-#else
-#define CTRL_MAT_K_NAME     "K.txt"
-#define CTRL_MAT_K_INT_NAME "K_int.txt"
+/**
+ * These matrices are loaded when full control
+ * is used.
+ * Matrices were obtained from the simulator,
+ * using LQR.
+ */
+  #if CTRL_INTEGRAL
+    #define CTRL_MAT_K_NAME   "K_prop_full.txt"
+  #else
+    #define CTRL_MAT_K_NAME   "K_full.txt"
+  #endif // CTRL_INTEGRAL
+  #define CTRL_MAT_K_INT_NAME "K_int_full.txt"
+
+#else // FULL_CONTROL
+/**
+ * These matrices are loaded when partial control
+ * is used.
+ */
+  #if CTRL_INTEGRAL
+    #define CTRL_MAT_K_NAME   "K_prop.txt"
+  #else
+    #define CTRL_MAT_K_NAME   "K.txt"
+  #endif // CTRL_INTEGRAL
+  #define CTRL_MAT_K_INT_NAME "K_int.txt"
 #endif // FULL_CONTROL
+
+#if CTRL_INTEGRAL
+/**
+ * Threshold to limit integral control
+ *   - Max state variations accepted (*DELTA*)
+ *   - Max state diff accumulation (*ACCUM*)
+ */
+#define CTRL_INT_DELTA_MAX_THETA PI/4 // rad
+#define CTRL_INT_DELTA_MAX_Z     0.5L // m
+#define CTRL_INT_DELTA_MAX_Y     1.0L // m
+#define CTRL_INT_DELTA_MAX_X     1.0L // m
+#define CTRL_INT_ACCUM_MAX_THETA PI/2 // rad
+#define CTRL_INT_ACCUM_MAX_Z     2.0L // m
+#define CTRL_INT_ACCUM_MAX_Y     5.0L // m
+#define CTRL_INT_ACCUM_MAX_X     5.0L // m
+#endif // CTRL_INTEGRAL
 
 typedef struct ctrl{
     uquad_mat_t *K;
