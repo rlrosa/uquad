@@ -35,7 +35,7 @@ h = @(x,y,z,psi,phi,theta,vqx,vqy,vqz) [ ...
 F = @() ...
     eye(Ns);
 
-H = @(psi,phi,theta) [...
+H = @(psi,phi,theta) [
     1, 0, 0,                   0,                                                  0,                                                  0 ;
     0, 1, 0,                   0,                                                  0,                                                  0 ;
     0, 0, 1,                   0,                                                  0,                                                  0 ;
@@ -48,9 +48,7 @@ H = @(psi,phi,theta) [...
 
 % Predict
 x_   = f(x_hat(1),x_hat(2),x_hat(3),x_hat(7),x_hat(8),x_hat(9));
-
 Fk_1 = F();
-
 P_   = Fk_1 * P * Fk_1'+ Q; 
 
 % Update
