@@ -138,14 +138,31 @@ int control(ctrl_t *ctrl, uquad_mat_t *w, uquad_mat_t *x, set_point_t *sp, doubl
     err_propagate(retval);
 
 #if CTRL_INTEGRAL
-    x_int_tmp->m[x_int_tmp->r - 1][0] = tmp_sub_sp_x->m[SV_THETA][0]*T_us/1000000;
-    x_int_tmp->m[x_int_tmp->r - 2][0] = tmp_sub_sp_x->m[SV_Z    ][0]*T_us/1000000;
+    double ddelta;
+    /// SV_THETA
+    ddelta = uquad_min(tmp_sub_sp_x->m[SV_THETA][0]*T_us/1000000,
+		       CTRL_INT_DELTA_MAX_THETA);
+    ctrl->x_int->m[ctrl->x_int->r - 1][0] =
+	uquad_min(ddelta + ctrl->x_int->m[ctrl->x_int->r - 1][0],
+		  CTRL_INT_ACCUM_MAX_THETA);
+    /// SV_Z
+    ddelta = uquad_min(tmp_sub_sp_x->m[SV_Z    ][0]*T_us/1000000,
+		       CTRL_INT_DELTA_MAX_Z);
+    ctrl->x_int->m[ctrl->x_int->r - 2][0] =
+	uquad_min(ddelta + ctrl->x_int->m[ctrl->x_int->r - 2][0],
+		  CTRL_INT_ACCUM_MAX_Z);
 #if FULL_CONTROL
-    x_int_tmp->m[x_int_tmp->r - 3][0] = tmp_sub_sp_x->m[SV_Y    ][0]*T_us/1000000;
-    x_int_tmp->m[x_int_tmp->r - 4][0] = tmp_sub_sp_x->m[SV_X    ][0]*T_us/1000000;
+    ddelta = uquad_min(tmp_sub_sp_x->m[SV_Y    ][0]*T_us/1000000,
+		       CTRL_INT_DELTA_MAX_Y);
+    ctrl->x_int->m[ctrl->x_int->r - 3][0] =
+	uquad_min(ddelta + ctrl->x_int->m[ctrl->x_int->r - 3][0],
+		  CTRL_INT_ACCUM_MAX_Y);
+    ddelta = uquad_min(tmp_sub_sp_x->m[SV_X    ][0]*T_us/1000000,
+		       CTRL_INT_DELTA_MAX_X);
+    ctrl->x_int->m[ctrl->x_int->r - 4][0] =
+	uquad_min(ddelta + ctrl->x_int->m[ctrl->x_int->r - 4][0],
+		  CTRL_INT_ACCUM_MAX_X);
 #endif // FULL_CONTROL
-    retval = uquad_mat_add(ctrl->x_int, ctrl->x_int, x_int_tmp);
-    err_propagate(retval);
     retval = uquad_mat_prod(w_tmp, ctrl->K_int, ctrl->x_int);
     err_propagate(retval);
     retval = uquad_mat_add(w, w, w_tmp);
