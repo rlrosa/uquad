@@ -3,34 +3,38 @@
 #include <uquad_types.h>
 #include <uquad_config.h>
 
-uquad_mat_t* Fk_1 = NULL;
-uquad_mat_t* Fk_1_T = NULL;
-uquad_mat_t* tmp = NULL;
-uquad_mat_t* tmp2 = NULL;
-uquad_mat_t* mtmp = NULL;
-uquad_mat_t* P_ = NULL;
-uquad_mat_t* w2 = NULL;
-uquad_mat_t* TM = NULL;
-uquad_mat_t* D = NULL;
-uquad_mat_t* H = NULL;
-uquad_mat_t* fx = NULL;
-uquad_mat_t* hx = NULL;
-uquad_mat_t* Fx = NULL;
+/// Vars for inertial kalman
+uquad_mat_t* Fk_1_intertial = NULL;
+uquad_mat_t* Fk_1_T_intertial = NULL;
+uquad_mat_t* tmp_intertial = NULL;
+uquad_mat_t* tmp2_intertial = NULL;
+uquad_mat_t* mtmp_intertial = NULL;
+uquad_mat_t* P__intertial = NULL;
+uquad_mat_t* H_intertial = NULL;
+uquad_mat_t* fx_intertial = NULL;
+uquad_mat_t* hx_intertial = NULL;
 // Auxiliares Update
-uquad_mat_t* yk = NULL;
-uquad_mat_t* HT   = NULL;
-uquad_mat_t* HP_  = NULL;
-uquad_mat_t* HP_H = NULL;
-uquad_mat_t* Sk   = NULL;
-uquad_mat_t* Sk_aux1   = NULL;
-uquad_mat_t* Sk_aux2   = NULL;
-uquad_mat_t* P_HT = NULL;
-uquad_mat_t* Kk   = NULL;
-uquad_mat_t* Kkyk = NULL;
-uquad_mat_t* KkH  = NULL;
-uquad_mat_t* IKH  = NULL;
-uquad_mat_t* Sk_1 = NULL;
-uquad_mat_t* I    = NULL;
+uquad_mat_t* yk_intertial = NULL;
+uquad_mat_t* HT_intertial = NULL;
+uquad_mat_t* HP__intertial = NULL;
+uquad_mat_t* HP_HT_intertial = NULL;
+uquad_mat_t* Sk_intertial = NULL;
+uquad_mat_t* Sk_aux1_intertial = NULL;
+uquad_mat_t* Sk_aux2_intertial = NULL;
+uquad_mat_t* P_HT_intertial = NULL;
+uquad_mat_t* Kk_intertial = NULL;
+uquad_mat_t* Kkyk_intertial = NULL;
+uquad_mat_t* KkH_intertial = NULL;
+uquad_mat_t* IKH_intertial = NULL;
+uquad_mat_t* Sk_1_intertial = NULL;
+uquad_mat_t* I_intertial = NULL;
+
+/// Var for drag/drive
+uquad_mat_t* TM       = NULL;
+uquad_mat_t* D        = NULL;
+uquad_mat_t* w_2      = NULL;
+uquad_mat_t* w_2_tmp  = NULL;
+uquad_mat_t* w_2_tmp2 = NULL;
 
 // GPS
 
@@ -50,13 +54,13 @@ uquad_mat_t* P__gps = NULL;
 uquad_mat_t* hx_gps = NULL;
 uquad_mat_t* z_gps = NULL;
 uquad_mat_t* yk_gps = NULL;
-uquad_mat_t* Hx_gps = NULL;
+uquad_mat_t* H_gps = NULL;
 uquad_mat_t* HP__gps  = NULL;
 uquad_mat_t* HT_gps   = NULL;
-uquad_mat_t* HP_H_gps = NULL;
+uquad_mat_t* HP_HT_gps = NULL;
 uquad_mat_t* Sk_gps   = NULL;
-uquad_mat_t* Sk_gps_aux1 = NULL;
-uquad_mat_t* Sk_gps_aux2 = NULL;
+uquad_mat_t* Sk_aux1_gps = NULL;
+uquad_mat_t* Sk_aux2_gps = NULL;
 uquad_mat_t* Sk_1_gps = NULL;
 uquad_mat_t* P_HT_gps = NULL;
 uquad_mat_t* Kk_gps   = NULL;
@@ -67,103 +71,188 @@ uquad_mat_t* KkH_gps  = NULL;
 uquad_mat_t* IKH_gps  = NULL;
 
 
-
-
-int H_init()
+int H_init(uquad_mat_t** H, uquad_bool_t is_gps)
 {
     int retval;
-    H = uquad_mat_alloc(10,STATE_COUNT+STATE_BIAS);
-    if(H == NULL)
+    if(!is_gps)
+	*H = uquad_mat_alloc(KALMAN_ROWS_H,STATE_COUNT+STATE_BIAS);
+    else
+	*H = uquad_mat_alloc(KALMAN_ROWS_H_GPS,STATE_COUNT+STATE_BIAS);
+    if(*H == NULL)
     {
 	err_check(ERROR_MALLOC, "Failed to allocate H()!");
     }
-    retval = uquad_mat_zeros(H);
+    retval = uquad_mat_zeros(*H);
     err_propagate(retval);
-    H->m[0][3]=1;
-    H->m[1][4]=1;
-    H->m[2][5]=1;
+    (*H)->m[0][3]=1;
+    (*H)->m[1][4]=1;
+    (*H)->m[2][5]=1;
 #if KALMAN_BIAS
-    H->m[3][12]=1;
-    H->m[4][13]=1;
-    H->m[5][14]=1;
+    (*H)->m[3][12]=1;
+    (*H)->m[4][13]=1;
+    (*H)->m[5][14]=1;
 #endif // KALMAN_BIAS
-    H->m[6][9]=1;
-    H->m[7][10]=1;
-    H->m[8][11]=1;
-    H->m[9][2]=1;
+    (*H)->m[6][9]=1;
+    (*H)->m[7][10]=1;
+    (*H)->m[8][11]=1;
+    (*H)->m[9][2]=1;
+    if(is_gps)
+    {
+	/// Reorder last terms, use {x,y,z}
+	(*H)->m[9][0]  = 1;
+	(*H)->m[10][1] = 1;
+	(*H)->m[11][2] = 1;
+    }
     return ERROR_OK;
 }
 
-int store_data(kalman_io_t* kalman_io_data, uquad_mat_t *w, imu_data_t* data, double T)
+int store_data(kalman_io_t* kalman_io_data, uquad_mat_t *w, imu_data_t* data, double T, gps_comm_data_t *gps_i_dat)
 {
+    uquad_mat_t *z = (gps_i_dat == NULL)?
+	kalman_io_data->z:
+	kalman_io_data->z_gps;
     int retval;
     retval = uquad_mat_copy(kalman_io_data->u, w);
     err_propagate(retval);
 
-    retval = uquad_mat_set_subm(kalman_io_data->z, 0, 0, data->magn);
+    retval = uquad_mat_set_subm(z, 0, 0, data->magn);
     err_propagate(retval);
 
-    retval = uquad_mat_set_subm(kalman_io_data->z, 3, 0, data->acc);
+    retval = uquad_mat_set_subm(z, 3, 0, data->acc);
     err_propagate(retval);
 
-    retval = uquad_mat_set_subm(kalman_io_data->z, 6, 0, data->gyro);
+    retval = uquad_mat_set_subm(z, 6, 0, data->gyro);
     err_propagate(retval);
 
-    kalman_io_data->z->m_full[9] = data->alt;
+    if(gps_i_dat != NULL)
+    {
+	retval = uquad_mat_set_subm(z, 9, 0, gps_i_dat->pos);
+	err_propagate(retval);
+    }
+    else
+    {
+	z->m_full[9] = data->alt;
+    }
 
-    // Use C timer instead of IMU timer, don't use this
-    //    kalman_io_data->T = data->T_us/1000000;
     kalman_io_data->T = T/1000000;
 
     return ERROR_OK;
 }
 
-int drag(uquad_mat_t* drag, uquad_mat_t* w)
+/**
+ * Calculates drag() torque, using:
+ *    drag = w^2*DRAG_A2 + w*DRAG_A1
+ *
+ * NOTE: Aux mem can be either all NULL, or all of size (LENGTH_INPUTx1)
+ *
+ * @param drag answer (LENGTH_INPUTx1)
+ * @param w input (LENGTH_INPUTx1)
+ * @param w_2 aux mem or NULL
+ * @param w_2_tmp aux mem or NULL
+ * @param w_2_tmp2 aux mem or NULL
+ *
+ * @return error code
+ */
+int drag(uquad_mat_t *drag, uquad_mat_t *w,
+	 uquad_mat_t *w_2,
+	 uquad_mat_t *w_2_tmp,
+	 uquad_mat_t *w_2_tmp2)
 {  
     int retval;
-    if(w2==NULL)
+    uquad_bool_t local_mem = false;
+    if(w_2 == NULL || w_2_tmp == NULL || w_2_tmp2 == NULL)
     {
-	w2 = uquad_mat_alloc(4,1);
-	tmp = uquad_mat_alloc(4,1);
-	tmp2 = uquad_mat_alloc(4,1);
-    }
-    double A1 = 0.0000034734;
-    double A2 = -0.00013205;
-    retval = uquad_mat_dot_product(w2,w,w);
-    err_propagate(retval);
-    retval = uquad_mat_scalar_mul(tmp, w2, A1);
-    err_propagate(retval);
-    retval = uquad_mat_scalar_mul(tmp2, w, A2);
-    err_propagate(retval);
-    retval = uquad_mat_add(drag,tmp,tmp2);
-    err_propagate(retval);
-    return ERROR_OK;
-}
-
-int drive(uquad_mat_t* drive, uquad_mat_t* w)
-{  
-    int retval;
-    if(w2==NULL)
-    {
-	w2 = uquad_mat_alloc(4,1);
-	tmp = uquad_mat_alloc(4,1);
-	tmp2 = uquad_mat_alloc(4,1);
-	if(w2 == NULL || tmp == NULL || tmp2 == NULL)
+	/**
+	 * Global vars used for tmp memory.
+	 * If they are not defined, define them.
+	 */
+	if(w_2 != NULL || w_2_tmp != NULL || w_2_tmp2 != NULL)
 	{
-	    err_check(ERROR_MALLOC,"Failed to allocate mem for drive()!");
+	    err_check(ERROR_INVALID_ARG,"Aux mem must be all or none!");
+	}
+	w_2      = uquad_mat_alloc(LENGTH_INPUT,1);
+	w_2_tmp  = uquad_mat_alloc(LENGTH_INPUT,1);
+	w_2_tmp2 = uquad_mat_alloc(LENGTH_INPUT,1);
+	local_mem = true;
+	if((w_2 == NULL) || (w_2_tmp == NULL) || (w_2_tmp2 == NULL))
+	{
+	    cleanup_log_if(ERROR_MALLOC, "Failed to allocate mem for drag()!");
 	}
     }
-    double A1 = 4.60160135072435e-05;
-    double A2 = -0.00103822726273726;
-    retval = uquad_mat_dot_product(w2,w,w);
+    retval = uquad_mat_dot_product(w_2,w,w);
     err_propagate(retval);
-    retval = uquad_mat_scalar_mul(tmp, w2, A1);
+    retval = uquad_mat_scalar_mul(w_2_tmp, w_2, DRAG_A1);
     err_propagate(retval);
-    retval = uquad_mat_scalar_mul(tmp2, w, A2);
+    retval = uquad_mat_scalar_mul(w_2_tmp2, w, DRAG_A2);
     err_propagate(retval);
-    retval = uquad_mat_add(drive,tmp,tmp2);
+    retval = uquad_mat_add(drag,w_2_tmp,w_2_tmp2);
     err_propagate(retval);
-    return ERROR_OK;
+    cleanup:
+    if(local_mem)
+    {
+	uquad_mat_free(w_2);
+	uquad_mat_free(w_2_tmp);
+	uquad_mat_free(w_2_tmp2);
+    }
+    return retval;
+}
+
+/**
+ * Calculates drive using:
+ *    drive = w^2*DRIVE_A2 + w*DRIVE_A1
+ *
+ * NOTE: Aux mem can be either all NULL, or all of size (LENGTH_INPUTx1)
+ *
+ * @param drive answer
+ * @param w input
+ * @param w_2 aux mem or NULL
+ * @param w_2_tmp aux mem or NULL
+ * @param w_2_tmp2 aux mem or NULL
+ *
+ * @return error code
+ */
+int drive(uquad_mat_t *drive, uquad_mat_t *w,
+	 uquad_mat_t *w_2,
+	 uquad_mat_t *w_2_tmp,
+	 uquad_mat_t *w_2_tmp2)
+{  
+    int retval;
+    uquad_bool_t local_mem = false;
+    if(w_2 == NULL || w_2_tmp == NULL || w_2_tmp2 == NULL)
+    {
+	/**
+	 * Global vars used for tmp memory.
+	 * If they are not defined, define them.
+	 */
+	if(w_2 != NULL || w_2_tmp != NULL || w_2_tmp2 != NULL)
+	{
+	    err_check(ERROR_INVALID_ARG,"Aux mem must be all or none!");
+	}
+	w_2      = uquad_mat_alloc(LENGTH_INPUT,1);
+	w_2_tmp  = uquad_mat_alloc(LENGTH_INPUT,1);
+	w_2_tmp2 = uquad_mat_alloc(LENGTH_INPUT,1);
+	local_mem = true;
+	if((w_2 == NULL) || (w_2_tmp == NULL) || (w_2_tmp2 == NULL))
+	{
+	    cleanup_log_if(ERROR_MALLOC, "Failed to allocate mem for drag()!");
+	}
+    }
+    retval = uquad_mat_dot_product(w_2,w,w);
+    err_propagate(retval);
+    retval = uquad_mat_scalar_mul(w_2_tmp, w_2, DRIVE_A1);
+    err_propagate(retval);
+    retval = uquad_mat_scalar_mul(w_2_tmp2, w, DRIVE_A2);
+    err_propagate(retval);
+    retval = uquad_mat_add(drive,w_2_tmp,w_2_tmp2);
+    err_propagate(retval);
+    cleanup:
+    if(local_mem)
+    {
+	uquad_mat_free(w_2);
+	uquad_mat_free(w_2_tmp);
+	uquad_mat_free(w_2_tmp2);
+    }
+    return retval;
 }
 
 int f(uquad_mat_t* fx, kalman_io_t* kalman_io_data)
@@ -194,14 +283,9 @@ int f(uquad_mat_t* fx, kalman_io_t* kalman_io_data)
     int retval;
     double* w    = kalman_io_data -> u -> m_full;
     uquad_mat_t* w_mat    = kalman_io_data -> u;
-    if(TM == NULL)
-    {
-	TM = uquad_mat_alloc(4,1);
-	D = uquad_mat_alloc(4,1);
-    }
-    retval =  drive(TM,w_mat);
+    retval =  drive(TM,w_mat,w_2,w_2_tmp,w_2_tmp2);
     err_propagate(retval);
-    retval =  drag(D,w_mat);
+    retval =  drag(D,w_mat,w_2,w_2_tmp,w_2_tmp2);
     err_propagate(retval);
     double* TM_vec = TM->m_full;
     double* D_vec = D->m_full;
@@ -228,7 +312,7 @@ int f(uquad_mat_t* fx, kalman_io_t* kalman_io_data)
     return ERROR_OK;
 }
 
-int h(uquad_mat_t* hx, kalman_io_t* kalman_io_data)
+int h(uquad_mat_t* hx, kalman_io_t* kalman_io_data, uquad_bool_t is_gps)
 {
     int retval;
     if(TM == NULL)
@@ -236,7 +320,7 @@ int h(uquad_mat_t* hx, kalman_io_t* kalman_io_data)
 	TM = uquad_mat_alloc(4,1); // TODO verificar que hay memoria y se ejecuto la sentencia correctamente
 	D = uquad_mat_alloc(4,1);
     }
-    retval = drive(TM,kalman_io_data->u);
+    retval = drive(TM,kalman_io_data->u,w_2,w_2_tmp,w_2_tmp2);
     err_propagate(retval);
     double* TM_vec = TM -> m_full;
     double
@@ -258,6 +342,12 @@ int h(uquad_mat_t* hx, kalman_io_t* kalman_io_data)
     hx->m_full[7]  = kalman_io_data -> x_ -> m_full[10];
     hx->m_full[8]  = kalman_io_data -> x_ -> m_full[11];
     hx->m_full[9] = kalman_io_data -> x_ -> m_full[2];
+    if(is_gps)
+    {
+    hx->m_full[10] = kalman_io_data -> x_ -> m_full[0];
+    hx->m_full[11] = kalman_io_data -> x_ -> m_full[1];
+    hx->m_full[12] = kalman_io_data -> x_ -> m_full[2];
+    }
     return ERROR_OK; 
 }
 
@@ -282,15 +372,9 @@ int F(uquad_mat_t* Fx, kalman_io_t* kalman_io_data)
     uquad_mat_t* w_t    = kalman_io_data -> u;
     int retval;
 
-    if(TM == NULL)
-    {
-	TM = uquad_mat_alloc(4,1);
-	D = uquad_mat_alloc(4,1);
-    }
-
-    retval =  drive(TM,w_t);
+    retval =  drive(TM,w_t,w_2,w_2_tmp,w_2_tmp2);
     err_propagate(retval);
-    retval =  drag(D,w_t);
+    retval =  drag(D,w_t,w_2,w_2_tmp,w_2_tmp2);
     err_propagate(retval);
 
     Fx->m[0][0] = 1;
@@ -551,20 +635,175 @@ int F(uquad_mat_t* Fx, kalman_io_t* kalman_io_data)
     return ERROR_OK;
 }
 
+void uquad_kalman_inertial_aux_mem_deinit(void)
+{
+    uquad_mat_free(Fk_1_intertial);
+    uquad_mat_free(Fk_1_T_intertial);
+    uquad_mat_free(mtmp_intertial);
+    uquad_mat_free(P__intertial);
+    uquad_mat_free(fx_intertial);
+    uquad_mat_free(hx_intertial);
+    uquad_mat_free(yk_intertial);
+    uquad_mat_free(H_intertial);
+    uquad_mat_free(HT_intertial);
+    uquad_mat_free(HP__intertial);
+    uquad_mat_free(HP_HT_intertial);
+    uquad_mat_free(Sk_intertial);
+    uquad_mat_free(Sk_1_intertial);
+    uquad_mat_free(Sk_aux1_intertial);
+    uquad_mat_free(Sk_aux2_intertial);
+    uquad_mat_free(P_HT_intertial);
+    uquad_mat_free(Kk_intertial);
+    uquad_mat_free(Kkyk_intertial);
+    uquad_mat_free(KkH_intertial);
+    uquad_mat_free(IKH_intertial);
+    uquad_mat_free(I_intertial);
+}
+
+int uquad_kalman_inertial_aux_mem_init(void)
+{
+    int retval;
+    if(Fk_1_intertial != NULL)
+    {
+	err_check(ERROR_FAIL,"Memory has already been allocated!");
+    }
+    Fk_1_intertial   = uquad_mat_alloc(STATE_COUNT+STATE_BIAS,STATE_COUNT+STATE_BIAS);
+    Fk_1_T_intertial = uquad_mat_alloc(STATE_COUNT+STATE_BIAS,STATE_COUNT+STATE_BIAS);
+    mtmp_intertial   = uquad_mat_alloc(STATE_COUNT+STATE_BIAS,STATE_COUNT+STATE_BIAS);
+    P__intertial     = uquad_mat_alloc(STATE_COUNT+STATE_BIAS,STATE_COUNT+STATE_BIAS);
+    retval = H_init(&H_intertial, false);
+    err_propagate(retval);
+    fx_intertial     = uquad_mat_alloc(STATE_COUNT+STATE_BIAS+3,1);
+    hx_intertial     = uquad_mat_alloc(10,1);
+
+    // Auxiliares para el update
+    yk_intertial     = uquad_mat_alloc(hx_intertial->r,hx_intertial->c);
+    HT_intertial     = uquad_mat_alloc(H_intertial->c, H_intertial->r);
+    HP__intertial    = uquad_mat_alloc(H_intertial->r,P__intertial->c);
+    HP_HT_intertial  = uquad_mat_alloc(H_intertial->r,H_intertial->r);
+    Sk_intertial     = uquad_mat_alloc(HP_HT_intertial->r,HP_HT_intertial->c);
+    Sk_1_intertial   = uquad_mat_alloc(Sk_intertial->r,Sk_intertial->c);
+    if(Sk_intertial != NULL)
+    {
+	Sk_aux1_intertial = uquad_mat_alloc(Sk_intertial->r,Sk_intertial->c);
+	Sk_aux2_intertial = uquad_mat_alloc(Sk_intertial->r,Sk_intertial->c << 1);
+    }
+    P_HT_intertial   = uquad_mat_alloc(P__intertial->r, H_intertial->r);
+    Kk_intertial     = uquad_mat_alloc(P_HT_intertial->r,Sk_1_intertial->c);
+    Kkyk_intertial   = uquad_mat_alloc(Kk_intertial->r,yk_intertial->c);
+    KkH_intertial    = uquad_mat_alloc(Kk_intertial->r, H_intertial->c);
+    IKH_intertial    = uquad_mat_alloc(KkH_intertial->r, KkH_intertial->c);
+    I_intertial      = uquad_mat_alloc(KkH_intertial->r, KkH_intertial->c);
+    if(Fk_1_intertial     == NULL ||
+       Fk_1_T_intertial   == NULL ||
+       mtmp_intertial     == NULL ||
+       P__intertial       == NULL ||
+       fx_intertial       == NULL ||
+       hx_intertial       == NULL ||
+       yk_intertial       == NULL ||
+       HT_intertial       == NULL ||
+       HP__intertial      == NULL ||
+       HP_HT_intertial    == NULL ||
+       Sk_intertial       == NULL ||
+       Sk_1_intertial     == NULL ||
+       Sk_aux1_intertial  == NULL ||
+       Sk_aux2_intertial  == NULL ||
+       P_HT_intertial     == NULL ||
+       Kk_intertial       == NULL ||
+       Kkyk_intertial     == NULL ||
+       KkH_intertial      == NULL ||
+       IKH_intertial      == NULL ||
+       I_intertial        == NULL)
+    {
+	err_check(ERROR_MALLOC,"Failed to allocate mem for inertial kalman!");
+    }
+    return retval;
+}
+
+void uquad_kalman_gps_aux_mem_deinit(void)
+{
+    err_log("NOT IMPLEMENTED!");
+}
+
+
+int uquad_kalman_gps_aux_mem_init(void)
+{
+    int retval;
+    if(Fk_1_gps != NULL)
+    {
+	err_check(ERROR_FAIL,"Memory has already been allocated!");
+    }
+    // Auxiliaries for prediction
+    Fk_1_gps   = uquad_mat_alloc(STATE_COUNT + STATE_BIAS,STATE_COUNT + STATE_BIAS);
+    Fk_1_T_gps = uquad_mat_alloc(STATE_COUNT + STATE_BIAS,STATE_COUNT + STATE_BIAS);
+    mtmp_gps   = uquad_mat_alloc(STATE_COUNT + STATE_BIAS,STATE_COUNT + STATE_BIAS);
+    P__gps     = uquad_mat_alloc(STATE_COUNT + STATE_BIAS,STATE_COUNT + STATE_BIAS);
+    retval = H_init(&H_gps, true);
+    err_propagate(retval);
+    // Auxiliaries for update
+    fx_gps        = uquad_mat_alloc(STATE_COUNT + STATE_BIAS, 1);
+    hx_gps        = uquad_mat_alloc(STATE_COUNT,1);
+    z_gps         = uquad_mat_alloc(STATE_COUNT,1);
+    yk_gps     = uquad_mat_alloc(hx_gps->r,hx_gps->c);
+    HT_gps     = uquad_mat_alloc(H_gps->c, H_gps->r);
+    HP__gps    = uquad_mat_alloc(H_gps->r,P__gps->c);
+    HP_HT_gps  = uquad_mat_alloc(H_gps->r,H_gps->r);
+    Sk_gps     = uquad_mat_alloc(HP_HT_gps->r,HP_HT_gps->c);
+    Sk_1_gps   = uquad_mat_alloc(Sk_gps->r,Sk_gps->c);
+    if(Sk_gps != NULL)
+    {
+	Sk_aux1_gps = uquad_mat_alloc(Sk_gps->r,Sk_gps->c);
+	Sk_aux2_gps = uquad_mat_alloc(Sk_gps->r,Sk_gps->c << 1);
+    }
+    P_HT_gps   = uquad_mat_alloc(P__gps->r, H_gps->r);
+    Kk_gps     = uquad_mat_alloc(P_HT_gps->r,Sk_1_gps->c);
+    Kkyk_gps   = uquad_mat_alloc(Kk_gps->r,yk_gps->c);
+    KkH_gps    = uquad_mat_alloc(Kk_gps->r, H_gps->c);
+    IKH_gps    = uquad_mat_alloc(KkH_gps->r, KkH_gps->c);
+    I_gps      = uquad_mat_alloc(KkH_gps->r, KkH_gps->c);
+
+    err_log("NOT IMPLEMENTED CORRECTLY!");
+    return ERROR_OK;
+}
+
+void uquad_kalman_drive_drag_aux_mem_deinit(void)
+{
+    uquad_mat_free(w_2);
+    uquad_mat_free(w_2_tmp);
+    uquad_mat_free(w_2_tmp2);
+    uquad_mat_free(TM);
+    uquad_mat_free(D);
+}
+
+int uquad_kalman_drive_drag_aux_mem_init(void)
+{
+    w_2      = uquad_mat_alloc(LENGTH_INPUT,1);
+    w_2_tmp  = uquad_mat_alloc(LENGTH_INPUT,1);
+    w_2_tmp2 = uquad_mat_alloc(LENGTH_INPUT,1);
+    TM       = uquad_mat_alloc(LENGTH_INPUT,1);
+    D        = uquad_mat_alloc(LENGTH_INPUT,1);
+    if(w_2 == NULL || w_2_tmp == NULL || w_2_tmp2 == NULL)
+    {
+	err_check(ERROR_MALLOC,"Failed to allocate memory!");
+    }
+    return ERROR_OK;
+}
+
 kalman_io_t* kalman_init()
 {
     int retval;
     kalman_io_t* kalman_io_data = (kalman_io_t*)malloc(sizeof(kalman_io_t));
     kalman_io_data->x_hat = uquad_mat_alloc(STATE_COUNT+STATE_BIAS,1);
     kalman_io_data->x_    = uquad_mat_alloc(STATE_COUNT+STATE_BIAS,1);
-    kalman_io_data->u     = uquad_mat_alloc(4,1);
-    kalman_io_data->z     = uquad_mat_alloc(10,1);
+    kalman_io_data->u     = uquad_mat_alloc(LENGTH_INPUT,1);
+    kalman_io_data->z     = uquad_mat_alloc(KALMAN_ROWS_H,1);
+    kalman_io_data->z_gps = uquad_mat_alloc(STATE_COUNT,1);
     kalman_io_data->Q     = uquad_mat_alloc(STATE_COUNT+STATE_BIAS,STATE_COUNT+STATE_BIAS);
     kalman_io_data->R     = uquad_mat_alloc(10,10);
     kalman_io_data->P     = uquad_mat_alloc(STATE_COUNT+STATE_BIAS,STATE_COUNT+STATE_BIAS);
-    kalman_io_data->Q_gps = uquad_mat_alloc(6,6);
-    kalman_io_data->R_gps = uquad_mat_alloc(6,6);
-    kalman_io_data->P_gps = uquad_mat_alloc(6,6);
+    kalman_io_data->Q_gps = uquad_mat_alloc(KALMAN_GPS_SIZE, KALMAN_GPS_SIZE);
+    kalman_io_data->R_gps = uquad_mat_alloc(STATE_COUNT,STATE_COUNT);
+    kalman_io_data->P_gps = uquad_mat_alloc(KALMAN_GPS_SIZE, KALMAN_GPS_SIZE);
 
     retval = uquad_mat_zeros(kalman_io_data->x_hat);
     cleanup_if(retval);
@@ -639,12 +878,18 @@ kalman_io_t* kalman_init()
     kalman_io_data->Q_gps->m[4][4] = 100;
     kalman_io_data->Q_gps->m[5][5] = 100;
 
-    kalman_io_data->R_gps->m[0][0] = 1;
-    kalman_io_data->R_gps->m[1][1] = 1;
-    kalman_io_data->R_gps->m[2][2] = 1000000;
-    kalman_io_data->R_gps->m[3][3] = 1;
-    kalman_io_data->R_gps->m[4][4] = 1;
-    kalman_io_data->R_gps->m[5][5] = 1000000;
+    kalman_io_data->R_gps->m[0][0] = 1000;
+    kalman_io_data->R_gps->m[1][1] = 1000;
+    kalman_io_data->R_gps->m[2][2] = 1000;
+    kalman_io_data->R_gps->m[3][3] = 10000;
+    kalman_io_data->R_gps->m[4][4] = 10000;
+    kalman_io_data->R_gps->m[5][5] = 10000;
+    kalman_io_data->R_gps->m[6][6] = 100;
+    kalman_io_data->R_gps->m[7][7] = 100;
+    kalman_io_data->R_gps->m[8][8] = 100;
+    kalman_io_data->R_gps->m[9][9] = 100;
+    kalman_io_data->R_gps->m[10][10] = 100;
+    kalman_io_data->R_gps->m[11][11] = 100;
 
     kalman_io_data->P_gps->m[0][0] = 1;
     kalman_io_data->P_gps->m[1][1] = 1;
@@ -659,48 +904,56 @@ kalman_io_t* kalman_init()
     retval = uquad_mat_zeros(kalman_io_data->x_);
     cleanup_if(retval);
 
+    /// Aux memory for inertial kalman
+    retval = uquad_kalman_inertial_aux_mem_init();
+    cleanup_if(retval);
+
+    /// Aux memory for gps kalman
+    retval = uquad_kalman_gps_aux_mem_init();
+    cleanup_if(retval);
+
+    // Aux memory for drive/drag
+    retval = uquad_kalman_drive_drag_aux_mem_init();
+    cleanup_if(retval);
+
     return kalman_io_data;
     cleanup:
     kalman_deinit(kalman_io_data);
     return NULL;
 }
 
-int uquad_kalman(kalman_io_t * kalman_io_data, uquad_mat_t* w, imu_data_t* data, double T)
+int uquad_kalman(kalman_io_t * kalman_io_data, uquad_mat_t* w, imu_data_t* data, double T, gps_comm_data_t *gps_i_data)
 {
     int retval;
-    if(Fk_1==NULL)
-    {
-	Fk_1   = uquad_mat_alloc(STATE_COUNT+STATE_BIAS,STATE_COUNT+STATE_BIAS);
-	Fk_1_T = uquad_mat_alloc(STATE_COUNT+STATE_BIAS,STATE_COUNT+STATE_BIAS);
-	mtmp   = uquad_mat_alloc(STATE_COUNT+STATE_BIAS,STATE_COUNT+STATE_BIAS);
-	P_     = uquad_mat_alloc(STATE_COUNT+STATE_BIAS,STATE_COUNT+STATE_BIAS);
-	retval = H_init();
-	err_propagate(retval);
-	Fx = uquad_mat_alloc(STATE_COUNT+STATE_BIAS,STATE_COUNT+STATE_BIAS);
-	fx = uquad_mat_alloc(STATE_COUNT+STATE_BIAS+3,1);
-	hx = uquad_mat_alloc(10,1);
+    uquad_bool_t is_gps = (gps_i_data != NULL);
+    uquad_mat_t
+	*Fk_1    = (is_gps)?Fk_1_gps:Fk_1_intertial,
+	*Fk_1_T  = (is_gps)?Fk_1_T_gps:Fk_1_T_intertial,
+	*mtmp    = (is_gps)?mtmp_gps:mtmp_intertial,
+	*P_      = (is_gps)?P__gps:P__intertial,
+	*H       = (is_gps)?H_gps:H_intertial,
+	*hx      = (is_gps)?hx_gps:hx_intertial,
+	*z       = (is_gps)?kalman_io_data->z_gps:kalman_io_data->z,
+	*R       = (is_gps)?kalman_io_data->R_gps:kalman_io_data->R,
+	*P       = kalman_io_data->P, /* ALWAYS */
+	*Q       = kalman_io_data->Q, /* ALWAYS */
+	// Auxiliares Update
+	*yk      = (is_gps)?yk_gps:yk_intertial,
+	*HT      = (is_gps)?HT_gps:HT_intertial,
+	*HP_     = (is_gps)?HP__gps:HP__intertial,
+	*HP_HT   = (is_gps)?HP_HT_gps:HP_HT_intertial,
+	*Sk      = (is_gps)?Sk_gps:Sk_intertial,
+	*Sk_aux1 = (is_gps)?Sk_aux1_gps:Sk_aux1_intertial,
+	*Sk_aux2 = (is_gps)?Sk_aux2_gps:Sk_aux2_intertial,
+	*P_HT    = (is_gps)?P_HT_gps:P_HT_intertial,
+	*Kk      = (is_gps)?Kk_gps:Kk_intertial,
+	*Kkyk    = (is_gps)?Kkyk_gps:Kkyk_intertial,
+	*KkH     = (is_gps)?KkH_gps:KkH_intertial,
+	*IKH     = (is_gps)?IKH_gps:IKH_intertial,
+	*Sk_1    = (is_gps)?Sk_1_gps:Sk_1_intertial,
+	*I       = (is_gps)?I_gps:I_intertial;
 
-	// Auxiliares para el update
-	yk = uquad_mat_alloc(10,1);
-	HT   = uquad_mat_alloc(STATE_COUNT+STATE_BIAS,10);
-	HP_  = uquad_mat_alloc(10,STATE_COUNT+STATE_BIAS);
-	HP_H = uquad_mat_alloc(10,10);
-	Sk   = uquad_mat_alloc(10,10);
-	if(Sk != NULL)
-	{
-	    Sk_aux1 = uquad_mat_alloc(Sk->r,Sk->c);
-	    Sk_aux2 = uquad_mat_alloc(Sk->r,Sk->c << 1);
-	}
-	P_HT = uquad_mat_alloc(STATE_COUNT+STATE_BIAS,10);
-	Kk   = uquad_mat_alloc(STATE_COUNT+STATE_BIAS,10);
-	Kkyk = uquad_mat_alloc(STATE_COUNT+STATE_BIAS,1);
-	KkH  = uquad_mat_alloc(STATE_COUNT+STATE_BIAS,STATE_COUNT+STATE_BIAS);
-	IKH  = uquad_mat_alloc(STATE_COUNT+STATE_BIAS,STATE_COUNT+STATE_BIAS);
-	Sk_1 = uquad_mat_alloc(10,10);
-	I    = uquad_mat_alloc(STATE_COUNT+STATE_BIAS,STATE_COUNT+STATE_BIAS);
-    }
-
-    retval = store_data(kalman_io_data, w, data, T);
+    retval = store_data(kalman_io_data, w, data, T, gps_i_data);
     err_propagate(retval);
 
     // Prediction
@@ -710,25 +963,25 @@ int uquad_kalman(kalman_io_t * kalman_io_data, uquad_mat_t* w, imu_data_t* data,
     err_propagate(retval);
     retval = uquad_mat_transpose(Fk_1_T, Fk_1);
     err_propagate(retval);
-    retval = uquad_mat_prod(mtmp, Fk_1, kalman_io_data->P);
+    retval = uquad_mat_prod(mtmp, Fk_1, P);
     err_propagate(retval);
     retval = uquad_mat_prod(Fk_1,mtmp, Fk_1_T); // Aca lo vuelvo a guardar en Fk_1 para no hacer otra variable temporal
     err_propagate(retval);
-    retval = uquad_mat_add(P_,Fk_1,kalman_io_data->Q);
+    retval = uquad_mat_add(P_,Fk_1,Q);
     err_propagate(retval);
 
     // Update
-    retval = h(hx, kalman_io_data);
+    retval = h(hx, kalman_io_data, is_gps);
     err_propagate(retval);
-    retval =  uquad_mat_sub(yk, kalman_io_data -> z , hx);
+    retval =  uquad_mat_sub(yk, z , hx);
     err_propagate(retval);
     retval = uquad_mat_prod(HP_,H,P_);
     err_propagate(retval);
     retval = uquad_mat_transpose(HT,H);
     err_propagate(retval);
-    retval = uquad_mat_prod(HP_H,HP_,HT);
+    retval = uquad_mat_prod(HP_HT,HP_,HT);
     err_propagate(retval);
-    retval = uquad_mat_add(Sk,HP_H,kalman_io_data -> R); // Sk
+    retval = uquad_mat_add(Sk,HP_HT,R); // Sk
     err_propagate(retval);
     retval = uquad_mat_inv(Sk_1,Sk,Sk_aux1,Sk_aux2);
     err_propagate(retval);
@@ -746,145 +999,109 @@ int uquad_kalman(kalman_io_t * kalman_io_data, uquad_mat_t* w, imu_data_t* data,
     err_propagate(retval);
     retval = uquad_mat_sub(IKH,I,KkH);
     err_propagate(retval);
-    retval = uquad_mat_prod(kalman_io_data->P, IKH, P_);
+    retval = uquad_mat_prod(P, IKH, P_);
     err_propagate(retval);
 
     return ERROR_OK;
 }
 
-
 int f_gps(uquad_mat_t* fx, kalman_io_t* kalman_io_data)
 {
-    fx->m_full[0]  = kalman_io_data -> x_hat -> m_full[0];
-    fx->m_full[1]  = kalman_io_data -> x_hat -> m_full[1];
-    fx->m_full[2]  = kalman_io_data -> x_hat -> m_full[2];
-    fx->m_full[3]  = kalman_io_data -> x_hat -> m_full[6];
-    fx->m_full[4]  = kalman_io_data -> x_hat -> m_full[7];
-    fx->m_full[5]  = kalman_io_data -> x_hat -> m_full[8];
-    return ERROR_OK;
+    int retval;
+    retval = f(fx,kalman_io_data);
+    err_propagate(retval);
+    /* fx->m_full[0]  = kalman_io_data -> x_hat -> m_full[0]; */
+    /* fx->m_full[1]  = kalman_io_data -> x_hat -> m_full[1]; */
+    /* fx->m_full[2]  = kalman_io_data -> x_hat -> m_full[2]; */
+    /* fx->m_full[3]  = kalman_io_data -> x_hat -> m_full[6]; */
+    /* fx->m_full[4]  = kalman_io_data -> x_hat -> m_full[7]; */
+    /* fx->m_full[5]  = kalman_io_data -> x_hat -> m_full[8]; */
+    return retval;
 }
 
 int h_gps(uquad_mat_t* hx, kalman_io_t* kalman_io_data)
 {
     int retval;
-    if(Rv_gps==NULL)
-    {
-	Rv_gps     = uquad_mat_alloc(3,1);
-	v_gps      = uquad_mat_alloc(3,1);
-	R_gps      = uquad_mat_alloc(3,3);
-    }
-    v_gps -> m_full[0] = kalman_io_data -> x_hat -> m_full[6];
-    v_gps -> m_full[1] = kalman_io_data -> x_hat -> m_full[7];
-    v_gps -> m_full[2] = kalman_io_data -> x_hat -> m_full[8];
-    retval = uquad_mat_rotate(false,Rv_gps, v_gps, 
-			      kalman_io_data -> x_hat -> m_full[3],
-			      kalman_io_data -> x_hat -> m_full[4],
-			      kalman_io_data -> x_hat -> m_full[5],
-			      R_gps);
+    retval = h(hx,kalman_io_data,true);
     err_propagate(retval);
+    return retval;
+    /* if(Rv_gps==NULL) */
+    /* { */
+    /* 	Rv_gps     = uquad_mat_alloc(3,1); */
+    /* 	v_gps      = uquad_mat_alloc(3,1); */
+    /* 	R_gps      = uquad_mat_alloc(3,3); */
+    /* } */
+    /* v_gps -> m_full[0] = kalman_io_data -> x_hat -> m_full[6]; */
+    /* v_gps -> m_full[1] = kalman_io_data -> x_hat -> m_full[7]; */
+    /* v_gps -> m_full[2] = kalman_io_data -> x_hat -> m_full[8]; */
+    /* retval = uquad_mat_rotate(false,Rv_gps, v_gps,  */
+    /* 			      kalman_io_data -> x_hat -> m_full[3], */
+    /* 			      kalman_io_data -> x_hat -> m_full[4], */
+    /* 			      kalman_io_data -> x_hat -> m_full[5], */
+    /* 			      R_gps); */
+    /* err_propagate(retval); */
 
-    hx->m_full[0]  = kalman_io_data -> x_hat -> m_full[0];
-    hx->m_full[1]  = kalman_io_data -> x_hat -> m_full[1];
-    hx->m_full[2]  = kalman_io_data -> x_hat -> m_full[2];
-    hx->m_full[3]  = Rv_gps -> m_full[0];
-    hx->m_full[4]  = Rv_gps -> m_full[1];
-    hx->m_full[5]  = Rv_gps -> m_full[2];
+    /* hx->m_full[0]  = kalman_io_data -> x_hat -> m_full[0]; */
+    /* hx->m_full[1]  = kalman_io_data -> x_hat -> m_full[1]; */
+    /* hx->m_full[2]  = kalman_io_data -> x_hat -> m_full[2]; */
+    /* hx->m_full[3]  = Rv_gps -> m_full[0]; */
+    /* hx->m_full[4]  = Rv_gps -> m_full[1]; */
+    /* hx->m_full[5]  = Rv_gps -> m_full[2]; */
 
-    return ERROR_OK;
+    /* return ERROR_OK; */
 }
 
-int F_gps(uquad_mat_t* Fx)
-{
-    int retval;
-    retval = uquad_mat_eye(Fx);
-    err_propagate(retval);
-    return ERROR_OK;
-}
-
-int H_gps(uquad_mat_t* Hx, kalman_io_t* kalman_io_data)
-{
-    double psi   = kalman_io_data -> x_hat -> m_full[3];
-    double phi   = kalman_io_data -> x_hat -> m_full[4];
-    double theta = kalman_io_data -> x_hat -> m_full[5];
-    Hx->m[0][0] = 1;
-    Hx->m[0][1] = 0;
-    Hx->m[0][2] = 0;
-    Hx->m[0][3] = 0;
-    Hx->m[0][4] = 0;
-    Hx->m[0][5] = 0;
-    Hx->m[1][0] = 0;
-    Hx->m[1][1] = 1;
-    Hx->m[1][2] = 0;
-    Hx->m[1][3] = 0;
-    Hx->m[1][4] = 0;
-    Hx->m[1][5] = 0;
-    Hx->m[2][0] = 0;
-    Hx->m[2][1] = 0;
-    Hx->m[2][2] = 1;
-    Hx->m[2][3] = 0;
-    Hx->m[2][4] = 0;
-    Hx->m[2][5] = 0;
-    Hx->m[3][0] = 0;
-    Hx->m[3][1] = 0;
-    Hx->m[3][2] = 0;
-    Hx->m[3][3] = cos(phi)*cos(theta);
-    Hx->m[3][4] = cos(theta)*sin(phi)*sin(psi) - cos(psi)*sin(theta);
-    Hx->m[3][5] = sin(psi)*sin(theta) + cos(psi)*cos(theta)*sin(phi);
-    Hx->m[4][0] = 0;
-    Hx->m[4][1] = 0;
-    Hx->m[4][2] = 0;
-    Hx->m[4][3] = cos(phi)*sin(theta);
-    Hx->m[4][4] = cos(psi)*cos(theta) + sin(phi)*sin(psi)*sin(theta);
-    Hx->m[4][5] = cos(psi)*sin(phi)*sin(theta) - cos(theta)*sin(psi);
-    Hx->m[5][0] = 0;
-    Hx->m[5][1] = 0;
-    Hx->m[5][2] = 0;
-    Hx->m[5][3] = -sin(phi);
-    Hx->m[5][4] = cos(phi)*sin(psi);
-    Hx->m[5][5] = cos(phi)*cos(psi);
-    return ERROR_OK;
-}
+/* int H_gps(uquad_mat_t* Hx, kalman_io_t* kalman_io_data) */
+/* { */
+/*     double psi   = kalman_io_data -> x_hat -> m_full[3]; */
+/*     double phi   = kalman_io_data -> x_hat -> m_full[4]; */
+/*     double theta = kalman_io_data -> x_hat -> m_full[5]; */
+/*     Hx->m[0][0] = 1; */
+/*     Hx->m[0][1] = 0; */
+/*     Hx->m[0][2] = 0; */
+/*     Hx->m[0][3] = 0; */
+/*     Hx->m[0][4] = 0; */
+/*     Hx->m[0][5] = 0; */
+/*     Hx->m[1][0] = 0; */
+/*     Hx->m[1][1] = 1; */
+/*     Hx->m[1][2] = 0; */
+/*     Hx->m[1][3] = 0; */
+/*     Hx->m[1][4] = 0; */
+/*     Hx->m[1][5] = 0; */
+/*     Hx->m[2][0] = 0; */
+/*     Hx->m[2][1] = 0; */
+/*     Hx->m[2][2] = 1; */
+/*     Hx->m[2][3] = 0; */
+/*     Hx->m[2][4] = 0; */
+/*     Hx->m[2][5] = 0; */
+/*     Hx->m[3][0] = 0; */
+/*     Hx->m[3][1] = 0; */
+/*     Hx->m[3][2] = 0; */
+/*     Hx->m[3][3] = cos(phi)*cos(theta); */
+/*     Hx->m[3][4] = cos(theta)*sin(phi)*sin(psi) - cos(psi)*sin(theta); */
+/*     Hx->m[3][5] = sin(psi)*sin(theta) + cos(psi)*cos(theta)*sin(phi); */
+/*     Hx->m[4][0] = 0; */
+/*     Hx->m[4][1] = 0; */
+/*     Hx->m[4][2] = 0; */
+/*     Hx->m[4][3] = cos(phi)*sin(theta); */
+/*     Hx->m[4][4] = cos(psi)*cos(theta) + sin(phi)*sin(psi)*sin(theta); */
+/*     Hx->m[4][5] = cos(psi)*sin(phi)*sin(theta) - cos(theta)*sin(psi); */
+/*     Hx->m[5][0] = 0; */
+/*     Hx->m[5][1] = 0; */
+/*     Hx->m[5][2] = 0; */
+/*     Hx->m[5][3] = -sin(phi); */
+/*     Hx->m[5][4] = cos(phi)*sin(psi); */
+/*     Hx->m[5][5] = cos(phi)*cos(psi); */
+/*     return ERROR_OK; */
+/* } */
 
 int uquad_kalman_gps(kalman_io_t* kalman_io_data, gps_comm_data_t* gps_i_data)
 {
     int retval;
-    if(Fk_1_gps==NULL)
-    {
-	// Auxiliaries for prediction
-	fx_gps     = uquad_mat_alloc(6,1);
-	Fk_1_gps   = uquad_mat_alloc(6,6);
-	Fk_1_T_gps = uquad_mat_alloc(6,6);
-	mtmp_gps   = uquad_mat_alloc(6,6);
-	P__gps     = uquad_mat_alloc(6,6);
-
-	// Auxiliaries for update
-	hx_gps        = uquad_mat_alloc(6,1);
-	z_gps         = uquad_mat_alloc(6,1);
-	yk_gps        = uquad_mat_alloc(6,1);
-	Hx_gps        = uquad_mat_alloc(6,6);
-	HP__gps       = uquad_mat_alloc(6,6);
-	HT_gps        = uquad_mat_alloc(6,6);
-	HP_H_gps      = uquad_mat_alloc(6,6);
-	Sk_gps        = uquad_mat_alloc(6,6);
-	if(Sk_gps != NULL)
-	{
-	    Sk_gps_aux1 = uquad_mat_alloc(Sk_gps->r,Sk_gps->c);
-	    Sk_gps_aux2 = uquad_mat_alloc(Sk_gps->r,Sk_gps->c << 1);
-	}
-	Sk_1_gps      = uquad_mat_alloc(6,6);
-	P_HT_gps      = uquad_mat_alloc(6,6);
-	Kk_gps        = uquad_mat_alloc(6,6);
-	Kkyk_gps      = uquad_mat_alloc(6,1);
-	x_hat_gps     = uquad_mat_alloc(6,1);
-	I_gps         = uquad_mat_alloc(6,6);
-	KkH_gps       = uquad_mat_alloc(6,6);
-	IKH_gps       = uquad_mat_alloc(6,6);
-    }
-
     // Prediction
-    retval = f_gps(fx_gps, kalman_io_data);
+    retval = f(fx_gps, kalman_io_data);
     err_propagate(retval);
-    retval = F_gps(Fk_1_gps);
+    retval = F(Fk_1_gps, kalman_io_data);
     err_propagate(retval);
     retval = uquad_mat_transpose(Fk_1_T_gps, Fk_1_gps);
     err_propagate(retval);
@@ -908,17 +1125,15 @@ int uquad_kalman_gps(kalman_io_t* kalman_io_data, gps_comm_data_t* gps_i_data)
 
     retval =  uquad_mat_sub(yk_gps, z_gps, hx_gps);
     err_propagate(retval);
-    retval = H_gps(Hx_gps, kalman_io_data);
+    retval = uquad_mat_prod(HP__gps,H_gps,P__gps);
     err_propagate(retval);
-    retval = uquad_mat_prod(HP__gps,Hx_gps,P__gps);
+    retval = uquad_mat_transpose(HT_gps,H_gps);
     err_propagate(retval);
-    retval = uquad_mat_transpose(HT_gps,Hx_gps);
+    retval = uquad_mat_prod(HP_HT_gps,HP__gps,HT_gps);
     err_propagate(retval);
-    retval = uquad_mat_prod(HP_H_gps,HP__gps,HT_gps);
+    retval = uquad_mat_add(Sk_gps,HP_HT_gps,kalman_io_data -> R_gps);
     err_propagate(retval);
-    retval = uquad_mat_add(Sk_gps,HP_H_gps,kalman_io_data -> R_gps);
-    err_propagate(retval);
-    retval = uquad_mat_inv(Sk_1_gps,Sk_gps,Sk_gps_aux1,Sk_gps_aux2);
+    retval = uquad_mat_inv(Sk_1_gps,Sk_gps,Sk_aux1_gps,Sk_aux2_gps);
     err_propagate(retval);
     retval = uquad_mat_prod(P_HT_gps,P__gps,HT_gps);
     err_propagate(retval);
@@ -930,7 +1145,7 @@ int uquad_kalman_gps(kalman_io_t* kalman_io_data, gps_comm_data_t* gps_i_data)
     err_propagate(retval);
     retval =  uquad_mat_eye(I_gps);
     err_propagate(retval);
-    retval = uquad_mat_prod(KkH_gps, Kk_gps, Hx_gps);
+    retval = uquad_mat_prod(KkH_gps, Kk_gps, H_gps);
     err_propagate(retval);
     retval = uquad_mat_sub(IKH_gps,I_gps,KkH_gps);
     err_propagate(retval);
@@ -949,33 +1164,14 @@ int uquad_kalman_gps(kalman_io_t* kalman_io_data, gps_comm_data_t* gps_i_data)
 
 void kalman_deinit(kalman_io_t *kalman_io_data)
 {
-    uquad_mat_free(Fk_1);
-    uquad_mat_free(Fk_1_T);
-    uquad_mat_free(mtmp);
-    uquad_mat_free(P_);
-    uquad_mat_free(Fx);
-    uquad_mat_free(fx);
-    uquad_mat_free(hx);
-    uquad_mat_free(yk);
-    uquad_mat_free(HT);
-    uquad_mat_free(HP_);
-    uquad_mat_free(HP_H);
-    uquad_mat_free(Sk);
-    uquad_mat_free(Sk_aux1);
-    uquad_mat_free(Sk_aux2);
-    uquad_mat_free(P_HT);
-    uquad_mat_free(Kk);
-    uquad_mat_free(Kkyk);
-    uquad_mat_free(KkH);
-    uquad_mat_free(IKH);
-    uquad_mat_free(Sk_1);
-    uquad_mat_free(I);
-    uquad_mat_free(w2);
-    uquad_mat_free(tmp);
-    uquad_mat_free(tmp2);
-    uquad_mat_free(TM);
-    uquad_mat_free(D);
-    uquad_mat_free(H);
+    /// Aux memory for inertial kalman
+    uquad_kalman_inertial_aux_mem_deinit();
+
+    /// Aux memory for gps kalman
+    uquad_kalman_gps_aux_mem_deinit();
+
+    // Aux memory for drive/drag
+    uquad_kalman_drive_drag_aux_mem_deinit();
 
     // GPS
 
@@ -993,15 +1189,14 @@ void kalman_deinit(kalman_io_t *kalman_io_data)
 
     // Auxiliaries for Update
     uquad_mat_free(hx_gps);
-    uquad_mat_free(z_gps);
     uquad_mat_free(yk_gps);
-    uquad_mat_free(Hx_gps);
+    uquad_mat_free(H_gps);
     uquad_mat_free(HP__gps);
     uquad_mat_free(HT_gps  );
-    uquad_mat_free(HP_H_gps);
+    uquad_mat_free(HP_HT_gps);
     uquad_mat_free(Sk_gps  );
-    uquad_mat_free(Sk_gps_aux1);
-    uquad_mat_free(Sk_gps_aux2);
+    uquad_mat_free(Sk_aux1_gps);
+    uquad_mat_free(Sk_aux2_gps);
     uquad_mat_free(Sk_1_gps);
     uquad_mat_free(P_HT_gps);
     uquad_mat_free(Kk_gps  );
@@ -1020,6 +1215,7 @@ void kalman_deinit(kalman_io_t *kalman_io_data)
 	uquad_mat_free(kalman_io_data->x_);
 	uquad_mat_free(kalman_io_data->u);
 	uquad_mat_free(kalman_io_data->z);
+	uquad_mat_free(kalman_io_data->z_gps);
 	uquad_mat_free(kalman_io_data->Q);
 	uquad_mat_free(kalman_io_data->R);
 	uquad_mat_free(kalman_io_data->P);

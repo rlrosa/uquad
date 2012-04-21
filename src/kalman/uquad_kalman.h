@@ -4,6 +4,10 @@
 #include <imu_comm.h>
 #include <uquad_gps_comm.h>
 
+#define KALMAN_ROWS_H_GPS 12
+#define KALMAN_ROWS_H     10
+#define KALMAN_GPS_SIZE   6
+
 /**
  * Kalman struct description (matches uquad_types.h):
  *
@@ -31,8 +35,9 @@
 typedef struct kalman_io {
     uquad_mat_t *x_hat;
     uquad_mat_t *u;
-    double T;
     uquad_mat_t *z;
+    uquad_mat_t *z_gps;
+    double T;
     uquad_mat_t *x_;
     uquad_mat_t *R;
     uquad_mat_t *Q;
@@ -42,7 +47,7 @@ typedef struct kalman_io {
     uquad_mat_t *P_gps;
 } kalman_io_t;
 
-int uquad_kalman(kalman_io_t * kalman_io_data, uquad_mat_t* w, imu_data_t* data, double T);
+int uquad_kalman(kalman_io_t * kalman_io_data, uquad_mat_t* w, imu_data_t* data, double T, gps_comm_data_t *gps_i_data);
 int uquad_kalman_gps(kalman_io_t* kalman_io_data, gps_comm_data_t* gps_i_data);
 kalman_io_t* kalman_init();
 void kalman_deinit(kalman_io_t *kalman_io_data);

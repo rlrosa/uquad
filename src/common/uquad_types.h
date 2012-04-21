@@ -36,6 +36,10 @@ typedef enum STATE_VECTOR{
 #define F_B2              -0.0010L    // Coeficiente lineal de la fuerza
 #define M_D1              3.4734e-6L  // Coeficiente cuadrático del torque
 #define M_D2              -1.3205e-4L // Coeficiente lineal del torque
+#define DRAG_A1           0.0000034734L // drag = w^2*A2 + w*A1
+#define DRAG_A2           -0.00013205L  // drag = w^2*A2 + w*A1
+#define DRIVE_A1          4.60160135072435e-05 // drive = w^2*A2 + w*A1
+#define DRIVE_A2          -0.00103822726273726 // drive = w^2*A2 + w*A1
 //#define MASA              1.741L    // Masa del Quad en kg
 #define MOT_W_HOVER       310.00L     // rad/s
 #define MASA              ((MOT_W_HOVER*MOT_W_HOVER*F_B1 \
