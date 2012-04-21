@@ -28,23 +28,25 @@ F=jacobian(f(z,psi,phi,theta,vqz,wqx,wqy,wqz,w1,w2,w3,w4,dw1,dw2,dw3,dw4,TM1,TM2
 %     z ...
 %     ];
 
-h = @(z,psi,phi,theta,vqx,vqy,vqz,wqx,wqy,wqz,TM1,TM2,TM3,TM4) [ ... 
+h = @(x,y,z,psi,phi,theta,vqx,vqy,vqz,wqx,wqy,wqz,TM1,TM2,TM3,TM4,ax,ay,az) [ ... 
     psi ; 
     phi ; 
     theta ; 
-    0;
-    0;
-    1/M*(TM1+TM2+TM3+TM4);
+    ax;
+    ay;
+    1/M*(TM1+TM2+TM3+TM4)+az;
     wqx ; 
     wqy ; 
     wqz ;
-    z   ;
-    -sin(phi)*vqx+cos(phi)*sin(psi)*vqy+cos(phi)*cos(psi)*vqz ...
+    x ;
+    y ;
+    z ;
+%     uquad_rotate([vqx;vqy;vqz],psi,phi,theta,0,0) ...
     ];
 
 
 
-H=jacobian(h(z,psi,phi,theta,vqx,vqy,vqz,wqx,wqy,wqz,TM1,TM2,TM3,TM4),[x,y,z,psi,phi,theta,vqz,vqy,vqz,wqx,wqy,wqz])
+H=jacobian(h(x,y,z,psi,phi,theta,vqx,vqy,vqz,wqx,wqy,wqz,TM1,TM2,TM3,TM4,ax,ay,az),[x,y,z,psi,phi,theta,vqz,vqy,vqz,wqx,wqy,wqz,ax,ay,az])
 
 
 
