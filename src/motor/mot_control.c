@@ -114,7 +114,7 @@ int mot_set_vel_rads(uquad_mot_t *mot, uquad_mat_t *w)
     
     for(i=0; i < MOT_C; ++i)
     {
-	if(w->m_full[i] < MOT_W_IDLE)
+	if(w->m_full[i] < MOT_W_MIN)
 	{
 	    /**
 	     * Setting speed to less than MOT_W_IDLE could
@@ -122,7 +122,7 @@ int mot_set_vel_rads(uquad_mot_t *mot, uquad_mat_t *w)
 	     *
 	     */
 	    err_log_num("WARN:w out of range, setting min for motor:",i);
-	    w->m_full[i] =  MOT_W_IDLE;
+	    w->m_full[i] =  MOT_W_MIN;
 	}
 	else if (w->m_full[i] > MOT_W_MAX)
 	{
