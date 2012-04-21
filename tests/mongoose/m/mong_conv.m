@@ -119,7 +119,7 @@ for i=1:length(m(:,1))
                                                  0,                                           cos(psi)/(cos(psi)^2 + sin(psi)^2),                                         -sin(psi)/(cos(psi)^2 + sin(psi)^2);
             -sin(phi)/(cos(phi)^2 + sin(phi)^2), (cos(phi)*sin(psi))/((cos(phi)^2 + sin(phi)^2)*(cos(psi)^2 + sin(psi)^2)), (cos(phi)*cos(psi))/((cos(phi)^2 + sin(phi)^2)*(cos(psi)^2 + sin(psi)^2))]...
             *auxm;
-    theta=-atan2(mrot(2),mrot(1));%+0.17069; %9.78@deg;
+    theta=-atan2(mrot(2),mrot(1))+0.17069; %9.78@deg;
     
     if ((i>1) && (abs(theta-euler(i-1,3)) >= pi))
         theta = theta-fix((theta-euler(i-1,3)+pi)/(2*pi))*2*pi;

@@ -518,7 +518,7 @@ int main(int argc, char *argv[]){
     }
 
 #if DEBUG_X_HAT
-    x_hat_T = uquad_mat_alloc(1,STATE_COUNT);
+    x_hat_T = uquad_mat_alloc(1,STATE_COUNT+STATE_BIAS);
     if(x_hat_T == NULL)
     {
 	err_log("Failed alloc x_hat_T!");
@@ -1018,6 +1018,7 @@ int main(int argc, char *argv[]){
 #endif //DEBUG_KALMAN_INPUT
 #if DEBUG_X_HAT
 	retval = uquad_mat_transpose(x_hat_T, kalman->x_hat);
+	quit_if(retval);
 	uquad_mat_dump(x_hat_T,log_x_hat);
 	fflush(log_x_hat);
 #endif //DEBUG_X_HAT

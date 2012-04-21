@@ -57,7 +57,7 @@ if(use_n_states < 2 && use_gps)
   warning('GPS data is being ignored, must control all states!');
 end
 %% Source
-log_path = 'tests/main/logs/2012_04_18_2_5_la_mejor';
+ log_path = 'tests/tests_rr_quito_2012_04_17/';
 if(~exist('log_path','var'))
   error('Must define a variable log_path to read from!');
 end

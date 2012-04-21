@@ -1208,9 +1208,11 @@ int imu_comm_read(imu_t *imu, uquad_bool_t *ready){
 int convert_2_euler(imu_data_t *data)
 {
     int retval;
-    double psi;   // rad
-    double phi;   // rad
-    double theta; // rad
+    double psi;              // rad
+    double phi;              // rad
+    double theta;            // rad
+    static double theta_pre; // rad
+    static uquad_bool_t theta_pre_defined = false;
     if(uquad_abs(data->acc->m_full[0]) < IMU_TH_DEADLOCK_ACC)
     {
 	phi = -asin(data->acc->m_full[0]/GRAVITY);
@@ -1237,8 +1239,22 @@ int convert_2_euler(imu_data_t *data)
     retval = uquad_mat_prod(m3x1_0,m3x3,data->magn);
     err_propagate(retval);
 
-    theta = atan2(m3x1_0->m_full[0],m3x1_0->m_full[1]) + IMU_TH_DEADLOCK_ANG;//9.78;
-    //    theta = -atan2(m3x1_0->m_full[1],m3x1_0->m_full[0]) + IMU_TH_DEADLOCK_ANG;//9.78;
+    theta = -atan2(m3x1_0->m_full[1],m3x1_0->m_full[0]) + IMU_TH_DEADLOCK_ANG;//9.78;
+
+    if(!theta_pre_defined)
+    {
+	theta_pre = theta;
+	theta_pre_defined = true;
+    }
+#if IMU_COMM_THETA_CONT
+    else
+    {
+	/// Avoid discontinuity of atan2()
+	if(uquad_abs(theta - theta_pre) >= PI)
+	    theta -= floor((theta-theta_pre+PI)/(2*PI))*2*PI;
+	theta_pre = theta;
+    }
+#endif // IMU_COMM_THETA_CONT
 
     data->magn->m_full[0]=psi;
     data->magn->m_full[1]=phi;
