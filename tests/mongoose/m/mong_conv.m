@@ -105,8 +105,8 @@ for i=1:length(m(:,1))
     
     % Convierto a angulos de Euler
     % phi, psi, theta en radianes
-    if (abs(aconv(i,1))<9.72)
-        phi=-asin(aconv(i,1)/9.81);
+    if (abs(aconv(i,1))<9.72/9.81*norm(aconv(i,:)))
+        phi=-asin(aconv(i,1)/norm(aconv(i,:)));
         psi=atan2(aconv(i,2),aconv(i,3));
     elseif aconv(i,1) > 0
         phi=-pi/2;
@@ -121,35 +121,9 @@ for i=1:length(m(:,1))
             *auxm;
     theta=-atan2(mrot(2),mrot(1))+0.17069; %9.78@deg;
     
-    if ((i>1) && (abs(theta-euler(i-1,3)) >= pi))
-        theta = theta-fix((theta-euler(i-1,3)+pi)/(2*pi))*2*pi;
-        
-%         if((theta-euler(i-1,3)>0))
-%             n_vueltas = n_vueltas-1;
-%         else
-%             n_vueltas = n_vueltas+1;
-%         end
-%         theta = theta + n_vueltas*2*pi;
-%         if i==1399
-%             disp('a');
-%         end
-% 
-%         if(~exist('ref','var'))
-%             ref = euler(i-1,3);
-%         end
-%         [i;n_vueltas;theta;euler(i-1,3)]
-% 
-% 
-% if(i==810)
-%     disp('a')
-% end
-%     
-% 
-% 
-%         [i;(theta-ref+pi)/(2*pi)]
-%         theta = theta-fix((theta-ref+pi)/(2*pi))*2*pi;
-
-    end
+%     if ((i>1) && (abs(theta-euler(i-1,3)) >= pi))
+%         theta = theta-fix((theta-euler(i-1,3)-pi)/(2*pi))*2*pi;
+%     end
     
     euler(i,:)=[  ...
       psi, ...
