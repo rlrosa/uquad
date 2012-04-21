@@ -9,11 +9,30 @@
 #include <uquad_config.h>
 
 #if FULL_CONTROL
-#define CTRL_MAT_K_NAME     "K_prop_full.txt"
-#define CTRL_MAT_K_INT_NAME "K_int_full.txt"
-#else
-#define CTRL_MAT_K_NAME     "K_prop.txt"
-#define CTRL_MAT_K_INT_NAME "K_int.txt"
+/**
+ * These matrices are loaded when full control
+ * is used.
+ * Matrices were obtained from the simulator,
+ * using LQR.
+ */
+  #if CTRL_INTEGRAL
+    #define CTRL_MAT_K_NAME   "K_prop_full.txt"
+  #else
+    #define CTRL_MAT_K_NAME   "K_full.txt"
+  #endif // CTRL_INTEGRAL
+  #define CTRL_MAT_K_INT_NAME "K_int_full.txt"
+
+#else // FULL_CONTROL
+/**
+ * These matrices are loaded when partial control
+ * is used.
+ */
+  #if CTRL_INTEGRAL
+    #define CTRL_MAT_K_NAME   "K_prop.txt"
+  #else
+    #define CTRL_MAT_K_NAME   "K.txt"
+  #endif // CTRL_INTEGRAL
+  #define CTRL_MAT_K_INT_NAME "K_int.txt"
 #endif // FULL_CONTROL
 
 typedef struct ctrl{

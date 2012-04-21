@@ -45,6 +45,11 @@ ctrl_t *control_init(void)
 	err_log_str("Failed to open:",CTRL_MAT_K_NAME);
 	cleanup_if(ERROR_FAIL);
     }
+    else
+    {
+	err_log_str("Loaded proportional gain matrix from:",
+		    CTRL_MAT_K_NAME);
+    }
 
     retval = uquad_mat_load(ctrl->K, file_mat);
     if(retval != ERROR_OK)
@@ -66,11 +71,16 @@ ctrl_t *control_init(void)
     retval = control_clear_int(ctrl);
     cleanup_log_if(retval, "Failed to clear integral term!");
 
-    file_mat = fopen(CTRL_MAT_K_NAME,"r");
+    file_mat = fopen(CTRL_MAT_K_INT_NAME,"r");
     if(file_mat == NULL)
     {
 	err_log_str("Failed to open:",CTRL_MAT_K_INT_NAME);
 	cleanup_if(ERROR_FAIL);
+    }
+    else
+    {
+	err_log_str("Loaded integral gain matrix from:",
+		    CTRL_MAT_K_INT_NAME);
     }
 
     retval = uquad_mat_load(ctrl->K_int, file_mat);
