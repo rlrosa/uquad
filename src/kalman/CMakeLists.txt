@@ -4,4 +4,4 @@ add_library (kalman uquad_kalman)
 
 add_dependencies(kalman imu)
 add_dependencies(kalman uquad_math)
-add_dependencies(kalman gps_comm)
+

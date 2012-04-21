@@ -100,7 +100,9 @@ int control(ctrl_t *ctrl, uquad_mat_t *w, uquad_mat_t *x, set_point_t *sp, doubl
 	err_check(ERROR_NULL_POINTER,"Inputs must be non NULL!");
     }
 
-    retval = uquad_mat_sub(tmp_sub_sp_x, sp->x, x);
+    retval = uquad_mat_get_subm(tmp_sub_sp_x,0,0,x);
+    err_propagate(retval);
+    retval = uquad_mat_sub(tmp_sub_sp_x, sp->x, tmp_sub_sp_x);
     err_propagate(retval);
 
 #if !FULL_CONTROL
