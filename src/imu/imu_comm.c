@@ -1213,9 +1213,10 @@ int convert_2_euler(imu_data_t *data)
     double psi;              // rad
     double phi;              // rad
     double theta;            // rad
-    if(uquad_abs(data->acc->m_full[0]) < IMU_TH_DEADLOCK_ACC)
+    double acc_norm = uquad_mat_norm(data->acc);
+    if(uquad_abs(data->acc->m_full[0]) < IMU_TH_DEADLOCK_ACC_NORM*acc_norm)
     {
-	phi = -asin(data->acc->m_full[0]/GRAVITY);
+	phi = -asin(data->acc->m_full[0]/acc_norm);
 	psi = atan2(data->acc->m_full[1],data->acc->m_full[2]);
     }else if(data->acc->m_full[0]>0){
 	phi=-PI/2;
