@@ -250,7 +250,9 @@ static int imu_comm_connect(imu_t *imu, const char *device){
 #else
     if( (strlen(device) < 3) || (strncmp(device,"/dev/",5) != 0))
     {
-	err_check(ERROR_INVALID_ARG, "Expected '/dev/*'!");
+	err_check(ERROR_INVALID_ARG,
+		  "Expected '/dev/*'!\n"				\
+		  "If reading from a log, IMU_COMM_FAKE must be enabled!");
     }
     imu->device = open(device,O_RDWR | O_NOCTTY | O_NONBLOCK);
     if(imu->device < 0)
