@@ -700,6 +700,11 @@ int uquad_kalman(kalman_io_t * kalman_io_data, uquad_mat_t* w, imu_data_t* data,
 	I    = uquad_mat_alloc(STATE_COUNT+STATE_BIAS,STATE_COUNT+STATE_BIAS);
     }
 
+    /* if (uquad_abs(data->magn->m_full[2] - x_hat->m_full[5]) >= PI) */
+    /* { */
+    /* 	data->magn->m_full[2] = data->magn->m_full[2]-trunc((data->magn->m_full[2]-kalman_io_data->x_hat->m_full[SV_THETA]-PI)/(2*PI))*2*PI; */
+    /* } */
+
     retval = store_data(kalman_io_data, w, data, T);
     err_propagate(retval);
 
