@@ -88,6 +88,7 @@ int uquad_mat_dot_product(uquad_mat_t *C, uquad_mat_t *A, uquad_mat_t *B);
 
 int uquad_mat_load(uquad_mat_t *m, FILE *input);
 void uquad_mat_dump(uquad_mat_t *m, FILE *output);
+void uquad_mat_dump_vec(uquad_mat_t *m, FILE *output);
 
 int uquad_mat_eye(uquad_mat_t *m);
 int uquad_mat_zeros(uquad_mat_t *m);

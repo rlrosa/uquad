@@ -944,7 +944,37 @@ void uquad_mat_dump(uquad_mat_t *m, FILE *output)
 
 }
 
-/** 
+/**
+ * Prints vector matrix to any output,
+ * in a single line.
+ *
+ * @param m
+ * @param output
+ */
+void uquad_mat_dump_vec(uquad_mat_t *m, FILE *output)
+{
+    int i,len;
+    if(m == NULL)
+    {
+	err_log("Cannot dump.");
+    }
+    if(m->r != 1 && m->c != 1)
+    {
+	err_log("Cannot dump as vector, not a vector! Using uquad_mat_dump()");
+	uquad_mat_dump(m,output);
+	return;
+    }
+    if(output == NULL)
+	output = stdout;
+    len = uquad_max(m->r,m->c);
+	for(i = 0; i < len; i++)
+	{
+	    fprintf(output, "%0.15f\t",m->m_full[i]);
+	}
+	fprintf(output,"\n");
+}
+
+/**
  * Allocates matrix of size r rows and c columns.
  * 
  * @param r Rows.
