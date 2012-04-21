@@ -66,16 +66,17 @@ typedef struct uquad_mot{
  */
 uquad_mot_t *mot_init(void);
 
-/** 
+/**
  * Takes an array of rads/s and sets the corresponding
  * i2c value as target speed.
- * 
- * @param mot 
+ *
+ * @param mot
  * @param w target speed, in rad/s
- * 
+ * @param force Ignore max/min settings for W
+ *
  * @return error code
  */
-int mot_set_vel_rads(uquad_mot_t *mot, uquad_mat_t *w);
+int mot_set_vel_rads(uquad_mot_t *mot, uquad_mat_t *w, uquad_bool_t force);
 
 /** 
  * Sets idle speed as target speed for all motors.
