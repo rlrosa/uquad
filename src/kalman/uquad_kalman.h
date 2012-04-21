@@ -35,6 +35,10 @@ typedef enum STATE_VECTOR{
  *    [wqx       ] - rad/s
  *    [wqy       ] - rad/s
  *    [wqz       ] - rad/s
+ * Acc bias estimation (iif KALMAN_BIAS)
+ *    [abx       ] - m/s^2
+ *    [aby       ] - m/s^2
+ *    [abz       ] - m/s^2
  *
  * T: Time since last sample, in us
  *
