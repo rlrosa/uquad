@@ -43,6 +43,8 @@ use_n_states = 2; % Regulates number of variables to control. Can be:
 use_gps      = 1; % Use kalman_gps
 use_fake_gps = 1; % Feed kalman_gps with fake data (only if use_gps)
 use_fake_T   = 0; % Ignore real timestamps from log, use average
+allin1       = 1; % Includes inertial and gps Kalman all in 1 filter
+use_gps_vel  = 1; % Uses velocity from GPS. Solo funca si allin1==0 (por ahora)
 
 %% Sanity check
 if(use_fake_gps && ~use_gps)
@@ -55,7 +57,7 @@ if(use_n_states < 2 && use_gps)
   warning('GPS data is being ignored, must control all states!');
 end
 %% Source
- log_path = 'tests/main/logs/2012_04_18_2_5_la_mejor';
+log_path = 'tests/main/logs/2012_04_18_2_5_la_mejor';
 if(~exist('log_path','var'))
   error('Must define a variable log_path to read from!');
 end
@@ -65,11 +67,12 @@ gps_file  = [log_path '/gps.log'];
 %% Load IMU data
 
 % Imu
-imu_file = 'tests/main/logs/2012_04_18_1_3_descambiamos_theta/imu_raw.log';
+% imu_file = 'tests/main/logs/2012_04_18_1_3_descambiamos_theta/imu_raw.log';
+imu_file = '../../../Escritorio/imu_raw_raw_drigo.log';
 [acrud,wcrud,mcrud,tcrud,bcrud,~,~,T]=mong_read(imu_file,0,1);
 
 avg = 1;
-startup_runs = 200;
+startup_runs = 800;
 imu_calib = 512;
 kalman_startup = 200;
 
@@ -151,12 +154,12 @@ end
 N       = size(a,1); % Cantidad de muestras de las observaciones
 Ns      = 15;        % N states: cantidad de variables de estado de Kalman
 Ngps    = 6;         % N gps: cantidad de variables corregidas por gps
-w_hover = 308.00;    % At this velocity, motor's force equals weight
-w_max   = 387.0; 
-w_min   = 109.0;
+w_hover = 310;    % At this velocity, motor's force equals weight
+w_max   = 387; 
+w_min   = 109;
 Q_imu   = diag(1*[100 100 100 1 1 1 100 100 100 10 10 10 1 1 1]);
 % Q_imu   = diag(1*[100 100 100 1 1 1 10  10  10  1  1  1]);
-R_imu   = diag(100*[10  10  10  100 100 100 1 1 1 100]);
+R_imu   = diag(100*[10  10  10  100 100 100 1 1 1 10]);
 % R_imu   = diag(100*[100 100 100 100 100 100 1 1 1 100]);
 
 % R_imu   = diag(100*[100 100 100 100 102 100 1 1 1 100 10]);
@@ -216,38 +219,81 @@ x_hat(1,4:6) = [psi0, phi0, theta0];
 for i=2:N
     wc_i = i-kalman_startup;
     Dt = T(i) - T(i-1);
-    Dt = min(Dt,12000e-6);Dt = max(Dt,000e-6); % Matches C
+    Dt = min(Dt,12000e-6);Dt = max(Dt,000e-6); % Matches C 
     
-    % Kalman inercial
-    if(i > kalman_startup + 1)
-      % Use control output as current w
-      [x_hat(i,:),P] = kalman_imu(x_hat(i-1,:),P,Q_imu,R_imu,Dt,w_control(wc_i - 1,:)',z(i,:)', w_hover);
-    else
-      % Use set point w as current w
-      [x_hat(i,:),P] = kalman_imu(x_hat(i-1,:),P,Q_imu,R_imu,Dt,sp_w,z(i,:)', w_hover);
-    end
-   
-    % Kalman GPS
-    if(use_gps)
-      if(T(i) >= T_gps(gps_index))
-          [aux,P_gps]  = kalman_gps(x_hat(i-1,1:9),P_gps,Q_gps,R_gps,...
-              [northing(gps_index); westing(gps_index); elevation(gps_index); ...
-              vx_gps(gps_index); vy_gps(gps_index); vz_gps(gps_index)]);
-          x_hat(i,1:3) = aux(1:3);
-          x_hat(i,7:9) = aux(4:6);
-        if(~use_fake_gps)
-          gps_index = gps_index + 1;
+    if ~allin1       
+        % Kalman inercial
+        if(i > kalman_startup + 1)
+          % Use control output as current w
+          [x_hat(i,:),P] = kalman_imu(x_hat(i-1,:),P,Q_imu,R_imu,Dt,...
+              w_control(wc_i - 1,:)',z(i,:)', w_hover);
         else
-          % Fake gps is of size 1, so force gps_index==1 to always be true
-          if(length(T) >= i + 100)
-            % Call again after 100 samples at 10ms -> 1sec
-            T_gps = T(i+100);
-          else
-            % No more GPS
-            T_gps = inf;
+          % Use set point w as current w
+          [x_hat(i,:),P] = kalman_imu(x_hat(i-1,:),P,Q_imu,R_imu,Dt,...
+              sp_w,z(i,:)', w_hover);
+        end
+        % Kalman GPS
+        if(use_gps)
+          if(T(i) >= T_gps(gps_index))
+              [aux,P_gps]  = kalman_gps(x_hat(i-1,1:9),P_gps,Q_gps,R_gps,...
+                  [northing(gps_index); westing(gps_index); elevation(gps_index); ...
+                  vx_gps(gps_index); vy_gps(gps_index); vz_gps(gps_index)]);
+              x_hat(i,1:3) = aux(1:3);
+              if use_gps_vel
+                  x_hat(i,7:9) = aux(4:6);
+              end
+            if(~use_fake_gps)
+              gps_index = gps_index + 1;
+            else
+              % Fake gps is of size 1, so force gps_index==1 to always be true
+              if(length(T) >= i + 100)
+                % Call again after 100 samples at 10ms -> 1sec
+                T_gps = T(i+100);
+              else
+                % No more GPS
+                T_gps = inf;
+              end
+            end
           end
         end
-      end
+    else % All in 1 big Kalman Filter
+        if(i > kalman_startup + 1)
+            % Use control output as current w
+            if(use_gps)
+                if(T(i) >= T_gps(gps_index))
+                    % Sin velocidades del GPS
+                    [x_hat(i,:),P] = kalman_imu_gps(x_hat(i-1,:),P,Q_imu,...
+                        diag(100*[10  10  10  100 100 100 1 1 1 1 1 1]),Dt,...
+                        w_control(wc_i - 1,:)',[z(i,1:end-1)';northing(gps_index);...
+                        westing(gps_index); elevation(gps_index)], w_hover);
+                    % Con velocidades del GPS
+%                     [x_hat(i,:),P] = kalman_imu_gps(x_hat(i-1,:),P,Q_imu,...
+%                         [R_imu(1:end-1,1:end-1) zeros(9,6);zeros(6,9) R_gps],Dt,...
+%                         w_control(wc_i - 1,:)',[z(i,1:end-1)';northing(gps_index);...
+%                         westing(gps_index); elevation(gps_index); vx_gps(gps_index);...
+%                         vy_gps(gps_index); vz_gps(gps_index)], w_hover);
+                    if(~use_fake_gps)
+                        gps_index = gps_index + 1;
+                    else
+                        % Fake gps is of size 1, so force gps_index==1 to always be true
+                        if(length(T) >= i + 100)
+                            % Call again after 100 samples at 10ms -> 1sec
+                            T_gps = T(i+100);
+                        else
+                            % No more GPS
+                            T_gps = inf;
+                        end
+                    end
+                else
+                    [x_hat(i,:),P] = kalman_imu(x_hat(i-1,:),P,Q_imu,R_imu,Dt,...
+                        w_control(wc_i - 1,:)',z(i,:)', w_hover);
+                end
+            end
+        else
+                % Use set point w as current w
+                [x_hat(i,:),P] = kalman_imu(x_hat(i-1,:),P,Q_imu,R_imu,Dt,...
+                    sp_w,z(i,:)', w_hover);
+        end
     end
     
     % Control
