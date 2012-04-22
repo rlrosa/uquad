@@ -953,6 +953,11 @@ int uquad_kalman(kalman_io_t * kalman_io_data, uquad_mat_t* w, imu_data_t* data,
 	*Sk_1    = (is_gps)?Sk_1_gps:Sk_1_intertial,
 	*I       = (is_gps)?I_gps:I_intertial;
 
+    if (uquad_abs(data->magn->m_full[2] - kalman_io_data->x_hat->m_full[5]) >= PI)
+    {
+	data->magn->m_full[2] = data->magn->m_full[2]-fix((data->magn->m_full[2]-kalman_io_data->x_hat->m_full[SV_THETA]-PI)/(2*PI))*2*PI;
+    }
+
     retval = store_data(kalman_io_data, w, data, T, gps_i_data);
     err_propagate(retval);
 

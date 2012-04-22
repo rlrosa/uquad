@@ -13,6 +13,7 @@
 #define deg2rad(a) (a*PI/180.0)
 #define rad2deg(a) (a*180.0/PI)
 #define uquad_round_double2int(x) ((x)>=0?(int)((x)+0.5):(int)((x)-0.5))
+#define fix(a) ((a>0)?floor(a):ceil(a))
 #define uquad_max(a,b) (a>b)?a:b
 #define uquad_min(a,b) (a<b)?a:b
 #define uquad_square(a) (a*a)

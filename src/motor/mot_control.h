@@ -12,6 +12,7 @@
 #define MOT_I2C_MAX         220     // i2c
 #define MOT_I2C_IDLE        50      // i2c
 #define MOT_W_MAX           387.0L  // rad/s (match MOT_MAX_I2C)
+#define MOT_W_MIN           (MOT_W_HOVER - (MOT_W_MAX - MOT_W_HOVER))
 #define MOT_W_IDLE          109.0L  // rad/s (match MOT_IDLE_I2C)
 #define MOT_W_STARTUP_RANGE (MOT_W_HOVER - MOT_W_IDLE)
 #define MOT_C               4
@@ -65,16 +66,17 @@ typedef struct uquad_mot{
  */
 uquad_mot_t *mot_init(void);
 
-/** 
+/**
  * Takes an array of rads/s and sets the corresponding
  * i2c value as target speed.
- * 
- * @param mot 
+ *
+ * @param mot
  * @param w target speed, in rad/s
- * 
+ * @param force Ignore max/min settings for W
+ *
  * @return error code
  */
-int mot_set_vel_rads(uquad_mot_t *mot, uquad_mat_t *w);
+int mot_set_vel_rads(uquad_mot_t *mot, uquad_mat_t *w, uquad_bool_t force);
 
 /** 
  * Sets idle speed as target speed for all motors.
