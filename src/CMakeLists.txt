@@ -37,7 +37,7 @@ set(${PROJECT_NAME}_C_FLAGS "-Wall" CACHE STRING
 # Enable the project's flags:
 set(CMAKE_C_FLAGS "${${PROJECT_NAME}_C_FLAGS}")
 
-set(USE_GPS 0)
+set(USE_GPS 1)
 if(${USE_GPS})
   message("Using GPS...")
   add_definitions(-DUSE_GPS=${USE_GPS})

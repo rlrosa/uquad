@@ -99,6 +99,8 @@ uquad_mat_t *x;
 imu_data_t imu_data;
 #if USE_GPS
 gps_comm_data_t *gps_dat;
+#else
+#define gps_dat NULL
 #endif
 /// Logs
 #if DEBUG
@@ -578,8 +580,8 @@ int main(int argc, char *argv[]){
     err_log_std(retval);
     retval = gettimeofday(&tv_last_ramp,NULL);
     err_log_std(retval);
-#if USE_GPS
     uquad_bool_t gps_update = false;
+#if USE_GPS
     retval = gettimeofday(&tv_gps_last,NULL);
     err_log_std(retval);
 #if !GPS_FAKE
@@ -982,7 +984,8 @@ int main(int argc, char *argv[]){
 	    retval = uquad_kalman(kalman,
 				  mot->w_curr,
 				  &imu_data,
-				  tv_diff.tv_usec);
+				  tv_diff.tv_usec,
+				  gps_update?gps_dat:NULL);
 	    log_n_continue(retval,"Inertial Kalman update failed");
 	}
 	else
@@ -991,7 +994,8 @@ int main(int argc, char *argv[]){
 	    retval = uquad_kalman(kalman,
 				  pp->sp->w,
 				  &imu_data,
-				  tv_diff.tv_usec);
+				  tv_diff.tv_usec,
+				  NULL);
 	    log_n_continue(retval,"Inertial Kalman update failed");
 	}
 	/// Mark time when we run Kalman
@@ -1001,8 +1005,8 @@ int main(int argc, char *argv[]){
 	{
 	    gettimeofday(&tv_tmp,NULL);
 	    retval = uquad_timeval_substract(&tv_diff, tv_tmp, tv_start);
-	    retval = uquad_kalman_gps(kalman, gps_dat);
-	    log_n_continue(retval,"GPS Kalman update failed");
+	    //	    retval = uquad_kalman_gps(kalman, gps_dat);
+	    //	    log_n_continue(retval,"GPS Kalman update failed");
 	    gps_update = false; // Clear gps status
 	    err_log_tv("GPS run!",tv_diff);
 	}

@@ -344,18 +344,25 @@ ERROR_TIMING
     }
 
 /**
- * Verifies that malloc succeeded.
+ * Verifies that malloc succeeded, return NULL if fail
  * 
  */
 #define mem_alloc_check(pointer)			\
     if(pointer==NULL)					\
     {							\
-	fprintf(stderr,"%s:%s:%d: malloc failed\n",	\
-		__TIME__,__FILE__,__LINE__);		\
-	if(REROUTE_STDERR && rerouted())		\
-	    fprintf(stdout,"%s:%s:%d: malloc failed\n",	\
-		    __TIME__,__FILE__,__LINE__);	\
+	err_log("malloc failed!");			\
 	return NULL;					\
+    }
+
+/**
+ * Verifies that malloc succeeded, returns ERROR_MALLOC.
+ *
+ */
+#define mem_alloc_check_ret_err(pointer)		\
+    if(pointer==NULL)					\
+    {							\
+	err_log("malloc failed!");			\
+	return ERROR_MALLOC;				\
     }
 
 /// No functions
