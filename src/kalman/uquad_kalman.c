@@ -35,11 +35,6 @@ uquad_mat_t* w_2      = NULL;
 uquad_mat_t* w_2_tmp  = NULL;
 uquad_mat_t* w_2_tmp2 = NULL;
 
-// Auxiliaries for h
-uquad_mat_t* Rv_gps = NULL;
-uquad_mat_t* v_gps  = NULL;
-uquad_mat_t* R_gps  = NULL;
-
 // Auxiliaries for Update
 uquad_mat_t* fx_gps = NULL;
 uquad_mat_t* Fk_1_gps = NULL;
@@ -706,7 +701,26 @@ int uquad_kalman_inertial_aux_mem_init(void)
 
 void uquad_kalman_gps_aux_mem_deinit(void)
 {
-    err_log("NOT IMPLEMENTED!");
+    uquad_mat_free(Fk_1_gps);
+    uquad_mat_free(Fk_1_T_gps);
+    uquad_mat_free(mtmp_gps);
+    uquad_mat_free(fx_gps);
+    uquad_mat_free(hx_gps);
+    uquad_mat_free(yk_gps);
+    uquad_mat_free(H_gps);
+    uquad_mat_free(HT_gps);
+    uquad_mat_free(HP__gps);
+    uquad_mat_free(HP_HT_gps);
+    uquad_mat_free(Sk_gps);
+    uquad_mat_free(Sk_1_gps);
+    uquad_mat_free(Sk_aux1_gps);
+    uquad_mat_free(Sk_aux2_gps);
+    uquad_mat_free(P_HT_gps);
+    uquad_mat_free(Kk_gps);
+    uquad_mat_free(Kkyk_gps);
+    uquad_mat_free(KkH_gps);
+    uquad_mat_free(IKH_gps);
+    uquad_mat_free(I_gps);
 }
 
 int uquad_kalman_gps_aux_mem_init(void)
@@ -999,36 +1013,6 @@ void kalman_deinit(kalman_io_t *kalman_io_data)
 
     // Aux memory for drive/drag
     uquad_kalman_drive_drag_aux_mem_deinit();
-
-    // Auxiliaries for h
-    uquad_mat_free(Rv_gps);
-    uquad_mat_free(v_gps );
-    uquad_mat_free(R_gps );
-
-    // Auxiliaries for Update
-    uquad_mat_free(fx_gps);
-    uquad_mat_free(Fk_1_gps);
-    uquad_mat_free(Fk_1_T_gps);
-    uquad_mat_free(mtmp_gps);
-
-    // Auxiliaries for Update
-    uquad_mat_free(hx_gps);
-    uquad_mat_free(yk_gps);
-    uquad_mat_free(H_gps);
-    uquad_mat_free(HP__gps);
-    uquad_mat_free(HT_gps  );
-    uquad_mat_free(HP_HT_gps);
-    uquad_mat_free(Sk_gps  );
-    uquad_mat_free(Sk_aux1_gps);
-    uquad_mat_free(Sk_aux2_gps);
-    uquad_mat_free(Sk_1_gps);
-    uquad_mat_free(P_HT_gps);
-    uquad_mat_free(Kk_gps  );
-    uquad_mat_free(Kkyk_gps);
-    uquad_mat_free(x_hat_gps);
-    uquad_mat_free(I_gps);
-    uquad_mat_free(KkH_gps);
-    uquad_mat_free(IKH_gps);
 
     if(kalman_io_data != NULL)
     {
