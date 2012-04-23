@@ -42,9 +42,8 @@ typedef struct kalman_io {
     uquad_mat_t *R;
     uquad_mat_t *Q;
     uquad_mat_t *P;
+    uquad_mat_t *P_;
     uquad_mat_t *R_gps;
-    uquad_mat_t *Q_gps;
-    uquad_mat_t *P_gps;
 } kalman_io_t;
 
 int uquad_kalman(kalman_io_t * kalman_io_data, uquad_mat_t* w, imu_data_t* data, double T, gps_comm_data_t *gps_i_data);

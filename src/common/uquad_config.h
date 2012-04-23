@@ -5,12 +5,12 @@
 
 #define DEBUG             1 // Show debug info
 
-#define GPS_FAKE          0 // Simulate GPS data (use zeros)
+#define GPS_FAKE          1 // Simulate GPS data (use zeros)
 
 #define KALMAN_BIAS       1 // Use kalman estimation of acc bias
 
 #define CTRL_INTEGRAL     0 // Use PI control
-#define FULL_CONTROL      0 // Control 12 states
+#define FULL_CONTROL      1 // Control 12 states
 
 // -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 // Do NOT edit the following lines!
