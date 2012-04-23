@@ -106,6 +106,11 @@ H = @(psi,phi,theta,vqx,vqy,vqz) [
     0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ...
     ];
 
+%% Theta continuity
+
+if (abs(z(3)-x_hat(6)) >= pi)
+    z(3) = z(3)-fix((z(3)-x_hat(6)-pi)/(2*pi))*2*pi;
+end
 
 %% Kalman
 

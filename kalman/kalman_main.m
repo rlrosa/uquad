@@ -44,7 +44,7 @@ use_gps      = 1; % Use kalman_gps
 use_fake_gps = 1; % Feed kalman_gps with fake data (only if use_gps)
 use_fake_T   = 0; % Ignore real timestamps from log, use average
 allin1       = 1; % Includes inertial and gps Kalman all in 1 filter
-use_gps_vel  = 1; % Uses velocity from GPS. Solo funca si allin1==0 (por ahora)
+use_gps_vel  = 0; % Uses velocity from GPS. Solo funca si allin1==0 (por ahora)
 
 %% Sanity check
 if(use_fake_gps && ~use_gps)
@@ -67,8 +67,8 @@ gps_file  = [log_path '/gps.log'];
 %% Load IMU data
 
 % Imu
-% imu_file = 'tests/main/logs/2012_04_18_1_3_descambiamos_theta/imu_raw.log';
-imu_file = '../../../Escritorio/imu_raw_raw_drigo.log';
+imu_file = 'tests/main/logs/2012_04_21_prueba_saturacion_derecha_izquierda/imu_raw.log';
+% imu_file = 'tests/main/logs/2012_04_21_2_1_8_states_sin_bias_theta_continuo/imu_raw.log';
 [acrud,wcrud,mcrud,tcrud,bcrud,~,~,T]=mong_read(imu_file,0,1);
 
 avg = 1;
@@ -120,10 +120,10 @@ T = T(startup_runs:end);
 
 % p0 and theta0 is estimated form first imu_calib samples
 [a_calib,w_calib,euler_calib] = mong_conv(acrud(1:imu_calib,:),wcrud(1:imu_calib,:),mcrud(1:imu_calib,:),0,tcrud(1:imu_calib));
-psi0                    = mean(euler_calib(:,1));
-phi0                    = mean(euler_calib(:,2));
-theta0                  = mean(euler_calib(:,3));
-b0                      = mean(bcrud(1:imu_calib));
+psi0   = mean(euler_calib(:,1));
+phi0   = mean(euler_calib(:,2));
+theta0 = mean(euler_calib(:,3));
+b0     = mean(bcrud(1:imu_calib));
 
 % averages are used
 acrud(:,1) = moving_avg(acrud(:,1),avg); acrud(:,2) = moving_avg(acrud(:,2),avg); acrud(:,3) = moving_avg(acrud(:,3),avg);
@@ -168,7 +168,6 @@ R_gps   = diag(1*[1 1 100000 1 1 100000]);
 
 if(use_n_states == 0)
     K    = load('src/control/K.txt');
-%     K    = load('K4x8');K=K.K;
     sp_x = [0;0;0;theta0;0;0;0;0];
     Nctl = 8;
 elseif(use_n_states == 1)
@@ -200,8 +199,7 @@ TM = drive(w);          % Fuerzas ejercidas por los motores en N. Cada columna c
 D  = drag(w);           % Torque de Drag ejercido por los motores en N*m. Cada columna corresponde a cada motor
     
 % Observaciones
-z  = [euler a w b];
-% z  = [euler a w b [0;diff(b)]];
+z = [euler a w b];
 
 % Inicialización
 x_hat          = zeros(N,Ns);
@@ -216,7 +214,7 @@ x_hat(1,4:6) = [psi0, phi0, theta0];
 
 %% Kalman
 
-for i=2:N
+for i=2:N    
     wc_i = i-kalman_startup;
     Dt = T(i) - T(i-1);
     Dt = min(Dt,12000e-6);Dt = max(Dt,000e-6); % Matches C 
@@ -323,7 +321,7 @@ for i=2:N
         if (w_control(wc_i,j) > w_max)
             w_control(wc_i,j) = w_max;
         end
-	end    
+    end    
 end
 
 %% Plots
