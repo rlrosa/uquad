@@ -11,9 +11,9 @@
 
 #define MOT_I2C_MAX         220     // i2c
 #define MOT_I2C_IDLE        50      // i2c
-#define MOT_W_MAX           387.0L  // rad/s (match MOT_MAX_I2C)
+#define MOT_W_MAX           387.0   // rad/s (match MOT_MAX_I2C)
 #define MOT_W_MIN           (MOT_W_HOVER - (MOT_W_MAX - MOT_W_HOVER))
-#define MOT_W_IDLE          109.0L  // rad/s (match MOT_IDLE_I2C)
+#define MOT_W_IDLE          109.0   // rad/s (match MOT_IDLE_I2C)
 #define MOT_W_STARTUP_RANGE (MOT_W_HOVER - MOT_W_IDLE)
 #define MOT_C               4
 
