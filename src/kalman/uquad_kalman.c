@@ -4,29 +4,29 @@
 #include <uquad_config.h>
 
 /// Vars for inertial kalman
-uquad_mat_t* Fk_1_intertial = NULL;
-uquad_mat_t* Fk_1_T_intertial = NULL;
-uquad_mat_t* tmp_intertial = NULL;
-uquad_mat_t* tmp2_intertial = NULL;
-uquad_mat_t* mtmp_intertial = NULL;
-uquad_mat_t* H_intertial = NULL;
-uquad_mat_t* fx_intertial = NULL;
-uquad_mat_t* hx_intertial = NULL;
+uquad_mat_t* Fk_1_inertial = NULL;
+uquad_mat_t* Fk_1_T_inertial = NULL;
+uquad_mat_t* tmp_inertial = NULL;
+uquad_mat_t* tmp2_inertial = NULL;
+uquad_mat_t* mtmp_inertial = NULL;
+uquad_mat_t* H_inertial = NULL;
+uquad_mat_t* fx_inertial = NULL;
+uquad_mat_t* hx_inertial = NULL;
 // Auxiliares Update
-uquad_mat_t* yk_intertial = NULL;
-uquad_mat_t* HT_intertial = NULL;
-uquad_mat_t* HP__intertial = NULL;
-uquad_mat_t* HP_HT_intertial = NULL;
-uquad_mat_t* Sk_intertial = NULL;
-uquad_mat_t* Sk_aux1_intertial = NULL;
-uquad_mat_t* Sk_aux2_intertial = NULL;
-uquad_mat_t* P_HT_intertial = NULL;
-uquad_mat_t* Kk_intertial = NULL;
-uquad_mat_t* Kkyk_intertial = NULL;
-uquad_mat_t* KkH_intertial = NULL;
-uquad_mat_t* IKH_intertial = NULL;
-uquad_mat_t* Sk_1_intertial = NULL;
-uquad_mat_t* I_intertial = NULL;
+uquad_mat_t* yk_inertial = NULL;
+uquad_mat_t* HT_inertial = NULL;
+uquad_mat_t* HP__inertial = NULL;
+uquad_mat_t* HP_HT_inertial = NULL;
+uquad_mat_t* Sk_inertial = NULL;
+uquad_mat_t* Sk_aux1_inertial = NULL;
+uquad_mat_t* Sk_aux2_inertial = NULL;
+uquad_mat_t* P_HT_inertial = NULL;
+uquad_mat_t* Kk_inertial = NULL;
+uquad_mat_t* Kkyk_inertial = NULL;
+uquad_mat_t* KkH_inertial = NULL;
+uquad_mat_t* IKH_inertial = NULL;
+uquad_mat_t* Sk_1_inertial = NULL;
+uquad_mat_t* I_inertial = NULL;
 
 /// Var for drag/drive
 uquad_mat_t* TM       = NULL;
@@ -48,7 +48,6 @@ uquad_mat_t* mtmp_gps = NULL;
 
 // Auxiliaries for Update
 uquad_mat_t* hx_gps = NULL;
-uquad_mat_t* z_gps = NULL;
 uquad_mat_t* yk_gps = NULL;
 uquad_mat_t* H_gps = NULL;
 uquad_mat_t* HP__gps  = NULL;
@@ -631,83 +630,77 @@ int F(uquad_mat_t* Fx, kalman_io_t* kalman_io_data)
 
 void uquad_kalman_inertial_aux_mem_deinit(void)
 {
-    uquad_mat_free(Fk_1_intertial);
-    uquad_mat_free(Fk_1_T_intertial);
-    uquad_mat_free(mtmp_intertial);
-    uquad_mat_free(fx_intertial);
-    uquad_mat_free(hx_intertial);
-    uquad_mat_free(yk_intertial);
-    uquad_mat_free(H_intertial);
-    uquad_mat_free(HT_intertial);
-    uquad_mat_free(HP__intertial);
-    uquad_mat_free(HP_HT_intertial);
-    uquad_mat_free(Sk_intertial);
-    uquad_mat_free(Sk_1_intertial);
-    uquad_mat_free(Sk_aux1_intertial);
-    uquad_mat_free(Sk_aux2_intertial);
-    uquad_mat_free(P_HT_intertial);
-    uquad_mat_free(Kk_intertial);
-    uquad_mat_free(Kkyk_intertial);
-    uquad_mat_free(KkH_intertial);
-    uquad_mat_free(IKH_intertial);
-    uquad_mat_free(I_intertial);
+    uquad_mat_free(Fk_1_inertial);
+    uquad_mat_free(Fk_1_T_inertial);
+    uquad_mat_free(mtmp_inertial);
+    uquad_mat_free(fx_inertial);
+    uquad_mat_free(hx_inertial);
+    uquad_mat_free(yk_inertial);
+    uquad_mat_free(H_inertial);
+    uquad_mat_free(HT_inertial);
+    uquad_mat_free(HP__inertial);
+    uquad_mat_free(HP_HT_inertial);
+    uquad_mat_free(Sk_inertial);
+    uquad_mat_free(Sk_1_inertial);
+    uquad_mat_free(Sk_aux1_inertial);
+    uquad_mat_free(Sk_aux2_inertial);
+    uquad_mat_free(P_HT_inertial);
+    uquad_mat_free(Kk_inertial);
+    uquad_mat_free(Kkyk_inertial);
+    uquad_mat_free(KkH_inertial);
+    uquad_mat_free(IKH_inertial);
+    uquad_mat_free(I_inertial);
 }
 
 int uquad_kalman_inertial_aux_mem_init(void)
 {
     int retval;
-    if(Fk_1_intertial != NULL)
+    if(Fk_1_inertial != NULL)
     {
 	err_check(ERROR_FAIL,"Memory has already been allocated!");
     }
-    Fk_1_intertial   = uquad_mat_alloc(STATE_COUNT+STATE_BIAS,STATE_COUNT+STATE_BIAS);
-    Fk_1_T_intertial = uquad_mat_alloc(STATE_COUNT+STATE_BIAS,STATE_COUNT+STATE_BIAS);
-    mtmp_intertial   = uquad_mat_alloc(STATE_COUNT+STATE_BIAS,STATE_COUNT+STATE_BIAS);
-    retval = H_init(&H_intertial, false);
+    Fk_1_inertial   = uquad_mat_alloc(STATE_COUNT+STATE_BIAS,STATE_COUNT+STATE_BIAS);
+    mem_alloc_check_ret_err(Fk_1_inertial);
+    Fk_1_T_inertial = uquad_mat_alloc(STATE_COUNT+STATE_BIAS,STATE_COUNT+STATE_BIAS);
+    mem_alloc_check_ret_err(Fk_1_T_inertial);
+    mtmp_inertial   = uquad_mat_alloc(STATE_COUNT+STATE_BIAS,STATE_COUNT+STATE_BIAS);
+    mem_alloc_check_ret_err(mtmp_inertial);
+    retval = H_init(&H_inertial, false);
     err_propagate(retval);
-    fx_intertial     = uquad_mat_alloc(STATE_COUNT+STATE_BIAS+3,1);
-    hx_intertial     = uquad_mat_alloc(10,1);
+    fx_inertial     = uquad_mat_alloc(STATE_COUNT+STATE_BIAS+3,1);
+    mem_alloc_check_ret_err(fx_inertial);
+    hx_inertial     = uquad_mat_alloc(10,1);
+    mem_alloc_check_ret_err(hx_inertial);
 
     // Auxiliares para el update
-    yk_intertial     = uquad_mat_alloc(hx_intertial->r,hx_intertial->c);
-    HT_intertial     = uquad_mat_alloc(H_intertial->c, H_intertial->r);
-    HP__intertial    = uquad_mat_alloc(H_intertial->r,STATE_COUNT + STATE_BIAS);
-    HP_HT_intertial  = uquad_mat_alloc(HP__intertial->r,HP__intertial->r);
-    Sk_intertial     = uquad_mat_alloc(HP_HT_intertial->r,HP_HT_intertial->c);
-    Sk_1_intertial   = uquad_mat_alloc(Sk_intertial->r,Sk_intertial->c);
-    if(Sk_intertial != NULL)
-    {
-	Sk_aux1_intertial = uquad_mat_alloc(Sk_intertial->r,Sk_intertial->c);
-	Sk_aux2_intertial = uquad_mat_alloc(Sk_intertial->r,Sk_intertial->c << 1);
-    }
-    P_HT_intertial   = uquad_mat_alloc(STATE_COUNT + STATE_BIAS, HT_intertial->c);
-    Kk_intertial     = uquad_mat_alloc(P_HT_intertial->r,Sk_1_intertial->c);
-    Kkyk_intertial   = uquad_mat_alloc(Kk_intertial->r,yk_intertial->c);
-    KkH_intertial    = uquad_mat_alloc(Kk_intertial->r, H_intertial->c);
-    IKH_intertial    = uquad_mat_alloc(KkH_intertial->r, KkH_intertial->c);
-    I_intertial      = uquad_mat_alloc(KkH_intertial->r, KkH_intertial->c);
-    if(Fk_1_intertial     == NULL ||
-       Fk_1_T_intertial   == NULL ||
-       mtmp_intertial     == NULL ||
-       fx_intertial       == NULL ||
-       hx_intertial       == NULL ||
-       yk_intertial       == NULL ||
-       HT_intertial       == NULL ||
-       HP__intertial      == NULL ||
-       HP_HT_intertial    == NULL ||
-       Sk_intertial       == NULL ||
-       Sk_1_intertial     == NULL ||
-       Sk_aux1_intertial  == NULL ||
-       Sk_aux2_intertial  == NULL ||
-       P_HT_intertial     == NULL ||
-       Kk_intertial       == NULL ||
-       Kkyk_intertial     == NULL ||
-       KkH_intertial      == NULL ||
-       IKH_intertial      == NULL ||
-       I_intertial        == NULL)
-    {
-	err_check(ERROR_MALLOC,"Failed to allocate mem for inertial kalman!");
-    }
+    yk_inertial     = uquad_mat_alloc(hx_inertial->r,hx_inertial->c);
+    mem_alloc_check_ret_err(yk_inertial);
+    HT_inertial     = uquad_mat_alloc(H_inertial->c, H_inertial->r);
+    mem_alloc_check_ret_err(HT_inertial);
+    HP__inertial    = uquad_mat_alloc(H_inertial->r,STATE_COUNT + STATE_BIAS);
+    mem_alloc_check_ret_err(HP__inertial);
+    HP_HT_inertial  = uquad_mat_alloc(HP__inertial->r,HP__inertial->r);
+    mem_alloc_check_ret_err(HP_HT_inertial);
+    Sk_inertial     = uquad_mat_alloc(HP_HT_inertial->r,HP_HT_inertial->c);
+    mem_alloc_check_ret_err(Sk_inertial);
+    Sk_1_inertial   = uquad_mat_alloc(Sk_inertial->r,Sk_inertial->c);
+    mem_alloc_check_ret_err(Sk_1_inertial);
+    Sk_aux1_inertial = uquad_mat_alloc(Sk_inertial->r,Sk_inertial->c);
+    mem_alloc_check_ret_err(Sk_aux1_inertial);
+    Sk_aux2_inertial = uquad_mat_alloc(Sk_inertial->r,Sk_inertial->c << 1);
+    mem_alloc_check_ret_err(Sk_aux2_inertial);
+    P_HT_inertial   = uquad_mat_alloc(STATE_COUNT + STATE_BIAS, HT_inertial->c);
+    mem_alloc_check_ret_err(P_HT_inertial);
+    Kk_inertial     = uquad_mat_alloc(P_HT_inertial->r,Sk_1_inertial->c);
+    mem_alloc_check_ret_err(Kk_inertial);
+    Kkyk_inertial   = uquad_mat_alloc(Kk_inertial->r,yk_inertial->c);
+    mem_alloc_check_ret_err(Kkyk_inertial);
+    KkH_inertial    = uquad_mat_alloc(Kk_inertial->r, H_inertial->c);
+    mem_alloc_check_ret_err(KkH_inertial);
+    IKH_inertial    = uquad_mat_alloc(KkH_inertial->r, KkH_inertial->c);
+    mem_alloc_check_ret_err(IKH_inertial);
+    I_inertial      = uquad_mat_alloc(KkH_inertial->r, KkH_inertial->c);
+    mem_alloc_check_ret_err(I_inertial);
     return retval;
 }
 
@@ -725,35 +718,47 @@ int uquad_kalman_gps_aux_mem_init(void)
     }
     // Auxiliaries for prediction
     Fk_1_gps   = uquad_mat_alloc(STATE_COUNT + STATE_BIAS,STATE_COUNT + STATE_BIAS);
+    mem_alloc_check_ret_err(Fk_1_gps);
     Fk_1_T_gps = uquad_mat_alloc(STATE_COUNT + STATE_BIAS,STATE_COUNT + STATE_BIAS);
+    mem_alloc_check_ret_err(Fk_1_T_gps);
     mtmp_gps   = uquad_mat_alloc(STATE_COUNT + STATE_BIAS,STATE_COUNT + STATE_BIAS);
+    mem_alloc_check_ret_err(mtmp_gps);
     retval = H_init(&H_gps, true);
     err_propagate(retval);
     // Auxiliaries for update
-
     fx_gps        = uquad_mat_alloc(STATE_COUNT + STATE_BIAS, 1);
+    mem_alloc_check_ret_err(fx_gps);
     hx_gps        = uquad_mat_alloc(STATE_COUNT,1);
-    z_gps         = uquad_mat_alloc(STATE_COUNT,1);
+    mem_alloc_check_ret_err(hx_gps);
     // Auxiliares para el update
     yk_gps     = uquad_mat_alloc(hx_gps->r,hx_gps->c);
+    mem_alloc_check_ret_err(yk_gps);
     HT_gps     = uquad_mat_alloc(H_gps->c, H_gps->r);
+    mem_alloc_check_ret_err(HT_gps);
     HP__gps    = uquad_mat_alloc(H_gps->r,STATE_COUNT + STATE_BIAS);
+    mem_alloc_check_ret_err(HP__gps);
     HP_HT_gps  = uquad_mat_alloc(HP__gps->r,HP__gps->r);
+    mem_alloc_check_ret_err(HP_HT_gps);
     Sk_gps     = uquad_mat_alloc(HP_HT_gps->r,HP_HT_gps->c);
+    mem_alloc_check_ret_err(Sk_gps);
     Sk_1_gps   = uquad_mat_alloc(Sk_gps->r,Sk_gps->c);
-    if(Sk_gps != NULL)
-    {
-	Sk_aux1_gps = uquad_mat_alloc(Sk_gps->r,Sk_gps->c);
-	Sk_aux2_gps = uquad_mat_alloc(Sk_gps->r,Sk_gps->c << 1);
-    }
+    mem_alloc_check_ret_err(Sk_1_gps);
+    Sk_aux1_gps = uquad_mat_alloc(Sk_gps->r,Sk_gps->c);
+    mem_alloc_check_ret_err(Sk_aux1_gps);
+    Sk_aux2_gps = uquad_mat_alloc(Sk_gps->r,Sk_gps->c << 1);
+    mem_alloc_check_ret_err(Sk_aux2_gps);
     P_HT_gps   = uquad_mat_alloc(STATE_COUNT + STATE_BIAS, HT_gps->c);
+    mem_alloc_check_ret_err(P_HT_gps);
     Kk_gps     = uquad_mat_alloc(P_HT_gps->r,Sk_1_gps->c);
+    mem_alloc_check_ret_err(Kk_gps);
     Kkyk_gps   = uquad_mat_alloc(Kk_gps->r,yk_gps->c);
+    mem_alloc_check_ret_err(Kkyk_gps);
     KkH_gps    = uquad_mat_alloc(Kk_gps->r, H_gps->c);
+    mem_alloc_check_ret_err(KkH_gps);
     IKH_gps    = uquad_mat_alloc(KkH_gps->r, KkH_gps->c);
+    mem_alloc_check_ret_err(IKH_gps);
     I_gps      = uquad_mat_alloc(KkH_gps->r, KkH_gps->c);
-
-    err_log("NOT IMPLEMENTED CORRECTLY!");
+    mem_alloc_check_ret_err(I_gps);
     return ERROR_OK;
 }
 
@@ -901,31 +906,31 @@ int uquad_kalman(kalman_io_t * kalman_io_data, uquad_mat_t* w, imu_data_t* data,
     int retval;
     uquad_bool_t is_gps = (gps_i_data != NULL);
     uquad_mat_t
-	*Fk_1    = (is_gps)?Fk_1_gps:Fk_1_intertial,
-	*Fk_1_T  = (is_gps)?Fk_1_T_gps:Fk_1_T_intertial,
-	*mtmp    = (is_gps)?mtmp_gps:mtmp_intertial,
-	*H       = (is_gps)?H_gps:H_intertial,
-	*hx      = (is_gps)?hx_gps:hx_intertial,
+	*Fk_1    = (is_gps)?Fk_1_gps:Fk_1_inertial,
+	*Fk_1_T  = (is_gps)?Fk_1_T_gps:Fk_1_T_inertial,
+	*mtmp    = (is_gps)?mtmp_gps:mtmp_inertial,
+	*H       = (is_gps)?H_gps:H_inertial,
+	*hx      = (is_gps)?hx_gps:hx_inertial,
 	*z       = (is_gps)?kalman_io_data->z_gps:kalman_io_data->z,
 	*R       = (is_gps)?kalman_io_data->R_gps:kalman_io_data->R,
 	*P_      = kalman_io_data->P_, /* ALWAYS */
 	*P       = kalman_io_data->P,  /* ALWAYS */
 	*Q       = kalman_io_data->Q,  /* ALWAYS */
 	// Auxiliares Update
-	*yk      = (is_gps)?yk_gps:yk_intertial,
-	*HT      = (is_gps)?HT_gps:HT_intertial,
-	*HP_     = (is_gps)?HP__gps:HP__intertial,
-	*HP_HT   = (is_gps)?HP_HT_gps:HP_HT_intertial,
-	*Sk      = (is_gps)?Sk_gps:Sk_intertial,
-	*Sk_aux1 = (is_gps)?Sk_aux1_gps:Sk_aux1_intertial,
-	*Sk_aux2 = (is_gps)?Sk_aux2_gps:Sk_aux2_intertial,
-	*P_HT    = (is_gps)?P_HT_gps:P_HT_intertial,
-	*Kk      = (is_gps)?Kk_gps:Kk_intertial,
-	*Kkyk    = (is_gps)?Kkyk_gps:Kkyk_intertial,
-	*KkH     = (is_gps)?KkH_gps:KkH_intertial,
-	*IKH     = (is_gps)?IKH_gps:IKH_intertial,
-	*Sk_1    = (is_gps)?Sk_1_gps:Sk_1_intertial,
-	*I       = (is_gps)?I_gps:I_intertial;
+	*yk      = (is_gps)?yk_gps:yk_inertial,
+	*HT      = (is_gps)?HT_gps:HT_inertial,
+	*HP_     = (is_gps)?HP__gps:HP__inertial,
+	*HP_HT   = (is_gps)?HP_HT_gps:HP_HT_inertial,
+	*Sk      = (is_gps)?Sk_gps:Sk_inertial,
+	*Sk_aux1 = (is_gps)?Sk_aux1_gps:Sk_aux1_inertial,
+	*Sk_aux2 = (is_gps)?Sk_aux2_gps:Sk_aux2_inertial,
+	*P_HT    = (is_gps)?P_HT_gps:P_HT_inertial,
+	*Kk      = (is_gps)?Kk_gps:Kk_inertial,
+	*Kkyk    = (is_gps)?Kkyk_gps:Kkyk_inertial,
+	*KkH     = (is_gps)?KkH_gps:KkH_inertial,
+	*IKH     = (is_gps)?IKH_gps:IKH_inertial,
+	*Sk_1    = (is_gps)?Sk_1_gps:Sk_1_inertial,
+	*I       = (is_gps)?I_gps:I_inertial;
 
     if (uquad_abs(data->magn->m_full[2] - kalman_io_data->x_hat->m_full[5]) >= PI)
     {
