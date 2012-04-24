@@ -97,8 +97,23 @@ static gps_t *gps;
 uquad_mat_t *w, *wt;
 uquad_mat_t *x;
 imu_data_t imu_data;
+struct timeval tv_start = {0,0};
+uquad_bool_t
+/**
+ * Flag to allow state estimation to keep running
+ * after abort, without controlling motors.
+ */
+interrupted = false,
+/**
+ * Flag to indicate that main read/estimate/control loop
+ * is running.
+ */
+running     = false;
+
 #if USE_GPS
 gps_comm_data_t *gps_dat;
+#else
+#define gps_dat NULL
 #endif
 /// Logs
 #if DEBUG
@@ -145,6 +160,40 @@ FILE *log_tv = NULL;
 void quit()
 {
     int retval;
+    struct timeval
+	tv_tmp,
+	tv_diff;
+    if(!interrupted)
+    {
+	/**
+	 * Kill motors, keep IMU+kalman running to log data
+	 *
+	 */
+	retval = mot_deinit(mot);
+	if(retval != ERROR_OK)
+	{
+	    err_log("Could not close motor driver correctly!");
+	}
+	interrupted = true;
+	if(running)
+	{
+	    // Let IMU gather data for a while
+	    gettimeofday(&tv_tmp, NULL);
+	    retval = uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
+	    if(retval > 0)
+	    {
+		err_log_tv("Motors killed!",tv_diff);
+	    }
+	    return;
+	}
+    }
+    gettimeofday(&tv_tmp, NULL);
+    retval = uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
+    if(retval > 0)
+    {
+	err_log_tv("main deinit started...",tv_diff);
+    }
+
     /// IO manager
     retval = io_deinit(io);
     if(retval != ERROR_OK)
@@ -161,13 +210,6 @@ void quit()
 
     /// Kalman
     kalman_deinit(kalman);
-
-    /// Motors
-    retval = mot_deinit(mot);
-    if(retval != ERROR_OK)
-    {
-	err_log("Could not close motor driver correctly!");
-    }
 
     /// Control module
     control_deinit(ctrl);
@@ -269,7 +311,8 @@ void slow_land(void)
     quit();
 }
 
-void uquad_sig_handler(int signal_num){
+void uquad_sig_handler(int signal_num)
+{
     err_log_num("Caught signal:",signal_num);
     quit();
 }
@@ -572,14 +615,13 @@ int main(int argc, char *argv[]){
 	tv_last_ramp,
 	tv_last_kalman,
 	tv_last_imu,
-	tv_gps_last,
-	tv_start;
+	tv_gps_last;
     retval = gettimeofday(&tv_start,NULL);
     err_log_std(retval);
     retval = gettimeofday(&tv_last_ramp,NULL);
     err_log_std(retval);
-#if USE_GPS
     uquad_bool_t gps_update = false;
+#if USE_GPS
     retval = gettimeofday(&tv_gps_last,NULL);
     err_log_std(retval);
 #if !GPS_FAKE
@@ -603,7 +645,9 @@ int main(int argc, char *argv[]){
     gettimeofday(&tv_tmp,NULL);
     uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
     err_log_tv("Entering while:",tv_diff);
-    while(1){
+    running = true;
+    while(1)
+    {
 	if((runs_imu > STARTUP_RUNS) &&
 	   (retval != ERROR_OK  ||
 	    err_imu != ERROR_OK ||
@@ -615,7 +659,10 @@ int main(int argc, char *argv[]){
 		gettimeofday(&tv_tmp,NULL);
 		retval = uquad_timeval_substract(&tv_diff, tv_tmp, tv_start);
 		err_log_tv("Too many errors! Aborting...",tv_diff);
-		slow_land();
+		if(!interrupted)
+		    slow_land();
+		else
+		    quit();
 		/// program ends here
 	    }
 	}
@@ -862,7 +909,7 @@ int main(int argc, char *argv[]){
 	/// -- -- -- -- -- -- -- --
 	/// check if new data
 	/// -- -- -- -- -- -- -- --
-	if(!imu_update)
+	if(!imu_update || interrupted)
 	    /**
 	     * We don't check gps_update here.
 	     * If gps_update && !imu_update, then
@@ -870,6 +917,9 @@ int main(int argc, char *argv[]){
 	     *   T_gps = 1s
 	     *   T_imu = 10ms
 	     * so use approx. that T_gps+T_imu ~ T_gps.
+	     *
+	     * interrupted: If main was interrupted, we want to
+	     * log data but the motors should not be controlled any more.
 	     */
 	    continue;
 	/// -- -- -- -- -- -- -- --
@@ -982,7 +1032,8 @@ int main(int argc, char *argv[]){
 	    retval = uquad_kalman(kalman,
 				  mot->w_curr,
 				  &imu_data,
-				  tv_diff.tv_usec);
+				  tv_diff.tv_usec,
+				  gps_update?gps_dat:NULL);
 	    log_n_continue(retval,"Inertial Kalman update failed");
 	}
 	else
@@ -991,7 +1042,8 @@ int main(int argc, char *argv[]){
 	    retval = uquad_kalman(kalman,
 				  pp->sp->w,
 				  &imu_data,
-				  tv_diff.tv_usec);
+				  tv_diff.tv_usec,
+				  NULL);
 	    log_n_continue(retval,"Inertial Kalman update failed");
 	}
 	/// Mark time when we run Kalman
@@ -1001,8 +1053,8 @@ int main(int argc, char *argv[]){
 	{
 	    gettimeofday(&tv_tmp,NULL);
 	    retval = uquad_timeval_substract(&tv_diff, tv_tmp, tv_start);
-	    retval = uquad_kalman_gps(kalman, gps_dat);
-	    log_n_continue(retval,"GPS Kalman update failed");
+	    //	    retval = uquad_kalman_gps(kalman, gps_dat);
+	    //	    log_n_continue(retval,"GPS Kalman update failed");
 	    gps_update = false; // Clear gps status
 	    err_log_tv("GPS run!",tv_diff);
 	}

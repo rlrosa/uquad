@@ -56,6 +56,9 @@ end
 if(use_n_states < 2 && use_gps)
   warning('GPS data is being ignored, must control all states!');
 end
+if(use_n_states < 2 && allin1)
+  error('Cannot use intertial+GPS kalman without allin1!');
+end
 %% Source
  log_path = 'tests/tests_rr_quito_2012_04_17/';
 if(~exist('log_path','var'))
@@ -132,12 +135,12 @@ mcrud(:,1) = moving_avg(mcrud(:,1),avg); mcrud(:,2) = moving_avg(mcrud(:,2),avg)
 bcrud      = moving_avg(bcrud,avg);
 tcrud      = moving_avg(tcrud,avg);
 % first imu_calib values are not used for kalman/control/etc
-acrud = acrud(imu_calib:end,:);
-wcrud = wcrud(imu_calib:end,:);
-mcrud = mcrud(imu_calib:end,:);
-bcrud = bcrud(imu_calib:end,:);
-tcrud = tcrud(imu_calib:end,:);
-T     = T(imu_calib:end,:);
+acrud = acrud(imu_calib+1:end,:);
+wcrud = wcrud(imu_calib+1:end,:);
+mcrud = mcrud(imu_calib+1:end,:);
+bcrud = bcrud(imu_calib+1:end,:);
+tcrud = tcrud(imu_calib+1:end,:);
+T     = T(imu_calib+1:end,:);
 
 [a,w,euler] = mong_conv(acrud,wcrud,mcrud,0,tcrud);
 b=altitud(bcrud,b0);
