@@ -8,7 +8,7 @@
 
 Independientemente del sistema bajo estudio, a la hora de elegir la t\'ecnica de control a utilizar se plantean diversas posibilidades. Parece razonable intentar resolver el problema planteado utilizando las t\'ecnicas m\'as sencillas que se disponen, al menos en una primera aproximaci\'on. En caso de que dicha soluci\'on no fuese satisfactoria se puede optar por una t\'ecnia con un mayor grado de complejidad.\\ 
 
-Las t\'ecnicas de control m\'as sencillas y con las que se tiene mayor experiencia se basan en el estudio de sistemas lineales invariantes en el tiempo (SLIT). Sin embargo el MVE obtenido en el cap\'tulo \ref{chap:modelo} es no lineal. Se propone entonces resolver el problema del control del cuadric\'optero aproximando el sistema por un sistema lineal invariante en el tiempo. Es claro que el sistema no puede ser linealizado en cualquier trayectoria o punto de operaci\'on. En  este cap\'itulo nos concentraremos en determinar bajo que condiciones es posible aproximar el sistema por un modelo lineal.
+Las t\'ecnicas de control m\'as sencillas y con las que se tiene mayor experiencia se basan en el estudio de sistemas lineales invariantes en el tiempo (SLIT). Sin embargo el MVE obtenido en el cap\'tulo \ref{chap:modelo} es no lineal. Se propone entonces resolver el problema del control del cuadric\'optero aproximando el sistema por un sistema lineal invariante en el tiempo. Dado que el sistema no puede ser linealizado en torno a cualquier trayectoria o punto de operaci\'on nos concentraremos en determinar bajo que condiciones es posible aproximar el sistema por un SLIT.
 
 \section{Concepto general}
 Consideremos un sistema que se rige por la siguiente evoluci\'on de su vector de estados. 
@@ -36,7 +36,7 @@ Donde $A(t)$ es una matriz de $n \times n$ y $B(t)$ es de $n \times m$, tales qu
 En el caso en que todos los coeficientes de las matrices A y B son constantes podemos afirmar que estamos en presencia de un sistema lineal invariante en el tiempo. 
 
 \section{Puntos de operaci\'on}
-Lo que buscamos ahora es encontrar las trayectorias que permiten que la linealizaci\'on de nuestro sistema en torno a estas resulte en un sistema invariante en el tiempo.\\
+Lo que buscamos ahora es encontrar las trayectorias que permiten que la linealizaci\'on de nuestro sistema en torno a estas resulte en un sistema lineal invariante en el tiempo.\\
 
 Para lograr este cometido, se debe cumplir que todos los elementos de las matrices \ref{eq:Agenerica} y \ref{eq:Bgenerica} sean constantes. Dichas matrices corresponden a la linealizaci\'on del MVE en torno a una trayectoria gen\'erica. Se desprende del an\'alisis de dichas matrices que los puntos de operaci\'on que cumplen esta condici\'on quedan restrictos a un subconjunto tal que: 
 
@@ -87,9 +87,10 @@ v_{qz}\\
 \end{array}\right)=0
 \end{equation}
 
-El sistema que tenemos es independiente de la posici\'on, lo cual es razonable ya que el reposo puede lograrse en cualquier punto del espacio. Dado que la velocidad y velocidad angular del sistema fue definida como cero tenemos por despejar 7 variables: los \'angulos de Euler, y las velocidades angulares de los motores. \\
+Dado que la velocidad y velocidad angular del sistema fue definida como cero tenemos por despejar 7 variables: los \'angulos de Euler, y las velocidades angulares de los motores. \\
 
-Al imponer las condiciones de \ref{eq:quieto} las ecuaciones \ref{eq:euler} y \ref{eq:pospunto} del MVE se cumplen trivialmente. Por lo tanto tenemos solamente las seis ecuaciones correspondientes a las derivadas de las velocidades y de las velocidades angulares. Estas \'ultimas  no dependen de $\theta$, por lo tanto podemos afirmar que el reposo tambi\'en se da para cualquier \'angulo de Yaw. Lo cual tambi\'en parece razonable ya que el sistema presenta simetr\'ia respecto del eje $\vec{k_q}$.
+Al imponer las condiciones de \ref{eq:quieto} las ecuaciones \ref{eq:euler} y \ref{eq:pospunto} del MVE se cumplen trivialmente. Por lo tanto tenemos solamente las seis ecuaciones correspondientes a las derivadas de las velocidades y de las velocidades angulares. Estas \'ultimas  no dependen de $\theta$, obteniendo entonces un sistema de seis ecuaciones y seis inc\'ognitas que debe ser resuelto a fin de determinar las condiciones que permiten el hovering. Cabe destacar que ninguna de las seis ecuaciones depende la posici\'on, esto sumado a la independencia de la condici\'on de hovering respecto de $\theta$, nos permite confirmar la suposici\'on de que puede lograrse el hovering en cualquier punto del espacio con cualquier \'angulo de Yaw.\\
+
 Del an\'alisis de las ecuaciones \ref{eq:quieto} se obtiene r\'apidamente que:
 \begin{equation}
 \varphi=0 \quad \psi=0
@@ -122,7 +123,7 @@ Al imponer que $\vec{\omega}_q=0$ la ecuaci\'on \ref{eq:euler} se verifica trivi
 \varphi=0 \quad \psi=0 \quad \omega_1=\omega_2=\omega_3=\omega_4 = 334.28 rad/s
 \end{equation}
 
-Hasta aqu\'i no hemos considerado la ecuaci\'on que relaciona las velocidades lineales en el sistema inercial con las velocidades lineales expresadas en el sistema del cuadric\'optero. Al considerando el resultado obtenido sobre $\varphi$ y $\psi$ dichas ecuaciones toman la forma:
+Hasta aqu\'i no hemos considerado la ecuaci\'on que relaciona las velocidades lineales en el sistema inercial con las velocidades lineales expresadas en el sistema del cuadric\'optero. Teniendo presente el resultado obtenido sobre $\varphi$ y $\psi$ dichas ecuaciones toman la forma:
 \begin{equation}\begin{array}{c}
 \dot{x}=v_{q_x}\cos\theta-v_{q_y}\sin\theta\\
 \dot{y}=v_{q_y}\sin\theta+v_{q_y}\cos\theta\\
@@ -130,24 +131,26 @@ Hasta aqu\'i no hemos considerado la ecuaci\'on que relaciona las velocidades li
 \end{array}
 \end{equation} 
 
-El vuelo en linea recta nos ofrece la posibilidad de fijar los restantes 4 par\'ametros de la trayectoria. Estos par\'ametros ser\'an determinados por el generador de trayectorias con el objetivo de realizar una recta en particular. 
+El vuelo en linea recta nos ofrece la posibilidad de fijar los restantes 4 par\'ametros de la trayectoria. Estos par\'ametros ser\'an determinados por el generador de trayectorias con el objetivo de realizar una recta en particular con una orientaci\'on determinada. 
 
 \subsection{Vuelo en c\'irculos}
 
 Dado que queremos un sistema invariante en el tiempo para poder trabajar con el no nos es posible, con las ecuaciones desarrolladas hasta este instante realizar movimientos con velocidades angulares distintas de cero. Si se viola esta condici\'on se tiene que al menos alguno de $\dot{\psi}$, $\dot{\varphi}$ o $\dot{\theta}$ es distinto de cero. Por lo tanto tenemos al menos alg\'un \'angulo de Euler variante en el tiempo. Para poder obtener un movimiento circular se debe realizar el cambio de variable en el MVE en lo que respecta a las ecuaciones de la derivada de la posici\'on propuesto en \ref{bib:auion}. \\
 %TODO faltan imagenes para explicar el mov circular
-El cambio de variables en cuesti\'on consiste en expresar la posici\'on (exclusivamente para los movimientos circulares) en la base del cuadric\'optero. Supongamos que el cuadric\'optero se encuentra realizando un movimiento tal, que su proyecci\'on sobre el plano horizontal ($Z=0$) es circular. Podemos describir la posici\'on en todo momento tomando como origen el centro de dicho c\'irculo. Como se observa en la figura \ref{fig:circulo} la posici\'on en dicho plano se puede expresar como $R\vec{i_1}$. Donde $R$, es el radio del c\'irculo e $\vec{i_1}$ es el primer vector de la base que se obtiene al realizar la primera rotaci\'on de Euler. A continuaci\'on expresaremos la posici\'on en la base solidaria al cuadric\'optero. Para lograr dicho objetivo se debe multiplicar $R\vec{i_1}$ por la matriz cambio de base $H_2^qH_1^2$. Estas matrices son las definidas en \ref{eq:bases}. La posici\'on ($\vec{r}_q$) expresada en dicha base es entonces:
+El cambio de variables en cuesti\'on consiste en expresar la posici\'on (exclusivamente para los movimientos circulares) en la base del cuadric\'optero. Supongamos que el cuadric\'optero se encuentra realizando un movimiento tal, que su proyecci\'on sobre el plano horizontal ($z=0$) es circular. Podemos describir la posici\'on en todo momento tomando como origen el centro de dicho c\'irculo. Como se observa en la figura \ref{fig:circulo} la posici\'on en dicho plano se puede expresar como $-R\vec{j}_1$\footnote{Esto es debido a que se elige que el vector $\vec{i}_q$ sea tangente a los c\'irculos descriptos. El razonamiento es an\'alogo si se desea que el vector $\vec{j}_q$ sea tangente al c\'irculo, en este caso debe expresarse la posic\'on del sistema como $R\vec{i}_1$}. Donde $R$, es el radio del c\'irculo y $\vec{j}_1$ es un vector de la base que se obtiene al realizar la primera rotaci\'on de Euler definida en \ref{eq:bases}. Multiplicando el vector $-R\vec{j_1}$ por la matriz cambio de base $H_2^qH_1^2$ definida en \ref{eq:bases} se obtiene la posici\'on expresada en el sistema $S_q$. Como $\vec{j}_1$ es invariante frente a la rotaci\'on $H_1^2$, alcanza con multiplicar dicho vector por $H_2^q$ obteniendo as\'i:
 
 \begin{equation}
 \label{eq:pos_circ}
-\vec{r}_q=H_2^qH_1^2R\vec{i}_1=R\left(\begin{array}{c}
-\cos\varphi\\
-\sin\varphi\sin\psi\\
-\sin\varphi\cos\psi\\
+\vec{r}_q=-H_2^q\vec{i}_1=-R\left(\begin{array}{c}
+0\\
+\cos\psi\\
+-\sin\psi\\
 \end{array}\right)
 \end{equation}
 
-La ventaja que se obtiene con esta forma de expresar la posici\'on es que la misma es independiente de uno de los tres \'anglos de Euler: $\theta$. Este cambio es una gran ventaja ya que bajo este modelo de variables de estado se puede lograr la invariancia temporal a pesar de que este \'angulo no sea constante. \\
+Al expresar la posici\'on con este cambio de variables se obtiene la independencia de la misma respecto de dos de los tres \'anglos de Euler: $\varphi$ y $\theta$. En lo que respecta al \'angulo $\varphi$ la independencia de esta variable no nos aporta absolutamente nada ya que para que el movimiento circular a velocidad constante sea posible dicho \'angulo debe ser cero. La raz\'on es que si el \'angulo fuese diferente a cero tendr\'iamos una componente de la fuerza en la direcci\'on tangencial al c\'irculo, por lo tanto una aceleraci\'on en dicha direcci\'on.\\
+
+Sin embargo, la independencia respecto de $\theta$, ya que (a diferencia de $\varphi$) dicha variable no est\'a presente en ninguna de las ecuaciones que gobiernan al sistema, presenta es una gran ventaja: bajo este modelo de variables de estado se logra la invariancia temporal a pesar de que este \'angulo no sea constante. \\
 
 Nos interesa ahora derivar la posici\'on para terminar de completar el modelo del sistema. Dado que la posici\'on se encuentra expresada en el sistema del cuadric\'optero tendremos que:
 \begin{equation}
@@ -168,27 +171,34 @@ v_{q_z}+\omega_{q_x}y_q-\omega_{q_y}x_q\\
 \end{array}\right)
 \end{equation}
 
-Este modelo nos permitir\'a realizar el control bas\'andonos en t\'ecnicas de control lineal para una trayectoria circular en el plano $z=0$.\\
+Este modelo nos permitir\'a realizar el control bas\'andonos en t\'ecnicas de control lineal para trayectorias circulares en planos tales que $z=cte$.\\
 
-Es fundamental aclarar que las ecuaciones derivadas hasta aqu\'i ser\'an utilizadas exclusivamente para la linealizaci\'on del sistema y no para determinar los valores de los par\'ametros a controlar. Para esto \'ultimo continuaremos utilizando el modelo de \ref{eq:modelo}. El movimiento circular queda determinado exclusivamente por dos par\'ametros la velocidad ($V_I$) y la velocidad angular ($\dot{\theta}$), estos ser\'an considerados conocidos ya que es trabajo del generador de rutas o del usuario determinar que movimiento se desea realizar. Se desea determinar 12 par\'ametros, ocho de las doce variables de estado (No nos interesa fijar ni \'angulo de Yaw ni la posici\'on) y las cuatro velocidades angulares de los motores.  Se deben tener en cuenta evidentemente las restricciones establecidas en \ref{eq:slit} sobre las derivadas de las velocidades del centro de masa y de las velocidades angulares. En lo que respecta a las derivadas de los \'angulos de Euler se debe cumplir que $\dot{\varphi}=\dot{\psi}=0$ adem\'as $\dot{\theta}$ debe ser igual al valor impuesto. 
+Es fundamental aclarar que las ecuaciones derivadas hasta aqu\'i ser\'an utilizadas exclusivamente para la linealizaci\'on del sistema y no para determinar los valores de los par\'ametros a controlar. Para esto \'ultimo continuaremos utilizando el modelo de \ref{eq:modelo}. El movimiento circular queda determinado exclusivamente por dos par\'ametros la velocidad ($V_I$) y la velocidad angular ($\dot{\theta}$), estos ser\'an considerados conocidos ya que es trabajo del generador de rutas o del usuario determinar que movimiento se desea realizar. Se desea determinar once par\'ametros, siete de las doce variables de estado (No nos interesa fijar ni \'angulo de Yaw ni la posici\'on y ya fue determinado que $\varphi = 0$) y las cuatro velocidades angulares de los motores.  Se deben tener en cuenta evidentemente las restricciones establecidas en \ref{eq:slit} sobre las derivadas de las velocidades del centro de masa y de las velocidades angulares. En lo que respecta a las derivadas de los \'angulos de Euler se debe cumplir que $\dot{\varphi}=\dot{\psi}=0$ adem\'as $\dot{\theta}$ debe ser igual al valor impuesto. De $dot{\psi} = 0$ se deduce trivialmente que $\omega_{q_x} = 0$ 
 
-Dado que la velocidad debe ser de m\'odulo constante, podemos considerar por ejemplo las tres primeras ecuaciones del MVE asumiendo $\theta=0$. Dado que estamos considerando movimientos circulares con la proyecci\'on sobre el plano horizontal del vector $\vec{j}_q$ tangente al c\'irculo, se tiene que:
+Para cada instante tendremos un \'angulo de Yaw distinto, por lo tanto la velocidad horizontal a cada instante tendr\'a una direcci\'on distinta, sin embargo su m\'odulo ser\'a constante. Sin p\'erdida de generalidad podemos considerar la situaci\'on evaluando $\theta = 0$
 
 \begin{equation}
+\label{eq:vel_theta}
 \left(\begin{array}{c}
-v_{q_x}\cos\varphi+v_{q_y}\sin\varphi\sin\psi+v_{q_z}\sin\varphi\cos\psi\\
+v_{q_x}+v_{q_y}\sin\psi\\
 v_{q_y}\cos\psi-v_{q_z}\sin\psi\\
--v_{q_x}\sin\varphi+v_{q_y}\cos\varphi\sin\psi+v_{q_z}\cos\varphi\cos\psi\\
+v_{q_y}\sin\psi+v_{q_z}\cos\psi\\
 \end{array}\right)=\left(\begin{array}{c}
+V_{I}\\
 0\\
-V_{I_{hor}}\\
-V_{I_{vert}}\\
+0\\
 \end{array}\right)
+\end{equation}	
+
+De la imposici\'on de dicha condici\'on surge:
+\begin{equation}
+v_{q_y} = - \tan^2\psi \quad v_{q_y}
 \end{equation}
 
-Tenemos entonces un sistema donde se desean determinar doce inc\'ognitas y se dispone de doce ecuaciones. Dicho sistema no ser\'a resuelto en forma anal\'itica, por el contrario se resolver\'a en forma num\'erica a la hora de planificar la trayectoria. 
+La soluci\'on de dicha ecuaci\'on es: $v_{q_y} = 0$, y por lo tanto $v_{q_z} = 0$ y $v_{q_x} = V_I$.\\
 
-Es importante aclarar que no ser\'a posible obtener una trayectoria circular en la cual la altura var\'ie. La razo\'on es que si queremos agregar esta caracter\'istica la posici\'on del cuadric\'optero debe ser expresada como $\vec{r}=R\vec{i}_1+z\vec{k}$. Luego al transformar la posici\'on a las coordenadas del cuadric\'optero la altura continua estando presente en las ecuaciones quedando entonces un sistema que no es invariante en el tiempo. 
+A esta altura nos resta por determinar simplemente tres de las variables de estado que permiten realizar un movimiento en c\'ircular ($\psi, \omega_{q_y}$ y $\omega_{q_z}$) adem\'as de las velocidades angulares de los motores. Hasta aqu\'i hemos utilizado cinco de las doce ecuaciones del modelo f\'isico, por lo tanto tenemos a\'un siete ecuaciones. El sistema a resolver no ser\'a resuelto en forma anal\'itica, por el contrario se resolver\'a en forma num\'erica a la hora de planificar la trayectoria. 
+
 
 Se ha dado un paso fundamental en camino de lograr controlar el cuadric\'optero, se han definido tres tipos de trayectorias las cuales es posible tratar desde el ``mundo'' del control lineal. Las trayector\'ias definidas ofrecen una amplia gama de posibilidades, ya que concatenando las mismas se pueden obtener pr\'acticamente cualquier movimiento, a excepci\'on de maniobras que involucren variaciones en m\'as de un \'angulo de Euler a la vez. El subconjunto de trayectorias con el que se puede trabajar es considerado ampliamente satisfactorio y por ende se da por concluido el an\'alisis sobre los puntos de operaciones y la linealizaci\'on del sistema. 
 
