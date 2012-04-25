@@ -12,7 +12,7 @@
 static uquad_mat_t *m3x1 = NULL;
 static uquad_mat_t *m3x3 = NULL;
 
-gps_t *  gps_comm_init(void){
+gps_t *  gps_comm_init(){
     gps_t * gps;
     int retval;
     gps = (gps_t *)malloc(sizeof(gps_t));
@@ -22,11 +22,11 @@ gps_t *  gps_comm_init(void){
     cleanup_if_null(gps->gpsd);
 
     gps->pos = uquad_mat_alloc(3,1);
-    cleanup_if_null(gps->gpsd);
+    cleanup_if_null(gps->pos);
     retval = uquad_mat_zeros(gps->pos);
     cleanup_if(retval);
     gps->pos_ep = uquad_mat_alloc(3,1);
-    cleanup_if_null(gps->gpsd);
+    cleanup_if_null(gps->pos_ep);
     uquad_mat_zeros(gps->pos_ep);
     cleanup_if(retval);
 
