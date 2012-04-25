@@ -15,7 +15,7 @@
 typedef struct gps_data_t gpsd_t;
 
 typedef struct utm{
-    int easting, northing;
+    double easting, northing;
     char let;
     int zone;
 }utm_t;
@@ -192,9 +192,9 @@ void gps_comm_dump(gps_t *gps, gps_comm_data_t *gps_data, FILE *stream);
 
 //#define sa         6378137.000000L
 //#define sb         6356752.314245L
-#define deg2utm_e  0.082094437950043L   // (sqrt((sa^2) - (sb^2))/sb)
-#define deg2utm_ee 0.00673949674233346L // (deg2utm_e*deg2utm_e)
-#define deg2utm_c  6399593.62575867L    // ((sa*sa)/sb)
+#define deg2utm_e  0.082094437950043   // (sqrt((sa^2) - (sb^2))/sb)
+#define deg2utm_ee 0.00673949674233346 // (deg2utm_e*deg2utm_e)
+#define deg2utm_c  6399593.62575867    // ((sa*sa)/sb)
 /** 
  * Converts from Lat/Long to UTM Coordinates (WGS84)
  * C implementation of deg2utm.m
