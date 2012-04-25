@@ -98,8 +98,31 @@ void  gps_comm_deinit(gps_t *gps);
 int gps_comm_wait_fix(gps_t *gps, uquad_bool_t *got_fix, struct timeval *t_out);
 
 /**
+ * Sets start time of client/test program.
+ * Should only be used when reading from a log file.
+ *
+ * @param gps
+ * @param tv_start new start time
+ *
+ * @return error code
+ */
+int gps_comm_set_tv_start(gps_t *gps, struct timeval tv_start);
+
+/**
+ * Sets starting position.
+ *
+ * NOTE: Must be called at most ONCE.
+ *
+ * @param gps
+ * @param gps_dat Position to set as 0
+ *
+ * @return error code
+ */
+int gps_comm_set_0(gps_t *gps, gps_comm_data_t *gps_dat);
+
+/**
  * Returns position determined by GPS when pgm started.
- * Must be called after gps_comm_wait_fx was successful.
+ * Must be called after gps_comm_set_0() was successful.
  *
  * @param gps
  * @param gps_dat Answer
@@ -146,14 +169,14 @@ int gps_comm_get_fd(gps_t *gps);
  * using select() with the file descriptor from gps_comm_get_fd()
  *
  * Will update status of gps->unread_data if successful.
- * NOTE: If NOT reading GPS data from a log file, then (ok==NULL) && (tv_curr==NULL). If
- * data is being read from a log file, then "tv_curr" must be updated using gettimeofday()
- * before calling gps_comm_read(), and "ok" will be true iif new data has been read. Time
- * in the log file will be used to determine whether a new line of data should be read, or
- * if not enough time has passed (this is specified by the timestamps in the log file).
+ * NOTE: If NOT reading GPS data from a log file, then (tv_curr==NULL). If data is being
+ * read from a log file, then "tv_curr" must be updated using gettimeofday() before calling
+ * gps_comm_read()
+ * Time in the log file will be used to determine whether a new line of data should be read,
+ * or if not enough time has passed (this is specified by the timestamps in the log file).
  *
  * @param gps 
- * @param ok is update was successful or NULL (must be NULL if using real GPS)
+ * @param ok true iif update was successful
  * @param tv_curr Current time in client program or NULL (must be NULL if using real GPS) 
  * 
  * @return error code.

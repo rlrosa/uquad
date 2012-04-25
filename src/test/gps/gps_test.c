@@ -222,36 +222,37 @@ int main(int argc, char *argv[])
 		{
 		    ret = gps_comm_read(gps, &ok, &tv_tmp);
 		    log_n_continue(ret, "Failed to read from log file!");
-		    if(!ok)
-			continue; // Not ready yet
 		}
 		else
 		{
-		    ret = gps_comm_read(gps, NULL, NULL);
+		    ret = gps_comm_read(gps, &ok, NULL);
 		    log_n_continue(ret, "Fail to get expected data from GPS!");
 		}
 
 		uquad_timeval_substract(&tv_diff, tv_tmp, tv_start);
 
-		if(gps_comm_3dfix(gps))
+		if(ok)
 		{
-		    ret = gps_comm_get_data(gps, gps_data, NULL);
-		    log_n_continue(ret, "Failed to get data!");
-		    if(output_file != NULL)
+		    if(gps_comm_3dfix(gps))
 		    {
-			log_tv_only(output_file,tv_diff);
-			gps_comm_dump(gps, gps_data, output_file);
+			ret = gps_comm_get_data(gps, gps_data, NULL);
+			log_n_continue(ret, "Failed to get data!");
+			if(output_file != NULL)
+			{
+			    log_tv_only(output_file,tv_diff);
+			    gps_comm_dump(gps, gps_data, output_file);
+			}
+			if(DUMP_STDOUT)
+			{
+			    log_tv_only(stdout,tv_diff);
+			    gps_comm_dump(gps, gps_data, stdout);
+			}
 		    }
-		    if(DUMP_STDOUT)
+		    else
 		    {
-			log_tv_only(stdout,tv_diff);
-			gps_comm_dump(gps, gps_data, stdout);
-		    }			
-		}
-		else
-		{
-		    err_log("Ignoring GPS data, no 3D fix!");
-		    sleep_ms(250);
+			err_log("Ignoring GPS data, no 3D fix!");
+			sleep_ms(250);
+		    }
 		}
             }
         }

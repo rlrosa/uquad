@@ -104,27 +104,8 @@ int gps_comm_wait_fix(gps_t *gps, uquad_bool_t *got_fix, struct timeval *t_out)
 	    err_propagate(retval);
 	    if(gps_comm_3dfix(gps))
 	    {
-		gps_comm_data_t *gps_dat = gps_comm_data_alloc();
-		if(gps_dat == NULL)
-		{
-		    cleanup_if(ERROR_MALLOC);
-		}
-		else
-		{
-		    retval = gps_comm_get_data(gps,gps_dat,NULL);
-		    cleanup_if(retval);
-		    gps->pos_0    = uquad_mat_alloc(3,1);
-		    if(gps->pos_0 == NULL)
-		    {
-			cleanup_if(ERROR_MALLOC);
-		    }
-		    retval = uquad_mat_copy(gps->pos_0,gps_dat->pos);
-		    cleanup_if(retval);
-		}
-		cleanup:
-		gps_comm_data_free(gps_dat);
 		*got_fix = true;
-		return retval;
+		return ERROR_OK;
 	    }
 	    else
 	    {
@@ -153,6 +134,21 @@ int gps_comm_wait_fix(gps_t *gps, uquad_bool_t *got_fix, struct timeval *t_out)
 	    }
 	}
     }
+}
+
+int gps_comm_set_0(gps_t *gps, gps_comm_data_t *gps_dat)
+{
+    int retval;
+    if(gps->pos_0 != NULL)
+	err_check(ERROR_FAIL,"Already set 0!");
+    gps->pos_0    = uquad_mat_alloc(3,1);
+    if(gps->pos_0 == NULL)
+    {
+	err_propagate(ERROR_MALLOC);
+    }
+    retval = uquad_mat_copy(gps->pos_0,gps_dat->pos);
+    err_propagate(retval);
+    return retval;
 }
 
 int gps_comm_get_0(gps_t *gps, gps_comm_data_t *gps_dat)
@@ -300,6 +296,28 @@ int gps_comm_get_fd(gps_t *gps)
 	fileno(gps->dev);
 }
 
+int gps_comm_set_tv_start(gps_t *gps, struct timeval tv_start)
+{
+    if(gps == NULL)
+    {
+	err_check(ERROR_INVALID_ARG,"Invalid arguments!");
+    }
+    if(gps->dev == NULL)
+    {
+	err_check(ERROR_FAIL, "Can only be used when reading from a log file!");
+    }
+    if(gps->tv_start == NULL)
+    {
+	gps->tv_start = (struct timeval *)malloc(sizeof(struct timeval));
+	if(gps->tv_start == NULL)
+	{
+	    err_check(ERROR_MALLOC, "Failed to allocate mem for tv_log_start!");
+	}
+    }
+    *(gps->tv_start) = tv_start;
+    return ERROR_OK;
+}
+
 int gps_comm_read(gps_t *gps, uquad_bool_t *ok, struct timeval *tv_curr)
 {
     int
@@ -309,6 +327,11 @@ int gps_comm_read(gps_t *gps, uquad_bool_t *ok, struct timeval *tv_curr)
     struct timeval
 	tv_tmp,
 	tv_diff;
+    if(gps == NULL || ok == NULL)
+    {
+	err_check(ERROR_INVALID_ARG,"Invalid arguments!");
+    }
+    *ok = false;
     if(gps->dev == NULL)
     {
 	// reading from real GPS device
@@ -334,11 +357,10 @@ int gps_comm_read(gps_t *gps, uquad_bool_t *ok, struct timeval *tv_curr)
 	 */
 	static uquad_bool_t read_tv = false;
 	static struct timeval tv_diff_log;
-	*ok = false;
 	double dtmp;
-	if(tv_curr == NULL || ok == NULL)
+	if(tv_curr == NULL)
 	{
-	    err_check(ERROR_INVALID_ARG,"Timestamp and boolean are required!");
+	    err_check(ERROR_INVALID_ARG,"Timestamp required!");
 	}
 	if(gps->tv_start == NULL)
 	{
@@ -399,11 +421,8 @@ int gps_comm_read(gps_t *gps, uquad_bool_t *ok, struct timeval *tv_curr)
 		read_double(gps->dev,dtmp);
 	    }
 	    read_double(gps->dev,dtmp); // lat
-	    log_double_only(stdout,dtmp);
 	    gps_fix.latitude  = dtmp;
 	    read_double(gps->dev,dtmp); // lon
-	    log_double_only(stdout,dtmp);
-	    log_eol(stdout);
 	    gps_fix.longitude = dtmp;
 	    read_double(gps->dev,dtmp); // speed
 	    gps_fix.speed     = dtmp;
@@ -470,8 +489,7 @@ int gps_comm_read(gps_t *gps, uquad_bool_t *ok, struct timeval *tv_curr)
 	    gps->track_ep = deg2rad(gps_fix.epd);
 	}
     }
-    if(gps->dev != NULL)
-	*ok = true;
+    *ok = true;
     return ERROR_OK;
 }
 
