@@ -4,45 +4,144 @@
 
 #include <uquad_gps_comm.h>
 #include <uquad_aux_io.h>
-#include <unistd.h>
+#include <uquad_error_codes.h>
+#include <uquad_config.h>
+#include <sys/signal.h> // for SIGINT and SIGQUIT
+#include <unistd.h>     // For STDIN_FILENO
 
-#define FREE_N_DIE_IF_ERROR(ret,msg) if(ret!=ERROR_OK){fprintf(stderr,"GPS test failed:%s:%d:%s\n",__FILE__,__LINE__,msg);goto kill_n_close;}
+#define UTM_CONV  1
+#if UTM_CONV
+FILE *input = NULL,*output = NULL;
+#endif // UTM_CONV
 
-int main(void)
+gps_t *gps = NULL;
+io_t *io   = NULL;
+
+void quit()
 {
     int ret;
-    gps_t *gps;
-    io_t *io;
+    ret = io_deinit(io);
+    if(ret != ERROR_OK)
+    {
+	err_log("Failed to deinit io.");
+    }
+    gps_comm_deinit(gps);
+#if UTM_CONV
+    if(input != NULL && input != stdin)
+	fclose(input);
+    if(output != NULL && output != stdout)
+	fclose(output);
+#endif
+    exit(0);
+}
+
+void uquad_sig_handler(int signal_num)
+{
+    err_log_num("Caught signal:",signal_num);
+    quit();
+}
+
+int main(int argc, char *argv[])
+{
+    int ret;
     uquad_bool_t got_fix;
     struct timeval t_out;
+    // Catch signals
+    signal(SIGINT, uquad_sig_handler);
+    signal(SIGQUIT, uquad_sig_handler);
+
+#if UTM_CONV
+    utm_t utm;
+    double
+	dtmp,
+	lat,
+	lon;
+
+    if(argc < 2)
+    {
+	input = stdin;
+	output = stdout;
+    }
+    else
+    {
+	input = fopen(argv[1],"r");
+	if(input == NULL)
+	{
+	    err_log_stderr("Failed to open file!");
+	    quit();
+	}
+	output = fopen("output.log","w");
+	if(output == NULL)
+	{
+	    err_log_stderr("Failed to open file!");
+	    quit();
+	}
+    }
+
+    for(;;)
+    {
+	if(input == stdin)
+	{
+	    ret = fprintf(stdout,"\nlat lon:");
+	    if(ret <= 0)
+	    {
+		err_log_stderr("Failed to write to stdout!");
+		quit();
+	    }
+	}
+	ret = fscanf(input,"%lf",&dtmp);
+	if(ret <= 0)
+	{
+	    err_log_stderr("Failed to read from input!");
+	    quit();
+	}
+	lat = dtmp;
+	ret = fscanf(input,"%lf",&dtmp);
+	if(ret <= 0)
+	{
+	    err_log_stderr("Failed to read from input!");
+	    quit();
+	}
+	lon = dtmp;
+	ret = gps_comm_deg2utm(&utm,lat,lon);
+	quit_log_if(ret,"Failed to convert to UTM!");
+	ret = fprintf(output,"%lf\t%lf\n",utm.easting,utm.northing);
+	if(ret <= 0)
+	{
+	    err_log_stderr("Failed to write to output!");
+	    quit();
+	}
+    }
+#endif
 
     gps = gps_comm_init();
-    if(gps == NULL){
-	FREE_N_DIE_IF_ERROR(ERROR_MALLOC,"GPS test failed.");
+    if(gps == NULL)
+    {
+	quit_log_if(ERROR_MALLOC,"GPS test failed.");
     }
 
     err_log("Will attempt to get GPS fix...");
     t_out.tv_usec = 0;
     t_out.tv_sec  = 1;
     ret = gps_comm_wait_fix(gps,&got_fix,&t_out);
-    FREE_N_DIE_IF_ERROR(ret,"Error waiting for gps!");
+    quit_log_if(ret,"Error waiting for gps!");
     if(!got_fix)
     {
-	FREE_N_DIE_IF_ERROR(ERROR_GPS,"Failed to get GPS fix!");
+	quit_log_if(ERROR_GPS,"Failed to get GPS fix!");
     }
 
     io = io_init();
     if(io == NULL){
-	FREE_N_DIE_IF_ERROR(ERROR_MALLOC,"GPS test failed.");
+	quit_log_if(ERROR_MALLOC,"GPS test failed.");
     }
 
     // add GPS
     ret = io_add_dev(io, gps_comm_get_fd(gps));
-    FREE_N_DIE_IF_ERROR(ret,"Failed to add device to io.");
+    quit_log_if(ret,"Failed to add device to io.");
 
     // add stdin to support clean exit
     ret = io_add_dev(io,STDIN_FILENO);
-    FREE_N_DIE_IF_ERROR(ret,"Failed to add STDIN to dev list");
+    quit_log_if(ret,"Failed to add STDIN to dev list");
 
     /// -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
     /// Poll n read loop
@@ -53,17 +152,17 @@ int main(void)
     gps_data = gps_comm_data_alloc();
     if(gps_data == NULL)
     {
-	FREE_N_DIE_IF_ERROR(ERROR_MALLOC, "Failed to allocate gps_data!");
+	quit_log_if(ERROR_MALLOC, "Failed to allocate gps_data!");
     }
     unsigned char tmp_buff[2];
     //    poll_n_read:
     while(1){
         ret = io_poll(io);
-        FREE_N_DIE_IF_ERROR(ret,"io_poll() error");
+        quit_log_if(ret,"io_poll() error");
         // gps
         if(reg_gps){
             ret = io_dev_ready(io,gps_comm_get_fd(gps),&read,&write);
-            FREE_N_DIE_IF_ERROR(ret,"io_dev_ready() error");
+            quit_log_if(ret,"io_dev_ready() error");
             if(read){		
                 ret = gps_comm_read(gps);
                 if(ret != ERROR_OK)
@@ -90,28 +189,25 @@ int main(void)
         // stdin
         if(reg_stdin){
             ret = io_dev_ready(io,STDIN_FILENO,&read,&write);
-            FREE_N_DIE_IF_ERROR(ret,"io_dev_ready() error");
+            quit_log_if(ret,"io_dev_ready() error");
             if(read){
                 ret = fread(tmp_buff,1,1,stdin);
                 if(ret<=0)
                     fprintf(stdout,"\nNo user input!!\n\n");
                 else
+		{
                     // Any user input will terminate program
-                    goto kill_n_close;
+                    quit();
+		}
             }
         }
         fflush(stdout);
     }
 
     // Failure...
-    kill_n_close:
-    ret = io_deinit(io);
-    if(ret != ERROR_OK){
-	err_log("Failed to deinit io.");
-    }
-    gps_comm_deinit(gps);
-    return ERROR_OK;
+    quit();
 }
+
 // -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 #else //UQUAD_GPS_LIB_TEST defined, testing gpsd library directly.
 // -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --

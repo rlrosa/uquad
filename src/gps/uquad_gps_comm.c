@@ -227,15 +227,15 @@ int gps_comm_deg2utm(utm_t *utm, double la, double lo)
     ta = ( deg2utm_ee / 2 ) * uquad_square(epsilon) * uquad_square(cos(lat));
     a1 = sin( 2 * lat );
     a2 = a1 * uquad_square(cos(lat));
-    j2 = lat + ( a1 / 2 );
-    j4 = ( ( 3 * j2 ) + a2 ) / 4;
-    j6 = ( ( 5 * j4 ) + ( a2 * uquad_square(cos(lat))) ) / 3;
-    alfa = ( 3 / 4 ) * deg2utm_ee;
-    beta = ( 5 / 3 ) * uquad_square(alfa);
-    gama = ( 35 / 27 ) * (alfa * alfa * alfa);
+    j2 = lat + ( a1 / 2.0 );
+    j4 = ( ( 3 * j2 ) + a2 ) / 4.0;
+    j6 = ( ( 5 * j4 ) + ( a2 * uquad_square(cos(lat))) ) / 3.0;
+    alfa = ( 0.75 ) * deg2utm_ee;
+    beta = ( 1.6666666666667 ) * uquad_square(alfa);
+    gama = ( 1.2962962962963 ) * (alfa * alfa * alfa);
     Bm = 0.9996 * deg2utm_c * ( lat - alfa * j2 + beta * j4 - gama * j6 );
-    utm->easting  = epsilon * v * ( 1 + ( ta / 3 ) ) + 500000;
-    utm->northing = nu * v * ( 1 + ta ) + Bm;
+    utm->easting  = epsilon * v * ( 1.0 + ( ta / 3.0 ) ) + 500000;
+    utm->northing = nu * v * ( 1.0 + ta ) + Bm;
 
     if (utm->northing < 0)
 	utm->northing += 9999999;
