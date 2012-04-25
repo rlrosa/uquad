@@ -365,6 +365,20 @@ ERROR_TIMING
 	return ERROR_MALLOC;				\
     }
 
+/**
+ * Reads a double from FILE* src, returns answer in db, checks
+ * for errors and logs if so.
+ *
+ */
+#define read_double(src,db)					\
+    {								\
+	if(fscanf(src, "%lf", &db) <= 0 )			\
+	{							\
+	    err_log_stderr("Failed to read double!");		\
+	    err_propagate(ERROR_READ);				\
+	}							\
+    }
+
 /// No functions
 
 #endif //UQUAD_ERROR_CODES_H

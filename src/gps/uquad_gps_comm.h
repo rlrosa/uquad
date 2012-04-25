@@ -61,16 +61,22 @@ typedef struct gps{
 
     double track;                // Course Made Good (rel. to N)  [rad]
     double track_ep;             // CMG uncertainty               [rad]
+
+    // Log file reading
+    FILE   *dev;                 // For reading GPS data from log file
+    struct timeval *tv_start;    // Test/Client program start time.
+    struct timeval *tv_log_start;// Start time according to log file.
+    // log indicates pgm started
 }gps_t;
 
-/** 
+/**
  * Initializes memory for gps data structure, and opens connection to daemon.
  * 
  * @return Pointer to structure, or NULL if something went wrong.
  */
-gps_t *gps_comm_init(void);
+gps_t *  gps_comm_init(const char *device);
 
-/** 
+/**
  * Frees memory used for gps data structure, and closes connection to daemon.
  *  
  * @param gps 
@@ -78,7 +84,7 @@ gps_t *gps_comm_init(void);
  */
 void  gps_comm_deinit(gps_t *gps);
 
-/** 
+/**
  * Waits for gps fix.
  * If successful, then gps should have data ready to be read.
  * Will set initial position.
@@ -116,7 +122,7 @@ int gps_comm_get_0(gps_t *gps, gps_comm_data_t *gps_dat);
  */
 int gps_comm_get_fix_mode(gps_t *gps);
 
-/** 
+/**
  * Returns true iif GPS has 3D fix
  * 
  * @param gps 
@@ -125,7 +131,7 @@ int gps_comm_get_fix_mode(gps_t *gps);
  */
 uquad_bool_t gps_comm_3dfix(gps_t *gps);
 
-/** 
+/**
  * Return file descriptor to allow reading only if new data is available.
  * 
  * @param gps 
@@ -134,20 +140,27 @@ uquad_bool_t gps_comm_3dfix(gps_t *gps);
  */
 int gps_comm_get_fd(gps_t *gps);
 
-/** 
+/**
  * Update data from GPS.
  * This function should only be called if new data is available, which can be checked
- *using select() with the file descriptor from gps_comm_get_fd()
- * 
- * Will update "unread_data" if successful.
+ * using select() with the file descriptor from gps_comm_get_fd()
+ *
+ * Will update status of gps->unread_data if successful.
+ * NOTE: If NOT reading GPS data from a log file, then (ok==NULL) && (tv_curr==NULL). If
+ * data is being read from a log file, then "tv_curr" must be updated using gettimeofday()
+ * before calling gps_comm_read(), and "ok" will be true iif new data has been read. Time
+ * in the log file will be used to determine whether a new line of data should be read, or
+ * if not enough time has passed (this is specified by the timestamps in the log file).
  *
  * @param gps 
+ * @param ok is update was successful or NULL (must be NULL if using real GPS)
+ * @param tv_curr Current time in client program or NULL (must be NULL if using real GPS) 
  * 
  * @return error code.
  */
-int gps_comm_read(gps_t *gps);
+int gps_comm_read(gps_t *gps, uquad_bool_t *ok, struct timeval *tv_curr);
 
-/** 
+/**
  * Returns info from the GPS.
  * Look at the declaration of gps_t for more info.
  * NOTE: If GPS_COMM_DATA_NON_INERTIAL_VEL, imu_data must be NULL.
@@ -155,27 +168,27 @@ int gps_comm_read(gps_t *gps);
  * @param gps 
  * @param gps_data Answer. Vel only valid if gps->vel_ok
  * @param imu_data IMU info to convert climb/speed/true_north to vx,vy,vz
- * 
+ *
  * @return error code
  */
 int gps_comm_get_data(gps_t *gps, gps_comm_data_t *gps_data, imu_data_t *imu_data);
 
-/** 
+/**
  * Same as gps_comm_get_data, except that only unread data will be considered
- * 
+ *
  * @param gps 
  * @param gps_data
  * @param imu_data 
- * 
+ *
  * @return 
  */
 int gps_comm_get_data_unread(gps_t *gps, gps_comm_data_t *gps_data, imu_data_t *imu_data);
 
-/** 
+/**
  * Prints data from last gps_read, with timestamp
  * Format:
  *     timestamp fix x y z vx vy vz lat lon speed climb track vel_ok
- * 
+ *
  * Description:
  *   - timestamp: is the moment the beagleboard received the data from the GPS.
  *   - fix: Fix type, should be 3D.
@@ -195,7 +208,7 @@ void gps_comm_dump(gps_t *gps, gps_comm_data_t *gps_data, FILE *stream);
 #define deg2utm_e  0.082094437950043   // (sqrt((sa^2) - (sb^2))/sb)
 #define deg2utm_ee 0.00673949674233346 // (deg2utm_e*deg2utm_e)
 #define deg2utm_c  6399593.62575867    // ((sa*sa)/sb)
-/** 
+/**
  * Converts from Lat/Long to UTM Coordinates (WGS84)
  * C implementation of deg2utm.m
  * Author: Rafael Palacios
