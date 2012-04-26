@@ -147,21 +147,6 @@ ERROR_TIMING
 #define log_tab(log) fprintf(log,"\t")
 
 /**
- * Print timeval message with unsigned long to stderr
- * 
- */
-#define err_log_tv(msg,tv)						\
-    {									\
-	fprintf(stderr,"%s:%s:%d: %s(%ld.%06ld)\n",			\
-		__TIME__,__FILE__,__LINE__,				\
-		msg,tv.tv_sec, tv.tv_usec);				\
-	if(REROUTE_STDERR && rerouted())				\
-	    fprintf(stdout,"%s:%s:%d: %s(%ld.%06ld)\n",			\
-		    __TIME__,__FILE__,__LINE__,				\
-		    msg,tv.tv_sec, tv.tv_usec);				\
-    }
-
-/**
  * Print timeval to log with unsigned long to log
  * 
  */
@@ -169,6 +154,17 @@ ERROR_TIMING
     {									\
 	fprintf(log,"%s:%s:%d: %s(%ld.%06ld)\n",			\
 		__TIME__,__FILE__,__LINE__,msg,tv.tv_sec, tv.tv_usec);	\
+    }
+
+/**
+ * Print timeval message with unsigned long to stderr
+ * 
+ */
+#define err_log_tv(msg,tv)						\
+    {									\
+	log_tv(stderr,msg,tv)						\
+	if(REROUTE_STDERR && rerouted())				\
+	    log_tv(stdout,msg,tv)					\
     }
 
 /**
@@ -215,29 +211,9 @@ ERROR_TIMING
     {									\
 	if(retval!=ERROR_OK)						\
 	{								\
-	    fprintf(stderr,"%s:%s:%d: %s\n",				\
-		    __TIME__,__FILE__,__LINE__,msg);			\
+	    err_log(msg);						\
+	    return retval;						\
 	}								\
-	/* Check if stderr was re-routed, if so, log to stdout */	\
-	if(REROUTE_STDERR && rerouted())				\
-	    fprintf(stdout,"%s:%s:%d: %s\n",				\
-		    __TIME__,__FILE__,__LINE__,msg);			\
-	return retval;							\
-    }
-
-/**
- * If @retval is an error, then print strerr to stderr and propagate error.
- *
- */
-#define err_check_std(retval)						\
-    if(retval!=ERROR_OK)						\
-    {									\
-	fprintf(stderr,"%s:%s:%d: %s\n",				\
-		__TIME__,__FILE__,__LINE__,strerror(errno));		\
-	if(REROUTE_STDERR && rerouted())				\
-	    fprintf(stdout,"%s:%s:%d: %s\n",				\
-		    __TIME__,__FILE__,__LINE__,strerror(errno));	\
-	return retval;							\
     }
 
 /**
@@ -252,6 +228,17 @@ ERROR_TIMING
 	if(REROUTE_STDERR && rerouted())				\
 	    fprintf(stdout,"%s:%s:%d: %s\n",				\
 		    __TIME__,__FILE__,__LINE__,strerror(errno));	\
+    }
+
+/**
+ * If @retval is an error, then print strerr to stderr and propagate error.
+ *
+ */
+#define err_check_std(retval)						\
+    if(retval!=ERROR_OK)						\
+    {									\
+	err_log_std(retval);						\
+	return retval;							\
     }
 
 /**
@@ -285,11 +272,7 @@ ERROR_TIMING
 #define cleanup_if_null(ptr)				\
     if(ptr == NULL)					\
     {							\
-	fprintf(stderr,"%s:%s:%d: Null pointer!\n",	\
-		__TIME__,__FILE__,__LINE__);		\
-	if(REROUTE_STDERR && rerouted())		\
-	    fprintf(stdout,"%s:%s:%d: Null pointer!\n",	\
-		    __TIME__,__FILE__,__LINE__);	\
+	err_log("Null pointer!");			\
 	goto cleanup;					\
     }
 
@@ -301,11 +284,7 @@ ERROR_TIMING
 #define cleanup_log_if(retval,msg)		\
     if(retval != ERROR_OK)			\
     {						\
-	fprintf(stderr,"%s:%d:\t%s\n",		\
-		__FILE__,__LINE__,msg);		\
-	if(REROUTE_STDERR && rerouted())	\
-	    fprintf(stdout,"%s:%d:\t%s\n",	\
-		    __FILE__,__LINE__,msg);	\
+	err_log(msg);				\
 	goto cleanup;				\
     }
 
