@@ -3,6 +3,7 @@
 
 #include <uquad_error_codes.h>
 #include <uquad_aux_time.h>
+#include <uquad_config.h>
 #include <sys/types.h>
 #include <sys/ipc.h>
 #include <sys/msg.h>
@@ -16,15 +17,16 @@
 #endif
 
 
-#define MSGSZ 4
-#define UQUAD_MSGTYPE 1L
-#define UQUAD_KQ_MAX_ACKS 100
+#define MSGSZ                    4
+#define UQUAD_MSGTYPE            1L
+#define UQUAD_KQ_WARN_ACKS       1   // # of errors to allow before logging errors
+#define UQUAD_KQ_MAX_ACKS        100
 #define UQUAD_KQ_MAX_ACKS_MISSED 20
-#define UQUAD_KQ_MAX_CLEARS 100
+#define UQUAD_KQ_MAX_CLEARS      100
 
-#define UQUAD_KQ_S_LOG_DATA "kq_s_data.log"
-#define UQUAD_KQ_S_LOG_ACK "kq_s_ack.log"
-#define UQUAD_KQ_ACK_STR "AKOK"
+#define UQUAD_KQ_S_LOG_DATA      "kq_s_data.log"
+#define UQUAD_KQ_S_LOG_ACK       "kq_s_ack.log"
+#define UQUAD_KQ_ACK_STR         "AKOK"
 
 typedef struct msgbuf {
     long    mtype;
@@ -33,10 +35,11 @@ typedef struct msgbuf {
 
 typedef struct uquad_kmsgq{
     message_buf_t mbuf;
-    key_t k_s;     // server key
-    key_t k_c;     // client key
+    key_t k_s;       // server key
+    key_t k_c;       // client key
     int msgflg;
-    int acks_pend; // pending acks
+    int acks_pend;   // pending acks
+    int acks_failed; // Count of acks errors (too many/not enough)
     unsigned long tx_counter;
 #if LOG_KQ_S_DATA
     FILE *s_log_data;   // server log

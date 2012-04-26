@@ -1,5 +1,6 @@
 #include "uquad_kernel_msgq.h"
 #include <uquad_aux_math.h>
+#include <uquad_aux_time.h>
 
 int uquad_kmsgq_clear(key_t key)
 {
@@ -82,7 +83,16 @@ int uquad_kmsgq_get_ack(uquad_kmsgq_t *server)
 
 int uquad_kmsgq_check_stat(uquad_kmsgq_t *server)
 {
-    int retval = ERROR_OK, ack_cnt = 0, watchdog = 0;
+    int
+	retval = ERROR_OK,
+	ack_cnt = 0,
+	watchdog = 0;
+#if DEBUG
+    struct timeval
+	tv_tmp,
+	tv_diff;
+    static struct timeval tv_fail_init;
+#endif // DEBUG
     if(server->acks_pend == 0)
 	return ERROR_OK;
     while(watchdog++ < 10)
@@ -102,35 +112,65 @@ int uquad_kmsgq_check_stat(uquad_kmsgq_t *server)
     server->acks_pend -= ack_cnt;
     if(server->acks_pend < 0)
     {
-	err_log("ACK count lost!");
+	if(server->acks_failed == 0)
+	{
+	    err_log("ACK count lost!");
+	}
 	server->acks_pend = 0;
     }
 
     if(ack_cnt == 1)
     {
 	// ack received correctly
+#if DEBUG
+	if(server->acks_failed != 0)
+	{
+	    gettimeofday(&tv_tmp,NULL);
+	    retval = uquad_timeval_substract(&tv_diff,tv_tmp,tv_fail_init);
+	    if(retval < 0)
+	    {
+		err_log_tv("Absurd timing!",tv_diff);
+	    }
+	    else
+	    {
+		err_log_tv("kmesg recovered!",tv_diff);
+	    }
+	}
+#endif
+	server->acks_failed = 0;
 	retval = ERROR_OK;
     }
     else
     {
+#if DEBUG
+	if(server->acks_failed == 0)
+	    gettimeofday(&tv_fail_init,NULL);
+#endif // DEBUG
+	server->acks_failed++;
 	// clean up
 	if (ack_cnt == 0)
 	{
-	    // report data was not received by client
-	    err_log("WARN: client did not ack!");
 	    retval = uquad_kmsgq_clear(server->k_s);
 	    err_propagate(retval);
 	    server->acks_pend = 0;
-	    retval = ERROR_KQ_ACK_NONE;
+	    // report data was not received by client
+	    if(server->acks_failed > UQUAD_KQ_WARN_ACKS)
+	    {
+		err_log_num("WARN: client did not ack!",server->acks_failed);
+		retval = ERROR_KQ_ACK_NONE;
+	    }
 	}
 	if (ack_cnt > 1)
 	{
-	    // report weird stuff comming
-	    err_log_num("WARN: recieved more acks than expected! Will clear ack queue. ACKs:",ack_cnt);
 	    retval = uquad_kmsgq_clear(server->k_c);
 	    err_propagate(retval);
 	    server->acks_pend = 0;
-	    retval = ERROR_KQ_ACK_MORE;
+	    if(server->acks_failed > UQUAD_KQ_WARN_ACKS)
+	    {
+		// report weird stuff comming
+		err_log_num("WARN: recieved more acks than expected! Will clear ack queue. ACKs:",ack_cnt);
+		retval = ERROR_KQ_ACK_MORE;
+	    }
 	}
     }
     return retval;
