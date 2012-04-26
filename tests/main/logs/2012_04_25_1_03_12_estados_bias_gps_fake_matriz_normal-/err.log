@@ -1,0 +1,40 @@
+01:46:12:/home/root/work/uquad/src/control/control.c:51: Loaded proportional gain matrix from:(/home/root/work/uquad/src/control/normal-/K_full.txt)
+01:46:19:/home/root/work/uquad/src/main/main.c:647: Entering while:(0.000000)
+01:46:19:/home/root/work/uquad/src/main/main.c:803: IMU startup completed at (14.067596)
+01:46:19:/home/root/work/uquad/src/main/main.c:948: IMU calibration completed:(19.176819)
+0.000000	0.00000000	-0.23432582	-0.12822914	9.93518989	0.00000000	0.00000000	0.00000000	-0.01290585	0.02357910	-0.00893280	33.80000000	0.00000000
+01:13:40:/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:105: ACK count lost!
+01:13:40:/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:129: WARN: recieved more acks than expected! Will clear ack queue. ACKs:(2)
+backtrace:/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:160
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:89
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:145
+01:46:19:/home/root/work/uquad/src/main/main.c:1117: Failed to set motor speed!
+01:46:19:/home/root/work/uquad/src/main/main.c:678: Recovered! Errors:(1)
+01:46:19:/home/root/work/uquad/src/main/main.c:1063: GPS run!(19.196655)
+01:46:19:/home/root/work/uquad/src/main/main.c:1020: TS supplied to Kalman out of range!:(0.018464)
+01:46:19:/home/root/work/uquad/src/main/main.c:1063: GPS run!(20.216674)
+01:46:19:/home/root/work/uquad/src/main/main.c:1100: Kalman startup completed in (21.160125)
+01:46:19:/home/root/work/uquad/src/main/main.c:1063: GPS run!(21.201049)
+01:46:19:/home/root/work/uquad/src/main/main.c:1020: TS supplied to Kalman out of range!:(0.012451)
+01:46:19:/home/root/work/uquad/src/main/main.c:1020: TS supplied to Kalman out of range!:(0.012298)
+01:46:19:/home/root/work/uquad/src/main/main.c:1063: GPS run!(22.205841)
+01:46:19:/home/root/work/uquad/src/main/main.c:1020: TS supplied to Kalman out of range!:(0.019500)
+01:46:19:/home/root/work/uquad/src/main/main.c:1063: GPS run!(23.210388)
+01:46:19:/home/root/work/uquad/src/main/main.c:1020: TS supplied to Kalman out of range!:(0.020019)
+01:46:19:/home/root/work/uquad/src/main/main.c:316: Caught signal:(2)
+01:46:19:/home/root/work/uquad/src/main/main.c:185: Motors killed!(23.759094)
+01:13:40:/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:120: WARN: client did not ack!
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:89
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:145
+01:46:19:/home/root/work/uquad/src/main/main.c:1164: Failed to set motor speed!
+01:46:19:/home/root/work/uquad/src/main/main.c:678: Recovered! Errors:(1)
+01:46:19:/home/root/work/uquad/src/main/main.c:316: Caught signal:(2)
+01:46:19:/home/root/work/uquad/src/main/main.c:194: main deinit started...(27.530609)
+01:39:02:/home/root/work/uquad/src/logger/uquad_logger.c:154: Closing logger:(/media/sda1/tv.log)
+01:39:02:/home/root/work/uquad/src/logger/uquad_logger.c:154: Closing logger:(/media/sda1/gps.log)
+01:39:02:/home/root/work/uquad/src/logger/uquad_logger.c:154: Closing logger:(/media/sda1/kalman_in.log)
+01:39:02:/home/root/work/uquad/src/logger/uquad_logger.c:154: Closing logger:(/media/sda1/x_hat.log)
+01:39:02:/home/root/work/uquad/src/logger/uquad_logger.c:154: Closing logger:(/media/sda1/w_ctrl.log)
+01:39:02:/home/root/work/uquad/src/logger/uquad_logger.c:154: Closing logger:(/media/sda1/w.log)
+01:39:02:/home/root/work/uquad/src/logger/uquad_logger.c:154: Closing logger:(/media/sda1/imu_avg.log)
+01:39:02:/home/root/work/uquad/src/logger/uquad_logger.c:154: Closing logger:(/media/sda1/imu_data.log)
