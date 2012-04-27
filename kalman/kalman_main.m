@@ -45,6 +45,7 @@ use_fake_gps = 1; % Feed kalman_gps with fake data (only if use_gps)
 use_fake_T   = 0; % Ignore real timestamps from log, use average
 allin1       = 1; % Includes inertial and gps Kalman all in 1 filter
 use_gps_vel  = 0; % Uses velocity from GPS. Solo funca si allin1==0 (por ahora)
+stabilize_ts = 0; % Read out IMU data until stable Ts (matches main.c after 2012-04027)
 
 %% Sanity check
 if(use_fake_gps && ~use_gps)
@@ -112,14 +113,35 @@ if(use_gps)
 end
 
 %% Re-calibrate sensors
-
 % startup_runs samples are discarded
-acrud = acrud(startup_runs:end,:);
-wcrud = wcrud(startup_runs:end,:);
-mcrud = mcrud(startup_runs:end,:);
-bcrud = bcrud(startup_runs:end,:);
-tcrud = tcrud(startup_runs:end,:);
-T = T(startup_runs:end);
+if (stabilize_ts)
+  ts_ok_count = 0;
+  i = 1;
+  dT = diff(T);
+  while(ts_ok_count < 10)
+    if((dT(i) > 8000e-6) && (dT(i) < 12000e-6))
+      ts_ok_count = ts_ok_count + 1;
+      T_ok = i;
+    else
+      ts_ok_count = 0;
+    end
+    i = i + 1;
+  end
+  fprintf('Discarded %d samples during stabilization\n',T_ok);
+  acrud = acrud(T_ok:end,:);
+  wcrud = wcrud(T_ok:end,:);
+  mcrud = mcrud(T_ok:end,:);
+  bcrud = bcrud(T_ok:end,:);
+  tcrud = tcrud(T_ok:end,:);
+  T = T(T_ok(end):end);
+else
+  acrud = acrud(startup_runs:end,:);
+  wcrud = wcrud(startup_runs:end,:);
+  mcrud = mcrud(startup_runs:end,:);
+  bcrud = bcrud(startup_runs:end,:);
+  tcrud = tcrud(startup_runs:end,:);
+  T = T(startup_runs:end);
+end
 
 % p0 and theta0 is estimated form first imu_calib samples
 [a_calib,w_calib,euler_calib] = mong_conv(acrud(1:imu_calib,:),wcrud(1:imu_calib,:),mcrud(1:imu_calib,:),0,tcrud(1:imu_calib));
