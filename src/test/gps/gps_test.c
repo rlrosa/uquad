@@ -9,10 +9,11 @@
 #include <sys/signal.h> // for SIGINT and SIGQUIT
 #include <unistd.h>     // For STDIN_FILENO
 
-#define UTM_CONV  1
-#if UTM_CONV
-FILE *input = NULL,*output = NULL;
-#endif // UTM_CONV
+#define DUMP_STDOUT  1
+#define UTM_CONV     0
+#define ERR_MAX      50
+
+FILE *input = NULL,*output = NULL, *output_file = NULL;
 
 gps_t *gps = NULL;
 io_t *io   = NULL;
@@ -26,12 +27,12 @@ void quit()
 	err_log("Failed to deinit io.");
     }
     gps_comm_deinit(gps);
-#if UTM_CONV
     if(input != NULL && input != stdin)
 	fclose(input);
     if(output != NULL && output != stdout)
 	fclose(output);
-#endif
+    if(output_file != NULL)
+	fclose(output_file);
     exit(0);
 }
 
@@ -41,16 +42,9 @@ void uquad_sig_handler(int signal_num)
     quit();
 }
 
-int main(int argc, char *argv[])
+void utm_only(int argc, char *argv[])
 {
     int ret;
-    uquad_bool_t got_fix;
-    struct timeval t_out;
-    // Catch signals
-    signal(SIGINT, uquad_sig_handler);
-    signal(SIGQUIT, uquad_sig_handler);
-
-#if UTM_CONV
     utm_t utm;
     double
 	dtmp,
@@ -112,22 +106,71 @@ int main(int argc, char *argv[])
 	    quit();
 	}
     }
-#endif
+}
 
-    gps = gps_comm_init();
+int main(int argc, char *argv[])
+{
+    int ret;
+    uquad_bool_t
+	got_fix   = false,
+	using_log = false;
+    char *dev = NULL;
+    struct timeval
+	t_out,
+	tv_start,
+	tv_tmp,
+	tv_diff;
+    // Catch signals
+    signal(SIGINT, uquad_sig_handler);
+    signal(SIGQUIT, uquad_sig_handler);
+
+    gettimeofday(&tv_start,NULL);
+
+    if(UTM_CONV)
+    {
+	utm_only(argc, argv);
+	err_log("Should never get here!");
+	quit();
+    }
+    if(argc > 1)
+    {
+	using_log = true;
+	dev = argv[1];	
+    }
+    if(argc > 2)
+    {
+	output_file = fopen(argv[2],"w");
+	if(output_file == NULL)
+	{
+	    err_log_stderr("Failed to open log file!");
+	    quit_if(ERROR_WRITE);
+	}
+    }
+
+    gps = gps_comm_init(dev);
     if(gps == NULL)
     {
 	quit_log_if(ERROR_MALLOC,"GPS test failed.");
     }
 
-    err_log("Will attempt to get GPS fix...");
-    t_out.tv_usec = 0;
-    t_out.tv_sec  = 1;
-    ret = gps_comm_wait_fix(gps,&got_fix,&t_out);
-    quit_log_if(ret,"Error waiting for gps!");
-    if(!got_fix)
+    if(!using_log)
     {
-	quit_log_if(ERROR_GPS,"Failed to get GPS fix!");
+	err_log("Will attempt to get GPS fix...");
+	t_out.tv_usec = 0;
+	t_out.tv_sec  = 1;
+	ret = gps_comm_wait_fix(gps,&got_fix,&t_out);
+	quit_log_if(ret,"Error waiting for gps!");
+	if(!got_fix)
+	{
+	    quit_log_if(ERROR_GPS,"Failed to get GPS fix!");
+	}
+    }
+    else
+    {
+	ret = gps_comm_read(gps, &got_fix, &tv_start);
+	quit_if(ret);
+	if(!got_fix)
+	    quit_log_if(ERROR_READ, "Failed to read from log file!");
     }
 
     io = io_init();
@@ -146,7 +189,11 @@ int main(int argc, char *argv[])
     /// -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
     /// Poll n read loop
     /// -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-    uquad_bool_t read = false,write = false;
+    uquad_bool_t
+	read  = false,
+	write = false,
+	ok    = false;
+    int err_count = 0;
     uquad_bool_t reg_gps = true, reg_stdin = true;
     gps_comm_data_t *gps_data;
     gps_data = gps_comm_data_alloc();
@@ -157,33 +204,56 @@ int main(int argc, char *argv[])
     unsigned char tmp_buff[2];
     //    poll_n_read:
     while(1){
+	if(ret != ERROR_OK)
+	{
+	    if(err_count++ > ERR_MAX)
+		quit_log_if(ERROR_FAIL,"Too many errors, aborting...");
+	}
         ret = io_poll(io);
         quit_log_if(ret,"io_poll() error");
         // gps
         if(reg_gps){
             ret = io_dev_ready(io,gps_comm_get_fd(gps),&read,&write);
             quit_log_if(ret,"io_dev_ready() error");
-            if(read){		
-                ret = gps_comm_read(gps);
-                if(ret != ERROR_OK)
+            if(read)
+	    {
+		gettimeofday(&tv_tmp,NULL);
+		if(using_log)
 		{
-                    fprintf(stdout,"\nGPS missed frame?\n\n");
-		    continue;
-                }
+		    ret = gps_comm_read(gps, &ok, &tv_tmp);
+		    log_n_continue(ret, "Failed to read from log file!");
+		}
 		else
+		{
+		    ret = gps_comm_read(gps, &ok, NULL);
+		    log_n_continue(ret, "Fail to get expected data from GPS!");
+		}
+
+		uquad_timeval_substract(&tv_diff, tv_tmp, tv_start);
+
+		if(ok)
 		{
 		    if(gps_comm_3dfix(gps))
 		    {
 			ret = gps_comm_get_data(gps, gps_data, NULL);
 			log_n_continue(ret, "Failed to get data!");
-			gps_comm_dump(gps, gps_data, stdout);
+			if(output_file != NULL)
+			{
+			    log_tv_only(output_file,tv_diff);
+			    gps_comm_dump(gps, gps_data, output_file);
+			}
+			if(DUMP_STDOUT)
+			{
+			    log_tv_only(stdout,tv_diff);
+			    gps_comm_dump(gps, gps_data, stdout);
+			}
 		    }
 		    else
 		    {
 			err_log("Ignoring GPS data, no 3D fix!");
 			sleep_ms(250);
 		    }
-                }
+		}
             }
         }
         // stdin
@@ -202,7 +272,9 @@ int main(int argc, char *argv[])
             }
         }
         fflush(stdout);
+	err_count = 0;
     }
+
 
     // Failure...
     quit();

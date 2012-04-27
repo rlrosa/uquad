@@ -47,4 +47,17 @@ typedef enum STATE_VECTOR{
 #define STATE_COUNT       12
 #define LENGTH_INPUT      4           // Tamaño del vector de entradass  
 
+/**
+ *
+ * Sampling time within [TS_MIN,TS_MAX] will be used for
+ * kalman filtering. If out of range, using it within the kalman filter
+ * would force a violent reaction, and the stabilization time would
+ * be unacceptable.
+ *
+ */
+#define TS_JITTER          2000L // Max jitter accepted
+#define TS_ERROR_WAIT      10    // Wait 10 errors before logging again
+#define TS_MAX             (TS_DEFAULT_US + TS_JITTER)
+#define TS_MIN             (TS_DEFAULT_US - TS_JITTER)
+
 #endif
