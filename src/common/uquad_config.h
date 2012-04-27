@@ -5,7 +5,7 @@
 
 #define DEBUG             1 // Show debug info
 
-#define GPS_FAKE          1 // Simulate GPS data (use zeros)
+#define GPS_ZERO          1 // Simulate GPS data (use zeros)
 
 #define KALMAN_BIAS       1 // Use kalman estimation of acc bias
 
@@ -28,11 +28,11 @@
     "Kalman bias removal not implemented correctly for H()"
 #endif // !KALMAN_BIAS
 
-#if (!USE_GPS && GPS_FAKE)
+#if (!USE_GPS && GPS_ZERO)
 #error							\
     "Cannot use fake GPS without USE_GPS enabled!"	\
     "Edit src/CMakelists.txt to enable USE_GPS"
-#endif // (!USE_GPS && GPS_FAKE)
+#endif // (!USE_GPS && GPS_ZERO)
 
 #if (!USE_GPS && FULL_CONTROL)
 #error						\

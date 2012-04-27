@@ -12,21 +12,18 @@
 static uquad_mat_t *m3x1 = NULL;
 static uquad_mat_t *m3x3 = NULL;
 
-gps_t *  gps_comm_init(void){
+gps_t *  gps_comm_init(const char *device){
     gps_t * gps;
     int retval;
     gps = (gps_t *)malloc(sizeof(gps_t));
     cleanup_if_null(gps);
 
-    gps->gpsd = (gpsd_t *)malloc(sizeof(gpsd_t));
-    cleanup_if_null(gps->gpsd);
-
     gps->pos = uquad_mat_alloc(3,1);
-    cleanup_if_null(gps->gpsd);
+    cleanup_if_null(gps->pos);
     retval = uquad_mat_zeros(gps->pos);
     cleanup_if(retval);
     gps->pos_ep = uquad_mat_alloc(3,1);
-    cleanup_if_null(gps->gpsd);
+    cleanup_if_null(gps->pos_ep);
     uquad_mat_zeros(gps->pos_ep);
     cleanup_if(retval);
 
@@ -36,21 +33,39 @@ gps_t *  gps_comm_init(void){
     cleanup_if_null(m3x3);
 
     gps->pos_0 = NULL;
+    gps->tv_start = NULL;
+    gps->tv_log_start = NULL;
 
-    // Initialize data structure and open connection
-    // Use default host/port (NULL/0)
-    retval = gps_open(NULL, 0, gps->gpsd);
-    if(retval < 0)
+    if(device == NULL)
     {
-	err_log("GPS init failed, could not open connection to GPS, is daemon running?");
-	cleanup_if(ERROR_GPS);
+	gps->dev = NULL;
+	// Initialize data structure and open connection
+	// Use default host/port (NULL/0)
+	gps->gpsd = (gpsd_t *)malloc(sizeof(gpsd_t));
+	cleanup_if_null(gps->gpsd);
+	retval = gps_open(NULL, 0, gps->gpsd);
+	if(retval < 0)
+	{
+	    err_log("GPS init failed, could not open connection to GPS, is daemon running?");
+	    cleanup_if(ERROR_GPS);
+	}
+
+	// Start TX from GPS
+	retval = gps_stream(gps->gpsd, GPS_COMM_STREAM_FLAGS_ENA, NULL);
+	if(retval < 0)
+	{
+	    cleanup_log_if(ERROR_GPS,"GPS init failed, could not stream from GPS.");
+	}
     }
-
-    // Start TX from GPS
-    retval = gps_stream(gps->gpsd, GPS_COMM_STREAM_FLAGS_ENA, NULL);
-    if(retval < 0)
+    else
     {
-	cleanup_log_if(ERROR_GPS,"GPS init failed, could not stream from GPS.");
+	gps->gpsd = NULL;
+	gps->dev = fopen(device,"r");
+	if(gps->dev == NULL)
+	{
+	    err_log_stderr("Failed to open GPS log file!");
+	    cleanup_if(ERROR_READ);
+	}
     }
     return gps;
 
@@ -85,31 +100,12 @@ int gps_comm_wait_fix(gps_t *gps, uquad_bool_t *got_fix, struct timeval *t_out)
 	err_propagate(retval);
 	if(read_ok)
 	{
-	    retval = gps_comm_read(gps);
+	    retval = gps_comm_read(gps, NULL, NULL);
 	    err_propagate(retval);
 	    if(gps_comm_3dfix(gps))
 	    {
-		gps_comm_data_t *gps_dat = gps_comm_data_alloc();
-		if(gps_dat == NULL)
-		{
-		    cleanup_if(ERROR_MALLOC);
-		}
-		else
-		{
-		    retval = gps_comm_get_data(gps,gps_dat,NULL);
-		    cleanup_if(retval);
-		    gps->pos_0    = uquad_mat_alloc(3,1);
-		    if(gps->pos_0 == NULL)
-		    {
-			cleanup_if(ERROR_MALLOC);
-		    }
-		    retval = uquad_mat_copy(gps->pos_0,gps_dat->pos);
-		    cleanup_if(retval);
-		}
-		cleanup:
-		gps_comm_data_free(gps_dat);
 		*got_fix = true;
-		return retval;
+		return ERROR_OK;
 	    }
 	    else
 	    {
@@ -138,6 +134,21 @@ int gps_comm_wait_fix(gps_t *gps, uquad_bool_t *got_fix, struct timeval *t_out)
 	    }
 	}
     }
+}
+
+int gps_comm_set_0(gps_t *gps, gps_comm_data_t *gps_dat)
+{
+    int retval;
+    if(gps->pos_0 != NULL)
+	err_check(ERROR_FAIL,"Already set 0!");
+    gps->pos_0    = uquad_mat_alloc(3,1);
+    if(gps->pos_0 == NULL)
+    {
+	err_propagate(ERROR_MALLOC);
+    }
+    retval = uquad_mat_copy(gps->pos_0,gps_dat->pos);
+    err_propagate(retval);
+    return retval;
 }
 
 int gps_comm_get_0(gps_t *gps, gps_comm_data_t *gps_dat)
@@ -172,13 +183,31 @@ void gps_comm_deinit(gps_t * gps){
 
     uquad_mat_free(gps->pos_0);
 
-    retval = gps_stream(gps->gpsd, GPS_COMM_STREAM_FLAGS_DIS, NULL);
-    if(retval < 0)
-	err_log("WARN: ignoring error while terminating GPS stream...");
-    retval = gps_close (gps->gpsd);
-    if(retval < 0)
-	err_log("WARN: ignoring error while closing GPS...");
-    free(gps->gpsd);
+    if(gps->dev == NULL)
+    {
+	retval = gps_stream(gps->gpsd, GPS_COMM_STREAM_FLAGS_DIS, NULL);
+	if(retval < 0)
+	    err_log("WARN: ignoring error while terminating GPS stream...");
+	retval = gps_close (gps->gpsd);
+	if(retval < 0)
+	    err_log("WARN: ignoring error while closing GPS...");
+	free(gps->gpsd);
+    }
+    else
+    {
+	fclose(gps->dev);
+	gps->dev = NULL;
+	if(gps->tv_start != NULL)
+	{
+	    free(gps->tv_start);
+	    gps->tv_start = NULL;
+	}
+	if(gps->tv_log_start != NULL)
+	{
+	    free(gps->tv_log_start);
+	    gps->tv_log_start = NULL;
+	}
+    }
     free(gps);
 }
 
@@ -223,7 +252,7 @@ int gps_comm_deg2utm(utm_t *utm, double la, double lo)
     a = cos(lat) * sin(deltaS);
     epsilon = 0.5 * log( ( 1 + a) / ( 1 - a ) );
     nu = atan( tan(lat) / cos(deltaS) ) - lat;
-    v = ( deg2utm_c / sqrt( ( 1 + ( deg2utm_ee * uquad_square(cos(lat)) ) ) )) * 0.9996;
+    v = ( deg2utm_c / sqrt( ( 1.0 + ( deg2utm_ee * uquad_square(cos(lat)) ) ) )) * 0.9996;
     ta = ( deg2utm_ee / 2 ) * uquad_square(epsilon) * uquad_square(cos(lat));
     a1 = sin( 2 * lat );
     a2 = a1 * uquad_square(cos(lat));
@@ -246,8 +275,11 @@ int gps_comm_deg2utm(utm_t *utm, double la, double lo)
     return ERROR_OK;
 }
 
-int gps_comm_get_fix_mode(gps_t *gps){
-    return gps->gpsd->fix.mode;
+int gps_comm_get_fix_mode(gps_t *gps)
+{
+    return (gps->dev == NULL)?
+	gps->gpsd->fix.mode:
+	gps->fix;
 }
 
 uquad_bool_t gps_comm_3dfix(gps_t *gps)
@@ -257,21 +289,156 @@ uquad_bool_t gps_comm_3dfix(gps_t *gps)
 	false;
 }
 
-int gps_comm_get_fd(gps_t *gps){
-    return gps->gpsd->gps_fd;
+int gps_comm_get_fd(gps_t *gps)
+{
+    return (gps->dev == NULL)?
+	gps->gpsd->gps_fd:
+	fileno(gps->dev);
 }
 
-int gps_comm_read(gps_t *gps){
-    int retval;
-    struct gps_fix_t gps_fix;
-    retval = gps_read(gps->gpsd);
-    if(retval == -1)
+int gps_comm_set_tv_start(gps_t *gps, struct timeval tv_start)
+{
+    if(gps == NULL)
     {
-	err_check(ERROR_IO,"New data from expected, but none found...\nWas select(gps_fd) called before gps_comm_read()?");
+	err_check(ERROR_INVALID_ARG,"Invalid arguments!");
     }
-    gettimeofday(&gps->timestamp,NULL);
-    gps->fix = gps_comm_get_fix_mode(gps);
-    gps_fix = gps->gpsd->fix;
+    if(gps->dev == NULL)
+    {
+	err_check(ERROR_FAIL, "Can only be used when reading from a log file!");
+    }
+    if(gps->tv_start == NULL)
+    {
+	gps->tv_start = (struct timeval *)malloc(sizeof(struct timeval));
+	if(gps->tv_start == NULL)
+	{
+	    err_check(ERROR_MALLOC, "Failed to allocate mem for tv_log_start!");
+	}
+    }
+    *(gps->tv_start) = tv_start;
+    return ERROR_OK;
+}
+
+int gps_comm_read(gps_t *gps, uquad_bool_t *ok, struct timeval *tv_curr)
+{
+    int
+	i,
+	retval;
+    struct gps_fix_t gps_fix;
+    struct timeval
+	tv_tmp,
+	tv_diff;
+    if(gps == NULL || ok == NULL)
+    {
+	err_check(ERROR_INVALID_ARG,"Invalid arguments!");
+    }
+    *ok = false;
+    if(gps->dev == NULL)
+    {
+	// reading from real GPS device
+	retval = gps_read(gps->gpsd);
+	if(retval == -1)
+	{
+	    err_check(ERROR_IO,"New data from expected, but none found...\nWas select(gps_fd) called before gps_comm_read()?");
+	}
+	gettimeofday(&gps->timestamp,NULL);
+	gps_fix = gps->gpsd->fix;
+	gps->fix = gps_comm_get_fix_mode(gps);
+    }
+    else
+    {
+	/**
+	 * Reading from log file
+	 *
+	 * Each line of a gps.log file has a timestamp referred to
+	 * the beginning of the program that generated the log file.
+	 * We don't care about that time, we want the time relative
+	 * to the beginning of the program that is reading from the
+	 * log file.
+	 */
+	static uquad_bool_t read_tv = false;
+	static struct timeval tv_diff_log;
+	double dtmp;
+	if(tv_curr == NULL)
+	{
+	    err_check(ERROR_INVALID_ARG,"Timestamp required!");
+	}
+	if(gps->tv_start == NULL)
+	{
+	    gps->tv_start = (struct timeval *)malloc(sizeof(struct timeval));
+	    if(gps->tv_start == NULL)
+	    {
+		err_check(ERROR_MALLOC, "Failed to allocate mem for tv_log_start!");
+	    }
+	    *(gps->tv_start) = *tv_curr;
+	}	
+	if(!read_tv)
+	{
+	    // read time from log
+	    retval = fscanf(gps->dev, "%lf", &dtmp);
+	    if(retval <= 0)
+	    {
+		err_check(ERROR_READ,"Failed to read timeval from log!");
+	    }
+	    tv_tmp.tv_sec  = (unsigned long) floor(dtmp);
+	    tv_tmp.tv_usec = (unsigned long) ((dtmp - floor(dtmp))*1e6);
+	    read_tv = true;
+	    if(gps->tv_log_start == NULL)
+	    {
+		gps->tv_log_start = (struct timeval *)malloc(sizeof(struct timeval));
+		if(gps->tv_log_start == NULL)
+		{
+		    err_check(ERROR_MALLOC, "Failed to allocate mem for tv_log_start!");
+		}
+		*(gps->tv_log_start) = tv_tmp;
+	    }
+	    retval = uquad_timeval_substract(&tv_diff, tv_tmp, *(gps->tv_log_start));
+	    if(retval < 0)
+	    {
+		err_check(ERROR_TIMING, "Absurd timing!");
+	    }
+	    tv_diff_log = tv_diff;
+	}
+	retval = uquad_timeval_substract(&tv_diff, *tv_curr, *(gps->tv_start));
+	if(retval < 0)
+	{
+	    err_check(ERROR_TIMING, "Absurd timing!");
+	}
+	retval = uquad_timeval_substract(&tv_diff, tv_diff, tv_diff_log);
+	if(retval < 0)
+	{
+	    // not the right time yet
+	    return ERROR_OK;
+	}
+	else
+	{
+	    read_tv = false;
+	    read_double(gps->dev,dtmp); // timestamp
+	    read_double(gps->dev,dtmp); // fix
+	    gps->fix = (int)dtmp;
+	    for(i = 0; i < 6; ++i)
+	    {
+		 // easting, northing, alt, vx, vy, vz
+		read_double(gps->dev,dtmp);
+	    }
+	    read_double(gps->dev,dtmp); // lat
+	    gps_fix.latitude  = dtmp;
+	    read_double(gps->dev,dtmp); // lon
+	    gps_fix.longitude = dtmp;
+	    read_double(gps->dev,dtmp); // speed
+	    gps_fix.speed     = dtmp;
+	    read_double(gps->dev,dtmp); // climb
+	    gps_fix.climb     = dtmp;
+	    read_double(gps->dev,dtmp); // track
+	    gps_fix.track     = dtmp;
+	    read_double(gps->dev,dtmp); // vel_ok
+	    gps_fix.epx = 0.0;
+	    gps_fix.epy = 0.0;
+	    gps_fix.epv = 0.0;
+	    gps_fix.eps = 0.0;
+	    gps_fix.epc = 0.0;
+	    gps_fix.epd = 0.0;
+	}
+    }
     gps->lat = gps_fix.latitude;
     gps->lon = gps_fix.longitude;
 
@@ -322,6 +489,7 @@ int gps_comm_read(gps_t *gps){
 	    gps->track_ep = deg2rad(gps_fix.epd);
 	}
     }
+    *ok = true;
     return ERROR_OK;
 }
 
@@ -360,7 +528,7 @@ int gps_comm_get_data(gps_t *gps, gps_comm_data_t *gps_data, imu_data_t *imu_dat
 	{
 	    err_check(ERROR_GPS_SYS_REF,"Cannot convert to non-inertial frame without IMU!");
 	}
-#else
+#else // GPS_COMM_DATA_NON_INERTIAL_VEL
 	if(imu_data != NULL)
 	{
 	    err_log("WARN: Vels are inertial, will ignore IMU!");
@@ -368,7 +536,7 @@ int gps_comm_get_data(gps_t *gps, gps_comm_data_t *gps_data, imu_data_t *imu_dat
 	gps_data->vel->m_full[0] = gps->speed*sin(gps->track);
 	gps_data->vel->m_full[1] = -gps->speed*cos(gps->track);//TODO verify!
 	gps_data->vel->m_full[2] = gps->climb;
-#endif
+#endif // GPS_COMM_DATA_NON_INERTIAL_VEL
     }
     return ERROR_OK;
 }
