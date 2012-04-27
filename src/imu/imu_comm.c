@@ -240,6 +240,12 @@ static int imu_comm_configure(imu_t *imu){
  */
 static int imu_comm_connect(imu_t *imu, const char *device){
 #if IMU_COMM_FAKE
+    if( (strlen(device) >= 5) && (strncmp(device,"/dev/",5) == 0))
+    {
+	err_check(ERROR_INVALID_ARG,
+		  "Expected an ascii log file!\n"			\
+		  "To read from UART, IMU_COMM_FAKE must be disabled!");
+    }
     // we don't want to write to the log file, just read.
     imu->device = fopen(device,"rb+");
     if(imu->device == NULL)
