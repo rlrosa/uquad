@@ -108,6 +108,19 @@ ERROR_TIMING
     }
 
 /**
+ * Print error message with char to stderr
+ *
+ */
+#define err_log_char(msg,ch)						\
+    {									\
+	fprintf(stderr,"%s:%s:%d: %s(%c)\n",				\
+		__TIME__,__FILE__,__LINE__,msg,ch);			\
+	if(REROUTE_STDERR && rerouted())				\
+	    fprintf(stdout,"%s:%s:%d: %s(%c)\n",			\
+		    __TIME__,__FILE__,__LINE__,msg,ch);			\
+    }
+
+/**
  * Print error message with number to stderr
  * 
  */

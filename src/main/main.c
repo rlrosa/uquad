@@ -21,10 +21,9 @@
 #define LOG_BUKAKE_STDOUT  1
 #endif
 
-#define W_SP_STEP 1.0L
-#define W_SP_INC  'i'
-#define W_SP_DEC  'k'
-
+#include <manual_mode.h>
+#include <curses.h>
+#include <stdio.h>
 #include <uquad_error_codes.h>
 #include <uquad_types.h>
 #include <macros_misc.h>
@@ -160,6 +159,8 @@ void quit()
     struct timeval
 	tv_tmp,
 	tv_diff;
+    clear();
+    endwin();
     if(!interrupted)
     {
 	/**
@@ -318,6 +319,7 @@ int main(int argc, char *argv[]){
     int
 	retval = ERROR_OK,
 	i,
+	input,
 	imu_ts_ok   = 0,
 	runs_imu    = 0,
 	runs_kalman = 0,
@@ -334,11 +336,11 @@ int main(int argc, char *argv[]){
 	ts_error_wait = 0;
 
     uquad_bool_t
-	read = false,
-	write = false,
-	imu_update = false,
-	reg_stdin = true;
-    unsigned char tmp_buff[2];
+	read        = false,
+	write       = false,
+	imu_update  = false,
+	reg_stdin   = true,
+	manual_mode = false;
     struct timeval
 	tv_tmp, tv_diff,
 	tv_last_m_cmd,
@@ -379,6 +381,11 @@ int main(int argc, char *argv[]){
     // Catch signals
     signal(SIGINT, uquad_sig_handler);
     signal(SIGQUIT, uquad_sig_handler);
+    // wait for input from stdin without RET
+    initscr();
+    cbreak();
+    noecho();
+    timeout(0);
 
     if(argc<2)
     {
@@ -653,8 +660,8 @@ int main(int argc, char *argv[]){
     }
 #endif
     // stdin
-    retval = io_add_dev(io,STDIN_FILENO);
-    quit_log_if(retval, "Failed to add stdin to io list");
+    //    retval = io_add_dev(io,STDIN_FILENO);
+    //    quit_log_if(retval, "Failed to add stdin to io list");
 
     /// -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
     /// Startup your engines...
@@ -673,6 +680,8 @@ int main(int argc, char *argv[]){
     running = true;
     while(1)
     {
+	fflush(stdout);
+	refresh();
 	if((runs_imu == IMU_TS_OK) &&
 	   (retval != ERROR_OK  ||
 	    err_imu != ERROR_OK ||
@@ -1254,54 +1263,164 @@ int main(int argc, char *argv[]){
 	/// -- -- -- -- -- -- -- --
 	if(reg_stdin)
 	{
-	    retval = io_dev_ready(io,STDIN_FILENO,&read,&write);
-	    quit_log_if(retval,"io_dev_ready() error");
-	    if(read){
-		retval = fread(tmp_buff,1,1,stdin);
-		if(retval<=0)
+	    input = getch();
+	    if(input > 0)
+	    {
+		gettimeofday(&tv_tmp,NULL);
+		retval = uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
+		if(retval <= 0)
 		{
-		    err_log("No user input!!");
+		    err_log("Absurd timing!");
 		}
-		else
+		retval = ERROR_OK; // clear error
+		dtmp = 0.0;
+		switch(input)
 		{
-		    gettimeofday(&tv_tmp,NULL);
-		    retval = uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
-		    if(retval <= 0)
+		case MANUAL_MODE:
+		    // switch manual mode on/off
+		    if(pp == NULL)
 		    {
-			err_log("Absurd timing!");
+			err_log("Cannot enable manual mode, path planner not setup!");
 		    }
-		    retval = ERROR_OK; // clear error
-		    dtmp = 0.0;
-		    switch(tmp_buff[0])
+		    else
 		    {
-		    case W_SP_INC:
-			dtmp = W_SP_STEP;
-			break;
-		    case W_SP_DEC:
-			dtmp = -W_SP_STEP;
-			break;
-		    default:
-			break;
+			manual_mode = !manual_mode;
+			if(manual_mode)
+			{
+			    err_log_tv("Manuel mode ENABLED!",tv_diff);
+			}
+			else
+			{
+			    err_log_tv("Manuel mode DISABLED!",tv_diff);
+			}
 		    }
-		    if(dtmp != 0.0)
+		    break;
+		case MANUAL_PSI_INC:
+		    if(!manual_mode)
+			break;
+		    if(pp == NULL)
 		    {
-			for(i = 0; i < MOT_C; ++i)
-			    pp->sp->w->m_full[i] += dtmp;
-			// display on screen
-			log_tv_only(stdout,tv_diff);
-			log_double(stdout,"Current w_sp",pp->sp->w->m_full[0]);
-			fflush(stdout);
+			err_log("Path planner not setup!");
 		    }
+		    pp->sp->x->m_full[SV_PSI] += MANUAL_EULER_STEP;
+		    break;
+		case MANUAL_PSI_DEC:
+		    if(!manual_mode)
+			break;
+		    if(pp == NULL)
+		    {
+			err_log("Path planner not setup!");
+		    }
+		    pp->sp->x->m_full[SV_PSI] -= MANUAL_EULER_STEP;
+		    break;
+		case MANUAL_PHI_INC:
+		    if(!manual_mode)
+			break;
+		    if(pp == NULL)
+		    {
+			err_log("Path planner not setup!");
+		    }
+		    pp->sp->x->m_full[SV_PHI] += MANUAL_EULER_STEP;
+		    break;
+		case MANUAL_PHI_DEC:
+		    if(!manual_mode)
+			break;
+		    if(pp == NULL)
+		    {
+			err_log("Path planner not setup!");
+		    }
+		    pp->sp->x->m_full[SV_PHI] -= MANUAL_EULER_STEP;
+		    break;
+		case MANUAL_THETA_INC:
+		    if(!manual_mode)
+			break;
+		    if(pp == NULL)
+		    {
+			err_log("Path planner not setup!");
+		    }
+		    pp->sp->x->m_full[SV_THETA] += MANUAL_EULER_STEP;
+		    break;
+		case MANUAL_THETA_DEC:
+		    if(!manual_mode)
+			break;
+		    if(pp == NULL)
+		    {
+			err_log("Path planner not setup!");
+		    }
+		    pp->sp->x->m_full[SV_THETA] -= MANUAL_EULER_STEP;
+		    break;
+		case MANUAL_W_HOVER:
+		    if(!manual_mode)
+			break;
+		    if(pp == NULL)
+		    {
+			err_log("Path planner not setup!");
+		    }
+		    for(i = 0; i < MOT_C; ++i)
+			pp->sp->w->m_full[i] = MOT_W_HOVER;
+		    break;
+		case MANUAL_W_HOVER_INC:
+		    if(!manual_mode)
+			break;
+		    if(pp == NULL)
+		    {
+			err_log("Path planner not setup!");
+		    }
+		    dtmp = MANUAL_W_HOVER_STEP;
+		    break;
+		case MANUAL_W_HOVER_DEC:
+		    if(!manual_mode)
+			break;
+		    if(pp == NULL)
+		    {
+			err_log("Path planner not setup!");
+		    }
+		    dtmp = -MANUAL_W_HOVER_STEP;
+		    break;
+		case MANUAL_Z_INC:
+		    if(!manual_mode)
+			break;
+		    if(pp == NULL)
+		    {
+			err_log("Path planner not setup!");
+		    }
+		    pp->sp->x->m_full[SV_Z] += MANUAL_Z_STEP;
+		    break;
+		case MANUAL_Z_DEC:
+		    if(!manual_mode)
+			break;
+		    if(pp == NULL)
+		    {
+			err_log("Path planner not setup!");
+		    }
+		    pp->sp->x->m_full[SV_Z] -= MANUAL_Z_STEP;
+		    break;
+		default:
+		    err_log("tetas");
+		    break;
+		}
+		if(manual_mode)
+		{
+		    err_log_char("Manual mode input:",input);
+		}
+		if(dtmp != 0.0)
+		{
+		    for(i = 0; i < MOT_C; ++i)
+			pp->sp->w->m_full[i] += dtmp;
+		    // display on screen
+		    log_tv_only(stdout,tv_diff);
+		    log_double(stdout,"Current w_sp",pp->sp->w->m_full[0]);
+		    fflush(stdout);
+		}
 #if LOG_TV
-		    // save to log file
-		    log_tv_only(log_tv, tv_diff);
-		    log_double(log_tv,"Current w_sp",pp->sp->w->m_full[0]);
-		    fflush(log_tv);
+		// save to log file
+		log_tv_only(log_tv, tv_diff);
+		log_double(log_tv,"Current w_sp",pp->sp->w->m_full[0]);
+		fflush(log_tv);
 #endif
-		}
 	    }
-	    retval = ERROR_OK;
 	}
+	retval = ERROR_OK;
     }
     // never gets here
     return 0;
