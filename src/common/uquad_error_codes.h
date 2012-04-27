@@ -192,15 +192,15 @@ ERROR_TIMING
  * If @retval is an error, then propagate error without printing anything.
  * 
  */
-#define err_propagate(retval)			\
-    if(retval!=ERROR_OK)			\
-    {						\
-	fprintf(stderr,"backtrace:%s:%d\n",	\
-		__FILE__,__LINE__);		\
-	if(REROUTE_STDERR && rerouted())	\
-	    fprintf(stdout,"backtrace:%s:%d\n",	\
-		    __FILE__,__LINE__);		\
-	return retval;				\
+#define err_propagate(retval)				\
+    if(retval!=ERROR_OK)				\
+    {							\
+	fprintf(stderr,"backtrace:%s:%s:%d\n",		\
+		__FILE__,__FUNCTION__,__LINE__);	\
+	if(REROUTE_STDERR && rerouted())		\
+	    fprintf(stdout,"backtrace:%s:%s:%d\n",	\
+		    __FILE__,__FUNCTION__,__LINE__);	\
+	return retval;					\
     }
 
 /**
