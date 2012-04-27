@@ -44,9 +44,10 @@
 
 #define UQUAD_HOW_TO   "./main <imu_device> /path/to/log/"
 #define MAX_ERRORS     20
-#define STARTUP_RUNS   800
+#define STARTUP_RUNS   10 // Wait for this number of samples at a steady Ts before running
 #define STARTUP_KALMAN 200
 #define FIXED          3
+#define IMU_TS_OK      -1
 
 #define LOG_DIR_DEFAULT    "/media/sda1/"
 
@@ -316,7 +317,12 @@ void uquad_sig_handler(int signal_num)
 int main(int argc, char *argv[]){
     int
 	retval = ERROR_OK,
-	i;
+	i,
+	imu_ts_ok   = 0,
+	runs_imu    = 0,
+	runs_kalman = 0,
+	err_imu     = ERROR_OK,
+	err_gps     = ERROR_OK;
     char
 	*device_imu,
 	*device_gps,
@@ -332,8 +338,6 @@ int main(int argc, char *argv[]){
 	write = false,
 	imu_update = false,
 	reg_stdin = true;
-    int runs_imu = 0, runs_kalman = 0;
-    int err_imu = ERROR_OK, err_gps = ERROR_OK;
     unsigned char tmp_buff[2];
     struct timeval
 	tv_tmp, tv_diff,
@@ -341,6 +345,7 @@ int main(int argc, char *argv[]){
 	tv_last_ramp,
 	tv_last_kalman,
 	tv_last_imu,
+	tv_last_frame,
 	tv_gps_last;
     retval = gettimeofday(&tv_start,NULL);
     err_log_std(retval);
@@ -668,7 +673,7 @@ int main(int argc, char *argv[]){
     running = true;
     while(1)
     {
-	if((runs_imu > STARTUP_RUNS) &&
+	if((runs_imu == IMU_TS_OK) &&
 	   (retval != ERROR_OK  ||
 	    err_imu != ERROR_OK ||
 	    err_gps != ERROR_OK))
@@ -744,14 +749,15 @@ int main(int argc, char *argv[]){
 		goto end_imu;
 	    }
 	    imu_update = false; // data may not be of direct use, may be calib
+
 #if IMU_COMM_FAKE
 	    // simulate delay (no delay when reading from txt)
 	    usleep(TS_DEFAULT_US);
 #endif
 
-#if LOG_IMU_RAW || LOG_IMU_DATA
 	    err_imu = gettimeofday(&tv_tmp,NULL);
 	    err_log_std(err_imu);
+#if LOG_IMU_RAW || LOG_IMU_DATA
 	    err_imu = uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
 	    if(err_imu < 0)
 	    {
@@ -799,24 +805,44 @@ int main(int argc, char *argv[]){
 #endif
 
 	    /// discard first samples
-	    if(!(runs_imu > STARTUP_RUNS))
+	    if(runs_imu >= 0)
 	    {
-		++runs_imu;
-		if(runs_imu == STARTUP_RUNS)
+		if(runs_imu == 0)
 		{
-		    err_imu = gettimeofday(&tv_last_imu,NULL);
-		    err_log_std(err_imu);
-		    tv_gps_last    = tv_last_imu;
-		    tv_last_kalman = tv_last_imu;
-		    err_imu = uquad_timeval_substract(&tv_diff,tv_last_imu,tv_start);
-		    if(err_imu < 0)
-		    {
-			log_n_jump(err_imu,end_imu,"Absurd IMU startup time!");
-		    }
-		    err_imu = ERROR_OK; // clear timing info
-		    err_log_tv("IMU startup completed at ", tv_diff);
-		    ++runs_imu; // so re-entry doesn't happen
+		    err_log("Waiting for stable IMU sampling time...");
+		    tv_last_frame = tv_start;
 		}
+		runs_imu++;
+		err_imu = gettimeofday(&tv_tmp, NULL);
+		err_log_std(err_imu);
+		err_imu = uquad_timeval_substract(&tv_diff, tv_tmp, tv_last_frame);
+		log_n_jump((err_imu < 0)?ERROR_TIMING:ERROR_OK,end_imu,"Absurd timing!");
+		err_imu = in_range_us(tv_diff, TS_MIN, TS_MAX);
+		if(err_imu == 0)
+		{
+		    if(imu_ts_ok++ >= STARTUP_RUNS)
+		    {
+			err_log_num("IMU: Frames read out during stabilization:",runs_imu);
+			runs_imu = IMU_TS_OK; // so re-entry doesn't happen
+			err_imu = gettimeofday(&tv_last_imu,NULL);
+			err_log_std(err_imu);
+			tv_gps_last    = tv_last_imu;
+			tv_last_kalman = tv_last_imu;
+			err_imu = uquad_timeval_substract(&tv_diff,tv_last_imu,tv_start);
+			if(err_imu < 0)
+			{
+			    log_n_jump(err_imu,end_imu,"Absurd IMU startup time!");
+			}
+			err_imu = ERROR_OK; // clear timing info
+			err_log_tv("IMU startup completed at ", tv_diff);
+		    }
+		}
+		else
+		{
+		    // We want consecutive stable samples
+		    imu_ts_ok = 0;
+		}
+		tv_last_frame = tv_tmp;
 		goto end_imu;
 	    }
 
