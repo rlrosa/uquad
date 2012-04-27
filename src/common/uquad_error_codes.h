@@ -147,6 +147,34 @@ enum UQUAD_ERROR_CODES{
     }
 
 /**
+ * Print double ended by tab to stderr
+ *
+ */
+#define err_log_double_only(dbl)					\
+    {									\
+	fprintf(stderr,"%lf\t", dbl);					\
+	if(REROUTE_STDERR && rerouted())				\
+	    fprintf(stdout,"%0.15f\t", dbl);				\
+    }
+
+/**
+ * Print error message with double to stderr
+ *
+ */
+#define err_log_eol()							\
+    {									\
+	fprintf(stderr,"\n\r");						\
+	if(REROUTE_STDERR && rerouted())				\
+	    fprintf(stdout,"\n\r");					\
+    }
+
+/**
+ * Print double ended by tab to log.
+ *
+ */
+#define log_double_only(log, dbl) fprintf(log,"%0.15f\t", dbl);
+
+/**
  * Print error message with double to log
  *
  */
@@ -194,12 +222,6 @@ enum UQUAD_ERROR_CODES{
  * 
  */
 #define log_int_only(log,db) fprintf(log,"%d\t",db)
-
-/**
- * Print double to log ended by tab
- * 
- */
-#define log_double_only(log,db) fprintf(log,"%lf\t",db)
 
 /**
  * If @retval is an error, then propagate error without printing anything.
