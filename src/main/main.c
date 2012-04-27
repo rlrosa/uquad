@@ -22,7 +22,7 @@
 #endif
 
 #include <manual_mode.h>
-#include <curses.h>
+#include <ncurses.h>
 #include <stdio.h>
 #include <uquad_error_codes.h>
 #include <uquad_types.h>
@@ -159,8 +159,6 @@ void quit()
     struct timeval
 	tv_tmp,
 	tv_diff;
-    clear();
-    endwin();
     if(!interrupted)
     {
 	/**
@@ -185,6 +183,8 @@ void quit()
 	    return;
 	}
     }
+    clear();
+    endwin();
     gettimeofday(&tv_tmp, NULL);
     retval = uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
     if(retval > 0)
@@ -349,6 +349,9 @@ int main(int argc, char *argv[]){
 	tv_last_imu,
 	tv_last_frame,
 	tv_gps_last;
+#if IMU_COMM_FAKE
+    struct timeval tv_imu_fake;
+#endif // IMU_COMM_FAKE
     retval = gettimeofday(&tv_start,NULL);
     err_log_std(retval);
     retval = gettimeofday(&tv_last_ramp,NULL);
@@ -381,11 +384,14 @@ int main(int argc, char *argv[]){
     // Catch signals
     signal(SIGINT, uquad_sig_handler);
     signal(SIGQUIT, uquad_sig_handler);
-    // wait for input from stdin without RET
-    initscr();
-    cbreak();
-    noecho();
-    timeout(0);
+
+    /**
+     * Init curses library, used for user input
+     */
+    initscr();  // init curses lib
+    cbreak();   // get user input without waiting for RET
+    noecho();   // do no echo user input on screen
+    timeout(0); // non-blocking reading of user input
 
     if(argc<2)
     {
@@ -759,10 +765,29 @@ int main(int argc, char *argv[]){
 	    }
 	    imu_update = false; // data may not be of direct use, may be calib
 
+
+	    err_imu = imu_comm_get_raw_latest(imu,&imu_frame);
+	    log_n_jump(err_imu,end_imu,"could not get new frame...");
+
 #if IMU_COMM_FAKE
 	    // simulate delay (no delay when reading from txt)
-	    usleep(TS_DEFAULT_US);
-#endif
+	    if(runs_imu == 0)
+	    {
+		tv_diff = imu_frame.timestamp;
+	    }
+	    else
+	    {
+		err_imu = uquad_timeval_substract(&tv_diff, imu_frame.timestamp, tv_imu_fake);
+		if(err_imu < 0)
+		{
+		    err_log("Absurd fake IMU timing!");
+		}
+	    }
+	    tv_imu_fake = imu_frame.timestamp;
+	    if(tv_diff.tv_sec > 0)
+		sleep(tv_diff.tv_sec);
+	    usleep(tv_diff.tv_usec);
+#endif // IMU_COMM_FAKE
 
 	    err_imu = gettimeofday(&tv_tmp,NULL);
 	    err_log_std(err_imu);
@@ -772,8 +797,6 @@ int main(int argc, char *argv[]){
 	    {
 		err_log("Timing error!");
 	    }
-	    err_imu = imu_comm_get_raw_latest(imu,&imu_frame);
-	    log_n_jump(err_imu,end_imu,"could not get new frame...");
 #if LOG_IMU_RAW
 	    log_tv_only(log_imu_raw,tv_diff);
 	    err_imu= imu_comm_print_raw(&imu_frame, log_imu_raw);
@@ -1274,6 +1297,10 @@ int main(int argc, char *argv[]){
 		}
 		retval = ERROR_OK; // clear error
 		dtmp = 0.0;
+		if(!manual_mode && (char)input != MANUAL_MODE)
+		{
+		    err_log("Manuel mode DISABLED, enable with 'm'. Ignoring input...");
+		}
 		switch(input)
 		{
 		case MANUAL_MODE:
@@ -1296,8 +1323,6 @@ int main(int argc, char *argv[]){
 		    }
 		    break;
 		case MANUAL_PSI_INC:
-		    if(!manual_mode)
-			break;
 		    if(pp == NULL)
 		    {
 			err_log("Path planner not setup!");
@@ -1305,8 +1330,6 @@ int main(int argc, char *argv[]){
 		    pp->sp->x->m_full[SV_PSI] += MANUAL_EULER_STEP;
 		    break;
 		case MANUAL_PSI_DEC:
-		    if(!manual_mode)
-			break;
 		    if(pp == NULL)
 		    {
 			err_log("Path planner not setup!");
@@ -1314,8 +1337,6 @@ int main(int argc, char *argv[]){
 		    pp->sp->x->m_full[SV_PSI] -= MANUAL_EULER_STEP;
 		    break;
 		case MANUAL_PHI_INC:
-		    if(!manual_mode)
-			break;
 		    if(pp == NULL)
 		    {
 			err_log("Path planner not setup!");
@@ -1323,8 +1344,6 @@ int main(int argc, char *argv[]){
 		    pp->sp->x->m_full[SV_PHI] += MANUAL_EULER_STEP;
 		    break;
 		case MANUAL_PHI_DEC:
-		    if(!manual_mode)
-			break;
 		    if(pp == NULL)
 		    {
 			err_log("Path planner not setup!");
@@ -1332,8 +1351,6 @@ int main(int argc, char *argv[]){
 		    pp->sp->x->m_full[SV_PHI] -= MANUAL_EULER_STEP;
 		    break;
 		case MANUAL_THETA_INC:
-		    if(!manual_mode)
-			break;
 		    if(pp == NULL)
 		    {
 			err_log("Path planner not setup!");
@@ -1341,8 +1358,6 @@ int main(int argc, char *argv[]){
 		    pp->sp->x->m_full[SV_THETA] += MANUAL_EULER_STEP;
 		    break;
 		case MANUAL_THETA_DEC:
-		    if(!manual_mode)
-			break;
 		    if(pp == NULL)
 		    {
 			err_log("Path planner not setup!");
@@ -1350,8 +1365,6 @@ int main(int argc, char *argv[]){
 		    pp->sp->x->m_full[SV_THETA] -= MANUAL_EULER_STEP;
 		    break;
 		case MANUAL_W_HOVER:
-		    if(!manual_mode)
-			break;
 		    if(pp == NULL)
 		    {
 			err_log("Path planner not setup!");
@@ -1360,8 +1373,6 @@ int main(int argc, char *argv[]){
 			pp->sp->w->m_full[i] = MOT_W_HOVER;
 		    break;
 		case MANUAL_W_HOVER_INC:
-		    if(!manual_mode)
-			break;
 		    if(pp == NULL)
 		    {
 			err_log("Path planner not setup!");
@@ -1369,8 +1380,6 @@ int main(int argc, char *argv[]){
 		    dtmp = MANUAL_W_HOVER_STEP;
 		    break;
 		case MANUAL_W_HOVER_DEC:
-		    if(!manual_mode)
-			break;
 		    if(pp == NULL)
 		    {
 			err_log("Path planner not setup!");
@@ -1378,8 +1387,6 @@ int main(int argc, char *argv[]){
 		    dtmp = -MANUAL_W_HOVER_STEP;
 		    break;
 		case MANUAL_Z_INC:
-		    if(!manual_mode)
-			break;
 		    if(pp == NULL)
 		    {
 			err_log("Path planner not setup!");
@@ -1387,8 +1394,6 @@ int main(int argc, char *argv[]){
 		    pp->sp->x->m_full[SV_Z] += MANUAL_Z_STEP;
 		    break;
 		case MANUAL_Z_DEC:
-		    if(!manual_mode)
-			break;
 		    if(pp == NULL)
 		    {
 			err_log("Path planner not setup!");
@@ -1396,12 +1401,8 @@ int main(int argc, char *argv[]){
 		    pp->sp->x->m_full[SV_Z] -= MANUAL_Z_STEP;
 		    break;
 		default:
-		    err_log("tetas");
+		    err_log("Invalid input!");
 		    break;
-		}
-		if(manual_mode)
-		{
-		    err_log_char("Manual mode input:",input);
 		}
 		if(dtmp != 0.0)
 		{
@@ -1412,6 +1413,14 @@ int main(int argc, char *argv[]){
 		    log_double(stdout,"Current w_sp",pp->sp->w->m_full[0]);
 		    fflush(stdout);
 		}
+		else
+		{
+		    if(manual_mode)
+		    {
+			uquad_mat_dump_vec(pp->sp->x,stderr);
+		    }
+		}
+
 #if LOG_TV
 		// save to log file
 		log_tv_only(log_tv, tv_diff);
