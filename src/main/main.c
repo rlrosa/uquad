@@ -41,6 +41,8 @@
 #include <sys/signal.h>   // for SIGINT and SIGQUIT
 #include <unistd.h>       // for STDIN_FILENO
 
+#define QUIT           27
+
 #define UQUAD_HOW_TO   "./main <imu_device> /path/to/log/"
 #define MAX_ERRORS     20
 #define STARTUP_RUNS   10 // Wait for this number of samples at a steady Ts before running
@@ -275,6 +277,28 @@ void quit()
     exit(retval);
 }
 
+/**
+ * Save configuration to log file.
+ *
+ */
+void log_configuration(void)
+{
+    err_log_eol();
+    err_log("-- -- -- -- -- -- -- --");
+    err_log("main.c configuration:");
+    err_log("-- -- -- -- -- -- -- --");
+    err_log_num("DEBUG",DEBUG);
+    err_log_num("KALMAN_BIAS",KALMAN_BIAS);
+    err_log_num("CTRL_INTEGRAL",CTRL_INTEGRAL);
+    err_log_num("FULL_CONTROL",FULL_CONTROL);
+    err_log_num("USE_GPS",USE_GPS);
+    err_log_num("GPS_ZERO",GPS_ZERO);
+    err_log_num("IMU_COMM_FAKE",IMU_COMM_FAKE);
+    err_log_double("MOT_W_HOVER",MOT_W_HOVER);
+    err_log("-- -- -- -- -- -- -- --");
+    err_log_eol();
+}
+
 #define IDLE_TIME_MS 1000
 #define RETRY_IDLE_WAIT_MS 100
 #define SLOW_LAND_STEP_MS 200
@@ -352,6 +376,11 @@ int main(int argc, char *argv[]){
 #if IMU_COMM_FAKE
     struct timeval tv_imu_fake;
 #endif // IMU_COMM_FAKE
+
+    // Catch signals
+    signal(SIGINT, uquad_sig_handler);
+    signal(SIGQUIT, uquad_sig_handler);
+
     retval = gettimeofday(&tv_start,NULL);
     err_log_std(retval);
     retval = gettimeofday(&tv_last_ramp,NULL);
@@ -381,10 +410,6 @@ int main(int argc, char *argv[]){
     imu_raw_t imu_frame;
 #endif // LOG_IMU_RAW || LOG_IMU_DATA
 
-    // Catch signals
-    signal(SIGINT, uquad_sig_handler);
-    signal(SIGQUIT, uquad_sig_handler);
-
     /**
      * Init curses library, used for user input
      */
@@ -392,6 +417,7 @@ int main(int argc, char *argv[]){
     cbreak();   // get user input without waiting for RET
     noecho();   // do no echo user input on screen
     timeout(0); // non-blocking reading of user input
+    refresh();  // show output on screen
 
     if(argc<2)
     {
@@ -514,6 +540,8 @@ int main(int argc, char *argv[]){
     }
 #endif // LOG_TV
 #endif //DEBUG
+
+    log_configuration();
 
     /// IO manager
     io = io_init();
@@ -686,8 +714,8 @@ int main(int argc, char *argv[]){
     running = true;
     while(1)
     {
-	fflush(stdout);
-	refresh();
+	fflush(stdout); // flushes output, but does not display on screen
+	refresh();      // displays flushed output on screen
 	if((runs_imu == IMU_TS_OK) &&
 	   (retval != ERROR_OK  ||
 	    err_imu != ERROR_OK ||
@@ -1297,6 +1325,13 @@ int main(int argc, char *argv[]){
 		}
 		retval = ERROR_OK; // clear error
 		dtmp = 0.0;
+		if(input == QUIT)
+		{
+		    err_log("Terminating program based on user input...");
+		    quit(); // Kill motors
+		    quit(); // Kill main.c
+		    // never gets here
+		}
 		if(!manual_mode && (char)input != MANUAL_MODE)
 		{
 		    err_log("Manuel mode DISABLED, enable with 'm'. Ignoring input...");
