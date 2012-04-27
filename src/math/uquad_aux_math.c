@@ -938,10 +938,26 @@ void uquad_mat_dump(uquad_mat_t *m, FILE *output)
     for(i=0;i<m->r;i++)
     {
 	for(j=0;j<m->c;j++)
-	    fprintf(output, "%0.15f\t",m->m[i][j]);
-	fprintf(output,"\n");
-    }
+	{
+	    if(output == stderr)
+	    {
+		err_log_double_only(m->m[i][j]);
+	    }
+	    else
+	    {
+		log_double_only(output, m->m[i][j]);
+	    }
 
+	}
+	if(output == stderr)
+	{
+	    err_log_eol();
+	}
+	else
+	{
+	    log_eol(output);
+	}
+    }
 }
 
 /**
@@ -967,11 +983,25 @@ void uquad_mat_dump_vec(uquad_mat_t *m, FILE *output)
     if(output == NULL)
 	output = stdout;
     len = uquad_max(m->r,m->c);
-	for(i = 0; i < len; i++)
+    for(i = 0; i < len; i++)
+    {
+	if(output == stderr)
 	{
-	    fprintf(output, "%0.15f\t",m->m_full[i]);
+	    err_log_double_only(m->m_full[i]);
 	}
-	fprintf(output,"\n");
+	else
+	{
+	    log_double_only(output, m->m_full[i]);
+	}
+    }
+    if(output == stderr)
+    {
+	err_log_eol();
+    }
+    else
+    {
+	log_eol(output);
+    }
 }
 
 /**
