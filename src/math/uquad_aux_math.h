@@ -10,22 +10,23 @@
 #define USE_EQUILIBRATE 0
 
 //TODO poner cuenta
-#define deg2rad(a) (a*PI/180.0)
-#define rad2deg(a) (a*180.0/PI)
+#define deg2rad(a)                (a*PI/180.0)
+#define rad2deg(a)                (a*180.0/PI)
 #define uquad_round_double2int(x) ((x)>=0?(int)((x)+0.5):(int)((x)-0.5))
-#define fix(a) ((a>0)?floor(a):ceil(a))
-#define uquad_max(a,b) (a>b)?a:b
-#define uquad_min(a,b) (a<b)?a:b
-#define uquad_square(a) (a*a)
+#define fix(a)                    ((a>0)?floor(a):ceil(a))
+#define sign(a)                   ((a < 0.0)?-1.0:1.0)
+#define uquad_max(a,b)            ((a>b)?a:b)
+#define uquad_min(a,b)            ((a<b)?a:b)
+#define uquad_square(a)           (a*a)
 
 /// abs() casts to integer, we don't want that
-#define uquad_abs(a) (((a) < 0) ? -(a) : (a))
+#define uquad_abs(a)              (((a) < 0) ? -(a) : (a))
 
 /// Math in degrees (instead of rad)
-#define cosd(a) cos(deg2rad(a))
-#define sind(a) sin(deg2rad(a))
-#define tand(a) atan(deg2rad(a))
-#define atan2d(y,x) atan2(deg2rad(y),deg2rad(x))
+#define cosd(a)                   cos(deg2rad(a))
+#define sind(a)                   sin(deg2rad(a))
+#define tand(a)                   atan(deg2rad(a))
+#define atan2d(y,x)               atan2(deg2rad(y),deg2rad(x))
 
 /**
  * -- -- -- -- -- -- -- -- -- -- -- --

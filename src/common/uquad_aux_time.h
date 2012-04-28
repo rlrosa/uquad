@@ -4,6 +4,12 @@
 #include <sys/time.h>
 #include <unistd.h> // for usleep()
 
+#define double2tv(tv,db)						\
+    {									\
+	tv.tv_sec  = (long int) floor(db);				\
+	tv.tv_usec = (long int) (1e6*(db - sign(db)*floor(db)));	\
+    }
+
 #define sleep_ms(ms) usleep(1000*ms)
 
 /** 

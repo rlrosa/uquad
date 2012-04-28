@@ -1,4 +1,4 @@
-function [aconv,wconv,euler] = mong_conv(a,w,m,plotear,t_imu)
+function [aconv,wconv,euler] = mong_conv(a,w,m,plotear,t_imu, T)
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 % function [aconv,wconv,mconv] = mong_conv(a,w,m,plotear)
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -152,8 +152,15 @@ end
 % euler(:,3) = theta(:,3);
 
 if plotear
-    T=1/fs;
-    t=0:T:T*(length(a(:,1))-1);
+    if(~exist('T','var'))
+      T=1/fs;
+      t=0:T:T*(length(a(:,1))-1);
+    else
+      if(length(T) ~= length(a(:,1)))
+        fprintf('WARN: will trim T (%d) to match length(a) (%d)\n', length(T), length(a(:,1)));
+      end
+      t = T(1:length(a(:,1)));
+    end
     figure()
         subplot(311)
         plot(t,aconv(:,1)); hold on; plot(t,aconv(:,2),'r'); plot(t,aconv(:,3),'g'); legend('a_x','a_y','a_z'); grid;

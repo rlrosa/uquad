@@ -14,7 +14,7 @@ function [kin, imu_data, x_hat_c, wlog, kin_cut, z] = plot_c(path)
 %path =['tests/main/logs/' path];
 if(~exist('path','var'))
   path = 'src/build/main/';
-  fprintf('Using default path: %s',path);
+  fprintf('Using default path: %s\n',path);
 end
 
 kin      = load([path 'kalman_in.log']);

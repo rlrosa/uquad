@@ -21,7 +21,7 @@ uquad_bool_t die = false;
 
 void uquad_logger_die(int signal)
 {
-    err_log_num("logger caught signal, will finish and die...",signal);
+    signal++; // avoid warning.
     die = true;
 }
 
