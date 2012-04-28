@@ -47,7 +47,7 @@ if len(sys.argv) > 1:
             elif (device[l-11:l-4] == 'imu_avg'):
                 log_type = LOG_IMU_AVG
             elif (device[l-12:l-4] == 'imu_data'):
-                log_type = LOG_IMU_DAT
+                log_type = LOG_IMU_DATA
             else:
                 print 'Invalid log name!'
                 exit
@@ -280,7 +280,7 @@ while 1:
             print line
             f.write(line)# Write to the output log file
             # Input looks correct, one last check
-            if (words_len > words_per_lin + 1):
+            if (words_len < words_per_lin + 1):
                 print 'Read too much data.\nGarbage?'
                 continue
             try:
