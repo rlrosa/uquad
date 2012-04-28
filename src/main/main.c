@@ -45,7 +45,8 @@
 
 #define UQUAD_HOW_TO   "./main <imu_device> /path/to/log/"
 #define MAX_ERRORS     20
-#define STARTUP_RUNS   10 // Wait for this number of samples at a steady Ts before running
+#define OL_TS_STABIL   790               // If != 0, then will wait OL_TS_STABIL+STARTUP_RUNS samples before using IMU.
+#define STARTUP_RUNS   (10+OL_TS_STABIL) // Wait for this number of samples at a steady Ts before running
 #define STARTUP_KALMAN 200
 #define FIXED          3
 #define IMU_TS_OK      -1
@@ -878,7 +879,7 @@ int main(int argc, char *argv[]){
 		err_imu = uquad_timeval_substract(&tv_diff, tv_tmp, tv_last_frame);
 		log_n_jump((err_imu < 0)?ERROR_TIMING:ERROR_OK,end_imu,"Absurd timing!");
 		err_imu = in_range_us(tv_diff, TS_MIN, TS_MAX);
-		if(err_imu == 0)
+		if(err_imu == 0 || OL_TS_STABIL)
 		{
 		    if(imu_ts_ok++ >= STARTUP_RUNS)
 		    {
