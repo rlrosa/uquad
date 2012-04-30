@@ -698,7 +698,7 @@ void uquad_mat_dump(uquad_mat_t *m, FILE *output)
     }
 }
 
-void uquad_mat_dump_vec(uquad_mat_t *m, FILE *output)
+void uquad_mat_dump_vec(uquad_mat_t *m, FILE *output, uquad_bool_t tight)
 {
     int i,len;
     if(m == NULL)
@@ -718,11 +718,25 @@ void uquad_mat_dump_vec(uquad_mat_t *m, FILE *output)
     {
 	if(output == stderr)
 	{
+	    if(tight)
+	    {
+		err_log_double_only_tight(m->m_full[i]);
+	    }
+	    else
+	    {
 	    err_log_double_only(m->m_full[i]);
+	    }
 	}
 	else
 	{
-	    log_double_only(output, m->m_full[i]);
+	    if(tight)
+	    {
+		log_double_only_tight(output, m->m_full[i]);
+	    }
+	    else
+	    {
+		log_double_only(output, m->m_full[i]);
+	    }
 	}
     }
     if(output == stderr)

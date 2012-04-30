@@ -157,7 +157,7 @@ int main(int argc, char *argv[]){
 			}
 			//			retval = uquad_kalman(kalman_io_data, w, &data, tv_diff.tv_usec);
 			retval = uquad_kalman(kalman_io_data, 
-					      w, &data, 13000.0);
+					      w, &data, 13000.0, 1.741, NULL);
 			err_propagate(retval);
 
 			if(gps_update)

@@ -30,6 +30,7 @@
  *    [abz       ] - m/s^2
  *
  * T: Time since last sample, in us
+ * weight: Weight of the cuadcopter - kg
  *
  */
 typedef struct kalman_io {
@@ -38,6 +39,7 @@ typedef struct kalman_io {
     uquad_mat_t *z;
     uquad_mat_t *z_gps;
     double T;
+    double weight;
     uquad_mat_t *x_;
     uquad_mat_t *R;
     uquad_mat_t *Q;
@@ -46,7 +48,7 @@ typedef struct kalman_io {
     uquad_mat_t *R_gps;
 } kalman_io_t;
 
-int uquad_kalman(kalman_io_t * kalman_io_data, uquad_mat_t* w, imu_data_t* data, double T, gps_comm_data_t *gps_i_data);
+int uquad_kalman(kalman_io_t * kalman_io_data, uquad_mat_t* w, imu_data_t* data, double T, double weight, gps_comm_data_t *gps_i_data);
 int uquad_kalman_gps(kalman_io_t* kalman_io_data, gps_comm_data_t* gps_i_data);
 kalman_io_t* kalman_init();
 void kalman_deinit(kalman_io_t *kalman_io_data);

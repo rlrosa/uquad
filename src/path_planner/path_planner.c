@@ -31,12 +31,6 @@ set_point_t *setpoint_init(void)
 	err_log("setpoint_init() failed!");
 	return NULL;
     }
-    /// HOVER at 1m
-    sp->x->m_full[0] = 0; 
-    sp->w->m_full[0] = MOT_W_HOVER;
-    sp->w->m_full[1] = MOT_W_HOVER;
-    sp->w->m_full[2] = MOT_W_HOVER;
-    sp->w->m_full[3] = MOT_W_HOVER;
     return sp;
 }
 
@@ -55,15 +49,22 @@ path_planner_t *pp_init(void)
 }
 
 
-int pp_update_setpoint(path_planner_t *pp, uquad_mat_t *x)
+int pp_update_setpoint(path_planner_t *pp, uquad_mat_t *x, double w_hover)
 {
-    if (pp->pt != HOVER)
-    {
-	err_check(ERROR_FAIL, "Not implemented!");
-    }
     if(pp == NULL || x == NULL)
     {
 	err_check(ERROR_NULL_POINTER,"Invalid argument.");
+    }
+    if (pp->pt == HOVER)
+    {
+	pp->sp->w->m_full[0] = w_hover;
+	pp->sp->w->m_full[1] = w_hover;
+	pp->sp->w->m_full[2] = w_hover;
+	pp->sp->w->m_full[3] = w_hover;
+    }
+    else
+    {
+	err_check(ERROR_FAIL, "Not implemented!");
     }
     return ERROR_OK;
 }
@@ -82,7 +83,7 @@ void pp_deinit(path_planner_t *pp)
 /* The discretization of the system is X(k+1)=phi*X(k)+gamma*U, */
 
 /* Where phi=exp(A*Ts) and gama=int(exp(A*s),0,Ts) */
-int pp_update_K(path_planner_t *pp)
+int pp_update_K(path_planner_t *pp, double weight)
 {
     int retval;
     uquad_mat_t *A = NULL;
@@ -95,7 +96,7 @@ int pp_update_K(path_planner_t *pp)
     //Linearization of the system
     A = uquad_mat_alloc(STATES_CONTROLLED,STATES_CONTROLLED);
     B = uquad_mat_alloc(STATES_CONTROLLED,MOT_C);
-    retval = pp_lin_model(A,B,pp->pt,pp->sp);
+    retval = pp_lin_model(A,B,pp->pt,pp->sp, weight);
     cleanup_if(retval);
 
     //Extends the system to include the integrated states
@@ -304,7 +305,7 @@ int pp_lqr(uquad_mat_t *K, uquad_mat_t *A, uquad_mat_t *B, uquad_mat_t *Q, uquad
 /*
 Performs the linearization of the physic model of the quadrotor
  */
-int pp_lin_model(uquad_mat_t *A, uquad_mat_t *B, path_type_t pt, set_point_t *sp)
+int pp_lin_model(uquad_mat_t *A, uquad_mat_t *B, path_type_t pt, set_point_t *sp, double weight)
 {
  if(A == NULL || B == NULL)
     {
@@ -416,10 +417,10 @@ int pp_lin_model(uquad_mat_t *A, uquad_mat_t *B, path_type_t pt, set_point_t *sp
  A->m[10][10] = 0;
  A->m[10][11] = -(IXX-IZZ)/IYY*xs[11];
 
- B->m[8][0]=(2*F_B1*ws[0]+F_B2)/MASA;
- B->m[8][1]=(2*F_B1*ws[1]+F_B2)/MASA;
- B->m[8][2]=(2*F_B1*ws[2]+F_B2)/MASA;
- B->m[8][3]=(2*F_B1*ws[3]+F_B2)/MASA;
+ B->m[8][0]=(2*F_B1*ws[0]+F_B2)/weight;
+ B->m[8][1]=(2*F_B1*ws[1]+F_B2)/weight;
+ B->m[8][2]=(2*F_B1*ws[2]+F_B2)/weight;
+ B->m[8][3]=(2*F_B1*ws[3]+F_B2)/weight;
 
  B->m[9][0] = xs[10]*IZZM/IYY;
  B->m[9][1] = -xs[10]*IZZM/IYY+LENGTH*(2*F_B1*ws[1]+F_B2)/IXX;

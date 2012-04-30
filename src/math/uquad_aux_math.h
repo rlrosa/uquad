@@ -248,8 +248,9 @@ void uquad_mat_dump(uquad_mat_t *m, FILE *output);
  *
  * @param m
  * @param output
+ * @param tight Compress output at the cost of loosing info.
  */
-void uquad_mat_dump_vec(uquad_mat_t *m, FILE *output);
+void uquad_mat_dump_vec(uquad_mat_t *m, FILE *output, uquad_bool_t tight);
 
 /**
  * Sets matrix to identity.

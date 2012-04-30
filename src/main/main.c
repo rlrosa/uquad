@@ -295,43 +295,10 @@ void log_configuration(void)
     err_log_num("USE_GPS",USE_GPS);
     err_log_num("GPS_ZERO",GPS_ZERO);
     err_log_num("IMU_COMM_FAKE",IMU_COMM_FAKE);
-    err_log_double("MOT_W_HOVER",MOT_W_HOVER);
+    err_log_num("OL_TS_STABIL",OL_TS_STABIL);
+    err_log_double("MASA_DEFAULT",MASA_DEFAULT);
     err_log("-- -- -- -- -- -- -- --");
     err_log_eol();
-}
-
-#define IDLE_TIME_MS 1000
-#define RETRY_IDLE_WAIT_MS 100
-#define SLOW_LAND_STEP_MS 200
-#define SLOW_LAND_STEP_W 10
-void slow_land(void)
-{
-    int i, retval = ERROR_OK;
-    double dtmp;
-    w->m_full[0] = MOT_W_HOVER;
-    w->m_full[1] = MOT_W_HOVER;
-    w->m_full[2] = MOT_W_HOVER;
-    w->m_full[3] = MOT_W_HOVER;
-    for(i = 0; i < 5; ++i)
-    {
-	retval = mot_set_vel_rads(mot, w, true);
-	if(retval != ERROR_OK)
-	    break;
-	else
-	    sleep_ms(RETRY_IDLE_WAIT_MS);
-    }
-    sleep_ms(IDLE_TIME_MS);
-    for(dtmp = MOT_W_HOVER;dtmp > MOT_W_IDLE;dtmp -= SLOW_LAND_STEP_W)
-    {
-	retval = mot_set_vel_rads(mot, w, true);
-	if(retval != ERROR_OK)
-	{
-	    err_log("Failed to set speed when landing...");
-	}
-	sleep_ms(SLOW_LAND_STEP_MS);
-    }
-    retval = mot_stop(mot);
-    quit();
 }
 
 void uquad_sig_handler(int signal_num)
@@ -728,10 +695,7 @@ int main(int argc, char *argv[]){
 		gettimeofday(&tv_tmp,NULL);
 		retval = uquad_timeval_substract(&tv_diff, tv_tmp, tv_start);
 		err_log_tv("Too many errors! Aborting...",tv_diff);
-		if(!interrupted)
-		    slow_land();
-		else
-		    quit();
+		quit();
 		/// program ends here
 	    }
 	}
@@ -895,7 +859,7 @@ int main(int argc, char *argv[]){
 			    log_n_jump(err_imu,end_imu,"Absurd IMU startup time!");
 			}
 			err_imu = ERROR_OK; // clear timing info
-			err_log_tv("IMU startup completed at ", tv_diff);
+			err_log_tv("IMU startup completed, starting calibration...", tv_diff);
 		    }
 		}
 		else
@@ -1053,7 +1017,7 @@ int main(int argc, char *argv[]){
 	    gettimeofday(&tv_tmp,NULL); // Will be used later
 	    retval = uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
 	    err_log_tv((retval < 0)?"Absurd IMU calibration time!":
-		       "IMU calibration completed:",
+		       "IMU calibration completed, running kalman+control+ramp",
 		       tv_diff);
 	    retval = imu_comm_raw2data(imu, &imu->calib.null_est, &imu_data);
 	    quit_log_if(retval,"Failed to correct setpoint!");
@@ -1164,6 +1128,7 @@ int main(int argc, char *argv[]){
 				  mot->w_curr,
 				  &imu_data,
 				  tv_diff.tv_usec,
+				  mot->weight,
 				  gps_update?gps_dat:NULL);
 	    log_n_continue(retval,"Inertial Kalman update failed");
 	}
@@ -1174,6 +1139,7 @@ int main(int argc, char *argv[]){
 				  pp->sp->w,
 				  &imu_data,
 				  tv_diff.tv_usec,
+				  mot->weight,
 				  NULL);
 	    log_n_continue(retval,"Inertial Kalman update failed");
 	}
@@ -1223,44 +1189,15 @@ int main(int argc, char *argv[]){
 		}
 		retval = ERROR_OK;
 		// save to error log
-		err_log_tv("Kalman startup completed in ", tv_diff);
-#if LOG_TV
-		// save to RET log, add end of line
-		log_tv_only(log_tv,tv_diff);
-		log_tv(log_tv, "Kalman startup completed in ", tv_diff);
-#endif // LOG_TV
+		err_log_tv("Ramp completed, running free control.", tv_diff);
 		++runs_kalman; // so re-entry doesn't happen
-	    }
-	    else
-	    {
-		// Ramp up motors to MOT_W_HOVER, avoid step
-		retval = gettimeofday(&tv_tmp,NULL);
-		err_log_std(retval);
-		for(i = 0; i < MOT_C; ++i)
-		    w->m_full[i] = MOT_W_IDLE +
-			runs_kalman*(MOT_W_STARTUP_RANGE/STARTUP_KALMAN);
-		retval = mot_set_vel_rads(mot, w, true);
-		log_n_continue(retval,"Failed to set motor speed!");
-#if LOG_W
-		uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
-		log_tv_only(log_w,tv_diff);
-		retval = uquad_mat_transpose(wt,w);
-		log_n_continue(retval,"Failed to transpose!");
-		uquad_mat_dump(wt,log_w);
-		fflush(log_w);
-#endif // LOG_W
-		tv_last_ramp  = tv_tmp;
-		tv_last_m_cmd = tv_tmp;
-		retval = gettimeofday(&tv_last_ramp,NULL);
-		log_n_continue(retval,"Failed to update ramp timer!");
-		continue;
 	    }
 	}
 
 	/// -- -- -- -- -- -- -- --
 	/// Update setpoint
 	/// -- -- -- -- -- -- -- --
-	retval = pp_update_setpoint(pp, kalman->x_hat);
+	retval = pp_update_setpoint(pp, kalman->x_hat, mot->w_hover);
 	log_n_continue(retval,"Kalman update failed");
 
 	/// -- -- -- -- -- -- -- --
@@ -1286,6 +1223,19 @@ int main(int argc, char *argv[]){
 	if (tv_diff.tv_usec > MOT_UPDATE_T || tv_diff.tv_sec > 1)
 	{
 	    /// Update motor controller
+	    if(!(runs_kalman > STARTUP_KALMAN))
+	    {
+		/**
+		 * Motors would start from hover speed
+		 * Ramp them up, but keep controlling to maintain
+		 * balance.
+		 */
+		for(i = 0; i < MOT_C; ++i)
+		    w->m_full[i] = uquad_max(mot->w_min,
+					     w->m_full[i] - (STARTUP_KALMAN - runs_kalman)
+					     *((mot->w_hover - mot->w_min)/STARTUP_KALMAN)
+					     );
+	    }
 	    retval = mot_set_vel_rads(mot, w, false);
 	    log_n_continue(retval,"Failed to set motor speed!");
 #if DEBUG && LOG_W
@@ -1316,7 +1266,7 @@ int main(int argc, char *argv[]){
 	if(reg_stdin)
 	{
 	    input = getch();
-	    if(input > 0)
+	    if(input > 0 && !interrupted)
 	    {
 		gettimeofday(&tv_tmp,NULL);
 		retval = uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
@@ -1337,132 +1287,131 @@ int main(int argc, char *argv[]){
 		{
 		    err_log("Manuel mode DISABLED, enable with 'm'. Ignoring input...");
 		}
-		switch(input)
+		else
 		{
-		case MANUAL_MODE:
-		    // switch manual mode on/off
-		    if(pp == NULL)
+		    switch(input)
 		    {
-			err_log("Cannot enable manual mode, path planner not setup!");
-		    }
-		    else
-		    {
-			manual_mode = !manual_mode;
-			if(manual_mode)
+		    case MANUAL_MODE:
+			// switch manual mode on/off
+			if(pp == NULL)
 			{
-			    err_log_tv("Manuel mode ENABLED!",tv_diff);
+			    err_log("Cannot enable manual mode, path planner not setup!");
 			}
 			else
 			{
-			    err_log_tv("Manuel mode DISABLED!",tv_diff);
+			    manual_mode = !manual_mode;
+			    if(manual_mode)
+			    {
+				err_log_tv("Manuel mode ENABLED!",tv_diff);
+			    }
+			    else
+			    {
+				err_log_tv("Manuel mode DISABLED!",tv_diff);
+			    }
+			}
+			break;
+		    case MANUAL_PSI_INC:
+			if(pp == NULL)
+			{
+			    err_log("Path planner not setup!");
+			}
+			pp->sp->x->m_full[SV_PSI] += MANUAL_EULER_STEP;
+			break;
+		    case MANUAL_PSI_DEC:
+			if(pp == NULL)
+			{
+			    err_log("Path planner not setup!");
+			}
+			pp->sp->x->m_full[SV_PSI] -= MANUAL_EULER_STEP;
+			break;
+		    case MANUAL_PHI_INC:
+			if(pp == NULL)
+			{
+			    err_log("Path planner not setup!");
+			}
+			pp->sp->x->m_full[SV_PHI] += MANUAL_EULER_STEP;
+			break;
+		    case MANUAL_PHI_DEC:
+			if(pp == NULL)
+			{
+			    err_log("Path planner not setup!");
+			}
+			pp->sp->x->m_full[SV_PHI] -= MANUAL_EULER_STEP;
+			break;
+		    case MANUAL_THETA_INC:
+			if(pp == NULL)
+			{
+			    err_log("Path planner not setup!");
+			}
+			pp->sp->x->m_full[SV_THETA] += MANUAL_EULER_STEP;
+			break;
+		    case MANUAL_THETA_DEC:
+			if(pp == NULL)
+			{
+			    err_log("Path planner not setup!");
+			}
+			pp->sp->x->m_full[SV_THETA] -= MANUAL_EULER_STEP;
+			break;
+		    case MANUAL_WEIGHT:
+			retval = mot_update_w_hover(mot, MASA_DEFAULT);
+			quit_log_if(retval, "Failed to update weight!");
+			break;
+		    case MANUAL_WEIGHT_INC:
+			if(pp == NULL)
+			{
+			    err_log("Path planner not setup!");
+			}
+			dtmp = MANUAL_WEIGHT_STEP;
+			break;
+		    case MANUAL_WEIGHT_DEC:
+			if(pp == NULL)
+			{
+			    err_log("Path planner not setup!");
+			}
+			dtmp = -MANUAL_WEIGHT_STEP;
+			break;
+		    case MANUAL_Z_INC:
+			if(pp == NULL)
+			{
+			    err_log("Path planner not setup!");
+			}
+			pp->sp->x->m_full[SV_Z] += MANUAL_Z_STEP;
+			break;
+		    case MANUAL_Z_DEC:
+			if(pp == NULL)
+			{
+			    err_log("Path planner not setup!");
+			}
+			pp->sp->x->m_full[SV_Z] -= MANUAL_Z_STEP;
+			break;
+		    default:
+			err_log("Invalid input!");
+			input = ERROR_INVALID_ARG;
+			break;
+		    }
+		    if(dtmp != 0.0)
+		    {
+			retval = mot_update_w_hover(mot, mot->weight + dtmp);
+			quit_log_if(retval, "Failed to update weight!");
+			// display on screen
+			log_tv_only(stdout,tv_diff);
+			log_double(stdout,"Current w hover:",mot->w_hover);
+			fflush(stdout);
+		    }
+		    else
+		    {
+			if(manual_mode && input != ERROR_INVALID_ARG)
+			{
+			    uquad_mat_dump_vec(pp->sp->x,stderr, true);
 			}
 		    }
-		    break;
-		case MANUAL_PSI_INC:
-		    if(pp == NULL)
-		    {
-			err_log("Path planner not setup!");
-		    }
-		    pp->sp->x->m_full[SV_PSI] += MANUAL_EULER_STEP;
-		    break;
-		case MANUAL_PSI_DEC:
-		    if(pp == NULL)
-		    {
-			err_log("Path planner not setup!");
-		    }
-		    pp->sp->x->m_full[SV_PSI] -= MANUAL_EULER_STEP;
-		    break;
-		case MANUAL_PHI_INC:
-		    if(pp == NULL)
-		    {
-			err_log("Path planner not setup!");
-		    }
-		    pp->sp->x->m_full[SV_PHI] += MANUAL_EULER_STEP;
-		    break;
-		case MANUAL_PHI_DEC:
-		    if(pp == NULL)
-		    {
-			err_log("Path planner not setup!");
-		    }
-		    pp->sp->x->m_full[SV_PHI] -= MANUAL_EULER_STEP;
-		    break;
-		case MANUAL_THETA_INC:
-		    if(pp == NULL)
-		    {
-			err_log("Path planner not setup!");
-		    }
-		    pp->sp->x->m_full[SV_THETA] += MANUAL_EULER_STEP;
-		    break;
-		case MANUAL_THETA_DEC:
-		    if(pp == NULL)
-		    {
-			err_log("Path planner not setup!");
-		    }
-		    pp->sp->x->m_full[SV_THETA] -= MANUAL_EULER_STEP;
-		    break;
-		case MANUAL_W_HOVER:
-		    if(pp == NULL)
-		    {
-			err_log("Path planner not setup!");
-		    }
-		    for(i = 0; i < MOT_C; ++i)
-			pp->sp->w->m_full[i] = MOT_W_HOVER;
-		    break;
-		case MANUAL_W_HOVER_INC:
-		    if(pp == NULL)
-		    {
-			err_log("Path planner not setup!");
-		    }
-		    dtmp = MANUAL_W_HOVER_STEP;
-		    break;
-		case MANUAL_W_HOVER_DEC:
-		    if(pp == NULL)
-		    {
-			err_log("Path planner not setup!");
-		    }
-		    dtmp = -MANUAL_W_HOVER_STEP;
-		    break;
-		case MANUAL_Z_INC:
-		    if(pp == NULL)
-		    {
-			err_log("Path planner not setup!");
-		    }
-		    pp->sp->x->m_full[SV_Z] += MANUAL_Z_STEP;
-		    break;
-		case MANUAL_Z_DEC:
-		    if(pp == NULL)
-		    {
-			err_log("Path planner not setup!");
-		    }
-		    pp->sp->x->m_full[SV_Z] -= MANUAL_Z_STEP;
-		    break;
-		default:
-		    err_log("Invalid input!");
-		    break;
-		}
-		if(dtmp != 0.0)
-		{
-		    for(i = 0; i < MOT_C; ++i)
-			pp->sp->w->m_full[i] += dtmp;
-		    // display on screen
-		    log_tv_only(stdout,tv_diff);
-		    log_double(stdout,"Current w_sp",pp->sp->w->m_full[0]);
-		    fflush(stdout);
-		}
-		else
-		{
-		    if(manual_mode)
-		    {
-			uquad_mat_dump_vec(pp->sp->x,stderr);
-		    }
-		}
-
 #if LOG_TV
-		// save to log file
-		log_tv_only(log_tv, tv_diff);
-		log_double(log_tv,"Current w_sp",pp->sp->w->m_full[0]);
-		fflush(log_tv);
+		    // save to log file
+		    log_tv_only(log_tv, tv_diff);
+		    log_double(log_tv,"Current w hover",mot->w_hover);
+		    fflush(log_tv);
 #endif
+		}
 	    }
 	}
 	retval = ERROR_OK;

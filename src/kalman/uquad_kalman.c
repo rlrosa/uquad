@@ -96,7 +96,7 @@ int H_init(uquad_mat_t** H, uquad_bool_t is_gps)
     return ERROR_OK;
 }
 
-int store_data(kalman_io_t* kalman_io_data, uquad_mat_t *w, imu_data_t* data, double T, gps_comm_data_t *gps_i_dat)
+int store_data(kalman_io_t* kalman_io_data, uquad_mat_t *w, imu_data_t* data, double T, double weight, gps_comm_data_t *gps_i_dat)
 {
     uquad_mat_t *z = (gps_i_dat == NULL)?
 	kalman_io_data->z:
@@ -125,6 +125,7 @@ int store_data(kalman_io_t* kalman_io_data, uquad_mat_t *w, imu_data_t* data, do
     }
 
     kalman_io_data->T = T/1000000;
+    kalman_io_data->weight = weight;
 
     return ERROR_OK;
 }
@@ -263,6 +264,7 @@ int f(uquad_mat_t* fx, kalman_io_t* kalman_io_data)
     double aby   = 0;
     double abz   = 0;
     double T     = kalman_io_data -> T;
+    double weight= kalman_io_data -> weight;
 
 #if KALMAN_BIAS
     abx   = kalman_io_data -> x_hat -> m_full[12];
@@ -287,7 +289,7 @@ int f(uquad_mat_t* fx, kalman_io_t* kalman_io_data)
     fx->m_full[5]  = theta + T*( wqz*cos(psi)/cos(phi)+wqy*sin(psi)/cos(phi));
     fx->m_full[6]  = vqx   + T*( vqy*wqz-vqz*wqy+GRAVITY*sin(phi)+abx);
     fx->m_full[7]  = vqy   + T*( vqz*wqx-vqx*wqz-GRAVITY*cos(phi)*sin(psi)+aby);
-    fx->m_full[8]  = vqz   + T*( vqx*wqy-vqy*wqx-GRAVITY*cos(phi)*cos(psi)+1/MASA*(TM_vec[0]+TM_vec[1]+TM_vec[2]+TM_vec[3])+abz);
+    fx->m_full[8]  = vqz   + T*( vqx*wqy-vqy*wqx-GRAVITY*cos(phi)*cos(psi)+1/weight*(TM_vec[0]+TM_vec[1]+TM_vec[2]+TM_vec[3])+abz);
     fx->m_full[9] = wqx   + T*( wqy*wqz*(IYY-IZZ)+wqy*IZZM*(w[0]-w[1]+w[2]-w[3])+LENGTH*(TM_vec[1]-TM_vec[3]) )/IXX ;
     fx->m_full[10] = wqy   + T*( wqx*wqz*(IZZ-IXX)+wqx*IZZM*(w[0]-w[1]+w[2]-w[3])+LENGTH*(TM_vec[2]-TM_vec[0]) )/IYY;
     // fx->m_full[11] = wqz   + T*( -IZZM*(dw[0]-dw[1]+dw[2]-dw[3])+D[0]-D[1]+D[2]-D[3] )/IZZ;
@@ -326,7 +328,7 @@ int h(uquad_mat_t* hx, kalman_io_t* kalman_io_data, uquad_bool_t is_gps)
     hx->m_full[2]  = kalman_io_data -> x_ -> m_full[SV_THETA];
     hx->m_full[3]  = abx;
     hx->m_full[4]  = aby;
-    hx->m_full[5]  = 1/MASA*(TM_vec[0]+TM_vec[1]+TM_vec[2]+TM_vec[3]) + abz;
+    hx->m_full[5]  = 1/kalman_io_data->weight*(TM_vec[0]+TM_vec[1]+TM_vec[2]+TM_vec[3]) + abz;
     hx->m_full[6]  = kalman_io_data -> x_ -> m_full[SV_WQX];
     hx->m_full[7]  = kalman_io_data -> x_ -> m_full[SV_WQY];
     hx->m_full[8]  = kalman_io_data -> x_ -> m_full[SV_WQZ];
@@ -915,7 +917,7 @@ kalman_io_t* kalman_init()
     return NULL;
 }
 
-int uquad_kalman(kalman_io_t * kalman_io_data, uquad_mat_t* w, imu_data_t* data, double T, gps_comm_data_t *gps_i_data)
+int uquad_kalman(kalman_io_t * kalman_io_data, uquad_mat_t* w, imu_data_t* data, double T, double weight, gps_comm_data_t *gps_i_data)
 {
     int retval;
     uquad_bool_t is_gps = (gps_i_data != NULL);
@@ -951,7 +953,7 @@ int uquad_kalman(kalman_io_t * kalman_io_data, uquad_mat_t* w, imu_data_t* data,
 	data->magn->m_full[2] = data->magn->m_full[2]-fix((data->magn->m_full[2]-kalman_io_data->x_hat->m_full[SV_THETA]-PI)/(2*PI))*2*PI;
     }
 
-    retval = store_data(kalman_io_data, w, data, T, gps_i_data);
+    retval = store_data(kalman_io_data, w, data, T, weight, gps_i_data);
     err_propagate(retval);
 
     // Prediction
