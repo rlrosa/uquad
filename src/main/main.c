@@ -45,7 +45,7 @@
 
 #define UQUAD_HOW_TO   "./main <imu_device> /path/to/log/"
 #define MAX_ERRORS     20
-#define OL_TS_STABIL   790               // If != 0, then will wait OL_TS_STABIL+STARTUP_RUNS samples before using IMU.
+#define OL_TS_STABIL   0                 // If != 0, then will wait OL_TS_STABIL+STARTUP_RUNS samples before using IMU.
 #define STARTUP_RUNS   (10+OL_TS_STABIL) // Wait for this number of samples at a steady Ts before running
 #define STARTUP_KALMAN 200
 #define FIXED          3
@@ -509,8 +509,6 @@ int main(int argc, char *argv[]){
 #endif // LOG_TV
 #endif //DEBUG
 
-    log_configuration();
-
     /// IO manager
     io = io_init();
     if(io==NULL)
@@ -641,6 +639,14 @@ int main(int argc, char *argv[]){
 	quit();
     }
 #endif // DEBUG_X_HAT
+
+    /**
+     * Save configuration to log file
+     *
+     */
+    retval = kalman_dump(kalman, log_err);
+    quit_log_if(retval,"Failed to save Kalman configuration!");
+    log_configuration();
 
     /// -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
     /// Register IO devices
@@ -1152,7 +1158,8 @@ int main(int argc, char *argv[]){
 	    retval = uquad_timeval_substract(&tv_diff, tv_tmp, tv_start);
 	    retval = ERROR_OK; // clear to avoid errors
 	    gps_update = false; // Clear gps status
-	    err_log_tv("GPS run!",tv_diff);
+	    log_tv_only(log_gps, tv_diff);
+	    log_eol(log_gps);
 	}
 #endif // USE_GPS
 
@@ -1189,9 +1196,11 @@ int main(int argc, char *argv[]){
 		}
 		retval = ERROR_OK;
 		// save to error log
+		err_log("-- --");
 		err_log("-- -- -- -- -- -- -- --");
-		err_log_tv("Ramp completed, running free control.", tv_diff);
+		err_log_tv("Ramp completed, running free control...", tv_diff);
 		err_log("-- -- -- -- -- -- -- --");
+		err_log("-- --");
 		++runs_kalman; // so re-entry doesn't happen
 	    }
 	}
