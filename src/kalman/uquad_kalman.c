@@ -849,8 +849,8 @@ kalman_io_t* kalman_init()
     kalman_io_data->Q->m[14][14] = 1;
 #endif // KALMAN_BIAS
 
-    kalman_io_data->R->m[0][0] = 1000;
-    kalman_io_data->R->m[1][1] = 1000;
+    kalman_io_data->R->m[0][0] = 10;
+    kalman_io_data->R->m[1][1] = 10;
     kalman_io_data->R->m[2][2] = 1000;
     kalman_io_data->R->m[3][3] = 10000;
     kalman_io_data->R->m[4][4] = 10000;
