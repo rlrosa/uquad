@@ -2,16 +2,7 @@ function [kin, imu_data, x_hat_c, wlog, kin_cut, z] = plot_c(path)
 % -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 % function [kin, imu_data, x_hat_c, wlog, kin_cut, z] = plot_c(path)
 % -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-%  path='2012_04_16_1_1_arranco_loquito/';
-%  path='2012_04_16_1_2_subio_derecho_8_states_no_int/';
-  %path='2012_04_16_1_3_aguanto_bastante/';
- %path='2012_04_16_1_4_8_states_con_integral/';
-%  path='2012_04_16_1_5_igual_q_el_anterior/';
- %path='2012_04_16_1_6_sp_z_1m_sin_integrador/';
-% path='2012_04_16_1_7_igual_q_anterior/';
- % path='2012_04_16_1_8_igual_anterior/';
 
-%path =['tests/main/logs/' path];
 if(~exist('path','var'))
   path = 'src/build/main/';
   fprintf('Using default path: %s\n',path);
@@ -26,7 +17,7 @@ lens     = [length(kin)      ...
             length(imu_data) ...
             length(x_hat_c)  ...
             length(wlog)];
-if(sum(diff(lens)) ~= 0)
+if(sum(lens ~= lens(1)) ~= 0)
   len_min = min(lens);
   fprintf('WARN: Will trim by:\n\tkin:\t\t%d\n\timu_data:\t%d\n\tx_hat:\t\t%d\n\tw:\t\t%d\n\t\n', ...
     length(kin)      - len_min, ...

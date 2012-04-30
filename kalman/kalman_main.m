@@ -71,7 +71,8 @@ gps_file  = [log_path '/gps.log'];
 %% Load IMU data
 
 % Imu
-imu_file = 'tests/main/logs/2012_04_28_2_01_K_normal_menos_bola_euler_ruido_kalman_nuevo_atras/imu_raw.log';
+imu_file = 'tests/main/logs/';
+imu_file = '/home/rrosa/tmp/test-rr-2012-04-30-03/imu_raw.log';
 % imu_file = 'tests/main/logs/2012_04_21_2_1_8_states_sin_bias_theta_continuo/imu_raw.log';
 [acrud,wcrud,mcrud,tcrud,bcrud,~,~,T]=mong_read(imu_file,0,1);
 
@@ -185,7 +186,7 @@ w_max   = 387;                         % Definition
 w_min   = w_hover - (w_max - w_hover); % Only for simetry
 
 %                  x   y   z  psi phi the vqx vqy vqz wqx wqy wqz ax  ay  az
-Q_imu_gps = diag([1e2 1e2 1e2 1e2 1e2 1e0 1e2 1e2 1e2 1e1 1e1 1e1 1e0 1e0 1e0 ]);
+Q_imu_gps = diag([1e2 1e2 1e2 1e0 1e0 1e0 1e2 1e2 1e2 1e1 1e1 1e1 1e0 1e0 1e0 ]);
 %                 psi phi the ax  ay  az  wqx wqy wqz  x   y   z
 R_imu_gps = diag([1e3 1e3 1e3 1e4 1e4 1e4 1e2 1e2 1e2 1e2 1e2 1e2]);
 %                  x   y   z  psi phi the vqx vqy vqz wqx wqy wqz ax  ay  az

@@ -814,7 +814,7 @@ kalman_io_t* kalman_init()
     kalman_io_data->R     = uquad_mat_alloc(10,10);
     kalman_io_data->P     = uquad_mat_alloc(STATE_COUNT+STATE_BIAS,STATE_COUNT+STATE_BIAS);
     kalman_io_data->P_    = uquad_mat_alloc(STATE_COUNT+STATE_BIAS,STATE_COUNT+STATE_BIAS);
-    kalman_io_data->R_gps = uquad_mat_alloc(STATE_COUNT,STATE_COUNT);
+    kalman_io_data->R_imu_gps = uquad_mat_alloc(STATE_COUNT,STATE_COUNT);
 
     retval = uquad_mat_zeros(kalman_io_data->x_hat);
     cleanup_if(retval);
@@ -828,7 +828,7 @@ kalman_io_t* kalman_init()
     cleanup_if(retval);
     retval = uquad_mat_zeros(kalman_io_data->P);
     cleanup_if(retval);
-    retval = uquad_mat_zeros(kalman_io_data->R_gps);
+    retval = uquad_mat_zeros(kalman_io_data->R_imu_gps);
     cleanup_if(retval);
  
     kalman_io_data->Q->m[0][0] = 100;
@@ -860,18 +860,18 @@ kalman_io_t* kalman_init()
     kalman_io_data->R->m[8][8] = 100;
     kalman_io_data->R->m[9][9] = 1000;
 
-    kalman_io_data->R_gps->m[0][0] = 1000;
-    kalman_io_data->R_gps->m[1][1] = 1000;
-    kalman_io_data->R_gps->m[2][2] = 1000;
-    kalman_io_data->R_gps->m[3][3] = 10000;
-    kalman_io_data->R_gps->m[4][4] = 10000;
-    kalman_io_data->R_gps->m[5][5] = 10000;
-    kalman_io_data->R_gps->m[6][6] = 100;
-    kalman_io_data->R_gps->m[7][7] = 100;
-    kalman_io_data->R_gps->m[8][8] = 100;
-    kalman_io_data->R_gps->m[9][9] = 100;
-    kalman_io_data->R_gps->m[10][10] = 100;
-    kalman_io_data->R_gps->m[11][11] = 100;
+    kalman_io_data->R_imu_gps->m[0][0] = 1000;
+    kalman_io_data->R_imu_gps->m[1][1] = 1000;
+    kalman_io_data->R_imu_gps->m[2][2] = 1000;
+    kalman_io_data->R_imu_gps->m[3][3] = 10000;
+    kalman_io_data->R_imu_gps->m[4][4] = 10000;
+    kalman_io_data->R_imu_gps->m[5][5] = 10000;
+    kalman_io_data->R_imu_gps->m[6][6] = 100;
+    kalman_io_data->R_imu_gps->m[7][7] = 100;
+    kalman_io_data->R_imu_gps->m[8][8] = 100;
+    kalman_io_data->R_imu_gps->m[9][9] = 100;
+    kalman_io_data->R_imu_gps->m[10][10] = 100;
+    kalman_io_data->R_imu_gps->m[11][11] = 100;
 
     kalman_io_data->P->m[0][0] = 1;
     kalman_io_data->P->m[1][1] = 1;
@@ -928,7 +928,7 @@ int uquad_kalman(kalman_io_t * kalman_io_data, uquad_mat_t* w, imu_data_t* data,
 	*H       = (is_gps)?H_gps:H_inertial,
 	*hx      = (is_gps)?hx_gps:hx_inertial,
 	*z       = (is_gps)?kalman_io_data->z_gps:kalman_io_data->z,
-	*R       = (is_gps)?kalman_io_data->R_gps:kalman_io_data->R,
+	*R       = (is_gps)?kalman_io_data->R_imu_gps:kalman_io_data->R,
 	*P_      = kalman_io_data->P_, /* ALWAYS */
 	*P       = kalman_io_data->P,  /* ALWAYS */
 	*Q       = kalman_io_data->Q,  /* ALWAYS */
@@ -1027,8 +1027,23 @@ void kalman_deinit(kalman_io_t *kalman_io_data)
 	uquad_mat_free(kalman_io_data->R);
 	uquad_mat_free(kalman_io_data->P);
 	uquad_mat_free(kalman_io_data->P_);
-	uquad_mat_free(kalman_io_data->R_gps);
+	uquad_mat_free(kalman_io_data->R_imu_gps);
 
 	free(kalman_io_data);
     }
+}
+
+int kalman_dump(kalman_io_t *kalman_io_data, FILE *output)
+{
+    if(kalman_io_data == NULL)
+    {
+	err_check(ERROR_NULL_POINTER,"NULL pointer is invalid argument!");
+    }
+    log_msg(output,"Kalman - R");
+    uquad_mat_dump(kalman_io_data->R, output);
+    log_msg(output,"Kalman - Q");
+    uquad_mat_dump(kalman_io_data->Q, output);
+    log_msg(output,"Kalman - R_imu_gps");
+    uquad_mat_dump(kalman_io_data->R_imu_gps, output);
+    return ERROR_OK;
 }

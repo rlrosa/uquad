@@ -86,6 +86,16 @@ enum UQUAD_ERROR_CODES{
 		    __TIME__,__FILE__,__LINE__,msg);	\
     }
 
+/**
+ * Print error message to log
+ * 
+ */
+#define log_msg(log,msg)					\
+    {								\
+	fprintf(log,"%s:%s:%d: %s\n\r",				\
+		__TIME__,__FILE__,__LINE__,msg);		\
+    }
+
 #define err_log_stderr(msg)						\
     {									\
 	fprintf(stderr,"%s:%s:%d: %s: %s\n\r",				\
