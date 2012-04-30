@@ -1189,7 +1189,9 @@ int main(int argc, char *argv[]){
 		}
 		retval = ERROR_OK;
 		// save to error log
+		err_log("-- -- -- -- -- -- -- --");
 		err_log_tv("Ramp completed, running free control.", tv_diff);
+		err_log("-- -- -- -- -- -- -- --");
 		++runs_kalman; // so re-entry doesn't happen
 	    }
 	}
