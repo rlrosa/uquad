@@ -14,7 +14,7 @@ sleep 1
 # check connections
 while(true);
 do
-    x=`ping -c1 10.42.43.1 2>&1 | grep "100% packet loss"`
+    x=`ping -c2 10.42.43.1 2>&1 | grep "100% packet loss"`
     if [ ! "$x" = "" ]; then
 	echo "check_net.sh: Connection lost!"
 	echo "Will kill cmd!"
