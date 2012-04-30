@@ -185,3 +185,11 @@ int mot_deinit(uquad_mot_t *mot)
     };
     return retval;;
 };
+
+double mot_calc_w_hover(double *w_hover, double weight)
+{
+    int retval;
+    retval = uquad_solve_pol2(w_hover, NULL, F_B1, F_B2, GRAVITY*weight/4.0);
+    err_propagate(retval);
+    return retval;
+}

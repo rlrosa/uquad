@@ -14,7 +14,7 @@
 #define MOT_W_MAX           387.0   // rad/s (match MOT_MAX_I2C)
 #define MOT_W_MIN           (MOT_W_HOVER - (MOT_W_MAX - MOT_W_HOVER))
 #define MOT_W_IDLE          109.0   // rad/s (match MOT_IDLE_I2C)
-#define MOT_W_STARTUP_RANGE (MOT_W_HOVER - MOT_W_IDLE)
+#define MOT_W_STARTUP_RANGE (MOT_W_HOVER - MOT_W_MIN)
 #define MOT_C               4
 
 #define MOT_UPDATE_MAX_US   2000  // us
@@ -111,4 +111,15 @@ int mot_stop(uquad_mot_t *mot);
  * driver was successfull.
  */
 int mot_deinit(uquad_mot_t *mot);
+
+/**
+ * Returns the speed that should be set on the motors to
+ * mantain a quadcopter of weight in steady in the air.
+ *
+ * @param w_hover [rad/s]
+ * @param weight  [kg]
+ *
+ * @return error code
+ */
+double mot_calc_w_hover(double w_hover, double weight);
 #endif //MOT_CONTROL_H
