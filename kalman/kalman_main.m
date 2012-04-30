@@ -61,7 +61,7 @@ if(use_n_states < 2 && allin1)
   error('Cannot use intertial+GPS kalman without allin1!');
 end
 %% Source
- log_path = 'tests/tests_rr_quito_2012_04_17/';
+ log_path = 'src/build/main/';
 if(~exist('log_path','var'))
   error('Must define a variable log_path to read from!');
 end
@@ -179,7 +179,8 @@ end
 N       = size(a,1); % Cantidad de muestras de las observaciones
 Ns      = 15;        % N states: cantidad de variables de estado de Kalman
 Ngps    = 6;         % N gps: cantidad de variables corregidas por gps
-w_hover = 310;    % At this velocity, motor's force equals weight
+masa    = 1.741;
+w_hover = calc_omega(9.81*masa/4);    % At this velocity, motor's force equals weight
 w_max   = 387; 
 w_min   = 109;
 % Q_imu   = diag(1*[100 100 100 1 1 1 100 100 100 10 10 10 1 1 1]);

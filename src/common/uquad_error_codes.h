@@ -54,6 +54,7 @@ enum UQUAD_ERROR_CODES{
     ERROR_MATH_UNDERFLOWS,
     ERROR_MATH_OVERFLOWS,
     ERROR_MATH_DIV_0,
+    ERROR_MATH_NEGATIVE,
     ERROR_MOTOR_CMD_START,
     ERROR_MOTOR_CMD_KILL,
     ERROR_MOTOR_SET,
@@ -139,10 +140,10 @@ enum UQUAD_ERROR_CODES{
  */
 #define err_log_double(msg,dbl)					\
     {								\
-	fprintf(stderr,"%s:%s:%d: %s: %lf\n\r",			\
+	fprintf(stderr,"%s:%s:%d: %s(%lf)\n\r",			\
 		__TIME__,__FILE__,__LINE__,msg,dbl);		\
 	if(REROUTE_STDERR && rerouted())			\
-	    fprintf(stdout,"%s:%s:%d: %s: %lf\n\r",		\
+	    fprintf(stdout,"%s:%s:%d: %s(%lf)\n\r",		\
 		    __TIME__,__FILE__,__LINE__,msg,dbl);	\
     }
 
@@ -155,6 +156,17 @@ enum UQUAD_ERROR_CODES{
 	fprintf(stderr,"%lf\t", dbl);					\
 	if(REROUTE_STDERR && rerouted())				\
 	    fprintf(stdout,"%0.15f\t", dbl);				\
+    }
+
+/**
+ * Print double ended by tab to stderr
+ *
+ */
+#define err_log_double_only_tight(dbl)					\
+    {									\
+	fprintf(stderr,"%lf\t", dbl);					\
+	if(REROUTE_STDERR && rerouted())				\
+	    fprintf(stdout,"%0.3f\t", dbl);				\
     }
 
 /**
@@ -173,6 +185,12 @@ enum UQUAD_ERROR_CODES{
  *
  */
 #define log_double_only(log, dbl) fprintf(log,"%0.15f\t", dbl);
+
+/**
+ * Print double ended by tab to log.
+ *
+ */
+#define log_double_only_tight(log, dbl) fprintf(log,"%0.3f\t", dbl);
 
 /**
  * Print error message with double to log

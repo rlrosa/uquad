@@ -14,6 +14,7 @@ enum test_type{
     LIN_SOLVE,
     MATRIX_EXP,
     ROTATE,
+    POL2,
     TEST_COUNT
 };
 
@@ -89,6 +90,45 @@ int load_m1_m2(void)
     err_propagate(retval);
     return ERROR_OK;
 }
+
+int pol2_test(void)
+{
+    double a,b,c,xp,xm;
+    for(;;)
+    {
+	retval = fprintf(stdout, "a,b,c (a*x^2 + b*x + c):\n");
+	if(retval < 0)
+	{
+	    err_log_stderr("fprintf()!");
+	}
+	retval = fscanf(stdin,"%lf %lf %lf", &a, &b, &c);
+	if(retval < 0)
+	{
+	    err_log_stderr("fscanf()!");
+	    err_check(ERROR_FAIL, "Fail!");
+	}
+	else
+	{
+	    if(retval < 3)
+	    {
+		err_log_num("Not enougth arguments!",retval);
+		err_check(ERROR_INVALID_ARG, "Fail!");
+	    }
+	}
+	retval = uquad_solve_pol2(&xp, &xm, a, b, c);
+	err_propagate(retval);
+	retval = fprintf(stdout, "\txp =\t%lf\n\txm =\t%lf\n\n", xp, xm);
+	if(retval < 0)
+	{
+	    err_log_stderr("fprintf()!");
+	}
+
+	if(!ask_continue())
+	    break;
+    }
+    return ERROR_OK;
+}
+
 
 int mat_inv_test(void)
 {
@@ -356,7 +396,7 @@ int main(void){
     int retval = ERROR_OK;
     enum test_type sel_test;
     int cmd;
-    printf("Select test:\n\t%d:Matrix product\n\t%d:Matrix det\n\t%d:Matrix inv\n\t%d:Matrix add\n\t%d:Matrix sub\n\t%d:Matrix mul k\n\t%d:Matrix div k\n\t%d:Linear system\n\t%d:Expnential Matrix\n\t%d:Rotate\n",
+    printf("Select test:\n\t%d:Matrix product\n\t%d:Matrix det\n\t%d:Matrix inv\n\t%d:Matrix add\n\t%d:Matrix sub\n\t%d:Matrix mul k\n\t%d:Matrix div k\n\t%d:Linear system\n\t%d:Expnential Matrix\n\t%d:Rotate\n\t%d:Pol2\n",
 	   MATRIX_PROD,
 	   MATRIX_DET,
 	   MATRIX_INV,
@@ -366,7 +406,8 @@ int main(void){
 	   MATRIX_DIV_K,
 	   LIN_SOLVE,
 	   MATRIX_EXP,
-	   ROTATE);
+	   ROTATE,
+	   POL2);
     scanf("%d",&cmd);
     if(cmd<0 || cmd > TEST_COUNT)
     {
@@ -401,6 +442,9 @@ int main(void){
 	break;
     case ROTATE:
 	retval = mat_rot_test();
+	break;
+    case POL2:
+	retval = pol2_test();
 	break;
     default:
 	err_check(ERROR_FAIL,"This shouldn't happen.");

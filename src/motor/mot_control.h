@@ -12,9 +12,7 @@
 #define MOT_I2C_MAX         220     // i2c
 #define MOT_I2C_IDLE        50      // i2c
 #define MOT_W_MAX           387.0   // rad/s (match MOT_MAX_I2C)
-#define MOT_W_MIN           (MOT_W_HOVER - (MOT_W_MAX - MOT_W_HOVER))
 #define MOT_W_IDLE          109.0   // rad/s (match MOT_IDLE_I2C)
-#define MOT_W_STARTUP_RANGE (MOT_W_HOVER - MOT_W_IDLE)
 #define MOT_C               4
 
 #define MOT_UPDATE_MAX_US   2000  // us
@@ -55,9 +53,15 @@ typedef struct uquad_mot{
     uquad_mat_t *w_curr;
     uquad_kmsgq_t *kmsgq;
     struct timeval last_set;
+
+    /// Keep track of weight and hover speed
+    double w_hover;
+    double weight;
+    double w_min;
+    double w_max;
 }uquad_mot_t;
 
-/** 
+/**
  * Allocates memory for uquad_mot_t, opens log
  * files and opens file for interaction will motor controlling
  * program.
@@ -78,7 +82,7 @@ uquad_mot_t *mot_init(void);
  */
 int mot_set_vel_rads(uquad_mot_t *mot, uquad_mat_t *w, uquad_bool_t force);
 
-/** 
+/**
  * Sets idle speed as target speed for all motors.
  * The motors will be running, but not fast enough
  * to move the cuadcopter.
@@ -89,7 +93,7 @@ int mot_set_vel_rads(uquad_mot_t *mot, uquad_mat_t *w, uquad_bool_t force);
  */
 int mot_set_idle(uquad_mot_t *mot);
 
-/** 
+/**
  * Sets speed to zero for all motors.
  * 
  * @param mot 
@@ -98,7 +102,7 @@ int mot_set_idle(uquad_mot_t *mot);
  */
 int mot_stop(uquad_mot_t *mot);
 
-/** 
+/**
  * Cleans up uquad_mot_t, closing all opened files and
  * freeing memory.
  * Will only close opened files (will check), and will
@@ -111,4 +115,15 @@ int mot_stop(uquad_mot_t *mot);
  * driver was successfull.
  */
 int mot_deinit(uquad_mot_t *mot);
+
+/**
+ * Updates the speed that should be set on the motors to
+ * mantain a quadcopter of weight in steady in the air.
+ *
+ * @param mot
+ * @param weight  [kg]
+ *
+ * @return error code
+ */
+int mot_update_w_hover(uquad_mot_t *mot, double weight);
 #endif //MOT_CONTROL_H

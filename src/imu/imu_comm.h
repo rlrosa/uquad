@@ -51,7 +51,7 @@
 #define IMU_DEFAULT_FRAME_SIZE_DATA_BYTES IMU_DEFAULT_FRAME_SIZE_BYTES - 6 // init,end,time
 #define IMU_SYNC_FAIL_MAX                 (IMU_DEFAULT_FRAME_SIZE_BYTES<<1)
 
-#define IMU_COMM_READ_1_BYTE              0  // Read only 1 byte from serial port per call
+#define IMU_COMM_READ_1_BYTE              1  // Read only 1 byte from serial port per call
 
 #define IMU_FRAME_BUFF_SIZE               32
 
