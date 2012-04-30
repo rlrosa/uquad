@@ -43,7 +43,7 @@ use_n_states = 2; % Regulates number of variables to control. Can be:
 use_gps      = 1; % Use kalman_gps
 use_fake_gps = 1; % Feed kalman_gps with fake data (only if use_gps)
 use_fake_T   = 0; % Ignore real timestamps from log, use average
-allin1       = 1; % Includes inertial and gps Kalman all in 1 filter
+allin1       = 0; % Includes inertial and gps Kalman all in 1 filter
 use_gps_vel  = 0; % Uses velocity from GPS. Solo funca si allin1==0 (por ahora)
 stabilize_ts = 0; % Read out IMU data until stable Ts (matches main.c after 2012-04027)
 
@@ -176,19 +176,26 @@ end
 %% Constantes, entradas, observaciones e inicialización
 
 % Constantes
-N       = size(a,1); % Cantidad de muestras de las observaciones
-Ns      = 15;        % N states: cantidad de variables de estado de Kalman
-Ngps    = 6;         % N gps: cantidad de variables corregidas por gps
-masa    = 1.741;
-w_hover = calc_omega(9.81*masa/4);    % At this velocity, motor's force equals weight
-w_max   = 387; 
-w_min   = 109;
-% Q_imu   = diag(1*[100 100 100 1 1 1 100 100 100 10 10 10 1 1 1]);
-Q_imu   = diag(1*[100 100 100 100 100 1 100 100 100 10 10 10 1 1 1]);
-R_imu   = diag(100*[10 10 10  100 100 100 1 1 1 10]);
+N       = size(a,1);                   % Quantity of observation samples
+Ns      = 15;                          % N states: cantidad de variables de estado de Kalman
+Ngps    = 6;                           % N gps: cantidad de variables corregidas por gps
+masa    = 1.741;                       % Quadcopter weight
+w_hover = calc_omega(9.81*masa/4);     % At this velocity, motor's force equals weight
+w_max   = 387;                         % Definition
+w_min   = w_hover - (w_max - w_hover); % Only for simetry
 
-Q_gps   = diag(1*[100 100 100 100 100 100]);
-R_gps   = diag(1*[1 1 100000 1 1 100000]);
+%                  x   y   z  psi phi the vqx vqy vqz wqx wqy wqz ax  ay  az
+Q_imu_gps = diag([1e2 1e2 1e2 1e2 1e2 1e0 1e2 1e2 1e2 1e1 1e1 1e1 1e0 1e0 1e0 ]);
+%                 psi phi the ax  ay  az  wqx wqy wqz  x   y   z
+R_imu_gps = diag([1e3 1e3 1e3 1e4 1e4 1e4 1e2 1e2 1e2 1e2 1e2 1e2]);
+%                  x   y   z  psi phi the vqx vqy vqz wqx wqy wqz ax  ay  az
+Q_imu     = diag([1e2 1e2 1e2 1e2 1e2 1e0 1e2 1e2 1e2 1e1 1e1 1e1 1e0 1e0 1e0]);
+%                 psi phi the ax  ay  az  wqx wqy wqz  z
+R_imu     = diag([1e1 1e1 1e3 1e4 1e4 1e4 1e2 1e2 1e2 1e3]);
+%                  x   y   z  vqx vqy vqz
+Q_gps     = diag([1e2 1e2 1e2 1e2 1e2 1e2]);
+%                  x   y   z  vqx vqy vqz
+R_gps     = diag([1e0 1e0 1e5 1e0 1e0 1e5]);
 
 if(use_n_states == 0)
     K    = load('src/control/K.txt');
@@ -284,10 +291,10 @@ for i=2:N
             if(use_gps)
                 if(T(i) >= T_gps(gps_index))
                     % Sin velocidades del GPS
-                    [x_hat(i,:),P] = kalman_imu_gps(x_hat(i-1,:),P,Q_imu,...
-                        diag(100*[10  10  10  100 100 100 1 1 1 1 1 1]),Dt,...
-                        w_control(wc_i - 1,:)',[z(i,1:end-1)';northing(gps_index);...
-                        westing(gps_index); elevation(gps_index)], w_hover);
+                    [x_hat(i,:),P] = kalman_imu_gps(x_hat(i-1,:),P,Q_imu_gps,...
+                        R_imu_gps,Dt,w_control(wc_i - 1,:)',...
+                        [z(i,1:end-1)';northing(gps_index);westing(gps_index);...
+                        elevation(gps_index)], w_hover);
                     % Con velocidades del GPS
 %                     [x_hat(i,:),P] = kalman_imu_gps(x_hat(i-1,:),P,Q_imu,...
 %                         [R_imu(1:end-1,1:end-1) zeros(9,6);zeros(6,9) R_gps],Dt,...
