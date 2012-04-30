@@ -6,7 +6,6 @@
 
 #define KALMAN_ROWS_H_GPS 12
 #define KALMAN_ROWS_H     10
-#define KALMAN_GPS_SIZE   6
 
 /**
  * Kalman struct description (matches uquad_types.h):
