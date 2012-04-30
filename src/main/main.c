@@ -351,12 +351,11 @@ int main(int argc, char *argv[]){
 
     retval = gettimeofday(&tv_start,NULL);
     err_log_std(retval);
-    retval = gettimeofday(&tv_last_ramp,NULL);
-    err_log_std(retval);
+    tv_last_ramp  = tv_start;
+    tv_last_m_cmd = tv_start;
     uquad_bool_t gps_update = false;
 #if USE_GPS
-    retval = gettimeofday(&tv_gps_last,NULL);
-    err_log_std(retval);
+    tv_gps_last   = tv_start;
 #if !GPS_ZERO
     uquad_bool_t reg_gps = true;
 #endif // !GPS_ZERO
@@ -1056,6 +1055,9 @@ int main(int argc, char *argv[]){
 #endif // USE_GPS
 		// Euler angles
 		pp->sp->x->m_full[SV_THETA] = imu_data.magn->m_full[2];
+		// Motor speed
+		for(i=0; i<MOT_C; ++i)
+		    pp->sp->w->m_full[i] = mot->w_min;
 	    }
 
 	    /**
