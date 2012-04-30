@@ -71,7 +71,7 @@ gps_file  = [log_path '/gps.log'];
 %% Load IMU data
 
 % Imu
-imu_file = 'tests/main/logs/2012_04_21_prueba_saturacion_derecha_izquierda/imu_raw.log';
+imu_file = 'tests/main/logs/2012_04_28_2_01_K_normal_menos_bola_euler_ruido_kalman_nuevo_atras/imu_raw.log';
 % imu_file = 'tests/main/logs/2012_04_21_2_1_8_states_sin_bias_theta_continuo/imu_raw.log';
 [acrud,wcrud,mcrud,tcrud,bcrud,~,~,T]=mong_read(imu_file,0,1);
 
@@ -182,12 +182,10 @@ Ngps    = 6;         % N gps: cantidad de variables corregidas por gps
 w_hover = 310;    % At this velocity, motor's force equals weight
 w_max   = 387; 
 w_min   = 109;
-Q_imu   = diag(1*[100 100 100 1 1 1 100 100 100 10 10 10 1 1 1]);
-% Q_imu   = diag(1*[100 100 100 1 1 1 10  10  10  1  1  1]);
-R_imu   = diag(100*[10  10  10  100 100 100 1 1 1 10]);
-% R_imu   = diag(100*[100 100 100 100 100 100 1 1 1 100]);
+% Q_imu   = diag(1*[100 100 100 1 1 1 100 100 100 10 10 10 1 1 1]);
+Q_imu   = diag(1*[100 100 100 100 100 1 100 100 100 10 10 10 1 1 1]);
+R_imu   = diag(100*[10 10 10  100 100 100 1 1 1 10]);
 
-% R_imu   = diag(100*[100 100 100 100 102 100 1 1 1 100 10]);
 Q_gps   = diag(1*[100 100 100 100 100 100]);
 R_gps   = diag(1*[1 1 100000 1 1 100000]);
 
