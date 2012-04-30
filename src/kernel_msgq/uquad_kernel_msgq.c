@@ -24,6 +24,7 @@ uquad_kmsgq_t *uquad_kmsgq_init(int key_s, int key_c)
     server->k_s = key_s;
     server->k_c = key_c;
     server->acks_pend = 0;
+    server->acks_failed = 0;
     server->mbuf.mtype = 1;//UQUAD_MSGTYPE;
     server->msgflg = IPC_CREAT | 0666;
     server->tx_counter = 0;
