@@ -1032,3 +1032,18 @@ void kalman_deinit(kalman_io_t *kalman_io_data)
 	free(kalman_io_data);
     }
 }
+
+int kalman_dump(kalman_io_t *kalman_io_data, FILE *output)
+{
+    if(kalman_io_data == NULL)
+    {
+	err_check(ERROR_NULL_POINTER,"NULL pointer is invalid argument!");
+    }
+    log_msg(output,"Kalman - R");
+    uquad_mat_dump(kalman_io_data->R, output);
+    log_msg(output,"Kalman - Q");
+    uquad_mat_dump(kalman_io_data->Q, output);
+    log_msg(output,"Kalman - R_gps");
+    uquad_mat_dump(kalman_io_data->R_gps, output);
+    return ERROR_OK;
+}

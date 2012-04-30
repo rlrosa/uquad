@@ -53,4 +53,14 @@ int uquad_kalman_gps(kalman_io_t* kalman_io_data, gps_comm_data_t* gps_i_data);
 kalman_io_t* kalman_init();
 void kalman_deinit(kalman_io_t *kalman_io_data);
 
+/**
+ * Saves Kalman noise settings to file
+ *
+ * @param kalman_io_data
+ * @param output log file, or NULL for stdout.
+ *
+ * @return error code
+ */
+int kalman_dump(kalman_io_t *kalman_io_data, FILE *output);
+
 #endif
