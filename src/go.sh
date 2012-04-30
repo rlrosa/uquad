@@ -61,7 +61,7 @@ done
 # prepare motor command
 mv i2c_beagle/cmd${pc_test} build/main/cmd
 
-launch gpsd
+# launch gpsd
 (cd ../scripts; ./start_gpsd.sh)
 sleep 1
 
