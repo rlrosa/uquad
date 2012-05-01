@@ -166,7 +166,7 @@ bcrud = bcrud(imu_calib+1:end,:);
 tcrud = tcrud(imu_calib+1:end,:);
 T     = T(imu_calib+1:end,:);
 
-[a,w,euler] = mong_conv(acrud,wcrud,mcrud,0,tcrud);
+[a,w,euler] = mong_conv(acrud,wcrud,mcrud,0,tcrud,T);
 b=altitud(bcrud,b0);
 
 % gyro offset comp
@@ -181,7 +181,7 @@ end
 N       = size(a,1);                   % Quantity of observation samples
 Ns      = 15;                          % N states: cantidad de variables de estado de Kalman
 Ngps    = 6;                           % N gps: cantidad de variables corregidas por gps
-masa    = 1.741;                       % Quadcopter weight
+masa    = 1.741-0.091;                 % Quadcopter weight
 w_hover = calc_omega(9.81*masa/4);     % At this velocity, motor's force equals weight
 w_max   = 387;                         % Definition
 w_min   = w_hover - (w_max - w_hover); % Only for simetry
