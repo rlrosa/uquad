@@ -1,7 +1,9 @@
-function [kin, imu_data, x_hat_c, wlog, kin_cut, z] = plot_c(path)
+% function [kin, imu_data, x_hat_c, wlog, kin_cut, z] = plot_c(path)
 % -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 % function [kin, imu_data, x_hat_c, wlog, kin_cut, z] = plot_c(path)
 % -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+path = 'tests/main/logs/2012_05_01_1_04_K_full_con_ceros_en_x_y_vqx_vqy_anduvo_espantoso/';
 
 if(~exist('path','var'))
   path = 'src/build/main/';
@@ -25,7 +27,7 @@ if(sum(lens ~= lens(1)) ~= 0)
     length(x_hat_c)  - len_min, ...
     length(wlog)     - len_min);    
   kin      = kin     (1:len_min,:);
-  imu_data = imu_data(len_min:end-len_min+1,:);
+%   imu_data = imu_data(len_min:end-len_min+1,:);
   x_hat_c  = x_hat_c (1:len_min,:);
   wlog     = wlog    (1:len_min,:);
 end
