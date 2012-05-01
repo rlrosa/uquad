@@ -72,8 +72,10 @@ gps_file  = [log_path '/gps.log'];
 %% Load IMU data
 
 % Imu
-imu_file = 'tests/main/logs/';
+% imu_file = 'tests/main/logs/';
 % imu_file = [p{9} 'imu_raw.log'];
+% imu_file = 'tests/main/logs/2012_04_21_2_1_8_states_sin_bias_theta_continuo/imu_raw.log';
+imu_file = 'tests/main/logs/2012_04_28_2_01_K_normal_menos_bola_euler_ruido_kalman_nuevo_atras/imu_raw.log';
 [acrud,wcrud,mcrud,tcrud,bcrud,~,~,T]=mong_read(imu_file,0,1);
 
 avg = 1;
@@ -255,11 +257,11 @@ for i=2:N
         % Kalman inercial
         if(i > kalman_startup + 1)
           % Use control output as current w
-          [x_hat(i,:),P] = kalman_imu(x_hat(i-1,:),P,Q_imu,R_imu,Dt,...
+          [x_hat(i,:),P,z(i,3)] = kalman_imu(x_hat(i-1,:),P,Q_imu,R_imu,Dt,...
               w_control(wc_i - 1,:)',z(i,:)', w_hover);
         else
           % Use set point w as current w
-          [x_hat(i,:),P] = kalman_imu(x_hat(i-1,:),P,Q_imu,R_imu,Dt,...
+          [x_hat(i,:),P,z(i,3)] = kalman_imu(x_hat(i-1,:),P,Q_imu,R_imu,Dt,...
               sp_w,z(i,:)', w_hover);
         end
         % Kalman GPS
@@ -292,12 +294,12 @@ for i=2:N
             if(use_gps)
                 if(T(i) >= T_gps(gps_index))
                     % Sin velocidades del GPS
-                    [x_hat(i,:),P] = kalman_imu_gps(x_hat(i-1,:),P,Q_imu_gps,...
+                    [x_hat(i,:),P,z(i,3)] = kalman_imu_gps(x_hat(i-1,:),P,Q_imu_gps,...
                         R_imu_gps,Dt,w_control(wc_i - 1,:)',...
                         [z(i,1:end-1)';northing(gps_index);westing(gps_index);...
                         elevation(gps_index)], w_hover);
                     % Con velocidades del GPS
-%                     [x_hat(i,:),P] = kalman_imu_gps(x_hat(i-1,:),P,Q_imu,...
+%                     [x_hat(i,:),P,z(i,3)] = kalman_imu_gps(x_hat(i-1,:),P,Q_imu,...
 %                         [R_imu(1:end-1,1:end-1) zeros(9,6);zeros(6,9) R_gps],Dt,...
 %                         w_control(wc_i - 1,:)',[z(i,1:end-1)';northing(gps_index);...
 %                         westing(gps_index); elevation(gps_index); vx_gps(gps_index);...
@@ -315,13 +317,13 @@ for i=2:N
                         end
                     end
                 else
-                    [x_hat(i,:),P] = kalman_imu(x_hat(i-1,:),P,Q_imu,R_imu,Dt,...
+                    [x_hat(i,:),P,z(i,3)] = kalman_imu(x_hat(i-1,:),P,Q_imu,R_imu,Dt,...
                         w_control(wc_i - 1,:)',z(i,:)', w_hover);
                 end
             end
         else
                 % Use set point w as current w
-                [x_hat(i,:),P] = kalman_imu(x_hat(i-1,:),P,Q_imu,R_imu,Dt,...
+                [x_hat(i,:),P,z(i,3)] = kalman_imu(x_hat(i-1,:),P,Q_imu,R_imu,Dt,...
                     sp_w,z(i,:)', w_hover);
         end
     end
