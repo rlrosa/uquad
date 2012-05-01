@@ -43,9 +43,10 @@ use_n_states = 2; % Regulates number of variables to control. Can be:
 use_gps      = 1; % Use kalman_gps
 use_fake_gps = 1; % Feed kalman_gps with fake data (only if use_gps)
 use_fake_T   = 0; % Ignore real timestamps from log, use average
-allin1       = 0; % Includes inertial and gps Kalman all in 1 filter
+allin1       = 1; % Includes inertial and gps Kalman all in 1 filter
 use_gps_vel  = 0; % Uses velocity from GPS. Solo funca si allin1==0 (por ahora)
 stabilize_ts = 0; % Read out IMU data until stable Ts (matches main.c after 2012-04027)
+ctrl_ramp    = 0; % Run kalman+control when ramping motors.
 
 %% Sanity check
 if(use_fake_gps && ~use_gps)
@@ -72,14 +73,13 @@ gps_file  = [log_path '/gps.log'];
 
 % Imu
 imu_file = 'tests/main/logs/';
-imu_file = '/home/rrosa/tmp/test-rr-2012-04-30-03/imu_raw.log';
-% imu_file = 'tests/main/logs/2012_04_21_2_1_8_states_sin_bias_theta_continuo/imu_raw.log';
+% imu_file = [p{9} 'imu_raw.log'];
 [acrud,wcrud,mcrud,tcrud,bcrud,~,~,T]=mong_read(imu_file,0,1);
 
 avg = 1;
 startup_runs = 800;
 imu_calib = 512;
-kalman_startup = 200;
+kalman_startup = 200*(~ctrl_ramp);
 
 % Fake T
 if(use_fake_T)
@@ -246,7 +246,7 @@ x_hat(1,4:6) = [psi0, phi0, theta0];
 
 %% Kalman
 
-for i=2:N    
+for i=2:N
     wc_i = i-kalman_startup;
     Dt = T(i) - T(i-1);
     Dt = min(Dt,12000e-6);Dt = max(Dt,000e-6); % Matches C 
@@ -346,13 +346,13 @@ for i=2:N
           continue;
     end
     w_control(wc_i,:) = (sp_w + K*(sp_x - x_hat_ctl(i,:)'))';
-	for j=1:4
-        if(w_control(wc_i,j) < w_min)
-            w_control(wc_i,j) = w_min;
-        end
-        if (w_control(wc_i,j) > w_max)
-            w_control(wc_i,j) = w_max;
-        end
+    for j=1:4
+      if(w_control(wc_i,j) < w_min)
+          w_control(wc_i,j) = w_min;
+      end
+      if (w_control(wc_i,j) > w_max)
+          w_control(wc_i,j) = w_max;
+      end
     end    
 end
 
