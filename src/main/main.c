@@ -22,7 +22,7 @@
 #endif
 
 #include <manual_mode.h>
-#include <ncurses.h>
+//#include <ncurses.h>
 #include <stdio.h>
 #include <uquad_error_codes.h>
 #include <uquad_types.h>
@@ -186,8 +186,8 @@ void quit()
 	    return;
 	}
     }
-    clear();
-    endwin();
+    /* clear(); */
+    /* endwin(); */
     gettimeofday(&tv_tmp, NULL);
     retval = uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
     if(retval > 0)
@@ -381,11 +381,11 @@ int main(int argc, char *argv[]){
     /**
      * Init curses library, used for user input
      */
-    initscr();  // init curses lib
-    cbreak();   // get user input without waiting for RET
-    noecho();   // do no echo user input on screen
-    timeout(0); // non-blocking reading of user input
-    refresh();  // show output on screen
+    /* initscr();  // init curses lib */
+    /* cbreak();   // get user input without waiting for RET */
+    /* noecho();   // do no echo user input on screen */
+    /* timeout(0); // non-blocking reading of user input */
+    /* refresh();  // show output on screen */
 
     if(argc<2)
     {
@@ -690,7 +690,7 @@ int main(int argc, char *argv[]){
     while(1)
     {
 	fflush(stdout); // flushes output, but does not display on screen
-	refresh();      // displays flushed output on screen
+	//	refresh();      // displays flushed output on screen
 	if((runs_imu == IMU_TS_OK) &&
 	   (retval != ERROR_OK  ||
 	    err_imu != ERROR_OK ||
@@ -1281,7 +1281,10 @@ int main(int argc, char *argv[]){
 	    log_n_continue(retval, "Failed to check stdin for input!");
 	    if(!read)
 		continue;
-	    input = getch();
+	    input = !input;
+	    log_n_continue(ERROR_FAIL, "STDIN NOT IMPLEMENTED!");
+	    continue;
+	    //	    input = getch();
 	    if(input > 0 && !interrupted)
 	    {
 		gettimeofday(&tv_tmp,NULL);
