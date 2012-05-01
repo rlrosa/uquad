@@ -38,6 +38,10 @@ uquad_mot_t *mot_init(void)
 	err_log("Failed to open tx log!");
 	goto cleanup;
     }
+
+    retval = mot_update_w_hover(m, MASA_DEFAULT);
+    cleanup_log_if(retval, "Failed to update W_HOVER!");
+
     retval = system(START_MOTOR_CMD);
     if(retval < 0)
     {
@@ -116,7 +120,7 @@ int mot_set_vel_rads(uquad_mot_t *mot, uquad_mat_t *w, uquad_bool_t force)
     {
 	if(!force)
 	{
-	    if(w->m_full[i] < MOT_W_MIN)
+	    if(w->m_full[i] < mot->w_min)
 	    {
 		/**
 		 * Setting speed to less than MOT_W_IDLE could
@@ -124,7 +128,7 @@ int mot_set_vel_rads(uquad_mot_t *mot, uquad_mat_t *w, uquad_bool_t force)
 		 *
 		 */
 		err_log_num("WARN:w out of range, setting min for motor:",i);
-		w->m_full[i] =  MOT_W_MIN;
+		w->m_full[i] =  mot->w_min;
 	    }
 	    else if (w->m_full[i] > MOT_W_MAX)
 	    {
@@ -185,3 +189,30 @@ int mot_deinit(uquad_mot_t *mot)
     };
     return retval;;
 };
+
+int mot_calc_w_hover(double *w_hover, double weight)
+{
+    int retval;
+    retval = uquad_solve_pol2(w_hover, NULL, F_B1, F_B2, -GRAVITY*weight/4.0);
+    err_propagate(retval);
+    return retval;
+}
+
+int mot_update_w_hover(uquad_mot_t *mot, double weight)
+{
+    int retval;
+    if(mot == NULL)
+    {
+	err_check(ERROR_NULL_POINTER, "NULL pointer is invalid arg!");
+    }
+    retval = mot_calc_w_hover(&mot->w_hover, weight);
+    err_propagate(retval);
+    if(mot->w_hover > MOT_W_MAX)
+    {
+	err_log("WARN: Attempted to set w_hover over MOT_W_MAX, will use max...");
+	mot->w_hover = MOT_W_MAX;
+    }
+    mot->w_min  = mot->w_hover - (MOT_W_MAX - mot->w_hover);
+    mot->weight = weight;
+    return ERROR_OK;
+}

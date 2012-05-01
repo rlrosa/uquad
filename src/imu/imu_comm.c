@@ -970,14 +970,18 @@ int imu_comm_read_frame_ascii(imu_t *imu, imu_raw_t *new_frame, uquad_bool_t *ok
     double dtmp;
     *ok = false;
 
-    // Discard main timestamps and imu_comm timestamps
-    for(i = 0; i < 2; ++i)
+    retval = fscanf(imu->device,"%lf",&dtmp);
+    if(retval < 0)
     {
-	retval = fscanf(imu->device,"%lf",&dtmp);
-	if(retval < 0)
-	{
-	    err_check(ERROR_IO,"Read error: Failed to discard timestamps!");
-	}
+	err_check(ERROR_IO,"Read error: Failed to discard timestamps!");
+    }
+    double2tv(new_frame->timestamp,dtmp);
+
+    // Discard the other timestamp
+    retval = fscanf(imu->device,"%lf",&dtmp);
+    if(retval < 0)
+    {
+	err_check(ERROR_IO,"Read error: Failed to discard timestamps!");
     }
 
     // Get sampling time
@@ -988,8 +992,9 @@ int imu_comm_read_frame_ascii(imu_t *imu, imu_raw_t *new_frame, uquad_bool_t *ok
 	err_check(ERROR_IO,"Read error: Failed to read T_us...");
     }
 
+    // Use timestamp from log file, do not generate a new one
     // Generate timestamp
-    gettimeofday(& new_frame->timestamp,NULL);
+    //    gettimeofday(& new_frame->timestamp,NULL);
 
     // Read sensors RAW data
     // acc

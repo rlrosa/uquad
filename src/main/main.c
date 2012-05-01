@@ -21,10 +21,9 @@
 #define LOG_BUKAKE_STDOUT  1
 #endif
 
-#define W_SP_STEP 1.0L
-#define W_SP_INC  'i'
-#define W_SP_DEC  'k'
-
+#include <manual_mode.h>
+#include <ncurses.h>
+#include <stdio.h>
 #include <uquad_error_codes.h>
 #include <uquad_types.h>
 #include <macros_misc.h>
@@ -42,9 +41,12 @@
 #include <sys/signal.h>   // for SIGINT and SIGQUIT
 #include <unistd.h>       // for STDIN_FILENO
 
+#define QUIT           27
+
 #define UQUAD_HOW_TO   "./main <imu_device> /path/to/log/"
 #define MAX_ERRORS     20
-#define STARTUP_RUNS   10 // Wait for this number of samples at a steady Ts before running
+#define OL_TS_STABIL   0                 // If != 0, then will wait OL_TS_STABIL+STARTUP_RUNS samples before using IMU.
+#define STARTUP_RUNS   (10+OL_TS_STABIL) // Wait for this number of samples at a steady Ts before running
 #define STARTUP_KALMAN 200
 #define FIXED          3
 #define IMU_TS_OK      -1
@@ -184,6 +186,8 @@ void quit()
 	    return;
 	}
     }
+    clear();
+    endwin();
     gettimeofday(&tv_tmp, NULL);
     retval = uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
     if(retval > 0)
@@ -274,38 +278,27 @@ void quit()
     exit(retval);
 }
 
-#define IDLE_TIME_MS 1000
-#define RETRY_IDLE_WAIT_MS 100
-#define SLOW_LAND_STEP_MS 200
-#define SLOW_LAND_STEP_W 10
-void slow_land(void)
+/**
+ * Save configuration to log file.
+ *
+ */
+void log_configuration(void)
 {
-    int i, retval = ERROR_OK;
-    double dtmp;
-    w->m_full[0] = MOT_W_HOVER;
-    w->m_full[1] = MOT_W_HOVER;
-    w->m_full[2] = MOT_W_HOVER;
-    w->m_full[3] = MOT_W_HOVER;
-    for(i = 0; i < 5; ++i)
-    {
-	retval = mot_set_vel_rads(mot, w, true);
-	if(retval != ERROR_OK)
-	    break;
-	else
-	    sleep_ms(RETRY_IDLE_WAIT_MS);
-    }
-    sleep_ms(IDLE_TIME_MS);
-    for(dtmp = MOT_W_HOVER;dtmp > MOT_W_IDLE;dtmp -= SLOW_LAND_STEP_W)
-    {
-	retval = mot_set_vel_rads(mot, w, true);
-	if(retval != ERROR_OK)
-	{
-	    err_log("Failed to set speed when landing...");
-	}
-	sleep_ms(SLOW_LAND_STEP_MS);
-    }
-    retval = mot_stop(mot);
-    quit();
+    err_log_eol();
+    err_log("-- -- -- -- -- -- -- --");
+    err_log("main.c configuration:");
+    err_log("-- -- -- -- -- -- -- --");
+    err_log_num("DEBUG",DEBUG);
+    err_log_num("KALMAN_BIAS",KALMAN_BIAS);
+    err_log_num("CTRL_INTEGRAL",CTRL_INTEGRAL);
+    err_log_num("FULL_CONTROL",FULL_CONTROL);
+    err_log_num("USE_GPS",USE_GPS);
+    err_log_num("GPS_ZERO",GPS_ZERO);
+    err_log_num("IMU_COMM_FAKE",IMU_COMM_FAKE);
+    err_log_num("OL_TS_STABIL",OL_TS_STABIL);
+    err_log_double("MASA_DEFAULT",MASA_DEFAULT);
+    err_log("-- -- -- -- -- -- -- --");
+    err_log_eol();
 }
 
 void uquad_sig_handler(int signal_num)
@@ -318,6 +311,7 @@ int main(int argc, char *argv[]){
     int
 	retval = ERROR_OK,
 	i,
+	input,
 	imu_ts_ok   = 0,
 	runs_imu    = 0,
 	runs_kalman = 0,
@@ -334,11 +328,11 @@ int main(int argc, char *argv[]){
 	ts_error_wait = 0;
 
     uquad_bool_t
-	read = false,
-	write = false,
-	imu_update = false,
-	reg_stdin = true;
-    unsigned char tmp_buff[2];
+	read        = false,
+	write       = false,
+	imu_update  = false,
+	reg_stdin   = true,
+	manual_mode = false;
     struct timeval
 	tv_tmp, tv_diff,
 	tv_last_m_cmd,
@@ -347,14 +341,21 @@ int main(int argc, char *argv[]){
 	tv_last_imu,
 	tv_last_frame,
 	tv_gps_last;
+#if IMU_COMM_FAKE
+    struct timeval tv_imu_fake;
+#endif // IMU_COMM_FAKE
+
+    // Catch signals
+    signal(SIGINT, uquad_sig_handler);
+    signal(SIGQUIT, uquad_sig_handler);
+
     retval = gettimeofday(&tv_start,NULL);
     err_log_std(retval);
-    retval = gettimeofday(&tv_last_ramp,NULL);
-    err_log_std(retval);
+    tv_last_ramp  = tv_start;
+    tv_last_m_cmd = tv_start;
     uquad_bool_t gps_update = false;
 #if USE_GPS
-    retval = gettimeofday(&tv_gps_last,NULL);
-    err_log_std(retval);
+    tv_gps_last   = tv_start;
 #if !GPS_ZERO
     uquad_bool_t reg_gps = true;
 #endif // !GPS_ZERO
@@ -376,9 +377,14 @@ int main(int argc, char *argv[]){
     imu_raw_t imu_frame;
 #endif // LOG_IMU_RAW || LOG_IMU_DATA
 
-    // Catch signals
-    signal(SIGINT, uquad_sig_handler);
-    signal(SIGQUIT, uquad_sig_handler);
+    /**
+     * Init curses library, used for user input
+     */
+    initscr();  // init curses lib
+    cbreak();   // get user input without waiting for RET
+    noecho();   // do no echo user input on screen
+    timeout(0); // non-blocking reading of user input
+    refresh();  // show output on screen
 
     if(argc<2)
     {
@@ -633,6 +639,14 @@ int main(int argc, char *argv[]){
     }
 #endif // DEBUG_X_HAT
 
+    /**
+     * Save configuration to log file
+     *
+     */
+    retval = kalman_dump(kalman, log_err);
+    quit_log_if(retval,"Failed to save Kalman configuration!");
+    log_configuration();
+
     /// -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
     /// Register IO devices
     /// -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
@@ -653,8 +667,8 @@ int main(int argc, char *argv[]){
     }
 #endif
     // stdin
-    retval = io_add_dev(io,STDIN_FILENO);
-    quit_log_if(retval, "Failed to add stdin to io list");
+    //    retval = io_add_dev(io,STDIN_FILENO);
+    //    quit_log_if(retval, "Failed to add stdin to io list");
 
     /// -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
     /// Startup your engines...
@@ -673,6 +687,8 @@ int main(int argc, char *argv[]){
     running = true;
     while(1)
     {
+	fflush(stdout); // flushes output, but does not display on screen
+	refresh();      // displays flushed output on screen
 	if((runs_imu == IMU_TS_OK) &&
 	   (retval != ERROR_OK  ||
 	    err_imu != ERROR_OK ||
@@ -684,10 +700,7 @@ int main(int argc, char *argv[]){
 		gettimeofday(&tv_tmp,NULL);
 		retval = uquad_timeval_substract(&tv_diff, tv_tmp, tv_start);
 		err_log_tv("Too many errors! Aborting...",tv_diff);
-		if(!interrupted)
-		    slow_land();
-		else
-		    quit();
+		quit();
 		/// program ends here
 	    }
 	}
@@ -750,10 +763,29 @@ int main(int argc, char *argv[]){
 	    }
 	    imu_update = false; // data may not be of direct use, may be calib
 
+
+	    err_imu = imu_comm_get_raw_latest(imu,&imu_frame);
+	    log_n_jump(err_imu,end_imu,"could not get new frame...");
+
 #if IMU_COMM_FAKE
 	    // simulate delay (no delay when reading from txt)
-	    usleep(TS_DEFAULT_US);
-#endif
+	    if(runs_imu == 0)
+	    {
+		tv_diff = imu_frame.timestamp;
+	    }
+	    else
+	    {
+		err_imu = uquad_timeval_substract(&tv_diff, imu_frame.timestamp, tv_imu_fake);
+		if(err_imu < 0)
+		{
+		    err_log("Absurd fake IMU timing!");
+		}
+	    }
+	    tv_imu_fake = imu_frame.timestamp;
+	    if(tv_diff.tv_sec > 0)
+		sleep(tv_diff.tv_sec);
+	    usleep(tv_diff.tv_usec);
+#endif // IMU_COMM_FAKE
 
 	    err_imu = gettimeofday(&tv_tmp,NULL);
 	    err_log_std(err_imu);
@@ -763,8 +795,6 @@ int main(int argc, char *argv[]){
 	    {
 		err_log("Timing error!");
 	    }
-	    err_imu = imu_comm_get_raw_latest(imu,&imu_frame);
-	    log_n_jump(err_imu,end_imu,"could not get new frame...");
 #if LOG_IMU_RAW
 	    log_tv_only(log_imu_raw,tv_diff);
 	    err_imu= imu_comm_print_raw(&imu_frame, log_imu_raw);
@@ -818,7 +848,7 @@ int main(int argc, char *argv[]){
 		err_imu = uquad_timeval_substract(&tv_diff, tv_tmp, tv_last_frame);
 		log_n_jump((err_imu < 0)?ERROR_TIMING:ERROR_OK,end_imu,"Absurd timing!");
 		err_imu = in_range_us(tv_diff, TS_MIN, TS_MAX);
-		if(err_imu == 0)
+		if(err_imu == 0 || OL_TS_STABIL)
 		{
 		    if(imu_ts_ok++ >= STARTUP_RUNS)
 		    {
@@ -834,7 +864,7 @@ int main(int argc, char *argv[]){
 			    log_n_jump(err_imu,end_imu,"Absurd IMU startup time!");
 			}
 			err_imu = ERROR_OK; // clear timing info
-			err_log_tv("IMU startup completed at ", tv_diff);
+			err_log_tv("IMU startup completed, starting calibration...", tv_diff);
 		    }
 		}
 		else
@@ -992,7 +1022,7 @@ int main(int argc, char *argv[]){
 	    gettimeofday(&tv_tmp,NULL); // Will be used later
 	    retval = uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
 	    err_log_tv((retval < 0)?"Absurd IMU calibration time!":
-		       "IMU calibration completed:",
+		       "IMU calibration completed, running kalman+control+ramp",
 		       tv_diff);
 	    retval = imu_comm_raw2data(imu, &imu->calib.null_est, &imu_data);
 	    quit_log_if(retval,"Failed to correct setpoint!");
@@ -1025,6 +1055,9 @@ int main(int argc, char *argv[]){
 #endif // USE_GPS
 		// Euler angles
 		pp->sp->x->m_full[SV_THETA] = imu_data.magn->m_full[2];
+		// Motor speed
+		for(i=0; i<MOT_C; ++i)
+		    pp->sp->w->m_full[i] = mot->w_min;
 	    }
 
 	    /**
@@ -1103,6 +1136,7 @@ int main(int argc, char *argv[]){
 				  mot->w_curr,
 				  &imu_data,
 				  tv_diff.tv_usec,
+				  mot->weight,
 				  gps_update?gps_dat:NULL);
 	    log_n_continue(retval,"Inertial Kalman update failed");
 	}
@@ -1113,6 +1147,7 @@ int main(int argc, char *argv[]){
 				  pp->sp->w,
 				  &imu_data,
 				  tv_diff.tv_usec,
+				  mot->weight,
 				  NULL);
 	    log_n_continue(retval,"Inertial Kalman update failed");
 	}
@@ -1125,7 +1160,8 @@ int main(int argc, char *argv[]){
 	    retval = uquad_timeval_substract(&tv_diff, tv_tmp, tv_start);
 	    retval = ERROR_OK; // clear to avoid errors
 	    gps_update = false; // Clear gps status
-	    err_log_tv("GPS run!",tv_diff);
+	    log_tv_only(log_gps, tv_diff);
+	    log_eol(log_gps);
 	}
 #endif // USE_GPS
 
@@ -1162,44 +1198,19 @@ int main(int argc, char *argv[]){
 		}
 		retval = ERROR_OK;
 		// save to error log
-		err_log_tv("Kalman startup completed in ", tv_diff);
-#if LOG_TV
-		// save to RET log, add end of line
-		log_tv_only(log_tv,tv_diff);
-		log_tv(log_tv, "Kalman startup completed in ", tv_diff);
-#endif // LOG_TV
+		err_log("-- --");
+		err_log("-- -- -- -- -- -- -- --");
+		err_log_tv("Ramp completed, running free control...", tv_diff);
+		err_log("-- -- -- -- -- -- -- --");
+		err_log("-- --");
 		++runs_kalman; // so re-entry doesn't happen
-	    }
-	    else
-	    {
-		// Ramp up motors to MOT_W_HOVER, avoid step
-		retval = gettimeofday(&tv_tmp,NULL);
-		err_log_std(retval);
-		for(i = 0; i < MOT_C; ++i)
-		    w->m_full[i] = MOT_W_IDLE +
-			runs_kalman*(MOT_W_STARTUP_RANGE/STARTUP_KALMAN);
-		retval = mot_set_vel_rads(mot, w, true);
-		log_n_continue(retval,"Failed to set motor speed!");
-#if LOG_W
-		uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
-		log_tv_only(log_w,tv_diff);
-		retval = uquad_mat_transpose(wt,w);
-		log_n_continue(retval,"Failed to transpose!");
-		uquad_mat_dump(wt,log_w);
-		fflush(log_w);
-#endif // LOG_W
-		tv_last_ramp  = tv_tmp;
-		tv_last_m_cmd = tv_tmp;
-		retval = gettimeofday(&tv_last_ramp,NULL);
-		log_n_continue(retval,"Failed to update ramp timer!");
-		continue;
 	    }
 	}
 
 	/// -- -- -- -- -- -- -- --
 	/// Update setpoint
 	/// -- -- -- -- -- -- -- --
-	retval = pp_update_setpoint(pp, kalman->x_hat);
+	retval = pp_update_setpoint(pp, kalman->x_hat, mot->w_hover);
 	log_n_continue(retval,"Kalman update failed");
 
 	/// -- -- -- -- -- -- -- --
@@ -1225,6 +1236,19 @@ int main(int argc, char *argv[]){
 	if (tv_diff.tv_usec > MOT_UPDATE_T || tv_diff.tv_sec > 1)
 	{
 	    /// Update motor controller
+	    if(!(runs_kalman > STARTUP_KALMAN))
+	    {
+		/**
+		 * Motors would start from hover speed
+		 * Ramp them up, but keep controlling to maintain
+		 * balance.
+		 */
+		for(i = 0; i < MOT_C; ++i)
+		    w->m_full[i] = uquad_max(mot->w_min,
+					     w->m_full[i] - (STARTUP_KALMAN - runs_kalman)
+					     *((mot->w_hover - mot->w_min)/STARTUP_KALMAN)
+					     );
+	    }
 	    retval = mot_set_vel_rads(mot, w, false);
 	    log_n_continue(retval,"Failed to set motor speed!");
 #if DEBUG && LOG_W
@@ -1254,54 +1278,156 @@ int main(int argc, char *argv[]){
 	/// -- -- -- -- -- -- -- --
 	if(reg_stdin)
 	{
-	    retval = io_dev_ready(io,STDIN_FILENO,&read,&write);
-	    quit_log_if(retval,"io_dev_ready() error");
-	    if(read){
-		retval = fread(tmp_buff,1,1,stdin);
-		if(retval<=0)
+	    input = getch();
+	    if(input > 0 && !interrupted)
+	    {
+		gettimeofday(&tv_tmp,NULL);
+		retval = uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
+		if(retval <= 0)
 		{
-		    err_log("No user input!!");
+		    err_log("Absurd timing!");
+		}
+		retval = ERROR_OK; // clear error
+		dtmp = 0.0;
+		if(input == QUIT)
+		{
+		    err_log("Terminating program based on user input...");
+		    quit(); // Kill motors
+		    quit(); // Kill main.c
+		    // never gets here
+		}
+		if(!manual_mode && (char)input != MANUAL_MODE)
+		{
+		    err_log("Manuel mode DISABLED, enable with 'm'. Ignoring input...");
 		}
 		else
 		{
-		    gettimeofday(&tv_tmp,NULL);
-		    retval = uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
-		    if(retval <= 0)
+		    switch(input)
 		    {
-			err_log("Absurd timing!");
-		    }
-		    retval = ERROR_OK; // clear error
-		    dtmp = 0.0;
-		    switch(tmp_buff[0])
-		    {
-		    case W_SP_INC:
-			dtmp = W_SP_STEP;
+		    case MANUAL_MODE:
+			// switch manual mode on/off
+			if(pp == NULL)
+			{
+			    err_log("Cannot enable manual mode, path planner not setup!");
+			}
+			else
+			{
+			    manual_mode = !manual_mode;
+			    if(manual_mode)
+			    {
+				err_log_tv("Manuel mode ENABLED!",tv_diff);
+			    }
+			    else
+			    {
+				err_log_tv("Manuel mode DISABLED!",tv_diff);
+			    }
+			}
 			break;
-		    case W_SP_DEC:
-			dtmp = -W_SP_STEP;
+		    case MANUAL_PSI_INC:
+			if(pp == NULL)
+			{
+			    err_log("Path planner not setup!");
+			}
+			pp->sp->x->m_full[SV_PSI] += MANUAL_EULER_STEP;
+			break;
+		    case MANUAL_PSI_DEC:
+			if(pp == NULL)
+			{
+			    err_log("Path planner not setup!");
+			}
+			pp->sp->x->m_full[SV_PSI] -= MANUAL_EULER_STEP;
+			break;
+		    case MANUAL_PHI_INC:
+			if(pp == NULL)
+			{
+			    err_log("Path planner not setup!");
+			}
+			pp->sp->x->m_full[SV_PHI] += MANUAL_EULER_STEP;
+			break;
+		    case MANUAL_PHI_DEC:
+			if(pp == NULL)
+			{
+			    err_log("Path planner not setup!");
+			}
+			pp->sp->x->m_full[SV_PHI] -= MANUAL_EULER_STEP;
+			break;
+		    case MANUAL_THETA_INC:
+			if(pp == NULL)
+			{
+			    err_log("Path planner not setup!");
+			}
+			pp->sp->x->m_full[SV_THETA] += MANUAL_EULER_STEP;
+			break;
+		    case MANUAL_THETA_DEC:
+			if(pp == NULL)
+			{
+			    err_log("Path planner not setup!");
+			}
+			pp->sp->x->m_full[SV_THETA] -= MANUAL_EULER_STEP;
+			break;
+		    case MANUAL_WEIGHT:
+			retval = mot_update_w_hover(mot, MASA_DEFAULT);
+			quit_log_if(retval, "Failed to update weight!");
+			break;
+		    case MANUAL_WEIGHT_INC:
+			if(pp == NULL)
+			{
+			    err_log("Path planner not setup!");
+			}
+			dtmp = MANUAL_WEIGHT_STEP;
+			break;
+		    case MANUAL_WEIGHT_DEC:
+			if(pp == NULL)
+			{
+			    err_log("Path planner not setup!");
+			}
+			dtmp = -MANUAL_WEIGHT_STEP;
+			break;
+		    case MANUAL_Z_INC:
+			if(pp == NULL)
+			{
+			    err_log("Path planner not setup!");
+			}
+			pp->sp->x->m_full[SV_Z] += MANUAL_Z_STEP;
+			break;
+		    case MANUAL_Z_DEC:
+			if(pp == NULL)
+			{
+			    err_log("Path planner not setup!");
+			}
+			pp->sp->x->m_full[SV_Z] -= MANUAL_Z_STEP;
 			break;
 		    default:
+			err_log("Invalid input!");
+			input = ERROR_INVALID_ARG;
 			break;
 		    }
 		    if(dtmp != 0.0)
 		    {
-			for(i = 0; i < MOT_C; ++i)
-			    pp->sp->w->m_full[i] += dtmp;
+			retval = mot_update_w_hover(mot, mot->weight + dtmp);
+			quit_log_if(retval, "Failed to update weight!");
 			// display on screen
 			log_tv_only(stdout,tv_diff);
-			log_double(stdout,"Current w_sp",pp->sp->w->m_full[0]);
+			log_double(stdout,"Current w hover:",mot->w_hover);
 			fflush(stdout);
+		    }
+		    else
+		    {
+			if(manual_mode && input != ERROR_INVALID_ARG)
+			{
+			    uquad_mat_dump_vec(pp->sp->x,stderr, true);
+			}
 		    }
 #if LOG_TV
 		    // save to log file
 		    log_tv_only(log_tv, tv_diff);
-		    log_double(log_tv,"Current w_sp",pp->sp->w->m_full[0]);
+		    log_double(log_tv,"Current w hover",mot->w_hover);
 		    fflush(log_tv);
 #endif
 		}
 	    }
-	    retval = ERROR_OK;
 	}
+	retval = ERROR_OK;
     }
     // never gets here
     return 0;
