@@ -3,6 +3,8 @@ function [kin, imu_data, x_hat_c, wlog, z] = plot_c(path)
 % function [kin, imu_data, x_hat_c, wlog, z] = plot_c(path)
 % -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
+path = 'tests/main/logs/2012_05_01_1_04_K_full_con_ceros_en_x_y_vqx_vqy_anduvo_espantoso/';
+
 if(~exist('path','var'))
   path = 'src/build/main/';
   fprintf('Using default path: %s\n',path);
