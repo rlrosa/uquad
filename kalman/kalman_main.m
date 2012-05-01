@@ -73,7 +73,7 @@ gps_file  = [log_path '/gps.log'];
 
 % Imu
 % imu_file = 'tests/main/logs/';
-% imu_file = [p{9} 'imu_raw.log'];
+% imu_file = [p{4} 'imu_raw.log'];
 % imu_file = 'tests/main/logs/2012_04_21_2_1_8_states_sin_bias_theta_continuo/imu_raw.log';
 imu_file = 'tests/main/logs/2012_04_28_2_01_K_normal_menos_bola_euler_ruido_kalman_nuevo_atras/imu_raw.log';
 [acrud,wcrud,mcrud,tcrud,bcrud,~,~,T]=mong_read(imu_file,0,1);
@@ -167,7 +167,7 @@ bcrud = bcrud(imu_calib+1:end,:);
 tcrud = tcrud(imu_calib+1:end,:);
 T     = T(imu_calib+1:end,:);
 
-[a,w,euler] = mong_conv(acrud,wcrud,mcrud,0,tcrud);
+[a,w,euler] = mong_conv(acrud,wcrud,mcrud,0,tcrud,T);
 b=altitud(bcrud,b0);
 
 % gyro offset comp
@@ -182,7 +182,7 @@ end
 N       = size(a,1);                   % Quantity of observation samples
 Ns      = 15;                          % N states: cantidad de variables de estado de Kalman
 Ngps    = 6;                           % N gps: cantidad de variables corregidas por gps
-masa    = 1.741;                       % Quadcopter weight
+masa    = 1.741-0.091;                 % Quadcopter weight
 w_hover = calc_omega(9.81*masa/4);     % At this velocity, motor's force equals weight
 w_max   = 387;                         % Definition
 w_min   = w_hover - (w_max - w_hover); % Only for simetry
