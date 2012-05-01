@@ -811,7 +811,7 @@ kalman_io_t* kalman_init()
     kalman_io_data->z     = uquad_mat_alloc(KALMAN_ROWS_H,1);
     kalman_io_data->z_gps = uquad_mat_alloc(STATE_COUNT,1);
     kalman_io_data->Q     = uquad_mat_alloc(STATE_COUNT+STATE_BIAS,STATE_COUNT+STATE_BIAS);
-    kalman_io_data->R     = uquad_mat_alloc(10,10);
+    kalman_io_data->R     = uquad_mat_alloc(KALMAN_ROWS_H,KALMAN_ROWS_H);
     kalman_io_data->P     = uquad_mat_alloc(STATE_COUNT+STATE_BIAS,STATE_COUNT+STATE_BIAS);
     kalman_io_data->P_    = uquad_mat_alloc(STATE_COUNT+STATE_BIAS,STATE_COUNT+STATE_BIAS);
     kalman_io_data->R_imu_gps = uquad_mat_alloc(STATE_COUNT,STATE_COUNT);
