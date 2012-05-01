@@ -1,4 +1,4 @@
-function [x_hat,P] = kalman_imu(x_hat,P,Q,R,T,u,z,w_hover)
+function [x_hat,P,z_out] = kalman_imu(x_hat,P,Q,R,T,u,z,w_hover)
 
 % -------------------------------------------------------------------------
 % function [x_hat,P] = kalman_imu(x_hat,P,T,u,z)
@@ -116,9 +116,8 @@ H = @() ...
 
 %% Theta continuity
 
-if (abs(z(3)-x_hat(6)) >= pi)
-    z(3) = z(3)-fix((z(3)-x_hat(6)-pi)/(2*pi))*2*pi;
-end
+z(3)  = theta_cont(z(3),x_hat(6));
+z_out = z(3);
 
 %% Kalman
 
