@@ -1,6 +1,6 @@
-% function [kin, imu_data, x_hat_c, wlog, kin_cut, z] = plot_c(path)
+function [kin, imu_data, x_hat_c, wlog, z] = plot_c(path)
 % -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-% function [kin, imu_data, x_hat_c, wlog, kin_cut, z] = plot_c(path)
+% function [kin, imu_data, x_hat_c, wlog, z] = plot_c(path)
 % -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
 path = 'tests/main/logs/2012_05_01_1_04_K_full_con_ceros_en_x_y_vqx_vqy_anduvo_espantoso/';
@@ -16,25 +16,20 @@ x_hat_c  = load([path 'x_hat.log'    ]);
 wlog     = load([path 'w.log'        ]);
 
 lens     = [length(kin)      ...
-            length(imu_data) ...
             length(x_hat_c)  ...
             length(wlog)];
 if(sum(lens ~= lens(1)) ~= 0)
   len_min = min(lens);
-  fprintf('WARN: Will trim by:\n\tkin:\t\t%d\n\timu_data:\t%d\n\tx_hat:\t\t%d\n\tw:\t\t%d\n\t\n', ...
+  fprintf('WARN: Will trim by:\n\tkin:\t\t%d\n\tx_hat:\t\t%d\n\tw:\t\t%d\n\t\n', ...
     length(kin)      - len_min, ...
-    length(imu_data) - len_min, ...
     length(x_hat_c)  - len_min, ...
     length(wlog)     - len_min);    
   kin      = kin     (1:len_min,:);
-%   imu_data = imu_data(len_min:end-len_min+1,:);
   x_hat_c  = x_hat_c (1:len_min,:);
   wlog     = wlog    (1:len_min,:);
 end
 
-kin_cut  = kin(end-length(x_hat_c)+1:end,:);
-
-z        = kin2z([ones(length(kin_cut),1) kin_cut]);
+z        = kin2z([ones(length(kin),1) kin]);
 
 if(mean(kin(:,1)) < .1)
   % logs con delta tiempos
