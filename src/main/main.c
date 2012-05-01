@@ -22,7 +22,7 @@
 #endif
 
 #include <manual_mode.h>
-#include <ncurses.h>
+//#include <ncurses.h>
 #include <stdio.h>
 #include <uquad_error_codes.h>
 #include <uquad_types.h>
@@ -47,7 +47,7 @@
 #define MAX_ERRORS     20
 #define OL_TS_STABIL   0                 // If != 0, then will wait OL_TS_STABIL+STARTUP_RUNS samples before using IMU.
 #define STARTUP_RUNS   (10+OL_TS_STABIL) // Wait for this number of samples at a steady Ts before running
-#define STARTUP_KALMAN 200
+#define STARTUP_KALMAN 100
 #define FIXED          3
 #define IMU_TS_OK      -1
 
@@ -74,18 +74,18 @@
 #define MOT_UPDATE_T MOT_UPDATE_MAX_US
 
 /// Global structs
-static imu_t *imu;
-static kalman_io_t *kalman;
-static uquad_mot_t *mot;
-static io_t *io;
-static ctrl_t *ctrl;
-static path_planner_t *pp;
+static imu_t *imu          = NULL;
+static kalman_io_t *kalman = NULL;
+static uquad_mot_t *mot    = NULL;
+static io_t *io            = NULL;
+static ctrl_t *ctrl        = NULL;
+static path_planner_t *pp  = NULL;
 #if USE_GPS && !GPS_ZERO
-static gps_t *gps;
+static gps_t *gps          = NULL;
 #endif
 /// Global var
-uquad_mat_t *w, *wt;
-uquad_mat_t *x;
+uquad_mat_t *w = NULL, *wt = NULL, *w_ramp = NULL;
+uquad_mat_t *x = NULL;
 imu_data_t imu_data;
 struct timeval tv_start = {0,0};
 uquad_bool_t
@@ -186,8 +186,8 @@ void quit()
 	    return;
 	}
     }
-    clear();
-    endwin();
+    /* clear(); */
+    /* endwin(); */
     gettimeofday(&tv_tmp, NULL);
     retval = uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
     if(retval > 0)
@@ -220,6 +220,7 @@ void quit()
 
     /// Global vars
     uquad_mat_free(w);
+    uquad_mat_free(w_ramp);
     uquad_mat_free(wt);
     uquad_mat_free(x);
     uquad_mat_free(imu_data.acc);
@@ -380,11 +381,11 @@ int main(int argc, char *argv[]){
     /**
      * Init curses library, used for user input
      */
-    initscr();  // init curses lib
-    cbreak();   // get user input without waiting for RET
-    noecho();   // do no echo user input on screen
-    timeout(0); // non-blocking reading of user input
-    refresh();  // show output on screen
+    /* initscr();  // init curses lib */
+    /* cbreak();   // get user input without waiting for RET */
+    /* noecho();   // do no echo user input on screen */
+    /* timeout(0); // non-blocking reading of user input */
+    /* refresh();  // show output on screen */
 
     if(argc<2)
     {
@@ -620,11 +621,12 @@ int main(int argc, char *argv[]){
     /// Global vars
     w = uquad_mat_alloc(4,1);        // Current angular speed [rad/s]
     wt = uquad_mat_alloc(1,4);        // tranpose(w)
+    w_ramp = uquad_mat_alloc(4,1);
     x = uquad_mat_alloc(1,STATE_COUNT);   // State vector
     retval = imu_data_alloc(&imu_data);
     quit_if(retval);
 
-    if( x == NULL || w == NULL || wt == NULL)
+    if( x == NULL || w == NULL || wt == NULL || w_ramp == NULL)
     {
 	err_log("Cannot run without x or w, aborting...");
 	quit();
@@ -667,8 +669,8 @@ int main(int argc, char *argv[]){
     }
 #endif
     // stdin
-    //    retval = io_add_dev(io,STDIN_FILENO);
-    //    quit_log_if(retval, "Failed to add stdin to io list");
+    retval = io_add_dev(io,STDIN_FILENO);
+    quit_log_if(retval, "Failed to add stdin to io list");
 
     /// -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
     /// Startup your engines...
@@ -688,7 +690,7 @@ int main(int argc, char *argv[]){
     while(1)
     {
 	fflush(stdout); // flushes output, but does not display on screen
-	refresh();      // displays flushed output on screen
+	//	refresh();      // displays flushed output on screen
 	if((runs_imu == IMU_TS_OK) &&
 	   (retval != ERROR_OK  ||
 	    err_imu != ERROR_OK ||
@@ -1057,7 +1059,7 @@ int main(int argc, char *argv[]){
 		pp->sp->x->m_full[SV_THETA] = imu_data.magn->m_full[2];
 		// Motor speed
 		for(i=0; i<MOT_C; ++i)
-		    pp->sp->w->m_full[i] = mot->w_min;
+		    w_ramp->m_full[i] = mot->w_min;
 	    }
 
 	    /**
@@ -1077,6 +1079,11 @@ int main(int argc, char *argv[]){
 	    kalman->x_hat->m_full[SV_PSI]   = imu_data.magn->m_full[0];
 	    kalman->x_hat->m_full[SV_PHI]   = imu_data.magn->m_full[1];
 	    kalman->x_hat->m_full[SV_THETA] = imu_data.magn->m_full[2];
+#if KALMAN_BIAS
+	    kalman->x_hat->m_full[SV_BAX] = imu_data.acc->m_full[0];
+	    kalman->x_hat->m_full[SV_BAY] = imu_data.acc->m_full[1];
+	    kalman->x_hat->m_full[SV_BAZ] = imu_data.acc->m_full[2] - GRAVITY;
+#endif
 	    retval = imu_comm_print_data(&imu_data, stderr);
 	    if(retval != ERROR_OK)
 	    {
@@ -1129,28 +1136,16 @@ int main(int argc, char *argv[]){
 		ts_error_wait = 0;
 	    }
 	}
-	if(runs_kalman > STARTUP_KALMAN)
-	{
-	    // use real w
-	    retval = uquad_kalman(kalman,
-				  mot->w_curr,
-				  &imu_data,
-				  tv_diff.tv_usec,
-				  mot->weight,
-				  gps_update?gps_dat:NULL);
-	    log_n_continue(retval,"Inertial Kalman update failed");
-	}
-	else
-	{
-	    // use w from setpoint
-	    retval = uquad_kalman(kalman,
-				  pp->sp->w,
-				  &imu_data,
-				  tv_diff.tv_usec,
-				  mot->weight,
-				  NULL);
-	    log_n_continue(retval,"Inertial Kalman update failed");
-	}
+	// use real w
+	retval = uquad_kalman(kalman,
+			      (runs_kalman > STARTUP_KALMAN)?
+			      mot->w_curr:w_ramp,
+			      &imu_data,
+			      tv_diff.tv_usec,
+			      mot->weight,
+			      gps_update?gps_dat:NULL);
+	log_n_continue(retval,"Inertial Kalman update failed");
+
 	/// Mark time when we run Kalman
 	tv_last_kalman = tv_tmp;
 #if USE_GPS
@@ -1244,10 +1239,13 @@ int main(int argc, char *argv[]){
 		 * balance.
 		 */
 		for(i = 0; i < MOT_C; ++i)
+		{
+		    w_ramp->m_full[i] = w->m_full[i];
 		    w->m_full[i] = uquad_max(mot->w_min,
 					     w->m_full[i] - (STARTUP_KALMAN - runs_kalman)
 					     *((mot->w_hover - mot->w_min)/STARTUP_KALMAN)
 					     );
+		}
 	    }
 	    retval = mot_set_vel_rads(mot, w, false);
 	    log_n_continue(retval,"Failed to set motor speed!");
@@ -1255,6 +1253,7 @@ int main(int argc, char *argv[]){
 	    uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
 	    log_tv_only(log_w,tv_diff);
 	    retval = uquad_mat_transpose(wt,mot->w_curr);
+	    log_n_continue(retval, "Failed to prepare w transpose...");
 	    uquad_mat_dump(wt,log_w);
 	    fflush(log_w);
 #endif
@@ -1278,7 +1277,14 @@ int main(int argc, char *argv[]){
 	/// -- -- -- -- -- -- -- --
 	if(reg_stdin)
 	{
-	    input = getch();
+	    retval = io_dev_ready(io,STDIN_FILENO,&read,NULL);
+	    log_n_continue(retval, "Failed to check stdin for input!");
+	    if(!read)
+		continue;
+	    input = !input;
+	    log_n_continue(ERROR_FAIL, "STDIN NOT IMPLEMENTED!");
+	    continue;
+	    //	    input = getch();
 	    if(input > 0 && !interrupted)
 	    {
 		gettimeofday(&tv_tmp,NULL);

@@ -30,8 +30,8 @@ link_directories(submodules/gpsd)
 
 # Add libm, for pow()
 link_libraries(m)
-# Add curses, for stdin input
-link_libraries(curses)
+# Add curses, for stdin input -> DISABLED, slows down beagleboard.
+# link_libraries(curses)
 
 # Add warning to compile flags:
 set(${PROJECT_NAME}_C_FLAGS "-Wall" CACHE STRING

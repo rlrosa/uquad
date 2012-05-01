@@ -44,8 +44,9 @@ use_gps      = 1; % Use kalman_gps
 use_fake_gps = 1; % Feed kalman_gps with fake data (only if use_gps)
 use_fake_T   = 0; % Ignore real timestamps from log, use average
 allin1       = 1; % Includes inertial and gps Kalman all in 1 filter
-use_gps_vel  = 1; % Uses velocity from GPS. Solo funca si allin1==0 (por ahora)
+use_gps_vel  = 0; % Uses velocity from GPS. Solo funca si allin1==0 (por ahora)
 stabilize_ts = 0; % Read out IMU data until stable Ts (matches main.c after 2012-04027)
+ctrl_ramp    = 0; % Run kalman+control when ramping motors.
 
 %% Sanity check
 if(use_fake_gps && ~use_gps)
@@ -72,14 +73,14 @@ gps_file  = [log_path '/gps.log'];
 
 % Imu
 imu_file = 'tests/main/logs/';
-imu_file = 'tests/main/logs/2012_04_28_2_01_K_normal_menos_bola_euler_ruido_kalman_nuevo_atras/imu_raw.log';
-% imu_file = 'tests/main/logs/2012_04_21_2_1_8_states_sin_bias_theta_continuo/imu_raw.log';
+% imu_file = 'tests/main/logs/2012_04_28_1_01_K_normal_menos_bola_euler_ruido_kalman_nuevo_rico/imu_raw.log';
+% imu_file = [p{9} 'imu_raw.log'];
 [acrud,wcrud,mcrud,tcrud,bcrud,~,~,T]=mong_read(imu_file,0,1);
 
 avg = 1;
 startup_runs = 800;
 imu_calib = 512;
-kalman_startup = 200;
+kalman_startup = 200*(~ctrl_ramp);
 
 % Fake T
 if(use_fake_T)
@@ -165,7 +166,7 @@ bcrud = bcrud(imu_calib+1:end,:);
 tcrud = tcrud(imu_calib+1:end,:);
 T     = T(imu_calib+1:end,:);
 
-[a,w,euler] = mong_conv(acrud,wcrud,mcrud,0,tcrud);
+[a,w,euler] = mong_conv(acrud,wcrud,mcrud,0,tcrud,T);
 b=altitud(bcrud,b0);
 
 % gyro offset comp
@@ -180,7 +181,7 @@ end
 N       = size(a,1);                   % Quantity of observation samples
 Ns      = 15;                          % N states: cantidad de variables de estado de Kalman
 Ngps    = 6;                           % N gps: cantidad de variables corregidas por gps
-masa    = 1.741;                       % Quadcopter weight
+masa    = 1.741-0.091;                 % Quadcopter weight
 w_hover = calc_omega(9.81*masa/4);     % At this velocity, motor's force equals weight
 w_max   = 387;                         % Definition
 w_min   = w_hover - (w_max - w_hover); % Only for simetry
@@ -188,11 +189,11 @@ w_min   = w_hover - (w_max - w_hover); % Only for simetry
 %                  x   y   z  psi phi the vqx vqy vqz wqx wqy wqz ax  ay  az
 Q_imu_gps = diag([1e2 1e2 1e2 1e0 1e0 1e0 1e2 1e2 1e2 1e1 1e1 1e1 1e0 1e0 1e0 ]);
 %                 psi phi the ax  ay  az  wqx wqy wqz  x   y   z
-R_imu_gps = diag([1e3 1e3 1e3 1e4 1e4 1e4 1e2 1e2 1e2 1e2 1e2 1e2]);
+R_imu_gps = diag([1e3 1e3 1e3 1e4 1e4 1e4 1e2 1e2 1e2 1e2 1e2 1e5]);
 %                  x   y   z  psi phi the vqx vqy vqz wqx wqy wqz ax  ay  az
 Q_imu     = diag([1e2 1e2 1e2 1e2 1e2 1e0 1e2 1e2 1e2 1e1 1e1 1e1 1e0 1e0 1e0]);
 %                 psi phi the ax  ay  az  wqx wqy wqz  z
-R_imu     = diag([1e1 1e1 1e3 1e4 1e4 1e4 1e2 1e2 1e2 1e3]);
+R_imu     = diag([1e1 1e1 1e3 1e4 1e4 1e4 1e2 1e2 1e2 1e5]);
 %                  x   y   z  vqx vqy vqz
 Q_gps     = diag([1e2 1e2 1e2 1e2 1e2 1e2]);
 %                  x   y   z  vqx vqy vqz
@@ -246,7 +247,7 @@ x_hat(1,4:6) = [psi0, phi0, theta0];
 
 %% Kalman
 
-for i=2:N    
+for i=2:N
     wc_i = i-kalman_startup;
     Dt = T(i) - T(i-1);
     Dt = min(Dt,12000e-6);Dt = max(Dt,000e-6); % Matches C 
@@ -346,13 +347,13 @@ for i=2:N
           continue;
     end
     w_control(wc_i,:) = (sp_w + K*(sp_x - x_hat_ctl(i,:)'))';
-	for j=1:4
-        if(w_control(wc_i,j) < w_min)
-            w_control(wc_i,j) = w_min;
-        end
-        if (w_control(wc_i,j) > w_max)
-            w_control(wc_i,j) = w_max;
-        end
+    for j=1:4
+      if(w_control(wc_i,j) < w_min)
+          w_control(wc_i,j) = w_min;
+      end
+      if (w_control(wc_i,j) > w_max)
+          w_control(wc_i,j) = w_max;
+      end
     end    
 end
 

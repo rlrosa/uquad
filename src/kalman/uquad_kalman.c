@@ -319,9 +319,9 @@ int h(uquad_mat_t* hx, kalman_io_t* kalman_io_data, uquad_bool_t is_gps)
 	aby = 0,
 	abz = 0;
 #if KALMAN_BIAS
-    abx = kalman_io_data -> x_ -> m_full[12];
-    aby = kalman_io_data -> x_ -> m_full[13];
-    abz = kalman_io_data -> x_ -> m_full[14];
+    abx = kalman_io_data -> x_ -> m_full[SV_BAX];
+    aby = kalman_io_data -> x_ -> m_full[SV_BAY];
+    abz = kalman_io_data -> x_ -> m_full[SV_BAZ];
 #endif
     hx->m_full[0]  = kalman_io_data -> x_ -> m_full[SV_PSI];
     hx->m_full[1]  = kalman_io_data -> x_ -> m_full[SV_PHI];
@@ -858,7 +858,7 @@ kalman_io_t* kalman_init()
     kalman_io_data->R->m[6][6] = 100;
     kalman_io_data->R->m[7][7] = 100;
     kalman_io_data->R->m[8][8] = 100;
-    kalman_io_data->R->m[9][9] = 1000;
+    kalman_io_data->R->m[9][9] = 100000;
 
     kalman_io_data->R_imu_gps->m[0][0] = 1000;
     kalman_io_data->R_imu_gps->m[1][1] = 1000;
@@ -871,7 +871,7 @@ kalman_io_t* kalman_init()
     kalman_io_data->R_imu_gps->m[8][8] = 100;
     kalman_io_data->R_imu_gps->m[9][9] = 100;
     kalman_io_data->R_imu_gps->m[10][10] = 100;
-    kalman_io_data->R_imu_gps->m[11][11] = 100;
+    kalman_io_data->R_imu_gps->m[11][11] = 100000;
 
     kalman_io_data->P->m[0][0] = 1;
     kalman_io_data->P->m[1][1] = 1;
