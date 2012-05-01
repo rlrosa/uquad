@@ -47,7 +47,7 @@
 #define MAX_ERRORS     20
 #define OL_TS_STABIL   0                 // If != 0, then will wait OL_TS_STABIL+STARTUP_RUNS samples before using IMU.
 #define STARTUP_RUNS   (10+OL_TS_STABIL) // Wait for this number of samples at a steady Ts before running
-#define STARTUP_KALMAN 200
+#define STARTUP_KALMAN 100
 #define FIXED          3
 #define IMU_TS_OK      -1
 
