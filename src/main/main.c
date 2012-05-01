@@ -14,6 +14,7 @@
 #define LOG_GPS            1
 #define DEBUG_KALMAN_INPUT 1
 #define LOG_TV             1
+#define LOG_T_ERR          1
 #define LOG_BUKAKE         0
 #endif
 
@@ -64,6 +65,7 @@
 #define LOG_KALMAN_IN_NAME "kalman_in"
 #define LOG_GPS_NAME       "gps"
 #define LOG_TV_NAME        "tv"
+#define LOG_T_ERR_NAME     "t_err"
 #define LOG_BUKAKE_NAME    "buk"
 
 /**
@@ -141,6 +143,9 @@ FILE *log_bukake = NULL;
 #if LOG_TV
 FILE *log_tv = NULL;
 #endif // LOG_TV
+#if LOG_T_ERR
+FILE *log_t_err = NULL;
+#endif // LOG_T_ERR
 #endif //DEBUG
 
 /**
@@ -273,6 +278,9 @@ void quit()
 #if LOG_TV
     uquad_logger_remove(log_tv);
 #endif // LOG_TV
+#if LOG_T_ERR
+    uquad_logger_remove(log_t_err);
+#endif // LOG_T_ERR
 #endif //DEBUG
 
     //TODO deinit everything?
@@ -337,6 +345,7 @@ int main(int argc, char *argv[]){
     struct timeval
 	tv_tmp, tv_diff,
 	tv_last_m_cmd,
+	tv_timing_off,
 	tv_last_ramp,
 	tv_last_kalman,
 	tv_last_imu,
@@ -507,6 +516,14 @@ int main(int argc, char *argv[]){
 	quit();
     }
 #endif // LOG_TV
+#if LOG_T_ERR
+    log_t_err = uquad_logger_add(LOG_T_ERR_NAME, log_path);
+    if(log_t_err == NULL)
+    {
+	err_log("Failed to open t_err_log!");
+	quit();
+    }
+#endif // LOG_TIMING_ERROR
 #endif //DEBUG
 
     /// IO manager
@@ -1120,6 +1137,13 @@ int main(int argc, char *argv[]){
 	    kalman_loops = (kalman_loops+1)%32768;// avoid overflow
 	    if(retval != 0)
 	    {
+#if LOG_T_ERR
+		uquad_timeval_substract(&tv_timing_off, tv_tmp, tv_start);
+		log_eol(log_t_err);
+		log_tv_only(log_t_err,tv_timing_off);
+		log_tv_only(log_t_err,tv_diff);
+		fflush(log_t_err);
+#endif // LOG_T_ERR
 		if(ts_error_wait == 0)
 		{
 		    // Avoid saturating log
