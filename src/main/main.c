@@ -669,8 +669,8 @@ int main(int argc, char *argv[]){
     }
 #endif
     // stdin
-    //    retval = io_add_dev(io,STDIN_FILENO);
-    //    quit_log_if(retval, "Failed to add stdin to io list");
+    retval = io_add_dev(io,STDIN_FILENO);
+    quit_log_if(retval, "Failed to add stdin to io list");
 
     /// -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
     /// Startup your engines...
@@ -1253,6 +1253,7 @@ int main(int argc, char *argv[]){
 	    uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
 	    log_tv_only(log_w,tv_diff);
 	    retval = uquad_mat_transpose(wt,mot->w_curr);
+	    log_n_continue(retval, "Failed to prepare w transpose...");
 	    uquad_mat_dump(wt,log_w);
 	    fflush(log_w);
 #endif
@@ -1276,6 +1277,10 @@ int main(int argc, char *argv[]){
 	/// -- -- -- -- -- -- -- --
 	if(reg_stdin)
 	{
+	    retval = io_dev_ready(io,STDIN_FILENO,&read,NULL);
+	    log_n_continue(retval, "Failed to check stdin for input!");
+	    if(!read)
+		continue;
 	    input = getch();
 	    if(input > 0 && !interrupted)
 	    {
