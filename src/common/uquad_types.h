@@ -43,7 +43,7 @@ typedef enum STATE_VECTOR{
 #define DRAG_A2           -0.00013205   // drag = w^2*A2 + w*A1
 #define DRIVE_A1          4.60160135072435e-05 // drive = w^2*A2 + w*A1
 #define DRIVE_A2          -0.00103822726273726 // drive = w^2*A2 + w*A1
-#define MASA_DEFAULT      1.741       // Masa del Quad en kg
+#define MASA_DEFAULT      (1.741-0.091)// Masa del Quad en kg
 #define STATE_COUNT       12
 #define LENGTH_INPUT      4           // Tamaño del vector de entradass  
 
