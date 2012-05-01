@@ -1079,6 +1079,11 @@ int main(int argc, char *argv[]){
 	    kalman->x_hat->m_full[SV_PSI]   = imu_data.magn->m_full[0];
 	    kalman->x_hat->m_full[SV_PHI]   = imu_data.magn->m_full[1];
 	    kalman->x_hat->m_full[SV_THETA] = imu_data.magn->m_full[2];
+#if KALMAN_BIAS
+	    kalman->x_hat->m_full[SV_BAX] = imu_data.acc->m_full[0];
+	    kalman->x_hat->m_full[SV_BAY] = imu_data.acc->m_full[1];
+	    kalman->x_hat->m_full[SV_BAZ] = imu_data.acc->m_full[2] - GRAVITY;
+#endif
 	    retval = imu_comm_print_data(&imu_data, stderr);
 	    if(retval != ERROR_OK)
 	    {

@@ -319,9 +319,9 @@ int h(uquad_mat_t* hx, kalman_io_t* kalman_io_data, uquad_bool_t is_gps)
 	aby = 0,
 	abz = 0;
 #if KALMAN_BIAS
-    abx = kalman_io_data -> x_ -> m_full[12];
-    aby = kalman_io_data -> x_ -> m_full[13];
-    abz = kalman_io_data -> x_ -> m_full[14];
+    abx = kalman_io_data -> x_ -> m_full[SV_BAX];
+    aby = kalman_io_data -> x_ -> m_full[SV_BAY];
+    abz = kalman_io_data -> x_ -> m_full[SV_BAZ];
 #endif
     hx->m_full[0]  = kalman_io_data -> x_ -> m_full[SV_PSI];
     hx->m_full[1]  = kalman_io_data -> x_ -> m_full[SV_PHI];

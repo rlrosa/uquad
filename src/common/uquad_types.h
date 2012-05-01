@@ -22,7 +22,10 @@ typedef enum STATE_VECTOR{
     SV_VQZ,
     SV_WQX,
     SV_WQY,
-    SV_WQZ
+    SV_WQZ,
+    SV_BAX,
+    SV_BAY,
+    SV_BAZ
 }STATE_VECTOR_T;
 
 #define GRAVITY           9.81 	      // Aceleracion gravitatoria
