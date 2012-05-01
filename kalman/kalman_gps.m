@@ -43,7 +43,7 @@ H = @(psi,phi,theta) [
     0, 0, 0, cos(phi)*sin(theta), cos(psi)*cos(theta) + sin(phi)*sin(psi)*sin(theta), cos(psi)*sin(phi)*sin(theta) - cos(theta)*sin(psi) ;
     0, 0, 0,           -sin(phi),                                  cos(phi)*sin(psi),                                  cos(phi)*cos(psi) ...
     ];
- 
+
 %% Kalman
 
 % Predict
