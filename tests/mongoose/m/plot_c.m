@@ -39,12 +39,9 @@ else
   % logs con t desde ./main
   t = kin(:,1);
 end
-t_z     = t(length(t) - length(z) + 1:end);
-t_x_hat = t(length(t) - length(x_hat_c) + 1:end);
 
 % timestamp kin coincide con x_hat_c, por eso x_hat_c no tiene.
-plot_main(x_hat_c,t_x_hat, ...
-  z,t_z);
+plot_main(x_hat_c,t,z,t);
 
 plot_w(wlog)
 
