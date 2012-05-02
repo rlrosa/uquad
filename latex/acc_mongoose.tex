@@ -36,7 +36,7 @@ Existe un ruido inherente del cual no nos preocuparemos en demasía ya que el mi
 En la hoja de datos del acelerómetro ADXL345 de la \emph{Mongoose 9DOF IMU} se declara que en cualquiera de los tres ejes los errores debido a una respuesta no lineal son, en el peor caso, $\pm$ 0.5\% del valor de fondo de escala, por lo tanto se decide considerar para el acelerómetro una respuesta lineal.
 
 \subsubsection*{No ortogonalidad de los ejes}
-Debido a defectos de construcción los ejes de sensibilidad del dispositivo pueden no ser ortogonales. Evidentemente si no se considera este aspecto se tendrá un error que puede ser importante en las medidas de aceleración. A modo de ejemplo, el acelerómetro en reposo colocado horizontalmente debería medir una aceleración igual a g en el eje vertical y cero en los ejes perpendiculares al primero. Debido a la no ortogonalidad del dispositivo se pueden tener entonces medidas que no coincidan con la realidad. Se modela esta no idealidad considerando la siguiente relación entre la aceleración medida en cada eje de sensibilidad del acelerómetro y la aceleración medida en un sistema solidario a la plataforma:
+Debido a defectos de construcción los ejes de sensibilidad del dispositivo pueden no ser ortogonales. Evidentemente si no se considera este aspecto se tendrá un error que puede ser importante en las medidas de aceleración. Se modela esta no idealidad considerando la siguiente relación entre la aceleración medida en cada eje de sensibilidad del acelerómetro y la aceleración medida en un sistema solidario a la plataforma:
 
 $$\mathbf{a}^p=T^p_a \mathbf{a}^a, \quad  T^p_a=\left( \begin{matrix}
 1 &-\alpha_{yz} &\alpha_{zy}\\
@@ -63,16 +63,11 @@ Donde:
   \vspace{-10pt}
 \end{figure}
 
-Estos parámetros son constantes ya que su origen es puramente de construcción y se puede asumir que las orientaciones se mantendrán durante la vida útil del sensor.
+Estos parámetros son constantes ya que su origen es puramente de construcción y se puede asumir que las orientaciones se mantendrán durante la vida útil del sensor.\\
 
-\subsubsection*{Drift aleatorio y variación de las medidas con la temperatura}
-
-La salida del acelerómetro es una tensión que luego es convertida a un nivel digital gracias a un conversor AD. Asumiendo un modelo lineal, la relación entre la aceleración y la medida realizada se puede expresar matricialmente de la siguiente forma:
+Asumiendo un modelo lineal, la relación entre la aceleración y la medida realizada se puede expresar matricialmente de la siguiente forma:
  
-$$\tilde{\mathbf{a}}^a = K_a \mathbf{a}^a + \mathbf{b}_a$$ donde $K_a$ es una matriz diagonal que representa el factor de escala para convertir del valor digital a una aceleración correspondiente. $\mathbf{b}_a$ no es otra cosa que un término independiente para corregir la posición del cero, que no necesariamente corresponde a la mitad de la escala digital. Estos dos parámetros poseen algunas de las fuentes de error que resulta más difícil de corregir. Resulta que dichos parámetros varían con la temperatura, por lo tanto se pueden observar algunas variaciones según la estación del año o el momento del día. A su vez, dichos parámetros poseen un drift aleatorio. 
-
-Podemos pensar estos parámetros como un valor estático más un valor relativamente pequeño que varía según estas descripciones. 
-En una primera instancia intentaremos caracterizar los valores estáticos.   
+$$\tilde{\mathbf{a}}^a = K_a \mathbf{a}^a + \mathbf{b}_a$$ donde $K_a$ es una matriz diagonal que representa el factor de escala para convertir del valor digital a una aceleración correspondiente. $\mathbf{b}_a$ no es otra cosa que un término independiente para corregir la posición del cero. Estos dos parámetros poseen algunas de las fuentes de error que resulta más difícil de corregir. Resulta que dichos parámetros varían con la temperatura, por lo tanto el resultado obtenido durante la calibraci\'on (temperatura ambiente) puede diferir de los valores obtenidos una vez instalado el aceler\'ometro dentro del cuadric\'optero (temperaturas superiores a los $30^\circ C$). A partir de la hoja de datos del fabricante se decide modelar el \emph{offset} mediante una relaci\'on lineal con la temperatura. En una primera aproximaci\'on no se considera este \'ultimo factor.
 
 \subsubsection{Modelo del acelerómetro}
 
@@ -124,6 +119,10 @@ Se construyo una plataforma de madera en forma de mesa con la tapa superior móv
 
 \subsubsection*{Medidas a realizar}
 En reposo el acelerómetro medirá una fuerza igual a \textit{g} en la dirección vertical y en el sentido radial saliente de la Tierra. En cada uno de los ejes de sensibilidad del acelerómetro se medirá la proyección ortogonal de dicho vector gravedad sobre cada eje. De esta forma, con distintas orientaciones se obtendrá una descomposición distinta.
+
+\subsection{Variac\'on de la medida con la temperatura}
+Para obtener una serie de datos adecuada se debe variar la temperatura en un rango que incluya la temperatura interna del cuadric\'optero en funcionamiento y la temperatura ambiente durante la calibraci\'on. Asimismo la variaci\'on de la temperatura no puede ser excesivamente r\'apida. Se procede a calentar la IMU con un secador, una vez alcanzados los %TODO 
+grados se deja enfriar. Se utilizar\'an los datos en la zona en la cual la temperatura disminuye. 
 
 \section{Resultados y análisis}
 \subsection{Medida estática durante una hora}
@@ -207,17 +206,21 @@ El tercer eje se deduce sabiendo que la base es directa. La aceleración medida 
 \end{tiny}
 \end{table} 
 
-Para la calibración se consideran solamente 24 de las 27 medidas realizadas a fin. Esto es útil ya que se tienen 3 medidas que no serán tenidas en cuenta en la calibración para realizar una verificación de qué tan buena es la calibración obtenida.
+Para la calibración se consideran solamente 24 de las 27 medidas realizadas. Esto es útil ya que se tienen 3 medidas que no serán tenidas en cuenta en la calibración para realizar una verificación de qué tan buena es la calibración obtenida.
 
 El problema de calibración consiste en encontrar el vector de parámetros $\theta$ que mejor ajusta las medidas obtenidas a los valores teóricos de aceleración. El vector $\theta$ se compone de los elementos de la diagonal de la matriz $K_a$, de los elementos de $b_a$ y de los $\alpha_{ij}$ de la matriz $T_a^p$. Es decir: $$\theta =\left[ k_{ax} , k_{ay} , k_{az} ,b_{ax} ,b_{ay} ,b_{az}, \alpha_{yz} , \alpha_{zy} , \alpha_{xz} , \alpha_{zx} , \alpha_{xy} , \alpha_{yx} \right]$$
 
 Como criterio de ajuste se decide minimizar la suma de los cuadrados de las diferencia entre la aceleración teórica y la aceleración medida. Dicho problema se puede expresar matemáticamente como:
 
-$$\theta \quad : \quad  min \left\lbrace \sum_{i=1}^{M} {\vert \vert\tilde{\mathbf{a}}_{i}^p-T_a^pK_a^{-1}\left(\tilde{\mathbf{a}}_{i}^a -\mathbf{b}_a \right)\vert \vert} \right\rbrace$$
-donde M es la cantidad de medidas realizadas, $\tilde{\mathbf{a}}_{i}^p$ los valores de aceleración teóricos en cada eje de la plataforma según la posición y orientación de la IMU y $\tilde{\mathbf{a}}_{i}^a$ los valores obtenidos de la IMU.
-Las relaciones entre los parámetros a determinar $\mathbf{no}$ es lineal, por lo tanto se utilizará para su determinación un algoritmo de mínimos cuadrados no lineales. \emph{Matlab}  provee un algoritmo con dicho fin: \emph{lsqnonlin}. El algoritmo precisa además una semilla para comenzar, dicha semilla debe ser bien elegida de forma de que el mínimo encontrado por el algoritmo sea el deseado. Sucede que dicho algoritmo encuentra mínimos locales. Si la semilla proporcionada se encuentra muy lejos de la solución que en realidad interesa, se puede obtener una solución que no sirva. \\
+\begin{equation}
+\label{eq:lsqnonlin}
+\theta \quad : \quad  min \left\lbrace \sum_{i=1}^{M} {\vert \vert\tilde{\mathbf{a}}_{i}^p-T_a^pK_a^{-1}\left(\tilde{\mathbf{a}}_{i}^a -\mathbf{b}_a \right)\vert \vert} \right\rbrace
+\end{equation}
 
-El rango de aceleraciones manejado en la prueba es de $\pm 16g$. Según la hoja de datos del acelerómetro, se tiene una ganancia de $3.9 mg/LDB$. La ganancia debe ser entonces $\frac{1}{g \times 3.9 \times 10^{-3}}=26.1376$ para los tres ejes. La IMU expresa las aceleraciones obtenidas en complemento a2, por lo que una aceleración de 0 equivale a una lectura de 0. Finalmente, los ángulos se suponen pequeños, por lo tanto una semilla válida parece ser: 
+donde M es la cantidad de medidas realizadas, $\tilde{\mathbf{a}}_{i}^p$ los valores de aceleración teóricos en cada eje de la plataforma según la posición y orientación de la IMU y $\tilde{\mathbf{a}}_{i}^a$ los valores obtenidos de la IMU.
+Para resolver dicho problema se utiliza el algoritmo \emph{lsqnonlin} de \emph{MatLab}, este es capaz de encontrar los m\'inimos locales de la funci\'on \ref{eq:lsqnonlin} a partir de una semilla.\\
+
+El rango de aceleraciones manejado en la prueba es de $\pm 16g$. Según la hoja de datos del acelerómetro, se tiene una ganancia de $3.9 mg/LDB$. El valor de la semilla de los t\'erminos que corresponden a la ganancia debe ser entonces $\frac{1}{g \times 3.9 \times 10^{-3}}=26.1376$ para los tres ejes. La IMU expresa las aceleraciones obtenidas en complemento a dos, por lo que una aceleración de 0 equivale a una lectura de 0, por lo tanto el valor de la semilla de los t\'ermnos que corresponden al offset debe ser 0. Finalmente, los ángulos se suponen pequeños, por lo tanto una semilla válida parece ser: 
 $$\theta_0=\left[ \frac{1}{g \times 3.9 \times 10^{-3}}, \frac{1}{g \times 3.9 \times 10^{-3}}, \frac{1}{g \times 3.9 \times 10^{-3}}, 0, 0, 0, 0, 0, 0, 0, 0, 0 \right]$$
 
 Los parámetros que minimizan la suma de los errores al cuadrado son los siguientes:
@@ -230,7 +233,7 @@ Luego de realizada la minimización se calcula la media del error cometido y la 
 $$\mu=6.88 \times 10^{-10} ms^{-2}$$ \\
 $$\sigma =  0.0397 ms^{-2}$$ 
  
-La media del error cometido es completamente despreciable, por lo tanto podemos afirmar que el $95\% $ de las medidas de aceleración realizadas tendrán un error inferior $2\sigma=0.0794$. Este error se integrará dos veces a la hora de obtener la posición del cuadricóptero, por lo tanto en el $95 \%$ de los casos estaremos cometiendo un error inferior a los 5 metros al cabo de 10 segundos de navegación. 
+La media del error cometido es completamente despreciable, por lo tanto podemos afirmar que el $95\% $ de las medidas de aceleración realizadas tendrán un error inferior $2\sigma=0.0794$.\\
  
 Para verificar la calibración realizada se utilizan las medidas siguientes:
 \begin{itemize}
