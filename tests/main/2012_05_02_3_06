@@ -1,0 +1,139 @@
+diff --git a/src/control/K_full.txt b/src/control/K_full.txt
+index bad8044..2204461 100644
+--- a/src/control/K_full.txt
++++ b/src/control/K_full.txt
+@@ -1,4 +1,4 @@
+-  -2.1544956e+00   3.6950631e-18   1.5764300e+00  -1.0431816e-16  -3.6484209e+01  -1.5617918e+01  -4.5461357e+00   6.1044948e-18   7.1644844e+00  -7.9935009e-18  -1.0395011e+01  -1.2953205e+01
+-   1.7938951e-18  -2.1544956e+00   1.5764300e+00   3.6484209e+01   5.7983711e-17   1.5617918e+01  -9.7497291e-18  -4.5461357e+00   7.1644844e+00   1.0395011e+01   5.3337850e-18   1.2953205e+01
+-   2.1544956e+00   3.6950625e-18   1.5764300e+00  -1.0431816e-16   3.6484209e+01  -1.5617918e+01   4.5461357e+00   6.1044936e-18   7.1644844e+00  -7.9935004e-18   1.0395011e+01  -1.2953205e+01
+-  -3.3345374e-19   2.1544956e+00   1.5764300e+00  -3.6484209e+01   2.1897820e-17   1.5617918e+01  -1.4241196e-17   4.5461357e+00   7.1644844e+00  -1.0395011e+01  -4.9772267e-18   1.2953205e+01
++0 0   1.5764300e+00  -1.0431816e-16  -3.6484209e+01  -1.5617918e+01  0 0   7.1644844e+00  -7.9935009e-18  -1.0395011e+01  -1.2953205e+01
++0 0   1.5764300e+00   3.6484209e+01   5.7983711e-17   1.5617918e+01  0 0   7.1644844e+00   1.0395011e+01   5.3337850e-18   1.2953205e+01
++0 0   1.5764300e+00  -1.0431816e-16   3.6484209e+01  -1.5617918e+01  0 0   7.1644844e+00  -7.9935004e-18   1.0395011e+01  -1.2953205e+01
++0 0   1.5764300e+00  -3.6484209e+01   2.1897820e-17   1.5617918e+01  0 0   7.1644844e+00  -1.0395011e+01  -4.9772267e-18   1.2953205e+01
+diff --git a/src/control/control.c b/src/control/control.c
+index 80296ab..52244c6 100644
+--- a/src/control/control.c
++++ b/src/control/control.c
+@@ -140,7 +140,7 @@ int control(ctrl_t *ctrl, uquad_mat_t *w, uquad_mat_t *x, set_point_t *sp, doubl
+ #if CTRL_INTEGRAL
+     double ddelta;
+     /// SV_THETA
+-    ddelta = uquad_min(tmp_sub_sp_x->m[SV_THETA][0]*T_us/1000000,
++    ddelta = uquad_min(tmp_sub_sp_x->m[SV_PSI][0]*T_us/1000000,
+ 		       CTRL_INT_DELTA_MAX_THETA);
+     ctrl->x_int->m[ctrl->x_int->r - 1][0] =
+ 	uquad_min(ddelta + ctrl->x_int->m[ctrl->x_int->r - 1][0],
+diff --git a/src/control/control.h b/src/control/control.h
+index 930201d..dcbc27a 100644
+--- a/src/control/control.h
++++ b/src/control/control.h
+@@ -16,11 +16,11 @@
+  * using LQR.
+  */
+   #if CTRL_INTEGRAL
+-    #define CTRL_MAT_K_NAME   "K_prop_full.txt"
++    #define CTRL_MAT_K_NAME   "/home/root/work/uquad/src/control/normal-/K_full.txt"
+   #else
+-    #define CTRL_MAT_K_NAME   "K_full.txt"
++    #define CTRL_MAT_K_NAME   "/home/root/work/uquad/src/control/normal-/K_full.txt"
+   #endif // CTRL_INTEGRAL
+-  #define CTRL_MAT_K_INT_NAME "K_int_full.txt"
++  #define CTRL_MAT_K_INT_NAME "/home/root/work/uquad/src/control/normal-/K_int_full.txt"
+ 
+ #else // FULL_CONTROL
+ /**
+diff --git a/src/control/normal-/K_full.txt b/src/control/normal-/K_full.txt
+index d2f3ecf..514e049 100644
+--- a/src/control/normal-/K_full.txt
++++ b/src/control/normal-/K_full.txt
+@@ -1,4 +1,4 @@
+-  -2.1172255e+00   9.5104473e-18   1.5764300e+00  -3.6443833e-17  -7.9192810e+01  -4.8922636e+01  -6.2181918e+00   1.3460492e-17   7.1644844e+00   9.8493761e-18  -1.5148037e+01  -2.2810867e+01
+-  -1.6161090e-17  -2.1172255e+00   1.5764300e+00   7.9192810e+01  -1.4796885e-16   4.8922636e+01  -3.3999965e-18  -6.2181918e+00   7.1644844e+00   1.5148037e+01   2.8682913e-17   2.2810867e+01
+-   2.1172255e+00   9.3380748e-18   1.5764300e+00  -3.0303572e-17   7.9192810e+01  -4.8922636e+01   6.2181918e+00   1.2969172e-17   7.1644844e+00   1.0498355e-17   1.5148037e+01  -2.2810867e+01
+-  -1.6158034e-17   2.1172255e+00   1.5764300e+00  -7.9192810e+01  -1.4795210e-16   4.8922636e+01  -3.3915733e-18   6.2181918e+00   7.1644844e+00  -1.5148037e+01   2.8684581e-17   2.2810867e+01
++0 0 0  0	0 0 0 0 0   0	   0 0
++0 0 0   8.464  	0 0 0 0 0    5.3818  0 0
++0 0 0  0  	0 0 0 0 0   0  	   0 0
++0 0 0  -8.464 	0 0 0 0 0  -5.3818  0 0
+diff --git a/src/control/normal-/K_int_full.txt b/src/control/normal-/K_int_full.txt
+index 78143b1..ce30c58 100644
+--- a/src/control/normal-/K_int_full.txt
++++ b/src/control/normal-/K_int_full.txt
+@@ -1,4 +1,4 @@
+-  -2.1108987e+00   1.5971974e-17   1.5735855e+00  -1.4736865e+00
+-   7.0119269e-18  -2.1108987e+00   1.5735855e+00   1.4736865e+00
+-   2.1108987e+00   1.1764270e-17   1.5735855e+00  -1.4736865e+00
+-   6.9282158e-18   2.1108987e+00   1.5735855e+00   1.4736865e+00
++0	0	0	0
++0	0	0	2.18
++0	0	0	0
++0	0	0	-2.18
+diff --git a/src/go.sh b/src/go.sh
+index aac560e..ae15a69 100755
+--- a/src/go.sh
++++ b/src/go.sh
+@@ -67,7 +67,7 @@ sleep 1
+ 
+ # run network check, kill cmd if network fails
+ echo Setting up check_net.sh
+-(cd ../scripts; ./check_net.sh &)
++#(cd ../scripts; ./check_net.sh &)
+ # wait for check net to start, or not
+ timer=3
+ while [ $timer -gt 0 ];
+diff --git a/src/i2c_beagle/cmd_motores.c b/src/i2c_beagle/cmd_motores.c
+index 425311c..1f2c459 100644
+--- a/src/i2c_beagle/cmd_motores.c
++++ b/src/i2c_beagle/cmd_motores.c
+@@ -118,6 +118,9 @@ int uquad_mot_i2c_addr_open(int i2c_dev, int addr){
+ 	/* ERROR HANDLING; you can check errno to see what went wrong */
+ 	fprintf(LOG_ERR,"ERROR! %s failed to write to 0x%02X...\n"	\
+ 		"errno info:\t %s\n",__FUNCTION__,addr,strerror(errno));
++#ifdef CHECK_STDIN
++	fflush(LOG_ERR);
++#endif // CHECK_STDIN
+ 	return NOT_OK;
+     }
+ #else
+@@ -136,6 +139,9 @@ int uquad_mot_i2c_send_byte(int i2c_dev, __u8 reg, __u8 value){
+ 	/* ERROR HANDLING: i2c transaction failed */
+ 	fprintf(LOG_ERR,"Failed to send value %d\tto 0x%02X\n."\
+ 		"errno info:\t %s\n",(int)value,(int)reg,strerror(errno));
++#ifdef CHECK_STDIN
++	fflush(LOG_ERR);
++#endif // CHECK_STDIN
+     }
+ #else
+ #if DEBUG
+@@ -506,7 +512,10 @@ int main(int argc, char *argv[])
+ 	    fprintf(LOG_ERR,"Mot %d:\t%s\n",i,mot_selected[i]?"Enabled.":"Not enabled");
+ 	}
+     }
+-    
++
++    mot_selected[0]=MOT_NOT_SELECTED;
++    mot_selected[1]=MOT_NOT_SELECTED;
++
+     sprintf(filename,"/dev/i2c-%d",adapter_nr);
+     fprintf(LOG_ERR,"Opening %s...\n",filename);
+ 
+diff --git a/src/main/main.c b/src/main/main.c
+index c0f4531..9761da3 100644
+--- a/src/main/main.c
++++ b/src/main/main.c
+@@ -1074,6 +1074,7 @@ int main(int argc, char *argv[]){
+ #endif // USE_GPS
+ 		// Euler angles
+ 		pp->sp->x->m_full[SV_THETA] = imu_data.magn->m_full[2];
++		pp->sp->x->m_full[SV_PSI]   = 0.0; // [rad]
+ 		// Motor speed
+ 		for(i=0; i<MOT_C; ++i)
+ 		    w_ramp->m_full[i] = mot->w_min;
+diff --git a/src/submodules/gpsd b/src/submodules/gpsd
+index f8744f4..aa55350 160000
+--- a/src/submodules/gpsd
++++ b/src/submodules/gpsd
+@@ -1 +1 @@
+-Subproject commit f8744f4af8cef211de698df5d8e6caddfe33f29d
++Subproject commit aa553504b1c8d97b061d3991b3c3ea1ddff0f433-dirty
