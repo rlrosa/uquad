@@ -32,7 +32,8 @@
 
 #define DEBUG                     0
 #if DEBUG
-#define LOG_VELS                  1
+//#define LOG_VELS
+//#define LOG_TIMING
 #endif
 
 #define PRINT_COUNT               500
@@ -128,7 +129,9 @@ static int msqid; // Set by mot_control.h
 const static key_t key_s = 169; // must match MOT_SERVER_KEY (in mot_control.h)
 const static key_t key_c = 170; // must match MOT_DRIVER_KEY (in mot_control.h)
 static message_buf_t rbuf;
+#ifdef LOG_VELS
 static struct timeval timestamp;
+#endif // LOG_VELS
 static int i2c_file = -1;
 static int mot_i2c_addr[MOT_COUNT] = {0x69,
 				      0x6a,
@@ -140,14 +143,15 @@ static unsigned short mot_selected[MOT_COUNT] = {MOT_NOT_SELECTED,
 						 MOT_NOT_SELECTED};
 
 static __u8 vels[MOT_COUNT] = {0,0,0,0};
+static __u8 diff = 0;
 
-#if LOG_VELS
+#ifdef LOG_VELS
 static FILE *log_rx;
 #endif
 #ifdef PC_TEST
 static FILE *i2c_fake;
 #define FAKE_I2C_PATH "i2c.dev"
-#endif
+#endif // LOG_VELS
 
 int uquad_mot_i2c_addr_open(int i2c_dev, int addr){
 #ifndef PC_TEST
@@ -170,7 +174,6 @@ int uquad_mot_i2c_addr_open(int i2c_dev, int addr){
 }
 
 int uquad_mot_i2c_send_byte(int i2c_dev, __u8 reg, __u8 value){
-    int ret;
 #ifndef PC_TEST
     if(i2c_smbus_write_byte_data(i2c_dev,reg,value) < 0)
     {
@@ -361,14 +364,14 @@ void uquad_sig_handler(int signal_num){
 	    fprintf(LOG_ERR,"Failed to shutdown motors!... Retrying...\n");
 	fprintf(LOG_ERR,"Motors successfully stoped!\n");
     }
-#if LOG_VELS
+#ifdef LOG_VELS
     fclose(log_rx);
-#endif
+#endif // LOG_VELS
     fclose(LOG_ERR);
     exit(ret);
 }
 
-#if LOG_VELS
+#ifdef LOG_VELS
 unsigned long rx_counter = 0;
 static inline void log_vels(void)
 {
@@ -381,7 +384,7 @@ static inline void log_vels(void)
 	    (int)timestamp.tv_usec,
 	    rx_counter++);
 }
-#endif
+#endif // LOG_VELS
 
 static char ack_counter = 0;
 int uquad_send_ack()
@@ -409,11 +412,12 @@ int uquad_send_ack()
     return OK;
 }
 
+#ifdef CHECK_STDIN
 static int itmp[MOT_COUNT] = {0,0,0,0};
 static int max_fd_plus_one = -1;
+#endif
 int uquad_read(void){
     fd_set rfds;
-    FILE *src;
     struct timeval tv;
     int retval = OK, i;
     __u8 u8tmp;
@@ -442,11 +446,9 @@ int uquad_read(void){
 	    return NOT_OK;
 	else
 	{
-	    if(FD_ISSET(STDIN_FILENO, &rfds))
-		src = stdin;
-	    else
+	    if(!FD_ISSET(STDIN_FILENO, &rfds))
 		return NOT_OK;
-	    retval = fscanf(src,"%d %d %d %d",
+	    retval = fscanf(stdin,"%d %d %d %d",
 			 itmp + 0,
 			 itmp + 1,
 			 itmp + 2,
@@ -465,9 +467,9 @@ int uquad_read(void){
 	    	{
 	    	    log_to_err("Refused to set m speed, invalid argument.");
 	    	}
-#if LOG_VELS
+#ifdef LOG_VELS
 	    log_vels();
-#endif
+#endif // LOG_VELS
 	}
     }
 #else
@@ -496,9 +498,9 @@ int uquad_read(void){
 		log_to_err("Refused to set m speed, invalid argument.");
 	    }
 	}
-#if LOG_VELS
+#ifdef LOG_VELS
 	log_vels();
-#endif
+#endif // LOG_VELS
     }
 #endif
     return retval;
@@ -509,21 +511,20 @@ int main(int argc, char *argv[])
     /* Open i2c bus */
     int adapter_nr = 2;
     int tmp, i;
-    int watchdog = 0, success_count = 0;
     char filename[20];
     struct timeval
 	tv_in,
 	tv_diff,
 	tv_end;
 
-#if LOG_VELS
+#ifdef LOG_VELS
     // Open log files
     log_rx = fopen("cmd_rx.log","w");
     if (log_rx == NULL) {
 	fprintf(LOG_ERR,"ERROR! Failed to open log...\n");
 	return -1;
     }
-#endif
+#endif // LOG_VELS
 
     if(argc != 5) // vel de los 4 motores + el nombre del programa (argv[0]).
     {
@@ -590,7 +591,7 @@ int main(int argc, char *argv[])
     // -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
     // Loop
     // -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-    int ret, new_vel;
+    int ret;
     mot_state_t m_status;
     m_status = STOPPED;
     int do_sleep = 0;
@@ -613,11 +614,15 @@ int main(int argc, char *argv[])
 	    do_sleep = 0;
 	}
 	// all
+	if(m_status == RUNNING)
+	    diff ^= 0;
+	else
+	    diff = 0;
 	for(i = 0; i < MOT_COUNT; ++i)
 	{
 	    ret = uquad_mot_set_speed(i2c_file,
 				      mot_i2c_addr[i],
-				      vels[i] & mot_selected[i]);
+				      mot_selected[i]?vels[i]+diff:0);
 	    if(ret != OK)
 	    {
 		backtrace();
@@ -694,7 +699,12 @@ int main(int argc, char *argv[])
 	if(ret > 0)
 	{
 	    if(tv_diff.tv_usec < LOOP_T_US)
+	    {
 		usleep(LOOP_T_US - tv_diff.tv_usec);
+#ifdef LOG_TIMING
+		fprintf(LOG_ERR,"%ld\n",LOOP_T_US - tv_diff.tv_usec);
+#endif
+	    }
 	}
     }
  
