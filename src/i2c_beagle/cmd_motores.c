@@ -57,12 +57,50 @@
 #define UQUAD_STARTUP_RETRIES     100
 #define UQUAD_STOP_RETRIES        1000
 
+#define LOOP_T_US                 2000UL
+
 #define LOG_ERR                   stdout
 
 #define backtrace()     fprintf(LOG_ERR,"%s:%d\n",__FUNCTION__,__LINE__)
 #define log_to_err(msg) fprintf(LOG_ERR,"%s: %s:%d\n",msg,__FUNCTION__,__LINE__)
 
 #define sleep_ms(ms)    usleep(1000*ms)
+
+int uquad_timeval_substract (struct timeval * result, struct timeval x, struct timeval y){
+    /* Perform the carry for the later subtraction by updating y. */
+    if (x.tv_usec < y.tv_usec) {
+	int nsec = (y.tv_usec - x.tv_usec) / 1000000 + 1;
+	y.tv_usec -= 1000000 * nsec;
+	y.tv_sec += nsec;
+    }
+    if (x.tv_usec - y.tv_usec > 1000000) {
+	int nsec = (y.tv_usec - x.tv_usec) / 1000000;
+	y.tv_usec += 1000000 * nsec;
+	y.tv_sec -= nsec;
+    }
+    
+    /* Compute the time remaining to wait.
+       tv_usec is certainly positive. */
+    result->tv_sec = x.tv_sec - y.tv_sec;
+    result->tv_usec = x.tv_usec - y.tv_usec;
+    
+    if(x.tv_sec < y.tv_sec)
+	// -1 if diff is negative
+	return -1;
+    if(x.tv_sec > y.tv_sec)
+	// 1 if diff is positive
+	return 1;
+    // second match, check usec
+    if(x.tv_usec < y.tv_usec)
+	// -1 if diff is negative
+	return -1;
+    if(x.tv_usec > y.tv_usec)
+	// 1 if diff is positive
+	return 1;
+
+    // 0 if equal
+    return 0;
+}
 
 /// Forwards defs
 int uquad_mot_i2c_addr_open(int i2c_dev, int addr);
@@ -473,6 +511,10 @@ int main(int argc, char *argv[])
     int tmp, i;
     int watchdog = 0, success_count = 0;
     char filename[20];
+    struct timeval
+	tv_in,
+	tv_diff,
+	tv_end;
 
 #if LOG_VELS
     // Open log files
@@ -561,10 +603,12 @@ int main(int argc, char *argv[])
     }
     for(;;)
     {
+	gettimeofday(&tv_in,NULL);
 	if(do_sleep)
 	{
 	    // avoid saturating i2c driver
 	    log_to_err("Will sleep to avoid saturating.");
+	    fflush(LOG_ERR);
 	    sleep_ms(10);
 	    do_sleep = 0;
 	}
@@ -644,7 +688,14 @@ int main(int argc, char *argv[])
 	    }
 	    // continue
 	}
-	usleep(1500);
+	gettimeofday(&tv_end,NULL);
+	/// Check if we have to wait a while
+	ret = uquad_timeval_substract(&tv_diff, tv_end, tv_in);
+	if(ret > 0)
+	{
+	    if(tv_diff.tv_usec < LOOP_T_US)
+		usleep(LOOP_T_US - tv_diff.tv_usec);
+	}
     }
  
     return 0;
