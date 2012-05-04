@@ -46,8 +46,8 @@ if modo=='hov'
     
     %Construcción de la matriz K método LQR para hovering
       
-    Q=diag([1 1 1  1e2 1e2 1e2  1 1 1  1 1 1  1 1 1 1]);
-    R = diag(.1*[1 1 1 1]);
+    Q=diag([1 1 1  1e3 1e3 1e3  1 1 1  1 1 1  1 1 1 1]);
+    R = diag(.01*[1 1 1 1]);
  
 %% Linealización vuelo en linea recta
 elseif modo=='rec'
