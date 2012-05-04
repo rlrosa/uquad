@@ -78,7 +78,7 @@ $$\tilde{\mathbf{a^a}}=K_a(T_a^p)^{-1}\mathbf{a^p}+b_a$$
 \section{Procedimiento}
 \subsection{Caracterización de las no idealidades variables}
 
-Previo a la calibración de los parámetros estáticos parece interesante estudiar una serie ``larga" de muestras. En particular se tomará una hora de muestras a una tasa de muestreo de 50Hz. Estos datos serán útiles para la determinación de dos no idealidades:  
+Previo a la calibración de los parámetros estáticos parece interesante estudiar una serie de algunos minutos a una tasa de muestreo de 100Hz. Estos datos serán útiles para la determinación de dos no idealidades:  
 \begin{itemize}
 \item Ruido inherente
 \item Drift aleatorio
@@ -127,42 +127,38 @@ grados se deja enfriar. Se utilizar\'an los datos en la zona en la cual la tempe
 \section{Resultados y análisis}
 \subsection{Medida estática durante una hora}
 
-En la figura \ref{fig:1hora} pueden observarse los datos crudos obtenidos de las aceleraciones registradas en los tres ejes de la IMU durante un período de 1 hora.
+En la figura \ref{fig:rrtests} pueden observarse los datos crudos obtenidos de las aceleraciones registradas en los tres ejes de la IMU durante un período de 3 minutos 45 segundos.
 
 \begin{figure}[h!]
-%  \vspace{-20pt}
   \begin{center}
-    \includegraphics[width=0.8\textwidth]{./pics_acc/1hora.pdf}
+    \includegraphics[width=0.5\textwidth]{./pics_acc/rrtests.pdf}
   \end{center}
-  \vspace{-20pt}
-  \caption{Aceleraciones y velocidades angulares registradas por la IMU orientada con el eje z verticalmente y en reposo}
-  \label{fig:1hora}
-%  \vspace{-10pt}
+  \caption{Aceleraciones registradas por la IMU orientada con el eje z verticalmente y en reposo}
+  \label{fig:rrtests}
+
 \end{figure}
 
-Se observa que dos medidas corresponden a un valor cercano a 0, mientras que la aceleración medida en z es cercana a -300. El eje z es el ubicado verticalmente hacia abajo, por lo tanto en dicha dirección se debería leer una medida equivalente a $-g$, mientras que en los otros dos ejes se debería leer un valor que corresponde a aceleración cero. Más allá de estas consideraciones, que permiten simplemente demostrar cierta coherencia entre lo esperado y lo obtenido,podemos afirmar que el ruido observado es asociable a un ruido blanco de media nula. Por otra parte no parece haber una deriva en las medidas realizadas. 
-
-A partir de dichas constataciones se podrá afirmar que trabajar con el valor promedio de una tirada de medidas arrojará un resultado muy similar al que se obtendría trabajando con la tirada completa. 
+En la figura se observa lo que se espera a priori de acuerdo a la posici\'on del aceler\'ometro, dos medidas cercanas al cero y una medida de valor positivo. Esta \'ultima corresponde a la medida de la aceleraci\'on vertical en el sistema de caida libre. De la observaci\'on de esta serie de datos relativamente extensa podemos afirmar que el ruido observado es asociable a un ruido blanco de media nula y que no existe deriva en las medidas realizadas. A partir de dichas constataciones se puede asegurar que es adecuado trabajar con el promedio de las muestras obtenidas en una posici\'on.
 
 
 \subsection{Medias estáticas para el acelerómetro}
 
 Como se aclaró en la sección anterior se trabajará con el promedio de las aceleraciones medidas en una serie de datos. Cada serie de datos es de 20 segundos de duración. Además de variar el ángulo ($\theta$) de la mesa, se rotará el prisma de forma de realizar una medida con cada eje perpendicular al plano de la mesa. Asimismo utilizando una escuadra se lograrán rotaciones de 45º respecto del eje perpendicular a la tapa ($\phi$). Los resultados obtenidos se presentan en la tabla \ref{tab:acc}. Se utiliza la siguiente notación para las orientaciones utilizadas:
 \begin{itemize}
-	\item Orientación ``z''
+	\item Orientación ``x''
 	\begin{itemize}
-		\item Eje ``z'' perpendicular a la tapa de la mesa y hacia abajo.
-		\item Giro de la tapa de la mesa según el eje ``x''.
+		\item Eje ``x'' perpendicular a la tapa de la mesa y hacia abajo.
+		\item Giro de la tapa de la mesa según el eje ``z''.
 	\end{itemize}
 	\item Orientación ``y''
 	\begin{itemize}
-		\item Eje ``y'' perpendicular a la tapa de la mesa y hacia abajo.
-		\item Giro de la tapa de la mesa según el eje ``-z''.
+		\item Eje ``y'' perpendicular a la tapa de la mesa y hacia arriba.
+		\item Giro de la tapa de la mesa según el eje ``z''.
 	\end{itemize}
 	\item Orientación ``x''
 	\begin{itemize}
-		\item Eje ``x'' perpendicular a la tapa de la mesa y hacia arriba.
-		\item Giro de la tapa de la mesa según el eje ``y''.
+		\item Eje ``z'' perpendicular a la tapa de la mesa y hacia arriba.
+		\item Giro de la tapa de la mesa según el eje ``-y''.
 	\end{itemize}
 \end{itemize}
 El tercer eje se deduce sabiendo que la base es directa. La aceleración medida es un número sin unidades.
@@ -174,9 +170,9 @@ El tercer eje se deduce sabiendo que la base es directa. La aceleración medida 
 \hhline{~~------}
 &
 
-& \multicolumn{2}{|p{79pt}|}{\cellcolor[gray]{0.5} \centering \textbf{Orientación z}}  
-& \multicolumn{2}{|p{79.5pt}|}{\cellcolor[gray]{0.5} \centering \textbf{Orientación x}}
-& \multicolumn{2}{|p{78.7pt}|}{\cellcolor[gray]{0.5} \centering \textbf{Orientación y}} \\ \hline 
+& \multicolumn{2}{|p{79pt}|}{\cellcolor[gray]{0.5} \centering \textbf{Orientación x}}  
+& \multicolumn{2}{|p{79.5pt}|}{\cellcolor[gray]{0.5} \centering \textbf{Orientación y}}
+& \multicolumn{2}{|p{78.7pt}|}{\cellcolor[gray]{0.5} \centering \textbf{Orientación z}} \\ \hline 
 
   \multicolumn{2}{|p{72.5pt}|}{\cellcolor[gray]{0.6}  \centering\textbf{Posición}}  
 & \multicolumn{6}{|p{262.8pt}|}{\cellcolor[gray]{0.6} \centering\textbf{Aceleraciones}}  \\ \hline
@@ -189,15 +185,15 @@ El tercer eje se deduce sabiendo que la base es directa. La aceleración medida 
 & \multicolumn{1}{|p{40pt}|}{\cellcolor[gray]{0.8} \textbf{Medida}}  
 & \multicolumn{1}{|p{26pt}|}{\cellcolor[gray]{0.7} Teórica ($ms^{-2})$ }
 \\ \hline
-\multicolumn{1}{|p{30pt}|}{0}  & 0  &  16.18138;    0.3579454;    -296.1701 &       0;          0;      -9.81 & 276.9511;      -0.3572594;    -46.29364 &   9.81;          0;         0 & 13.39179;    -266.4408;    -44.0221 &      0;      -9.81;         0\\ \hline
-\multicolumn{1}{|p{30pt}|}{10} & 0  &  16.27273;    -49.02392;     -292.201 &       0;    -1.7035;     -9.661 & 272.6542;       -0.045677;    0.5318108 &  9.661;          0;    1.7035 & 61.69231;    -262.3715;    -44.1195 & 1.7035;     -9.661;         0\\ \hline
-\multicolumn{1}{|p{30pt}|}{10} & 45 & -14.74318;    -35.02247;    -292.0225 & -1.2045;    -1.2045;     -9.661 & 272.8368;        -33.2294;    -12.55412 &  9.661;    -1.2045;    1.2045 & 48.10742;    -262.3444;    -11.9763 & 1.2045;     -9.661;    1.2045\\ \hline
-\multicolumn{1}{|p{30pt}|}{20} & 0  &  16.74718;    -94.71498;    -279.7955 &       0;    -3.3552;    -9.2184 & 260.3108;     -0.01932367;     43.84863 & 9.2184;          0;    3.3552 & 107.4279;    -251.4245;    -44.0647 & 3.3552;    -9.2184;         0\\ \hline
-\multicolumn{1}{|p{30pt}|}{20} & 45 &   -48.512;     -66.7136;    -278.9184 & -2.3725;    -2.3725;    -9.2184 & 260.2182;       -65.37851;     18.87273 & 9.2184;    -2.3725;    2.3725 & 79.13748;    -251.2897;     19.3682 & 2.3725;    -9.2184;    2.3725\\ \hline
-\multicolumn{1}{|p{30pt}|}{30} & 0  &  16.37318;    -136.5687;    -259.0533 &       0;     -4.905;    -8.4957 & 242.0839;    -0.004746835;     85.09968 & 8.4957;          0;     4.905 & 149.6053;    -229.7778;    -42.7181 &  4.905;    -8.4957;         0\\ \hline
-\multicolumn{1}{|p{30pt}|}{30} & 45 & -76.82085;    -96.91368;    -259.6808 & -3.4684;    -3.4684;    -8.4957 & 242.3039;       -95.85131;     48.34477 & 8.4957;    -3.4684;    3.4684 & 109.3377;    -230.7721;      48.941 & 3.4684;    -8.4957;    3.4684\\ \hline
-\multicolumn{1}{|p{30pt}|}{45} & 0  &  15.07717;    -190.8315;    -220.3402 &       0;    -6.9367;    -6.9367 & 198.5261;      0.07394958;      136.558 & 6.9367;          0;    6.9367 & 200.7626;    -189.0423;    -42.6423 & 6.9367;    -6.9367;         0\\ \hline
-\multicolumn{1}{|p{30pt}|}{45} & 45 & -117.0878;    -134.7984;    -219.9024 &  -4.905;     -4.905;    -6.9367 & 198.4038;       -133.7997;     84.62754 & 6.9367;     -4.905;     4.905 & 145.8022;    -188.9018;     85.0561 &  4.905;    -6.9367;     4.905\\ \hline
+\multicolumn{1}{|p{30pt}|}{0}  & 0  &  -247.3172;    0.1591;    -49.4095 &       -9.81;          0;      0 & 14.3760;      264.0399;    -44.6882 &   0;          9.81;         0 & 12.1923;    0.2008;    207.5115 &      0;      0;         9.81\\ \hline
+\multicolumn{1}{|p{30pt}|}{10} & 0  &  -242.5470;    50.0072;     -48.7807 &       -9.6610;    1.7035;     0 & 15.3408;       259.7820;    -91.4934 &    0;	 9.661;   -1.7035 & 62.8272;    0.0766;    203.3657 & 1.7035;     0;         9.661\\ \hline
+\multicolumn{1}{|p{30pt}|}{10} & 45 & -242.7077;    36.7365;    -14.3685 & -9.661;    1.2045;     1.2045 & 50.9558;        259.5086;    -77.8004 &  1.2045;    9.661;	-1.2045     & 48.5749;    -35.4617;    203.0832 & 1.2045;     -1.2045;	-9.661    \\ \hline
+\multicolumn{1}{|p{30pt}|}{20} & 0  &  -229.2972;    95.2188;    -48.4324 &       0;    -9.2184;    3.3552 & 15.8545;     249.5544;     -133.6116 & 0;          9.2184;    3.3552 & 108.2951;    0.0158;    191.7640 & 3.3552;    0;		9.2184\\ \hline
+\multicolumn{1}{|p{30pt}|}{20} & 45 &   -229.6051;     68.0701;    15.6173 & -9.2184;    2.3725;    2.3725 & 82.0560;       248.6061;     -109.4629 & 2.3725;    9.2184;    -2.3725 & 79.4781;    -67.2837;     191.4327 & 2.3725;    -2.3725;	9.2184    \\ \hline
+\multicolumn{1}{|p{30pt}|}{30} & 0  &  -209.4179;    134.6230;    -47.5677 &       -8.4957;     4.905;    0 & 16.3148;    229.4927;     -173.9674 & 0;		8.4957;		-4.905 & 147.6114;    -0.0215;    173.6084 &  4.905;    0;	8.4957\\ \hline
+\multicolumn{1}{|p{30pt}|}{30} & 45 & -209.7781;    97.1743;    43.9208 & -8.4957;    3.4684;    3.4684 & 111.5630;       228.5963;     -134.9143 & 3.4684;    8.4957;	-3.4684 & 109.1504;       -96.7951;     173.0896 & 3.4684;    -3.4684;    8.4957\\ \hline
+\multicolumn{1}{|p{30pt}|}{45} & 0  &  -166.6483;    191.3168;    -46.3487 &       -6.9367;    6.9367;    0 & 17.0755;      186.6639;      -226.5195 & 0;          6.9367;    6.9367 & 202.2578;    -0.1806;    130.7166 & 6.9367;    0;         6.9367\\ \hline
+\multicolumn{1}{|p{30pt}|}{45} & 45 & -167.2223;    136.3814;    79.8707 &  6.9367;	4.905;     4.905;     & 150.2017;       185.5153;     -172.5526 & 4.905;    6.9367; -4.905      & 147.2068;    -135.3122;     130.4525 &  4.905;    -4.905;	6.9367     \\ \hline
 
 
 \end{tabular}
@@ -226,20 +222,20 @@ $$\theta_0=\left[ \frac{1}{g \times 3.9 \times 10^{-3}}, \frac{1}{g \times 3.9 \
 Los parámetros que minimizan la suma de los errores al cuadrado son los siguientes:
 
 \begin{scriptsize}
-$$\theta=\left[ 26.9553 \quad 27.1044 \quad 25.9160 \quad 13.0717 \quad -1.0795 \quad -40.7236 \quad -0.0095 \quad 0.0096 \quad -0.0004 \quad 0.0068 \quad -0.0105 \quad -0.0046 \quad \right]$$
+$$\theta=\left[ 26.7572 \quad 27.0.0599 \quad 25.9838 \quad 16.9374 \quad -0.2446 \quad -47.7863 \quad 0.0005 \quad 0.0025 \quad 0.0149 \quad 0.0023 \quad 0.0000 \quad -0.0077 \quad \right]$$
 \end{scriptsize}
 
 Luego de realizada la minimización se calcula la media del error cometido y la desviación estándar del error.
-$$\mu=6.88 \times 10^{-10} ms^{-2}$$ \\
-$$\sigma =  0.0397 ms^{-2}$$ 
+$$\mu=-2.0779 \times 10^{-10} ms^{-2}$$ \\
+$$\sigma =  0.0465 ms^{-2}$$ 
  
-La media del error cometido es completamente despreciable, por lo tanto podemos afirmar que el $95\% $ de las medidas de aceleración realizadas tendrán un error inferior $2\sigma=0.0794$.\\
+La media del error cometido es completamente despreciable, por lo tanto podemos afirmar que el $95\% $ de las medidas de aceleración realizadas tendrán un error inferior $2\sigma=0.0930ms^{-2}$.\\
  
 Para verificar la calibración realizada se utilizan las medidas siguientes:
 \begin{itemize}
-\item $\theta = 0 \quad \phi = 0 \quad$ orientación z
-\item $\theta = 20 \quad \phi = 0 \quad$ orientación x
-\item $\theta = 10 \quad \phi = 45 \quad$ orientación y
+\item $\theta = 0 \quad \phi = 0 \quad$ orientación x
+\item $\theta = 20 \quad \phi = 0 \quad$ orientación y
+\item $\theta = 10 \quad \phi = 45 \quad$ orientación z
 \end{itemize}
 
 Se presenta para las tres medidas la aceleración teórica, la medida convertida con los parámetros obtenidos y el error en la tabla \ref{tab:diff}. 
@@ -250,18 +246,18 @@ Se presenta para las tres medidas la aceleración teórica, la medida convertida
 \hline
 \cellcolor[gray]{0.8}{Medida} & \cellcolor[gray]{0.8}{Aceleración Medida ($ms^{-2}$)}&\cellcolor[gray]{0.8}{Aceleración teórica($m^{-2}$)}& \cellcolor[gray]{0.8}{Error($ms^{-2}$)} \\
 \hline
-1 &  0.0217; 0.120; -9.856   & 0.00;0.00;-9.810     & 0.0217; 0.120; -0.0460\\
+1 &  -9.8762; -0.1323; -0.0622   & -9.8100; 0.0000;0.0000     & -0.0662; -0.1323; -0.0622\\
 \hline
-2 & 9.204;0.0136;3.359       & 9.218;0.00;3.355     & -0.0140; 0.0136; 0.00400\\
+2 & -0.0534; 9.2382;-3.3743       & 0.0000;9.2184;3.3552     & -0.0534; 0.0198; -0.0191\\
 \hline
-3 & 1.218;-9.647;1.167       & 1.204;-9.660;1.205   & 0.0140; 0.0130 -0.0380\\
+3 & 1.2072;-1.3057;9.6649       & 1.2045;-1.2045;-9.661   & 0.0027; -0.1012 0.0039\\
 \hline
 \end{tabular}
 \caption{Medidas de verificación}
 \label{tab:diff}
 \end{table}
 
-Si bien estos valores no son una buena muestra estadística, sirven como verificación ya que en la mayoría de los casos se obtiene un error inferior a $\sigma$ y tenemos solamente un error superior a $2\sigma$.
+%TODO faltar\'ia alg\'un comentario sobre estos resultados.... no son muy buenos por eso no supe que poner
 
 \subsection{Variación con la temperatura}
 
