@@ -44,11 +44,7 @@ if modo=='hov'
     Aext = [Ah Z1;Id Z2];
     Bext = [Bh;ZB];
     
-    %Construcción de la matriz K método LQR para hovering
-      
-    Q=diag([1 1 1  1e3 1e3 1e3  1 1 1  1 1 1  1 1 1 1]);
-    R = diag(.01*[1 1 1 1]);
- 
+   
 %% Linealización vuelo en linea recta
 elseif modo=='rec'
     
@@ -60,12 +56,8 @@ elseif modo=='rec'
     Br=eval(B);
     
     Aext = [Ar Z1;Id Z2];
-    Bext = [Br;ZB];
-       
-    % Construcción de la matriz K método LQR para linea recta
-           
-    Q=diag([1 1 1 1e3 1e3 1e3 1 1 1 1 1 1 1 1 1 1]);
-    R = diag([1e-2 1e-2 1e-2 1e-2]);
+    Bext = [Br;ZB];     
+   
               
 %% Linealización círculos
 elseif modo=='cir'
@@ -79,13 +71,14 @@ elseif modo=='cir'
     Bc=eval(B);        
     
     Aext = [Ac Z1;Id Z2];
-    Bext = [Bc;ZB];
-    % Construcción de la matriz K método LQR para circulos
-    Q = diag([1 1 1 1e3 1e3 1e3 1 1 1 1 1 1 1 1 1e-3 1]);
-    R=diag([1e-2 1e-2 1e-2 1e-2]);
-         
+    Bext = [Bc;ZB];       
      
 end
+Q = diag([evalin('base','Q1') evalin('base','Q2') evalin('base','Q3') evalin('base','Q4') evalin('base','Q5')...
+        evalin('base','Q6') evalin('base','Q7') evalin('base','Q8') evalin('base','Q9') evalin('base','Q10')...
+            evalin('base','Q11') evalin('base','Q12') evalin('base','Q13') evalin('base','Q14') evalin('base','Q15')...
+                evalin('base','Q16')]);
+R = evalin('base','R')*diag([1 1 1 1]);
 
  switch ctrl
      case 2
