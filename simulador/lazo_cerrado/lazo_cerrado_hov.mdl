@@ -92,7 +92,7 @@ Model {
       Name		      "w"
     }
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.302"
+    ComputedModelVersion    "1.325"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -123,9 +123,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "pater"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Sat Apr 14 21:21:00 2012"
-  RTWModifiedTimeStamp	  256317001
-  ModelVersionFormat	  "1.%<AutoIncrement:302>"
+  LastModifiedDate	  "Thu May  3 20:55:12 2012"
+  RTWModifiedTimeStamp	  257979091
+  ModelVersionFormat	  "1.%<AutoIncrement:325>"
   ConfigurationManager	  "None"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -951,7 +951,7 @@ Model {
     ShowPageBoundaries	    off
     ZoomFactor		    "100"
     ReportName		    "simulink-default.rpt"
-    SIDHighWatermark	    "1936"
+    SIDHighWatermark	    "1956"
     Block {
       BlockType		      Inport
       Name		      "w1"
@@ -988,7 +988,7 @@ Model {
       Name		      "Demux"
       SID		      "392"
       Ports		      [1, 4]
-      Position		      [205, 450, 210, 490]
+      Position		      [430, 235, 435, 275]
       ShowName		      off
       DisplayOption	      "bar"
     }
@@ -1046,21 +1046,21 @@ Model {
     }
     Block {
       BlockType		      Mux
-      Name		      "Mux1"
-      SID		      "1765"
-      Ports		      [4, 1]
-      Position		      [545, 22, 575, 138]
-      ShowName		      off
-      DisplayOption	      "bar"
-    }
-    Block {
-      BlockType		      Mux
       Name		      "Mux2"
       SID		      "1914"
       Ports		      [2, 1]
       Position		      [675, 632, 680, 688]
       ShowName		      off
       Inputs		      "2"
+      DisplayOption	      "bar"
+    }
+    Block {
+      BlockType		      Mux
+      Name		      "Mux3"
+      SID		      "1941"
+      Ports		      [4, 1]
+      Position		      [260, 229, 265, 286]
+      ShowName		      off
       DisplayOption	      "bar"
     }
     Block {
@@ -1083,41 +1083,199 @@ Model {
       DisplayOption	      "bar"
     }
     Block {
+      BlockType		      SubSystem
+      Name		      "Perturbacion motores"
+      SID		      "1947"
+      Ports		      [0, 1]
+      Position		      [45, 74, 120, 146]
+      MinAlgLoopOccurrences   off
+      PropExecContextOutsideSubsystem off
+      RTWSystemCode	      "Auto"
+      FunctionWithSeparateData off
+      Opaque		      off
+      RequestExecContextInheritance off
+      MaskHideContents	      off
+      System {
+	Name			"Perturbacion motores"
+	Location		[0, 53, 1366, 768]
+	Open			on
+	ModelBrowserVisibility	off
+	ModelBrowserWidth	200
+	ScreenColor		"white"
+	PaperOrientation	"landscape"
+	PaperPositionMode	"auto"
+	PaperType		"A4"
+	PaperUnits		"centimeters"
+	TiledPaperMargins	[1.270000, 1.270000, 1.270000, 1.270000]
+	TiledPageScale		1
+	ShowPageBoundaries	off
+	ZoomFactor		"100"
+	Block {
+	  BlockType		  Reference
+	  Name			  "Motor 1"
+	  SID			  "1949"
+	  Ports			  [0, 1]
+	  Position		  [30, 22, 70, 48]
+	  LibraryVersion	  "1.73"
+	  SourceBlock		  "commnoisgen2/Gaussian Noise\nGenerator"
+	  SourceType		  "Gaussian Noise Generator"
+	  ShowPortLabels	  "FromPortIcon"
+	  SystemSampleTime	  "-1"
+	  FunctionWithSeparateData off
+	  RTWMemSecFuncInitTerm	  "Inherit from model"
+	  RTWMemSecFuncExecute	  "Inherit from model"
+	  RTWMemSecDataConstants  "Inherit from model"
+	  RTWMemSecDataInternal	  "Inherit from model"
+	  RTWMemSecDataParameters "Inherit from model"
+	  GeneratePreprocessorConditionals off
+	  m			  "mot1"
+	  d			  "var_mot"
+	  s			  "fix(100*rand(1))"
+	  Ts			  "t_mot"
+	  frameBased		  off
+	  sampPerFrame		  "1"
+	  orient		  off
+	  outDataType		  "double"
+	}
+	Block {
+	  BlockType		  Reference
+	  Name			  "Motor 2"
+	  SID			  "1954"
+	  Ports			  [0, 1]
+	  Position		  [30, 77, 70, 103]
+	  LibraryVersion	  "1.73"
+	  SourceBlock		  "commnoisgen2/Gaussian Noise\nGenerator"
+	  SourceType		  "Gaussian Noise Generator"
+	  ShowPortLabels	  "FromPortIcon"
+	  SystemSampleTime	  "-1"
+	  FunctionWithSeparateData off
+	  RTWMemSecFuncInitTerm	  "Inherit from model"
+	  RTWMemSecFuncExecute	  "Inherit from model"
+	  RTWMemSecDataConstants  "Inherit from model"
+	  RTWMemSecDataInternal	  "Inherit from model"
+	  RTWMemSecDataParameters "Inherit from model"
+	  GeneratePreprocessorConditionals off
+	  m			  "mot2"
+	  d			  "var_mot"
+	  s			  "fix(100*rand(1))"
+	  Ts			  "t_mot"
+	  frameBased		  off
+	  sampPerFrame		  "1"
+	  orient		  off
+	  outDataType		  "double"
+	}
+	Block {
+	  BlockType		  Reference
+	  Name			  "Motor 3"
+	  SID			  "1955"
+	  Ports			  [0, 1]
+	  Position		  [30, 127, 70, 153]
+	  LibraryVersion	  "1.73"
+	  SourceBlock		  "commnoisgen2/Gaussian Noise\nGenerator"
+	  SourceType		  "Gaussian Noise Generator"
+	  ShowPortLabels	  "FromPortIcon"
+	  SystemSampleTime	  "-1"
+	  FunctionWithSeparateData off
+	  RTWMemSecFuncInitTerm	  "Inherit from model"
+	  RTWMemSecFuncExecute	  "Inherit from model"
+	  RTWMemSecDataConstants  "Inherit from model"
+	  RTWMemSecDataInternal	  "Inherit from model"
+	  RTWMemSecDataParameters "Inherit from model"
+	  GeneratePreprocessorConditionals off
+	  m			  "mot3"
+	  d			  "var_mot"
+	  s			  "fix(100*rand(1))"
+	  Ts			  "t_mot"
+	  frameBased		  off
+	  sampPerFrame		  "1"
+	  orient		  off
+	  outDataType		  "double"
+	}
+	Block {
+	  BlockType		  Reference
+	  Name			  "Motor 4"
+	  SID			  "1956"
+	  Ports			  [0, 1]
+	  Position		  [30, 177, 70, 203]
+	  LibraryVersion	  "1.73"
+	  SourceBlock		  "commnoisgen2/Gaussian Noise\nGenerator"
+	  SourceType		  "Gaussian Noise Generator"
+	  ShowPortLabels	  "FromPortIcon"
+	  SystemSampleTime	  "-1"
+	  FunctionWithSeparateData off
+	  RTWMemSecFuncInitTerm	  "Inherit from model"
+	  RTWMemSecFuncExecute	  "Inherit from model"
+	  RTWMemSecDataConstants  "Inherit from model"
+	  RTWMemSecDataInternal	  "Inherit from model"
+	  RTWMemSecDataParameters "Inherit from model"
+	  GeneratePreprocessorConditionals off
+	  m			  "mot4"
+	  d			  "var_mot"
+	  s			  "fix(100*rand(1))"
+	  Ts			  "t_mot"
+	  frameBased		  off
+	  sampPerFrame		  "1"
+	  orient		  off
+	  outDataType		  "double"
+	}
+	Block {
+	  BlockType		  Mux
+	  Name			  "Mux1"
+	  SID			  "1953"
+	  Ports			  [4, 1]
+	  Position		  [180, 89, 185, 146]
+	  ShowName		  off
+	  DisplayOption		  "bar"
+	}
+	Block {
+	  BlockType		  Outport
+	  Name			  "Perturbación"
+	  SID			  "1948"
+	  Position		  [235, 113, 265, 127]
+	  IconDisplay		  "Port number"
+	}
+	Line {
+	  SrcBlock		  "Mux1"
+	  SrcPort		  1
+	  DstBlock		  "Perturbación"
+	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "Motor 4"
+	  SrcPort		  1
+	  Points		  [45, 0; 0, -50]
+	  DstBlock		  "Mux1"
+	  DstPort		  4
+	}
+	Line {
+	  SrcBlock		  "Motor 3"
+	  SrcPort		  1
+	  Points		  [35, 0; 0, -15]
+	  DstBlock		  "Mux1"
+	  DstPort		  3
+	}
+	Line {
+	  SrcBlock		  "Motor 2"
+	  SrcPort		  1
+	  Points		  [45, 0; 0, 20]
+	  DstBlock		  "Mux1"
+	  DstPort		  2
+	}
+	Line {
+	  SrcBlock		  "Motor 1"
+	  SrcPort		  1
+	  Points		  [90, 0]
+	  DstBlock		  "Mux1"
+	  DstPort		  1
+	}
+      }
+    }
+    Block {
       BlockType		      Saturate
       Name		      "Saturation"
       SID		      "1767"
       Ports		      [1, 1]
-      Position		      [365, 200, 395, 230]
-      InputPortMap	      "u0"
-      UpperLimit	      "387"
-      LowerLimit	      "109"
-    }
-    Block {
-      BlockType		      Saturate
-      Name		      "Saturation1"
-      SID		      "1768"
-      Ports		      [1, 1]
-      Position		      [380, 250, 410, 280]
-      InputPortMap	      "u0"
-      UpperLimit	      "387"
-      LowerLimit	      "109"
-    }
-    Block {
-      BlockType		      Saturate
-      Name		      "Saturation2"
-      SID		      "1769"
-      Ports		      [1, 1]
-      Position		      [410, 300, 440, 330]
-      InputPortMap	      "u0"
-      UpperLimit	      "387"
-      LowerLimit	      "109"
-    }
-    Block {
-      BlockType		      Saturate
-      Name		      "Saturation3"
-      SID		      "1770"
-      Ports		      [1, 1]
-      Position		      [435, 465, 465, 495]
+      Position		      [370, 240, 400, 270]
       InputPortMap	      "u0"
       UpperLimit	      "387"
       LowerLimit	      "109"
@@ -10572,55 +10730,14 @@ Model {
       BlockType		      Sum
       Name		      "Sum"
       SID		      "393"
-      Ports		      [2, 1]
-      Position		      [305, 205, 325, 225]
+      Ports		      [3, 1]
+      Position		      [310, 245, 330, 265]
       ShowName		      off
       IconShape		      "round"
+      Inputs		      "+++"
       InputSameDT	      off
       OutMin		      "109.0"
       OutMax		      "387.0"
-      OutDataTypeStr	      "Inherit: Inherit via internal rule"
-      SaturateOnIntegerOverflow	off
-    }
-    Block {
-      BlockType		      Sum
-      Name		      "Sum1"
-      SID		      "394"
-      Ports		      [2, 1]
-      Position		      [325, 255, 345, 275]
-      ShowName		      off
-      IconShape		      "round"
-      InputSameDT	      off
-      OutMin		      "109"
-      OutMax		      "387"
-      OutDataTypeStr	      "Inherit: Inherit via internal rule"
-      SaturateOnIntegerOverflow	off
-    }
-    Block {
-      BlockType		      Sum
-      Name		      "Sum2"
-      SID		      "395"
-      Ports		      [2, 1]
-      Position		      [355, 305, 375, 325]
-      ShowName		      off
-      IconShape		      "round"
-      InputSameDT	      off
-      OutMin		      "109"
-      OutMax		      "387"
-      OutDataTypeStr	      "Inherit: Inherit via internal rule"
-      SaturateOnIntegerOverflow	off
-    }
-    Block {
-      BlockType		      Sum
-      Name		      "Sum3"
-      SID		      "396"
-      Ports		      [2, 1]
-      Position		      [375, 350, 395, 370]
-      ShowName		      off
-      IconShape		      "round"
-      InputSameDT	      off
-      OutMin		      "109"
-      OutMax		      "387"
       OutDataTypeStr	      "Inherit: Inherit via internal rule"
       SaturateOnIntegerOverflow	off
     }
@@ -10773,95 +10890,11 @@ Model {
       PortDimensions	      "4"
     }
     Line {
-      SrcBlock		      "Demux"
-      SrcPort		      4
-      Points		      [170, 0]
-      DstBlock		      "Sum3"
-      DstPort		      2
-    }
-    Line {
-      SrcBlock		      "Demux"
-      SrcPort		      3
-      Points		      [150, 0]
-      DstBlock		      "Sum2"
-      DstPort		      2
-    }
-    Line {
-      SrcBlock		      "Demux"
-      SrcPort		      2
-      Points		      [120, 0]
-      DstBlock		      "Sum1"
-      DstPort		      2
-    }
-    Line {
-      SrcBlock		      "Demux"
-      SrcPort		      1
-      Points		      [100, 0]
-      DstBlock		      "Sum"
-      DstPort		      2
-    }
-    Line {
-      SrcBlock		      "w1"
-      SrcPort		      1
-      Points		      [100, 0; 0, -25]
-      DstBlock		      "Sum"
-      DstPort		      1
-    }
-    Line {
-      SrcBlock		      "w2"
-      SrcPort		      1
-      Points		      [120, 0; 0, -20; 20, 0]
-      DstBlock		      "Sum1"
-      DstPort		      1
-    }
-    Line {
-      SrcBlock		      "w3"
-      SrcPort		      1
-      Points		      [150, 0; 0, -25]
-      DstBlock		      "Sum2"
-      DstPort		      1
-    }
-    Line {
-      SrcBlock		      "w4"
-      SrcPort		      1
-      Points		      [170, 0; 0, 25; 40, 0; 0, -55]
-      DstBlock		      "Sum3"
-      DstPort		      1
-    }
-    Line {
       SrcBlock		      "Mux"
       SrcPort		      1
       Points		      [40, 0; 0, 115; -960, 0]
       DstBlock		      "Sum4"
       DstPort		      2
-    }
-    Line {
-      SrcBlock		      "Sum3"
-      SrcPort		      1
-      Points		      [20, 0]
-      DstBlock		      "Saturation3"
-      DstPort		      1
-    }
-    Line {
-      SrcBlock		      "Sum2"
-      SrcPort		      1
-      DstBlock		      "Saturation2"
-      DstPort		      1
-    }
-    Line {
-      SrcBlock		      "Sum1"
-      SrcPort		      1
-      DstBlock		      "Saturation1"
-      DstPort		      1
-    }
-    Line {
-      Name		      "realimentación"
-      Labels		      [0, 0]
-      SrcBlock		      "Gain"
-      SrcPort		      1
-      Points		      [0, -20; -545, 0; 0, -60; 55, 0; 0, -30; -115, 0]
-      DstBlock		      "Demux"
-      DstPort		      1
     }
     Line {
       SrcBlock		      "Subsystem1"
@@ -11058,75 +11091,6 @@ Model {
       }
     }
     Line {
-      SrcBlock		      "Mux1"
-      SrcPort		      1
-      DstBlock		      "w"
-      DstPort		      1
-    }
-    Line {
-      SrcBlock		      "Sum"
-      SrcPort		      1
-      DstBlock		      "Saturation"
-      DstPort		      1
-    }
-    Line {
-      SrcBlock		      "Saturation"
-      SrcPort		      1
-      Points		      [60, 0]
-      Branch {
-	Points			[0, 25]
-	DstBlock		"Subsystem1"
-	DstPort			1
-      }
-      Branch {
-	Points			[0, -180]
-	DstBlock		"Mux1"
-	DstPort			1
-      }
-    }
-    Line {
-      SrcBlock		      "Saturation1"
-      SrcPort		      1
-      Points		      [50, 0; 0, 55; 20, 0]
-      Branch {
-	DstBlock		"Subsystem1"
-	DstPort			2
-      }
-      Branch {
-	Points			[0, -255]
-	DstBlock		"Mux1"
-	DstPort			2
-      }
-    }
-    Line {
-      SrcBlock		      "Saturation2"
-      SrcPort		      1
-      Points		      [5, 0; 0, 85; 50, 0]
-      Branch {
-	DstBlock		"Subsystem1"
-	DstPort			3
-      }
-      Branch {
-	Points			[0, -305]
-	DstBlock		"Mux1"
-	DstPort			3
-      }
-    }
-    Line {
-      SrcBlock		      "Saturation3"
-      SrcPort		      1
-      Points		      [50, 0]
-      Branch {
-	DstBlock		"Subsystem1"
-	DstPort			4
-      }
-      Branch {
-	Points			[0, -355]
-	DstBlock		"Mux1"
-	DstPort			4
-      }
-    }
-    Line {
       SrcBlock		      "Zero-Order\nHold"
       SrcPort		      1
       Points		      [70, 0; 0, -25]
@@ -11261,6 +11225,104 @@ Model {
       SrcBlock		      "Transport\nDelay"
       SrcPort		      1
       DstBlock		      "Zero-Order\nHold"
+      DstPort		      1
+    }
+    Line {
+      SrcBlock		      "w1"
+      SrcPort		      1
+      Points		      [25, 0; 0, 20]
+      DstBlock		      "Mux3"
+      DstPort		      1
+    }
+    Line {
+      SrcBlock		      "w2"
+      SrcPort		      1
+      Points		      [25, 0; 0, -15]
+      DstBlock		      "Mux3"
+      DstPort		      2
+    }
+    Line {
+      SrcBlock		      "w3"
+      SrcPort		      1
+      Points		      [50, 0]
+      DstBlock		      "Mux3"
+      DstPort		      3
+    }
+    Line {
+      SrcBlock		      "w4"
+      SrcPort		      1
+      Points		      [50, 0]
+      DstBlock		      "Mux3"
+      DstPort		      4
+    }
+    Line {
+      SrcBlock		      "Saturation"
+      SrcPort		      1
+      DstBlock		      "Demux"
+      DstPort		      1
+    }
+    Line {
+      SrcBlock		      "Demux"
+      SrcPort		      1
+      DstBlock		      "Subsystem1"
+      DstPort		      1
+    }
+    Line {
+      SrcBlock		      "Demux"
+      SrcPort		      2
+      Points		      [40, 0; 0, 70]
+      DstBlock		      "Subsystem1"
+      DstPort		      2
+    }
+    Line {
+      SrcBlock		      "Demux"
+      SrcPort		      3
+      Points		      [30, 0; 0, 140]
+      DstBlock		      "Subsystem1"
+      DstPort		      3
+    }
+    Line {
+      SrcBlock		      "Demux"
+      SrcPort		      4
+      Points		      [20, 0; 0, 210]
+      DstBlock		      "Subsystem1"
+      DstPort		      4
+    }
+    Line {
+      Name		      "realimentación"
+      Labels		      [0, 0; 0, 0]
+      SrcBlock		      "Gain"
+      SrcPort		      1
+      Points		      [0, -60; -475, 0]
+      DstBlock		      "Sum"
+      DstPort		      3
+    }
+    Line {
+      SrcBlock		      "Mux3"
+      SrcPort		      1
+      Points		      [10, 0; 0, -5]
+      DstBlock		      "Sum"
+      DstPort		      2
+    }
+    Line {
+      SrcBlock		      "Sum"
+      SrcPort		      1
+      Points		      [20, 0]
+      Branch {
+	DstBlock		"Saturation"
+	DstPort			1
+      }
+      Branch {
+	Points			[0, -175]
+	DstBlock		"w"
+	DstPort			1
+      }
+    }
+    Line {
+      SrcBlock		      "Perturbacion motores"
+      SrcPort		      1
+      Points		      [195, 0]
+      DstBlock		      "Sum"
       DstPort		      1
     }
     Annotation {
