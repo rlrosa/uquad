@@ -555,7 +555,7 @@ int main(int argc, char *argv[])
 	    fprintf(LOG_ERR,"Mot %d:\t%s\n",i,mot_selected[i]?"Enabled.":"Not enabled");
 	}
     }
-    
+
     sprintf(filename,"/dev/i2c-%d",adapter_nr);
     fprintf(LOG_ERR,"Opening %s...\n",filename);
 

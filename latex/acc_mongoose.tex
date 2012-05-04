@@ -261,6 +261,10 @@ Se presenta para las tres medidas la aceleración teórica, la medida convertida
 
 \subsection{Variación con la temperatura}
 
+La temperatura de funcionamiento normal de los sensores es mucho mayor a la temperatura ambiente, debido al calor emanado por la electrónica utilizada. Gracias al sensor de temperatura presente en la IMU es posible caracterizar dicha temperatura, obteniendo que ronda los $35^oC$. Dado que la calibración fue realizada a una temperatura sensiblemente inferior, y para lograr robustez frente a eventuales cambios de temperatura, se realiza una compensación por temperatura de la lectura otorgada por el acelerómetro.\\
+
+Para ello se calientan los sensores hasta una temperatura aproximada de $48^oC$, se lo deja enfriar hasta los $35^oC$ y se analiza la variación de las medidas con la temperatura. Al realizar dicho experimento se obtienen los resultados mostrados en la figura \ref{fig:bajada}.
+
 \begin{figure}[H]
   \begin{center}
     \includegraphics[width=0.8\textwidth]{./pics_acc/bajada.pdf}
@@ -269,6 +273,39 @@ Se presenta para las tres medidas la aceleración teórica, la medida convertida
   \caption{Variación de la medida del acelerómetro con la temperatura }
   \label{fig:bajada}
 \end{figure}
+
+En la misma gráfica se muestran las medidas obtenidas de los sensores y la temperatura en función del tiempo. Los ejes rojos corresponden a la aceleración mientras que los ejes en negro corresponden a la temperatura.\\
+
+TODO\\
+explicar que solo se considera que varia un offset en z porque dice la hoja de datos\\
+poner la ecuacion que se usa\\
+borrar lo q escribio el matute\\
+
+
+\begin{figure}[H]
+  \begin{center}
+    \includegraphics[width=0.8\textwidth]{./pics_acc/resultado_temp.pdf}
+  \end{center}
+  \vspace{-20pt}
+  \caption{Resultado de la compensación por temperatura}
+  \label{fig:resultado_temp}
+\end{figure}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 \subsection{Análisis de variación}
 A partir del análisis de los experimentos realizados es claro que la mínima variación existente en las señales procedentes de los acelerómetros es del orden de $0.04 m/s^2$, tal como puede observarse en la siguiente gráfica:
