@@ -118,6 +118,9 @@ int uquad_mot_i2c_addr_open(int i2c_dev, int addr){
 	/* ERROR HANDLING; you can check errno to see what went wrong */
 	fprintf(LOG_ERR,"ERROR! %s failed to write to 0x%02X...\n"	\
 		"errno info:\t %s\n",__FUNCTION__,addr,strerror(errno));
+#ifdef CHECK_STDIN
+	fflush(LOG_ERR);
+#endif // CHECK_STDIN
 	return NOT_OK;
     }
 #else
@@ -136,6 +139,9 @@ int uquad_mot_i2c_send_byte(int i2c_dev, __u8 reg, __u8 value){
 	/* ERROR HANDLING: i2c transaction failed */
 	fprintf(LOG_ERR,"Failed to send value %d\tto 0x%02X\n."\
 		"errno info:\t %s\n",(int)value,(int)reg,strerror(errno));
+#ifdef CHECK_STDIN
+	fflush(LOG_ERR);
+#endif // CHECK_STDIN
     }
 #else
 #if DEBUG
@@ -567,7 +573,7 @@ int main(int argc, char *argv[])
 	{
 	    ret = uquad_mot_set_speed(i2c_file,
 				      mot_i2c_addr[i],
-				      vels[i]);	
+				      vels[i] & mot_selected[i]);
 	    if(ret != OK)
 	    {
 		backtrace();
