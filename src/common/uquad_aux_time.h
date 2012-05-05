@@ -10,6 +10,11 @@
 	tv.tv_usec = (long int) (1e6*(db - sign(db)*floor(db)));	\
     }
 
+#define tv2double(db,tv)					\
+    {								\
+	db = ((double) tv.tv_sec) + ((double) tv.tv_usec)/1e6;	\
+    }								\
+
 #define sleep_ms(ms) usleep(1000*ms)
 
 /** 
