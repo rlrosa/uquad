@@ -73,7 +73,10 @@ $$\tilde{\mathbf{a}}^a = K_a \mathbf{a}^a + \mathbf{b}_a$$ donde $K_a$ es una ma
 
 A partir del anális realizado se puede concluir que el modelo de acelerómetro que se considerará es el siguiente:
 
-$$\tilde{\mathbf{a^a}}=K_a(T_a^p)^{-1}\mathbf{a^p}+b_a$$
+\begin{equation}
+\tilde{\mathbf{a^a}}=K_a(T_a^p)^{-1}\mathbf{a^p}+b_a
+\label{ec:modelo_acc}
+\end{equation}
 
 \section{Procedimiento}
 \subsection{Caracterización de las no idealidades variables}
@@ -276,11 +279,24 @@ Para ello se calientan los sensores hasta una temperatura aproximada de $48^oC$,
 
 En la misma gráfica se muestran las medidas obtenidas de los sensores y la temperatura en función del tiempo. Los ejes rojos corresponden a la aceleración mientras que los ejes en negro corresponden a la temperatura.\\
 
-TODO\\
-explicar que solo se considera que varia un offset en z porque dice la hoja de datos\\
-poner la ecuacion que se usa\\
-borrar lo q escribio el matute\\
+De la hoja de datos del acelerómetro se puede extraer la siguiente información:
+\begin{description}
+\item [0 g Offset vs. Temperature for X-, Y-Axes:]$\pm 0.4\frac{mg}{^oC}$
+\item [0 g Offset vs. Temperature for Z-Axis:]$\pm 1.2\frac{mg}{^oC}$
+\end{description}
+la cual indica que la variación con la temperatura de la medida otorgada en \textbf{z} es 3 veces superior que la variación en los otros dos ejes y se puede caracterizar fundamentalmente con un offset que depende de la temperatura. Por ello se propone una compensación por temperatura utilizando un offset solamente para el eje \textbf{z}, de la forma:
+$$ b = b_a + \alpha (t - t_o) $$
+Recordando la ecuación \ref{ec:modelo_acc}, se puede actualizar el modelo del acelerómetro al siguiente modelo:
+\begin{equation}
+\tilde{\mathbf{a^a}}=K_a(T_a^p)^{-1}\mathbf{a^p}+b_a+\left(
+\begin{array}{c}
+0 \\ 0 \\ \alpha(t - t_o)
+\end{array}
+\right)
+\end{equation}
+donde $t$ es la temperatura instantánea y $t_0$ la temperatura para la cual el acelerómetro fue calibrado (aproximadamente $27^oC$).\\
 
+Los resultados obtenidos luego de la compensación por temperatura se muestran en la figura \ref{fig:resultado_temp}.
 
 \begin{figure}[H]
   \begin{center}
@@ -291,37 +307,6 @@ borrar lo q escribio el matute\\
   \label{fig:resultado_temp}
 \end{figure}
 
+En la prueba mostrada en dicha figura se coloca al acelerómetro en forma horizontal, por lo que debería arrojar una lectura cercana a $9.81\frac{m}{s}$. En las medidas sin compensación se puede observar el carácter lineal de la dependencia con la temperatura. A su vez puede decirse que el error introducido por la temperatura en las medidas es corregido en buena forma por el modelo propuesto, ya que se obtienen valores de aceleración cercanos a los esperados en todo el rango de temperaturas estudiados.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-\subsection{Análisis de variación}
-A partir del análisis de los experimentos realizados es claro que la mínima variación existente en las señales procedentes de los acelerómetros es del orden de $0.04 m/s^2$, tal como puede observarse en la siguiente gráfica:
-
-\begin{figure}[H]
-  \begin{center}
-    \includegraphics[width=0.8\textwidth]{./pics_acc/variacion.png}
-  \end{center}
-  \vspace{-20pt}
-  \caption{Variación de la medida del acelerómetro con la temperatura }
-  \label{fig:variacion}
-\end{figure}
-
-Por otro lado, de los parámetros obtenidos de la calibración, se determina que $\sigma= 0.0396798455378608$, lo cual resulta coherente con el resultado anterior.\\
-\\
-Finalmente, de la hoja de datos del acelerómetro se obtiene que el factor de escala para la señal es de $3.9 mg/LSB$, lo cual nuevamente es coherente con los resultados obtenidos anteriormente.\\
-\\
-De lo anterior puede concluirse que el procedimiento de calibración parecería ser correcto, obteniéndose valores similares para $\sigma$ tanto en la teoría como en la realidad.
 \end{document}

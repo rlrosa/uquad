@@ -151,8 +151,9 @@ figure
     plot(t_imu,aconv_avg(:,3),'*','color',red1)
     plot(moving_avg(t_imu,20),moving_avg(aconv_temp_lin(:,3),20),'*','color',red2);
 %     axis([15 30 -11 1]); xlabel('Temperatura'); ylabel('Aceleracion en m/s^2');
-axis([34 50 8 11]); xlabel('\fontsize{16}Temperatura'); ylabel('\fontsize{16}Aceleracion en m/s^2');
-legend('\fontsize{16}a_z sin compensar','\fontsize{16}a_z compensada')
+axis([34 50 9 10.5]); xlabel('\fontsize{16}Temperatura'); ylabel('\fontsize{16}Aceleracion en m/s^2');
+legend_handle = legend('\fontsize{16}a_z sin compensar','\fontsize{16}a_z compensada')
+set(legend_handle, 'Box', 'off');
 %     legend('ax sin compensar','ax compensada','ay sin compensar','ay compensada','az sin compensar','az compensada')
 
 figure()
