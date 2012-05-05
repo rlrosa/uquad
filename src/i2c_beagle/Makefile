@@ -1,14 +1,15 @@
 EXECUTABLE=cmd
 CC=gcc
-CFLAGS=-O
+CFLAGS=-Wall
+LDFLAGS=-lm
 SOURCES=cmd_motores.c
 all:
-	$(CC) $(CFLAGS) cmd_motores.c -o $(EXECUTABLE)
+	$(CC) -O3 $(CFLAGS) $(LDFLAGS) cmd_motores.c -o $(EXECUTABLE)
 debug:
 	$(CC) -g $(SOURCES) -o $(EXECUTABLE)_debug
 pc_test:
-	$(CC) -g -DPC_TEST $(SOURCES) -o $(EXECUTABLE)pc_test
+	$(CC) -g -DPC_TEST $(LDFLAGS) $(CFLAGS) $(SOURCES) -o $(EXECUTABLE)pc_test
 stdin:
-	$(CC) -g -DCHECK_STDIN $(SOURCES) -o $(EXECUTABLE)stdin
+	$(CC) -DCHECK_STDIN $(LDFLAGS) $(CFLAGS) $(SOURCES) -o $(EXECUTABLE)stdin
 clean:
 	rm $(EXECUTABLE)
