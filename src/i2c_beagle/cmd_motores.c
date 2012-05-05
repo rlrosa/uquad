@@ -1,4 +1,5 @@
 #include <errno.h> 
+#include <math.h>
 #include <string.h> 
 #include <stdio.h> 
 #include <signal.h> // for SIGINT, SIGQUIT
@@ -57,6 +58,8 @@
 
 #define UQUAD_STARTUP_RETRIES     100
 #define UQUAD_STOP_RETRIES        1000
+#define UQUAD_USE_DIFF            0
+#define UQUAD_USE_SIN             1
 
 #define LOOP_T_US                 2000UL
 
@@ -66,6 +69,16 @@
 #define log_to_err(msg) fprintf(LOG_ERR,"%s: %s:%d\n",msg,__FUNCTION__,__LINE__)
 
 #define sleep_ms(ms)    usleep(1000*ms)
+
+#define log_tv_only(log,tv)					\
+    {								\
+	fprintf(log,"%ld.%06ld\t",tv.tv_sec, tv.tv_usec);	\
+    }
+
+#define tv2double(db,tv)					\
+    {								\
+	db = ((double) tv.tv_sec) + ((double) tv.tv_usec)/1e6;	\
+    }								\
 
 int uquad_timeval_substract (struct timeval * result, struct timeval x, struct timeval y){
     /* Perform the carry for the later subtraction by updating y. */
@@ -143,14 +156,15 @@ static unsigned short mot_selected[MOT_COUNT] = {MOT_NOT_SELECTED,
 						 MOT_NOT_SELECTED};
 
 static __u8 vels[MOT_COUNT] = {0,0,0,0};
-static __u8 diff = 0;
 
 #ifdef LOG_VELS
 static FILE *log_rx;
 #endif
 #ifdef PC_TEST
+#if DEBUG
 static FILE *i2c_fake;
 #define FAKE_I2C_PATH "i2c.dev"
+#endif
 #endif // LOG_VELS
 
 int uquad_mot_i2c_addr_open(int i2c_dev, int addr){
@@ -512,6 +526,7 @@ int main(int argc, char *argv[])
     int adapter_nr = 2;
     int tmp, i;
     char filename[20];
+    double dtmp;
     struct timeval
 	tv_in,
 	tv_diff,
@@ -614,15 +629,24 @@ int main(int argc, char *argv[])
 	    do_sleep = 0;
 	}
 	// all
+#if UQUAD_USE_DIFF
 	if(m_status == RUNNING)
-	    diff ^= 0;
+	{
+#if UQUAD_USE_SIN
+	    tv2double(dtmp,tv_in);
+	    dtmp = 5.0*sin(2.0*3.14*5.0*dtmp); // 5Hz sin()
+#else // UQUAD_USE_SIN
+#endif // UQUAD_USE_SIN
+	}
 	else
-	    diff = 0;
+#endif // UQUAD_USE_DIFF
+	    dtmp = 0.0;
 	for(i = 0; i < MOT_COUNT; ++i)
 	{
 	    ret = uquad_mot_set_speed(i2c_file,
 				      mot_i2c_addr[i],
-				      mot_selected[i]?vels[i]+diff:0);
+				      mot_selected[i]?
+				      (__u8) (((double)vels[i])+dtmp):0);
 	    if(ret != OK)
 	    {
 		backtrace();
