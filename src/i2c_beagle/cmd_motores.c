@@ -413,7 +413,7 @@ void uquad_sig_handler(int signal_num){
 	fprintf(LOG_ERR,"Shutting down motors...\n");
 	while(uquad_mot_disable_all(i2c_file) != OK)
 	    fprintf(LOG_ERR,"Failed to shutdown motors!... Retrying...\n");
-	fprintf(LOG_ERR,"Motors successfully stoped!\n");
+	fprintf(LOG_ERR,"Motors successfully stopped!\n");
     }
 #ifdef LOG_VELS
     fclose(log_rx);
