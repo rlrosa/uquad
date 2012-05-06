@@ -19,10 +19,13 @@ uquad_mot_t *mot_init(void)
     retval = system(KILL_MOTOR_CMD);
     // ignore return value, it's ok if it wasn't running
     retval = ERROR_OK;
-    sleep_ms(50);
+    sleep_ms(150);
 
     uquad_mot_t *m = (uquad_mot_t *)malloc(sizeof(uquad_mot_t));
-    mem_alloc_check(m);
+    if(m == NULL)
+    {
+	cleanup_log_if(ERROR_MALLOC, "Failed to allocate mem for uquad_mot_t!");
+    }
     memset((void *)m,0,sizeof(uquad_mot_t));
 
     m->w_curr = uquad_mat_alloc(MOT_C,1);
