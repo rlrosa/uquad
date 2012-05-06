@@ -35,7 +35,10 @@
 #if DEBUG
 //#define LOG_VELS
 //#define LOG_TIMING
+#define LOG_TIMING_KERNEL_CALLS
 #endif
+
+#define TV_TH_US                  500UL
 
 #define PRINT_COUNT               500
 #define MOT_COUNT                 4
@@ -59,7 +62,7 @@
 #define UQUAD_STARTUP_RETRIES     100
 #define UQUAD_STOP_RETRIES        1000
 #define UQUAD_USE_DIFF            0
-#define UQUAD_USE_SIN             1
+#define UQUAD_USE_SIN             (1 && UQUAD_USE_DIFF)
 
 #define LOOP_T_US                 2000UL
 
@@ -138,10 +141,12 @@ typedef struct msgbuf {
 typedef enum {RUNNING,STOPPED}mot_state_t;
 
 // Global vars
+#ifndef CHECK_STDIN
 static int msqid; // Set by mot_control.h
+static message_buf_t rbuf;
+#endif // CHECK_STDIN
 const static key_t key_s = 169; // must match MOT_SERVER_KEY (in mot_control.h)
 const static key_t key_c = 170; // must match MOT_DRIVER_KEY (in mot_control.h)
-static message_buf_t rbuf;
 #ifdef LOG_VELS
 static struct timeval timestamp;
 #endif // LOG_VELS
@@ -169,6 +174,10 @@ static FILE *i2c_fake;
 
 int uquad_mot_i2c_addr_open(int i2c_dev, int addr){
 #ifndef PC_TEST
+#ifdef LOG_TIMING_KERNEL_CALLS
+    struct timeval tv_before, tv_after, tv_diff;
+    gettimeofday(&tv_before,NULL);
+#endif // LOG_TIMING_KERNEL_CALLS
     if (ioctl(i2c_dev,I2C_SLAVE,addr) < 0)
     {
 	/* ERROR HANDLING; you can check errno to see what went wrong */
@@ -179,6 +188,18 @@ int uquad_mot_i2c_addr_open(int i2c_dev, int addr){
 #endif // CHECK_STDIN
 	return NOT_OK;
     }
+#ifdef LOG_TIMING_KERNEL_CALLS
+    else
+    {
+	gettimeofday(&tv_after,NULL);
+	uquad_timeval_substract(&tv_diff, tv_after, tv_before);
+	if(tv_diff.tv_usec > TV_TH_US)
+	{
+	    log_tv_only(stdout, tv_diff);
+	    fprintf(stdout,"ioctl()\n");
+	}
+    }
+#endif // LOG_TIMING_KERNEL_CALLS
 #else
 #if DEBUG
     fprintf(i2c_fake,"%d",addr);
@@ -189,6 +210,10 @@ int uquad_mot_i2c_addr_open(int i2c_dev, int addr){
 
 int uquad_mot_i2c_send_byte(int i2c_dev, __u8 reg, __u8 value){
 #ifndef PC_TEST
+#ifdef LOG_TIMING_KERNEL_CALLS
+    struct timeval tv_before, tv_after, tv_diff;
+    gettimeofday(&tv_before,NULL);
+#endif // LOG_TIMING_KERNEL_CALLS
     if(i2c_smbus_write_byte_data(i2c_dev,reg,value) < 0)
     {
 	/* ERROR HANDLING: i2c transaction failed */
@@ -198,6 +223,18 @@ int uquad_mot_i2c_send_byte(int i2c_dev, __u8 reg, __u8 value){
 	fflush(LOG_ERR);
 #endif // CHECK_STDIN
     }
+#ifdef LOG_TIMING_KERNEL_CALLS
+    else
+    {
+	gettimeofday(&tv_after,NULL);
+	uquad_timeval_substract(&tv_diff, tv_after, tv_before);
+	if(tv_diff.tv_usec > TV_TH_US)
+	{
+	    log_tv_only(stdout, tv_diff);
+	    fprintf(stdout,"i2c_smbus_write_byte_data()\n");
+	}
+    }
+#endif // LOG_TIMING_KERNEL_CALLS
 #else
 #if DEBUG
     struct timeval t;
@@ -376,7 +413,7 @@ void uquad_sig_handler(int signal_num){
 	fprintf(LOG_ERR,"Shutting down motors...\n");
 	while(uquad_mot_disable_all(i2c_file) != OK)
 	    fprintf(LOG_ERR,"Failed to shutdown motors!... Retrying...\n");
-	fprintf(LOG_ERR,"Motors successfully stoped!\n");
+	fprintf(LOG_ERR,"Motors successfully stopped!\n");
     }
 #ifdef LOG_VELS
     fclose(log_rx);
@@ -428,14 +465,13 @@ int uquad_send_ack()
 
 #ifdef CHECK_STDIN
 static int itmp[MOT_COUNT] = {0,0,0,0};
-static int max_fd_plus_one = -1;
 #endif
 int uquad_read(void){
+    int retval = OK, i;
+    
+#ifdef CHECK_STDIN
     fd_set rfds;
     struct timeval tv;
-    int retval = OK, i;
-    __u8 u8tmp;
-    
     // Watch stdin and ctrl_file, check for speed updates
     FD_ZERO(&rfds);
     FD_SET(STDIN_FILENO, &rfds);
@@ -443,8 +479,6 @@ int uquad_read(void){
     // Don't wait
     tv.tv_sec = 0;
     tv.tv_usec = 0;
-
-#ifdef CHECK_STDIN
     /// get speed data from stdin
     retval = select(STDIN_FILENO+1, &rfds, NULL, NULL, &tv);
     // Don't rely on the value of tv now!
@@ -486,7 +520,8 @@ int uquad_read(void){
 #endif // LOG_VELS
 	}
     }
-#else
+#else // CHECK_STDIN
+    __u8 u8tmp;
     /// get speed data from kernel msgq
     if ((msqid = msgget(key_s, 0666)) < 0)
 	return NOT_OK;
@@ -494,7 +529,7 @@ int uquad_read(void){
     /*
      * Receive an answer of message type 1.
      */
-    if (msgrcv(msqid, &rbuf, 4, 0, IPC_NOWAIT) < 0)
+    if (msgrcv(msqid, &rbuf, 4, 1, IPC_NOWAIT) < 0)
 	return NOT_OK;
 
     /*
@@ -571,6 +606,11 @@ int main(int argc, char *argv[])
 	}
     }
 
+    /* mot_selected[0] = MOT_NOT_SELECTED; */
+    /* mot_selected[1] = MOT_NOT_SELECTED; */
+    /* mot_selected[2] = MOT_NOT_SELECTED; */
+    /* mot_selected[3] = MOT_NOT_SELECTED; */
+
     sprintf(filename,"/dev/i2c-%d",adapter_nr);
     fprintf(LOG_ERR,"Opening %s...\n",filename);
 
@@ -578,7 +618,7 @@ int main(int argc, char *argv[])
 
     // Open i2c
 #ifndef PC_TEST
-    if ((i2c_file = open(filename,O_RDWR)) < 0) {
+    if ((i2c_file = open(filename,O_RDWR | O_NONBLOCK)) < 0) {
 	fprintf(LOG_ERR,"ERROR! Failed to open %s!\nAborting...\n",filename);
 	fprintf(LOG_ERR,"errno info:\t %s\n",strerror(errno));
 	/* ERROR HANDLING; you can check errno to see what went wrong */
@@ -634,7 +674,7 @@ int main(int argc, char *argv[])
 	{
 #if UQUAD_USE_SIN
 	    tv2double(dtmp,tv_in);
-	    dtmp = 5.0*sin(2.0*3.14*5.0*dtmp); // 5Hz sin()
+	    dtmp = 5.0*sin(2.0*3.14*3.0*dtmp); // 17Hz sin()
 #else // UQUAD_USE_SIN
 #endif // UQUAD_USE_SIN
 	}
@@ -684,6 +724,7 @@ int main(int argc, char *argv[])
 		{
 		    fprintf(LOG_ERR,"Startup was successfull!...\n");
 		    m_status = RUNNING;
+		    gettimeofday(&tv_in,NULL); // Restart timer
 		}
 	    }
 	    // stop
@@ -707,6 +748,7 @@ int main(int argc, char *argv[])
 		{
 		    log_to_err("Stopping was successfull!...");
 		    m_status = STOPPED;
+		    gettimeofday(&tv_in,NULL); // Restart timer
 		}
 	    }
 	    /// send ack
@@ -725,10 +767,25 @@ int main(int argc, char *argv[])
 	    if(tv_diff.tv_usec < LOOP_T_US)
 	    {
 		usleep(LOOP_T_US - tv_diff.tv_usec);
-#ifdef LOG_TIMING
-		fprintf(LOG_ERR,"%ld\n",LOOP_T_US - tv_diff.tv_usec);
-#endif
 	    }
+#ifdef LOG_TIMING
+	    else
+	    {
+		if(tv_diff.tv_sec > 0)
+		{
+		    tv2double(dtmp,tv_diff);
+		    fprintf(LOG_ERR,"ERR: Loop took too long! (%0.6f)\nAborting...", dtmp);
+		}
+		else
+		{
+		    fprintf(LOG_ERR, "WARN: Loop should be %lu but was %lu\n", LOOP_T_US, tv_diff.tv_usec);
+		}
+	    }
+#endif
+	}
+	else
+	{
+	    log_to_err("WARN: Absurd timing!");
 	}
     }
  

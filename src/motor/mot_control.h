@@ -15,11 +15,11 @@
 #define MOT_W_IDLE          109.0   // rad/s (match MOT_IDLE_I2C)
 #define MOT_C               4
 
-#define MOT_UPDATE_MAX_US   2000  // us
-#define MOT_WAIT_STARTUP_MS 420   // ms
-#define MOT_WAIT_STARTUP_S  3     // s
+#define MOT_UPDATE_MAX_US   2000    // us
+#define MOT_WAIT_STARTUP_MS 3420    // ms
+#define MOT_WAIT_STARTUP_S  1       // s
 
-#define START_MOTOR_CMD "./cmd > cmd_output.log &"
+#define START_MOTOR_CMD "./cmd &"
 #define KILL_MOTOR_CMD  "kill -INT `pidof -s cmd` > /dev/null &"
 
 /// Communication with motor driver is done via kernel msgs
