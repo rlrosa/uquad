@@ -1,9 +1,10 @@
 % close all
 % clear all
 % clc
+% archivo = 'sniffer/logs/01.vcd';
 
 function [dat,D0_val,D2_val,D4_val,D6_val,...
-          D0_add,D2_add,D4_add,D6_add] = read_log(archivo)
+          D0_add,D2_add,D4_add,D6_add,T0,T2,T4,T6] = read_log(archivo)
 
 D0_val=0;D2_val=0;D4_val=0;D6_val=0;
 D0_add=0;D2_add=0;D4_add=0;D6_add=0;
@@ -16,18 +17,25 @@ D = textscan(F,'%s','delimiter','\t');
 fclose(F);
 
 j=1;
-for i = 1:size(D{1},1)
+for i = 1:size(D{1},1)-1
     if (D{1}{i}(1) == 'b') % && (D{1}{i}(2) ~= 'x')
         data{j} = (D{1}{i}(2:9));
+        j=j+1;
+    end
+    if (D{1}{i}(1) == '#' && D{1}{i+1}(1) == 'b' && (sum(D{1}{i+1}(1:9) == 'b11010010')==9 || ... 
+        sum(D{1}{i+1}(1:9) == 'b11010100')==9 || sum(D{1}{i+1}(1:9) == 'b11010110')==9 ||...
+        sum(D{1}{i+1}(1:9) == 'b11010000')==9))
+        data{j} = D{1}{i};
         j=j+1;
     end
 end
 
 i=1; j=1; k=1; l=1; m=1;
-while i<size(data,2)
-    if data{i} == '11010010'
+while i<size(data,2)-1
+    if data{i}(1)~= '#' && sum(data{i} == '11010010')==8
         if data{i+1}(2) ~= 'x'
             D2_add (j) = bin2dec(data{i+1});
+            T2(j) = str2num(data{i-1}(2:end));
         else
             D2_add (j) = 500;
         end
@@ -37,9 +45,10 @@ while i<size(data,2)
             D2_val (j) = 500;
         end
         j=j+1;
-    elseif data{i} == '11010100'
+    elseif data{i}(1)~= '#' && sum(data{i} == '11010100')==8
         if data{i+1}(2) ~= 'x'
             D4_add (k) = bin2dec(data{i+1});
+            T4(k) = str2num(data{i-1}(2:end));
         else
             D4_add (k) = 500;
         end
@@ -49,9 +58,10 @@ while i<size(data,2)
             D4_val (k) = 500;
         end
         k=k+1;
-    elseif data{i} == '11010110'
+    elseif data{i}(1)~= '#' && sum(data{i} == '11010110')==8
         if data{i+1}(2) ~= 'x'
             D6_add (l) = bin2dec(data{i+1});
+            T6(l) = str2num(data{i-1}(2:end));
         else
             D6_add (l) = 500;
         end
@@ -61,9 +71,10 @@ while i<size(data,2)
             D6_val (l) = 500;
         end
         l=l+1;
-        elseif data{i} == '11010000'
+        elseif data{i}(1)~= '#' && sum(data{i} == '11010000')==8
         if data{i+1}(2) ~= 'x'
             D0_add (m) = bin2dec(data{i+1});
+            T0(m) = str2num(data{i-1}(2:end));
         else
             D0_add (m) = 500;
         end
@@ -77,14 +88,14 @@ while i<size(data,2)
     i=i+1;
 end
 
-j=1;
-for i=1:length(data)
-    if data{i}(1) ~='x'
-        dat(j)=bin2dec(data{i});
-        j=j+1;
-    end
-end
-
+% j=1;
+% for i=1:length(data)
+%     if data{i}(1) ~='x'
+%         dat(j)=bin2dec(data{i});
+%         j=j+1;
+%     end
+% end
+dat = data;
 
 %% PLOTS
 
@@ -149,6 +160,33 @@ subplot 224
     xlabel('\fontsize{14}Muestras')
     ylabel('\fontsize{14}Registro del esclavo')
     
+    
+figure('Name','Tiempos')
+subplot 221
+    plot(diff(T0)*1e-5,'b*','markersize',8)
+    axis([1 length(T0) 1 15])
+    title('\fontsize{16}Derecha - D0 - 68')
+    xlabel('\fontsize{14}Muestras')
+    ylabel('\fontsize{14}Tiempo entre llamados (ms)')
+subplot 222
+    plot(diff(T2)*1e-5,'m+','markersize',8)
+    axis([1 length(T2) 1 15])
+    title('\fontsize{16}Adelante - D2 - 69')
+    xlabel('\fontsize{14}Muestras')
+    ylabel('\fontsize{14}Tiempo entre llamados (ms)')
+subplot 223
+    plot(diff(T4)*1e-5,'ro','markersize',8)
+    axis([1 length(T4) 1 15])
+    title('\fontsize{16}Atras - D4 - 6A')
+    xlabel('\fontsize{14}Muestras')
+    ylabel('\fontsize{14}Tiempo entre llamados (ms)')
+subplot 224
+    plot(diff(T6)*1e-5,'gs','markersize',8)
+    axis([1 length(T6) 1 15])
+    title('\fontsize{16}Izquierda - D6 - 6B')
+    xlabel('\fontsize{14}Muestras')
+    ylabel('\fontsize{14}Tiempo entre llamados (ms)')
+
 end    
   
 % figure

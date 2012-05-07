@@ -50,12 +50,13 @@ fs = 100;
 
 [a,w,m,t_imu,~,fecha,ind]=mong_read...
     (['tests/mongoose/temperaturomometro/data_abril/imu_raw.log'],1,1);
-a = a(2.26e4:4.8e5,:);
-w = w(2.26e4:4.8e5,:);
-m = m(2.26e4:4.8e5,:);
-t_imu=t_imu(2.26e4:4.8e5,:);
+a = a(3.26e4:4.8e5,:);
+w = w(3.26e4:4.8e5,:);
+m = m(3.26e4:4.8e5,:);
+t_imu=t_imu(3.26e4:4.8e5,:);
 
-[aconv,wconv,mconv]=mong_conv(a,w,m,0);
+% [aconv,wconv,mconv]=mong_conv(a,w,m,0);
+aconv = mong_conv_acc(a);
 t_imu=t_imu/10;
 
 
@@ -78,10 +79,10 @@ t_imu=t_imu/10;
 %% Plot
 
 % [ax1,ax2] = plot_temp(fs,aconv,t_imu,t_posta,ind,1);
-[ax1,ax2] = plot_temp(fs,aconv,t_imu,0,ind,1);
+[ax1,ax2] = plot_temp(fs,aconv,t_imu,0,ind,0);
 
 %% Ajuste
-    
+
 global a_crudas a_teoricos temperaturas to
 
 A    = load('acc','X','T_0');
@@ -123,6 +124,14 @@ end
 
 %% Plots
 
+green1 = [154,205,50]/256;
+green2 = [34,139,34]/256;
+blue1  = [0,0,128]/256;
+blue2  = [0,0,255]/256;
+% red1   = [184,69,57]/256;
+red1   = [165,136,105]/256;
+red2   = [178,34,34]/256;
+
 a_avg1=moving_avg(a(:,1),20);
 a_avg2=moving_avg(a(:,2),20);
 a_avg3=moving_avg(a(:,3),20);
@@ -134,16 +143,19 @@ aconv_avg3=moving_avg(aconv(:,3),20);
 aconv_avg = [aconv_avg1 aconv_avg2 aconv_avg3];
 
 figure
-    plot(t_imu,aconv_avg(:,1),'g*')
-    hold on
-    plot(moving_avg(t_imu,20),moving_avg(aconv_temp_lin(:,1),20),'*c');
-    plot(t_imu,aconv_avg(:,2),'r*')
-    plot(moving_avg(t_imu,20),moving_avg(aconv_temp_lin(:,2),20),'*m');
-    plot(t_imu,aconv_avg(:,3),'b*')
-    plot(moving_avg(t_imu,20),moving_avg(aconv_temp_lin(:,3),20),'*y');
+%     plot(t_imu,aconv_avg(:,1),'*','color',blue1)
+    hold on;grid
+%     plot(moving_avg(t_imu,20),moving_avg(aconv_temp_lin(:,1),20),'*','color',blue2);
+%     plot(t_imu,aconv_avg(:,2),'*','color',red1)
+%     plot(moving_avg(t_imu,20),moving_avg(aconv_temp_lin(:,2),20),'*','color',red2);
+    plot(t_imu,aconv_avg(:,3),'*','color',red1)
+    plot(moving_avg(t_imu,20),moving_avg(aconv_temp_lin(:,3),20),'*','color',red2);
 %     axis([15 30 -11 1]); xlabel('Temperatura'); ylabel('Aceleracion en m/s^2');
-    legend('ax sin compensar','ax compensada','ay sin compensar','ay compensada','az sin compensar','az compensada')
-        
+axis([34 50 9 10.5]); xlabel('\fontsize{16}Temperatura'); ylabel('\fontsize{16}Aceleracion en m/s^2');
+legend_handle = legend('\fontsize{16}a_z sin compensar','\fontsize{16}a_z compensada')
+set(legend_handle, 'Box', 'off');
+%     legend('ax sin compensar','ax compensada','ay sin compensar','ay compensada','az sin compensar','az compensada')
+
 figure()
 subplot(211)
     plot(aconv_temp_lin(:,3),'g'); hold on; grid;

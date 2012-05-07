@@ -1,4 +1,5 @@
 #include <errno.h> 
+#include <math.h>
 #include <string.h> 
 #include <stdio.h> 
 #include <signal.h> // for SIGINT, SIGQUIT
@@ -32,8 +33,12 @@
 
 #define DEBUG                     0
 #if DEBUG
-#define LOG_VELS                  1
+//#define LOG_VELS
+//#define LOG_TIMING
+#define LOG_TIMING_KERNEL_CALLS
 #endif
+
+#define TV_TH_US                  500UL
 
 #define PRINT_COUNT               500
 #define MOT_COUNT                 4
@@ -56,6 +61,10 @@
 
 #define UQUAD_STARTUP_RETRIES     100
 #define UQUAD_STOP_RETRIES        1000
+#define UQUAD_USE_DIFF            0
+#define UQUAD_USE_SIN             (1 && UQUAD_USE_DIFF)
+
+#define LOOP_T_US                 2000UL
 
 #define LOG_ERR                   stdout
 
@@ -63,6 +72,52 @@
 #define log_to_err(msg) fprintf(LOG_ERR,"%s: %s:%d\n",msg,__FUNCTION__,__LINE__)
 
 #define sleep_ms(ms)    usleep(1000*ms)
+
+#define log_tv_only(log,tv)					\
+    {								\
+	fprintf(log,"%ld.%06ld\t",tv.tv_sec, tv.tv_usec);	\
+    }
+
+#define tv2double(db,tv)					\
+    {								\
+	db = ((double) tv.tv_sec) + ((double) tv.tv_usec)/1e6;	\
+    }								\
+
+int uquad_timeval_substract (struct timeval * result, struct timeval x, struct timeval y){
+    /* Perform the carry for the later subtraction by updating y. */
+    if (x.tv_usec < y.tv_usec) {
+	int nsec = (y.tv_usec - x.tv_usec) / 1000000 + 1;
+	y.tv_usec -= 1000000 * nsec;
+	y.tv_sec += nsec;
+    }
+    if (x.tv_usec - y.tv_usec > 1000000) {
+	int nsec = (y.tv_usec - x.tv_usec) / 1000000;
+	y.tv_usec += 1000000 * nsec;
+	y.tv_sec -= nsec;
+    }
+    
+    /* Compute the time remaining to wait.
+       tv_usec is certainly positive. */
+    result->tv_sec = x.tv_sec - y.tv_sec;
+    result->tv_usec = x.tv_usec - y.tv_usec;
+    
+    if(x.tv_sec < y.tv_sec)
+	// -1 if diff is negative
+	return -1;
+    if(x.tv_sec > y.tv_sec)
+	// 1 if diff is positive
+	return 1;
+    // second match, check usec
+    if(x.tv_usec < y.tv_usec)
+	// -1 if diff is negative
+	return -1;
+    if(x.tv_usec > y.tv_usec)
+	// 1 if diff is positive
+	return 1;
+
+    // 0 if equal
+    return 0;
+}
 
 /// Forwards defs
 int uquad_mot_i2c_addr_open(int i2c_dev, int addr);
@@ -86,11 +141,15 @@ typedef struct msgbuf {
 typedef enum {RUNNING,STOPPED}mot_state_t;
 
 // Global vars
+#ifndef CHECK_STDIN
 static int msqid; // Set by mot_control.h
+static message_buf_t rbuf;
+#endif // CHECK_STDIN
 const static key_t key_s = 169; // must match MOT_SERVER_KEY (in mot_control.h)
 const static key_t key_c = 170; // must match MOT_DRIVER_KEY (in mot_control.h)
-static message_buf_t rbuf;
+#ifdef LOG_VELS
 static struct timeval timestamp;
+#endif // LOG_VELS
 static int i2c_file = -1;
 static int mot_i2c_addr[MOT_COUNT] = {0x69,
 				      0x6a,
@@ -103,23 +162,44 @@ static unsigned short mot_selected[MOT_COUNT] = {MOT_NOT_SELECTED,
 
 static __u8 vels[MOT_COUNT] = {0,0,0,0};
 
-#if LOG_VELS
+#ifdef LOG_VELS
 static FILE *log_rx;
 #endif
 #ifdef PC_TEST
+#if DEBUG
 static FILE *i2c_fake;
 #define FAKE_I2C_PATH "i2c.dev"
 #endif
+#endif // LOG_VELS
 
 int uquad_mot_i2c_addr_open(int i2c_dev, int addr){
 #ifndef PC_TEST
+#ifdef LOG_TIMING_KERNEL_CALLS
+    struct timeval tv_before, tv_after, tv_diff;
+    gettimeofday(&tv_before,NULL);
+#endif // LOG_TIMING_KERNEL_CALLS
     if (ioctl(i2c_dev,I2C_SLAVE,addr) < 0)
     {
 	/* ERROR HANDLING; you can check errno to see what went wrong */
 	fprintf(LOG_ERR,"ERROR! %s failed to write to 0x%02X...\n"	\
 		"errno info:\t %s\n",__FUNCTION__,addr,strerror(errno));
+#ifdef CHECK_STDIN
+	fflush(LOG_ERR);
+#endif // CHECK_STDIN
 	return NOT_OK;
     }
+#ifdef LOG_TIMING_KERNEL_CALLS
+    else
+    {
+	gettimeofday(&tv_after,NULL);
+	uquad_timeval_substract(&tv_diff, tv_after, tv_before);
+	if(tv_diff.tv_usec > TV_TH_US)
+	{
+	    log_tv_only(stdout, tv_diff);
+	    fprintf(stdout,"ioctl()\n");
+	}
+    }
+#endif // LOG_TIMING_KERNEL_CALLS
 #else
 #if DEBUG
     fprintf(i2c_fake,"%d",addr);
@@ -129,14 +209,32 @@ int uquad_mot_i2c_addr_open(int i2c_dev, int addr){
 }
 
 int uquad_mot_i2c_send_byte(int i2c_dev, __u8 reg, __u8 value){
-    int ret;
 #ifndef PC_TEST
+#ifdef LOG_TIMING_KERNEL_CALLS
+    struct timeval tv_before, tv_after, tv_diff;
+    gettimeofday(&tv_before,NULL);
+#endif // LOG_TIMING_KERNEL_CALLS
     if(i2c_smbus_write_byte_data(i2c_dev,reg,value) < 0)
     {
 	/* ERROR HANDLING: i2c transaction failed */
 	fprintf(LOG_ERR,"Failed to send value %d\tto 0x%02X\n."\
 		"errno info:\t %s\n",(int)value,(int)reg,strerror(errno));
+#ifdef CHECK_STDIN
+	fflush(LOG_ERR);
+#endif // CHECK_STDIN
     }
+#ifdef LOG_TIMING_KERNEL_CALLS
+    else
+    {
+	gettimeofday(&tv_after,NULL);
+	uquad_timeval_substract(&tv_diff, tv_after, tv_before);
+	if(tv_diff.tv_usec > TV_TH_US)
+	{
+	    log_tv_only(stdout, tv_diff);
+	    fprintf(stdout,"i2c_smbus_write_byte_data()\n");
+	}
+    }
+#endif // LOG_TIMING_KERNEL_CALLS
 #else
 #if DEBUG
     struct timeval t;
@@ -315,16 +413,16 @@ void uquad_sig_handler(int signal_num){
 	fprintf(LOG_ERR,"Shutting down motors...\n");
 	while(uquad_mot_disable_all(i2c_file) != OK)
 	    fprintf(LOG_ERR,"Failed to shutdown motors!... Retrying...\n");
-	fprintf(LOG_ERR,"Motors successfully stoped!\n");
+	fprintf(LOG_ERR,"Motors successfully stopped!\n");
     }
-#if LOG_VELS
+#ifdef LOG_VELS
     fclose(log_rx);
-#endif
+#endif // LOG_VELS
     fclose(LOG_ERR);
     exit(ret);
 }
 
-#if LOG_VELS
+#ifdef LOG_VELS
 unsigned long rx_counter = 0;
 static inline void log_vels(void)
 {
@@ -337,7 +435,7 @@ static inline void log_vels(void)
 	    (int)timestamp.tv_usec,
 	    rx_counter++);
 }
-#endif
+#endif // LOG_VELS
 
 static char ack_counter = 0;
 int uquad_send_ack()
@@ -365,15 +463,15 @@ int uquad_send_ack()
     return OK;
 }
 
+#ifdef CHECK_STDIN
 static int itmp[MOT_COUNT] = {0,0,0,0};
-static int max_fd_plus_one = -1;
+#endif
 int uquad_read(void){
-    fd_set rfds;
-    FILE *src;
-    struct timeval tv;
     int retval = OK, i;
-    __u8 u8tmp;
     
+#ifdef CHECK_STDIN
+    fd_set rfds;
+    struct timeval tv;
     // Watch stdin and ctrl_file, check for speed updates
     FD_ZERO(&rfds);
     FD_SET(STDIN_FILENO, &rfds);
@@ -381,8 +479,6 @@ int uquad_read(void){
     // Don't wait
     tv.tv_sec = 0;
     tv.tv_usec = 0;
-
-#ifdef CHECK_STDIN
     /// get speed data from stdin
     retval = select(STDIN_FILENO+1, &rfds, NULL, NULL, &tv);
     // Don't rely on the value of tv now!
@@ -398,11 +494,9 @@ int uquad_read(void){
 	    return NOT_OK;
 	else
 	{
-	    if(FD_ISSET(STDIN_FILENO, &rfds))
-		src = stdin;
-	    else
+	    if(!FD_ISSET(STDIN_FILENO, &rfds))
 		return NOT_OK;
-	    retval = fscanf(src,"%d %d %d %d",
+	    retval = fscanf(stdin,"%d %d %d %d",
 			 itmp + 0,
 			 itmp + 1,
 			 itmp + 2,
@@ -421,12 +515,13 @@ int uquad_read(void){
 	    	{
 	    	    log_to_err("Refused to set m speed, invalid argument.");
 	    	}
-#if LOG_VELS
+#ifdef LOG_VELS
 	    log_vels();
-#endif
+#endif // LOG_VELS
 	}
     }
-#else
+#else // CHECK_STDIN
+    __u8 u8tmp;
     /// get speed data from kernel msgq
     if ((msqid = msgget(key_s, 0666)) < 0)
 	return NOT_OK;
@@ -434,7 +529,7 @@ int uquad_read(void){
     /*
      * Receive an answer of message type 1.
      */
-    if (msgrcv(msqid, &rbuf, 4, 0, IPC_NOWAIT) < 0)
+    if (msgrcv(msqid, &rbuf, 4, 1, IPC_NOWAIT) < 0)
 	return NOT_OK;
 
     /*
@@ -452,9 +547,9 @@ int uquad_read(void){
 		log_to_err("Refused to set m speed, invalid argument.");
 	    }
 	}
-#if LOG_VELS
+#ifdef LOG_VELS
 	log_vels();
-#endif
+#endif // LOG_VELS
     }
 #endif
     return retval;
@@ -465,17 +560,21 @@ int main(int argc, char *argv[])
     /* Open i2c bus */
     int adapter_nr = 2;
     int tmp, i;
-    int watchdog = 0, success_count = 0;
     char filename[20];
+    double dtmp;
+    struct timeval
+	tv_in,
+	tv_diff,
+	tv_end;
 
-#if LOG_VELS
+#ifdef LOG_VELS
     // Open log files
     log_rx = fopen("cmd_rx.log","w");
     if (log_rx == NULL) {
 	fprintf(LOG_ERR,"ERROR! Failed to open log...\n");
 	return -1;
     }
-#endif
+#endif // LOG_VELS
 
     if(argc != 5) // vel de los 4 motores + el nombre del programa (argv[0]).
     {
@@ -506,7 +605,12 @@ int main(int argc, char *argv[])
 	    fprintf(LOG_ERR,"Mot %d:\t%s\n",i,mot_selected[i]?"Enabled.":"Not enabled");
 	}
     }
-    
+
+    /* mot_selected[0] = MOT_NOT_SELECTED; */
+    /* mot_selected[1] = MOT_NOT_SELECTED; */
+    /* mot_selected[2] = MOT_NOT_SELECTED; */
+    /* mot_selected[3] = MOT_NOT_SELECTED; */
+
     sprintf(filename,"/dev/i2c-%d",adapter_nr);
     fprintf(LOG_ERR,"Opening %s...\n",filename);
 
@@ -514,7 +618,7 @@ int main(int argc, char *argv[])
 
     // Open i2c
 #ifndef PC_TEST
-    if ((i2c_file = open(filename,O_RDWR)) < 0) {
+    if ((i2c_file = open(filename,O_RDWR | O_NONBLOCK)) < 0) {
 	fprintf(LOG_ERR,"ERROR! Failed to open %s!\nAborting...\n",filename);
 	fprintf(LOG_ERR,"errno info:\t %s\n",strerror(errno));
 	/* ERROR HANDLING; you can check errno to see what went wrong */
@@ -542,7 +646,7 @@ int main(int argc, char *argv[])
     // -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
     // Loop
     // -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-    int ret, new_vel;
+    int ret;
     mot_state_t m_status;
     m_status = STOPPED;
     int do_sleep = 0;
@@ -555,19 +659,34 @@ int main(int argc, char *argv[])
     }
     for(;;)
     {
+	gettimeofday(&tv_in,NULL);
 	if(do_sleep)
 	{
 	    // avoid saturating i2c driver
 	    log_to_err("Will sleep to avoid saturating.");
+	    fflush(LOG_ERR);
 	    sleep_ms(10);
 	    do_sleep = 0;
 	}
 	// all
+#if UQUAD_USE_DIFF
+	if(m_status == RUNNING)
+	{
+#if UQUAD_USE_SIN
+	    tv2double(dtmp,tv_in);
+	    dtmp = 5.0*sin(2.0*3.14*3.0*dtmp); // 17Hz sin()
+#else // UQUAD_USE_SIN
+#endif // UQUAD_USE_SIN
+	}
+	else
+#endif // UQUAD_USE_DIFF
+	    dtmp = 0.0;
 	for(i = 0; i < MOT_COUNT; ++i)
 	{
 	    ret = uquad_mot_set_speed(i2c_file,
 				      mot_i2c_addr[i],
-				      vels[i]);	
+				      mot_selected[i]?
+				      (__u8) (((double)vels[i])+dtmp):0);
 	    if(ret != OK)
 	    {
 		backtrace();
@@ -605,6 +724,7 @@ int main(int argc, char *argv[])
 		{
 		    fprintf(LOG_ERR,"Startup was successfull!...\n");
 		    m_status = RUNNING;
+		    gettimeofday(&tv_in,NULL); // Restart timer
 		}
 	    }
 	    // stop
@@ -628,6 +748,7 @@ int main(int argc, char *argv[])
 		{
 		    log_to_err("Stopping was successfull!...");
 		    m_status = STOPPED;
+		    gettimeofday(&tv_in,NULL); // Restart timer
 		}
 	    }
 	    /// send ack
@@ -638,7 +759,34 @@ int main(int argc, char *argv[])
 	    }
 	    // continue
 	}
-	usleep(1500);
+	gettimeofday(&tv_end,NULL);
+	/// Check if we have to wait a while
+	ret = uquad_timeval_substract(&tv_diff, tv_end, tv_in);
+	if(ret > 0)
+	{
+	    if(tv_diff.tv_usec < LOOP_T_US)
+	    {
+		usleep(LOOP_T_US - tv_diff.tv_usec);
+	    }
+#ifdef LOG_TIMING
+	    else
+	    {
+		if(tv_diff.tv_sec > 0)
+		{
+		    tv2double(dtmp,tv_diff);
+		    fprintf(LOG_ERR,"ERR: Loop took too long! (%0.6f)\nAborting...", dtmp);
+		}
+		else
+		{
+		    fprintf(LOG_ERR, "WARN: Loop should be %lu but was %lu\n", LOOP_T_US, tv_diff.tv_usec);
+		}
+	    }
+#endif
+	}
+	else
+	{
+	    log_to_err("WARN: Absurd timing!");
+	}
     }
  
     return 0;

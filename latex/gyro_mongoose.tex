@@ -44,7 +44,7 @@ $$T^p_a=\left(
 \section{Procedimiento}
 \subsection{Caracterización de las no idealidades variables}
 
-Para obtener más información sobre el \emph{ruido inherente} y el \emph{drift aleatorio} se toman datos durante una hora a una frecuencia de 50 Hz con el dispositivo quieto.\\
+Para obtener más información sobre el \emph{ruido inherente} y el \emph{drift aleatorio} se toman datos durante una hora a una frecuencia de 100 Hz con el dispositivo quieto.\\
 
 \subsection{Determinación de parámetros estáticos}
 
@@ -187,5 +187,9 @@ El error promedio corresponde a una velocidad angular de $1.07^\circ/s$ y $2\sig
 %\end{figure}
 %
 %Uno de ellos, el más grande, es de aproximadamente $1 º/s$, mientras que el otro, que se observa en el acercamiento realizado en dicha figura, es de aproximadamente $0.05º/s$. Éste último es comparable con el valor hallado de la desviación estándar por lo que puede pensarse como una verificación de la coherencia de los datos obtenidos y calibrados. Por otra parte, los saltos de $1º/s$ no parecen tener, a priori, un sentido claro. Analizando el código que corre internamente en la IMU se detectó el causante de dichos saltos. Resulta que a la hora de enviar los datos, la imu realiza un $cast$ de los valores expresados en punto flotante a entero, lo cual se traduce en una pérdida aberrante de la resolución del instrumento de medida. Es evidente que el código será retocado para evitar esta pérdida de información en el futuro. Por otro lado es importante destacar que este error no afecta al proceso de calibración realizado, ya que se tomaron medidas de velocidades angulares constantes durante todo el tiempo de muestreo y se realizó un promedio de cada tirada, logrando valores más robustos ante dicho fenómeno.
+
+\subsection{Variación con la temperatura}
+
+Como fue explicado en el capítulo \ref{chap:calibracion_acelerometro}, la temperatura de trabajo de la IMU es ampliamente mayor que la temperatura para la cual fueron calibrados los sensores. Para realizar la compensación de la medida del giróscopo por temperatura, se utiliza un método idéntico al utilizado para el acelerómetro: se varía la temperatura desde una temperatura aproximada de $48^oC$ hasta $35^oC$ y se releva la curva de velocidad angular medida contra temperatura.
 
 \end{document}

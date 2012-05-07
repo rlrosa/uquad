@@ -15,6 +15,7 @@
 #define DEBUG_KALMAN_INPUT 1
 #define LOG_TV             1
 #define LOG_T_ERR          1
+#define LOG_INT            (1 && CTRL_INTEGRAL)
 #define LOG_BUKAKE         0
 #endif
 
@@ -66,6 +67,7 @@
 #define LOG_GPS_NAME       "gps"
 #define LOG_TV_NAME        "tv"
 #define LOG_T_ERR_NAME     "t_err"
+#define LOG_INT_NAME       "int"
 #define LOG_BUKAKE_NAME    "buk"
 
 /**
@@ -146,6 +148,9 @@ FILE *log_tv = NULL;
 #if LOG_T_ERR
 FILE *log_t_err = NULL;
 #endif // LOG_T_ERR
+#if LOG_INT
+FILE *log_int = NULL;
+#endif // LOG_INT
 #endif //DEBUG
 
 /**
@@ -281,6 +286,9 @@ void quit()
 #if LOG_T_ERR
     uquad_logger_remove(log_t_err);
 #endif // LOG_T_ERR
+#if LOG_INT
+    uquad_logger_remove(log_int);
+#endif // LOG_INT
 #endif //DEBUG
 
     //TODO deinit everything?
@@ -523,7 +531,15 @@ int main(int argc, char *argv[]){
 	err_log("Failed to open t_err_log!");
 	quit();
     }
-#endif // LOG_TIMING_ERROR
+#endif // LOG_T_ERROR
+#if LOG_INT
+    log_int = uquad_logger_add(LOG_INT_NAME, log_path);
+    if(log_int == NULL)
+    {
+	err_log("Failed to open t_err_log!");
+	quit();
+    }
+#endif // LOG_INT
 #endif //DEBUG
 
     /// IO manager
@@ -1074,6 +1090,7 @@ int main(int argc, char *argv[]){
 #endif // USE_GPS
 		// Euler angles
 		pp->sp->x->m_full[SV_THETA] = imu_data.magn->m_full[2];
+		pp->sp->x->m_full[SV_PSI]   = 0.0; // [rad]
 		// Motor speed
 		for(i=0; i<MOT_C; ++i)
 		    w_ramp->m_full[i] = mot->w_min;
@@ -1239,13 +1256,19 @@ int main(int argc, char *argv[]){
 	uquad_timeval_substract(&tv_diff,tv_tmp,tv_last_m_cmd);
 	retval = control(ctrl, w, kalman->x_hat, pp->sp, (double)tv_diff.tv_usec);
 	log_n_continue(retval,"Control failed!");
+#if DEBUG
+	uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
+#endif // DEBUG
 #if DEBUG && LOG_W_CTRL
 	retval = uquad_mat_transpose(wt,w);
-	uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
 	log_tv_only(log_w_ctrl,tv_diff);
 	uquad_mat_dump(wt,log_w_ctrl);
 	fflush(log_w_ctrl);
 #endif
+#if LOG_INT
+	log_tv_only(log_int, tv_diff);
+	uquad_mat_dump_vec(ctrl->x_int, log_int, false);
+#endif // LOG_INT
 
 	/// -- -- -- -- -- -- -- --
 	/// Set motor speed
