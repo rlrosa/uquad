@@ -14,6 +14,7 @@ El esquema general de un cuadric\'optero es el que se puede apreciar en la figur
 \end{figure}
 \section{Acciones de control b\'asicas}
 Existe una velocidad angular de los motores para la cual la fuerza total producida es igual al peso, esa velocidad angular permite que el cuadric\'optero permanezca suspendido con velocidad nula, esta situaci\'on es conocida como \emph{hovering}.\\ Si aumentamos uniformemente la velocidad angular de los motores la fuerza producida por los mismos supera al peso y el sistema se acelera hacia arriba. Por el contrario si la velocidad angular es inferior a la velocidad angular de hovering el sistema se acelera hacia el centro de la Tierra.\\
+
 \begin{figure}
 \centering
 \subfloat[Cambio en el \'angulo de Roll]{\label{fig:cuad_roll}
@@ -22,6 +23,7 @@ Existe una velocidad angular de los motores para la cual la fuerza total produci
 \includegraphics[scale=0.5]{./pics_general/quad_phi.pdf}}
 \caption{}
 \end{figure}
+
 Para realizar una rotaci\'on se debe crear un desbalance entre los torques producidos por los motores. Si se desea realizar aumentar el \'angulo de Roll ($\psi$), debe disminuirse la velocidad  angular del motor 4 y aumentar la del motor 2 manteniendo la fuerza neta igual a la fuerza necesaria para lograr el hovering. Esta situaci\'on se encuentra representada en la figura \ref{fig:cuad_roll}. Del mismo modo, como se observa en la figura \ref{fig:cuad_pitch} para aumentar el \'angulo de Pitch debe aumentarse la velocidad angular del motor 3 y disminuir la velocidad angular del motor 1. Finalmente si se desea aumentar el \'angulo de Yaw se debe disminuir la velocidad de la velocidad de los motores 1 y 3 y aumentar la de los motores 2 y 4, manteniendo la fuerza neta igual a la fuerza de hovering. Esta \'ultima situaci\'on es la presentada en la figura \ref{fig:quad_theta}.
 
 
