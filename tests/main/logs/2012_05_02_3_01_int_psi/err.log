@@ -1,0 +1,511 @@
+12:01:04:/home/root/work/uquad/src/control/control.c:51: Loaded proportional gain matrix from:(/home/root/work/uquad/src/control/normal-/K_full.txt)
+12:01:04:/home/root/work/uquad/src/control/control.c:83: Loaded integral gain matrix from:(/home/root/work/uquad/src/control/normal-/K_int_full.txt)
+12:01:00:/home/root/work/uquad/src/kalman/uquad_kalman.c:1045: Kalman - R
+10.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	10.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	1000.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	10000.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	10000.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	10000.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	100.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	100.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	100.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	100000.000000	
+12:01:00:/home/root/work/uquad/src/kalman/uquad_kalman.c:1047: Kalman - Q
+100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	1.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	1.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	1.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	10.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	10.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	10.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	1.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	1.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	1.000000	
+12:01:00:/home/root/work/uquad/src/kalman/uquad_kalman.c:1049: Kalman - R_imu_gps
+1000.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	1000.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	1000.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	10000.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	10000.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	10000.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	100.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	100.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	100.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	100.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	100000.000000	
+
+12:01:19:/home/root/work/uquad/src/main/main.c:297: -- -- -- -- -- -- -- --
+12:01:19:/home/root/work/uquad/src/main/main.c:298: main.c configuration:
+12:01:19:/home/root/work/uquad/src/main/main.c:299: -- -- -- -- -- -- -- --
+12:01:19:/home/root/work/uquad/src/main/main.c:300: DEBUG(1)
+12:01:19:/home/root/work/uquad/src/main/main.c:301: KALMAN_BIAS(1)
+12:01:19:/home/root/work/uquad/src/main/main.c:302: CTRL_INTEGRAL(1)
+12:01:19:/home/root/work/uquad/src/main/main.c:303: FULL_CONTROL(1)
+12:01:19:/home/root/work/uquad/src/main/main.c:304: USE_GPS(1)
+12:01:19:/home/root/work/uquad/src/main/main.c:305: GPS_ZERO(1)
+12:01:19:/home/root/work/uquad/src/main/main.c:306: IMU_COMM_FAKE(0)
+12:01:19:/home/root/work/uquad/src/main/main.c:307: OL_TS_STABIL(0)
+12:01:19:/home/root/work/uquad/src/main/main.c:308: MASA_DEFAULT(1.650000)
+12:01:19:/home/root/work/uquad/src/main/main.c:309: -- -- -- -- -- -- -- --
+
+12:01:19:/home/root/work/uquad/src/main/main.c:705: Entering while:(3.909515)
+12:01:19:/home/root/work/uquad/src/main/main.c:861: Waiting for stable IMU sampling time...
+12:01:19:/home/root/work/uquad/src/main/main.c:874: IMU: Frames read out during stabilization:(606)
+12:01:19:/home/root/work/uquad/src/main/main.c:886: IMU startup completed, starting calibration...(6.040649)
+12:01:19:/home/root/work/uquad/src/main/main.c:1045: IMU calibration completed, running kalman+control+ramp(11.146820)
+0.000000	0.00000000	-0.04753551	0.13319510	9.95510087	0.00000000	0.00000000	0.00000000	0.01337878	0.00477453	-2.01345577	39.70000000	0.00000000
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012146)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012146)
+12:01:19:/home/root/work/uquad/src/main/main.c:1221: -- --
+12:01:19:/home/root/work/uquad/src/main/main.c:1222: -- -- -- -- -- -- -- --
+12:01:19:/home/root/work/uquad/src/main/main.c:1223: Ramp completed, running free control...(12.151978)
+12:01:19:/home/root/work/uquad/src/main/main.c:1224: -- -- -- -- -- -- -- --
+12:01:19:/home/root/work/uquad/src/main/main.c:1225: -- --
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012513)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013214)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012573)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012299)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012116)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.007995)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.007843)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.007874)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.007874)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012268)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012390)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013520)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012024)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012329)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012055)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012268)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012269)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012451)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012054)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012146)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012024)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012543)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012176)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012116)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012085)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012482)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013031)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012390)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012024)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013001)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012176)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012390)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012054)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013275)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012482)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012543)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012726)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012024)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012390)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012359)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012756)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.007995)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.007874)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.007996)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.007965)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.007843)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.007904)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.007935)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.007721)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012024)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012024)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013336)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013337)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012146)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012085)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012359)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012177)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012359)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012207)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012421)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012085)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012970)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013031)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012665)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013061)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013458)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012604)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012299)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.007813)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.007935)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.007691)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012726)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012329)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012665)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013580)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012207)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012787)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012024)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012115)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012390)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012298)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012634)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012299)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012787)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012146)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013062)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013001)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012299)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012573)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013732)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013763)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012451)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012421)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012146)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012909)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012787)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013031)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012512)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013428)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012757)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012757)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013611)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013153)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012848)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012359)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.007843)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.007843)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.007904)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012024)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012726)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012787)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012574)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012055)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012513)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.014252)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013428)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013031)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012665)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012940)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012268)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012787)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012543)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012421)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012055)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012024)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012878)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012512)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013367)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013214)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012817)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013367)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012909)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012726)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013001)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012238)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012268)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012421)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012482)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012085)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012359)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013275)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012604)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013062)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012451)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012574)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.014160)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012421)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013489)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.007934)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.007751)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.007812)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.007996)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.007812)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.007721)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.007996)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013092)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012726)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012848)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012909)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013886)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012420)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013977)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012634)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012696)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.014404)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012054)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012879)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.014038)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012817)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012054)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012177)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012237)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012177)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013031)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012085)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012543)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012970)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012024)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012848)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012543)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012390)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012634)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012513)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012543)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013824)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012330)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012817)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012390)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013671)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013245)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013855)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013398)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013581)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012817)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012085)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012512)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012024)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012085)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013458)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013275)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012207)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012696)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012482)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.014222)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012574)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013459)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013306)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012695)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012451)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012756)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.014191)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012695)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013062)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013671)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012573)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013764)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012268)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013458)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012481)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012360)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012665)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012573)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012298)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.014038)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012024)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012664)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012359)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013123)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012879)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.014191)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013886)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012543)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012329)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.014069)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012146)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012268)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012451)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013367)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012085)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013825)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012360)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012512)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012482)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012757)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012756)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012665)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012176)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012847)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012451)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012512)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012604)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012970)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013001)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013062)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012451)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012146)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012573)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012573)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012970)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013488)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.014282)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012085)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012696)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012269)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012970)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012360)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012451)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013916)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013886)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012330)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012390)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012664)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012024)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012696)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012207)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.007965)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.007782)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.007904)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.007995)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.007538)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.007690)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.007629)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.007660)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.007599)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.007996)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012146)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012390)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012482)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012452)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.014190)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012635)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012054)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012756)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013611)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012299)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012635)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012726)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012329)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012573)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012451)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012604)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012177)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013061)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012696)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013428)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012085)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012177)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013855)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012146)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012756)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012695)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012848)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.014526)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012756)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013123)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012177)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012360)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.014222)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012664)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012146)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012482)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012817)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.014343)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012238)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013916)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.007690)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.007751)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.014068)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012451)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012024)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012695)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012909)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012573)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012726)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012940)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013703)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012604)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013489)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.014130)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012818)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012452)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012574)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012207)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013123)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013885)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012421)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012298)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013183)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.014038)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012482)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013397)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012970)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012207)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012177)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013153)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013886)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013458)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012482)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012786)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013703)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012299)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013154)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.014007)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013611)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012542)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013123)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012146)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013641)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013305)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.007782)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.007843)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.007629)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012329)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013763)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013001)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012939)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013916)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013549)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012024)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012970)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013184)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013092)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012513)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013031)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013244)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.014099)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012085)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012848)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012603)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012329)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012604)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012207)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012664)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012237)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012360)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012726)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012848)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012176)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013092)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013367)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012268)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012390)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012329)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012055)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013336)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012237)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013306)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012603)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013184)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013122)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012207)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013092)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012146)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012298)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012787)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012177)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012268)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.013122)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012573)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012207)
+12:01:19:/home/root/work/uquad/src/main/main.c:1151: TS supplied to Kalman out of range!:(0.012513)
+12:01:19:/home/root/work/uquad/src/main/main.c:315: Caught signal:(2)
+12:01:19:/home/root/work/uquad/src/main/main.c:189: Motors killed!(205.760284)
+12:00:55:/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:160: WARN: client did not ack!(1)
+12:00:55:/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:214: msgsnd failed!
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:93
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:149
+12:01:19:/home/root/work/uquad/src/main/main.c:1276: Failed to set motor speed!
+12:01:19:/home/root/work/uquad/src/main/main.c:735: Recovered! Errors:(1)
+12:01:19:/home/root/work/uquad/src/main/main.c:315: Caught signal:(2)
+12:01:19:/home/root/work/uquad/src/main/main.c:200: main deinit started...(207.645203)
+08:57:35:/home/root/work/uquad/src/logger/uquad_logger.c:154: Closing logger:(/media/sda1/t_err.log)
+08:57:35:/home/root/work/uquad/src/logger/uquad_logger.c:154: Closing logger:(/media/sda1/tv.log)
+08:57:35:/home/root/work/uquad/src/logger/uquad_logger.c:154: Closing logger:(/media/sda1/gps.log)
+08:57:35:/home/root/work/uquad/src/logger/uquad_logger.c:154: Closing logger:(/media/sda1/kalman_in.log)
+08:57:35:/home/root/work/uquad/src/logger/uquad_logger.c:154: Closing logger:(/media/sda1/x_hat.log)
+08:57:35:/home/root/work/uquad/src/logger/uquad_logger.c:154: Closing logger:(/media/sda1/w_ctrl.log)
+08:57:35:/home/root/work/uquad/src/logger/uquad_logger.c:154: Closing logger:(/media/sda1/w.log)
+08:57:35:/home/root/work/uquad/src/logger/uquad_logger.c:154: Closing logger:(/media/sda1/imu_avg.log)
+08:57:35:/home/root/work/uquad/src/logger/uquad_logger.c:154: Closing logger:(/media/sda1/imu_data.log)
+08:57:35:/home/root/work/uquad/src/logger/uquad_logger.c:154: Closing logger:(/media/sda1/imu_raw.log)
