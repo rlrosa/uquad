@@ -48,7 +48,8 @@
 #define UQUAD_HOW_TO   "./main <imu_device> /path/to/log/"
 #define MAX_ERRORS     20
 #define OL_TS_STABIL   0                 // If != 0, then will wait OL_TS_STABIL+STARTUP_RUNS samples before using IMU.
-#define STARTUP_RUNS   (10+OL_TS_STABIL) // Wait for this number of samples at a steady Ts before running
+#define STARTUP_RUNS   (50+OL_TS_STABIL) // Wait for this number of samples at a steady Ts before running
+#define STARTUP_TO_S   5 // Max number of seconds waiting for stable IMU data
 #define STARTUP_KALMAN 100
 #define FIXED          3
 #define IMU_TS_OK      -1
@@ -360,6 +361,7 @@ int main(int argc, char *argv[]){
 	tv_last_kalman,
 	tv_last_imu,
 	tv_last_frame,
+	tv_imu_stab_init,
 	tv_gps_last;
 #if IMU_COMM_FAKE
     struct timeval tv_imu_fake;
@@ -1047,6 +1049,7 @@ int main(int argc, char *argv[]){
 		{
 		    err_log("Waiting for stable IMU sampling time...");
 		    tv_last_frame = tv_start;
+		    gettimeofday(&tv_imu_stab_init,NULL);
 		}
 		runs_imu++;
 		err_imu = gettimeofday(&tv_tmp, NULL);
@@ -1079,6 +1082,12 @@ int main(int argc, char *argv[]){
 		    imu_ts_ok = 0;
 		}
 		tv_last_frame = tv_tmp;
+		// check timeout
+		err_imu = uquad_timeval_substract(&tv_diff, tv_tmp, tv_imu_stab_init);
+		if(tv_diff.tv_sec > STARTUP_TO_S)
+		{
+		    quit_log_if(ERROR_IO, "Timed out waiting for stable IMU samples...");
+		}
 		goto end_imu;
 	    }
 
