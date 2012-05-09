@@ -217,7 +217,7 @@ enum UQUAD_ERROR_CODES{
 
 /**
  * Print timeval to log with unsigned long to log
- * 
+ *
  */
 #define log_tv(log,msg,tv)						\
     {									\
@@ -226,15 +226,41 @@ enum UQUAD_ERROR_CODES{
     }
 
 /**
- * Print timeval message with unsigned long to stderr
- * 
+ * Print timeval to log with int to log
+ *
+ */
+#define log_tv_num(log,msg,tv,num)					\
+    {									\
+	fprintf(log,"%s:%s:%d: %s(%ld.%06ld) (%d)\n\r",			\
+		__TIME__,__FILE__,__LINE__,				\
+		msg,tv.tv_sec, tv.tv_usec, num);			\
+    }
+
+/**
+ * Print timeval to log with int to stderr
+ *
  */
 #define err_log_tv(msg,tv)			\
     {						\
-	log_tv(stderr,msg,tv)			\
-	    if(REROUTE_STDERR && rerouted())	\
-		log_tv(stdout,msg,tv)		\
-		    }
+	log_tv(stderr,msg,tv);			\
+	if(REROUTE_STDERR && rerouted())	\
+	{					\
+	    log_tv(stdout,msg,tv);		\
+	}					\
+    }
+
+/**
+ * Print timeval message with unsigned long to stderr
+ * 
+ */
+#define err_log_tv_num(msg,tv,num)		\
+    {						\
+	log_tv_num(stderr,msg,tv,num);		\
+	if(REROUTE_STDERR && rerouted())	\
+	{					\
+	    log_tv_num(stdout,msg,tv,num);	\
+	}					\
+    }
 
 /**
  * Print timeval to log with unsigned long to log, no '\n\r'
