@@ -114,13 +114,19 @@ b=[A.X(4) A.X(5) A.X(6)]';
 
 wconv_temp_lin=zeros(size(w));  
 for i=1:length(w(:,1))
-    aux = T *(K^-1)* (w(i,:)'- (b + [x(1); ...
-                                 x(2); ...
-                                 x(3)]*(t_imu(i)-to)+[x(4);x(5);x(6)])) ;
+    aux = T *(K^-1)* (w(i,:)'- (b + [x(1);x(2);x(3)]*(t_imu(i)-to)+[x(4);x(5);x(6)])) ;
     wconv_temp_lin(i,:)=aux';
 end
 
 %% Plots
+
+green1 = [154,205,50]/256;
+green2 = [34,139,34]/256;
+blue1  = [0,0,128]/256;
+blue2  = [0,0,255]/256;
+% red1   = [184,69,57]/256;
+red1   = [165,136,105]/256;
+red2   = [178,34,34]/256;
 
 w_avg1=moving_avg(w(:,1),20);
 w_avg2=moving_avg(w(:,2),20);
@@ -140,19 +146,32 @@ figure
     plot(moving_avg(t_imu,20),moving_avg(wconv_temp_lin(:,2),20),'*m');
     plot(t_imu,wconv_avg(:,3),'b*')
     plot(moving_avg(t_imu,20),moving_avg(wconv_temp_lin(:,3),20),'*y');
-    axis tight; xlabel('Temperatura'); ylabel('Velocidad angular en rad/s');
+    xlabel('Temperatura'); ylabel('Velocidad angular en rad/s');
     legend('wx sin compensar','wx compensada','wy sin compensar', ...
       'wy compensada', 'wz sin compensar','wz compensada')
         
 figure()
-subplot(211)
-    plot(wconv_temp_lin(:,3),'g'); hold on; grid;
-    plot(wconv(:,3),'r');
-    axis([0 length(wconv_temp_lin) -10.5 -9.5])
-subplot(212)
-    plot(moving_avg(wconv_temp_lin(:,3),20),'g'); hold on; grid;
-    plot(moving_avg(wconv(:,3),20),'r');
-    axis([0 length(wconv_temp_lin) -10.5 -9.5])
+subplot(311)
+    hold on;
+    plot(wconv(:,1),'color',red1); 
+    plot(wconv_temp_lin(:,1),'color',green1); hold on; grid; axis tight; xlabel('\fontsize{13}Muestras'); ylabel('\fontsize{13}\omega [rad/s]')
+    title('\fontsize{16}\omega_{qx}'); %legend('sin compensar','compensado','location','eastoutside')
+subplot(312)
+    hold on;
+    plot(wconv(:,2),'color',red1);    
+    plot(wconv_temp_lin(:,2),'color',green1); hold on; grid; axis tight; xlabel('\fontsize{13}Muestras'); ylabel('\fontsize{13}\omega [rad/s]')
+    title('\fontsize{16}\omega_{qy}'); %legend('sin compensar','compensado','location','eastoutside')
+subplot(313)
+    hold on;
+    plot(wconv(:,3),'color',red1);
+    plot(wconv_temp_lin(:,3),'color',green1); hold on; grid; axis tight; xlabel('\fontsize{13}Muestras'); ylabel('\fontsize{13}\omega [rad/s]')
+    title('\fontsize{16}\omega_{qz}'); legend('\fontsize{13}sin compensar','\fontsize{13}compensado')
+
+%     axis([0 length(wconv_temp_lin) -10.5 -9.5])
+% subplot(212)
+%     plot(moving_avg(wconv_temp_lin(:,3),20),'g'); hold on; grid;
+%     plot(moving_avg(wconv(:,3),20),'r');
+%     axis([0 length(wconv_temp_lin) -10.5 -9.5])
     
 %fprintf('Raiz de suma de errores al cuadrado\nK constante:%f\nK lineal:%f\n'...
  %   ,sqrt(sum((wconv(:,3)+9.81).^2)),sqrt(sum((wconv_temp_lin(:,3)+9.81).^2)))

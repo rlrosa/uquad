@@ -1,4 +1,4 @@
-function [aconv,wconv,euler] = mong_conv(a,w,m,plotear,t_imu, T)
+function [aconv,wconv,euler] = mong_conv(a,w,m,plotear,t_imu,T)
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 % function [aconv,wconv,mconv] = mong_conv(a,w,m,plotear)
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -88,11 +88,10 @@ Tg=[1    -gayza gazya;
 
 wconv=zeros(size(w));
 for i=1:length(w(:,1))
-    bgt =bg+[GT.x(1);GT.x(2);GT.x(3)]*(t_imu(i)-g_to);
+    bgt =bg+[GT.x(1);GT.x(2);GT.x(3)]*(t_imu(i)-g_to)+[GT.x(4);GT.x(5);GT.x(6)];
     auxg=Tg*(Kg^(-1))*(w(i,:)'-bgt);
     wconv(i,:)=auxg';
 end
-
 
 % MAGNETOMETRO
 
