@@ -342,8 +342,9 @@ int main(int argc, char *argv[]){
     double
 	dtmp;
     unsigned long
-	kalman_loops = 0,
-	ts_error_wait = 0;
+	kalman_loops   = 0,
+	ts_error_accum = 0,
+	ts_error_wait  = 0;
     unsigned char
 	tmp_buff[2];
 
@@ -1344,9 +1345,19 @@ int main(int argc, char *argv[]){
 		if(ts_error_wait == 0 || (ts_error_wait == TS_ERROR_WAIT))
 		{
 		    // Avoid saturating log
-		    err_log_tv_num("TS supplied to Kalman out of range! Ignored:", tv_diff, (int)ts_error_wait);
+		    if(ts_error_accum < MAX_ERRORS)
+		    {
+			err_log_tv_num("TS supplied to Kalman out of range! Ignored:", tv_diff, (int)ts_error_wait);
+		    }
+		    else
+		    {
+			err_log_tv("WARN: Too many timing errors!! Kalman Ts:", tv_diff);
+		    }
 		    if(ts_error_wait == TS_ERROR_WAIT)
+		    {
 			ts_error_wait = 0;
+			ts_error_accum++;
+		    }
 		}
 		ts_error_wait++;
 		/// Lie to kalman, avoid large drifts
@@ -1360,6 +1371,7 @@ int main(int argc, char *argv[]){
 		    err_log_tv_num("TS supplied to Kalman out of range! Ignored:", tv_diff, (int)ts_error_wait);
 		}   
 		ts_error_wait = 0;
+		ts_error_accum = 0;
 	    }
 	}
 	// use real w
