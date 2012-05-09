@@ -1072,7 +1072,6 @@ int main(int argc, char *argv[]){
 			{
 			    log_n_jump(err_imu,end_imu,"Absurd IMU startup time!");
 			}
-			err_imu = ERROR_OK; // clear timing info
 			err_log_tv("IMU startup completed, starting calibration...", tv_diff);
 		    }
 		}
@@ -1081,9 +1080,10 @@ int main(int argc, char *argv[]){
 		    // We want consecutive stable samples
 		    imu_ts_ok = 0;
 		}
+		err_imu = ERROR_OK; // clear error, doesn't matter here.
 		tv_last_frame = tv_tmp;
 		// check timeout
-		err_imu = uquad_timeval_substract(&tv_diff, tv_tmp, tv_imu_stab_init);
+		(void) uquad_timeval_substract(&tv_diff, tv_tmp, tv_imu_stab_init);
 		if(tv_diff.tv_sec > STARTUP_TO_S)
 		{
 		    quit_log_if(ERROR_IO, "Timed out waiting for stable IMU samples...");
