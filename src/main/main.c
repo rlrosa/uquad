@@ -782,6 +782,10 @@ int main(int argc, char *argv[]){
 	    // save to log file
 	    gettimeofday(&tv_tmp,NULL);
 	    retval = uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
+	    if(retval <= 0)
+	    {
+		err_log("Absurd timing!");
+	    }
 	    log_tv(log_tv, "RET:", tv_diff);
 	    fflush(log_tv);
 	    err_log_tv("Saving timestamp...",tv_diff);
@@ -1328,19 +1332,24 @@ int main(int argc, char *argv[]){
 		log_tv_only(log_t_err,tv_diff);
 		fflush(log_t_err);
 #endif // LOG_T_ERR
-		if(ts_error_wait == 0)
+		if(ts_error_wait == 0 || (ts_error_wait == TS_ERROR_WAIT))
 		{
 		    // Avoid saturating log
-		    err_log_tv("TS supplied to Kalman out of range!:",tv_diff);
-		    ts_error_wait = TS_ERROR_WAIT;
+		    err_log_tv_num("TS supplied to Kalman out of range! Ignored:", tv_diff, (int)ts_error_wait);
+		    if(ts_error_wait == TS_ERROR_WAIT)
+			ts_error_wait = 0;
 		}
-		ts_error_wait--;
+		ts_error_wait++;
 		/// Lie to kalman, avoid large drifts
 		tv_diff.tv_usec = (retval > 0) ? TS_MAX:TS_MIN;
 	    }
 	    else
 	    {
 		// Print next T_s error immediately
+		if(ts_error_wait > 1)
+		{
+		    err_log_tv_num("TS supplied to Kalman out of range! Ignored:", tv_diff, (int)ts_error_wait);
+		}   
 		ts_error_wait = 0;
 	    }
 	}
