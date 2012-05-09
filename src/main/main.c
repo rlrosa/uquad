@@ -24,7 +24,7 @@
 #endif
 
 #include <manual_mode.h>
-//#include <ncurses.h>
+//#include <ncurses.h> // Timing unnacceptable when using (linking) ncurses!
 #include <stdio.h>
 #include <uquad_error_codes.h>
 #include <uquad_types.h>
@@ -328,7 +328,7 @@ int main(int argc, char *argv[]){
     int
 	retval = ERROR_OK,
 	i,
-	input,
+	input       = -1,
 	imu_ts_ok   = 0,
 	runs_imu    = 0,
 	runs_kalman = 0,
@@ -343,6 +343,8 @@ int main(int argc, char *argv[]){
     unsigned long
 	kalman_loops = 0,
 	ts_error_wait = 0;
+    unsigned char
+	tmp_buff[2];
 
     uquad_bool_t
 	read        = false,
@@ -1328,9 +1330,16 @@ int main(int argc, char *argv[]){
 	    log_n_continue(retval, "Failed to check stdin for input!");
 	    if(!read)
 		continue;
-	    input = !input;
-	    log_n_continue(ERROR_FAIL, "STDIN NOT IMPLEMENTED!");
-	    continue;
+	    retval = fread(tmp_buff,1,1,stdin);
+	    if(retval <= 0)
+	    {
+		log_n_continue(ERROR_READ, "No user input detected!");
+	    }
+#if LOG_TV
+	    // save to log file
+	    log_tv(log_tv, "RET:", tv_diff);
+	    fflush(log_tv);
+#endif
 	    //	    input = getch();
 	    if(input > 0 && !interrupted)
 	    {
@@ -1471,12 +1480,6 @@ int main(int argc, char *argv[]){
 			    uquad_mat_dump_vec(pp->sp->x,stderr, true);
 			}
 		    }
-#if LOG_TV
-		    // save to log file
-		    log_tv_only(log_tv, tv_diff);
-		    log_double(log_tv,"Current w hover",mot->w_hover);
-		    fflush(log_tv);
-#endif
 		}
 	    }
 	}
