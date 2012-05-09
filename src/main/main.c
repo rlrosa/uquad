@@ -48,7 +48,8 @@
 #define UQUAD_HOW_TO   "./main <imu_device> /path/to/log/"
 #define MAX_ERRORS     20
 #define OL_TS_STABIL   0                 // If != 0, then will wait OL_TS_STABIL+STARTUP_RUNS samples before using IMU.
-#define STARTUP_RUNS   (10+OL_TS_STABIL) // Wait for this number of samples at a steady Ts before running
+#define STARTUP_RUNS   (50+OL_TS_STABIL) // Wait for this number of samples at a steady Ts before running
+#define STARTUP_TO_S   5 // Max number of seconds waiting for stable IMU data
 #define STARTUP_KALMAN 100
 #define FIXED          3
 #define IMU_TS_OK      -1
@@ -313,6 +314,7 @@ void log_configuration(void)
     err_log_num("GPS_ZERO",GPS_ZERO);
     err_log_num("IMU_COMM_FAKE",IMU_COMM_FAKE);
     err_log_num("OL_TS_STABIL",OL_TS_STABIL);
+    err_log_num("CTRL_TS",CTRL_TS);
     err_log_double("MASA_DEFAULT",MASA_DEFAULT);
     err_log("-- -- -- -- -- -- -- --");
     err_log_eol();
@@ -332,6 +334,7 @@ int main(int argc, char *argv[]){
 	imu_ts_ok   = 0,
 	runs_imu    = 0,
 	runs_kalman = 0,
+	ctrl_samples= 0,
 	err_imu     = ERROR_OK,
 	err_gps     = ERROR_OK;
     char
@@ -341,8 +344,9 @@ int main(int argc, char *argv[]){
     double
 	dtmp;
     unsigned long
-	kalman_loops = 0,
-	ts_error_wait = 0;
+	kalman_loops   = 0,
+	ts_error_accum = 0,
+	ts_error_wait  = 0;
     unsigned char
 	tmp_buff[2];
 
@@ -360,6 +364,7 @@ int main(int argc, char *argv[]){
 	tv_last_kalman,
 	tv_last_imu,
 	tv_last_frame,
+	tv_imu_stab_init,
 	tv_gps_last;
 #if IMU_COMM_FAKE
     struct timeval tv_imu_fake;
@@ -782,6 +787,10 @@ int main(int argc, char *argv[]){
 	    // save to log file
 	    gettimeofday(&tv_tmp,NULL);
 	    retval = uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
+	    if(retval <= 0)
+	    {
+		err_log("Absurd timing!");
+	    }
 	    log_tv(log_tv, "RET:", tv_diff);
 	    fflush(log_tv);
 	    err_log_tv("Saving timestamp...",tv_diff);
@@ -1043,6 +1052,7 @@ int main(int argc, char *argv[]){
 		{
 		    err_log("Waiting for stable IMU sampling time...");
 		    tv_last_frame = tv_start;
+		    gettimeofday(&tv_imu_stab_init,NULL);
 		}
 		runs_imu++;
 		err_imu = gettimeofday(&tv_tmp, NULL);
@@ -1065,7 +1075,6 @@ int main(int argc, char *argv[]){
 			{
 			    log_n_jump(err_imu,end_imu,"Absurd IMU startup time!");
 			}
-			err_imu = ERROR_OK; // clear timing info
 			err_log_tv("IMU startup completed, starting calibration...", tv_diff);
 		    }
 		}
@@ -1074,7 +1083,14 @@ int main(int argc, char *argv[]){
 		    // We want consecutive stable samples
 		    imu_ts_ok = 0;
 		}
+		err_imu = ERROR_OK; // clear error, doesn't matter here.
 		tv_last_frame = tv_tmp;
+		// check timeout
+		(void) uquad_timeval_substract(&tv_diff, tv_tmp, tv_imu_stab_init);
+		if(tv_diff.tv_sec > STARTUP_TO_S)
+		{
+		    quit_log_if(ERROR_IO, "Timed out waiting for stable IMU samples...");
+		}
 		goto end_imu;
 	    }
 
@@ -1328,20 +1344,36 @@ int main(int argc, char *argv[]){
 		log_tv_only(log_t_err,tv_diff);
 		fflush(log_t_err);
 #endif // LOG_T_ERR
-		if(ts_error_wait == 0)
+		if(ts_error_wait == 0 || (ts_error_wait == TS_ERROR_WAIT))
 		{
 		    // Avoid saturating log
-		    err_log_tv("TS supplied to Kalman out of range!:",tv_diff);
-		    ts_error_wait = TS_ERROR_WAIT;
+		    if(ts_error_accum < MAX_ERRORS)
+		    {
+			err_log_tv_num("TS supplied to Kalman out of range! Ignored:", tv_diff, (int)ts_error_wait);
+		    }
+		    else
+		    {
+			err_log_tv("WARN: Too many timing errors!! Kalman Ts:", tv_diff);
+		    }
+		    if(ts_error_wait == TS_ERROR_WAIT)
+		    {
+			ts_error_wait = 0;
+			ts_error_accum++;
+		    }
 		}
-		ts_error_wait--;
+		ts_error_wait++;
 		/// Lie to kalman, avoid large drifts
 		tv_diff.tv_usec = (retval > 0) ? TS_MAX:TS_MIN;
 	    }
 	    else
 	    {
 		// Print next T_s error immediately
+		if(ts_error_wait > 1)
+		{
+		    err_log_tv_num("TS supplied to Kalman out of range! Ignored:", tv_diff, (int)ts_error_wait);
+		}   
 		ts_error_wait = 0;
+		ts_error_accum = 0;
 	    }
 	}
 	// use real w
@@ -1409,6 +1441,12 @@ int main(int argc, char *argv[]){
 		++runs_kalman; // so re-entry doesn't happen
 	    }
 	}
+
+	if(++ctrl_samples == CTRL_TS)
+	    ctrl_samples = 0;
+	else
+	    // Don't run ctrl loop, nor set motor speed
+	    continue;
 
 	/// -- -- -- -- -- -- -- --
 	/// Update setpoint
@@ -1485,8 +1523,6 @@ int main(int argc, char *argv[]){
 #endif
 	    tv_last_m_cmd = tv_tmp;
 	}
-
-	retval = ERROR_OK;
     }
     // never gets here
     return 0;

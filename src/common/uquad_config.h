@@ -12,6 +12,8 @@
 #define CTRL_INTEGRAL     0 // Use PI control
 #define FULL_CONTROL      1 // Control 12 states
 
+#define CTRL_TS           1 // Ratio of [samples]/[control action]
+
 // -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 // Do NOT edit the following lines!
 // -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
@@ -49,5 +51,10 @@
 #else
 #define STATE_BIAS        0
 #endif
+
+#if (CTRL_TS < 1)
+#error						\
+    "Must be CTRL_TS >= 1"
+#endif // (CTRL_TS < 1)
 
 #endif // UQUAD_CONFIG_H

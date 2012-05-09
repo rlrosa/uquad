@@ -69,7 +69,7 @@ sleep 1
 echo Setting up check_net.sh
 (cd ../scripts; ./check_net.sh &)
 # wait for check net to start, or not
-timer=3
+timer=4
 while [ $timer -gt 0 ];
 do
     echo "Wait ${timer} for check_net.sh..."
@@ -82,7 +82,7 @@ sleep 1
 echo ""
 echo Running main...
 echo ""
-(cd build/main; ./main ${serial_port};echo "Main finished!";)
+(cd build/main; ./main ${serial_port};echo "";echo "-- -- -- --";echo "Main finished!";echo "-- -- -- --";)
 
 # kill everything. Muaha, ha.
 ctrl_c

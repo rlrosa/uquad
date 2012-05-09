@@ -16,7 +16,7 @@
 #define MOT_C               4
 
 #define MOT_UPDATE_MAX_US   2000    // us
-#define MOT_WAIT_STARTUP_MS 3420    // ms
+#define MOT_WAIT_STARTUP_MS 4500    // ms
 #define MOT_WAIT_STARTUP_S  1       // s
 
 #define START_MOTOR_CMD "./cmd &"
