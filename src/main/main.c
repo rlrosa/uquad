@@ -314,6 +314,7 @@ void log_configuration(void)
     err_log_num("GPS_ZERO",GPS_ZERO);
     err_log_num("IMU_COMM_FAKE",IMU_COMM_FAKE);
     err_log_num("OL_TS_STABIL",OL_TS_STABIL);
+    err_log_num("CTRL_TS",CTRL_TS);
     err_log_double("MASA_DEFAULT",MASA_DEFAULT);
     err_log("-- -- -- -- -- -- -- --");
     err_log_eol();
@@ -333,6 +334,7 @@ int main(int argc, char *argv[]){
 	imu_ts_ok   = 0,
 	runs_imu    = 0,
 	runs_kalman = 0,
+	ctrl_samples= 0,
 	err_imu     = ERROR_OK,
 	err_gps     = ERROR_OK;
     char
@@ -1440,6 +1442,12 @@ int main(int argc, char *argv[]){
 	    }
 	}
 
+	if(++ctrl_samples == CTRL_TS)
+	    ctrl_samples = 0;
+	else
+	    // Don't run ctrl loop, nor set motor speed
+	    continue;
+
 	/// -- -- -- -- -- -- -- --
 	/// Update setpoint
 	/// -- -- -- -- -- -- -- --
@@ -1515,8 +1523,6 @@ int main(int argc, char *argv[]){
 #endif
 	    tv_last_m_cmd = tv_tmp;
 	}
-
-	retval = ERROR_OK;
     }
     // never gets here
     return 0;
