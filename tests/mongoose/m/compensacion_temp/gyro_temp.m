@@ -55,10 +55,9 @@ w = w(2.26e4:4.8e5,:);
 m = m(2.26e4:4.8e5,:);
 t_imu=t_imu(2.26e4:4.8e5,:);
 
-[aconv,wconv,mconv]=mong_conv(a,w,m,0);
+% [aconv,wconv,mconv]=mong_conv(a,w,m,0);
+wconv = mong_conv_gyro(w);
 t_imu=t_imu/10;
-
-
 
 %% Temperatura Posta
 
