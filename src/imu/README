@@ -1,0 +1,20 @@
+IMU reads calibration parameters from imu_calib.txt
+
+File should have only numbers, no comments, no text, etc.
+Spaces, tabs, newlines do not matter, data is parsed from left to right, top to bottom.
+
+Accelerometer calibration:
+	      - 9 numbers for gain matrix
+	      - 3 numbers for offset
+Gyroscope:
+	- 9 numbers for gain matrix.
+	- 3 numbers for offset
+Magnetometer:
+	- 9 numbers for gain matrix
+	- 3 numbers for offset
+Accelerometer temp. compensation:
+	      - 1 number for acc z axis temp. coefficient.
+	      - 1 number for temperature during calibration.
+Gyro temperature compensation:
+     - 3 numbers for temp. dependant coefficients.
+     - 3 numbers for temp. independant coefficient.
