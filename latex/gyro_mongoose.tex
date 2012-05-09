@@ -31,7 +31,11 @@
 \section{Marco teórico}
 Para la calibración del giróscopo se utiliza el mismo modelo que se utilizó para el acelerómetro en la sección \ref{chap:calibracion_acelerometro}.
 
-$$\tilde{\mathbf{w^a}}=K_w(T_a^p)^{-1}\mathbf{w^p}+b_w$$
+\begin{equation}
+\tilde{\mathbf{w^a}}=K_w(T_a^p)^{-1}\mathbf{w^p}+\mathbf{b}_w
+\label{ec:modelo_gyro}
+\end{equation}
+
 con $K_w$ matriz diagonal que representa el factor de escala para convertir del valor digital a la velocidad angular correspondiente, $\mathbf{b}_w$ un término independiente para corregir la medida de velocidad angular nula y $T^p_a$ una matriz que corrige la no ortogonalidad de los ejes:
 $$T^p_a=\left( 
 \begin{matrix}
@@ -192,4 +196,24 @@ El error promedio corresponde a una velocidad angular de $1.07^\circ/s$ y $2\sig
 
 Como fue explicado en el capítulo \ref{chap:calibracion_acelerometro}, la temperatura de trabajo de la IMU es ampliamente mayor que la temperatura para la cual fueron calibrados los sensores. Para realizar la compensación de la medida del giróscopo por temperatura, se utiliza un método idéntico al utilizado para el acelerómetro: se varía la temperatura desde una temperatura aproximada de $48^oC$ hasta $35^oC$ y se releva la curva de velocidad angular medida contra temperatura.
 
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=.7\textwidth]{./pics_gyro/wtemp.pdf}
+	\caption{Variación de la velocidad angular con la temperatura}
+	\label{fig:wtemp}
+\end{figure}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=.9\textwidth]{./pics_gyro/wcompensado.pdf}
+	\caption{Velocidad angular compensada por temperatura}
+	\label{fig:wcomp}
+\end{figure}
+
+Aca decir como es el modelo q se usa para compensar la temperatura. tratar de explicar lo del offset que no depende de la temperatura\\
+
+Recordando la ecuación \ref{ec:modelo_gyro}, el nuevo modelo para la velocidad angular es el siguiente:
+$$\tilde{\mathbf{w^a}}=K_w(T_a^p)^{-1}\mathbf{w^p}+\mathbf{b}_w+\mathbf{b}_1(t-t_0)+\mathbf{b}_0'$$
+simplemente definiendo $\mathbf{b}_0=\mathbf{b}_w+\mathbf{b}_0'$:
+$$\tilde{\mathbf{w^a}}=K_w(T_a^p)^{-1}\mathbf{w^p}+\mathbf{b}_0+\mathbf{b}_1(t-t_0)$$
 \end{document}

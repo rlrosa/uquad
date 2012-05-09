@@ -606,6 +606,7 @@ int main(int argc, char *argv[])
 	}
     }
 
+    /// Override input (for testing)
     /* mot_selected[0] = MOT_NOT_SELECTED; */
     /* mot_selected[1] = MOT_NOT_SELECTED; */
     /* mot_selected[2] = MOT_NOT_SELECTED; */
