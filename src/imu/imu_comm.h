@@ -55,7 +55,7 @@
 
 #define IMU_FRAME_BUFF_SIZE               32
 
-#define IMU_AVG_COUNT                     1 // Reduce variance my taking avg
+#define IMU_AVG_COUNT                     6 // Reduce variance by taking avg
 #define IMU_CALIB_SIZE                    512 //TODO Tune!
 
 #define IMU_GYRO_DEFAULT_GAIN             14.375L // Not used
@@ -285,6 +285,8 @@ int imu_comm_calibration_start(imu_t *imu);
 int imu_comm_calibration_abort(imu_t *imu);
 
 int imu_comm_calibration_get(imu_t *imu, imu_calib_t **calib);
+
+int imu_comm_get_lpf_unread(imu_t *imu, imu_data_t *data);
 
 #endif // IMU_COMM_H
 

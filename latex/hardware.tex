@@ -77,20 +77,19 @@ Las posibilidades que ofrece la Beagleboard en cuanto a puertos de entrada y sal
 Para poder controlar el sistema es importante poder conocer los valores que toman las variables del mismo. Como se ver\'a en el cap\'itulo sobre el desarrollo del modelo f\'isico del cuadric\'optero, las variables que es necesario conocer son:
 
 \begin{itemize}
-\item La orientaci\'on del sistema en el sistema de coordenadas utilizado
-\item La altura del sistema en el sistema de coordenadas utilizado
-\item La aceleraci\'on en las tres coordenadas
-\item La velocidad angular del sistema seg\'un tres ejes de rotaci\'on
+\item La orientaci\'on del cuadric\'optero 
+\item La posici\'on del cuadric\'optero 
+\item La velocidad del cuadric\'optero
+\item La velocidad angular 
 \end{itemize}
 
-Por dicho motivo parece imprescindible dotar al sistema de sensores capaces de medir dichas magnitudes.
+Por dicho motivo parece imprescindible dotar al sistema de sensores capaces de medir dichas magnitudes directa o indirectamente.
 \subsection{IMU}
 
 \subsubsection{Aceler\'ometro}
 \label{acelerometro}
 
-Un aceler\'ometro es un dispositivo capaz de medir su aceleraci\'on propia en el marco de referencia de la ca\'ida libre. Esto implica que el dispositivo no mide siempre su cambio de velocidad en el espacio.\\
-Por ejemplo, la medida de un aceler\'ometro en ca\'ida libre ser\'a cero a pesar de que su velocidad crezca, de la misma forma se puede observar que un aceler\'ometro en reposo respecto de la Tierra, no dar\'a una medida nula, sino que por el contrario medir\'a como aceleraci\'on g.\\
+Un aceler\'ometro es un dispositivo capaz de medir su aceleraci\'on propia en el marco de referencia de la ca\'ida libre. Esto implica que el dispositivo no mide siempre su cambio de velocidad en el espacio. Por ejemplo, la medida de un aceler\'ometro en ca\'ida libre ser\'a cero a pesar de que su velocidad crezca, de la misma forma se puede observar que un aceler\'ometro en reposo respecto de la Tierra, no dar\'a una medida nula, sino que por el contrario medir\'a como aceleraci\'on g.\\
 
 Existen diversos tipos de aceler\'ometro, en este caso se eligi\'o trabajar con un aceler\'ometro contenido en un circuito integrado (tecnolog\'ia MEMS). Las razones de esta elecci\'on son fundamentalmente tama\~no y peso (cr\'iticos en la aplicaci\'on) y econ\'omicos. Los mismos son m\'as peque\~nos, livianos y baratos que otras tecnolog\'ias.\\
 Dicho aceler\'ometro procesa las medidas y las convierte a una salida el\'ectrica; la forma de dicha salida depende si el integrado es anal\'ogico o digital.\\
@@ -125,7 +124,7 @@ Si bien el sistema contar\'a con gir\'oscopos que permitir\'an, a trav\'es de in
 
 Si bien el control del sistema no depende directamente de la temperatura, los instrumentos a utilizarse est\'an construidos con cierta tecnolog\'ia que presenta dependencia con (y por ende tendr\'a errores asociados a) la temperatura. El contar con un sensor de temperatura permitir\'a sensar la misma y realizar correcciones en tiempo real que permitan minimizar dicho errores.\\
 
-La Mongoose 9DoF IMU posee todos los sensores que se han nombrado hasta aqu\'i excepto el GPS. La misma posee adem\'as un micropresador con facilidades para ser programado, puediendo as\'i realizar un preprocesamiento de los datos antes de realizar la estimaci\'on del estado. Entre las modificaciones realizadas las m\'as importantes son un aumento y una estabilizaci\'on de la frecuencia de muestreo y la conversi\'on de los datos de salida de formato ASCII a binario. Esto \'ultimo permite una mayor velocidad de transmisi\'on de los mismos a trav\'es del puerto serie de la Mongoose. En la figura \ref{fig:mongoose} se puede observar dicha placa de instrumentaci\'on. Las caracter\'isticas de dicha placa pueden consultarse en \ref{chap:anexo_mongoose}.
+La Mongoose 9DoF IMU posee todos los sensores que se han nombrado hasta aqu\'i excepto el GPS. La misma posee adem\'as un micropresador con facilidades para ser programado, puediendo as\'i realizar un preprocesamiento de los datos antes de realizar la estimaci\'on del estado. Entre las modificaciones realizadas las m\'as importantes son un aumento y una estabilizaci\'on de la frecuencia de muestreo y la conversi\'on de los datos de salida de formato ASCII a binario. Esto \'ultimo permite una mayor velocidad de transmisi\'on de los mismos a trav\'es del puerto serie de la Mongoose. En la figura \ref{fig:mongoose} se puede observar dicha placa de instrumentaci\'on. Las caracter\'isticas de dicha placa pueden consultarse en el anexo  \ref{chap:anexo_mongoose}.
 
 
 \begin{figure} 
@@ -148,13 +147,11 @@ La Mongoose 9DoF IMU posee todos los sensores que se han nombrado hasta aqu\'i e
 
 La elecci\'on del GPS se bas\'o cas\'i totalmente en lograr la simplicidad del sistema. Exist\'ian muchas opciones, placas de diversos tama\~nos, con diversos tama\~nos de antenas, pero todas con similares especificaciones.\\
 
-Las placas candidatas a estar a cargo de la inteligencia contaban con interfaces USB, por lo que se opt\'o por comprar un dongle GPS, cuyas especificaciones son similares a las del resto de las opciones, y se puede comunicar via USB. Existen drivers para dicho GPS en linux, por lo que la comunicaci\'on con el mismo no deber\'ia ser un problema.\\
-\\
-Se opt\'o por utilizar un GPS \textit{Canmore GT-730F}.
+Las placas candidatas a estar a cargo de la inteligencia contaban con interfaces USB, por lo que se opt\'o por comprar un dongle GPS, cuyas especificaciones son similares a las del resto de las opciones, y se puede comunicar via USB gracias a drivers ya existentes para linux. Se opt\'o por utilizar un GPS \textit{Canmore GT-730F}.
 
 \section{Consideraciones adicionales sobre el hardware utilizado}
 
-Si bien entendemos que en lo que respecta a la instrumentaci\'on la elecci\'on es la adecuada para la primer versi\'on de la plataforma en el futuro puede ser de inter\'es añadir al sistema la posibilidad de obtener la posici\'on mediante el procesamiento de im\'agenes, para lograr una mayor exactitud. Para esto, la capacidad de procesamiento, las bibliotecas existentes de \emph{computer vision} y los m\'odulos de c\'amaras VGA dise\~nados para trabajar con la Beagleboard permiten aprovechar al m\'aximo la capacidad de esta plataforma la cual supera ampliamente los requerimientos de este proyecto.\\
+Si bien entendemos que en lo que respecta a la instrumentaci\'on la elecci\'on es la adecuada para la primer versi\'on de la plataforma en el futuro puede ser de inter\'es añadir al sistema la posibilidad de obtener la posici\'on mediante el procesamiento de im\'agenes, para lograr una mayor exactitud en la estimaci\'on de la posici\'on . Para esto, la capacidad de procesamiento, las bibliotecas existentes de \emph{computer vision} y los m\'odulos de c\'amaras VGA dise\~nados para trabajar con la Beagleboard permiten aprovechar al m\'aximo la capacidad de esta plataforma la cual supera ampliamente los requerimientos de este proyecto.\\
 
  
 
