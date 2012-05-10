@@ -5,6 +5,11 @@ acc_orig = imu_data(:,4:6);
 a=[0.4 0.3 0.15 0.15];
 b=[0.2 0.2 0.2 0.2 0.1 0.1];
 
+% for i=length(a):length(acc_orig(:,1))
+%     conv_acc_orig_1_a_mano(i) = a*acc_orig(i:-1:i-length(a)+1,1);
+% end
+% figure; plot(conv_acc_orig_1_a_mano);hold on; plot(conv_acc_orig_1,'r')
+
 conv_acc_orig_1=conv(acc_orig(:,1),a);
 conv_acc_orig_2=conv(acc_orig(:,2),a);
 conv_acc_orig_3=conv(acc_orig(:,3),a);
