@@ -1115,8 +1115,11 @@ int main(int argc, char *argv[]){
 
 	    gettimeofday(&tv_tmp,NULL);
 
-	    err_imu = imu_comm_get_avg_unread(imu,&imu_data);
-	    log_n_jump(err_imu,end_imu,"IMU did not have new avg!");
+	    //	    err_imu = imu_comm_get_avg_unread(imu,&imu_data);
+	    //	    log_n_jump(err_imu,end_imu,"IMU did not have new avg!");
+	    err_imu = imu_comm_get_lpf_unread(imu,&imu_data);
+	    log_n_jump(err_imu,end_imu,"LPF failed");
+
 #if LOG_IMU_AVG
 	    uquad_timeval_substract(&tv_diff, tv_tmp, tv_start);
 	    log_tv_only(log_imu_avg, tv_diff);
