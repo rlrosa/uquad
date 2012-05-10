@@ -397,23 +397,25 @@ La teor\'ia de fluidos que explica el comportamiento de las h\'elices es complej
 
 La \emph{Blade Element Theory} (BET) intenta explicar las fuerzas presentes en la h\'elice considerando en primer lugar las fuerzas en un elemento de \'area infinitesimal de la h\'elice. Una vez halladas estas fuerzas se integra sobre el total de la superficie obteniendo as\'i las fuerzas y momentos totales. Como se explica en \ref{bib:fuerzas-helices}, las fuerzas presentes sobre un elemento de \'area de la h\'elice son la fuerza de \emph{lift} y la fuerza de \emph{drag}, dichas fuerzas se encuentran representadas en la figura \ref{fig:helice} como $dL$ y $dD$ respectivamente. La forma que tienen dichas fuerzas es:
 
-$$
-dL=\frac{1}{2}\rho_A \omega_p^2 C_L c r^2dr$$\\
-
-$$
+\begin{equation}
+dL=\frac{1}{2}\rho_A \omega_p^2 C_L c r^2dr
+\end{equation}
+\begin{equation}
 dD=\frac{1}{2}\rho_A \omega_p^2 C_D c r^2dr
-$$
+\end{equation}
 
 Donde $\rho_A$ es la densidad del aire, $\omega_p$ la velocidad angular de la h\'elice, $r$ la distancia del elemento de h\'elice al eje de la h\'elice, c es la longitud promedio de la cuerda de la h\'elice \footnote{segmento imaginario que une el borde de ataque con el borde de fuga },$ C_L$ y $C_D$ son coeficientes adimensionados.
 
 La fuerza infinitesimal de empuje ($dT$) puede escribirse en funci\'on de las fuerzas de \emph{lift} y de \emph{drag} de la siguiente forma:
 
-$$dT=dL\cos\varphi_I-dD\sin\varphi$$
-
+\begin{equation}
+dT=dL\cos\varphi_I-dD\sin\varphi
+\end{equation}
 Realizando la aproximaci\'on que $\varphi$ es un \'angulo peque\~no y que la fuerza de \emph{lift} es al menos un orden mayor que la de \emph{drag} se puede afirmar que:
 
-$$dT\approx dL
-$$
+\begin{equation}
+dT\approx dL
+\end{equation}
 
 El empuje por lo tanto puede calcularse como la integral de $dT$ respecto de $r$. Considerando que la h\'elice consta de dos hojas, se obtiene que:
 
@@ -428,8 +430,9 @@ Donde $R_P$ es el radio radio de la h\'elice. En todo momento tenemos dos fuerza
 Intentaremos ahora obtener la resultante de las fuerzas horizontales sobre la h\'elice y el torque de dichas fuerzas. Comenzaremos por analizar que sucede con las sumas de las fuerzas, para luego proceder a calcular el momento de las mismas. Consideremos ahora la fuerza $dF$ como la que se muestra en la figura \ref{fig:fuerza-helice}. Como se observa en la figura dicha fuerza es hacia la derecha. Si consideramos la fuerza horizontal sobre la otra hoja de la h\'elice, se obtiene una fuerza hacia la izquierda. Por lo tanto la suma de las fuerzas horizontales es nula. Sin embargo los momentos de las fuerzas en una y otra hoja de la h\'elice no se anulan, el momento que producen ambas es en la direcci\'on de $-\vec{k}_q$. Por lo tanto el momento total ser\'a la suma de los momentos infinitesimales en toda la superficie de una hoja de la h\'elice multiplicado por la cantidad de hojas, es decir 2. 
 
 En primer lugar escribimos la fuerza horizontal como una composici\'on de la fuerza de \emph{lift} y la fuerza de \emph{drag}. 
-$$dF=dD\cos\varphi+dL\sin\varphi \approx dD +dL\left(\frac{V}{\omega_p}\right)$$
-
+\begin{equation}
+dF=dD\cos\varphi+dL\sin\varphi \approx dD +dL\left(\frac{V}{\omega_p}\right)
+\end{equation} 
 En esta ecuaci\'on $V$ y $\omega_p r$ representan la velocidad del flujo de aire en las direcciones vertical y horizontal respectivamente. Operando se obtiene el momento total de la h\'elice en la direcci\'on entrante:
 
 \begin{equation}
@@ -444,29 +447,34 @@ En resumen, la teor\'ia BET nos permite afirmar que sobre cada h\'elice del cuad
 Hasta aqu\'i sabemos que sucede las fuerzas y momentos aplicados sobre una h\'elice. Nos concentraremos ahora en estudiar como influyen estas fuerzas y momentos en el cuadric\'optero. Para lo que sigue continuaremos trabajando con las convenciones adoptadas en \ref{fig:quad}. 
  
 A partir de lo estudiado anteriormente se deduce trivialmente que el empuje de las h\'elices puede expresarse en el sistema $S_q$ como:
-$$
+\begin{equation}
 \sum_{i=1}^{i=4} \vec{T_i} =\sum_{i=1}^{i=4}T_i\left(\begin{array}{c}
 0\\
 0\\
 1\\
 \end{array} \right)
-$$
+\end{equation}
 
 Se determin\'o que las fuerzas de empuje no introducen un momento neto en el eje de las mismas. Sin embargo no debemos perder de vista que la segunda cardinal fue planteada en el centro de masa del sistema, por lo tanto respecto de dicho punto las fuerzas s\'i introducen un momento que puede calcularse como $M_1=L\vec{x\prime} \times T_1\vec{k}_q$ para el motor 1. $L$ es la distancia del centro de masa del cuadric\'optero al eje del motor 1. La expresi\'on del momento es an\'aloga para los restantes motores.
 
 Debemos considerar adem\'as el momento obtenido para cada h\'elice en la direcci\'on $\vec{k_q}$. Cabe recordad que se dedujo que para h\'elices rotando en sentido anti- horario se tiene un momento negativo, mientras que para una h\'elice rotando en sentido horario el momento es positivo. Realizando estas consideraciones es posible afirmar que la suma total de los momentos es:
 
-$$M_G^{ext} = \left(\begin{array}{c}
+\begin{equation}
+M_G^{ext} = \left(\begin{array}{c}
 L(T2-T4)\\
 L(T3-T1)\\
 -Q_1+Q2-Q3+Q_4\\
-\end{array} \right)$$
+\end{array} \right)
+\end{equation}
 
 En base al estudio realizado se podr\'ian conocer dichas relaciones calculando los par\'ametros que dependen de la geometr\'ia de la h\'elice, sin embargo este estudio resulta tedioso y la mayor parte de los m\'etodos existentes para determinar dichos par\'ametros con buena precisi\'on son destructivos. Por lo tanto se opt\'o por obtener dichas respuestas en forma experimental. El proceso detallado puede consultarse en el cap\'itulo \ref{chap:test_motores}. En dichos experimentos se obtuvo que:
 
-$$
-T=4.6016\times 10^{-5}\omega^2-1.0382\times 10^{-3}\omega
-$$\\$$Q= 3.4734\times 10^{-6}\omega^2-1.3205\times 10^{-4}\omega $$
+\begin{equation}
+T=4.3031\times 10^{-5}\omega^2-6.1147\times 10^{-4}\omega
+\end{equation}\\
+\begin{equation}
+Q= 3.4734\times 10^{-6}\omega^2-1.3205\times 10^{-4}\omega 
+\end{equation}
 
 Estos resultados parecen adecuados respecto de lo desarrollado te\'oricamente ya que ambas respuestas son cuadr\'aticas. 
 
@@ -475,7 +483,9 @@ Estos resultados parecen adecuados respecto de lo desarrollado te\'oricamente ya
 Luego de realizados los estudios sobre la cinem\'atica y din\'amica del sistema y luego de comprender cabalmente las fuerzas y momentos involucrados se procede a construir el modelo en variables de estado.\\ 
 
 Se debe aclarar que la elecci\'on realizada del vector de estados se debe exclusivamente a la conveniencia pr\'actica que se encuentra al trabajar con las variables expresadas en el sistema del cuadric\'optero. Esta conveniencia se ve reflejada en dos aspectos, en primer lugar las simplificaciones que introduce trabajar con estas variables en el marco de un desarrollo te\'orico de las ecuaciones que gobiernan al sistema, por otra parte, al disponer de sensores montados sobre el cuadric\'optero, los mismos medir\'an las velocidades angulares y las aceleraciones lineales en el sistema $S_q$. Bajo esta elecci\'on parece razonable escoger el vector de estados de la siguiente manera:
-$$X=\left\lbrace  x,y,z, \theta,\varphi,\psi, v_{q_z},v_{q_y},v_{q_z},\omega_{q_x},\omega_{q_y},\omega_{q_z} \right\rbrace$$
+\begin{equation}
+X=\left\lbrace  x,y,z, \theta,\varphi,\psi, v_{q_z},v_{q_y},v_{q_z},\omega_{q_x},\omega_{q_y},\omega_{q_z} \right\rbrace
+\end{equation}
 
 Las ecuaciones desarrolladas hasta ahora son las que gobiernan el comportamiento mecánico del sistema y son las que serán utilizadas para el desarrollo del simulador. Dichas ecuaciones dependen tanto de la velocidad angular de las hélices como de sus derivadas. Para realizar el control resulta m\'as sencillo poder trabajar sin dichas derivadas. La raz\'on es que las velocidades angulares y sus derivadas no son entradas independientes. Por lo tanto no se pueden imponer valores a unas sin considerar el comportamiento de las otras. En este sentido se realiza \'ultima aproximaci\'on. El t\'ermino de las derivadas de las velocidades angulares se encuentra presente exclusivamente en la ecuaci\'on \ref{eq:omegas}. Dicho t\'ermino se encuentra multiplicado por el momento de inercia de los motores. En el cap\'itulo \ref{chap:testsmotores} se obtiene el orden de la variaci\'on de la velocidad angular de los motores. Adelantando el resultado de esta variaci\'on de la velocidad angular y el valor del t\'ermino del tensor de inercia de los motores (ver anexo \ref{chap:anexo_tensores}), se puede despreciar el t\'ermino de las derivadas de las velocidades angulares respecto al t\'ermino asociado a los torques en la ecuaci\'on \ref{eq:omegas}.\\
 
