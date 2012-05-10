@@ -2,9 +2,10 @@
 
 \begin{document}
 \chapter{Visi\'on general del proyecto}
+\label{chap:general}
 Consideramos importante explicar superficialmente las distintas partes que componen el proyecto de forma de que el lector se haga una idea general de los distintos bloques que componen al sistema para luego ir profundizando sobre cada uno de ellos en los siguientes cap\'itulos.\\
 
-El esquema general de un cuadric\'optero es el que se puede apreciar en la figura \ref{fig:cuad}, el mismo se compone de dos ejes perpendiculares, en cuyos extremos se ubican los propulsores (motores y h\'elices). Las velocidades angulares de dichos motores, as\'i como las fuerzas y torques producidos por ellos se presentan tambi\'en en la figura \ref{fig:cuad}. Tanto los torques como las fuerzas de los propulsores dependen de la velocidad angular de las h\'elices. Por dicho motivo, lo que se busca es actuar sobre los motores variando la velocidad angular de los mismos para realizar las distintas acciones de control.
+El esquema general de un cuadric\'optero es el que se puede apreciar en la figura \ref{fig:cuad}, el mismo se compone de dos ejes perpendiculares, en cuyos extremos se ubican los propulsores (motores y h\'elices). Las velocidades angulares de dichos motores($\omega$), as\'i como las fuerzas($T$) y torques($M$) producidos por ellos se presentan tambi\'en en la figura \ref{fig:cuad}. Tanto los torques como las fuerzas de los propulsores dependen de la velocidad angular de las h\'elices. Por dicho motivo, lo que se busca es actuar sobre los motores variando la velocidad angular de los mismos para realizar las distintas acciones de control.
 
 \begin{figure}
 \centering
@@ -39,9 +40,9 @@ Las acciones de control descriptas anteriormente pueden ser combinadas de forma 
 \section{Componentes del sistema y su interacci\'on}
 
 En la proxima secci\'on se ver\'a en detalle el hardware utilizado durante el presente proyecto, sin embargo daremos una visi\'on general del sistema que se desea implementar. En la figura \ref{fig:bloques} se presenta un diagrama de bloques del sistema.\\
-%TODO diagrama de bloques
 
-La plataforma elegida es un cuadric\'optero comercial radio controlado, por dicho motivo una parte del sistema se encuentra ya diseñada, esta incluye los elementos indispensables para poder volar manualmente el cuadric\'optero, es decir transmisor, receptor, CPU1 y motores.\\   
+
+La plataforma elegida es un cuadric\'optero comercial radio controlado, por dicho motivo una parte del sistema se encuentra ya diseñada, esta incluye los elementos indispensables para poder volar manualmente el cuadric\'optero, es decir transmisor, receptor, CPU1, motores y ESCs\footnote{Electronic speed controllers}.\\   
 
 Una de las señales del receptor ser\'a utilizada para definir si el control de los motores estar\'a comandado por la CPU1 o por la CPU2 (piloto autom\'atico). Esta \'ultima es el centro del sistema de control que se desea implementar. Para determinar las acciones a realizar sobre los motores es imprescindible contar con cierta instrumentaci\'on (IMU\footnote{Inertial Measurement Unit} y GPS) que permita estimar las variables de inter\'es.\\
 

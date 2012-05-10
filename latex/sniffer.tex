@@ -48,7 +48,7 @@ donde:
 	Cc 	 Capacitancia de canal cruzado
 \end{verbatim}
 
-Las líneas \textbf{SDA} y \textbf{SCL} son de drenador abierto, lo que significa que tanto el maestro como los esclavos solamente pueden conducir a nivel bajo estas líneas o dejarlos abiertos. Si ningún dispositivo $i^2c$ está conduciendo hacia abajo la línea, la resistencia de \emph{pull-up} $R_p$ se encarga de conducir la línea a $V_cc$.\\
+Las líneas \textbf{SDA} y \textbf{SCL} son de drenador abierto, lo que significa que tanto el maestro como los esclavos solamente pueden conducir a nivel bajo estas líneas o dejarlos abiertos. Si ningún dispositivo $i^2c$ está conduciendo hacia abajo la línea, la resistencia de \emph{pull-up} $R_p$ se encarga de conducir la línea a $V_{cc}$.\\
 
 Cada dispositivo tiene asignada una dirección que lo identifica. Para establecer una comunicación la secuencia típica empieza por el maestro enviando una secuencia de comienzo de conexión, seguida de la dirección del esclavo con el cual desea comunicarse. Seguidamente el maestro envía un bit que determina si la acción que desea realizar es escritura o lectura, a lo que el esclavo correspondiente responde con un bit de \emph{acknowledge} (\textbf{Ack}). Luego el maestro envía la dirección de memoria interna del esclavo donde debe ser almacenada la información enviada, y por último envía los datos. Para finalizar la conexión, el maestro envía una secuencia de fin de conexión.
 
@@ -99,7 +99,7 @@ Se analizan las siguientes situaciones:
 \begin{center}
 \begin{tabular}{|p{30pt}|c|c|c|c|p{130pt}|} 
 \hline \cellcolor[gray]{0.8} \centering \textbf{Id} & \cellcolor[gray]{0.8} \textbf{Elev} & \cellcolor[gray]{0.8} \textbf{Ruddle} & \cellcolor[gray]{0.8} \textbf{Aile} & \cellcolor[gray]{0.8} \textbf{Throttle} & \cellcolor[gray]{0.8} \textbf{Movimiento}  \\ \hline
-\centering 0 & atrás\footnote{el mínimo necesario para encender los motores} & medio & medio & medio & idle \\ \hline
+\centering 0 & atrás& medio & medio & medio & idle \\ \hline
 \centering 1 & medio & medio & medio & medio & vertical hacia arriba con aceleración constante \\ \hline
 \centering 2 & adelante & medio & medio & medio & vertical hacia arriba con aceleración constante \\ \hline
 \centering 3 & medio & izquierda & medio & medio & giro según eje $z$ \\ \hline
