@@ -38,8 +38,10 @@ stty -F ${serial_port} 115200 -echo raw
 sleep 0.5
 
 # build
-(cd i2c_beagle; make ${pc_test};)
-(cd build/main; make;)
+cd i2c_beagle; make ${pc_test};
+cd ../
+cd build/main; make;
+cd ../../
 
 # use correct calibration file
 if [ ! -e `pwd`/build/main/imu_calib.txt ];

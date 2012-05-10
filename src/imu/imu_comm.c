@@ -60,6 +60,30 @@ void imu_data_free(imu_data_t *imu_data)
     uquad_mat_free(imu_data->magn);
 }
 
+/**
+ * Sets all fields to zero.
+ *
+ * @param imu_data
+ */
+int imu_data_zero(imu_data_t *imu_data)
+{
+    int retval;
+    if(imu_data == NULL)
+    {
+	err_check(ERROR_INVALID_ARG, "NULL pointer is invalid arg!");
+    }
+    retval = uquad_mat_zeros(imu_data->acc);
+    err_propagate(retval);
+    retval = uquad_mat_zeros(imu_data->gyro);
+    err_propagate(retval);
+    retval = uquad_mat_zeros(imu_data->magn);
+    err_propagate(retval);
+    imu_data->T_us = 0.0;
+    imu_data->temp = 0.0;
+    imu_data->alt  = 0.0;
+    return retval;
+}
+
 /** 
  * Copies the data in src to dest.
  * Must previously allocate mem for dest.

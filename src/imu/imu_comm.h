@@ -245,6 +245,7 @@ int imu_comm_resume(imu_t *imu);
 #endif
 
 int imu_data_alloc(imu_data_t *imu_data);
+int imu_data_zero(imu_data_t *imu_data);
 void imu_data_free(imu_data_t *imu_data);
 
 // -- -- -- -- -- -- -- -- -- -- -- --
