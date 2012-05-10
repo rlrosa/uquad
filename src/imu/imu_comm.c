@@ -1942,13 +1942,13 @@ int imu_comm_print_calib(imu_calib_t *calib, FILE *stream){
     err_check(ERROR_FAIL,"Not implemented.");
 }
 
-#define LPF_LEN 4
+#define LPF_LEN 6
 int lpf(imu_t *imu, imu_data_t *data)
 {
     int retval, i, j;
     imu_raw_t *frame;
     static imu_raw_t frame_aux;
-    static double h[LPF_LEN]={0.4, 0.3, 0.15, 0.15};
+    static double h[LPF_LEN]={0.2, 0.2, 0.2, 0.2, 0.1, 0.1};
     if(imu->frame_count < LPF_LEN)
     {
 	err_check(ERROR_FAIL,"Not enough samples to lpf!");
