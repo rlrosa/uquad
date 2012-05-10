@@ -580,7 +580,9 @@ int main(int argc, char *argv[])
     {
 	if(argc == 1)
 	{
+#ifdef CHECK_STDIN
 	    fprintf(LOG_ERR,"Input speed and press RET to set.\n");
+#endif
 	    for(i=0;i<MOT_COUNT;++i)
 		mot_selected[i] = 1;
 	}
