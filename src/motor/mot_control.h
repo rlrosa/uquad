@@ -65,10 +65,13 @@ typedef struct uquad_mot{
  * Allocates memory for uquad_mot_t, opens log
  * files and opens file for interaction will motor controlling
  * program.
- * 
+ *
+ * @param start_motors If initialization is successful and start_motors, then
+ *        motors will be running at idle speed after init.
+ *
  * @return Instance of uquad_mot_t, or NULL if error.
  */
-uquad_mot_t *mot_init(void);
+uquad_mot_t *mot_init(uquad_bool_t start_motors);
 
 /**
  * Takes an array of rads/s and sets the corresponding
