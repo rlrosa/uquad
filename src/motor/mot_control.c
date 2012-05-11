@@ -11,9 +11,12 @@
  *
  * NOTE: Takes MOT_WAIT_STARTUP_S secs + MOT_UPDATE_MAX_US usecs to init
  *
+ * @param start_motors If initialization is successful and start_motors, then
+ *        motors will be running at idle speed after init.
+ *
  * @return
  */
-uquad_mot_t *mot_init(void)
+uquad_mot_t *mot_init(uquad_bool_t start_motors)
 {
     int retval = ERROR_OK;
     retval = system(KILL_MOTOR_CMD);
@@ -63,6 +66,12 @@ uquad_mot_t *mot_init(void)
     retval = gettimeofday(&m->last_set,NULL);
     cleanup_log_if(retval,"Failed to initialize timer");
     usleep(MOT_UPDATE_MAX_US); // Wait before allowing cmds to be sent
+
+    if(start_motors)
+    {
+	retval = mot_set_idle(m);
+	cleanup_log_if(retval, "Failed to startup motors!");
+    }
 
     return m;
 

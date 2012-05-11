@@ -2,14 +2,15 @@
 #if DEBUG // The following define will affect includes
 #define TIMING             0
 #define TIMING_KALMAN      0
-#define TIMING_IMU         0
+#define TIMING_IMU         1
 #define TIMING_IO          0
+
 #define LOG_ERR            1
 #define LOG_W              1
-#define LOG_W_CTRL         1
+#define LOG_W_CTRL         0
 #define LOG_IMU_RAW        1
-#define LOG_IMU_DATA       1
-#define LOG_IMU_AVG        1
+#define LOG_IMU_DATA       0
+#define LOG_IMU_AVG        0
 #define DEBUG_X_HAT        1
 #define LOG_GPS            1
 #define DEBUG_KALMAN_INPUT 1
@@ -49,7 +50,7 @@
 #define MAX_ERRORS     20
 #define OL_TS_STABIL   0                 // If != 0, then will wait OL_TS_STABIL+STARTUP_RUNS samples before using IMU.
 #define STARTUP_RUNS   (50+OL_TS_STABIL) // Wait for this number of samples at a steady Ts before running
-#define STARTUP_TO_S   5 // Max number of seconds waiting for stable IMU data
+#define STARTUP_TO_S   10 // Max number of seconds waiting for stable IMU data
 #define STARTUP_KALMAN 100
 #define FIXED          3
 #define IMU_TS_OK      -1
@@ -173,30 +174,31 @@ void quit()
     struct timeval
 	tv_tmp,
 	tv_diff;
-    if(!interrupted)
+    if(mot != NULL)
     {
-	/**
-	 * Kill motors, keep IMU+kalman running to log data
-	 *
-	 */
 	retval = mot_deinit(mot);
 	if(retval != ERROR_OK)
 	{
 	    err_log("Could not close motor driver correctly!");
 	}
-	interrupted = true;
-	if(running)
+	mot = NULL;
+	gettimeofday(&tv_tmp, NULL);
+	retval = uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
+	if(retval > 0)
 	{
-	    // Let IMU gather data for a while
-	    gettimeofday(&tv_tmp, NULL);
-	    retval = uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
-	    if(retval > 0)
-	    {
-		err_log_tv("Motors killed!",tv_diff);
-	    }
-	    return;
+	    err_log_tv("Motors killed!",tv_diff);
 	}
     }
+    if(interrupted && running)
+    {
+	/**
+	 * Keep IMU+kalman running to log data
+	 *
+	 */
+	running = false;
+	return;
+    }
+
     /* clear(); */
     /* endwin(); */
     gettimeofday(&tv_tmp, NULL);
@@ -323,6 +325,7 @@ void log_configuration(void)
 void uquad_sig_handler(int signal_num)
 {
     err_log_num("Caught signal:",signal_num);
+    interrupted = true;
     quit();
 }
 
@@ -335,6 +338,7 @@ int main(int argc, char *argv[]){
 	runs_imu    = 0,
 	runs_kalman = 0,
 	ctrl_samples= 0,
+	ts_error    = 0,
 	err_imu     = ERROR_OK,
 	err_gps     = ERROR_OK;
     char
@@ -345,21 +349,20 @@ int main(int argc, char *argv[]){
 	dtmp;
     unsigned long
 	kalman_loops   = 0,
-	ts_error_accum = 0,
 	ts_error_wait  = 0;
     unsigned char
 	tmp_buff[2];
 
     uquad_bool_t
-	read        = false,
-	write       = false,
+	read_ok     = false,
+	write_ok    = false,
 	imu_update  = false,
 	reg_stdin   = true,
+        aux_bool    = false,
 	manual_mode = false;
     struct timeval
 	tv_tmp, tv_diff,
 	tv_last_m_cmd,
-	tv_timing_off,
 	tv_last_ramp,
 	tv_last_kalman,
 	tv_last_imu,
@@ -369,6 +372,9 @@ int main(int argc, char *argv[]){
 #if IMU_COMM_FAKE
     struct timeval tv_imu_fake;
 #endif // IMU_COMM_FAKE
+#if LOG_T_ERR
+    struct timeval tv_timing_off;
+#endif // LOG_T_ERR
 
     // Catch signals
     signal(SIGINT, uquad_sig_handler);
@@ -393,7 +399,7 @@ int main(int argc, char *argv[]){
     gettimeofday(&tv_pgm,NULL);
 #endif
 #if TIMING && TIMING_IMU
-    struct timeval tv_last_imu_read, tv_imu_start, tv_imu_diff;
+    struct timeval tv_last_imu_read, tv_imu_start;
     gettimeofday(&tv_last_imu_read,NULL);
 #endif
     int count_err = 0, count_ok = FIXED;
@@ -556,6 +562,13 @@ int main(int argc, char *argv[]){
 	quit_log_if(ERROR_FAIL,"io init failed!");
     }
 
+    /// Motors
+    mot = mot_init(false);
+    if(mot == NULL)
+    {
+	quit_log_if(ERROR_FAIL,"mot init failed!");
+    }
+
     /// IMU
     imu = imu_comm_init(device_imu);
     if(imu == NULL)
@@ -637,13 +650,6 @@ int main(int argc, char *argv[]){
 	quit_log_if(ERROR_FAIL,"kalman init failed!");
     }
 
-    /// Motors
-    mot = mot_init();
-    if(mot == NULL)
-    {
-	quit_log_if(ERROR_FAIL,"mot init failed!");
-    }
-
     /// Control module
     ctrl = control_init();
     if(ctrl == NULL)
@@ -685,7 +691,7 @@ int main(int argc, char *argv[]){
      * Save configuration to log file
      *
      */
-    retval = kalman_dump(kalman, log_err);
+    //    retval = kalman_dump(kalman, log_err);
     quit_log_if(retval,"Failed to save Kalman configuration!");
     log_configuration();
 
@@ -726,6 +732,11 @@ int main(int argc, char *argv[]){
     gettimeofday(&tv_tmp,NULL);
     uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
     err_log_tv("Entering while:",tv_diff);
+#if !IMU_COMM_FAKE
+    // clear imu input buffer
+    err_log("Clearing IMU input buffer...");
+    while(read(imu->device,tmp_buff,1) > 0);
+#endif // !IMU_COMM_FAKE
     running = true;
     while(1)
     {
@@ -760,7 +771,6 @@ int main(int argc, char *argv[]){
 	    }
 	}
 	// reset error/update indicators
-	imu_update = false;
 	err_imu = ERROR_OK;
 	//gps_update = false; // This is cleared within the loop
 	err_gps = ERROR_OK;
@@ -774,9 +784,9 @@ int main(int argc, char *argv[]){
 	/// -- -- -- -- -- -- -- --
 	if(reg_stdin)
 	{
-	    retval = io_dev_ready(io,STDIN_FILENO,&read,NULL);
+	    retval = io_dev_ready(io,STDIN_FILENO,&read_ok,NULL);
 	    log_n_continue(retval, "Failed to check stdin for input!");
-	    if(!read)
+	    if(!read_ok)
 		goto end_stdin;
 	    retval = fread(tmp_buff,1,1,stdin);
 	    if(retval <= 0)
@@ -796,7 +806,7 @@ int main(int argc, char *argv[]){
 	    err_log_tv("Saving timestamp...",tv_diff);
 #endif
 	    //	    input = getch();
-	    if(input > 0 && !interrupted)
+	    if(input > 0 && running)
 	    {
 		if(retval <= 0)
 		{
@@ -807,8 +817,7 @@ int main(int argc, char *argv[]){
 		if(input == QUIT)
 		{
 		    err_log("Terminating program based on user input...");
-		    quit(); // Kill motors
-		    quit(); // Kill main.c
+		    quit();
 		    // never gets here
 		}
 		if(!manual_mode && (char)input != MANUAL_MODE)
@@ -941,13 +950,16 @@ int main(int argc, char *argv[]){
 	/// -- -- -- -- -- -- -- --
 	/// Check IMU updates
 	/// -- -- -- -- -- -- -- --
-	retval = io_dev_ready(io,imu_fds,&read,&write);
+	retval = io_dev_ready(io,imu_fds,&read_ok,&write_ok);
 	quit_log_if(retval,"io_dev_ready() error");
-	if(read)
+	if(read_ok)
 	{
+            if(imu_update)
+            {
+		err_log_tv("Skipped IMU!...",tv_diff);
+		imu_update = false;
+            }
 #if TIMING && TIMING_IO
-	    err_imu = gettimeofday(&tv_tmp,NULL);
-	    err_log_std(err_imu);
 	    err_imu = uquad_timeval_substract(&tv_diff,tv_tmp,tv_last_io_ok);
 	    if(err_imu < 0)
 	    {
@@ -966,17 +978,18 @@ int main(int argc, char *argv[]){
 	    err_log_std(err_imu);
 #endif
 
-	    err_imu = imu_comm_read(imu, &imu_update);
+	    err_imu = imu_comm_read(imu, &aux_bool);
 	    log_n_jump(err_imu,end_imu,"imu_comm_read() failed!");
-	    if(!imu_update)
+	    if(!aux_bool)
 	    {
 		goto end_imu;
 	    }
-	    imu_update = false; // data may not be of direct use, may be calib
+            // data may not be of direct use, may be calib
 
-
+#if LOG_IMU_RAW || LOG_IMU_DATA
 	    err_imu = imu_comm_get_raw_latest(imu,&imu_frame);
 	    log_n_jump(err_imu,end_imu,"could not get new frame...");
+#endif // (LOG_IMU_RAW || LOG_IMU_DATA)
 
 #if IMU_COMM_FAKE
 	    // simulate delay (no delay when reading from txt)
@@ -1023,30 +1036,24 @@ int main(int argc, char *argv[]){
 #endif // LOG_IMU_RAW || LOG_IMU_DATA
 
 #if TIMING && TIMING_IMU
-	    err_imu = gettimeofday(&tv_tmp,NULL);
-	    err_log_std(err_imu);
-	    err_imu = uquad_timeval_substract(&tv_diff,tv_tmp,tv_last_imu_read);
-	    if(err_imu < 0)
-	    {
-		err_log("Timing error!");
-	    }
-	    err_imu = uquad_timeval_substract(&tv_imu_diff,tv_tmp,tv_imu_start);
-	    if(err_imu < 0)
-	    {
-		err_log("Timing error!");
-	    }
-	    err_imu = gettimeofday(&tv_last_imu_read,NULL);
-	    err_log_std(err_imu);
-	    err_imu = gettimeofday(&tv_pgm,NULL);
-	    err_log_std(err_imu);
-	    printf("IMU:\t%ld\tDELAY:\t%ld\t\t%ld.%06ld\n",
-		   tv_diff.tv_usec, tv_imu_diff.tv_usec,
-		   tv_pgm.tv_sec - tv_start.tv_sec,
-		   tv_pgm.tv_usec);
+            if(runs_kalman > 0)
+            {
+                err_imu = gettimeofday(&tv_tmp,NULL);
+                err_log_std(err_imu);
+                err_imu = uquad_timeval_substract(&tv_diff,tv_tmp,tv_last_imu_read);
+                if(err_imu < 0)
+                {
+                    err_log("IMU Timing error!");
+                }
+                err_imu = ERROR_OK; // clear error
+                tv_last_imu_read = tv_tmp;
+                tv_pgm = tv_tmp;
+                err_log_tv("IMU delay:", tv_diff);
+            }
 #endif
 
 	    /// discard first samples
-	    if(runs_imu >= 0)
+	    if(runs_imu != IMU_TS_OK)
 	    {
 		if(runs_imu == 0)
 		{
@@ -1066,8 +1073,7 @@ int main(int argc, char *argv[]){
 		    {
 			err_log_num("IMU: Frames read out during stabilization:",runs_imu);
 			runs_imu = IMU_TS_OK; // so re-entry doesn't happen
-			err_imu = gettimeofday(&tv_last_imu,NULL);
-			err_log_std(err_imu);
+			tv_last_imu = tv_tmp;
 			tv_gps_last    = tv_last_imu;
 			tv_last_kalman = tv_last_imu;
 			err_imu = uquad_timeval_substract(&tv_diff,tv_last_imu,tv_start);
@@ -1082,6 +1088,8 @@ int main(int argc, char *argv[]){
 		{
 		    // We want consecutive stable samples
 		    imu_ts_ok = 0;
+		    log_tv_only(log_tv,tv_diff);
+		    log_eol(log_tv);
 		}
 		err_imu = ERROR_OK; // clear error, doesn't matter here.
 		tv_last_frame = tv_tmp;
@@ -1140,6 +1148,13 @@ int main(int argc, char *argv[]){
 	    imu_update = true;
 	    err_imu = gettimeofday(&tv_last_imu,NULL);
 	    err_log_std(err_imu);
+            /**
+             * Now that we have data, we'll go back to the beginning of the
+             * loop to check if more data is available.
+             * Small delays over time may lead to us falling behind IMU. If this
+             * happens, we'll sacrifice a control loop to catch up.
+             */
+            continue;
 
 	    end_imu:;
 	    // will jump here if something went wrong during IMU reading
@@ -1152,8 +1167,8 @@ int main(int argc, char *argv[]){
 	/// -- -- -- -- -- -- -- --
 	if(reg_gps && !gps_update)
 	{
-	    err_gps = io_dev_ready(io,gps_fds,&read,&write);
-	    if(read)
+	    err_gps = io_dev_ready(io,gps_fds,&read_ok,&write_ok);
+	    if(read_ok)
 	    {
 		gettimeofday(&tv_tmp,NULL); // Will be used in log_gps
 		if(device_gps != NULL)
@@ -1212,7 +1227,7 @@ int main(int argc, char *argv[]){
 	/// -- -- -- -- -- -- -- --
 	/// check if new data
 	/// -- -- -- -- -- -- -- --
-	if(!imu_update || interrupted)
+	if(!imu_update || !running)
 	    /**
 	     * We don't check gps_update here.
 	     * If gps_update && !imu_update, then
@@ -1221,10 +1236,12 @@ int main(int argc, char *argv[]){
 	     *   T_imu = 10ms
 	     * so use approx. that T_gps+T_imu ~ T_gps.
 	     *
-	     * interrupted: If main was interrupted, we want to
+	     * running: If main was interrupted, then we want to
 	     * log data but the motors should not be controlled any more.
 	     */
 	    continue;
+        else
+            imu_update = false; // mark data as used
 	/// -- -- -- -- -- -- -- --
 	/// Startup Kalman estimator
 	/// -- -- -- -- -- -- -- --
@@ -1350,7 +1367,7 @@ int main(int argc, char *argv[]){
 		if(ts_error_wait == 0 || (ts_error_wait == TS_ERROR_WAIT))
 		{
 		    // Avoid saturating log
-		    if(ts_error_accum < MAX_ERRORS)
+		    if(ts_error < MAX_ERRORS)
 		    {
 			err_log_tv_num("TS supplied to Kalman out of range! Ignored:", tv_diff, (int)ts_error_wait);
 		    }
@@ -1361,7 +1378,7 @@ int main(int argc, char *argv[]){
 		    if(ts_error_wait == TS_ERROR_WAIT)
 		    {
 			ts_error_wait = 0;
-			ts_error_accum++;
+			ts_error++;
 		    }
 		}
 		ts_error_wait++;
@@ -1376,7 +1393,7 @@ int main(int argc, char *argv[]){
 		    err_log_tv_num("TS supplied to Kalman out of range! Ignored:", tv_diff, (int)ts_error_wait);
 		}   
 		ts_error_wait = 0;
-		ts_error_accum = 0;
+		ts_error = uquad_max(0,ts_error - 1);
 	    }
 	}
 	// use real w
@@ -1398,8 +1415,10 @@ int main(int argc, char *argv[]){
 	    retval = uquad_timeval_substract(&tv_diff, tv_tmp, tv_start);
 	    retval = ERROR_OK; // clear to avoid errors
 	    gps_update = false; // Clear gps status
+#if LOG_GPS
 	    log_tv_only(log_gps, tv_diff);
 	    log_eol(log_gps);
+#endif // LOG_GPS
 	}
 #endif // USE_GPS
 

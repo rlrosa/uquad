@@ -788,7 +788,9 @@ int main(int argc, char *argv[])
 	}
 	else
 	{
+#ifndef PC_TEST
 	    log_to_err("WARN: Absurd timing!");
+#endif // PC_TEST
 	}
     }
  
