@@ -54,9 +54,9 @@ B=[diff(dX,w1) diff(dX,w2) diff(dX,w3) diff(dX,w4)];
 
 %Para los círculos hay que cambiar las tres primeras ecuaciones
 
-dXcirc(1:3,1)= [vq1+wq2*z-wq3*y;
-           vq2+wq3*x-wq1*z;
-           vq3+wq1*y-wq2*x];
+dXcirc(1:3,1)= [vq1-wq2*z+wq3*y;
+           vq2-wq3*x+wq1*z;
+           vq3-wq1*y+wq2*x];
 
 
 A3primeras=[diff(dXcirc,x) diff(dXcirc,y) diff(dXcirc,z)  diff(dXcirc,psis) diff(dXcirc,phi) diff(dXcirc,theta) diff(dXcirc,vq1) diff(dXcirc,vq2) diff(dXcirc,vq3)  diff(dXcirc,wq1) diff(dXcirc,wq2) diff(dXcirc,wq3)];

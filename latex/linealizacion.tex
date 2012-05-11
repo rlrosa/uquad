@@ -6,7 +6,7 @@
 \chapter{Linelizaci\'on y puntos de operaci\'on}
 \label{chap:linealizacion}
 
-Independientemente del sistema bajo estudio, a la hora de elegir la t\'ecnica de control a utilizar se plantean diversas posibilidades. Parece razonable intentar resolver el problema planteado utilizando las t\'ecnicas m\'as sencillas que se disponen, al menos en una primera aproximaci\'on. En caso de que dicha soluci\'on no fuese satisfactoria se puede optar por una t\'ecnia con un mayor grado de complejidad.\\ 
+Independientemente del sistema bajo estudio, a la hora de elegir la t\'ecnica de control a utilizar se plantean diversas posibilidades. Parece razonable intentar resolver el problema planteado utilizando las t\'ecnicas m\'as sencillas que se disponen, al menos en una primera aproximaci\'on. En caso de que dicha soluci\'on no fuese satisfactoria se puede optar por una t\'ecnica con un mayor grado de complejidad.\\ 
 
 Las t\'ecnicas de control m\'as sencillas y con las que se tiene mayor experiencia se basan en el estudio de sistemas lineales invariantes en el tiempo (SLIT). Sin embargo el MVE obtenido en el cap\'tulo \ref{chap:modelo} es no lineal. Se propone entonces resolver el problema del control del cuadric\'optero aproximando el sistema por un sistema lineal invariante en el tiempo. Dado que el sistema no puede ser linealizado en torno a cualquier trayectoria o punto de operaci\'on nos concentraremos en determinar bajo que condiciones es posible aproximar el sistema por un SLIT.
 
@@ -31,7 +31,7 @@ Este mismo concepto puede generalizarse en caso en el cual el vector de estados 
 \begin{equation}
 \dot{\tilde{X}}(t)=A(t)\tilde{X}(t)+B(t)\tilde{U}(t)
 \end{equation}
-Donde $A(t)$ es una matriz de $n \times n$ y $B(t)$ es de $n \times m$, tales que $a_{ij}= \frac{\partial f_i}{\partial X_j}\vert_{U=U^*}^{X=X^*}$ y  $b_{ij}= \frac{\partial f_i}{\partial U_j}\vert_{U=U^*}^{X=X^*}$
+Donde $A(t)$ es una matriz de $n \times n$ y $B(t)$ es de $n \times m$, tales que $a_{ij}= \frac{\partial f_i}{\partial X_j}\vert_{U=U^*}^{X=X^*}$ y  $b_{ij}= \frac{\partial f_i}{\partial U_j}\vert_{U=U^*}^{X=X^*}$.\\
 
 En el caso en que todos los coeficientes de las matrices A y B son constantes podemos afirmar que estamos en presencia de un sistema lineal invariante en el tiempo. 
 
@@ -89,9 +89,9 @@ v_{qz}\\
 
 Dado que la velocidad y velocidad angular del sistema fue definida como cero tenemos por despejar 7 variables: los \'angulos de Euler, y las velocidades angulares de los motores. \\
 
-Al imponer las condiciones de \ref{eq:quieto} las ecuaciones \ref{eq:euler} y \ref{eq:pospunto} del MVE se cumplen trivialmente. Por lo tanto tenemos solamente las seis ecuaciones correspondientes a las derivadas de las velocidades y de las velocidades angulares. Estas \'ultimas  no dependen de $\theta$, obteniendo entonces un sistema de seis ecuaciones y seis inc\'ognitas que debe ser resuelto a fin de determinar las condiciones que permiten el hovering. Cabe destacar que ninguna de las seis ecuaciones depende la posici\'on, esto sumado a la independencia de la condici\'on de hovering respecto de $\theta$, nos permite confirmar la suposici\'on de que puede lograrse el hovering en cualquier punto del espacio con cualquier \'angulo de Yaw.\\
+Al imponer las condiciones de \ref{eq:quieto} las ecuaciones \ref{eq:euler} y \ref{eq:pospunto} del MVE se cumplen trivialmente. La restricci\'on establecida en \ref{eq:slit} consta de seis ecuaciones. Estas no dependen de $\theta$, obteniendo entonces un sistema de seis ecuaciones y seis inc\'ognitas que debe ser resuelto a fin de determinar las condiciones que permiten el hovering. Ninguna de las seis ecuaciones depende la posici\'on, esto sumado a la independencia de la condici\'on de hovering respecto de $\theta$, nos permite confirmar un resultado evidente: el hovering puede lograrse en cualquier punto del espacio con cualquier \'angulo de Yaw\\
 
-Del an\'alisis de las ecuaciones \ref{eq:quieto} se obtiene r\'apidamente que:
+Del an\'alisis de las ecuaciones \ref{eq:slit} se obtiene r\'apidamente que:
 \begin{equation}
 \varphi=0 \quad \psi=0
 \end{equation}
@@ -135,7 +135,8 @@ El vuelo en linea recta nos ofrece la posibilidad de fijar los restantes 4 par\'
 
 \subsection{Vuelo en c\'irculos}
 
-Dado que queremos un sistema invariante en el tiempo para poder trabajar con el no nos es posible, con las ecuaciones desarrolladas hasta este instante realizar movimientos con velocidades angulares distintas de cero. Si se viola esta condici\'on se tiene que al menos alguno de $\dot{\psi}$, $\dot{\varphi}$ o $\dot{\theta}$ es distinto de cero. Por lo tanto tenemos al menos alg\'un \'angulo de Euler variante en el tiempo. Para poder obtener un movimiento circular se debe realizar el cambio de variable en el MVE en lo que respecta a las ecuaciones de la derivada de la posici\'on propuesto en \ref{bib:auion}. \\
+Con las ecuaciones desarrolladas hasta este instante nos es imposible realizar movimientos con velocidades angulares distintas de cero sin que el sistema resultante sea variante en el tiempo. Si imponemos que la velocidad angular del sistema sea distinta a cero se tiene que al menos alguno de las derivadas de los \'agulos de Euler es distinta de cero. Por lo tanto tenemos al menos alg\'un \'angulo de Euler variante en el tiempo. Para poder obtener un movimiento circular se realiza el cambio de variable en el MVE en lo que respecta a las ecuaciones de la derivada de la posici\'on propuesto en \ref{bib:auion}. \\
+
 %TODO faltan imagenes para explicar el mov circular
 El cambio de variables en cuesti\'on consiste en expresar la posici\'on (exclusivamente para los movimientos circulares) en la base del cuadric\'optero. Supongamos que el cuadric\'optero se encuentra realizando un movimiento tal, que su proyecci\'on sobre el plano horizontal ($z=0$) es circular. Podemos describir la posici\'on en todo momento tomando como origen el centro de dicho c\'irculo. Como se observa en la figura \ref{fig:circulo} la posici\'on en dicho plano se puede expresar como $-R\vec{j}_1$\footnote{Esto es debido a que se elige que el vector $\vec{i}_q$ sea tangente a los c\'irculos descriptos. El razonamiento es an\'alogo si se desea que el vector $\vec{j}_q$ sea tangente al c\'irculo, en este caso debe expresarse la posic\'on del sistema como $R\vec{i}_1$}. Donde $R$, es el radio del c\'irculo y $\vec{j}_1$ es un vector de la base que se obtiene al realizar la primera rotaci\'on de Euler definida en \ref{eq:bases}. Multiplicando el vector $-R\vec{j_1}$ por la matriz cambio de base $H_2^qH_1^2$ definida en \ref{eq:bases} se obtiene la posici\'on expresada en el sistema $S_q$. Como $\vec{j}_1$ es invariante frente a la rotaci\'on $H_1^2$, alcanza con multiplicar dicho vector por $H_2^q$ obteniendo as\'i:
 
@@ -150,7 +151,7 @@ El cambio de variables en cuesti\'on consiste en expresar la posici\'on (exclusi
 
 Al expresar la posici\'on con este cambio de variables se obtiene la independencia de la misma respecto de dos de los tres \'anglos de Euler: $\varphi$ y $\theta$. En lo que respecta al \'angulo $\varphi$ la independencia de esta variable no nos aporta absolutamente nada ya que para que el movimiento circular a velocidad constante sea posible dicho \'angulo debe ser cero. La raz\'on es que si el \'angulo fuese diferente a cero tendr\'iamos una componente de la fuerza en la direcci\'on tangencial al c\'irculo, por lo tanto una aceleraci\'on en dicha direcci\'on.\\
 
-Sin embargo, la independencia respecto de $\theta$, ya que (a diferencia de $\varphi$) dicha variable no est\'a presente en ninguna de las ecuaciones que gobiernan al sistema, presenta es una gran ventaja: bajo este modelo de variables de estado se logra la invariancia temporal a pesar de que este \'angulo no sea constante. \\
+Sin embargo, la independencia respecto de $\theta$ en la posici\'on es un paso fundamental para lograr el vuelo en c\'irculos ya que las \'unicas ecuaciones del MVE \ref{eq:modelo} que dependen de esta variable son las que refieren a la derivada de la posici\'on. Por lo tanto, seremos capaces de desarrollar un nuevo MVE independiente del \'angulo de Yaw.\\
 
 Nos interesa ahora derivar la posici\'on para terminar de completar el modelo del sistema. Dado que la posici\'on se encuentra expresada en el sistema del cuadric\'optero tendremos que:
 \begin{equation}
