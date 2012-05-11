@@ -12,7 +12,7 @@
 #define LOG_IMU_DATA       0
 #define LOG_IMU_AVG        0
 #define DEBUG_X_HAT        1
-#define LOG_GPS            0
+#define LOG_GPS            1
 #define DEBUG_KALMAN_INPUT 1
 #define LOG_TV             1
 #define LOG_T_ERR          1
