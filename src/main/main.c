@@ -174,30 +174,31 @@ void quit()
     struct timeval
 	tv_tmp,
 	tv_diff;
-    if(!interrupted)
+    if(mot != NULL)
     {
-	/**
-	 * Kill motors, keep IMU+kalman running to log data
-	 *
-	 */
 	retval = mot_deinit(mot);
 	if(retval != ERROR_OK)
 	{
 	    err_log("Could not close motor driver correctly!");
 	}
-	interrupted = true;
-	if(running)
+	mot = NULL;
+	gettimeofday(&tv_tmp, NULL);
+	retval = uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
+	if(retval > 0)
 	{
-	    // Let IMU gather data for a while
-	    gettimeofday(&tv_tmp, NULL);
-	    retval = uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
-	    if(retval > 0)
-	    {
-		err_log_tv("Motors killed!",tv_diff);
-	    }
-	    return;
+	    err_log_tv("Motors killed!",tv_diff);
 	}
     }
+    if(interrupted && running)
+    {
+	/**
+	 * Keep IMU+kalman running to log data
+	 *
+	 */
+	running = false;
+	return;
+    }
+
     /* clear(); */
     /* endwin(); */
     gettimeofday(&tv_tmp, NULL);
@@ -324,6 +325,7 @@ void log_configuration(void)
 void uquad_sig_handler(int signal_num)
 {
     err_log_num("Caught signal:",signal_num);
+    interrupted = true;
     quit();
 }
 
@@ -804,7 +806,7 @@ int main(int argc, char *argv[]){
 	    err_log_tv("Saving timestamp...",tv_diff);
 #endif
 	    //	    input = getch();
-	    if(input > 0 && !interrupted)
+	    if(input > 0 && running)
 	    {
 		if(retval <= 0)
 		{
@@ -815,8 +817,7 @@ int main(int argc, char *argv[]){
 		if(input == QUIT)
 		{
 		    err_log("Terminating program based on user input...");
-		    quit(); // Kill motors
-		    quit(); // Kill main.c
+		    quit();
 		    // never gets here
 		}
 		if(!manual_mode && (char)input != MANUAL_MODE)
@@ -1226,7 +1227,7 @@ int main(int argc, char *argv[]){
 	/// -- -- -- -- -- -- -- --
 	/// check if new data
 	/// -- -- -- -- -- -- -- --
-	if(!imu_update || interrupted)
+	if(!imu_update || !running)
 	    /**
 	     * We don't check gps_update here.
 	     * If gps_update && !imu_update, then
@@ -1235,7 +1236,7 @@ int main(int argc, char *argv[]){
 	     *   T_imu = 10ms
 	     * so use approx. that T_gps+T_imu ~ T_gps.
 	     *
-	     * interrupted: If main was interrupted, we want to
+	     * running: If main was interrupted, then we want to
 	     * log data but the motors should not be controlled any more.
 	     */
 	    continue;
