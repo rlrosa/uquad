@@ -406,7 +406,11 @@ int main(int argc, char *argv[]){
 
 #if LOG_IMU_RAW || LOG_IMU_DATA
     imu_raw_t imu_frame;
+    struct timeval tv_raw_sample;
 #endif // LOG_IMU_RAW || LOG_IMU_DATA
+#if LOG_IMU_AVG
+    struct timeval tv_imu_avg;
+#endif // LOG_IMU_AVG
 
     /**
      * Init curses library, used for user input
@@ -986,11 +990,6 @@ int main(int argc, char *argv[]){
 	    }
             // data may not be of direct use, may be calib
 
-#if LOG_IMU_RAW || LOG_IMU_DATA
-	    err_imu = imu_comm_get_raw_latest(imu,&imu_frame);
-	    log_n_jump(err_imu,end_imu,"could not get new frame...");
-#endif // (LOG_IMU_RAW || LOG_IMU_DATA)
-
 #if IMU_COMM_FAKE
 	    // simulate delay (no delay when reading from txt)
 	    if(runs_imu == 0)
@@ -1014,25 +1013,12 @@ int main(int argc, char *argv[]){
 	    err_imu = gettimeofday(&tv_tmp,NULL);
 	    err_log_std(err_imu);
 #if LOG_IMU_RAW || LOG_IMU_DATA
-	    err_imu = uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
+	    err_imu = uquad_timeval_substract(&tv_raw_sample,tv_tmp,tv_start);
 	    if(err_imu < 0)
 	    {
 		err_log("Timing error!");
 	    }
-#if LOG_IMU_RAW
-	    log_tv_only(log_imu_raw,tv_diff);
-	    err_imu= imu_comm_print_raw(&imu_frame, log_imu_raw);
-	    log_n_jump(err_imu,end_imu,"could not print new raw frame...");
-	    fflush(log_imu_raw);
-#endif // LOG_IMU_RAW
-#if LOG_IMU_DATA
-	    err_imu = imu_comm_raw2data(imu, &imu_frame, &imu_data);
-	    log_n_jump(err_imu,end_imu,"could not convert new raw...");
-	    log_tv_only(log_imu_data,tv_diff);
-	    err_imu = imu_comm_print_data(&imu_data, log_imu_data);
-	    log_n_jump(err_imu,end_imu,"could not print new data...");
-	    fflush(log_imu_data);
-#endif // LOG_IMU_DATA
+	    err_imu = ERROR_OK;
 #endif // LOG_IMU_RAW || LOG_IMU_DATA
 
 #if TIMING && TIMING_IMU
@@ -1091,10 +1077,15 @@ int main(int argc, char *argv[]){
 		    log_tv_only(log_tv,tv_diff);
 		    log_eol(log_tv);
 		}
-		err_imu = ERROR_OK; // clear error, doesn't matter here.
 		tv_last_frame = tv_tmp;
 		// check timeout
-		(void) uquad_timeval_substract(&tv_diff, tv_tmp, tv_imu_stab_init);
+		err_imu =  uquad_timeval_substract(&tv_diff, tv_tmp, tv_imu_stab_init);
+		if(err_imu < 0)
+		{
+		    err_log("Timing error!");
+		}
+		err_imu = ERROR_OK; // clear error, doesn't matter here.
+
 		if(tv_diff.tv_sec > STARTUP_TO_S)
 		{
 		    quit_log_if(ERROR_IO, "Timed out waiting for stable IMU samples...");
@@ -1128,18 +1119,19 @@ int main(int argc, char *argv[]){
 	    err_imu = imu_comm_get_lpf_unread(imu,&imu_data);
 	    log_n_jump(err_imu,end_imu,"LPF failed");
 
-#if LOG_IMU_AVG
-	    uquad_timeval_substract(&tv_diff, tv_tmp, tv_start);
-	    log_tv_only(log_imu_avg, tv_diff);
-	    err_imu = imu_comm_print_data(&imu_data, log_imu_avg);
-	    log_n_jump(err_imu,end_imu,"Failed to log imu avg!");
-#endif // LOG_IMU_AVG
-
 	    err_imu = uquad_timeval_substract(&tv_diff,tv_tmp,tv_last_imu);
 	    if(err_imu < 0)
 	    {
 		log_n_jump(ERROR_TIMING,end_imu,"Timing error!");
 	    }
+#if LOG_IMU_AVG
+	    err_imu = uquad_timeval_substract(&tv_imu_avg,tv_tmp,tv_start);
+	    if(err_imu < 0)
+	    {
+		log_n_jump(ERROR_TIMING,end_imu,"Timing error!");
+	    }
+	    err_imu = ERROR_OK; // clear error, doesn't matter here.
+#endif // LOG_IMU_AVG
 
 	    // store time since last IMU sample
 	    imu_data.timestamp = tv_diff;
@@ -1531,6 +1523,35 @@ int main(int argc, char *argv[]){
 	    uquad_mat_dump(wt,log_w);
 	    fflush(log_w);
 #endif
+
+	    /**
+	     * Log only data that was actually used.
+	     * To check missed data, look at error log.
+	     */
+#if LOG_IMU_AVG
+	    log_tv_only(log_imu_avg, tv_imu_avg);
+	    err_imu = imu_comm_print_data(&imu_data, log_imu_avg);
+	    log_n_jump(err_imu,end_imu,"Failed to log imu avg!");
+#endif // LOG_IMU_AVG
+#if LOG_IMU_RAW || LOG_IMU_DATA
+	    retval = imu_comm_get_raw_latest(imu,&imu_frame);
+	    log_n_jump(retval,end_log_imu,"could not get new frame...");
+#if LOG_IMU_RAW
+	    log_tv_only(log_imu_raw,tv_raw_sample);
+	    retval= imu_comm_print_raw(&imu_frame, log_imu_raw);
+	    log_n_jump(retval,end_log_imu,"could not print new raw frame...");
+	    fflush(log_imu_raw);
+#endif // LOG_IMU_RAW
+#if LOG_IMU_DATA
+	    retval = imu_comm_raw2data(imu, &imu_frame, &imu_data);
+	    log_n_jump(retval,end_log_imu,"could not convert new raw...");
+	    log_tv_only(log_imu_data,tv_raw_sample);
+	    retval = imu_comm_print_data(&imu_data, log_imu_data);
+	    log_n_jump(retval,end_log_imu,"could not print new data...");
+	    fflush(log_imu_data);
+#endif // LOG_IMU_DATA
+	    end_log_imu:;
+#endif // LOG_IMU_RAW || LOG_IMU_DATA
 
 #if LOG_BUKAKE
 	    uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
