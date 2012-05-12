@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
 	pipe_name = argv[1];
     }
 
-    log_file = uquad_logger_add(pipe_name,"./");
+    log_file = uquad_logger_add(pipe_name,"./", 0);
     if(log_file == NULL)
     {
 	quit_log_if(ERROR_OPEN,"Failed to start pipe!");

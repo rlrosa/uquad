@@ -18,6 +18,20 @@
 #define LOG_T_ERR          1
 #define LOG_INT            (1 && CTRL_INTEGRAL)
 #define LOG_BUKAKE         0
+
+/**
+ * Realtime logging to SD card has proven to destroy performance, so
+ * running main.c with realtime logs to SD card is not acceptable.
+ *
+ * Logging to external flash drive is ok reasonable, but it is recomended to
+ * save logs in ram, and dump after program execution is completed. To achieve
+ * this, set LOG_RAM_MB to the number of megabytes that logger are allowed to
+ * allocate.
+ *
+ * If LOG_RAM_MB == 0, then realtime logging will be used.
+ *
+ */
+#define LOG_RAM_MB         10 // If 0, will log to disk (SD, flash drive, etc).
 #endif
 
 #if LOG_BUKAKE
@@ -447,7 +461,7 @@ int main(int argc, char *argv[]){
     /// Logs
 #if DEBUG
 #if LOG_ERR
-    log_err = uquad_logger_add(LOG_ERR_NAME, log_path);
+    log_err = uquad_logger_add(LOG_ERR_NAME, log_path, LOG_RAM_MB);
     if(log_err == NULL)
     {
 	err_log("Failed to open log_imu_raw!");
@@ -462,7 +476,7 @@ int main(int argc, char *argv[]){
     stderr = log_err;
 #endif // LOG_ERR
 #if LOG_IMU_RAW
-    log_imu_raw = uquad_logger_add(LOG_IMU_RAW_NAME, log_path);
+    log_imu_raw = uquad_logger_add(LOG_IMU_RAW_NAME, log_path, LOG_RAM_MB);
     if(log_imu_raw == NULL)
     {
 	err_log("Failed to open log_imu_raw!");
@@ -470,7 +484,7 @@ int main(int argc, char *argv[]){
     }
 #endif //LOG_IMU_RAW
 #if LOG_IMU_DATA
-    log_imu_data = uquad_logger_add(LOG_IMU_DATA_NAME, log_path);
+    log_imu_data = uquad_logger_add(LOG_IMU_DATA_NAME, log_path, LOG_RAM_MB);
     if(log_imu_data == NULL)
     {
 	err_log("Failed to open log_imu_data!");
@@ -478,7 +492,7 @@ int main(int argc, char *argv[]){
     }
 #endif //LOG_IMU_DATA
 #if LOG_IMU_AVG
-    log_imu_avg = uquad_logger_add(LOG_IMU_AVG_NAME, log_path);
+    log_imu_avg = uquad_logger_add(LOG_IMU_AVG_NAME, log_path, LOG_RAM_MB);
     if(log_imu_avg == NULL)
     {
 	err_log("Failed to open log_imu_avg!");
@@ -486,7 +500,7 @@ int main(int argc, char *argv[]){
     }
 #endif //LOG_IMU_AVG
 #if LOG_W
-    log_w = uquad_logger_add(LOG_W_NAME, log_path);
+    log_w = uquad_logger_add(LOG_W_NAME, log_path, LOG_RAM_MB);
     if(log_w == NULL)
     {
 	err_log("Failed to open log_w!");
@@ -494,7 +508,7 @@ int main(int argc, char *argv[]){
     }
 #endif //LOG_W
 #if LOG_W_CTRL
-    log_w_ctrl = uquad_logger_add(LOG_W_CTRL_NAME, log_path);
+    log_w_ctrl = uquad_logger_add(LOG_W_CTRL_NAME, log_path, LOG_RAM_MB);
     if(log_w_ctrl == NULL)
     {
 	err_log("Failed to open log_w_ctrl!");
@@ -502,7 +516,7 @@ int main(int argc, char *argv[]){
     }
 #endif //LOG_W_CTRL
 #if DEBUG_X_HAT
-    log_x_hat = uquad_logger_add(LOG_X_HAT_NAME, log_path);
+    log_x_hat = uquad_logger_add(LOG_X_HAT_NAME, log_path, LOG_RAM_MB);
     if(log_x_hat == NULL)
     {
 	err_log("Failed to open x_hat!");
@@ -510,7 +524,7 @@ int main(int argc, char *argv[]){
     }
 #endif //DEBUG_X_HAT
 #if DEBUG_KALMAN_INPUT
-    log_kalman_in = uquad_logger_add(LOG_KALMAN_IN_NAME, log_path);
+    log_kalman_in = uquad_logger_add(LOG_KALMAN_IN_NAME, log_path, LOG_RAM_MB);
     if(log_kalman_in == NULL)
     {
 	err_log("Failed open kalman_in log!");
@@ -518,7 +532,7 @@ int main(int argc, char *argv[]){
     }
 #endif
 #if LOG_GPS && USE_GPS
-    log_gps = uquad_logger_add(LOG_GPS_NAME, log_path);
+    log_gps = uquad_logger_add(LOG_GPS_NAME, log_path, LOG_RAM_MB);
     if(log_gps == NULL)
     {
 	err_log("Failed open kalman_in log!");
@@ -526,7 +540,7 @@ int main(int argc, char *argv[]){
     }
 #endif //LOG_GPS && USE_GPS
 #if LOG_BUKAKE && !LOG_BUKAKE_STDOUT
-    log_bukake = uquad_logger_add(LOG_BUKAKE_NAME, log_path);
+    log_bukake = uquad_logger_add(LOG_BUKAKE_NAME, log_path, LOG_RAM_MB);
     if(log_bukake == NULL)
     {
 	err_log("Failed open kalman_in log!");
@@ -534,7 +548,7 @@ int main(int argc, char *argv[]){
     }
 #endif //LOG_BUKAKE && !LOG_BUKAKE_STDOUT
 #if LOG_TV
-    log_tv = uquad_logger_add(LOG_TV_NAME, log_path);
+    log_tv = uquad_logger_add(LOG_TV_NAME, log_path, LOG_RAM_MB);
     if(log_tv == NULL)
     {
 	err_log("Failed to open tv_log!");
@@ -542,7 +556,7 @@ int main(int argc, char *argv[]){
     }
 #endif // LOG_TV
 #if LOG_T_ERR
-    log_t_err = uquad_logger_add(LOG_T_ERR_NAME, log_path);
+    log_t_err = uquad_logger_add(LOG_T_ERR_NAME, log_path, LOG_RAM_MB);
     if(log_t_err == NULL)
     {
 	err_log("Failed to open t_err_log!");
@@ -550,7 +564,7 @@ int main(int argc, char *argv[]){
     }
 #endif // LOG_T_ERROR
 #if LOG_INT
-    log_int = uquad_logger_add(LOG_INT_NAME, log_path);
+    log_int = uquad_logger_add(LOG_INT_NAME, log_path, LOG_RAM_MB);
     if(log_int == NULL)
     {
 	err_log("Failed to open t_err_log!");
@@ -695,7 +709,7 @@ int main(int argc, char *argv[]){
      * Save configuration to log file
      *
      */
-    //    retval = kalman_dump(kalman, log_err);
+    retval = kalman_dump(kalman, log_err);
     quit_log_if(retval,"Failed to save Kalman configuration!");
     log_configuration();
 
@@ -1074,8 +1088,6 @@ int main(int argc, char *argv[]){
 		{
 		    // We want consecutive stable samples
 		    imu_ts_ok = 0;
-		    log_tv_only(log_tv,tv_diff);
-		    log_eol(log_tv);
 		}
 		tv_last_frame = tv_tmp;
 		// check timeout
