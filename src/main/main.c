@@ -1107,8 +1107,18 @@ int main(int argc, char *argv[]){
 
 	    /// check calibration status
 	    if(imu_comm_get_status(imu) == IMU_COMM_STATE_CALIBRATING)
+	    {
 		// if calibrating, then data should not be used.
+#if LOG_IMU_RAW
+		retval = imu_comm_get_raw_latest(imu,&imu_frame);
+		log_n_jump(retval,end_log_imu,"could not get new frame...");
+		log_tv_only(log_imu_raw,tv_raw_sample);
+		retval= imu_comm_print_raw(&imu_frame, log_imu_raw);
+		log_n_jump(retval,end_log_imu,"could not print new raw frame...");
+		fflush(log_imu_raw);
+#endif // LOG_IMU_RAW
 		goto end_imu;
+	    }
 	    else if(!imu_comm_calib_estim(imu))
 	    {
 		// if no calibration estim exists, build one.
