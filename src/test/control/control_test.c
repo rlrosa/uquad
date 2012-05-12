@@ -7,6 +7,8 @@
 #include <uquad_error_codes.h>
 #include <uquad_types.h>
 
+#define USAGE "Pater hay que definir USAGE"
+
 static uquad_mat_t
 *x_hat = NULL,
 *w     = NULL;
@@ -38,6 +40,7 @@ int main(int argc, char *argv[])
 
     int retval;
     FILE *file;
+    uquad_mat_t *x, *w;
 
     if(argc < 2)
     {
@@ -79,7 +82,8 @@ int main(int argc, char *argv[])
 	{
 	    quit_log_if(retval, "End of log?");
 	}
-	retval = pp_update_setpoint(pp, x);
+	#warning "w_hover esta mal!"
+	retval = pp_update_setpoint(pp, x, 0);
 	quit_if(retval);
 	retval = control(ctrl, w, x, pp->sp, TS_DEFAULT_US);
 	quit_if(retval);

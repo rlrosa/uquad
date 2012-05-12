@@ -25,15 +25,31 @@ void uquad_logger_die(int signal)
     die = true;
 }
 
-void uquad_logger_read(int pipefd, char *log_name, char *path)
+/**
+ * Child process launched by uquad_logger_add().
+ *
+ * NOTE: If ram is greater that 0, up to ram BYTES of data will be read
+ *       from pipefd, and stored in dynamically allocated memory. After
+ *       reading ram BYTES, logger will continue reading from pipe, but
+ *       data will be discarded.
+ *
+ * @param pipefd Will read from pipefd until parent closes pipe.
+ * @param log_name File to which data will be saved.
+ * @param path Path where log file will be placed.
+ * @param ram If greater than 0, up to ram BYTES will be stored.
+ */
+void uquad_logger_read(int pipefd, char *log_name, char *path, int ram)
 {
     int retval = ERROR_OK,
 	log_fd = -1,
 	buff_index = 0;
     char file_name[PATH_MAX];
-    char buff[BUFF_SIZE];
     char *new_line = NULL;
-    uquad_bool_t write_ok, read_ok;
+    char *buff = NULL;
+    uquad_bool_t
+	write_ok   = false,
+	read_ok    = false,
+	out_of_ram = false;
     struct timeval
 #if LOGGER_DEBUG
 	tv_new,
@@ -41,6 +57,12 @@ void uquad_logger_read(int pipefd, char *log_name, char *path)
 	tv_diff,
 #endif // LOGGER_DEBUG
 	tv_old;
+    buff = (char *)malloc(sizeof(char)*
+			  ((ram>0?ram:BUFF_SIZE) + READ_SIZE));
+    if(buff == NULL)
+    {
+	cleanup_log_if(ERROR_MALLOC, "Failed to allocate mem for logger!");
+    }
     retval = sprintf(file_name,"%s%s.log",path,log_name);
     if(retval < 0)
     {
@@ -80,6 +102,16 @@ void uquad_logger_read(int pipefd, char *log_name, char *path)
 	    retval = read(pipefd, (void *)(buff+buff_index), READ_SIZE);
 	    if(retval > 0)
 	    {
+		if((ram > 0) && (buff_index >= ram))
+		{
+		    /// Discard data, no space left...
+		    if(!out_of_ram)
+		    {
+			out_of_ram = true;
+			err_log_str("Logger out of ram, will discard incoming data...",log_name);
+		    }
+		    continue;
+		}
 		buff_index += retval;
 #if LOGGER_DEBUG
 		gettimeofday(&tv_new,NULL);
@@ -89,7 +121,7 @@ void uquad_logger_read(int pipefd, char *log_name, char *path)
 		    err_log_tv("read() got stuck!",tv_diff);
 		}
 #endif // LOGGER_DEBUG
-		if(buff_index < FLUSH_SIZE)
+		if(buff_index < FLUSH_SIZE || ram > 0)
 		    continue;
 		retval = check_io_locks(log_fd,NULL,NULL,&write_ok);
 		if(retval != ERROR_OK)
@@ -170,7 +202,7 @@ void uquad_logger_read(int pipefd, char *log_name, char *path)
     exit(0);
 }
 
-FILE *uquad_logger_add(char *log_name, char *path)
+FILE *uquad_logger_add(char *log_name, char *path, int ram)
 {
     int retval = ERROR_OK;
     FILE *pipe_f;
@@ -202,7 +234,7 @@ FILE *uquad_logger_add(char *log_name, char *path)
 	signal(SIGINT, uquad_logger_die);
 	signal(SIGQUIT,uquad_logger_die);
 	signal(SIGPIPE,uquad_logger_die);
-	uquad_logger_read(pipefd[0], log_name, path);
+	uquad_logger_read(pipefd[0], log_name, path, (ram<<20));
 	return NULL;
     }
     else
