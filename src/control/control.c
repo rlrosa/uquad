@@ -164,10 +164,16 @@ int control(ctrl_t *ctrl, uquad_mat_t *w, uquad_mat_t *x, set_point_t *sp, doubl
 
     /// SV_THETA
     ctrl_int(ctrl->x_int->m_full + (ctrl->x_int->r - 1),
-	     tmp_sub_sp_x->m[SV_THETA][0],
+	     tmp_sub_sp_x->m[SV_PSI][0],
 	     T_s,
-	     CTRL_INT_DELTA_MAX_THETA,
-	     CTRL_INT_ACCUM_MAX_THETA);
+	     CTRL_INT_DELTA_MAX_PSI,
+	     CTRL_INT_ACCUM_MAX_PSI);
+    /* /// SV_THETA */
+    /* ctrl_int(ctrl->x_int->m_full + (ctrl->x_int->r - 1), */
+    /* 	     tmp_sub_sp_x->m[SV_THETA][0], */
+    /* 	     T_s, */
+    /* 	     CTRL_INT_DELTA_MAX_THETA, */
+    /* 	     CTRL_INT_ACCUM_MAX_THETA); */
 
     /// SV_Z
     ctrl_int(ctrl->x_int->m_full + (ctrl->x_int->r - 2),
