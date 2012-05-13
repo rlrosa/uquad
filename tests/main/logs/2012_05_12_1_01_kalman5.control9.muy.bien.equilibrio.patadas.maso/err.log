@@ -1,0 +1,259 @@
+16:43:33:/home/root/work/uquad/src/control/control.c:51: Loaded proportional gain matrix from:(K_full.txt)
+
+16:43:36:/home/root/work/uquad/src/main/main.c:308: -- -- -- -- -- -- -- --
+16:43:36:/home/root/work/uquad/src/main/main.c:309: main.c configuration:
+16:43:36:/home/root/work/uquad/src/main/main.c:310: -- -- -- -- -- -- -- --
+16:43:36:/home/root/work/uquad/src/main/main.c:311: DEBUG(1)
+16:43:36:/home/root/work/uquad/src/main/main.c:312: KALMAN_BIAS(1)
+16:43:36:/home/root/work/uquad/src/main/main.c:313: CTRL_INTEGRAL(0)
+16:43:36:/home/root/work/uquad/src/main/main.c:314: FULL_CONTROL(1)
+16:43:36:/home/root/work/uquad/src/main/main.c:315: USE_GPS(1)
+16:43:36:/home/root/work/uquad/src/main/main.c:316: GPS_ZERO(1)
+16:43:36:/home/root/work/uquad/src/main/main.c:317: IMU_COMM_FAKE(0)
+16:43:36:/home/root/work/uquad/src/main/main.c:318: OL_TS_STABIL(0)
+16:43:36:/home/root/work/uquad/src/main/main.c:319: CTRL_TS(1)
+16:43:36:/home/root/work/uquad/src/main/main.c:320: MASA_DEFAULT(1.650000)
+16:43:36:/home/root/work/uquad/src/main/main.c:321: -- -- -- -- -- -- -- --
+
+16:43:36:/home/root/work/uquad/src/main/main.c:738: Entering while:(6.036560)
+16:43:36:/home/root/work/uquad/src/main/main.c:741: Clearing IMU input buffer...
+16:43:36:/home/root/work/uquad/src/main/main.c:1046: Waiting for stable IMU sampling time...
+16:43:36:/home/root/work/uquad/src/main/main.c:1060: IMU: Frames read out during stabilization:(52)
+16:43:36:/home/root/work/uquad/src/main/main.c:1070: IMU startup completed, starting calibration...(6.928650)
+16:43:36:/home/root/work/uquad/src/main/main.c:1256: IMU calibration completed, running kalman+control+ramp(12.037048)
+0.000000	0.00000000	-0.27151978	-0.53526878	9.92819234	0.00000000	0.00000000	0.00000000	-0.05386188	0.02730191	3.09776011	25.10000000	0.00000000
+16:43:36:/home/root/work/uquad/src/main/main.c:1364: TS supplied to Kalman out of range! Ignored:(0.007446) (0)
+16:43:36:/home/root/work/uquad/src/main/main.c:1450: -- --
+16:43:36:/home/root/work/uquad/src/main/main.c:1451: -- -- -- -- -- -- -- --
+16:43:36:/home/root/work/uquad/src/main/main.c:1452: Ramp completed, running free control...(13.024170)
+16:43:36:/home/root/work/uquad/src/main/main.c:1453: -- -- -- -- -- -- -- --
+16:43:36:/home/root/work/uquad/src/main/main.c:1454: -- --
+16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(3)
+16:43:36:/home/root/work/uquad/src/main/main.c:327: Caught signal:(2)
+16:43:36:/home/root/work/uquad/src/main/main.c:189: Motors killed!(59.676788)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.017914)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.409577)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.419678)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.429749)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.439728)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.449371)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.459717)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.469208)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.479675)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.489746)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.499329)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.509247)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.519257)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.529205)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.539185)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.549072)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.559143)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.569000)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.578827)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.588837)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.598847)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.608734)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.618775)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.628632)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.638611)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.648590)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.658539)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.668549)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.678375)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.688202)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.698303)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.708283)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.718231)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.728180)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.738129)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.748108)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.758057)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.767975)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.777954)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.787903)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.797669)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.807922)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.817749)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.827698)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.837647)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.847626)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.857575)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.867493)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.877411)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.887360)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.897339)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.907410)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.917328)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.927338)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.937195)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.947144)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.957123)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.967072)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.977020)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.986969)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.996918)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(1.000000)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009400)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009887)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009827)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009796)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009766)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009704)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009827)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009857)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009766)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009827)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.010040)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009552)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009827)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009857)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009827)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009705)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009827)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009765)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009369)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009827)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009765)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009980)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009704)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009705)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009796)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009918)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009826)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009765)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009796)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009460)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009766)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009796)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009858)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009796)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009766)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009796)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009827)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009735)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009919)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.010254)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009277)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009827)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009674)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009857)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009735)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009826)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009765)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009857)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009704)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009766)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.010285)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009308)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009857)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009857)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009704)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009705)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009735)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009827)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009796)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009704)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009858)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.010224)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009369)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009735)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009796)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009796)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009827)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009857)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009735)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009857)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009735)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009888)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.010163)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009430)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009857)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009827)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009827)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009736)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009796)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009858)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009735)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009858)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009613)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.010224)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009430)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009796)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009796)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009887)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009888)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009735)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009827)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009674)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009827)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009826)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.010102)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009522)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009826)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009826)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009796)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009735)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009705)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009827)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009827)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009827)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009735)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.010071)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009521)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009857)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009796)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009797)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009796)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009796)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009827)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009308)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009765)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009765)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009857)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009705)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009705)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009827)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009736)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009857)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009797)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009735)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009400)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009827)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009857)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009888)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009766)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009857)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009674)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009796)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009827)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009827)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.010132)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009369)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009857)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009705)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009766)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009827)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009766)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009765)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009827)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009796)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009827)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.010254)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009369)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009704)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009766)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009826)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009705)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009888)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009796)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009826)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009826)
+16:43:36:/home/root/work/uquad/src/main/main.c:963: Skipped IMU!...(0.009827)
+16:43:36:/home/root/work/uquad/src/main/main.c:327: Caught signal:(2)
+16:43:36:/home/root/work/uquad/src/main/main.c:208: main deinit started...(61.839874)
+16:43:17:/home/root/work/uquad/src/logger/uquad_logger.c:154: Closing logger:(/media/sda1/t_err.log)
+16:43:17:/home/root/work/uquad/src/logger/uquad_logger.c:154: Closing logger:(/media/sda1/tv.log)
+16:43:17:/home/root/work/uquad/src/logger/uquad_logger.c:154: Closing logger:(/media/sda1/kalman_in.log)
+16:43:17:/home/root/work/uquad/src/logger/uquad_logger.c:154: Closing logger:(/media/sda1/x_hat.log)
+16:43:17:/home/root/work/uquad/src/logger/uquad_logger.c:154: Closing logger:(/media/sda1/w.log)
+16:43:17:/home/root/work/uquad/src/logger/uquad_logger.c:154: Closing logger:(/media/sda1/imu_raw.log)
