@@ -67,6 +67,8 @@ typedef enum STATE_VECTOR{
 #define CHECK_NET_ACK          "OK"
 #define CHECK_NET_PING         "HI"
 #define CHECK_NET_KILL_RETRIES 10
-#define CHECK_NET_MSG_LEN      2
-#define CHECK_NET_MSG_T_MS     100
+#define CHECK_NET_MSG_LEN      2    // [bytes]
+#define CHECK_NET_MSG_T_MS     500  // [ms] - time between pings
+#define CHECK_NET_RETRY_MS     50   // [ms] - time between requests for ack
+#define CHECK_NET_TO_S         1    // [s]  - timeout
 #endif
