@@ -5,12 +5,16 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-#include <netdb.h> 
+#include <netdb.h>
+#include <arpa/inet.h>
+
 
 #include <mot_control.h> // for KILL_MOTOR_CMD
 #include <uquad_types.h>
 #include <uquad_aux_time.h>
 #include <uquad_aux_io.h>
+
+#define USAGE "usage:\n\tsclient <host IP> <port>\n"
 
 static int sockfd = -1;
 
@@ -28,60 +32,56 @@ int main(int argc, char *argv[])
 	n,
 	retval,
 	kill_retries = 0;
-    uquad_bool_t read_ok = false;
-    struct sockaddr_in serv_addr;
-    struct hostent *server;
+    uquad_bool_t
+	read_ok = false;
+    struct sockaddr_in
+	servaddr;
+    struct hostent
+	*server;
     struct timeval
 	tv_out,
 	tv_sent,
 	tv_diff,
 	tv_tmp;
-
+    socklen_t
+	len;
     char
 	buff_i[CHECK_NET_MSG_LEN],
 	buff_o[CHECK_NET_MSG_LEN] = CHECK_NET_PING;
 
-    tv_out.tv_usec = (CHECK_NET_MSG_T_MS*1000 << 2);
-    tv_out.tv_sec  = 0;
+    tv_out.tv_usec = 0;
+    tv_out.tv_sec  = CHECK_NET_TO_S;
 
     if (argc < 3)
     {
-	err_log("Usage:\n\t./client hostname port");
-	quit();
-    }
-    portno = atoi(argv[2]);
-    sockfd = socket(AF_INET, SOCK_STREAM, 0);
-    if (sockfd < 0) 
-    {
-	err_log_stderr("ERROR opening socket");
-	quit();
+	quit_log_if(ERROR_INVALID_ARG, USAGE);
     }
 
+    portno = atoi(argv[2]);
+
     server = gethostbyname(argv[1]);
-    if (server == NULL)
+    if(server == NULL)
     {
 	err_log_str("ERROR, no such host", argv[1]);
 	quit();
     }
-    bzero((char *) &serv_addr, sizeof(serv_addr));
-    serv_addr.sin_family = AF_INET;
-    bcopy((char *)server->h_addr, 
-         (char *)&serv_addr.sin_addr.s_addr,
-         server->h_length);
-    serv_addr.sin_port = htons(portno);
-    if (connect(sockfd,(struct sockaddr *) &serv_addr,sizeof(serv_addr)) < 0)
-    {
-	err_log_stderr("ERROR connecting");
-	quit();
-    }
+
+    sockfd=socket(AF_INET,SOCK_DGRAM,0);
+
+    bzero(&servaddr,sizeof(servaddr));
+    servaddr.sin_family = AF_INET;
+    servaddr.sin_addr.s_addr=inet_addr(argv[1]);
+    servaddr.sin_port=htons(portno);
+
     bzero(buff_i,CHECK_NET_MSG_LEN);
     while(1)
     {
 	/// ping server
-	n = write(sockfd,buff_o,CHECK_NET_MSG_LEN);
+	n = sendto(sockfd,buff_o,CHECK_NET_MSG_LEN,0,
+		   (struct sockaddr *)&servaddr,sizeof(servaddr));
 	if (n < 0)
 	{
-	    err_log_stderr("ERROR writing to socket");
+	    err_log_stderr("sendto()");
 	    goto kill_motors;
 	}
 	bzero(buff_i,CHECK_NET_MSG_LEN);
@@ -90,22 +90,26 @@ int main(int argc, char *argv[])
 	/// wait for ack
 	while(1)
 	{
+	    len = sizeof(servaddr);
 	    retval = check_io_locks(sockfd, NULL, &read_ok, NULL);
 	    quit_if(retval);
 	    if(read_ok)
 	    {
-		n = read(sockfd,buff_i,CHECK_NET_MSG_LEN);
+		n=recvfrom(sockfd,buff_i,CHECK_NET_MSG_LEN,
+			   0,(struct sockaddr *)&servaddr,&len);
 		if (n < 0)
 		{
-		    err_log_stderr("ERROR reading from socket");
+		    err_log_stderr("recvfrom()");
 		    goto kill_motors;
 		}
 		if (n > 0)
 		{
 		    // ack received
 		    sleep_ms(CHECK_NET_MSG_T_MS);
+		    err_log("ACK received!");
 		    break;
 		}
+		sleep_ms(CHECK_NET_RETRY_MS);
 	    }
 
 	    /// check timeout
