@@ -1,772 +1,0 @@
-16:43:33:/home/root/work/uquad/src/control/control.c:51: Loaded proportional gain matrix from:(K_full.txt)
-20:03:50:/home/root/work/uquad/src/kalman/uquad_kalman.c:1045: Kalman - R
-1000.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	1000.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	1000.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	10000.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	10000.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	10000.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	10.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	10.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	10.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	100000.000000	
-20:03:50:/home/root/work/uquad/src/kalman/uquad_kalman.c:1047: Kalman - Q
-100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.001000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.001000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.001000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	10.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	10.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	10.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	1.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	1.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	1.000000	
-20:03:50:/home/root/work/uquad/src/kalman/uquad_kalman.c:1049: Kalman - R_imu_gps
-1000.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	1000.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	1000.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	10000.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	10000.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	10000.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	10.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	10.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	10.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	100.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	100.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	100000.000000	
-
-18:28:56:/home/root/work/uquad/src/main/main.c:322: -- -- -- -- -- -- -- --
-18:28:56:/home/root/work/uquad/src/main/main.c:323: main.c configuration:
-18:28:56:/home/root/work/uquad/src/main/main.c:324: -- -- -- -- -- -- -- --
-18:28:56:/home/root/work/uquad/src/main/main.c:325: DEBUG(1)
-18:28:56:/home/root/work/uquad/src/main/main.c:326: KALMAN_BIAS(1)
-18:28:56:/home/root/work/uquad/src/main/main.c:327: CTRL_INTEGRAL(0)
-18:28:56:/home/root/work/uquad/src/main/main.c:328: FULL_CONTROL(1)
-18:28:56:/home/root/work/uquad/src/main/main.c:329: USE_GPS(1)
-18:28:56:/home/root/work/uquad/src/main/main.c:330: GPS_ZERO(1)
-18:28:56:/home/root/work/uquad/src/main/main.c:331: IMU_COMM_FAKE(0)
-18:28:56:/home/root/work/uquad/src/main/main.c:332: OL_TS_STABIL(0)
-18:28:56:/home/root/work/uquad/src/main/main.c:333: CTRL_TS(1)
-18:28:56:/home/root/work/uquad/src/main/main.c:334: MASA_DEFAULT(1.650000)
-18:28:56:/home/root/work/uquad/src/main/main.c:335: -- -- -- -- -- -- -- --
-
-18:28:56:/home/root/work/uquad/src/main/main.c:752: Entering while:(6.056488)
-18:28:56:/home/root/work/uquad/src/main/main.c:755: Clearing IMU input buffer...
-18:28:56:/home/root/work/uquad/src/main/main.c:1060: Waiting for stable IMU sampling time...
-18:28:56:/home/root/work/uquad/src/main/main.c:1074: IMU: Frames read out during stabilization:(52)
-18:28:56:/home/root/work/uquad/src/main/main.c:1084: IMU startup completed, starting calibration...(6.969666)
-18:28:56:/home/root/work/uquad/src/main/main.c:1278: IMU calibration completed, running kalman+control+ramp(12.075928)
-0.000000	0.00000000	-0.01028447	0.05998710	9.89211652	0.00000000	0.00000000	0.00000000	0.00606406	0.00103964	0.04037536	25.40000000	0.00000000
-18:28:56:/home/root/work/uquad/src/main/main.c:1472: -- --
-18:28:56:/home/root/work/uquad/src/main/main.c:1473: -- -- -- -- -- -- -- --
-18:28:56:/home/root/work/uquad/src/main/main.c:1474: Ramp completed, running free control...(13.066010)
-18:28:56:/home/root/work/uquad/src/main/main.c:1475: -- -- -- -- -- -- -- --
-18:28:56:/home/root/work/uquad/src/main/main.c:1476: -- --
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(0)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(0)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(0)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(0)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(0)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(0)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(0)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(0)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(0)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(0)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(0)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(0)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(0)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(0)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(0)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(0)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(0)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(0)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(0)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(0)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(0)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(0)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(0)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(0)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(0)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(0)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(0)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(0)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(0)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(0)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(0)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(0)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(0)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(0)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(0)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(0)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(0)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(0)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(0)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(0)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(0)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(0)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(0)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(0)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(0)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(0)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(0)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(0)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(0)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(0)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(0)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(0)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(0)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(0)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(1)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:152: WARN:w out of range, setting max for motor:(2)
-16:43:22:/home/root/work/uquad/src/motor/mot_control.c:142: WARN:w out of range, setting min for motor:(3)
-18:28:56:/home/root/work/uquad/src/main/main.c:341: Caught signal:(2)
-18:28:56:/home/root/work/uquad/src/main/main.c:203: Motors killed!(16.692688)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.021026)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.596680)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.606537)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.617310)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.626221)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.636505)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.646271)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.656433)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.666016)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.676300)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.686035)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.696350)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.706208)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.716217)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.726136)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.736054)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.746033)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.755982)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.766053)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.775879)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.785919)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.795777)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.805695)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.815705)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.825745)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.835724)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.845612)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.855500)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.865448)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.875428)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.885376)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.895233)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.905274)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.915222)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.925141)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.935150)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.945069)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.955017)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.964936)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.974945)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.984864)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.994873)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(1.000000)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009491)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009827)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.010375)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009246)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009796)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009796)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009827)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009643)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009949)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009705)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009796)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009766)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009796)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.010162)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009185)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009827)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009704)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009735)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009704)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009736)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009887)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009643)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009735)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009796)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.010407)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009216)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009858)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009826)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009766)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009674)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009918)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009705)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009827)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009674)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009735)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.010346)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009033)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009887)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009735)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009796)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009735)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009949)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009796)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009705)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009735)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009797)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.010254)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009216)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009674)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009674)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009948)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009766)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009735)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009826)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009704)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009735)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009705)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.010193)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009186)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009826)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009827)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009979)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009521)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009887)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009736)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009216)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009735)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009735)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009888)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009613)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009765)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009674)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009857)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009674)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009827)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009674)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009339)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009858)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009705)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009857)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009552)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009796)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009857)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009765)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009888)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009857)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.010314)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009307)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009735)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009704)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009858)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009735)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009735)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009888)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009766)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009735)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009735)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.010223)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009277)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009674)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009765)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009735)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009765)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009705)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009735)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009674)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009674)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009888)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.010254)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009277)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009674)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009857)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009765)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009674)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009857)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009704)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009827)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009796)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009858)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.010315)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009247)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009735)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009858)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009704)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009765)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009704)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009735)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009766)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009704)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009705)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.010162)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009461)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009826)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009674)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009857)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009674)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009826)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009796)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009705)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009857)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009766)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.010162)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009430)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009857)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009675)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009979)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009705)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009796)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009736)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009461)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009827)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009827)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009735)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009857)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009643)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009888)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009826)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009857)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009826)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.010040)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009583)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009857)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009674)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.010163)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009339)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009735)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009796)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009949)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009552)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009735)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.010345)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009216)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009736)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009857)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009797)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009460)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009857)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009766)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009949)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009461)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009705)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.010315)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009277)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009857)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009735)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009735)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009644)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009705)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009766)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009949)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009735)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009735)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.010376)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009094)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009674)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009735)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009827)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009583)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009736)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009857)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009797)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009552)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009858)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.010407)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009246)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009704)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009796)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009704)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009461)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009888)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009705)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009857)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009735)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009888)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.010315)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.008881)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009827)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009857)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009644)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009857)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009796)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009766)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009674)
-18:28:56:/home/root/work/uquad/src/main/main.c:977: Skipped IMU!...(0.009918)
-18:28:56:/home/root/work/uquad/src/main/main.c:341: Caught signal:(2)
-18:28:56:/home/root/work/uquad/src/main/main.c:222: main deinit started...(19.339112)
-18:21:28:/home/root/work/uquad/src/logger/uquad_logger.c:186: Closing logger:(/media/sda1/t_err.log)
-18:21:28:/home/root/work/uquad/src/logger/uquad_logger.c:186: Closing logger:(/media/sda1/tv.log)
-18:21:28:/home/root/work/uquad/src/logger/uquad_logger.c:186: Closing logger:(/media/sda1/gps.log)
-18:21:28:/home/root/work/uquad/src/logger/uquad_logger.c:186: Closing logger:(/media/sda1/kalman_in.log)
-18:21:28:/home/root/work/uquad/src/logger/uquad_logger.c:186: Closing logger:(/media/sda1/x_hat.log)
-18:21:28:/home/root/work/uquad/src/logger/uquad_logger.c:186: Closing logger:(/media/sda1/w.log)
-18:21:28:/home/root/work/uquad/src/logger/uquad_logger.c:186: Closing logger:(/media/sda1/imu_raw.log)
