@@ -102,6 +102,28 @@ ctrl_t *control_init(void)
     return NULL;
 }
 
+/**
+ * Update integral estimation of x_int, controlling step size and max value of
+ * integration.
+ *
+ * @param x_int Current integral value.
+ * @param data New data.
+ * @param T_s Sampling period for data.
+ * @param delta_max Limit on step size.
+ * @param accum_max Limit on integration.
+ */
+static inline void ctrl_int(double *x_int, double data, double T_s, double delta_max, double accum_max)
+{
+    double
+	ddelta;
+    ddelta = uquad_min(data * T_s, delta_max);
+    if(ddelta < 0)
+	ddelta = uquad_max(ddelta, -delta_max);
+    *x_int = uquad_min(ddelta + (*x_int), accum_max);
+    if(*x_int < 0)
+	*x_int = uquad_max(*x_int,-accum_max);
+}
+
 int control(ctrl_t *ctrl, uquad_mat_t *w, uquad_mat_t *x, set_point_t *sp, double T_us)
 {
     int retval = ERROR_OK;
@@ -136,33 +158,39 @@ int control(ctrl_t *ctrl, uquad_mat_t *w, uquad_mat_t *x, set_point_t *sp, doubl
 
     retval = uquad_mat_add(w,sp->w,w);
     err_propagate(retval);
-
 #if CTRL_INTEGRAL
-    double ddelta;
-    double T_s = T_us/1000000.0;
+    double
+	T_s = T_us/1000000.0;
+
     /// SV_THETA
-    ddelta = uquad_min(tmp_sub_sp_x->m[SV_THETA][0]*T_s,
-		       CTRL_INT_DELTA_MAX_THETA);
-    ctrl->x_int->m[ctrl->x_int->r - 1][0] =
-	uquad_min(ddelta + ctrl->x_int->m[ctrl->x_int->r - 1][0],
-		  CTRL_INT_ACCUM_MAX_THETA);
+    ctrl_int(ctrl->x_int->m_full + (ctrl->x_int->r - 1),
+	     tmp_sub_sp_x->m[SV_THETA][0],
+	     T_s,
+	     CTRL_INT_DELTA_MAX_THETA,
+	     CTRL_INT_ACCUM_MAX_THETA);
+
     /// SV_Z
-    ddelta = uquad_min(tmp_sub_sp_x->m[SV_Z    ][0]*T_s,
-		       CTRL_INT_DELTA_MAX_Z);
-    ctrl->x_int->m[ctrl->x_int->r - 2][0] =
-	uquad_min(ddelta + ctrl->x_int->m[ctrl->x_int->r - 2][0],
-		  CTRL_INT_ACCUM_MAX_Z);
+    ctrl_int(ctrl->x_int->m_full + (ctrl->x_int->r - 2),
+	     tmp_sub_sp_x->m[SV_Z][0],
+	     T_s,
+	     CTRL_INT_DELTA_MAX_Z,
+	     CTRL_INT_ACCUM_MAX_Z);
+
 #if FULL_CONTROL
-    ddelta = uquad_min(tmp_sub_sp_x->m[SV_Y    ][0]*T_s,
-		       CTRL_INT_DELTA_MAX_Y);
-    ctrl->x_int->m[ctrl->x_int->r - 3][0] =
-	uquad_min(ddelta + ctrl->x_int->m[ctrl->x_int->r - 3][0],
-		  CTRL_INT_ACCUM_MAX_Y);
-    ddelta = uquad_min(tmp_sub_sp_x->m[SV_X    ][0]*T_s,
-		       CTRL_INT_DELTA_MAX_X);
-    ctrl->x_int->m[ctrl->x_int->r - 4][0] =
-	uquad_min(ddelta + ctrl->x_int->m[ctrl->x_int->r - 4][0],
-		  CTRL_INT_ACCUM_MAX_X);
+    /// SV_Y
+    ctrl_int(ctrl->x_int->m_full + (ctrl->x_int->r - 3),
+	     tmp_sub_sp_x->m[SV_Y][0],
+	     T_s,
+	     CTRL_INT_DELTA_MAX_Y,
+	     CTRL_INT_ACCUM_MAX_Y);
+
+    /// SV_X
+    ctrl_int(ctrl->x_int->m_full + (ctrl->x_int->r - 4),
+	     tmp_sub_sp_x->m[SV_X][0],
+	     T_s,
+	     CTRL_INT_DELTA_MAX_X,
+	     CTRL_INT_ACCUM_MAX_X);
+
 #endif // FULL_CONTROL
     retval = uquad_mat_prod(w_tmp, ctrl->K_int, ctrl->x_int);
     err_propagate(retval);
