@@ -10,6 +10,7 @@
 #include <mot_control.h> // for KILL_MOTOR_CMD
 #include <uquad_types.h>
 #include <uquad_aux_time.h>
+#include <uquad_aux_io.h>
 
 static int sockfd = -1;
 
@@ -27,6 +28,7 @@ int main(int argc, char *argv[])
 	n,
 	retval,
 	kill_retries = 0;
+    uquad_bool_t read_ok = false;
     struct sockaddr_in serv_addr;
     struct hostent *server;
     struct timeval
@@ -39,8 +41,8 @@ int main(int argc, char *argv[])
 	buff_i[CHECK_NET_MSG_LEN],
 	buff_o[CHECK_NET_MSG_LEN] = CHECK_NET_PING;
 
-    tv_out.tv_usec = 0;
-    tv_out.tv_sec  = 1;
+    tv_out.tv_usec = (CHECK_NET_MSG_T_MS*1000 << 2);
+    tv_out.tv_sec  = 0;
 
     if (argc < 3)
     {
@@ -54,6 +56,7 @@ int main(int argc, char *argv[])
 	err_log_stderr("ERROR opening socket");
 	quit();
     }
+
     server = gethostbyname(argv[1]);
     if (server == NULL)
     {
@@ -75,7 +78,7 @@ int main(int argc, char *argv[])
     while(1)
     {
 	/// ping server
-	n = write(sockfd,buff_o,strlen(buff_o));
+	n = write(sockfd,buff_o,CHECK_NET_MSG_LEN);
 	if (n < 0)
 	{
 	    err_log_stderr("ERROR writing to socket");
@@ -87,24 +90,29 @@ int main(int argc, char *argv[])
 	/// wait for ack
 	while(1)
 	{
-	    n = read(sockfd,buff_i,CHECK_NET_MSG_LEN);
-	    if (n < 0)
+	    retval = check_io_locks(sockfd, NULL, &read_ok, NULL);
+	    quit_if(retval);
+	    if(read_ok)
 	    {
-		err_log_stderr("ERROR reading from socket");
-		goto kill_motors;
-	    }
-	    if (n > 0)
-	    {
-		// ack received
-		sleep_ms(CHECK_NET_MSG_T_MS);
-		break;
+		n = read(sockfd,buff_i,CHECK_NET_MSG_LEN);
+		if (n < 0)
+		{
+		    err_log_stderr("ERROR reading from socket");
+		    goto kill_motors;
+		}
+		if (n > 0)
+		{
+		    // ack received
+		    sleep_ms(CHECK_NET_MSG_T_MS);
+		    break;
+		}
 	    }
 
 	    /// check timeout
 	    gettimeofday(&tv_tmp, NULL);
 	    (void) uquad_timeval_substract(&tv_diff, tv_tmp, tv_sent);
 	    retval = uquad_timeval_substract(&tv_diff, tv_out, tv_diff);
-	    if(retval > 0)
+	    if(retval < 0)
 	    {
 		/// timed out, game over
 		kill_motors:

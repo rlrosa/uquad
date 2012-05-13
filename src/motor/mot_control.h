@@ -20,7 +20,7 @@
 #define MOT_WAIT_STARTUP_S  1       // s
 
 #define START_MOTOR_CMD "./cmd &"
-#define KILL_MOTOR_CMD  "kill -INT `pidof -s cmd` > /dev/null &"
+#define KILL_MOTOR_CMD  "kill -INT `pidof -s cmd` 2> /dev/null &"
 
 /// Communication with motor driver is done via kernel msgs
 #define MOT_SERVER_KEY 169 // some number
