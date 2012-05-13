@@ -6,3 +6,4 @@ add_executable (${server_bin} server)
 
 # Set required libraries
 target_link_libraries(${client_bin} uquad_time)
+target_link_libraries(${client_bin} uquad_io)
