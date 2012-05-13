@@ -72,15 +72,14 @@ gps_file  = [log_path '/gps.log'];
 %% Load IMU data
 
 % Imu
-imu_file = 'tests/main/logs/';
-% imu_file = 'tests/main/logs/2012_04_28_1_01_K_normal_menos_bola_euler_ruido_kalman_nuevo_rico/imu_raw.log';
+imu_file = 'tests/main/logs/2012_05_12_1_02_quieto.bien.patadas.mal/imu_raw.log';
 % imu_file = [p{9} 'imu_raw.log'];
 [acrud,wcrud,mcrud,tcrud,bcrud,~,~,T]=mong_read(imu_file,0,1);
 
 avg = 1;
 startup_runs = 800;
 imu_calib = 512;
-kalman_startup = 200*(~ctrl_ramp);
+kalman_startup = 100*(~ctrl_ramp);
 
 % Fake T
 if(use_fake_T)
@@ -114,36 +113,36 @@ if(use_gps)
   end
 end
 
-%% Re-calibrate sensors
-% startup_runs samples are discarded
-if (stabilize_ts)
-  ts_ok_count = 0;
-  i = 1;
-  dT = diff(T);
-  while(ts_ok_count < 10)
-    if((dT(i) > 8000e-6) && (dT(i) < 12000e-6))
-      ts_ok_count = ts_ok_count + 1;
-      T_ok = i;
-    else
-      ts_ok_count = 0;
-    end
-    i = i + 1;
-  end
-  fprintf('Discarded %d samples during stabilization\n',T_ok);
-  acrud = acrud(T_ok:end,:);
-  wcrud = wcrud(T_ok:end,:);
-  mcrud = mcrud(T_ok:end,:);
-  bcrud = bcrud(T_ok:end,:);
-  tcrud = tcrud(T_ok:end,:);
-  T = T(T_ok(end):end);
-else
-  acrud = acrud(startup_runs:end,:);
-  wcrud = wcrud(startup_runs:end,:);
-  mcrud = mcrud(startup_runs:end,:);
-  bcrud = bcrud(startup_runs:end,:);
-  tcrud = tcrud(startup_runs:end,:);
-  T = T(startup_runs:end);
-end
+% %% Re-calibrate sensors
+% % startup_runs samples are discarded
+% if (stabilize_ts)
+%   ts_ok_count = 0;
+%   i = 1;
+%   dT = diff(T);
+%   while(ts_ok_count < 10)
+%     if((dT(i) > 8000e-6) && (dT(i) < 12000e-6))
+%       ts_ok_count = ts_ok_count + 1;
+%       T_ok = i;
+%     else
+%       ts_ok_count = 0;
+%     end
+%     i = i + 1;
+%   end
+%   fprintf('Discarded %d samples during stabilization\n',T_ok);
+%   acrud = acrud(T_ok:end,:);
+%   wcrud = wcrud(T_ok:end,:);
+%   mcrud = mcrud(T_ok:end,:);
+%   bcrud = bcrud(T_ok:end,:);
+%   tcrud = tcrud(T_ok:end,:);
+%   T = T(T_ok(end):end);
+% else
+%   acrud = acrud(startup_runs:end,:);
+%   wcrud = wcrud(startup_runs:end,:);
+%   mcrud = mcrud(startup_runs:end,:);
+%   bcrud = bcrud(startup_runs:end,:);
+%   tcrud = tcrud(startup_runs:end,:);
+%   T = T(startup_runs:end);
+% end
 
 % p0 and theta0 is estimated form first imu_calib samples
 [a_calib,w_calib,euler_calib] = mong_conv(acrud(1:imu_calib,:),wcrud(1:imu_calib,:),mcrud(1:imu_calib,:),0,tcrud(1:imu_calib));
@@ -166,6 +165,21 @@ bcrud = bcrud(imu_calib+1:end,:);
 tcrud = tcrud(imu_calib+1:end,:);
 T     = T(imu_calib+1:end,:);
 
+% low pass filter
+h=[0.2 0.2 0.2 0.2 0.1 0.1];
+hlen = length(h);
+aux = conv(acrud(:,1),h); acrud(hlen:end,1) = aux(hlen:end-hlen+1);
+aux = conv(acrud(:,2),h); acrud(hlen:end,2) = aux(hlen:end-hlen+1);
+aux = conv(acrud(:,3),h); acrud(hlen:end,3) = aux(hlen:end-hlen+1);
+aux = conv(wcrud(:,1),h); wcrud(hlen:end,1) = aux(hlen:end-hlen+1);
+aux = conv(wcrud(:,2),h); wcrud(hlen:end,2) = aux(hlen:end-hlen+1);
+aux = conv(wcrud(:,3),h); wcrud(hlen:end,3) = aux(hlen:end-hlen+1);
+aux = conv(mcrud(:,1),h); mcrud(hlen:end,1) = aux(hlen:end-hlen+1);
+aux = conv(mcrud(:,2),h); mcrud(hlen:end,2) = aux(hlen:end-hlen+1);
+aux = conv(mcrud(:,3),h); mcrud(hlen:end,3) = aux(hlen:end-hlen+1);
+aux = conv(bcrud,h);      bcrud(hlen:end)   = aux(hlen:end-hlen+1);
+aux = conv(tcrud,h);      tcrud(hlen:end)   = aux(hlen:end-hlen+1);
+
 [a,w,euler] = mong_conv(acrud,wcrud,mcrud,0,tcrud,T);
 b=altitud(bcrud,b0);
 
@@ -186,14 +200,14 @@ w_hover = calc_omega(9.81*masa/4);     % At this velocity, motor's force equals 
 w_max   = 387;                         % Definition
 w_min   = w_hover - (w_max - w_hover); % Only for simetry
 
-%                  x   y   z  psi phi the vqx vqy vqz wqx wqy wqz ax  ay  az
-Q_imu_gps = diag([1e2 1e2 1e2 1e0 1e0 1e0 1e2 1e2 1e2 1e1 1e1 1e1 1e0 1e0 1e0 ]);
+%                  x   y   z  psi  phi  thet vqx vqy vqz wqx wqy wqz ax  ay  az
+Q_imu_gps = diag([1e2 1e2 1e2 1e-6 1e-6 1e-6 1e2 1e2 1e2 1e1 1e1 1e1 1e0 1e0 1e0 ]);
 %                 psi phi the ax  ay  az  wqx wqy wqz  x   y   z
-R_imu_gps = diag([1e3 1e3 1e3 1e4 1e4 1e4 1e2 1e2 1e2 1e2 1e2 1e5]);
+R_imu_gps = diag([1e6 1e6 1e6 1e4 1e4 1e4 1e1 1e1 1e1 1e2 1e2 1e5]);
 %                  x   y   z  psi phi the vqx vqy vqz wqx wqy wqz ax  ay  az
-Q_imu     = diag([1e2 1e2 1e2 1e2 1e2 1e0 1e2 1e2 1e2 1e1 1e1 1e1 1e0 1e0 1e0]);
+Q_imu     = diag([1e2 1e2 1e2 1e-6 1e-6 1e-6 1e2 1e2 1e2 1e1 1e1 1e1 1e0 1e0 1e0]);
 %                 psi phi the ax  ay  az  wqx wqy wqz  z
-R_imu     = diag([1e1 1e1 1e3 1e4 1e4 1e4 1e2 1e2 1e2 1e5]);
+R_imu     = diag([1e6 1e6 1e6 1e4 1e4 1e4 1e1 1e1 1e1 1e5]);
 %                  x   y   z  vqx vqy vqz
 Q_gps     = diag([1e2 1e2 1e2 1e2 1e2 1e2]);
 %                  x   y   z  vqx vqy vqz
