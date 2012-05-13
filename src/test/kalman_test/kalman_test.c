@@ -157,15 +157,9 @@ int main(int argc, char *argv[]){
 			}
 			//			retval = uquad_kalman(kalman_io_data, w, &data, tv_diff.tv_usec);
 			retval = uquad_kalman(kalman_io_data, 
-					      w, &data, 13000.0, 1.741, NULL);
+					      w, &data, 13000.0, 1.741, gps_dat);
 			err_propagate(retval);
-
-			if(gps_update)
-			{
-			    retval = uquad_kalman_gps(kalman_io_data, 
-						      gps_dat);
-			    err_propagate(retval);
-			}
+#warning "GPS may be incorrectly used!"
 
 			retval = uquad_mat_transpose(tmp4print,kalman_io_data->x_hat);
 			err_propagate(retval);

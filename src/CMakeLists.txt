@@ -60,3 +60,6 @@ add_subdirectory(logger)
 
 # Check in test dir for deeper includes
 add_subdirectory(test)
+
+# Build check_net exec
+add_subdirectory(check_net)

@@ -52,7 +52,7 @@ Veremos luego que, realizando un cambio de variable como se explica en \ref{bib:
 \item Vuelo en c\'irculo a velocidad constante 
 \end{itemize} 
 
-En los tres casos se tienen que cumplir las restricciones de  \ref{eq:slit}.
+En los tres casos se tienen que cumplir las restricciones siguientes:
 
 \begin{equation}
 \label{eq:slit}
@@ -68,7 +68,7 @@ En los tres casos se tienen que cumplir las restricciones de  \ref{eq:slit}.
 \end{array}\right)=0
 \end{equation}
 
-Cada una de las trayectorias posibles tiene adem\'as sus particularidades, a continuaci\'on nos encargaremos justamente de determinar las restricciones espec\'ificas de cada trayectoria posible. 
+Cada una de las trayectorias posibles tiene adem\'as sus particularidades, a continuaci\'on nos encargaremos justamente de determinar las restricciones espec\'ificas de cada una de ellas.
 
 \subsection{Hovering}
 En el caso del reposo mec\'anico no solo debe cumplirse las condiciones establecidas en \ref{eq:slit} si no que adem\'as las velocidades del centro de masa y las velocidades angulares deben ser iguales a cero.
@@ -155,7 +155,7 @@ Sin embargo, la independencia respecto de $\theta$ en la posici\'on es un paso f
 
 Nos interesa ahora derivar la posici\'on para terminar de completar el modelo del sistema. Dado que la posici\'on se encuentra expresada en el sistema del cuadric\'optero tendremos que:
 \begin{equation}
-\frac{d\vec{r}_q}{dt}=\frac{d\prime\vec{r}_q}{dt}+\vec{\omega}_q \times \vec{r}_q=\vec{v}_q+\vec{\omega}_q \times \vec{r}_q
+\vec{v}_q = \frac{d\vec{r}_q}{dt}=\frac{d\prime\vec{r}_q}{dt}+\vec{\omega}_q \times \vec{r}_q
 \end{equation}
 
 Por lo tanto tendremos que:
@@ -166,15 +166,15 @@ Por lo tanto tendremos que:
 \dot{y_q}\\
 \dot{z_q}\\
 \end{array}\right)=\left(\begin{array}{c}
-v_{q_x}+\omega_{q_y}z_q-\omega_{q_z}y_q\\
-v_{q_y}+\omega_{q_z}x_q-\omega_{q_x}z_q\\
-v_{q_z}+\omega_{q_x}y_q-\omega_{q_y}x_q\\
+v_{q_x}-\omega_{q_y}z_q+\omega_{q_z}y_q\\
+v_{q_y}-\omega_{q_z}x_q+\omega_{q_x}z_q\\
+v_{q_z}-\omega_{q_x}y_q+\omega_{q_y}x_q\\
 \end{array}\right)
 \end{equation}
 
 Este modelo nos permitir\'a realizar el control bas\'andonos en t\'ecnicas de control lineal para trayectorias circulares en planos tales que $z=cte$.\\
 
-Es fundamental aclarar que las ecuaciones derivadas hasta aqu\'i ser\'an utilizadas exclusivamente para la linealizaci\'on del sistema y no para determinar los valores de los par\'ametros a controlar. Para esto \'ultimo continuaremos utilizando el modelo de \ref{eq:modelo}. El movimiento circular queda determinado exclusivamente por dos par\'ametros la velocidad ($V_I$) y la velocidad angular ($\dot{\theta}$), estos ser\'an considerados conocidos ya que es trabajo del generador de rutas o del usuario determinar que movimiento se desea realizar. Se desea determinar once par\'ametros, siete de las doce variables de estado (No nos interesa fijar ni \'angulo de Yaw ni la posici\'on y ya fue determinado que $\varphi = 0$) y las cuatro velocidades angulares de los motores.  Se deben tener en cuenta evidentemente las restricciones establecidas en \ref{eq:slit} sobre las derivadas de las velocidades del centro de masa y de las velocidades angulares. En lo que respecta a las derivadas de los \'angulos de Euler se debe cumplir que $\dot{\varphi}=\dot{\psi}=0$ adem\'as $\dot{\theta}$ debe ser igual al valor impuesto. De $dot{\psi} = 0$ se deduce trivialmente que $\omega_{q_x} = 0$ 
+Es fundamental aclarar que las ecuaciones derivadas hasta aqu\'i ser\'an utilizadas exclusivamente para la linealizaci\'on del sistema y no para determinar los valores de los par\'ametros a controlar. Para esto \'ultimo continuaremos utilizando el modelo de \ref{eq:modelo}. El movimiento circular queda determinado exclusivamente por dos par\'ametros la velocidad ($V_I$) y la velocidad angular ($\dot{\theta}$), estos ser\'an considerados conocidos ya que es trabajo del generador de rutas o del usuario determinar que movimiento se desea realizar. Se desea determinar once par\'ametros, siete de las doce variables de estado (No nos interesa fijar ni \'angulo de Yaw ni la posici\'on y ya fue determinado que $\varphi = 0$) y las cuatro velocidades angulares de los motores.  Se deben tener en cuenta evidentemente las restricciones establecidas en \ref{eq:slit} sobre las derivadas de las velocidades del centro de masa y de las velocidades angulares. En lo que respecta a las derivadas de los \'angulos de Euler se debe cumplir que $\dot{\varphi}=\dot{\psi}=0$ adem\'as $\dot{\theta}$ debe ser igual al valor impuesto. De $\dot{\psi} = 0$ se deduce trivialmente que $\omega_{q_x} = 0$ 
 
 Para cada instante tendremos un \'angulo de Yaw distinto, por lo tanto la velocidad horizontal a cada instante tendr\'a una direcci\'on distinta, sin embargo su m\'odulo ser\'a constante. Sin p\'erdida de generalidad podemos considerar la situaci\'on evaluando $\theta = 0$
 

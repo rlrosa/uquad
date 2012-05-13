@@ -12,7 +12,28 @@
  * -- -- -- -- -- -- -- -- -- -- -- --
  */
 #define DEF_PERM 0666
-FILE *uquad_logger_add(char *log_name, char *path);
+/**
+ * Launches a logger as a child process, returns the
+ * file to which the parent should write.
+ *
+ * NOTE: Logging to ram will allocate ram MB of mem and save data there. If
+ *       logger runs out of space, it will discard data new data.
+ *
+ * @param log_name Name to be used for new log.
+ * @param path Path to where log file will be created.
+ * @param ram If not 0, then logs will be saved in ram MB of RAM, and dumped when closed.
+ *
+ * @return File (pipe) to which parent should write, or NULL if error.
+ */
+FILE *uquad_logger_add(char *log_name, char *path, int ram);
+
+/**
+ * Closes parent side of pipe, indicating to child that it should
+ * dump remaining data and die.
+ * Argument must match the value previously returned by uquad_logger_add().
+ *
+ * @param pipe_f Name of file (pipe) to close.
+ */
 void uquad_logger_remove(FILE *pipe_f);
 
 /**

@@ -60,7 +60,7 @@ int main(void){
     }
 
     /// Initialize structure
-    mot = mot_init();
+    mot = mot_init(false);
     if(mot==NULL)
     {
 	fprintf(stderr,"Fatal error.");
@@ -83,7 +83,7 @@ int main(void){
 	    vels->m_full[1] = dtmp + 0.2;
 	    vels->m_full[2] = dtmp + 3.69;
 	    vels->m_full[3] = dtmp + 1.0;
-	    retval = mot_set_vel_rads(mot,vels);
+	    retval = mot_set_vel_rads(mot,vels,false);
 	    gettimeofday(&tv,NULL);
 	    fprintf(log,"%d\t%0.4f\t%0.4f\t%0.4f\t%0.4f\t%d\n",
 		    retval,
