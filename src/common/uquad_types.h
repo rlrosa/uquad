@@ -60,4 +60,13 @@ typedef enum STATE_VECTOR{
 #define TS_MAX             (TS_DEFAULT_US + TS_JITTER)
 #define TS_MIN             (TS_DEFAULT_US - TS_JITTER)
 
+/**
+ * Misc macros define
+ *
+ */
+#define CHECK_NET_ACK          "OK"
+#define CHECK_NET_PING         "HI"
+#define CHECK_NET_KILL_RETRIES 10
+#define CHECK_NET_MSG_LEN      2
+#define CHECK_NET_MSG_T_MS     100
 #endif
