@@ -1269,18 +1269,18 @@ int convert_2_euler(imu_data_t *data)
     {
 	phi = -asin(data->acc->m_full[0]/acc_norm);
 	psi = atan2(data->acc->m_full[1],data->acc->m_full[2]);
-    }else if(data->acc->m_full[0]>0){
-	phi=-PI/2;
-	psi=0;
+    }else if(data->acc->m_full[0]>0.0){
+	phi=-PI/2.0;
+	psi=0.0;
     }else{
-	phi=PI/2;
-	psi=0;
+	phi=PI/2.0;
+	psi=0.0;
     }
 
     m3x3->m[0][0] = cos(phi)/(uquad_square(cos(phi)) + uquad_square(sin(phi)));
     m3x3->m[0][1] = (sin(phi)*sin(psi))/((uquad_square(cos(phi)) + uquad_square(sin(phi)))*(uquad_square(cos(psi)) + uquad_square(sin(psi))));
     m3x3->m[0][2] = (cos(psi)*sin(phi))/((uquad_square(cos(phi)) + uquad_square(sin(phi)))*(uquad_square(cos(psi)) + uquad_square(sin(psi))));
-    m3x3->m[1][0] = 0;
+    m3x3->m[1][0] = 0.0;
     m3x3->m[1][1] = cos(psi)/(uquad_square(cos(psi)) + uquad_square(sin(psi)));
     m3x3->m[1][2] = -sin(psi)/(uquad_square(cos(psi)) + uquad_square(sin(psi)));
     m3x3->m[2][0] = -sin(phi)/(uquad_square(cos(phi)) + uquad_square(sin(phi)));
