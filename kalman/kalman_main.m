@@ -72,7 +72,7 @@ gps_file  = [log_path '/gps.log'];
 %% Load IMU data
 
 % Imu
-imu_file = 'tests/main/logs/2012_05_12_1_02_quieto.bien.patadas.mal/imu_raw.log';
+imu_file = 'tests/main/logs/2012_05_13_2_02_control_prop_anduvo_re_feo/imu_raw.log';
 % imu_file = [p{9} 'imu_raw.log'];
 [acrud,wcrud,mcrud,tcrud,bcrud,~,~,T]=mong_read(imu_file,0,1);
 
