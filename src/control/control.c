@@ -162,18 +162,18 @@ int control(ctrl_t *ctrl, uquad_mat_t *w, uquad_mat_t *x, set_point_t *sp, doubl
     double
 	T_s = T_us/1000000.0;
 
+    /* /// SV_PSI - not controllable (theory) */
+    /* ctrl_int(ctrl->x_int->m_full + (ctrl->x_int->r - 1), */
+    /* 	     tmp_sub_sp_x->m[SV_PSI][0], */
+    /* 	     T_s, */
+    /* 	     CTRL_INT_DELTA_MAX_PSI, */
+    /* 	     CTRL_INT_ACCUM_MAX_PSI); */
     /// SV_THETA
     ctrl_int(ctrl->x_int->m_full + (ctrl->x_int->r - 1),
-	     tmp_sub_sp_x->m[SV_PSI][0],
-	     T_s,
-	     CTRL_INT_DELTA_MAX_PSI,
-	     CTRL_INT_ACCUM_MAX_PSI);
-    /* /// SV_THETA */
-    /* ctrl_int(ctrl->x_int->m_full + (ctrl->x_int->r - 1), */
-    /* 	     tmp_sub_sp_x->m[SV_THETA][0], */
-    /* 	     T_s, */
-    /* 	     CTRL_INT_DELTA_MAX_THETA, */
-    /* 	     CTRL_INT_ACCUM_MAX_THETA); */
+    	     tmp_sub_sp_x->m[SV_THETA][0],
+    	     T_s,
+    	     CTRL_INT_DELTA_MAX_THETA,
+    	     CTRL_INT_ACCUM_MAX_THETA);
 
     /// SV_Z
     ctrl_int(ctrl->x_int->m_full + (ctrl->x_int->r - 2),
@@ -230,3 +230,17 @@ void control_deinit(ctrl_t *ctrl)
     free(ctrl);
 }
 
+int control_dump(ctrl_t *ctrl, FILE *output)
+{
+    if(ctrl == NULL)
+    {
+	err_check(ERROR_NULL_POINTER, "NULL pointer is invalid arg!");
+    }
+    log_msg(output,"Control - K");
+    uquad_mat_dump(ctrl->K, output);
+#if CTRL_INTEGRAL
+    log_msg(output,"Control - K_int");
+    uquad_mat_dump(ctrl->K_int, output);
+#endif
+    return ERROR_OK;
+}
