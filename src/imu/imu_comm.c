@@ -997,7 +997,15 @@ int imu_comm_read_frame_ascii(imu_t *imu, imu_raw_t *new_frame, uquad_bool_t *ok
     retval = fscanf(imu->device,"%lf",&dtmp);
     if(retval < 0)
     {
-	err_check(ERROR_IO,"Read error: Failed to discard timestamps!");
+	if(retval == EOF)
+	{
+	    err_check(ERROR_IO,"End of file!");
+	}
+	else
+	{
+	    err_log_stderr("fscanf()");
+	    err_propagate(ERROR_IO);
+	}
     }
     double2tv(new_frame->timestamp,dtmp);
 
@@ -1005,7 +1013,15 @@ int imu_comm_read_frame_ascii(imu_t *imu, imu_raw_t *new_frame, uquad_bool_t *ok
     retval = fscanf(imu->device,"%lf",&dtmp);
     if(retval < 0)
     {
-	err_check(ERROR_IO,"Read error: Failed to discard timestamps!");
+	if(retval == EOF)
+	{
+	    err_check(ERROR_IO,"End of file!");
+	}
+	else
+	{
+	    err_log_stderr("fscanf()");
+	    err_propagate(ERROR_IO);
+	}
     }
 
     // Get sampling time
