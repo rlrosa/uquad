@@ -81,6 +81,11 @@ int main(int argc, char *argv[])
 		 err_log_stderr("sendto()");
 		 quit();
 	     }
+	     /**
+	      * Client pings at a CHECK_NET_MSG_T_MS rate.
+	      * We'll read more often, since timing is not
+	      * a problem on the server side (PC)
+	      */
 	     sleep_ms(CHECK_NET_MSG_T_MS >> 1);
 	 }
 	 /// nothing new...

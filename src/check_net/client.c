@@ -86,6 +86,8 @@ int main(int argc, char *argv[])
 	}
 	bzero(buff_i,CHECK_NET_MSG_LEN);
 	gettimeofday(&tv_sent, NULL);
+	/// give server some time to answer
+	sleep_ms(CHECK_NET_RETRY_MS);
 
 	/// wait for ack
 	while(1)

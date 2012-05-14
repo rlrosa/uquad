@@ -61,14 +61,17 @@ typedef enum STATE_VECTOR{
 #define TS_MIN             (TS_DEFAULT_US - TS_JITTER)
 
 /**
- * Misc macros define
+ * check_net macros
  *
+ * In a worst case scenario, check_net will take a max
+ * of CHECK_NET_TO_S [s] + CHECK_NET_MSG_T_MS [ms] to
+ * detect loss of connectivity.
  */
 #define CHECK_NET_ACK          "OK"
 #define CHECK_NET_PING         "HI"
 #define CHECK_NET_KILL_RETRIES 10
 #define CHECK_NET_MSG_LEN      2    // [bytes]
-#define CHECK_NET_MSG_T_MS     500  // [ms] - time between pings
+#define CHECK_NET_MSG_T_MS     950  // [ms] - time between pings
 #define CHECK_NET_RETRY_MS     50   // [ms] - time between requests for ack
 #define CHECK_NET_TO_S         1    // [s]  - timeout
 #endif
