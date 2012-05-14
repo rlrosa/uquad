@@ -42,13 +42,13 @@
  *   - Max state diff accumulation (*ACCUM*)
  */
 #define CTRL_INT_DELTA_MAX_PSI   1.74e-3// [rad*s] - @Ts=10ms, max 10° expected
-#define CTRL_INT_DELTA_MAX_THETA PI/4.0 // [rad*s]
-#define CTRL_INT_DELTA_MAX_Z     0.5    // [m*s]
+#define CTRL_INT_DELTA_MAX_THETA 1.74e-3// [rad*s]
+#define CTRL_INT_DELTA_MAX_Z     1e-5   // [m*s]
 #define CTRL_INT_DELTA_MAX_Y     1.0    // [m*s]
 #define CTRL_INT_DELTA_MAX_X     1.0    // [m*s]
 #define CTRL_INT_ACCUM_MAX_PSI   0.35   // [rad*s]
 #define CTRL_INT_ACCUM_MAX_THETA 0.35   // [rad*s]
-#define CTRL_INT_ACCUM_MAX_Z     2.0    // [m*s]
+#define CTRL_INT_ACCUM_MAX_Z     3.0    // [m*s]
 #define CTRL_INT_ACCUM_MAX_Y     5.0    // [m*s]
 #define CTRL_INT_ACCUM_MAX_X     5.0    // [m*s]
 #endif // CTRL_INTEGRAL

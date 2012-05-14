@@ -9,8 +9,6 @@ trap ctrl_c INT
 function ctrl_c() {
     echo "** Trapped CTRL-C"
     killall cmd
-    killall check_net.sh
-    echo "Please wait for logger to finish (25 sec)..."
     exit
 }
 
@@ -65,19 +63,6 @@ mv i2c_beagle/cmd${pc_test} build/main/cmd
 
 # launch gpsd
 (cd ../scripts; ./start_gpsd.sh)
-sleep 1
-
-# run network check, kill cmd if network fails
-echo Setting up check_net.sh
-(cd ../scripts; ./check_net.sh &)
-# wait for check net to start, or not
-timer=4
-while [ $timer -gt 0 ];
-do
-    echo "Wait ${timer} for check_net.sh..."
-    sleep 1
-    timer=$(( $timer - 1 ))
-done
 sleep 1
 
 # run main
