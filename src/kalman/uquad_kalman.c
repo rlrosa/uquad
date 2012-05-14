@@ -537,7 +537,7 @@ int F(uquad_mat_t* Fx, kalman_io_t* kd)
     Fx->m[2][13] = 0;
     Fx->m[2][14] = 0;
 
-    Fx->m[3][12] = T;
+    Fx->m[3][12] = 0;
     Fx->m[3][13] = 0;
     Fx->m[3][14] = 0;
 
