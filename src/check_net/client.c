@@ -8,13 +8,12 @@
 #include <netdb.h>
 #include <arpa/inet.h>
 
-
 #include <mot_control.h> // for KILL_MOTOR_CMD
 #include <uquad_types.h>
 #include <uquad_aux_time.h>
 #include <uquad_aux_io.h>
 
-#define USAGE "usage:\n\tsclient <host IP> <port>\n"
+#define USAGE "usage:\n\t./client <host IP> <port>\n"
 
 static int sockfd = -1;
 
@@ -33,7 +32,8 @@ int main(int argc, char *argv[])
 	retval,
 	kill_retries = 0;
     uquad_bool_t
-	read_ok = false;
+	read_ok = false,
+	server_ok = false;
     struct sockaddr_in
 	servaddr;
     struct hostent
@@ -86,6 +86,8 @@ int main(int argc, char *argv[])
 	}
 	bzero(buff_i,CHECK_NET_MSG_LEN);
 	gettimeofday(&tv_sent, NULL);
+	/// give server some time to answer
+	sleep_ms(CHECK_NET_RETRY_MS);
 
 	/// wait for ack
 	while(1)
@@ -102,11 +104,12 @@ int main(int argc, char *argv[])
 		    err_log_stderr("recvfrom()");
 		    goto kill_motors;
 		}
-		if (n > 0)
+		if (n == CHECK_NET_MSG_LEN &&
+		    (strcmp(buff_i,CHECK_NET_ACK) == 0))
 		{
 		    // ack received
+		    server_ok = true;
 		    sleep_ms(CHECK_NET_MSG_T_MS);
-		    err_log("ACK received!");
 		    break;
 		}
 		sleep_ms(CHECK_NET_RETRY_MS);
@@ -122,6 +125,25 @@ int main(int argc, char *argv[])
 		kill_motors:
 		if(kill_retries == 0)
 		{
+		    if(!server_ok)
+		    {
+			err_log("");
+			err_log("");
+			err_log("");
+			err_log("");
+			err_log("");
+			err_log("-- -- -- -- --");
+			err_log("-- -- -- -- -- -- -- -- -- --");
+			err_log("WARN: Will NOT run checknet, server never acked...");
+			err_log("-- -- -- -- -- -- -- -- -- --");
+			err_log("-- -- -- -- --");
+			err_log("");
+			err_log("");
+			err_log("");
+			err_log("");
+			err_log("");
+			quit();
+		    }
 		    err_log("check_net: Connection lost! Killing motors...");
 		}
 		retval = system(KILL_MOTOR_CMD);

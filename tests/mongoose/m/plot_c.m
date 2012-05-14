@@ -3,7 +3,8 @@ function [kin, imu_raw, imu_data, x_hat_c, wlog, z] = plot_c(path)
 % function [kin, imu_data, x_hat_c, wlog, z] = plot_c(path)
 % -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
-% path = 'tests/main/logs/2012_05_01_1_04_K_full_con_ceros_en_x_y_vqx_vqy_anduvo_espantoso/';
+% path =
+% 'tests/main/logs/2012_05_01_1_04_K_full_con_ceros_en_x_y_vqx_vqy_anduvo_espantoso/';
 
 if(~exist('path','var'))
   path = 'src/build/main/';
@@ -11,10 +12,10 @@ if(~exist('path','var'))
 end
 
 kin      = load([path 'kalman_in.log']);
-imu_data = load([path 'imu_data.log']);
 x_hat_c  = load([path 'x_hat.log'    ]);
 wlog     = load([path 'w.log'        ]);
-imu_raw  = load([path 'imu_raw.log'  ]);
+imu_raw  = load_if_exist([path 'imu_raw.log'  ]);
+imu_data = load_if_exist([path 'imu_data.log']);
 
 lens     = [length(kin)      ...
             length(x_hat_c)  ...
