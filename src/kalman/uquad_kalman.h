@@ -47,19 +47,19 @@ typedef struct kalman_io {
     uquad_mat_t *R_imu_gps;
 } kalman_io_t;
 
-int uquad_kalman(kalman_io_t * kalman_io_data, uquad_mat_t* w, imu_data_t* data, double T, double weight, gps_comm_data_t *gps_i_data);
-int uquad_kalman_gps(kalman_io_t* kalman_io_data, gps_comm_data_t* gps_i_data);
+int uquad_kalman(kalman_io_t * kd, uquad_mat_t* w, imu_data_t* data, double T, double weight, gps_comm_data_t *gps_i_data);
+int uquad_kalman_gps(kalman_io_t* kd, gps_comm_data_t* gps_i_data);
 kalman_io_t* kalman_init();
-void kalman_deinit(kalman_io_t *kalman_io_data);
+void kalman_deinit(kalman_io_t *kd);
 
 /**
  * Saves Kalman noise settings to file
  *
- * @param kalman_io_data
+ * @param kd
  * @param output log file, or NULL for stdout.
  *
  * @return error code
  */
-int kalman_dump(kalman_io_t *kalman_io_data, FILE *output);
+int kalman_dump(kalman_io_t *kd, FILE *output);
 
 #endif
