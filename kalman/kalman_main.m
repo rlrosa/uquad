@@ -69,7 +69,7 @@ if(stabilize_ts)
 	warning('Should be set to 0 for logs dated 2012-05-13 and later!')
 end
 %% Source
- log_path = 'src/build/main/';
+%  log_path = 'src/build/main/';
 if(~exist('log_path','var'))
   error('Must define a variable log_path to read from!');
 end
@@ -219,15 +219,15 @@ w_min   = w_hover - (w_max - w_hover); % Only for simetry
 Q_imu_gps = diag([1e2 1e2 1e2 1e-3 1e-3 1e-3 1e2 1e2 1e2 1e1 1e1 1e1 1e0 1e0 1e0 ]);
 %                 psi phi the ax  ay  az  wqx wqy wqz  x   y   z
 R_imu_gps = diag([1e3 1e3 1e3 1e4 1e4 1e4 1e1 1e1 1e1 1e2 1e2 1e5]);
-%                  x   y   z  psi phi the vqx vqy vqz wqx wqy wqz ax  ay  az
-Q_imu     = Q_imu_gps;
-% Q_imu     = diag([1e2 1e2 1e2 1e-6 1e-6 1e-6 1e2 1e2 1e2 1e1 1e1 1e1 1e0 1e0 1e0]);
-%                 psi phi the ax  ay  az  wqx wqy wqz  z
-R_imu     = diag([1e3 1e3 1e3 1e4 1e4 1e4 1e1 1e1 1e1 1e5]);
 %                  x   y   z  vqx vqy vqz
 Q_gps     = diag([1e2 1e2 1e2 1e2 1e2 1e2]);
 %                  x   y   z  vqx vqy vqz
 R_gps     = diag([1e0 1e0 1e5 1e0 1e0 1e5]);
+
+Q_imu     = Q_imu_gps;
+Rdiag     = diag(R_imu_gps);
+R_imu     = diag([Rdiag(1:end-3); Rdiag(end)]);
+
 
 if(use_n_states == 0)
     K    = load('src/control/K.txt');
