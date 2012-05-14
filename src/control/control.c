@@ -230,3 +230,17 @@ void control_deinit(ctrl_t *ctrl)
     free(ctrl);
 }
 
+int control_dump(ctrl_t *ctrl, FILE *output)
+{
+    if(ctrl == NULL)
+    {
+	err_check(ERROR_NULL_POINTER, "NULL pointer is invalid arg!");
+    }
+    log_msg(output,"Control - K");
+    uquad_mat_dump(ctrl->K, output);
+#if CTRL_INTEGRAL
+    log_msg(output,"Control - K_int");
+    uquad_mat_dump(ctrl->K_int, output);
+#endif
+    return ERROR_OK;
+}

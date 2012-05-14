@@ -86,4 +86,14 @@ int control(ctrl_t *ctrl, uquad_mat_t *w, uquad_mat_t *x, set_point_t *sp, doubl
 
 void control_deinit(ctrl_t *ctrl);
 
+/**
+ * Saves control matrices to file.
+ *
+ * @param ctrl
+ * @param output log file, or NULL for stdout.
+ *
+ * @return error code
+ */
+int control_dump(ctrl_t *ctrl, FILE *output);
+
 #endif

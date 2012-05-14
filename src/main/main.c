@@ -711,6 +711,8 @@ int main(int argc, char *argv[]){
      */
     retval = kalman_dump(kalman, log_err);
     quit_log_if(retval,"Failed to save Kalman configuration!");
+    retval = control_dump(ctrl, log_err);
+    quit_log_if(retval,"Failed to save Kalman configuration!");
     log_configuration();
 
     /// -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
