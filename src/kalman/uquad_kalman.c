@@ -849,29 +849,29 @@ kalman_io_t* kalman_init()
     kd->Q->m[14][14] = 1;
 #endif // KALMAN_BIAS
 
-    kd->R->m[0][0] = 1000;
-    kd->R->m[1][1] = 1000;
-    kd->R->m[2][2] = 1000;
-    kd->R->m[3][3] = 10000;
-    kd->R->m[4][4] = 10000;
-    kd->R->m[5][5] = 10000;
-    kd->R->m[6][6] = 10;
-    kd->R->m[7][7] = 10;
-    kd->R->m[8][8] = 10;
-    kd->R->m[9][9] = 100000;
+    kd->R->m[0][0] = 1e3;
+    kd->R->m[1][1] = 1e3;
+    kd->R->m[2][2] = 1e3;
+    kd->R->m[3][3] = 1e4;
+    kd->R->m[4][4] = 1e4;
+    kd->R->m[5][5] = 1e4;
+    kd->R->m[6][6] = 1e1;
+    kd->R->m[7][7] = 1e1;
+    kd->R->m[8][8] = 1e1;
+    kd->R->m[9][9] = 1e5;
 
-    kd->R_imu_gps->m[0][0] = 1000;
-    kd->R_imu_gps->m[1][1] = 1000;
-    kd->R_imu_gps->m[2][2] = 1000;
-    kd->R_imu_gps->m[3][3] = 10000;
-    kd->R_imu_gps->m[4][4] = 10000;
-    kd->R_imu_gps->m[5][5] = 10000;
-    kd->R_imu_gps->m[6][6] = 10;
-    kd->R_imu_gps->m[7][7] = 10;
-    kd->R_imu_gps->m[8][8] = 10;
-    kd->R_imu_gps->m[9][9] = 100;
-    kd->R_imu_gps->m[10][10] = 100;
-    kd->R_imu_gps->m[11][11] = 100000;
+    kd->R_imu_gps->m[0][0] = kd->R->m[0][0];
+    kd->R_imu_gps->m[1][1] = kd->R->m[1][1];;
+    kd->R_imu_gps->m[2][2] = kd->R->m[2][2];;
+    kd->R_imu_gps->m[3][3] = kd->R->m[3][3];;
+    kd->R_imu_gps->m[4][4] = kd->R->m[4][4];;
+    kd->R_imu_gps->m[5][5] = kd->R->m[5][5];;
+    kd->R_imu_gps->m[6][6] = kd->R->m[6][6];;
+    kd->R_imu_gps->m[7][7] = kd->R->m[7][7];;
+    kd->R_imu_gps->m[8][8] = kd->R->m[8][8];;
+    kd->R_imu_gps->m[9][9] = 1e2;
+    kd->R_imu_gps->m[10][10] = 1e2;
+    kd->R_imu_gps->m[11][11] = kd->R->m[9][9];
 
     kd->P->m[0][0] = 1;
     kd->P->m[1][1] = 1;
