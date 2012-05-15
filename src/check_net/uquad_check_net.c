@@ -1,6 +1,6 @@
 #include <uquad_check_net.h>
 
-int uquad_check_net_server(int portno)
+int uquad_check_net_server(int portno, uquad_bool_t tcp)
 {
     int
 	sockfd = -1,
@@ -12,22 +12,40 @@ int uquad_check_net_server(int portno)
     struct sockaddr_in servaddr, cliaddr;
     socklen_t len;
 
-    sockfd=socket(AF_INET,SOCK_DGRAM,0);
+    sockfd=socket(AF_INET,
+		  (tcp)?SOCK_STREAM:SOCK_DGRAM,
+		  0);
 
     bzero(&servaddr,sizeof(servaddr));
     servaddr.sin_family = AF_INET;
-    servaddr.sin_addr.s_addr=htonl(INADDR_ANY);
+    servaddr.sin_addr.s_addr=INADDR_ANY;
     servaddr.sin_port=htons(portno);
+    len = sizeof(cliaddr);
     if(bind(sockfd,(struct sockaddr *)&servaddr,sizeof(servaddr)) < 0)
     {
 	err_log_stderr("bind()");
 	cleanup_if(ERROR_FAIL);
     }
 
+    if(tcp)
+    {
+	if(listen(sockfd,5) < 0)
+	{
+	    err_log_stderr("listen()");
+	    cleanup_if(ERROR_FAIL);
+	}
+	newsockfd = accept(sockfd,(struct sockaddr *) &cliaddr,
+			   &len);
+	if(newsockfd < 0)
+	{
+	    err_log_stderr("accept()");
+	    cleanup_if(ERROR_FAIL);
+	}
+    }
+
     while(1)
     {
-	len = sizeof(cliaddr);
-	n = recvfrom(sockfd,buff_i,CHECK_NET_MSG_LEN,0,(struct sockaddr *)&cliaddr,&len);
+	n = recvfrom(tcp?newsockfd:sockfd,buff_i,CHECK_NET_MSG_LEN,0,(struct sockaddr *)&cliaddr,&len);
 	if (n < 0)
 	{
 	    /// Something went wrong, die.
@@ -41,7 +59,7 @@ int uquad_check_net_server(int portno)
 #ifdef DEBUG_CHECK_NET
 	    err_log("server(): ping received!");
 #endif
-	    n = sendto(sockfd,buff_o,CHECK_NET_MSG_LEN,
+	    n = sendto(tcp?newsockfd:sockfd,buff_o,CHECK_NET_MSG_LEN,
 		       0,(struct sockaddr *)&cliaddr,sizeof(cliaddr));
 	    if (n < 0)
 	    {
@@ -68,7 +86,7 @@ int uquad_check_net_server(int portno)
     return ERROR_FAIL;
 }
 
-int uquad_check_net_client(const char *hostIP, int portno)
+int uquad_check_net_client(const char *hostIP, int portno, uquad_bool_t tcp)
 {
     int
 	n,
@@ -103,12 +121,24 @@ int uquad_check_net_client(const char *hostIP, int portno)
 	cleanup_if(ERROR_FAIL);
     }
 
-    sockfd=socket(AF_INET,SOCK_DGRAM,0);
+    sockfd=socket(AF_INET,
+		  (tcp)?SOCK_STREAM:SOCK_DGRAM,
+		  0);
 
     bzero(&servaddr,sizeof(servaddr));
     servaddr.sin_family = AF_INET;
-    servaddr.sin_addr.s_addr=inet_addr(hostIP);
+    bcopy((char *)server->h_addr,
+         (char *)&servaddr.sin_addr.s_addr,
+         server->h_length);
     servaddr.sin_port=htons(portno);
+    if(tcp)
+    {
+	if(connect(sockfd,(struct sockaddr *) &servaddr,sizeof(servaddr)) < 0)
+	{
+	    err_log_stderr("connect()");
+	    cleanup_if(ERROR_FAIL);
+	}
+    }
 
     bzero(buff_i,CHECK_NET_MSG_LEN);
     while(1)
