@@ -997,7 +997,15 @@ int imu_comm_read_frame_ascii(imu_t *imu, imu_raw_t *new_frame, uquad_bool_t *ok
     retval = fscanf(imu->device,"%lf",&dtmp);
     if(retval < 0)
     {
-	err_check(ERROR_IO,"Read error: Failed to discard timestamps!");
+	if(retval == EOF)
+	{
+	    err_check(ERROR_IO,"End of file!");
+	}
+	else
+	{
+	    err_log_stderr("fscanf()");
+	    err_propagate(ERROR_IO);
+	}
     }
     double2tv(new_frame->timestamp,dtmp);
 
@@ -1005,7 +1013,15 @@ int imu_comm_read_frame_ascii(imu_t *imu, imu_raw_t *new_frame, uquad_bool_t *ok
     retval = fscanf(imu->device,"%lf",&dtmp);
     if(retval < 0)
     {
-	err_check(ERROR_IO,"Read error: Failed to discard timestamps!");
+	if(retval == EOF)
+	{
+	    err_check(ERROR_IO,"End of file!");
+	}
+	else
+	{
+	    err_log_stderr("fscanf()");
+	    err_propagate(ERROR_IO);
+	}
     }
 
     // Get sampling time
@@ -1253,18 +1269,18 @@ int convert_2_euler(imu_data_t *data)
     {
 	phi = -asin(data->acc->m_full[0]/acc_norm);
 	psi = atan2(data->acc->m_full[1],data->acc->m_full[2]);
-    }else if(data->acc->m_full[0]>0){
-	phi=-PI/2;
-	psi=0;
+    }else if(data->acc->m_full[0]>0.0){
+	phi=-PI/2.0;
+	psi=0.0;
     }else{
-	phi=PI/2;
-	psi=0;
+	phi=PI/2.0;
+	psi=0.0;
     }
 
     m3x3->m[0][0] = cos(phi)/(uquad_square(cos(phi)) + uquad_square(sin(phi)));
     m3x3->m[0][1] = (sin(phi)*sin(psi))/((uquad_square(cos(phi)) + uquad_square(sin(phi)))*(uquad_square(cos(psi)) + uquad_square(sin(psi))));
     m3x3->m[0][2] = (cos(psi)*sin(phi))/((uquad_square(cos(phi)) + uquad_square(sin(phi)))*(uquad_square(cos(psi)) + uquad_square(sin(psi))));
-    m3x3->m[1][0] = 0;
+    m3x3->m[1][0] = 0.0;
     m3x3->m[1][1] = cos(psi)/(uquad_square(cos(psi)) + uquad_square(sin(psi)));
     m3x3->m[1][2] = -sin(psi)/(uquad_square(cos(psi)) + uquad_square(sin(psi)));
     m3x3->m[2][0] = -sin(phi)/(uquad_square(cos(phi)) + uquad_square(sin(phi)));

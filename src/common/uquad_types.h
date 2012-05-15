@@ -35,17 +35,17 @@ typedef enum STATE_VECTOR{
 #define IZZM              0.0000154   // Tensor de inercia de los motores - segun z
 #define LENGTH            0.29	      // Largo en metros del los brazos del quad
 #define PI                3.1415926
-#define F_B1              4.6016e-05  // Coeficiente cuadrático de la fuerza
-#define F_B2              -0.0010     // Coeficiente lineal de la fuerza
+#define F_B1              4.60160135072435e-05     // Coeficiente cuadrático de la fuerza
+#define F_B2              -0.00103822726273726     // Coeficiente lineal de la fuerza
 #define M_D1              3.4734e-6   // Coeficiente cuadrático del torque
 #define M_D2              -1.3205e-4  // Coeficiente lineal del torque
-#define DRAG_A1           0.0000034734  // drag = w^2*A2 + w*A1
-#define DRAG_A2           -0.00013205   // drag = w^2*A2 + w*A1
+#define DRAG_A1           0.0000034734// drag = w^2*A2 + w*A1
+#define DRAG_A2           -0.00013205 // drag = w^2*A2 + w*A1
 #define DRIVE_A1          4.60160135072435e-05 // drive = w^2*A2 + w*A1
 #define DRIVE_A2          -0.00103822726273726 // drive = w^2*A2 + w*A1
-#define MASA_DEFAULT      (1.741-0.091)// Masa del Quad en kg
-#define STATE_COUNT       12
-#define LENGTH_INPUT      4           // Tamaño del vector de entradass  
+#define MASA_DEFAULT      (1.550)     // Weight of the quadcopter [kg]
+#define STATE_COUNT       12          // State vector length
+#define LENGTH_INPUT      4           // Input vector length
 
 /**
  *
@@ -61,14 +61,17 @@ typedef enum STATE_VECTOR{
 #define TS_MIN             (TS_DEFAULT_US - TS_JITTER)
 
 /**
- * Misc macros define
+ * check_net macros
  *
+ * In a worst case scenario, check_net will take a max
+ * of CHECK_NET_TO_S [s] + CHECK_NET_MSG_T_MS [ms] to
+ * detect loss of connectivity.
  */
 #define CHECK_NET_ACK          "OK"
 #define CHECK_NET_PING         "HI"
 #define CHECK_NET_KILL_RETRIES 10
 #define CHECK_NET_MSG_LEN      2    // [bytes]
-#define CHECK_NET_MSG_T_MS     500  // [ms] - time between pings
+#define CHECK_NET_MSG_T_MS     950  // [ms] - time between pings
 #define CHECK_NET_RETRY_MS     50   // [ms] - time between requests for ack
 #define CHECK_NET_TO_S         1    // [s]  - timeout
 #endif

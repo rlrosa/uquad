@@ -62,13 +62,58 @@
 
 #define UQUAD_HOW_TO   "./main <imu_device> /path/to/log/"
 #define MAX_ERRORS     20
-#define OL_TS_STABIL   0                 // If != 0, then will wait OL_TS_STABIL+STARTUP_RUNS samples before using IMU.
-#define STARTUP_RUNS   (50+OL_TS_STABIL) // Wait for this number of samples at a steady Ts before running
-#define STARTUP_TO_S   10 // Max number of seconds waiting for stable IMU data
-#define STARTUP_KALMAN 100
 #define FIXED          3
-#define IMU_TS_OK      -1
 
+/**
+ * Before running, we'll check if we have a stable sampling period.
+ * If something is wrong, for example some program is hogging the CPU,
+ * then we cannot run, a stable sampling period is required.
+ *
+ * OL_TS_STABIL: If != 0, then will wait OL_TS_STABIL+DISCARD_RUNS samples
+ *               before using IMU.
+ *               NOTE: This does not imply stable sampling period was achieved.
+ * DISCARD_RUNS: Wait for this number of samples at a steady Ts before running.
+ *               If !OL_TS_STABIL, then description above applies. Else, will
+ *               wait for DISCARD_RUNS samples at a stable sampling period, and
+ *               will NOT run until this condition is achieved (or timeout).
+ * STARTUP_TO_S: Timeout waiting for stable IMU data [s]
+ *
+ * NOTE: If IMU_COMM_FAKE, then timing was already taken care of, and log file
+ *       will start from the first sample used to calibrate, so no data should
+ *       be discarded and timing should not be a concern.
+ */
+#define STARTUP_TO_S   10
+#define IMU_TS_OK      -1
+#if !IMU_COMM_FAKE
+#define OL_TS_STABIL   0
+#define DISCARD_RUNS   (50+OL_TS_STABIL)
+#else // !IMU_COMM_FAKE
+#define OL_TS_STABIL   1
+#define DISCARD_RUNS   1
+#endif // !IMU_COMM_FAKE
+
+/**
+ * After IMU calibration, STARTUP_SAMPLES are used to
+ * ramp motors from mot->w_min to mot->w_hover.
+ * It will take STARTUP_SAMPLES*TS_DEFAULT_US/1e6 seconds.
+ * This is implemented by running everything as if we were
+ * hovering, but use a lower speed setting for the motors.
+ *
+ * Why?
+ * If we tell Kalman that we have a speed lower than mot->w_hover,
+ * the the prediction will be that be will fall, and this will result
+ * in an attempt to increase power.
+ * Evenly lowering the motor power will not affect the differences between
+ * the motors, and these differences are what the controller has determined
+ * necessary to mantain a stable attitud.
+ * So we get a stable ramp :)
+ */
+#define STARTUP_SAMPLES 100
+
+/**
+ * Access to SD card on beagleboard has proven to be VERY slow,
+ * using an external flash drive is much faster.
+ */
 #define LOG_DIR_DEFAULT    "/media/sda1/"
 
 #define LOG_W_NAME         "w"
@@ -100,6 +145,7 @@ static uquad_mot_t *mot    = NULL;
 static io_t *io            = NULL;
 static ctrl_t *ctrl        = NULL;
 static path_planner_t *pp  = NULL;
+
 #if USE_GPS && !GPS_ZERO
 static gps_t *gps          = NULL;
 #endif
@@ -170,17 +216,8 @@ FILE *log_int = NULL;
 #endif //DEBUG
 
 /**
- * Will print configuration to err log.
- *
- */
-/* void log_config(void) */
-/* { */
-
-/* } */
-
-/** 
  * Clean up and close
- * 
+ *
  */
 void quit()
 {
@@ -711,6 +748,8 @@ int main(int argc, char *argv[]){
      */
     retval = kalman_dump(kalman, log_err);
     quit_log_if(retval,"Failed to save Kalman configuration!");
+    retval = control_dump(ctrl, log_err);
+    quit_log_if(retval,"Failed to save Kalman configuration!");
     log_configuration();
 
     /// -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
@@ -1003,9 +1042,10 @@ int main(int argc, char *argv[]){
 		goto end_imu;
 	    }
             // data may not be of direct use, may be calib
-
 #if IMU_COMM_FAKE
 	    // simulate delay (no delay when reading from txt)
+	    retval = imu_comm_get_raw_latest(imu,&imu_frame);
+	    log_n_jump(retval,end_log_imu,"could not get new frame...");
 	    if(runs_imu == 0)
 	    {
 		tv_diff = imu_frame.timestamp;
@@ -1069,7 +1109,7 @@ int main(int argc, char *argv[]){
 		err_imu = in_range_us(tv_diff, TS_MIN, TS_MAX);
 		if(err_imu == 0 || OL_TS_STABIL)
 		{
-		    if(imu_ts_ok++ >= STARTUP_RUNS)
+		    if(imu_ts_ok++ >= DISCARD_RUNS)
 		    {
 			err_log_num("IMU: Frames read out during stabilization:",runs_imu);
 			runs_imu = IMU_TS_OK; // so re-entry doesn't happen
@@ -1162,6 +1202,9 @@ int main(int argc, char *argv[]){
 	    imu_update = true;
 	    err_imu = gettimeofday(&tv_last_imu,NULL);
 	    err_log_std(err_imu);
+#if IMU_COMM_FAKE
+	    goto end_imu;
+#endif // IMU_COMM_FAKE
             /**
              * Now that we have data, we'll go back to the beginning of the
              * loop to check if more data is available.
@@ -1228,6 +1271,11 @@ int main(int argc, char *argv[]){
 		{
 		    quit_log_if(ERROR_GPS, "Fake GPS does not make sense if not hovering!");
 		}
+#if LOG_GPS
+		retval = uquad_timeval_substract(&tv_diff, tv_tmp, tv_start);
+		log_tv_only(log_gps, tv_diff);
+		log_eol(log_gps);
+#endif
 	    }
 	    else
 	    {
@@ -1310,7 +1358,10 @@ int main(int argc, char *argv[]){
 		pp->sp->x->m_full[SV_PSI]   = 0.0; // [rad]
 		// Motor speed
 		for(i=0; i<MOT_C; ++i)
+		{
 		    w_ramp->m_full[i] = mot->w_min;
+		    w->m_full[i]      = mot->w_hover;
+		}
 	    }
 
 	    /**
@@ -1410,10 +1461,9 @@ int main(int argc, char *argv[]){
 		ts_error = uquad_max(0,ts_error - 1);
 	    }
 	}
-	// use real w
 	retval = uquad_kalman(kalman,
-			      (runs_kalman > STARTUP_KALMAN)?
-			      mot->w_curr:w_ramp,
+			      (runs_kalman > STARTUP_SAMPLES)?
+			      mot->w_curr:w,
 			      &imu_data,
 			      tv_diff.tv_usec,
 			      mot->weight,
@@ -1425,14 +1475,7 @@ int main(int argc, char *argv[]){
 #if USE_GPS
 	if(gps_update)
 	{
-	    gettimeofday(&tv_tmp,NULL);
-	    retval = uquad_timeval_substract(&tv_diff, tv_tmp, tv_start);
-	    retval = ERROR_OK; // clear to avoid errors
 	    gps_update = false; // Clear gps status
-#if LOG_GPS
-	    log_tv_only(log_gps, tv_diff);
-	    log_eol(log_gps);
-#endif // LOG_GPS
 	}
 #endif // USE_GPS
 
@@ -1451,14 +1494,14 @@ int main(int argc, char *argv[]){
 	fflush(log_x_hat);
 #endif //DEBUG_X_HAT
 #endif //DEBUG
-	if(!(runs_kalman > STARTUP_KALMAN))
+	if(!(runs_kalman > STARTUP_SAMPLES))
 	{
 	    /**
 	     * Startup:
 	     *   - Ramp motors.
 	     */
 	    ++runs_kalman;
-	    if(runs_kalman == STARTUP_KALMAN)
+	    if(runs_kalman == STARTUP_SAMPLES)
 	    {
 		gettimeofday(&tv_tmp,NULL);
 		retval = uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
@@ -1474,6 +1517,7 @@ int main(int argc, char *argv[]){
 		err_log_tv("Ramp completed, running free control...", tv_diff);
 		err_log("-- -- -- -- -- -- -- --");
 		err_log("-- --");
+
 		++runs_kalman; // so re-entry doesn't happen
 	    }
 	}
@@ -1519,7 +1563,7 @@ int main(int argc, char *argv[]){
 	if (tv_diff.tv_usec > MOT_UPDATE_T || tv_diff.tv_sec > 1)
 	{
 	    /// Update motor controller
-	    if(!(runs_kalman > STARTUP_KALMAN))
+	    if(!(runs_kalman > STARTUP_SAMPLES))
 	    {
 		/**
 		 * Motors would start from hover speed
@@ -1528,15 +1572,19 @@ int main(int argc, char *argv[]){
 		 */
 		for(i = 0; i < MOT_C; ++i)
 		{
-		    w_ramp->m_full[i] = w->m_full[i];
-		    w->m_full[i] = uquad_max(mot->w_min,
-					     w->m_full[i] - (STARTUP_KALMAN - runs_kalman)
-					     *((mot->w_hover - mot->w_min)/STARTUP_KALMAN)
+		    w_ramp->m_full[i] = uquad_max(mot->w_min,
+					     w->m_full[i] - (STARTUP_SAMPLES - runs_kalman)
+					     *((mot->w_hover - mot->w_min)/STARTUP_SAMPLES)
 					     );
 		}
+		retval = mot_set_vel_rads(mot, w_ramp, false);
+		log_n_continue(retval,"Failed to set motor speed during ramp!");
 	    }
-	    retval = mot_set_vel_rads(mot, w, false);
-	    log_n_continue(retval,"Failed to set motor speed!");
+	    else
+	    {
+		retval = mot_set_vel_rads(mot, w, false);
+		log_n_continue(retval,"Failed to set motor speed!");
+	    }
 #if DEBUG && LOG_W
 	    uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
 	    log_tv_only(log_w,tv_diff);
