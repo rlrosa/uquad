@@ -47,8 +47,8 @@
 #define CTRL_INT_DELTA_MAX_Y     1.0    // [m*s]
 #define CTRL_INT_DELTA_MAX_X     1.0    // [m*s]
 #define CTRL_INT_ACCUM_MAX_PSI   0.35   // [rad*s]
-#define CTRL_INT_ACCUM_MAX_THETA 0.35   // [rad*s]
-#define CTRL_INT_ACCUM_MAX_Z     3.0    // [m*s]
+#define CTRL_INT_ACCUM_MAX_THETA 11.54   // [rad*s]
+#define CTRL_INT_ACCUM_MAX_Z     9.42    // [m*s]
 #define CTRL_INT_ACCUM_MAX_Y     5.0    // [m*s]
 #define CTRL_INT_ACCUM_MAX_X     5.0    // [m*s]
 #endif // CTRL_INTEGRAL
