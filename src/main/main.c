@@ -1602,6 +1602,7 @@ int main(int argc, char *argv[]){
 #if LOG_INT
 	log_tv_only(log_int, tv_diff);
 	uquad_mat_dump_vec(ctrl->x_int, log_int, false);
+	fflush(log_int);
 #endif // LOG_INT
 
 	/// -- -- -- -- -- -- -- --
