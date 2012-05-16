@@ -18,24 +18,11 @@ En este capítulo se analiza la performance del GPS. Se intenta reconstruir un p
 \item Cinta métrica, pintura y cuerda.
 \end{itemize}
 
-\begin{figure} [h!]
-  \vspace{-20pt}
-  \centering
-  \subfloat[Trípode de fotografía, con el GPS atado en lugar de una cámara.]{\label{fig:tripode_con_plomada.jpg}
-    \includegraphics[width=0.35\textwidth]{./pics_gps/tripode_con_plomada.jpg}}
-  \subfloat[GPS amarrado al trípode.]{\label{fig:vista_usb.jpg}
-    \includegraphics[width=0.35\textwidth]{./pics_gps/vista_usb.jpg}}
-  \caption{GPS + Atril}
-  \label{fig:rebotes}
-  \vspace{-50pt}
-\end{figure}
-
-\newpage
 \section{Procedimiento}
 \label{sec:gps2-procedimiento}
 
 \begin{wrapfigure}{r}{0.6\textwidth}
-\vspace{-50pt}
+\vspace{-200pt}
 \begin{quote}
 \begin{quote}
 \begin{verbatim}
@@ -78,6 +65,19 @@ Los pasos a seguir son los siguientes:
 \item Fijar la altura y la orientación del GPS, y tomar medidas en cada uno de los puntos \verb+[1,2,3,4,5,6]+.
 \item Tomar un punto como origen, y comparar la figura que resulta de los datos provenientes del GPS con las medidas tomadas con el metro.
 \end{enumerate}
+
+\begin{wrapfigure}{r}{0.6\textwidth}
+  \vspace{-30pt}
+  \centering
+  \subfloat[Trípode de fotografía, con el GPS atado en lugar de una cámara.]{\label{fig:tripode_con_plomada.jpg}
+    \includegraphics[width=0.2\textwidth]{./pics_gps/tripode_con_plomada.jpg}}
+  \subfloat[GPS amarrado al trípode.]{\label{fig:vista_usb.jpg}
+    \includegraphics[width=0.2\textwidth]{./pics_gps/vista_usb.jpg}}
+\vspace{-10pt}
+  \caption{GPS + Atril}
+  \label{fig:rebotes}
+  \vspace{-50pt}
+\end{wrapfigure}
 
 En la figura \ref{fig:tripode_con_plomada.jpg} se observa el trípode que sostiene al GPS. Se busca tener el GPS a una altura fija, y separado del piso. Al nivel del piso los rebotes degradan seriamente la performance del GPS. La cuerda que marca el lado del polígono, junto con las patas del trípode, se utilizaron para fijar la orientación del GPS durante el experimento.
 
@@ -152,18 +152,21 @@ Se podría hacer una figura irregular cualquiera, y tomarlo en cuanto en el rest
 \subsection{Punto fijo - 2 minutos}
 \label{sec:gps2-punto-fijo-2-minutos}
 
+Se tomaron datos durante aproximadamente 2 minutos ($\approx$ 120 muestras) en cada uno de los vértices del polígono, con el objetivo de observar la estabilidad de la información proveniente del GPS.
+
 \begin{wrapfigure} {r} {0.6\textwidth}
-\vspace{-30pt}
+\vspace{-10pt}
   \centering
   \subfloat[Orientación \#3]{\label{fig:or2.jpg}
     \includegraphics[width=0.27\textwidth]{./pics_gps/or2.jpg}}
   \subfloat[Orientación \#1 y \#4.]{\label{fig:or3.jpg}
     \includegraphics[width=0.27\textwidth]{./pics_gps/or3.jpg}}
-\caption{Orientaciones del GPS}
 \vspace{-10pt}
+\caption{Orientaciones del GPS}
+\vspace{-20pt}
 \end{wrapfigure}
 
-Se tomaron datos durante aproximadamente 2 minutos ($\approx$ 120 muestras) en cada uno de los vértices del polígono, con el objetivo de observar la estabilidad de la información proveniente del GPS. En las siguiente figuras se muestran los datos luego de restar el promedio, o sea que se muestra el error respecto al valor promedio. Si el GPS fuese perfecto, entonces todas las muestras coincidirían con el promedio, y estarían ubicadas en el punto \verb+[0,0]+. El círculo negro tiene 2.5m de radio, las muestras que caen fuera de él están a más de 2.5m del valor promedio. En la leyenda se muestra qué porcentaje de las muestras caen fuera del círculo.
+En las siguiente figuras se muestran los datos luego de restar el promedio, o sea que se muestra el error respecto al valor promedio. Si el GPS fuese perfecto, entonces todas las muestras coincidirían con el promedio, y estarían ubicadas en el punto \verb+[0,0]+. El círculo negro tiene 2.5m de radio, las muestras que caen fuera de él están a más de 2.5m del valor promedio. En la leyenda se muestra qué porcentaje de las muestras caen fuera del círculo.
 
 Este experimento también se hizo tomando 10 minutos de muestras por punto, los resultados fueron muy similares.
 
@@ -192,16 +195,18 @@ Se orientó el GPS de 3 maneras distintas, siempre alineando el trípode con uno
 \vspace{-20pt}
 \end{figure}
 
+\vspace{-20pt}
 \subsubsection{Punto fijo: Análisis - \textbf{satélites disponibles}}
 \label{sec:gps2-punto-fijo-analisis-sat-count}
 
 La teoría dice que con 4 satélites debería alcanzar para obtener un \textit{fix 3D}, es decir, estimar la posición sobre la esfera terrestre, y la distancia (altura) a la misma. Se recomienda tener no menos de 6. Durante el experimento de la figura \ref{fig:or2_todos_cut.png}, en un momento el GPS perdió señal, y el número de satélites disponibles, que usualmente anda por los 9 o 10, pasó a ser 4. Los datos correspondientes se muestran en la figura \ref{fig:or2_todos_sat_mal.png}. El trazo naranja, con un error de hasta 23 metros, corresponde a instantes donde la cantidad de satélites era entre 4 y 5. Luego de volver a 9 o 10 satélites, los datos vuelven a ser más razonables.
 
 \begin{wrapfigure}{r}{0.65\textwidth}
+\vspace{-30pt}
   \includegraphics[width=.6\textwidth]{./pics_gps/or2_todos_sat_mal.png}
   \caption{Datos con solamente 4 satélites. Orientación: \textbf{3}.}
   \label{fig:or2_todos_sat_mal.png}
-\vspace{-60pt}
+\vspace{-50pt}
 \end{wrapfigure}
 
 En la figura \ref{fig:or2_todos_cut.png} se observa el mismo log que en \ref{fig:or2_todos_sat_mal.png}, pero luego de haber quitado las muestras correspondientes al período donde se deterioró la señal.
@@ -237,7 +242,6 @@ Tener visibilidad limitada por obstáculos, o tener una mala geometría deterior
 
 %El impacto de la geometría se analiza en la sección \ref{sec:geometria}.
 
-\newpage
 \subsection{Polígono}
 \label{sec:gps2-poligono}
 
@@ -319,7 +323,7 @@ Los resultados se resumen en la tabla \ref{tab:err-rectas}.
 \caption{}
 \label{tab:err-rectas}
 \end{center}
-\vspace{-20pt}
+\vspace{-30pt}
 \end{table}
 
 En la tabla \ref{tab:err-rectas} se observa, cómo es de esperarse, que el error relativo disminuye al intentar estimar distancias mayores. Asumiendo que el error en la estimación de la posición de cada punto \verb+A+, \verb+B+ es similar, entonces para cometer un error de \verb+P+\% en la estimación de una distancia \verb+X+ (medida con el metro) entre \verb+A+ y \verb+B+, el GPS debe equivocarse en $\frac{P}{100}X\frac{1}{2}$ en la estimación de la posición de \verb+A+ y \verb+B+.
@@ -328,6 +332,7 @@ Resulta que el error en la estimación de la posición de un punto es de aproxim
 
 Nuevamente, no se cuenta con información sobre la posición real, pero parece razonable asumir que la ubicación real es cercana al promedio de los datos provenientes del GPS. Evidencia a favor de esto se observa en la figura \ref{fig:10m_mapa.png}. Se trata este tema un poco más en la sección \ref{sec:posicion-absoluta}.
 
+\vspace{-20pt}
 \section{Caminata por el borde del polígono}
 \label{sec:caminata-por-el-borde-del-poligono}
 
@@ -341,18 +346,17 @@ En las figuras siguientes se observan los datos tomados durante 3 caminatas sigu
 \vspace{-10pt}
   \centering
   \subfloat[Caminata \#1]{\label{fig:caminata1.png}
-    \includegraphics[width=0.45\textwidth]{./pics_gps/caminata1.png}}
+    \includegraphics[width=0.4\textwidth]{./pics_gps/caminata1.png}}
   \subfloat[Caminata \#2]{\label{fig:caminata2.png}
-    \includegraphics[width=0.45\textwidth]{./pics_gps/caminata2.png}}
+    \includegraphics[width=0.4\textwidth]{./pics_gps/caminata2.png}}
   \label{fig:caminatas}
 \caption{Caminatas por el borde del polígono}
 \vspace{-20pt}
 \end{figure}
 
+\newpage
 \subsection{Caminata - Análisis}
 \label{sec:caminata-analisis}
-
-Las gráficas de las caminatas a primera vista son muy desalentadoras. Se observa un error que parece ser muy significativo, la trayectoria no se parece en nada a un rectángulo. Un análisis más detallado de los resultados revela que la performance del GPS es acorde a los esperado según las pruebas de las secciones anteriores.
 
 \begin{wrapfigure}{r}{0.5\textwidth}
   \begin{center}
@@ -362,8 +366,10 @@ Las gráficas de las caminatas a primera vista son muy desalentadoras. Se observ
 \vspace{-20pt}
   \caption{Caminata \#3}
   \label{fig:caminata3}
-\vspace{-40pt}
+\vspace{-10pt}
 \end{wrapfigure}
+
+Las gráficas de las caminatas a primera vista son muy desalentadoras. Se observa un error que parece ser muy significativo, la trayectoria no se parece en nada a un rectángulo. Un análisis más detallado de los resultados revela que la performance del GPS es acorde a los esperado según las pruebas de las secciones anteriores.
 
 La posición parece tender a estabilizarse una vez que se llega al destino final, el punto 1. Ahí se continuó logueando datos por unos 20 segundos. En la figura \ref{fig:caminata2.png} la posición final parece tener un drift que se aleja de la posición inicial, en lugar de acercarse. No se encontró una justificación para este comportamiento, pero es similar al observado para puntos fijos, por lo que no se le prestó especial atención.
 
@@ -420,13 +426,13 @@ Para enfrentar este problema, lo más razonable parece ser que el algoritmo que 
 
 \begin{wrapfigure}{r}{0.5\textwidth}
   \begin{center}
-\vspace{-80pt}
-  \includegraphics[height=.6\textwidth]{./pics_gps/ponce.png}
+\vspace{-90pt}
+  \includegraphics[height=.5\textwidth]{./pics_gps/ponce.png}
   \end{center}
 \vspace{-20pt}
   \caption{Recorrido en bicicleta.}
   \label{fig:ponce.png}
-\vspace{-30pt}
+\vspace{-20pt}
 \end{wrapfigure}
 
 Se realizaron varios experimentos para analizar si la ubicación que daba el GPS se correspondía con la realidad, ya que algunos GPSs a veces dan un error constante de varios metros, y de ser el caso, se podría compensar este problema una vez detectado.
@@ -437,7 +443,6 @@ No se observo un offset evidente y constante, por lo que se asume el GPS \textbf
 
 En la figura \ref{fig:ponce.png} se observa una trayectoria realizada en bicicleta, con el GPS colocado sobre el trípode, asomando de una mochila. El recorrido fue hacia el sur-oeste, sobre la senda derecha, contra el lado derecho (cerca del cordón). No se observa un offset constante. Se analizaron otras figuras, y se llegaron a conclusiones similares.
 
-\newpage
 \section{Conclusiones}
 \label{sec:conclusion}
 
