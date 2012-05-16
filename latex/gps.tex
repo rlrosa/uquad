@@ -21,7 +21,7 @@ En este capítulo se analiza la performance del GPS. Se intenta reconstruir un p
 \begin{figure} [h!]
   \vspace{-20pt}
   \centering
-  \subfloat[Trípode de fotografía, con el GPS atado en lugar de la cámara..]{\label{fig:tripode_con_plomada.jpg}
+  \subfloat[Trípode de fotografía, con el GPS atado en lugar de una cámara.]{\label{fig:tripode_con_plomada.jpg}
     \includegraphics[width=0.35\textwidth]{./pics_gps/tripode_con_plomada.jpg}}
   \subfloat[GPS amarrado al trípode.]{\label{fig:vista_usb.jpg}
     \includegraphics[width=0.35\textwidth]{./pics_gps/vista_usb.jpg}}
@@ -34,36 +34,35 @@ En este capítulo se analiza la performance del GPS. Se intenta reconstruir un p
 \section{Procedimiento}
 \label{sec:gps2-procedimiento}
 
-En esta prueba se trata de obtener el error del GPS en el plano paralelo a la tierra, es decir, el error en latitud y longitud.
-
-El experimento que se diseñó consiste en marcar un rectángulo sobre el suelo (pasto), utilizando 6 puntos, con la siguiente disposición:
-
+\begin{wrapfigure}{r}{0.6\textwidth}
+\vspace{-50pt}
 \begin{quote}
 \begin{quote}
 \begin{verbatim}
-      Árbol              
- Árbol               Árbol
-           Gente_q_me_va_a_afanar
-      Árbol
- -- < -- < -- < -- < -- < -- < -- <
-    calle que sube de la rambla
- -- > -- > -- > -- > -- > -- > -- > 
- 3                2                1
- x ---- ---- ---- x ---- ---- ---- x
- |                                 |      Orientación del GPS:
- |                                 |            led
- |                                 |             ^
- |                                 |             |
- |                                 |             |
- x ---- ---- ---- x ---- ---- ---- x            usb
- 6                5                4
-
-     Estacionamiento de la facultad
+       Club de Golf
+ -- < -- < -- < -- < --
+    Av. Julio M. Sosa
+ -- > -- > -- > -- > --
+ 3          2          1
+ x -- -- -- x -- -- -- x
+ |                     |
+ |                     |
+ |                     |
+ x -- -- -- x -- -- -- x
+ 6          5          4
+  Estacionamiento FING
 \end{verbatim}
 \end{quote}
 \end{quote}
+\vspace{-10pt}
+\caption{Polígono}
+\vspace{-20pt}
+\label{fig:pol-pedorro}
+\end{wrapfigure}
 
-A diferencia del experimento de la sección \ref{chap-gps-test-1}, aqui todas líneas punteadas son de 6m de largo, en lugar de 1m. Resulta en un rectángulo de 6m por 12m.
+En esta prueba se busca caracterizar el error del GPS en latitud y longitud.
+
+El experimento que se diseñó consiste en marcar un rectángulo sobre el suelo, utilizando 6 puntos, con la disposición de la figura \ref{fig:pol-pedorro}. Todas líneas punteadas son de 6m de largo. Resulta en un rectángulo de 6m por 12m.
 
 Los pasos a seguir son los siguientes:
 
@@ -71,8 +70,8 @@ Los pasos a seguir son los siguientes:
 \item Construir el rectángulo sobre un superficie plana.
   \begin{itemize}
   \item Se utilizó pintura para marcar los vértices del triángulo.
-  \item Para trazar uno de los lados de 12 metros (puntos 1,2 y 3), se fijó una cuerda de 12 metros (con el punto medio marcado) a un punto, y se extendió (sin estirarla). El principio (\verb+1+) y el final (\verb+3+) de la cuerda son vértices del polígono, y el punto medio (\verb+2+) es otro de los puntos de interés.
-  \item Para construir rectas perpendiculares se utilizó una cuerda de 6m, y otra de 8.5m\footnote{Pitágoras: $8.5 \approx \sqrt{6^2 + 6^2} = 8.4852...$}. Uno de los extremos de la cuerda de 6 metros se fijó al \verb+1+, y uno de los extremos de la cuerda de 8.5m se fijó a \verb+2+. El punto donde ambas se intersectan corresponde a \verb+4+. Un procedimiento similar se siguió para determinar la ubicación de \verb+5+ y \verb+6+.
+  \item Para trazar uno de los lados de 12 metros (puntos 1,2 y 3), se fijó una cuerda de 12 metros (con el punto medio marcado) a un punto, y se la extendió (sin estirarla). El principio (\verb+1+) y el final (\verb+3+) de la cuerda son vértices del polígono, y el punto medio (\verb+2+) es otro de los puntos de interés.
+  \item Para construir rectas perpendiculares se utilizó una cuerda de 6m, y otra de 8.5m\footnote{$8.5 \approx \sqrt{6^2 + 6^2} = 8.4852...$}. Uno de los extremos de la cuerda de 6 metros se fijó al \verb+1+, y uno de los extremos de la cuerda de 8.5m se fijó a \verb+2+. El punto donde ambas se intersectan corresponde a \verb+4+. Un procedimiento similar se siguió para determinar la ubicación de \verb+5+ y \verb+6+.
   \end{itemize}
 \item Medir, con un metro, las distancias entre todos los puntos.
 \item Utilizar mínimos cuadrados para minimizar el error entre las distancias esperadas, y las experimentales. Esto puede llevar a trabajar con un polígono que \textbf{no} sea un rectángulo, pero el error será menor que el que resultaría de usar los valores teóricos.
@@ -80,18 +79,18 @@ Los pasos a seguir son los siguientes:
 \item Tomar un punto como origen, y comparar la figura que resulta de los datos provenientes del GPS con las medidas tomadas con el metro.
 \end{enumerate}
 
-En la figura \ref{fig:tripode_con_plomada.jpg} se observa el trípode que sostiene al GPS. El objetivo era tener el GPS a una altura fija, y separado del piso. Al nivel del piso los rebotes degradan seriamente la performance del GPS. La cuerda que marca el lado del polígono, junto con las patas del trípode, se utilizaron para fijar la orientación del GPS durante el experimento.
+En la figura \ref{fig:tripode_con_plomada.jpg} se observa el trípode que sostiene al GPS. Se busca tener el GPS a una altura fija, y separado del piso. Al nivel del piso los rebotes degradan seriamente la performance del GPS. La cuerda que marca el lado del polígono, junto con las patas del trípode, se utilizaron para fijar la orientación del GPS durante el experimento.
 
 \subsection{Adquisición de datos}
 \label{sec:adquisicion-de-datos}
 
-Para tomar datos se conectó el GPS, que manda información mediante USB-serie, al puerto USB de una computadora. En la computadora se utilizó el \href{http://catb.org/gpsd/}{GPSD}, un software open-source que hace de \textit{daemon}, y se encarga de transformar lo que llega del GPS en una estructura de datos fácil de manejar en \verb+C+.
+Para tomar datos se conectó el GPS, que manda información mediante USB-serie, al puerto USB de una computadora. En la computadora se utilizó el \href{http://catb.org/gpsd/}{GPSD}, un software open-source que hace de \textit{daemon}, y se encarga de transformar lo que llega del GPS a una estructura de datos fácil de manejar en \verb+C+.
 
 El GPS emite sentencias NMEA a través de USB serie, a 38400bps. Trabaja con sentencias:
 \begin{itemize}
 \item GPGGA - \textit{Global Positioning System Fix Data}: Información sobre la fecha, posición y datos relevantes sobre el \textit{fix}.
 \item GPGSV - \textit{Satellites in view}: Información sobre la cantidad de satélites detectados, y la calidad de la señal proveniente de cada uno.
-\item GPGSA - \textit{DOP and active satellites}: Información sobre DOP\footnote{\textit{Dilution of precision}.} y satélites activos.
+\item GPGSA - \textit{DOP and active satellites}: Información sobre DOP\footnote{\textit{Dilution of precision} - Ver \ref{sec:dop}.} y satélites activos.
 \item GPRMC - \textit{Recommended minimum specific GPS/Transit data}: Sentencia mínima recomendada, trae suficiente información como para poder trabajar con el GPS.
 \item GPVTG - \textit{Track Made Good and Ground Speed}: Información sobre la dirección y la velocidad (\textbf{no} sobre la posición absoluta).
 \end{itemize}
@@ -99,15 +98,10 @@ El GPS emite sentencias NMEA a través de USB serie, a 38400bps. Trabaja con sen
 \subsection{Verificación del polígono}
 \label{sec:verificacion-del-poligono}
 
-Una vez construido el polígono, es de interés medir todas las diagonales (con la cinta métrica) por dos motivos:
-\begin{itemize}
-\item Verificar que no se cometieron errores.
-\item Hacer mínimos cuadrados con las medidas, de manera de obtener un polígono, que no tiene porqué ser (y en general no será) un rectángulo, sino algo similar a un rectángulo, más ajustado a la realidad.
-\end{itemize}
-
-\begin{wrapfigure}{r}{0.6\textwidth}
+\begin{wraptable}{r}{0.5\textwidth}
 \centering
-\subfloat[Diagonales del polígono en cm. Lectura: \textbf{D24} representa la longitud (en cm) de la recta que une el punto $2$ con el punto $4$.]{\label{tab:diagonales-poligono}
+\vspace{-25pt}
+\caption{Diagonales del polígono (cm).}\label{tab:diagonales-poligono}
 \begin{tabular}{|c|c|c|c|c|}
 \hline
 \rowcolor[gray]{0.9}
@@ -125,14 +119,26 @@ Una vez construido el polígono, es de interés medir todas las diagonales (con 
 \hline
 850 & 602 & 602 & 1202 & 603 \\
 \hline
-\end{tabular}}\\
-\subfloat[Polígono luego de MC.]{\label{fig:pol_mc.png}
-  \includegraphics[width=.5\textwidth]{./pics_gps/pol_mc.png}}
-\end{wrapfigure}
+\end{tabular}
+\vspace{-30pt}
+\end{wraptable}
 
+Una vez construido el polígono, es de interés medir todas las diagonales (con la cinta métrica) por dos motivos:
+\begin{itemize}
+\item Verificar que no se cometieron errores.
+\item Hacer mínimos cuadrados con las medidas, de manera de obtener un polígono, que no tiene porqué ser (y en general no será) un rectángulo, sino algo similar a un rectángulo, más ajustado a la realidad.
+\end{itemize}
+
+\begin{wrapfigure}{r}{0.6\textwidth}
+\vspace{-20pt}
+  \includegraphics[width=.5\textwidth]{./pics_gps/pol_mc.png}
+\caption{Polígono luego de MC.}
+\label{fig:pol_mc.png}
+\vspace{-20pt}
+\end{wrapfigure}
 Las medidas tomadas se resumen en la tabla \ref{tab:diagonales-poligono}, donde \verb+D12+ representa la medida de la recta que une el punto \verb+1+ con el punto \verb+2+, en cm.
 
-El polígono resultante se observa en la figura \ref{fig:pol_mc.png}. El error relativo, es decir, el cociente entre las medidas de cada recta \textbf{D\#\#} resultante de aplicar MC, y lo esperado en el polígono teórico, de 6m de lado, es:
+El polígono resultante se observa en la figura \ref{fig:pol_mc.png}. El error relativo, es decir, el cociente entre las medidas de cada recta \textbf{DAB} (distancia entre el punto \verb+A+ y el \verb+B+) resultante de aplicar MC, y lo esperado en el polígono teórico, de 6m de lado, es:
 
 \begin{itemize}
 \item $9.51\%$ en el peor caso.
@@ -141,17 +147,20 @@ El polígono resultante se observa en la figura \ref{fig:pol_mc.png}. El error r
 
 Se considera que el error, siendo  menor al 10\% en el peor caso, es aceptable.
 
-En realidad se podría hacer una figura irregular cualquiera, y tomarlo en cuanto en el resto del experimento, pero complicaría la interpretación intuitiva de los resultados.
+Se podría hacer una figura irregular cualquiera, y tomarlo en cuanto en el resto del experimento, pero complicaría la interpretación intuitiva de los resultados.
 
 \subsection{Punto fijo - 2 minutos}
 \label{sec:gps2-punto-fijo-2-minutos}
 
 \begin{wrapfigure} {r} {0.6\textwidth}
+\vspace{-30pt}
   \centering
   \subfloat[Orientación \#3]{\label{fig:or2.jpg}
     \includegraphics[width=0.27\textwidth]{./pics_gps/or2.jpg}}
   \subfloat[Orientación \#1 y \#4.]{\label{fig:or3.jpg}
     \includegraphics[width=0.27\textwidth]{./pics_gps/or3.jpg}}
+\caption{Orientaciones del GPS}
+\vspace{-10pt}
 \end{wrapfigure}
 
 Se tomaron datos durante aproximadamente 2 minutos ($\approx$ 120 muestras) en cada uno de los vértices del polígono, con el objetivo de observar la estabilidad de la información proveniente del GPS. En las siguiente figuras se muestran los datos luego de restar el promedio, o sea que se muestra el error respecto al valor promedio. Si el GPS fuese perfecto, entonces todas las muestras coincidirían con el promedio, y estarían ubicadas en el punto \verb+[0,0]+. El círculo negro tiene 2.5m de radio, las muestras que caen fuera de él están a más de 2.5m del valor promedio. En la leyenda se muestra qué porcentaje de las muestras caen fuera del círculo.
@@ -168,14 +177,13 @@ Se orientó el GPS de 3 maneras distintas, siempre alineando el trípode con uno
 \end{enumerate}
 
 \begin{figure}[h!]
+\caption{Punto fijo - 2 minutos}
   \hspace{-50pt}
   \subfloat[Orientación: \textbf{4}.]{\label{fig:2m_or1_todos.png}
     \includegraphics[width=.6\textwidth]{./pics_gps/2m_or1_todos.png}}
   \subfloat[Orientación: \textbf{2}.]{\label{fig:2m_or2_todos.png}
     \includegraphics[width=.6\textwidth]{./pics_gps/2m_or2_todos.png}}\\
-\end{figure}
 
-\begin{figure}[h!]
   \hspace{-50pt}
   \subfloat[Orientación: \textbf{3}.]{\label{fig:or2_todos_cut.png}
     \includegraphics[width=.6\textwidth]{./pics_gps/or2_todos_cut.png}}
@@ -233,19 +241,24 @@ Tener visibilidad limitada por obstáculos, o tener una mala geometría deterior
 \subsection{Polígono}
 \label{sec:gps2-poligono}
 
-En la figura \ref{fig:10min_pol.png}, la línea en roja representa el polígono resultante de unir el promedio, en cada vértice, de las muestras tomadas durante de 10 minutos. En la figura \ref{fig:10m_mapa.png} se dicho polígono, proyectado sobre una foto satelital\footnote{El mapa y las fotos se obtuvieron de:\\ \url{http://sig.montevideo.gub.uy/mapas/mapa-principal}}.
+En la figura \ref{fig:10min_pol.png}, la línea en roja representa el polígono resultante de unir el promedio, en cada vértice, de las muestras tomadas durante un experimento de 10 minutos. En la figura \ref{fig:10m_mapa.png} se dicho polígono, proyectado sobre una foto satelital\footnote{El mapa y las fotos se obtuvieron de:\\ \url{http://sig.montevideo.gub.uy/mapas/mapa-principal}}.
 
 \begin{figure}[h!]
+\vspace{-10pt}
   \centering
   \subfloat[Polígono formado por los promedios de 10 minutos.]{\label{fig:10min_pol.png}
     \includegraphics[width=.4\textwidth]{./pics_gps/10min_pol.png}}
   \subfloat[Proyección del polígono sobre una foto satelital.]{\label{fig:10m_mapa.png}
     \includegraphics[width=.4\textwidth,height=.28\textwidth]{./pics_gps/10m_mapa.png}}
+\vspace{-10pt}
+\caption{Polígono}
+\vspace{-10pt}
 \end{figure}
 
 En las siguientes figuras se observan los polígonos formados por los promedios de varias secuencias de 2 minutos por punto. 
 
 \begin{figure}[h!]
+\vspace{-10pt}
   \centering
 \subfloat[Orientación: \textbf{4}.]{\label{fig:2m_or1_pol.png}
   \includegraphics[width=.5\textwidth]{./pics_gps/2m_or1_pol.png}}
@@ -255,6 +268,9 @@ En las siguientes figuras se observan los polígonos formados por los promedios 
   \includegraphics[width=.5\textwidth]{./pics_gps/or2_poly_cut.png}}
 \subfloat[Orientación: \textbf{4}]{\label{fig:or3_pol.png}
   \includegraphics[width=.5\textwidth]{./pics_gps/or3_pol.png}}
+\vspace{-10pt}
+\caption{Polígono - 2 minutos por punto}
+\vspace{-10pt}
 \end{figure}
 
 \subsection{Polígono - Análisis}
@@ -322,12 +338,15 @@ Los errores en la medida de un punto fijo hacen pensar que sería posible que la
 En las figuras siguientes se observan los datos tomados durante 3 caminatas siguiendo el contorno del polígono, siguiendo la secuencia \verb+1-2-3-6-5-4-1+\footnote{Notar que \textbf{no} se recorre en el mismo orden en el que se numeran los puntos del rectángulo}. Se empezó a loguear datos en el punto 1, y se terminó nuevamente en el punto 1.
 
 \begin{figure} [h!]
+\vspace{-10pt}
   \centering
   \subfloat[Caminata \#1]{\label{fig:caminata1.png}
     \includegraphics[width=0.45\textwidth]{./pics_gps/caminata1.png}}
   \subfloat[Caminata \#2]{\label{fig:caminata2.png}
     \includegraphics[width=0.45\textwidth]{./pics_gps/caminata2.png}}
   \label{fig:caminatas}
+\caption{Caminatas por el borde del polígono}
+\vspace{-20pt}
 \end{figure}
 
 \subsection{Caminata - Análisis}
@@ -343,6 +362,7 @@ Las gráficas de las caminatas a primera vista son muy desalentadoras. Se observ
 \vspace{-20pt}
   \caption{Caminata \#3}
   \label{fig:caminata3}
+\vspace{-40pt}
 \end{wrapfigure}
 
 La posición parece tender a estabilizarse una vez que se llega al destino final, el punto 1. Ahí se continuó logueando datos por unos 20 segundos. En la figura \ref{fig:caminata2.png} la posición final parece tener un drift que se aleja de la posición inicial, en lugar de acercarse. No se encontró una justificación para este comportamiento, pero es similar al observado para puntos fijos, por lo que no se le prestó especial atención.
@@ -350,8 +370,10 @@ La posición parece tender a estabilizarse una vez que se llega al destino final
 \section{Error en altura}
 \label{sec:error-en-altura}
 
+Para determinar el error la información sobre la altura que provee el GPS, se diseñó un experimento, que consiste en tomar medidas en una perpendicular a la esfera terrestre, a 4 alturas diferentes: 0m, 1m, 2m y 3m respecto al suelo.
+
 \begin{wrapfigure}{r}{0.6\textwidth}
-\vspace{-60pt}
+\vspace{-30pt}
   \begin{center}
   \includegraphics[width=.5\textwidth]{./pics_gps/altura_punto_fijo_fing.png}
   \end{center}
@@ -360,8 +382,6 @@ La posición parece tender a estabilizarse una vez que se llega al destino final
   \label{fig:altura_punto_fijo_fing.png}
 \vspace{-15pt}
 \end{wrapfigure}
-
-Para determinar el error la información sobre la altura que provee el GPS, se diseñó un experimento, que consiste en tomar medidas en una perpendicular a la esfera terrestre, a 4 alturas diferentes: 0m, 1m, 2m y 3m respecto al suelo.
 
 En la primera etapa del experimento, se mantuvo el GPS quieto en cada uno de los niveles, y se tomaron muestras durante aproximadamente 60 segundos. El objetivo de esta etapa era verificar si era viable el experimento.
 
