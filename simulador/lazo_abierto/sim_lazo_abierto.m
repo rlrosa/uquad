@@ -6,7 +6,7 @@ function [t,X]=sim_lazo_abierto(ti,tf,w1,w2,w3,w4)
 % simulink las entienda
 assignin('base','g',9.81); %Constante gravitacional
 assignin('base','L',0.29); %Largo de los brazos del quadcopter en metros
-assignin('base','M',1.541); %Masa del quadcopter en kilogramos
+assignin('base','M',1.741); %Masa del quadcopter en kilogramos
 %Elementos relevantes del tensor de inercia en kilogramos metros cuadrados
 assignin('base','Ixx',2.32e-2);
 assignin('base','Iyy',2.32e-2);

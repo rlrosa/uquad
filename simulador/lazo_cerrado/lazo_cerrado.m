@@ -1975,7 +1975,7 @@ function edit46_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of edit46 as text
 %        str2double(get(hObject,'String')) returns contents of edit46 as a double
 var=str2double(get(hObject,'String'));
-    assignin('base','R',var)
+    assignin('base','rho',var)
 
 
 % --- Executes during object creation, after setting all properties.
@@ -1990,8 +1990,7 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 set(hObject,'String','0.01');
-var=str2double(get(hObject,'String'));
-    assignin('base','R',var)
+    assignin('base','rho',0.01)
 
 
 
