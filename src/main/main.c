@@ -734,18 +734,18 @@ int main(int argc, char *argv[]){
 	quit_log_if(ERROR_FAIL,"kalman init failed!");
     }
 
-    /// Control module
-    ctrl = control_init();
-    if(ctrl == NULL)
-    {
-	quit_log_if(ERROR_FAIL,"control init failed!");
-    }
-
     /// Path planner module
     pp = pp_init();
     if(pp == NULL)
     {
 	quit_log_if(ERROR_FAIL,"path planner init failed!");
+    }
+
+    /// Control module
+    ctrl = control_init();
+    if(ctrl == NULL)
+    {
+	quit_log_if(ERROR_FAIL,"control init failed!");
     }
 
     /// Global vars
