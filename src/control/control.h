@@ -69,7 +69,7 @@ typedef struct ctrl{
  *   - Proportional gain matrix.
  *   - Integral gain matrix.
  *
- * @return
+ * @return ctrl structure, or NULL if error.
  */
 ctrl_t *control_init(void);
 
