@@ -1062,7 +1062,11 @@ int main(int argc, char *argv[]){
 	{
             if(imu_update)
             {
-		err_log_tv("Skipped IMU!...",tv_diff);
+		if(!interrupted)
+		{
+		    /// Don't be annoying if we were already killed
+		    err_log_tv("Skipped IMU!...",tv_diff);
+		}
 		imu_update = false;
             }
 #if TIMING && TIMING_IO
