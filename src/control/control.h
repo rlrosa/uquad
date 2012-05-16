@@ -16,12 +16,20 @@
  * using LQR.
  */
   #if CTRL_INTEGRAL
-    #define CTRL_MAT_K_NAME   "K_prop_full.txt"
-  #else
-    #define CTRL_MAT_K_NAME   "K_full.txt"
+    #if CTRL_INTEGRAL_ANG
+      #define CTRL_MAT_K_NAME   "K_prop_full_pptz.txt"
+    #else // CTRL_INTEGRAL_ANG
+      #define CTRL_MAT_K_NAME   "K_prop_full.txt"
+    #endif // CTRL_INTEGRAL_ANG
+  #else // CTRL_INTEGRAL
+    #define CTRL_MAT_K_NAME     "K_full.txt"
   #endif // CTRL_INTEGRAL
-  #define CTRL_MAT_K_INT_NAME "K_int_full.txt"
 
+  #if CTRL_INTEGRAL_ANG
+    #define CTRL_MAT_K_INT_NAME "K_int_full_pptz.txt"
+  #else // CTRL_INTEGRAL_ANG
+    #define CTRL_MAT_K_INT_NAME "K_int_full.txt"
+  #endif // CTRL_INTEGRAL_ANG
 #else // FULL_CONTROL
 /**
  * These matrices are loaded when partial control
