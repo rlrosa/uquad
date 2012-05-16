@@ -59,6 +59,7 @@
 #include <unistd.h>       // for STDIN_FILENO
 
 #define QUIT           27
+#define RAMP_DOWN      'q'
 
 #define UQUAD_HOW_TO   "./main <imu_device> /path/to/log/"
 #define MAX_ERRORS     20
@@ -111,6 +112,25 @@
 #define STARTUP_SAMPLES 100
 
 /**
+ * To avoid a violent stop, pull motor speed down until
+ * speed is:
+ *   ((mot->w_hover - mot->w_min) >> 1)
+ * This will take RAMP_DOWN_SAMPLES*TS_DEFAULT_US/1e6 seconds,
+ * and when completed, the motors will be shut off.
+ *
+ * This, in theory, could be replaced by SV_Z=0 and letting the
+ * control algorithm do its thing, but the estimation of the
+ * elevation has a 0.5-1m error, so this approach will allow us
+ * to force to to land.
+ *
+ * NOTES: This should not be used if the quad is far from the ground,
+ *        since it will eventually shut off the motors, and if the
+ *        altitud changes a lot, then the controller will attempt to
+ *        fix it, going against the purpose of a ramp down.
+ */
+#define RAMP_DOWN_SAMPLES 600
+
+/**
  * Access to SD card on beagleboard has proven to be VERY slow,
  * using an external flash drive is much faster.
  */
@@ -138,6 +158,13 @@
  */
 #define MOT_UPDATE_T MOT_UPDATE_MAX_US
 
+enum state{
+    ST_RAMPING_UP,
+    ST_RUNNING,
+    ST_RAMPING_DOWN,
+    ST_STATE_COUNT};
+typedef enum state state_t;
+
 /// Global structs
 static imu_t *imu          = NULL;
 static kalman_io_t *kalman = NULL;
@@ -150,10 +177,11 @@ static path_planner_t *pp  = NULL;
 static gps_t *gps          = NULL;
 #endif
 /// Global var
-uquad_mat_t *w = NULL, *wt = NULL, *w_ramp = NULL;
+uquad_mat_t *w = NULL, *wt = NULL, *w_forced = NULL;
 uquad_mat_t *x = NULL;
 imu_data_t imu_data;
 struct timeval tv_start = {0,0};
+state_t uquad_state = ST_RAMPING_UP;
 uquad_bool_t
 /**
  * Flag to allow state estimation to keep running
@@ -284,7 +312,7 @@ void quit()
 
     /// Global vars
     uquad_mat_free(w);
-    uquad_mat_free(w_ramp);
+    uquad_mat_free(w_forced);
     uquad_mat_free(wt);
     uquad_mat_free(x);
     uquad_mat_free(imu_data.acc);
@@ -388,6 +416,7 @@ int main(int argc, char *argv[]){
 	imu_ts_ok   = 0,
 	runs_imu    = 0,
 	runs_kalman = 0,
+	runs_down   = 0,
 	ctrl_samples= 0,
 	ts_error    = 0,
 	err_imu     = ERROR_OK,
@@ -722,12 +751,12 @@ int main(int argc, char *argv[]){
     /// Global vars
     w = uquad_mat_alloc(4,1);        // Current angular speed [rad/s]
     wt = uquad_mat_alloc(1,4);        // tranpose(w)
-    w_ramp = uquad_mat_alloc(4,1);
+    w_forced = uquad_mat_alloc(4,1);
     x = uquad_mat_alloc(1,STATE_COUNT);   // State vector
     retval = imu_data_alloc(&imu_data);
     quit_if(retval);
 
-    if( x == NULL || w == NULL || wt == NULL || w_ramp == NULL)
+    if( x == NULL || w == NULL || wt == NULL || w_forced == NULL)
     {
 	err_log("Cannot run without x or w, aborting...");
 	quit();
@@ -845,10 +874,30 @@ int main(int argc, char *argv[]){
 	    log_n_continue(retval, "Failed to check stdin for input!");
 	    if(!read_ok)
 		goto end_stdin;
-	    retval = fread(tmp_buff,1,1,stdin);
+	    retval = fread(tmp_buff,sizeof(unsigned char),2,stdin);
 	    if(retval <= 0)
 	    {
 		log_n_jump(ERROR_READ, end_stdin,"No user input detected!");
+	    }
+	    if((retval == 2) && (tmp_buff[0] == RAMP_DOWN))
+	    {
+		if(uquad_state != ST_RUNNING)
+		{
+		    if(uquad_state == ST_RAMPING_DOWN)
+		    {
+			err_log("WARN: Aborting ramp down!");
+			uquad_state = ST_RUNNING;
+		    }
+		    else
+		    {
+			err_log("Will not apply landing if not in ST_RUNNING!");
+		    }
+		}
+		else
+		{
+		    err_log("WARN: Ramping down motors...");
+		    uquad_state = ST_RAMPING_DOWN;
+		}
 	    }
 #if LOG_TV
 	    // save to log file
@@ -1359,7 +1408,7 @@ int main(int argc, char *argv[]){
 		// Motor speed
 		for(i=0; i<MOT_C; ++i)
 		{
-		    w_ramp->m_full[i] = mot->w_min;
+		    w_forced->m_full[i] = mot->w_min;
 		    w->m_full[i]      = mot->w_hover;
 		}
 	    }
@@ -1462,7 +1511,7 @@ int main(int argc, char *argv[]){
 	    }
 	}
 	retval = uquad_kalman(kalman,
-			      (runs_kalman > STARTUP_SAMPLES)?
+			      (uquad_state == ST_RUNNING)?
 			      mot->w_curr:w,
 			      &imu_data,
 			      tv_diff.tv_usec,
@@ -1494,7 +1543,7 @@ int main(int argc, char *argv[]){
 	fflush(log_x_hat);
 #endif //DEBUG_X_HAT
 #endif //DEBUG
-	if(!(runs_kalman > STARTUP_SAMPLES))
+	if(uquad_state == ST_RAMPING_UP)
 	{
 	    /**
 	     * Startup:
@@ -1518,7 +1567,7 @@ int main(int argc, char *argv[]){
 		err_log("-- -- -- -- -- -- -- --");
 		err_log("-- --");
 
-		++runs_kalman; // so re-entry doesn't happen
+		uquad_state = ST_RUNNING;
 	    }
 	}
 
@@ -1553,6 +1602,7 @@ int main(int argc, char *argv[]){
 #if LOG_INT
 	log_tv_only(log_int, tv_diff);
 	uquad_mat_dump_vec(ctrl->x_int, log_int, false);
+	fflush(log_int);
 #endif // LOG_INT
 
 	/// -- -- -- -- -- -- -- --
@@ -1563,21 +1613,41 @@ int main(int argc, char *argv[]){
 	if (tv_diff.tv_usec > MOT_UPDATE_T || tv_diff.tv_sec > 1)
 	{
 	    /// Update motor controller
-	    if(!(runs_kalman > STARTUP_SAMPLES))
+	    if(uquad_state != ST_RUNNING)
 	    {
-		/**
-		 * Motors would start from hover speed
-		 * Ramp them up, but keep controlling to maintain
-		 * balance.
-		 */
+		switch(uquad_state)
+		{
+		case ST_RAMPING_UP:
+		    /**
+		     * Motors would start from hover speed
+		     * Ramp them up, but keep controlling to maintain
+		     * balance.
+		     */
+		    dtmp = - (STARTUP_SAMPLES - runs_kalman)
+			*((mot->w_hover - mot->w_min)/STARTUP_SAMPLES);
+		    break;
+		case ST_RAMPING_DOWN:
+		    /**
+		     * Slowly pull down motor speed y approach ground,
+		     * but keep the controller running for stability.
+		     */
+		    dtmp = -runs_down*(((mot->w_hover - mot->w_min)/2.0)/RAMP_DOWN_SAMPLES);
+		    if(runs_down++ > RAMP_DOWN_SAMPLES)
+		    {
+			err_log("Landing completed, terminating...");
+			quit();
+		    }
+		    break;
+		default:
+		    quit_log_if(ERROR_FAIL,"Invalid state!");
+		    break;
+		}
 		for(i = 0; i < MOT_C; ++i)
 		{
-		    w_ramp->m_full[i] = uquad_max(mot->w_min,
-					     w->m_full[i] - (STARTUP_SAMPLES - runs_kalman)
-					     *((mot->w_hover - mot->w_min)/STARTUP_SAMPLES)
-					     );
+		    w_forced->m_full[i] = uquad_max(mot->w_min,
+						    w->m_full[i] + dtmp);
 		}
-		retval = mot_set_vel_rads(mot, w_ramp, false);
+		retval = mot_set_vel_rads(mot, w_forced, false);
 		log_n_continue(retval,"Failed to set motor speed during ramp!");
 	    }
 	    else

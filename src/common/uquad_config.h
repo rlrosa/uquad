@@ -3,16 +3,54 @@
 
 #include <uquad_types.h>
 
-#define DEBUG             1 // Show debug info
+/**
+ * Show debug information on ssh session, and log
+ * data to log files.
+ * Should not disturb timing, but may be disabled
+ * if more computation time is required.
+ */
+#define DEBUG             1
 
+/**
+ * Use fake GPS information to help state estimation. The
+ * quad will think it is at [x,y,z] = [0,0,0].
+ *
+ */
 #define GPS_ZERO          1 // Simulate GPS data (use zeros)
 
-#define KALMAN_BIAS       1 // Use kalman estimation of acc bias
+/**
+ * Use kalman estimation of acc bias.
+ */
+#define KALMAN_BIAS       1
 
-#define CTRL_INTEGRAL     0 // Use PI control
-#define FULL_CONTROL      1 // Control 12 states
+/**
+ * Use PI control on:
+ *   [SV_X, SV_Y, SV_Z,SV_THETA]
+ */
+#define CTRL_INTEGRAL     1
 
-#define CTRL_TS           1 // Ratio of [samples]/[control action]
+/**
+ * Apply a PI on:
+ *   [SV_PSI, SV_PHI, SV_Z, SV_THETA]
+ * Must enable CTRL_INTEGRAL to be able to use this, and will disable
+ * proportional control on:
+ *   [SV_X, SV_Y, SV_Z, SV_VQX, SV_VQY, SV_VQZ]
+ * This is a requirement, otherwise system will not be controllable.
+ */
+#define CTRL_INTEGRAL_ANG 0
+
+/**
+ * Apply control on all 12 states, as documented in uquad_kalman.h
+ *
+ */
+#define FULL_CONTROL      1
+
+/**
+ * Ratio of [samples]/[control action].
+ * Setting to 1 will apply a control action every time a new sample
+ * is received from the IMU.
+ */
+#define CTRL_TS           1
 
 // -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 // Do NOT edit the following lines!
@@ -45,6 +83,11 @@
 #error						\
     "Without FULL_CONTROL, GPS is useless!"
 #endif // (!USE_GPS && FULL_CONTROL)
+
+#if (CTRL_INTEGRAL_ANG && !CTRL_INTEGRAL)
+#error							\
+    "Cannot use PI on angles without CTRL_INTEGRAL "
+#endif // (CTRL_INTEGRAL_ANG && !CTRL_INTEGRAL)
 
 #if KALMAN_BIAS
 #define STATE_BIAS        3
