@@ -437,7 +437,7 @@ function pushbutton1_Callback(hObject, eventdata, handles)
     ind=evalin('base','indice');%ind corresponde a la situación de vuelo 
                                 %elegida en el simulador
     val=0;
-    m=1.541; % Masa del quad
+    m=1.741; % Masa del quad
      
     psio=evalin('base','psi0'); %Ángulo de Roll
     phio=evalin('base','phi0'); %Aangulo de pitch
@@ -480,7 +480,7 @@ function pushbutton1_Callback(hObject, eventdata, handles)
          
             %Velocidad angular necesaria para tener 1N más de fuerza que en
             %hovering
-            val_mas=calcu_omega(val_hov+1);
+            val_mas=calc_omega(fuerza_hov+1);
                      
             %Le asigno esa velocidad angular a los motores 2 y 4
             w2(time>tf/2) = val_mas;
@@ -489,7 +489,7 @@ function pushbutton1_Callback(hObject, eventdata, handles)
          
             %Velocidad angular necesaria para tener 1N menos de fuerza que
             %en hovering
-            val_menos=calcu_omega(val_hov-1)
+            val_menos=calc_omega(fuerza_hov-1);
             
             %Le asigno esa velocidad angular a los motores 1 y 3
             w1(time>tf/2) = val_menos;
@@ -502,7 +502,7 @@ function pushbutton1_Callback(hObject, eventdata, handles)
             fuerza_rec=9.81*m/(4*cos(psio)*cos(phio));
             
             %Calculo la velocidad angular necesaria para tener esa fuerza
-            val_rec=calcu_omega(fuerza_rec);
+            val_rec=calc_omega(fuerza_rec);
             
              %Le asigno esa velocidad angular a los cuatro motores 
              w1(time>(ti-1)) = val_rec;
