@@ -61,6 +61,16 @@ ctrl_t *control_init(void)
     file_mat = NULL;
 
 #if CTRL_INTEGRAL
+#if CTRL_INTEGRAL_ANG
+    int i;
+    for(i = 0; i < LENGTH_INPUT; ++i)
+    {
+	ctrl->K->m[i][SV_X]   = 0;
+	ctrl->K->m[i][SV_Y]   = 0;
+	ctrl->K->m[i][SV_VQX] = 0;
+	ctrl->K->m[i][SV_VQY] = 0;
+    }
+#endif // CTRL_INTEGRAL_ANG
     ctrl->K_int = uquad_mat_alloc(LENGTH_INPUT,STATES_INT_CONTROLLED);
     ctrl->x_int = uquad_mat_alloc(STATES_INT_CONTROLLED,1);
     x_int_tmp   = uquad_mat_alloc(STATES_INT_CONTROLLED,1);
@@ -162,13 +172,6 @@ int control(ctrl_t *ctrl, uquad_mat_t *w, uquad_mat_t *x, set_point_t *sp, doubl
     double
 	T_s = T_us/1000000.0;
 
-    /* /// SV_PSI - not controllable (theory) */
-    /* ctrl_int(ctrl->x_int->m_full + (ctrl->x_int->r - 1), */
-    /* 	     tmp_sub_sp_x->m[SV_PSI][0], */
-    /* 	     T_s, */
-    /* 	     CTRL_INT_DELTA_MAX_PSI, */
-    /* 	     CTRL_INT_ACCUM_MAX_PSI); */
-    /// SV_THETA
     ctrl_int(ctrl->x_int->m_full + (ctrl->x_int->r - 1),
     	     tmp_sub_sp_x->m[SV_THETA][0],
     	     T_s,
@@ -183,6 +186,21 @@ int control(ctrl_t *ctrl, uquad_mat_t *w, uquad_mat_t *x, set_point_t *sp, doubl
 	     CTRL_INT_ACCUM_MAX_Z);
 
 #if FULL_CONTROL
+#if CTRL_INTEGRAL_ANG
+    /// SV_PHI
+    ctrl_int(ctrl->x_int->m_full + (ctrl->x_int->r - 3),
+	     tmp_sub_sp_x->m[SV_PHI][0],
+	     T_s,
+	     CTRL_INT_DELTA_MAX_PHI,
+	     CTRL_INT_ACCUM_MAX_PHI);
+
+    /// SV_PSI
+    ctrl_int(ctrl->x_int->m_full + (ctrl->x_int->r - 4),
+	     tmp_sub_sp_x->m[SV_PSI][0],
+	     T_s,
+	     CTRL_INT_DELTA_MAX_PSI,
+	     CTRL_INT_ACCUM_MAX_PSI);
+#else // CTRL_INTEGRAL_ANG
     /// SV_Y
     ctrl_int(ctrl->x_int->m_full + (ctrl->x_int->r - 3),
 	     tmp_sub_sp_x->m[SV_Y][0],
@@ -196,7 +214,7 @@ int control(ctrl_t *ctrl, uquad_mat_t *w, uquad_mat_t *x, set_point_t *sp, doubl
 	     T_s,
 	     CTRL_INT_DELTA_MAX_X,
 	     CTRL_INT_ACCUM_MAX_X);
-
+#endif // CTRL_INTEGRAL_ANG
 #endif // FULL_CONTROL
     retval = uquad_mat_prod(w_tmp, ctrl->K_int, ctrl->x_int);
     err_propagate(retval);
