@@ -92,7 +92,7 @@ Model {
       Name		      "w"
     }
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.325"
+    ComputedModelVersion    "1.326"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -123,9 +123,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "pater"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Thu May  3 20:55:12 2012"
-  RTWModifiedTimeStamp	  257979091
-  ModelVersionFormat	  "1.%<AutoIncrement:325>"
+  LastModifiedDate	  "Mon May  7 14:35:11 2012"
+  RTWModifiedTimeStamp	  258302110
+  ModelVersionFormat	  "1.%<AutoIncrement:326>"
   ConfigurationManager	  "None"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -10875,7 +10875,7 @@ Model {
       BlockType		      Outport
       Name		      "noise"
       SID		      "1443"
-      Position		      [345, 733, 375, 747]
+      Position		      [460, 568, 490, 582]
       Port		      "13"
       IconDisplay	      "Port number"
       PortDimensions	      "12"
@@ -11078,17 +11078,9 @@ Model {
     Line {
       SrcBlock		      "Subsystem"
       SrcPort		      1
-      Points		      [100, 0]
-      Branch {
-	Points			[125, 0]
-	DstBlock		"Sum4"
-	DstPort			3
-      }
-      Branch {
-	Points			[0, -40]
-	DstBlock		"noise"
-	DstPort			1
-      }
+      Points		      [225, 0]
+      DstBlock		      "Sum4"
+      DstPort		      3
     }
     Line {
       SrcBlock		      "Zero-Order\nHold"
@@ -11203,9 +11195,17 @@ Model {
 	DstPort			1
       }
       Branch {
-	Points			[0, -80; 185, 0]
-	DstBlock		"Mux2"
-	DstPort			1
+	Points			[0, -40]
+	Branch {
+	  Points		  [0, -40; 185, 0]
+	  DstBlock		  "Mux2"
+	  DstPort		  1
+	}
+	Branch {
+	  Points		  [-30, 0]
+	  DstBlock		  "noise"
+	  DstPort		  1
+	}
       }
     }
     Line {
