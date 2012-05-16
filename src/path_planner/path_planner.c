@@ -48,10 +48,9 @@ path_planner_t *pp_init(void)
     return pp;
 }
 
-
-int pp_update_setpoint(path_planner_t *pp, uquad_mat_t *x, double w_hover)
+int pp_update_setpoint(path_planner_t *pp, uquad_mat_t *x, double w_hover, uquad_bool_t *ctrl_outdated)
 {
-    if(pp == NULL || x == NULL)
+    if(pp == NULL || x == NULL || ctrl_outdated == NULL)
     {
 	err_check(ERROR_NULL_POINTER,"Invalid argument.");
     }
@@ -61,6 +60,7 @@ int pp_update_setpoint(path_planner_t *pp, uquad_mat_t *x, double w_hover)
 	pp->sp->w->m_full[1] = w_hover;
 	pp->sp->w->m_full[2] = w_hover;
 	pp->sp->w->m_full[3] = w_hover;
+	*ctrl_outdated = false;
     }
     else
     {

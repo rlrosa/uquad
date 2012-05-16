@@ -35,7 +35,10 @@ typedef struct path_planner{
 
 path_planner_t *pp_init(void);
 
-int pp_update_setpoint(path_planner_t *pp, uquad_mat_t *x, double w_hover);
+int pp_update_setpoint(path_planner_t *pp, uquad_mat_t *x, double w_hover, uquad_bool_t *ctrl_outdated);
+
+#warning "implement!"
+int pp_new_setpoint(void);
 
 void pp_deinit(path_planner_t *pp);
 

@@ -434,12 +434,13 @@ int main(int argc, char *argv[]){
 	tmp_buff[2];
 
     uquad_bool_t
-	read_ok     = false,
-	write_ok    = false,
-	imu_update  = false,
-	reg_stdin   = true,
-        aux_bool    = false,
-	manual_mode = false;
+	read_ok       = false,
+	write_ok      = false,
+	imu_update    = false,
+	reg_stdin     = true,
+        aux_bool      = false,
+	ctrl_outdated = false,
+	manual_mode   = false;
     struct timeval
 	tv_tmp, tv_diff,
 	tv_last_m_cmd,
@@ -1446,6 +1447,7 @@ int main(int argc, char *argv[]){
 	    }
 	    retval = ERROR_OK;// ignore error
 	    fflush(stderr);
+
 	}
 
 	/// -- -- -- -- -- -- -- --
@@ -1584,8 +1586,19 @@ int main(int argc, char *argv[]){
 	/// -- -- -- -- -- -- -- --
 	/// Update setpoint
 	/// -- -- -- -- -- -- -- --
-	retval = pp_update_setpoint(pp, kalman->x_hat, mot->w_hover);
+	retval = pp_update_setpoint(pp, kalman->x_hat, mot->w_hover, &ctrl_outdated);
 	log_n_continue(retval,"Kalman update failed");
+
+	/// -- -- -- -- -- -- -- --
+	/// Update control matrices
+	/// -- -- -- -- -- -- -- --
+	if(ctrl_outdated)
+	{
+	    retval = control_update_K(pp, mot->weight);
+	    quit_log_if(retval, "Failed to update control matrix! Aborting...");
+	    retval = control_dump(ctrl, log_err);
+	    quit_log_if(retval, "Failed to dump new control matrix! Aborting...");
+	}
 
 	/// -- -- -- -- -- -- -- --
 	/// Run control
