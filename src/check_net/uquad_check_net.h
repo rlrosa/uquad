@@ -26,11 +26,11 @@
  * it will not (except if an error occurs) stop running.
  *
  * @param portno Port on which server should listen
- * @param tcp Use a connection oriented socket (TCP)
+ * @param udp If true, use UDP, else TCP
  *
  * @return error code
  */
-int uquad_check_net_server(int portno, uquad_bool_t tcp);
+int uquad_check_net_server(int portno, uquad_bool_t udp);
 
 /**
  * Will launch a client that will periodically ping a server.
@@ -40,10 +40,10 @@ int uquad_check_net_server(int portno, uquad_bool_t tcp);
  *
  * @param hostIP IP of the host where the server is running.
  * @param portno Port used by the server.
- * @param tcp Use a connection oriented socket (TCP)
+ * @param udp If true, use UDP, else TCP
  *
  * @return error code
  */
-int uquad_check_net_client(const char *hostIP, int portno, uquad_bool_t tcp);
+int uquad_check_net_client(const char *hostIP, int portno, uquad_bool_t udp);
 
 #endif // UQUAD_CHECK_NET_H

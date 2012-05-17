@@ -139,7 +139,9 @@ int mot_set_vel_rads(uquad_mot_t *mot, uquad_mat_t *w, uquad_bool_t force)
 		 * cause motors to stop.
 		 *
 		 */
+#ifdef DEBUG_MOT
 		err_log_num("WARN:w out of range, setting min for motor:",i);
+#endif // DEBUG_MOT
 		w->m_full[i] =  mot->w_min;
 	    }
 	    else if (w->m_full[i] > MOT_W_MAX)
@@ -149,7 +151,9 @@ int mot_set_vel_rads(uquad_mot_t *mot, uquad_mat_t *w, uquad_bool_t force)
 		 * damage battery.
 		 *
 		 */
+#ifdef DEBUG_MOT
 		err_log_num("WARN:w out of range, setting max for motor:",i);
+#endif // DEBUG_MOT
 		w->m_full[i] =  MOT_W_MAX;
 	    }
 	}
