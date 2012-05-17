@@ -52,6 +52,14 @@
  */
 #define CTRL_TS           1
 
+/**
+ * Setting the following will allow main to run with no connection ping
+ * to server (laptop).
+ * This is not recommended, since it will NOT be possible to stop the motors
+ * if wifi dies.
+ */
+#define CHECK_NET_BYPASS  0
+
 // -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 // Do NOT edit the following lines!
 // -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
@@ -88,6 +96,10 @@
 #error							\
     "Cannot use PI on angles without CTRL_INTEGRAL "
 #endif // (CTRL_INTEGRAL_ANG && !CTRL_INTEGRAL)
+
+#if CHECK_NET_BYPASS
+#warning  "check net bypassed!"
+#endif // CHECK_NET_BYPASS
 
 #if KALMAN_BIAS
 #define STATE_BIAS        3

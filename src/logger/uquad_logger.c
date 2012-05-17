@@ -199,7 +199,7 @@ void uquad_logger_read(int pipefd, char *log_name, char *path, int ram)
     }
     if(new_line != NULL)
 	free(new_line);
-    exit(0);
+    _exit(0);
 }
 
 FILE *uquad_logger_add(char *log_name, char *path, int ram)

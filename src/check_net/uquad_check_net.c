@@ -1,6 +1,8 @@
 #include <uquad_check_net.h>
+#include <sys/prctl.h>
+#include <signal.h> // for SIGHUP
 
-int uquad_check_net_server(int portno, uquad_bool_t tcp)
+int uquad_check_net_server(int portno, uquad_bool_t udp)
 {
     int
 	sockfd = -1,
@@ -13,7 +15,7 @@ int uquad_check_net_server(int portno, uquad_bool_t tcp)
     socklen_t len;
 
     sockfd=socket(AF_INET,
-		  (tcp)?SOCK_STREAM:SOCK_DGRAM,
+		  (!udp)?SOCK_STREAM:SOCK_DGRAM,
 		  0);
 
     bzero(&servaddr,sizeof(servaddr));
@@ -27,7 +29,7 @@ int uquad_check_net_server(int portno, uquad_bool_t tcp)
 	cleanup_if(ERROR_FAIL);
     }
 
-    if(tcp)
+    if(!udp)
     {
 	if(listen(sockfd,5) < 0)
 	{
@@ -43,14 +45,19 @@ int uquad_check_net_server(int portno, uquad_bool_t tcp)
 	}
     }
 
+    err_log_num(udp?"UDP server running on port:":"TCP server running on port:"
+		,portno);
     while(1)
     {
-	n = recvfrom(tcp?newsockfd:sockfd,buff_i,CHECK_NET_MSG_LEN,0,(struct sockaddr *)&cliaddr,&len);
+	n = recvfrom(!udp?newsockfd:sockfd,buff_i,CHECK_NET_MSG_LEN,0,(struct sockaddr *)&cliaddr,&len);
 	if (n < 0)
 	{
 	    /// Something went wrong, die.
 	    err_log_stderr("recvfrom()");
-	    cleanup_if(ERROR_IO);
+	    /// Wait for another client...
+	    newsockfd = accept(sockfd,(struct sockaddr *) &cliaddr,
+			       &len);
+	    continue;
 	}
 	if(n == CHECK_NET_MSG_LEN &&
 	   (memcmp(buff_i,CHECK_NET_PING,CHECK_NET_MSG_LEN) == 0))
@@ -59,7 +66,7 @@ int uquad_check_net_server(int portno, uquad_bool_t tcp)
 #ifdef DEBUG_CHECK_NET
 	    err_log("server(): ping received!");
 #endif
-	    n = sendto(tcp?newsockfd:sockfd,buff_o,CHECK_NET_MSG_LEN,
+	    n = sendto(!udp?newsockfd:sockfd,buff_o,CHECK_NET_MSG_LEN,
 		       0,(struct sockaddr *)&cliaddr,sizeof(cliaddr));
 	    if (n < 0)
 	    {
@@ -86,12 +93,26 @@ int uquad_check_net_server(int portno, uquad_bool_t tcp)
     return ERROR_FAIL;
 }
 
-int uquad_check_net_client(const char *hostIP, int portno, uquad_bool_t tcp)
+static int sockfd = -1;
+void client_sig_handler(int signal_num)
+{
+    if(signal_num == SIGHUP)
+    {
+	err_log("Parent died, so will client...");
+	sleep(1);
+	if(sockfd > 0)
+	    close(sockfd);
+	_exit(0);
+    }
+}
+
+int uquad_check_net_client(const char *hostIP, int portno, uquad_bool_t udp)
 {
     int
 	n,
 	retval,
-	sockfd = -1,
+	pid,
+	err_output = -1,
 	kill_retries = 0;
     uquad_bool_t
 	read_ok = false,
@@ -122,7 +143,7 @@ int uquad_check_net_client(const char *hostIP, int portno, uquad_bool_t tcp)
     }
 
     sockfd=socket(AF_INET,
-		  (tcp)?SOCK_STREAM:SOCK_DGRAM,
+		  (!udp)?SOCK_STREAM:SOCK_DGRAM,
 		  0);
 
     bzero(&servaddr,sizeof(servaddr));
@@ -131,7 +152,7 @@ int uquad_check_net_client(const char *hostIP, int portno, uquad_bool_t tcp)
          (char *)&servaddr.sin_addr.s_addr,
          server->h_length);
     servaddr.sin_port=htons(portno);
-    if(tcp)
+    if(!udp)
     {
 	if(connect(sockfd,(struct sockaddr *) &servaddr,sizeof(servaddr)) < 0)
 	{
@@ -176,9 +197,37 @@ int uquad_check_net_client(const char *hostIP, int portno, uquad_bool_t tcp)
 		{
 		    // ack received
 #ifdef DEBUG_CHECK_NET
-	    err_log("client(): ack received!");
+		    err_log("client(): ack received!");
 #endif
-		    server_ok = true;
+		    if(!server_ok)
+		    {
+			server_ok = true;
+			err_log_num(udp?
+				    "UDP client running on port:":
+				    "TCP client running on port:"
+				    ,portno);
+			pid = fork();
+			if(pid < 0)
+			{
+			    err_log_stderr("fork()");
+			    cleanup_if(ERROR_FAIL);
+			}
+			if(pid > 0)
+			{
+			    /// Parent process, go back to being usefull
+			    err_output = (int)pid;
+			    goto cleanup;
+			}
+			else
+			{
+			    /**
+			     * Child process.
+			     * Ask kernel to tell us when daddy dies.
+			     */
+			    prctl(PR_SET_PDEATHSIG, SIGHUP);
+			    signal(SIGHUP, client_sig_handler);
+			}
+		    }
 		    sleep_ms(CHECK_NET_MSG_T_MS);
 		    break;
 		}
@@ -197,21 +246,7 @@ int uquad_check_net_client(const char *hostIP, int portno, uquad_bool_t tcp)
 		{
 		    if(!server_ok)
 		    {
-			err_log("");
-			err_log("");
-			err_log("");
-			err_log("");
-			err_log("");
-			err_log("-- -- -- -- --");
-			err_log("-- -- -- -- -- -- -- -- -- --");
 			err_log("WARN: Will NOT run checknet, server never acked...");
-			err_log("-- -- -- -- -- -- -- -- -- --");
-			err_log("-- -- -- -- --");
-			err_log("");
-			err_log("");
-			err_log("");
-			err_log("");
-			err_log("");
 			goto cleanup;
 		    }
 		    err_log("check_net: Connection lost! Killing motors...");
@@ -230,5 +265,5 @@ int uquad_check_net_client(const char *hostIP, int portno, uquad_bool_t tcp)
     if(sockfd > 0)
 	close(sockfd);
     /// Client should never die, any reason is an error
-    return ERROR_FAIL;
+    return err_output;
 }
