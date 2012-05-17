@@ -11,6 +11,7 @@ target_link_libraries(${main_bin} uquad_time)
 target_link_libraries(${main_bin} uquad_logger)
 target_link_libraries(${main_bin} kalman)
 target_link_libraries(${main_bin} control)
+target_link_libraries(${main_bin} uquad_check_net)
 target_link_libraries(${main_bin} path_planner)
 
 # To enable/disable GPS, set USE_GPS to 1/0 in src/CMakelists.txt
