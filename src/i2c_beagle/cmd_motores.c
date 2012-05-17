@@ -31,6 +31,15 @@
 #define MAX_SPEED                 220 // i2c
 #define MIN_SPEED                 45  // i2c
 
+/**
+ * Die after MAX_ERR_CMD.
+ * Almost no type of errors are tolerable:
+ *   - speed update errors: Invalid arguments, etc. These are rare.
+ *   - i2c problems - caused by failing to communicate with ESC controller,
+ *   which is unnaccetable.
+ */
+#define MAX_ERR_CMD               20
+
 #define DEBUG                     0
 #if DEBUG
 //#define LOG_VELS
@@ -70,6 +79,7 @@
 
 #define backtrace()     fprintf(LOG_ERR,"%s:%d\n",__FUNCTION__,__LINE__)
 #define log_to_err(msg) fprintf(LOG_ERR,"%s: %s:%d\n",msg,__FUNCTION__,__LINE__)
+#define log_to_err_num(msg,num) fprintf(LOG_ERR,"%s: (%d) -  %s:%d\n",msg,num,__FUNCTION__,__LINE__)
 
 #define sleep_ms(ms)    usleep(1000*ms)
 
@@ -513,7 +523,7 @@ int uquad_read(void){
 	    	}
 	    	else
 	    	{
-	    	    log_to_err("Refused to set m speed, invalid argument.");
+		    log_to_err_num("Refused to set m speed, invalid argument.",itmp[i]);
 	    	}
 #ifdef LOG_VELS
 	    log_vels();
@@ -558,10 +568,15 @@ int uquad_read(void){
 int main(int argc, char *argv[])
 {
     /* Open i2c bus */
-    int adapter_nr = 2;
-    int tmp, i;
-    char filename[20];
-    double dtmp;
+    int
+	adapter_nr = 2,
+	tmp,
+	i,
+	err_count  = 0;
+    char
+	filename[20];
+    double
+	dtmp;
     struct timeval
 	tv_in,
 	tv_diff,
@@ -663,6 +678,13 @@ int main(int argc, char *argv[])
     for(;;)
     {
 	gettimeofday(&tv_in,NULL);
+	if(err_count > MAX_ERR_CMD)
+	{
+	    log_to_err("## ## ## ## ## ## ##");
+	    log_to_err("ERROR! MOTOR DRIVER ABORTING!");
+	    log_to_err("## ## ## ## ## ## ##");
+	    return -1;
+	}
 	if(do_sleep)
 	{
 	    // avoid saturating i2c driver
@@ -694,6 +716,7 @@ int main(int argc, char *argv[])
 	    {
 		backtrace();
 		do_sleep = 1;
+		err_count++;
 		break;
 	    }
 	}
@@ -701,6 +724,12 @@ int main(int argc, char *argv[])
 	{
 	    do_sleep = 1;
 	    continue;
+	}
+	else
+	{
+	    /// This loop was fine
+	    if(err_count > 0)
+		err_count--;
 	}
 	ret = uquad_read();
 	if(ret == OK)
@@ -759,6 +788,7 @@ int main(int argc, char *argv[])
 	    if(ret != OK)
 	    {
 		log_to_err("Failed to send ack!");
+		err_count++;
 	    }
 	    // continue
 	}
@@ -791,6 +821,7 @@ int main(int argc, char *argv[])
 #ifndef PC_TEST
 	    log_to_err("WARN: Absurd timing!");
 #endif // PC_TEST
+	    err_count++;
 	}
     }
  
