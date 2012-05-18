@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
      uquad_bool_t
 	 udp = true;
 
-     if (argc < 2 || argc > 3)
+     if (argc > 3)
      {
 	 err_check(ERROR_INVALID_ARG, USAGE);
      }
@@ -18,7 +18,15 @@ int main(int argc, char *argv[])
      {
 	 udp = atoi(argv[2]);
      }
-     portno = atoi(argv[1]);
+     if (argc > 1)
+     {
+	 portno = atoi(argv[1]);
+     }
+     else
+     {
+	 err_log_num("Using default port:", CHECK_NET_PORT);
+	 portno = CHECK_NET_PORT;
+     }
 
      retval = uquad_check_net_server(portno, udp);
      err_check(retval, "server() failed!");

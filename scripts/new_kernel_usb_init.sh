@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash -e
 # alternative version, while modprobe doesn't like the modules.
 insmod /lib/modules/2.6.32/kernel/drivers/usb/gadget/g_ether.ko  host_addr=16:0F:15:5A:E1:21 dev_addr=16:0F:15:5A:E1:20
 ifconfig usb0 192.168.0.202 netmask 255.255.255.0

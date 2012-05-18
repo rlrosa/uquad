@@ -1,4 +1,4 @@
-#!/bin/bash -E
+#!/bin/bash -e
 # Start up gpsd
 
 baudrate=38400
