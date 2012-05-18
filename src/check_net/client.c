@@ -1,15 +1,31 @@
 #include <uquad_check_net.h>
+#include <sys/wait.h>     // for waitpid()
+#include <limits.h>       // for INT_MAX
+
 
 #define USAGE "usage:\n\t./client <host IP> <port> [<UDP/!TCP>]\n"
+
+static pid_t child_pid = -1;
+
+void uquad_conn_lost_handler(int signal_num)
+{
+    pid_t p;
+    int status;
+    p = waitpid(-1, &status, WNOHANG);
+    if(p == child_pid)
+    {
+	err_log_num("Client died, caught signal",signal_num);
+	exit(0);
+    }
+}
 
 int main(int argc, char *argv[])
 {
     int
 	portno,
-	hold_on_sec = 2,
 	retval;
     uquad_bool_t
-	udp = true;
+	udp = false;
 
     if (argc > 4)
     {
@@ -42,10 +58,11 @@ int main(int argc, char *argv[])
     }
     else
     {
-	err_log_num("Client running! Child pid:",retval);
-	err_log_num("Client running, parent will die in [sec]...", hold_on_sec);
-	sleep(hold_on_sec);
+	child_pid = retval;
 	retval = ERROR_OK;
+	err_log_num("Client running! Child pid:",child_pid);
+	for(;;)
+	    sleep(INT_MAX);
     }
     return retval;
 }

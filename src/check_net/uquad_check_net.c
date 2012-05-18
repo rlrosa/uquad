@@ -1,4 +1,5 @@
 #include <uquad_check_net.h>
+#include <uquad_aux_io.h>
 #include <sys/prctl.h>
 #include <signal.h> // for SIGHUP
 
@@ -7,7 +8,10 @@ int uquad_check_net_server(int portno, uquad_bool_t udp)
     int
 	sockfd = -1,
 	newsockfd = -1,
-	n;
+	n,
+	retval;
+    uquad_bool_t
+	read_ok;
     char
 	buff_o[CHECK_NET_MSG_LEN] = CHECK_NET_ACK,
 	buff_i[CHECK_NET_MSG_LEN];
@@ -29,6 +33,9 @@ int uquad_check_net_server(int portno, uquad_bool_t udp)
 	cleanup_if(ERROR_FAIL);
     }
 
+    err_log_num(udp?"UDP server running on port:":"TCP server running on port:"
+		,portno);
+
     if(!udp)
     {
 	if(listen(sockfd,5) < 0)
@@ -43,21 +50,57 @@ int uquad_check_net_server(int portno, uquad_bool_t udp)
 	    err_log_stderr("accept()");
 	    cleanup_if(ERROR_FAIL);
 	}
+	else
+	{
+	    err_log("Connection established!");
+	}
     }
 
-    err_log_num(udp?"UDP server running on port:":"TCP server running on port:"
-		,portno);
     while(1)
     {
+	retval = check_io_locks(!udp?newsockfd:sockfd, NULL, &read_ok, NULL);
+	cleanup_log_if(retval, "Failed to check locks on socket!");
+	if(!read_ok)
+	    goto nothing_new;
+
 	n = recvfrom(!udp?newsockfd:sockfd,buff_i,CHECK_NET_MSG_LEN,0,(struct sockaddr *)&cliaddr,&len);
-	if (n < 0)
+	if (n <= 0)
 	{
-	    /// Something went wrong, die.
-	    err_log_stderr("recvfrom()");
-	    /// Wait for another client...
-	    newsockfd = accept(sockfd,(struct sockaddr *) &cliaddr,
-			       &len);
-	    continue;
+	    if(n < 0)
+	    {
+		err_log_stderr("recvfrom()");
+	    }
+	    if(udp)
+	    {
+		cleanup_log_if(ERROR_IO, "Terminating server...");
+	    }
+	    else
+	    {
+		/**
+		 * We already used select() to check for data, so if we are
+		 * at this point, it should be n>0.
+		 * If n == 0, then the client has closed his side of the socket.
+		 * When using TCP, we must also close our side, to enable another
+		 * client to replace the dead one.
+		 */
+		if(newsockfd > 0)
+		{
+		    err_log("Client closed socket, so will server...");
+		    close(newsockfd);
+		    newsockfd = accept(sockfd,(struct sockaddr *) &cliaddr,
+				       &len);
+		    if(newsockfd < 0)
+		    {
+			err_log_stderr("accept()");
+			cleanup_if(ERROR_FAIL);
+		    }
+		    else
+		    {
+			err_log("Connection established!");
+		    }
+		    continue;
+		}
+	    }
 	}
 	if(n == CHECK_NET_MSG_LEN &&
 	   (memcmp(buff_i,CHECK_NET_PING,CHECK_NET_MSG_LEN) == 0))
@@ -81,6 +124,7 @@ int uquad_check_net_server(int portno, uquad_bool_t udp)
 	    sleep_ms(CHECK_NET_MSG_T_MS >> 1);
 	}
 	/// nothing new...
+	nothing_new:
 	usleep(100);
 	continue;
     }
@@ -96,9 +140,11 @@ int uquad_check_net_server(int portno, uquad_bool_t udp)
 static int sockfd = -1;
 void client_sig_handler(int signal_num)
 {
-    if(signal_num == SIGHUP)
+    if(signal_num == SIGHUP ||
+       signal_num == SIGINT ||
+       signal_num == SIGQUIT)
     {
-	err_log("Parent died, so will client...");
+	err_log_num("Parent died, so will client... Signal:", signal_num);
 	sleep(1);
 	if(sockfd > 0)
 	    close(sockfd);
@@ -187,6 +233,7 @@ int uquad_check_net_client(const char *hostIP, int portno, uquad_bool_t udp)
 	    {
 		n=recvfrom(sockfd,buff_i,CHECK_NET_MSG_LEN,
 			   0,(struct sockaddr *)&servaddr,&len);
+
 		if (n < 0)
 		{
 		    err_log_stderr("recvfrom()");
@@ -226,6 +273,8 @@ int uquad_check_net_client(const char *hostIP, int portno, uquad_bool_t udp)
 			     */
 			    prctl(PR_SET_PDEATHSIG, SIGHUP);
 			    signal(SIGHUP, client_sig_handler);
+			    signal(SIGINT, client_sig_handler);
+			    signal(SIGQUIT, client_sig_handler);
 			}
 		    }
 		    sleep_ms(CHECK_NET_MSG_T_MS);

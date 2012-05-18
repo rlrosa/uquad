@@ -29,6 +29,14 @@ A partir de la matriz determinada originalmente en las simulaciones se realizaro
 De manera análoga al caso anterior, es importante verificar el buen funcionamiento del control sobre el giro en ``z'', para lo cual se utiliza un dispositivo de prueba que restringe los grados de libertad del cuadricóptero. En este caso se lo sujeta con una cuerda desde arriba de los cuatro brazos de modo de realizar la fuerza lo más pareja posible. El cuadricóptero queda sujetado colgando horizontal y conserva el libre giro según ``x'' ($\theta$).
 Se setea una velocidad de \emph{hovering} inferior a la necesaria para levantar vuelo, de modo que el cuadricóptero no se eleve y la cuerda quede siempre tensa. Para el giro bajo estudio no es relevante el valor absoluto de la velocidad de giro de cada motor, ya que depende exclusivamente de la diferencia de velocidades angulares. Por ello los resultados de realizar las pruebas con una velocidad de \emph{hovering} inferior a la real son extrapolables a la situación de vuelo libre, sin pérdida de generalidad.\\
 
+\begin{wrapfigure}{r}{0.55\textwidth}
+	\vspace{-20pt}
+	\centering
+	\includegraphics[width=0.4\textwidth]{./pics_test_control/dispositivo_theta.pdf}
+	\caption{Dispositivo de prueba de $\theta$}
+	\label{fig:thetadisp}
+\end{wrapfigure}
+
 El giro en $\theta$ es generado por un desequilibrio entre los pares ejercidos por las hélices. Si el par neto de todas las hélices resulta por ejemplo positivo, el cuadricóptero realizará un movimiento hacia los negativos, equilibrando el par, como se explica en el capítulo \ref{chap:general}.\\
 
 Para la estimación de $\theta$ se utiliza por un lado la integral de la velocidad angular en el eje ``z'' y por otro la proyección del vector del campo magnético medido sobre el plano horizontal, medidas que son combinadas en el filtro de Kalman. El dato obtenido del magnetómetro no distingue entre giros de $360^o$, limitando el valor al rango [$-180^o$ - $180^o$]. Es necesario entonces realizar un reajuste de la medida deducida del campo magnético para lograr la continuidad en el ángulo estimado.\\

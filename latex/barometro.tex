@@ -52,9 +52,7 @@ Se analizan las siguientes situaciones:
 \section{Consideraciones previas}
 \label{consideraciones}
 
-El sensor de presión devuelve la presión absoluta. Si se conoce la presión y la temperatura a nivel del mar, es posible calcular la elevación.
-
-A nivel de la tropósfera, la capa más baja de la atmósfera, se puede calcular la altura a partir de la presión atmosférica mediante la siguiente fórmula\cite{bib:alt-press}:
+El sensor de presión devuelve la presión absoluta. Si se conoce la presión y la temperatura a nivel del mar, es posible calcular la elevación. A nivel de la tropósfera, la capa más baja de la atmósfera, se puede calcular la altura a partir de la presión atmosférica mediante la siguiente fórmula\cite{bib:alt-press}:
 
 \begin{equation}
   \label{eq:press-alt}
@@ -72,65 +70,45 @@ Donde:
 \end{itemize}
 
 
-\newpage
 \section{Procedimiento}
 \label{sec:procedimiento}
 
-\subsection{Drift y \textit{warm-up}}
-\label{sec:drift-y-warm-up}
+\begin{itemize}
+\item \label{sec:drift-y-warm-up} \textbf{Drift y \textit{warm-up:}} En los datos tomados durante varios minutos, se observa lo que parecería ser un drift en las medidas obtenidas del barómetro. Se toman muestras durante 1 hora, con el barómetro quieto, comenzando con el circuito en frío\footnote{Habiendo estado apagado durante, por lo menos, los 30 minutos previos a la prueba.}.
 
-En los datos tomados durante varios minutos, se observa lo que parecería ser un drift en las medidas obtenidas del barómetro. Se toman muestras durante 1 hora, con el barómetro quieto, comenzando con el circuito en frío\footnote{Habiendo estado apagado durante, por lo menos, los 30 minutos previos a la prueba.}.
+\item \textbf{Caracterización del ruido:} Es de interés caracterizar el ruido en los datos provenientes del barómetro. Si se trata de un proceso estacionario, y de ruido blanco, entonces, promediando se puede reducir el error. Se analizan datos tomados durante diversos períodos de tiempo: 5 minutos, 2 minutos, 20 segundos y 15 segundos. Sobre estos datos se calcula la autocorrelación de las muestras, y se compara el ruido con los valores dados por la hoja de datos. La hoja de datos especifica ruido RMS típico para los distintos modos de funcionamiento.
 
-\subsection{Caracterización del ruido}
+  \begin{figure}[h!]
+    \vspace{-20pt}
+    \begin{center}
+      \subfloat[Toma de datos.]{\label{fig:escalera_compu.jpg}
+	\includegraphics[width=0.2\textwidth]
+        {./pics_barom/escalera_compu.jpg}}
+      \subfloat[Vacío de la escalera.]{\label{fig:escalera_pater.jpg}
+	\includegraphics[width=0.2\textwidth]
+        {./pics_barom/escalera_pater.jpg}}
+      \subfloat[Esquema experimento usando distancias de 1m.]{\label{fig:imerl.png}
+        \includegraphics[width=.35\textwidth]{./pics_barom/imerl.png}}
+    \end{center}
+    \vspace{-20pt}
+    \caption{}
+    \vspace{-20pt}
+    \label{fig:escalera-fing}
+  \end{figure}
 
-Es de interés caracterizar el ruido en los datos provenientes del barómetro. Si se trata de un proceso estacionario, y de ruido blanco, entonces, promediando se puede reducir el error.
+\item \textbf{Medidas de altura absoluta:} Para analizar la performance del barómetro como instrumento para determinar la elevación absoluta, se toman puntos de altura conocida, y se comparan las lecturas contra los datos conocidos.
 
-Se analizan datos tomados durante diversos períodos de tiempo: 5 minutos, 2 minutos, 20 segundos y 15 segundos.
+\item \textbf{Distancias de varios metros:} Se despliega una cinta métrica en el vacío del centro de una escalera de 4 tramos. La cinta extendida cubre aproximadamente 25 metros. Se comparan las medidas dadas por el barómetro con las que se obtienen de la cinta.
 
-Se analiza la autocorrelación de las muestras, y se compara el ruido con los valores dados por la hoja de datos. La hoja de datos especifica ruido RMS típico para los distintos modos de funcionamiento.
+Se utiliza una cinta de agrimensor, graduada cada 10 centímetros, para medir la distancia de un piso a otro. Luego se toman 1 minuto de datos en cada piso, recorriendo la escalera de un extremo a otro. Se repite este experimento 3 veces (se sube, se baja y se vuelve a subir) y luego se realiza un experimento similar, pero recorriendo la escalera de manera casi continua (Pausa por piso menor a 2 segundos).
 
-\subsection{Medidas de altura absoluta}
+\item \textbf{Distancias de un metro:} Se realizan marcas cada un metro, en seis puntos distintos de una tanza. Se ata el cubo de lapacho en un extremo de la tanza, con la \emph{Mongoose} atornillada a él. Se lo deja descender desde la escalera del \emph{IMERL}\footnote{Instituto de Matemática y Estadística Rafael Laguardia}. Se suelta tanza hasta que el cubo se apoya contra el piso, de forma que la primer marca en la cuerda se encuentre junto a quien está realizando las medidas. Se hace una pequeña marca sobre la baranda, en el punto que coincide con la primer marca de la cuerda. Se mide la presión durante un minuto. Luego se sube el cubo hasta que la marca en la baranda coincida con la segunda marca de la cuerda ($\Delta h = 1m$), etc.
+Al comenazar y al terminar se mide la presión a nivel del suelo, para tomar en cuentas cambios meteorológicos.
 
-\begin{wrapfigure}{r}{0.5\textwidth}
-\vspace{-70pt}
-  \begin{center}
-	\subfloat[Toma de datos.]{\label{fig:escalera_compu.jpg}
-	\includegraphics[width=0.25\textwidth]
-		{./pics_barom/escalera_compu.jpg}}\\
-	\subfloat[Vacío de la escalera.]{\label{fig:escalera_pater.jpg}
-	\includegraphics[width=0.25\textwidth]
-		{./pics_barom/escalera_pater.jpg}}
-  \end{center}
-  \caption{Experimento: Distancias de varios metros.}
-\label{fig:escalera-fing}
-\vspace{-40pt}
-\end{wrapfigure}
+\item \textbf{Distancias de decenas de centímetros}: Se ubica el cubo de lapacho siempre en la misma orientación sobre cada uno de los estantes de una estantería, se mide distancia al piso y se toman datos de la presión durante 5 segundos.
 
-Para analizar la performance del barómetro como instrumento para determinar la elevación absoluta, se toman puntos de altura conocida, y se comparan las lecturas contra los datos conocidos.
+\end{itemize}
 
-\subsection{Distancias de varios metros}
-
-Se deja despliega una cinta métrica en el vacío del centro de una escalera de 4 tramos en la Facultad de Ingeniería de la Universidad de la República. La cinta extendida cubre aproximadamente 25 metros. Se comparan las medidas dadas por el barómetro con las que se obtienen de la cinta.
-
-Se utiliza una cinta de agrimensor, graduada cada 10 centímetros, para medir la distancia de un piso a otro. Luego se toman 1 minuto de datos en cada piso, recorriendo la escalera de un extremo a otro. Se repite este experimento 3 veces (se sube, se baja y se vuelve a subir) y luego se realiza un experimento similar, pero en lugar de detenerse a tomar muestras durante 1 minuto en cada piso, se apoya la IMU, se anota el tiempo (mediante software), y se sigue. La pausa en cada punto es menor a 2 segundos.
-
-\subsection{Distancias de un metro}
-
-\begin{wrapfigure}{r}{0.5\textwidth}
-\hspace{20pt}
-  \includegraphics[width=.5\textwidth]{./pics_barom/imerl.png}
-  \caption{Esquema experimento usando distancias de 1m.}
-  \label{fig:imerl.png}
-\end{wrapfigure}
-
-Se toma una tanza de pesca resistente. Se realizan marcas cada un metro, en seis puntos distintos de la tanza. En un extremo de la tanza se ata el cubo de lapacho, con la \emph{Mongoose} atornillada a él. Se lo deja descender desde la escalera del \emph{IMERL}\footnote{Instituto de Matemática y Estadística Rafael Laguardia}. Se suelta tanza hasta que el cubo se apoya contra el piso, de forma que la primer marca en la cuerda se encuentre junto a quien está realizando las medidas. Se hace una pequeña marca sobre la baranda, en el punto que coincide con la primer marca de la cuerda. Se mide la presión durante un minuto. Luego se sube el cubo hasta que la marca en la baranda coincida con la segunda marca de la cuerda (y por lo tanto el cubo subió 1 metro). Se vuelve a tomar la medida de presión. Se repite el procedimiento hasta tener la medida de presión a 5 alturas distintas. 
-Se repite el experimento dos veces. Luego se toma la medida de presión a nivel del suelo. Se toman medidas mientras se sube y se baja el barómetro dos veces, se vuelven a tomar medidas a nivel del suelo.
-
-\subsection{Distancias de decenas de centímetros}
-
-Se ubica el cubo de lapacho siempre en la misma orientación sobre cada uno de los estantes de una estantería. Se coloca el cubo sobre el primer estante. Se mide la altura desde el suelo a la cara del cubo sobre la cual se encuentra apoyada la IMU. Se mide la presión durante 8 minutos. Se mueve el cubo al estante siguiente. Se vuelve a medir la altura respecto del suelo con un metro y se mide la presión durante un minuto. Se repite el procedimiento para cada uno los cinco estantes que componen la estantería. Luego se repite el experimento, pero tomando solamente 5 segundos de datos por estante.
-
-\newpage
 \section{Análisis y resultados}
 
 \subsection{Drift y \textit{warm-up}}
@@ -141,28 +119,19 @@ Para observar si hay un drift y/o tiempo de \textit{warm-up} significativo, se p
 Se repite este experimento varias veces. En las figuras \ref{fig:1hora_04.pdf} y \ref{fig:1hora_01.pdf} se observan los resultados característicos.
 
 \begin{figure}[h!]
-  \includegraphics[width=.9\textwidth]{./pics_barom/1hora_01.pdf}
-  \caption{Muestras durante una hora, experimento \#1.}
-  \label{fig:1hora_01.pdf}
+\hspace{-50pt}
+\subfloat[Muestras durante una hora, experimento \#1.]{\label{fig:1hora_01.pdf}
+  \includegraphics[width=.6\textwidth,height=180pt]{./pics_barom/1hora_01.pdf}}
+\subfloat[Muestras durante una hora, experimento \#4.]{\label{fig:1hora_04.pdf}
+  \includegraphics[width=.6\textwidth,height=180pt]{./pics_barom/1hora_04.pdf}}
+\caption{}
 \end{figure}
-\vspace{-20pt}
-\begin{figure}[h!]
-  \includegraphics[width=.9\textwidth]{./pics_barom/1hora_04.pdf}
-  \caption{Muestras durante una hora, experimento \#4.}
-  \label{fig:1hora_04.pdf}
-\end{figure}
-
-% \begin{figure}[h!]
-%   \includegraphics[width=1\textwidth]{./pics_barom/1hora_02.pdf}
-%   \caption{Muestras durante una hora, experimento \#2.}
-%   \label{fig:1hora_02.pdf}
-% \end{figure}
+\vspace{-10pt}
 
 Se observa que existe un tiempo de \textit{warm-up} bastante extenso, pero con un rango pequeño. La temperatura tarda entre 15 y 45 minutos en estabilizarse, y en el proceso varía menos de 2\degc. Las muestras del barómetro no parecen estar directamente correlacionadas con la temperatura.
 
 El barómetro no parece ser adecuado para medir la elevación absoluta. En los datos de las figuras \ref{fig:1hora_01.pdf} y \ref{fig:1hora_04.pdf} se observan variaciones de hasta 3 metros en la estimación de la altura en un período de 1 hora. Sin embargo, el error en el corto plazo es significativamente menor que en el largo plazo, parece viable el uso del barómetro como estimador de la altura en el corto plazo. Esto se analiza más adelante.
 
-\newpage
 \subsection{Caracterización del ruido}
 \label{sec:caract-ruido}
 
@@ -176,36 +145,36 @@ En los logs de la sección \ref{sec:drift-y-warm-up}, se observa que:
 
 Analizando el ruido en intervalos más pequeños, donde el proceso se puede considerar estacionario, el comportamiento del ruido es muy similar al del ruido blanco.
 
-En la figura \ref{fig:autocorr} se observa la autocorrelación de la muestras tomadas del barómetro en intervalos de tiempo de 5 minutos, 2 minutos, y 15 segundos.
+En la figura \ref{fig:autocorr} se observa la autocorrelación de la muestras tomadas con el barómetro en intervalos de tiempo de 5 minutos, 2 minutos, y 15 segundos.
 
 Cabe destacar que el ruido se puede considerar estacionario si se usan intervalos de tiempo menores a 15 segundos.
 
 \begin{figure}[H]
-  \begin{center}
-	\subfloat[Datos durante 5 minutos]{\label{fig:autocorr_5m.pdf}
-	\includegraphics[width=0.4\textwidth]
+\vspace{-20pt}
+\centering
+	\subfloat[5 minutos]{\label{fig:autocorr_5m.pdf}
+	\includegraphics[width=0.3\textwidth]
 		{./pics_barom/autocorr_5m_log04.pdf}}
-	\subfloat[Datos durante 15 segundos]{\label{autocorr_15s_log04.pdf}
-	\includegraphics[width=0.4\textwidth]
-		{./pics_barom/autocorr_15s_log04.pdf}}\\
-	\subfloat[Datos durante 15 segundos]{\label{autocorr_15s_log04.pdf}
-	\includegraphics[width=.4\textwidth]
+	\subfloat[15 segundos]{\label{autocorr_15s_log04.pdf}
+	\includegraphics[width=0.3\textwidth]
+		{./pics_barom/autocorr_15s_log04.pdf}}
+	\subfloat[15 segundos]{\label{autocorr_15s_log04.pdf}
+	\includegraphics[width=.3\textwidth]
 		{./pics_barom/autocorr.pdf}}
-  \end{center}
   \caption{Autocorrelación de las muestras del barómetro.}
 \label{fig:autocorr}
 \end{figure}
+\vspace{-20pt}
 
 \subsubsection{Modos de funcionamiento}
 
-El barómetro permite trabajar en varios modos. Básicamente, permite que se le exija más resolución, menos ruido, y a cambio aumenta el tiempo que tarda en tener un dato nuevo listo, y consume más energía. Esto lo logra promediando datos internamente. En la tabla \ref{tab:ruido-rms} se compara el ruido RMS en los distintos modos, con lo que se lograría usándolo en el modo básico (sin promediar internamente) y promediando en el microprocesador.
-
-\begin{table}[H]
+\begin{wraptable}{r}{0.45\textwidth}
+\vspace{-40pt}
 \centering
 \begin{tabular}{c|c|c|c|} 
 \cline{2-4}
 	& \multicolumn{3}{|c|}{\cellcolor[gray]{0.8} Ruido RMS  (m)}      \\ \hline
-\multicolumn{1}{|c|}{\cellcolor[gray]{0.8} {Modo}} & \cellcolor[gray]{0.8} {Microprocesador} &\cellcolor[gray]{0.8} {Sensor} &\cellcolor[gray]{0.8} {Especificaciones}\\ \hline
+\multicolumn{1}{|c|}{\cellcolor[gray]{0.8} {Modo}} & \cellcolor[gray]{0.8} {$\mu p$} &\cellcolor[gray]{0.8} {Sensor} &\cellcolor[gray]{0.8} {specs}\\ \hline
 
 \multicolumn{1}{|c|}{0}	&	0.52	&	0.52	&	0.50\\
 \hline
@@ -217,127 +186,95 @@ El barómetro permite trabajar en varios modos. Básicamente, permite que se le 
 \hline
 
 \end{tabular}
-\caption{Ruido RMS, 2 minutos de datos a 14Hz.}
+\caption{}
+\vspace{-16pt}
 \label{tab:ruido-rms}
-\end{table}
-\vspace{-15pt}
-La resolución más atractiva parece ser la número 2, en la cual se promedian 4 datos. Se concluye que, si se dispone de procesador se optará por promediar datos en él, de lo contrario se usará el promedio calculado por el sensor.
+\end{wraptable}
+
+El barómetro puede dar más resolución y menos ruido, a cambio de un incremento en el tiempo entre datos nuevos, y en el consumo de energía. Esto lo logra promediando datos internamente. En la tabla \ref{tab:ruido-rms} se compara el ruido RMS en los distintos modos, con lo que se lograría usándolo en el modo básico (sin promediar internamente) y promediando en el microprocesador.
+
+La resolución más atractiva parece ser la número 2, en la cual se promedian 4 datos.
 
 \subsubsection{Resolución del instrumento}
+
 En la figura \ref{fig:barom_hist_exp4.pdf} se observa un histograma de las diferencias entre muestras sucesivas de los datos del barómetro. Se observa que la mayor parte de los datos saltan de a 25cm. Se esperaba una discretización en niveles de  aproximadamente 8cm, correspondientes a variaciones de presión de 1Pa (la resolución del instrumento).
 
-Puede resultar difícil ver que hay muestras en todos los bins, pero mirando con detalle se puede. Puede deberse a un problema de software, o la construcción del sensor en sí. Este problema no parece ser significativo.
-%TODO averiguar q onda con esto.
-\vspace{-14pt}
-\begin{figure}[h!]
-\centering
-  \includegraphics[width=.75\textwidth]{./pics_barom/barom_hist_exp4.pdf}
-\vspace{-15pt}
-  \caption{Histograma de las diferencias, experimento \#4.}
-  \label{fig:barom_hist_exp4.pdf}
-\end{figure}
-\vspace{-40pt}
+Puede resultar difícil ver que hay muestras en todos los bins, pero mirando con detalle se puede. Puede deberse a un problema del firmware del sensor, o la construcción del sensor en sí.
 
-
-\newpage
 \subsection{Altura absoluta}
 
-Las figuras \ref{fig:1hora_01.pdf} y \ref{fig:1hora_04.pdf} se corresponden a datos tomados a la misma altura, pero en dias distintos. Cabe destacar que la diferencia entre ambas curvas llega es de aproximadamente 25 metros.
-
-Se descarta la posibilidad de utilizar el barómetro para determinar la altura absoluta, ya que estando el barómetro a una altura fija, la elevación varía mucho de un día a otro, lo cual refleja una fuerte dependencia con factores externos, probablemente climáticos, que no interesa considerar.
+Las figuras \ref{fig:1hora_01.pdf} y \ref{fig:1hora_04.pdf} se corresponden a datos tomados a la misma altura, pero en dias distintos. Cabe destacar que la diferencia entre ambas curvas es de aproximadamente 25 metros. Se descarta la posibilidad de utilizar el barómetro para determinar la altura absoluta, ya que estando el barómetro a una altura fija, la elevación varía mucho de un día a otro, lo cual refleja una fuerte dependencia con factores externos, probablemente climáticos, que no interesa considerar.
 
 \subsection{Distancias de varios metros}
 
-En las siguientes figuras se observan los resultados del experimento. Las líneas verticales (en negro) representan el comienzo y el fin de la toma de datos en cada piso. No se hace una medida de la altura absoluta, se miden las distancias entre piso y piso (con la cinta métrica), y se usa como origen de coordenadas la altura dada por el promedio de algunas muestras al comienzo del experimento, ya sea en el piso de más arriba, o en el piso de más abajo (bajadas y subidas respectivamente). La coordenada Y de los segmentos en rojo que unen las rectas verticales representan la distancia entre el origen y el piso actual. Dicha distancia se mide con la cinta métrica.
+En las siguientes figuras se observan los resultados del experimento. Las líneas verticales (en negro) representan el comienzo y el fin de la toma de datos en cada piso. No se hace una medida de la altura absoluta, se miden las distancias entre piso y piso (con la cinta métrica), y se usa como origen de coordenadas la altura dada por el promedio de algunas muestras al comienzo del experimento, ya sea en el piso de más arriba, o en el piso de más abajo (bajadas y subidas respectivamente). La coordenada Y de los segmentos en rojo representan la distancia entre el origen y el piso actual. Dicha distancia se mide con la cinta métrica.
 
-\vspace{-12pt}
 \begin{figure}[h!]
 \centering
-  \includegraphics[width=.80\textwidth]{./pics_barom/metros-s1.pdf}
-\vspace{-15pt}
-  \caption{Subida \#1.}
-  \label{fig:metros-s1.pdf}
-\end{figure}
-\vspace{-15pt}
-
-En la figura \ref{fig:metros-s1.pdf} se observa que para cuando se termina de recorrer la escalera, el error acumulado se llega a los 3 metros.
-
-\newpage
-\vspace{-40pt}
-\begin{figure}[h!]
-\centering
-  \includegraphics[width=.85\textwidth]{./pics_barom/metros-b1.pdf}
-\vspace{-25pt}
-  \caption{Bajada \#1.}
-  \label{fig:metros-b1.pdf}
+\subfloat[Subida \#1.]{\label{fig:metros-s1.pdf}
+  \includegraphics[width=.5\textwidth]{./pics_barom/metros-s1.pdf}}
+\subfloat[Bajada \#1.]{\label{fig:metros-b1.pdf}
+  \includegraphics[width=.5\textwidth]{./pics_barom/metros-b1.pdf}}
+\caption{Subida/Bajada \#1, 2 minutos de datos por piso.}
+\label{fig:subida-bajada-1-2}
 \end{figure}
 
-En la figura \ref{fig:metros-b1.pdf} se observan resultados mejores que en la figura \ref{fig:metros-s1.pdf}. Se repite la subida, y se obtienen resultados similares a los de la figura \ref{fig:metros-b1.pdf}, por este motivo no se incluye una figura de este último experimento.
+En la figura \ref{fig:metros-s1.pdf} se observa que para cuando se termina de recorrer la escalera, el error acumulado se llega a los 3 metros. En la \ref{fig:metros-b1.pdf} se observan resultados mejores que en la figura \ref{fig:metros-s1.pdf}. Se repite la subida, y se obtienen resultados similares a los de la figura \ref{fig:subida-bajada-1-2}.
 
-Los errores en las medidas se analizan más adelante.
-
-Cabe destacar que la performance en la figura \ref{fig:metros-rapido.pdf} es muy similar a la que se obtuvo tomando muestras durante 1 minutos. Esto resulta alentador, ya que se pretende utilizar el barómetro para obtener medidas con una frecuencia mucho mayor 1Hz.
+Cabe destacar que la performance durant ela bajada rápida (figura \ref{fig:metros-rapido.pdf}) es muy similar a la que se obtuvo tomando muestras durante 1 minuto, por lo que 
 
 En la figura \ref{fig:metros-err-accum.pdf} se observa la evolución del error acumulado para 2 subidas\footnote{No se incluye una gráfica de la segundo subida, ya es muy similar, en cuanto al error, a la de la primera bajada, pero con un error del orden del de la primer bajada.}, 1 bajada y una bajada rápida.
 
-El error en la determinación de la distancia entre un piso y el siguiente se observa en la figura \ref{fig:metros-err-piso-a-piso.pdf}.
-
-El error de la figura \ref{fig:metros-err-piso-a-piso.pdf} es relativo a la altura de cada piso, que son de aproximadamente 4.3m. Analizando los número con cuidado, se llega a que el error es siempre menor al 10\%.
+El error en la determinación de la distancia entre un piso y el siguiente se observa en la figura \ref{fig:metros-err-piso-a-piso.pdf}. Dicho error es relativo a la altura de cada piso, que es de aproximadamente 4.3m. Analizando los números con cuidado, se llega a que el error es siempre menor al 10\%.
 
 De las figuras \ref{fig:metros-rapido.pdf} y \ref{fig:metros-err-accum.pdf} se desprende que utilizando promedios de 20 muestras\footnote{Esta es la cantidad de muestras que se promediaron para determinar la altura cada vez en cada piso en el experimento ``rápido''.}, se obtiene un error de aproximadamente 0.5m. El comportamiento del barómetro es aceptable, y se corresponde con las especificaciones de la hoja de datos.
 
 
-\newpage
-\vspace{-40pt}
+\vspace{-10pt}
 \begin{figure}[h!]
 \centering
-  \includegraphics[width=.95\textwidth]{./pics_barom/metros-rapido.pdf}
-  \caption{Bajada sin detenerse en cada piso.}
-  \label{fig:metros-rapido.pdf}
+\subfloat[Bajada sin detenerse en cada piso.]{\label{fig:metros-rapido.pdf}
+  \includegraphics[width=.50\textwidth]{./pics_barom/metros-rapido.pdf}}
+\subfloat[Histograma de las diferencias, experimento \#4.]{\label{fig:barom_hist_exp4.pdf}
+  \includegraphics[width=.5\textwidth]{./pics_barom/barom_hist_exp4.pdf}}
+  \caption{}
+\vspace{-20pt}
 \end{figure}
 
-\begin{figure}[H]
-\hspace{-50pt}
+\subsection{Distancias de un metro}
+
+Las figuras \ref{fig:esc1.pdf} y \ref{fig:esc2.pdf} presentan las medidas obtenidas al realizar las medidas estáticas a alturas que difieren en 1 metro. La figura \ref{fig:variando} muestra las medidas obtenidas durante el proceso de subir y bajar el barómetro. En las tres figuras se observan los datos obtenidos y la media móvil considerando 20 muestras.
+
+\begin{figure}[!h]
+\centering
 	\subfloat[Error acumulado.]{\label{fig:metros-err-accum.pdf}
-	\includegraphics[width=.6\textwidth]
+	\includegraphics[width=.38\textwidth]
         {./pics_barom/metros-err-accum.pdf}}
 	\subfloat[Error en la estimación de la distancia del piso anterior al actual.]{\label{fig:metros-err-piso-a-piso.pdf}
-	\includegraphics[width=.6\textwidth]
+	\includegraphics[width=.38\textwidth]
         {./pics_barom/metros-err-piso-a-piso.pdf}}
   \caption{Evolución del error en distancias de varios metros.}
 \label{fig:autocorr}
+\vspace{-15pt}
 \end{figure}
 
-\newpage
-\subsection{Distancias de un metro}
-
-Las figuras \ref{fig:esc1.pdf} y \ref{fig:esc2.pdf} presentan las medidas obtenidas al realizar las medidas estáticas a alturas que difieren de un metro. La figura \ref{fig:variando} muestra las medidas obtenidas durante el proceso de subir y bajar el barómetro. En las tres figuras se observan los datos obtenidos y la media móvil considerando 20 muestras.
-
-Se aprecia que el comportamiento es acorde a lo esperado, corresponde a las acciones realizadas. Se analizan con mayor detenimiento los resultados para concluir que es lo que se puede esperar del barómetro.
-
-\vspace{-25pt}
 \begin{figure}[H]
-\hspace{-70pt}
+\hspace{-40pt}
+\centering
 	\subfloat[Primer serie de medidas cada 1 metro.]{\label{fig:esc1.pdf}
-  \includegraphics[width=.65\textwidth]{./pics_barom/esc1.pdf}}
+  \includegraphics[width=.55\textwidth]{./pics_barom/esc1.pdf}}
 	\subfloat[Segunda serie de medidas cada 1 metro.]{\label{fig:esc2.pdf}
-  \includegraphics[width=.65\textwidth]{./pics_barom/esc2.pdf}}
-\vspace{-10pt}
-  \caption{Experimento: Distancias de 1 metro.}
+  \includegraphics[width=.55\textwidth]{./pics_barom/esc2.pdf}}
+  \caption{Distancias de 1 metro.}
 \label{fig:1m}
 \end{figure}
 
+En la tabla \ref{tab:alturasm} se muestran los valores de altura obtenidos en las distintas posiciones en las dos series de datos tomadas. La altura absoluta no es correcta, ya que no se usó la presión real a nivel del mar en la ecuación \ref{eq:press-alt}.
 
-%   \caption{}
-%   \label{fig:esc2}
-% \end{figure}
-
-En la tabla \ref{tab:alturasm} se muestran los valores de altura obtenidos en las distintas posiciones en las dos series de datos tomadas. La altura absoluta no tiene sentido, ya que no se conoce la presión a nivel del mar en el momento de tomar las muestras, por lo tanto la ecuación \ref{eq:press-alt} no dará el resultado correcto.
-
-\begin{table}[H]
-\centering
+\begin{wraptable}{l}{0.45\textwidth}
+\vspace{-15pt}
 \begin{tabular}{c|c|c|} 
-	& \multicolumn{2}{|p{200pt}|}{\cellcolor[gray]{0.8} Altura medida con el barómetro (m)}      \\ \hline
+	& \multicolumn{2}{|p{100pt}|}{\cellcolor[gray]{0.8} Altura medida con el barómetro (m)}      \\ \hline
 \cellcolor[gray]{0.8} {Posición} & \cellcolor[gray]{0.8} {Serie 1} &\cellcolor[gray]{0.8} {Serie 2}\\ \hline
 
 \multicolumn{1}{|c|}{1} & 44.66 & 46.52 \\ \hline
@@ -348,27 +285,29 @@ En la tabla \ref{tab:alturasm} se muestran los valores de altura obtenidos en la
 \multicolumn{1}{|c|}{6} & 50.66 & 51.21 \\ \hline
 
 \end{tabular}
-\caption{Alturas obtenidas con el barómetro}
+\caption{}
 \label{tab:alturasm}
-\end{table}
+\end{wraptable}
 
-Se observa inmediatamente en las medidas de altura realizadas que la altura absoluta registrada por el barómetro cambia considerablemente de una serie a la otra. En la segunda se observa que las medidas se encuentran en promedio un metro más arriba. Los puntos que se consideraron fueron los mismos, sin embargo las medidas fueron realizadas un día de tormenta. La presión atmosférica es muy cambiante en esos días. Eso puede explicar dicha diferencia. Otra explicación puede ser el drift observado en secciones previas.
+La altura absoluta registrada por el barómetro cambia considerablemente de una serie a la otra. En la figura \ref{fig:esc2.pdf} las medidas están, en promedio, un metro más arriba que en la \ref{fig:esc1.pdf}. Los puntos que se consideraron fueron los mismos, sin embargo las medidas fueron realizadas un día de tormenta. La presión atmosférica es muy cambiante en esos días. Eso puede explicar dicha diferencia. Otra explicación puede ser el drift observado en secciones previas.
 
 En la figura \ref{fig:1-metro-err} se muestra la evolución de los errores relativo y acumulado.
 
-\begin{figure}[H]
-\hspace{-50pt}
+\begin{wrapfigure}{r}{0.34\textwidth}
+\vspace{-10pt}
 	\subfloat[Error acumulado.]
         {\label{fig:1-metro-error-accum.pdf}
-	\includegraphics[width=.6\textwidth]
+	\includegraphics[width=.35\textwidth]
         {./pics_barom/1-metro-error-accum.pdf}}
-	\subfloat[Error en la estimación de la distancia del piso anterior al actual.]
+
+	\subfloat[Error en la distancia entre pisos.]
         {\label{fig:1-metro-err-piso-a-piso.pdf}
-	\includegraphics[width=0.6\textwidth]
+	\includegraphics[width=0.35\textwidth]
         {./pics_barom/1-metro-err-punto-a-punto.pdf}}
-  \caption{Errores en las medidas a 1 metro entre sí.}
+  \caption{}
 \label{fig:1-metro-err}
-\end{figure}
+\vspace{-110pt}
+\end{wrapfigure}
 
 Del análisis de cada serie de manera independiente:
 \begin{itemize}
@@ -384,8 +323,6 @@ Del análisis de cada serie de manera independiente:
 		\end{itemize}
 \end{itemize}
 
-Al tener pocas muestras en cada una de las series es imposible considerarlas para armar estadísticas, de hecho ambas difieren mucho en cuanto al error promedio que presentan y la desviación estándar. 
-
 Si se trabaja con las dos series de datos, se obtienen:
 
 \begin{itemize}
@@ -393,20 +330,19 @@ Si se trabaja con las dos series de datos, se obtienen:
 \item Desviación estándar: $0.38m$
 \end{itemize}
 
-A partir de los datos anteriores se puede concluir que el $95.5 \%$ de las veces se tiene errores inferiores a $0.76m$ en diferencias de un metro. El error se mantiene por debajo de $1m$ al usar pocas (4 muestras, 8, 10, etc) muestras para cada punto. Esto es prometedor, ya que se piensa utilizar 
+Pese a tener pocas muestras, a partir de los datos anteriores se puede suponer que el $95.5 \%$ de las veces se tendrán errores inferiores a $0.76m$ en diferencias de un metro. El error se mantiene por debajo de $1m$ al usar pocas (4 muestras, 8, 10, etc) muestras para cada punto. Este error depende del drift del barómetro, y se puede reducir incorporando, de manera periódica, información externa (GPS) sobre la altura absoluta.
 
-Este error depende del drift del barómetro, y se puede reducir incorporando, de manera periódica, información externa (GPS) sobre la altura absoluta.
-
-En la figura \ref{fig:variando} se observa la variación en la altura absoluta. Si bien cada tramo comienza y termina a una altura que cae dentro del error esperado, hay tramos del principio y del final del experimento (barómetro apoyado en el suelo) entre los que se observa una diferencia en altura de 1.5m. Esto no cae dentro del error esperado. El problema se ve luego de transcurridos varios minutos, tiempo mucho mayor al sugerido en la sección \ref{sec:caract-ruido}, por lo que no parece ser un problema relevante, ya que puede ser causado por el drift y/o por cambios en las condiciones atmosféricas.
+En la figura \ref{fig:variando} se observa la variación en la altura absoluta. Si bien cada tramo comienza y termina a una altura que cae dentro del error esperado, hay tramos del principio y del final del experimento (barómetro apoyado en el suelo) entre los que se observa una diferencia en altura de 1.5m. Esto no cae dentro del error esperado. El problema se ve luego de transcurridos varios minutos, tiempo mucho mayor al sugerido en la sección \ref{sec:caract-ruido}. Puede ser causado por el drift y/o por cambios en las condiciones atmosféricas.
 
 \begin{figure}[H]
-\hspace{-70pt}
-  \includegraphics[width=1.3\textwidth]{./pics_barom/variando.pdf}
+\hspace{-50pt}
+  \includegraphics[width=1.2\textwidth]{./pics_barom/variando.pdf}
+\vspace{-20pt}
   \caption{Medidas de altura subiendo y bajando.}
+\vspace{-10pt}
   \label{fig:variando}
 \end{figure}
 
-\newpage
 \subsection{Distancias de decenas de centímetros}
 
 \subsubsection{5 segundos por estante}
@@ -417,61 +353,36 @@ Se toman datos durante 5 segundos en casa escalón. Repitiendo el análisis real
 \item Desviación estándar: 24.4 cm
 \end{itemize}
 
-\begin{figure}[H]
-\hspace{-50pt}
-	\subfloat[Error acumulado.]
-        {\label{fig:cm-err-accum.pdf}
-	\includegraphics[width=.6\textwidth]
-        {./pics_barom/cm-err-accum.pdf}}
-	\subfloat[Error en la estimación de la distancia del estante anterior al actual.]
-        {\label{fig:cm-err-punto-a-punto.pdf}
-	\includegraphics[width=0.6\textwidth]
-        {./pics_barom/cm-err-punto-a-punto.pdf}}
-  \caption{Errores en las medidas a decenas de cm entre sí.}
-\label{fig:cm-err}
-\end{figure}
-
-\subsubsection{8 minutos por estante}
-
-En la figura \ref{fig:cm-8min-por-estante.pdf} se observan los datos capturados durante este experimento. El experimento se realiza un día de tormenta. Se toman 8 minutos de datos en cada estante, el experimento en su totalidad dura 40 minutos. El cambio de presión durante una tormenta es significativo. Se considera que esta fue la causa del drift observado en la figura \ref{fig:cm-8min-por-estante.pdf}. No se analiza el error en las medidas, ya que claramente está lejos de ser algo utilizable. Cabe destacar que no sirve tomar medidas durante tanto mucho tiempo con el barómetro, ya que el drift y/o factores externos introducen errores importantes.
-
-\begin{figure}[H]
-\centering
-  \includegraphics[width=1\textwidth]{./pics_barom/cm-8min-por-estante.pdf}
-  \caption{8 minutos por estante durante una tormenta.}
-  \label{fig:cm-8min-por-estante.pdf}
-\end{figure}
-
-\newpage
 \subsubsection{3m en aproximadamente 7 segundos}
 
-Como prueba extra, se recorre 4 veces la estantería sin detenerse cada estante, completando el trayecto de bajar y volver a subir en aproximadamente 7 segundos. Se calcula la distancia recorrida al bajar, la distancia recorrida al subir, y la total, y se compara dichas distancias contra los valores medidos con la cinta métrica. Los resultados se muestran en la tabla \ref{tab:ruido-rms}. Solamente se hicieron 4 experimentos, por lo que los datos estadísticos son solamente para dar una idea de la performance frente a movimientos bruscos.
-
-\begin{table}[H]
-\centering
-\begin{tabular}{c|c|c|} 
+\begin{wraptable}{r}{0.4\textwidth}
+\vspace{-105pt}
+\hspace{10pt}
+\begin{tabular}{c|p{40pt}|p{40pt}|} 
 \cline{2-3}
-  & Error promedio (cm) & Desviación estándar (cm)\\ \hline
-\multicolumn{1}{|c|}{Bajada} & 15.1 & 25.9 \\ \hline
-\multicolumn{1}{|c|}{Subida} & 4.4 &  58.9 \\ \hline
-\multicolumn{1}{|c|}{Bajada+Subida} & 10.7 & 49.0 \\ \hline
+  & $\mu$ (cm) & $\sigma$ (cm)\\ \hline
+\multicolumn{1}{|c|}{$\searrow$} & 15.1 & 25.9 \\ \hline
+\multicolumn{1}{|c|}{$\nearrow$} & 4.4 &  58.9 \\ \hline
+\multicolumn{1}{|c|}{$\searrow$+$\nearrow$} & 10.7 & 49.0 \\ \hline
 \end{tabular}
-\caption{3 metros en aproximadamente 7 segundos.}
+\caption{}
 \label{tab:ruido-rms}
-\end{table}
+\vspace{-15pt}
+\end{wraptable}
+
+Como prueba extra, se recorre 4 veces la estantería sin detenerse cada estante, completando el trayecto de bajar y volver a subir en aproximadamente 7 segundos. Se calcula la distancia recorrida al bajar, la distancia recorrida al subir, y la total, y se compara dichas distancias contra los valores medidos con la cinta métrica. Los resultados se muestran en la tabla \ref{tab:ruido-rms}. Solamente se hicieron 4 experimentos, por lo que los datos estadísticos son solamente para dar una idea de la performance frente a movimientos bruscos.
 
 Cabe destacar que el error se mantiene por debajo de los 1.2m en el peor caso.
 
 La figura \ref{fig:estante_veloz.pdf} muestra gráficamente los resultados del experimento.
 
 \begin{figure}[H]
-\hspace{-90pt}
-  \includegraphics[width=1.4\textwidth]{./pics_barom/estante_veloz.pdf}
+\hspace{-25pt}
+  \includegraphics[width=1.1\textwidth]{./pics_barom/estante_veloz.pdf}
   \caption{3m metros en aproximadamente 7 segundos.}
   \label{fig:estante_veloz.pdf}
 \end{figure}
 
-\newpage
 \section{Conclusiones}
 \label{sec:conclusiones}
 

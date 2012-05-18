@@ -8,7 +8,7 @@ int main(int argc, char *argv[])
 	 portno,
 	 retval;
      uquad_bool_t
-	 udp = true;
+	 udp = false;
 
      if (argc > 3)
      {
