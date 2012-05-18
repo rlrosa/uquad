@@ -1,4 +1,4 @@
-#!/bin/bash -E
+#!/bin/bash -e
 
 cd build
 dest_platform=

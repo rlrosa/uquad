@@ -119,6 +119,19 @@ enum UQUAD_ERROR_CODES{
     }
 
 /**
+ * Print error message with number to stderr
+ *
+ */
+#define err_log_num_num(msg,num1,num2)				\
+    {								\
+	fprintf(stderr,"%s:%s:%d: %s(%d/%d)\n\r",		\
+		__TIME__,__FILE__,__LINE__,msg,num1,num2);	\
+	if(REROUTE_STDERR && rerouted())			\
+	    fprintf(stdout,"%s:%s:%d: %s(%d/%d)\n\r",		\
+		    __TIME__,__FILE__,__LINE__,msg,num1,num2);	\
+    }
+
+/**
  * Print error message with char to stderr
  *
  */

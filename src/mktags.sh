@@ -1,4 +1,4 @@
-#!/bin/bash -E
+#!/bin/bash -e
 
 if [ "$1" == "-a" ]; then
     CURR_DIR=`pwd`

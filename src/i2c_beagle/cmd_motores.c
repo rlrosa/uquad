@@ -18,6 +18,8 @@
 #include <fcntl.h>
 #include <sys/time.h>
 
+#include "../common/uquad_error_codes.h"
+
 // kernel queues
 #include <sys/ipc.h> // for IPC_NOWAIT
 #include <sys/msg.h>
@@ -28,7 +30,7 @@
     "or 4, enabling each motor.\n\n\t./cmd ena9 enaA enaB ena8\nwhere"\
     "enaX enables motor X, valid is 0 or 1\n\n"
 
-#define MAX_SPEED                 220 // i2c
+#define MAX_SPEED                 220 // i2c - must match mot_control.h
 #define MIN_SPEED                 45  // i2c
 
 /**
@@ -77,16 +79,9 @@
 
 #define LOG_ERR                   stdout
 
-#define backtrace()     fprintf(LOG_ERR,"%s:%d\n",__FUNCTION__,__LINE__)
-#define log_to_err(msg) fprintf(LOG_ERR,"%s: %s:%d\n",msg,__FUNCTION__,__LINE__)
-#define log_to_err_num(msg,num) fprintf(LOG_ERR,"%s: (%d) -  %s:%d\n",msg,num,__FUNCTION__,__LINE__)
+#define backtrace()     err_log("backtrace:")
 
 #define sleep_ms(ms)    usleep(1000*ms)
-
-#define log_tv_only(log,tv)					\
-    {								\
-	fprintf(log,"%ld.%06ld\t",tv.tv_sec, tv.tv_usec);	\
-    }
 
 #define tv2double(db,tv)					\
     {								\
@@ -191,11 +186,9 @@ int uquad_mot_i2c_addr_open(int i2c_dev, int addr){
     if (ioctl(i2c_dev,I2C_SLAVE,addr) < 0)
     {
 	/* ERROR HANDLING; you can check errno to see what went wrong */
-	fprintf(LOG_ERR,"ERROR! %s failed to write to 0x%02X...\n"	\
-		"errno info:\t %s\n",__FUNCTION__,addr,strerror(errno));
-#ifdef CHECK_STDIN
-	fflush(LOG_ERR);
-#endif // CHECK_STDIN
+	err_log_num("Failed to select slave at i2c addr:", addr);
+	err_log_stderr("ioctl()");
+	fflush(stderr);
 	return NOT_OK;
     }
 #ifdef LOG_TIMING_KERNEL_CALLS
@@ -227,11 +220,9 @@ int uquad_mot_i2c_send_byte(int i2c_dev, __u8 reg, __u8 value){
     if(i2c_smbus_write_byte_data(i2c_dev,reg,value) < 0)
     {
 	/* ERROR HANDLING: i2c transaction failed */
-	fprintf(LOG_ERR,"Failed to send value %d\tto 0x%02X\n."\
-		"errno info:\t %s\n",(int)value,(int)reg,strerror(errno));
-#ifdef CHECK_STDIN
-	fflush(LOG_ERR);
-#endif // CHECK_STDIN
+	err_log_num_num("Failed to send i2c data (value/reg):!",(int)value,(int)reg);
+	err_log_stderr("i2c_smbus_write_byte_data()");
+	fflush(stderr);
     }
 #ifdef LOG_TIMING_KERNEL_CALLS
     else
@@ -417,18 +408,22 @@ int uquad_mot_stop_all(int i2c_file, __u8 *v){
 	
 void uquad_sig_handler(int signal_num){
     int ret = OK;
-    fprintf(LOG_ERR,"Caught signal %d.\n",signal_num);
+    err_log_num("Caught signal: ",signal_num);
+    fflush(stderr);
     if( i2c_file>= 0 )
     {
-	fprintf(LOG_ERR,"Shutting down motors...\n");
+	err_log("Shutting down motors...");
 	while(uquad_mot_disable_all(i2c_file) != OK)
-	    fprintf(LOG_ERR,"Failed to shutdown motors!... Retrying...\n");
-	fprintf(LOG_ERR,"Motors successfully stopped!\n");
+	{
+	    err_log("Failed to shutdown motors!... Retrying...");
+	    fflush(stderr);
+	}
+	err_log("Motors successfully stopped!");
+	fflush(stderr);
     }
 #ifdef LOG_VELS
     fclose(log_rx);
 #endif // LOG_VELS
-    fclose(LOG_ERR);
     exit(ret);
 }
 
@@ -455,7 +450,8 @@ int uquad_send_ack()
     ack_msg.mtype = 1;
     if ((msqid = msgget(key_c, IPC_CREAT | 0666 )) < 0)
     {
-	fprintf(LOG_ERR,"msgget failed!:%s",strerror(errno));
+	err_log_stderr("msgget()");
+	fflush(stderr);
 	return NOT_OK;
     }
     ack_msg.mtext[0] = 'A';
@@ -466,8 +462,8 @@ int uquad_send_ack()
     retries = 0;
     if (msgsnd(msqid, &ack_msg, MOT_COUNT, IPC_NOWAIT) < 0)
     {
-	fprintf(LOG_ERR,"msgsnd failed!:%s",strerror(errno));
-	fflush(LOG_ERR);
+	err_log_stderr("msgsnd()");
+	fflush(stderr);
 	return NOT_OK;
     }
     return OK;
@@ -495,7 +491,7 @@ int uquad_read(void){
 
     if (retval < 0)
     {
-	log_to_err("select()");
+	err_log("select()");
 	return NOT_OK;
     }
     else
@@ -517,13 +513,14 @@ int uquad_read(void){
 	    else
 		retval = OK;
 	    for(i=0; i < MOT_COUNT; ++i)
-	    	if( itmp[i] >= 0 && itmp[i] < MAX_SPEED)
+		if( itmp[i] >= 0 && itmp[i] <= MAX_SPEED)
 	    	{
 	    	    vels[i] = (__u8)itmp[i];
 	    	}
 	    	else
 	    	{
-		    log_to_err_num("Refused to set m speed, invalid argument.",itmp[i]);
+		    err_log_num("Refused to set m speed, invalid argument.",itmp[i]);
+		    retval = NOT_OK;
 	    	}
 #ifdef LOG_VELS
 	    log_vels();
@@ -550,11 +547,12 @@ int uquad_read(void){
 	for(i=0; i < MOT_COUNT; ++i)
 	{
 	    u8tmp = 0xff & rbuf.mtext[i];
-	    if(u8tmp < MAX_SPEED)
+	    if(u8tmp <= MAX_SPEED)
 		vels[i] = u8tmp;
 	    else
 	    {
-		log_to_err("Refused to set m speed, invalid argument.");
+		err_log_num("Refused to set m speed, invalid argument.",(int)u8tmp);
+		retval = NOT_OK;
 	    }
 	}
 #ifdef LOG_VELS
@@ -586,7 +584,7 @@ int main(int argc, char *argv[])
     // Open log files
     log_rx = fopen("cmd_rx.log","w");
     if (log_rx == NULL) {
-	fprintf(LOG_ERR,"ERROR! Failed to open log...\n");
+	err_log("ERROR! Failed to open log...");
 	return -1;
     }
 #endif // LOG_VELS
@@ -596,7 +594,7 @@ int main(int argc, char *argv[])
 	if(argc == 1)
 	{
 #ifdef CHECK_STDIN
-	    fprintf(LOG_ERR,"Input speed and press RET to set.\n");
+	    err_log("Input speed and press RET to set.");
 #endif
 	    for(i=0;i<MOT_COUNT;++i)
 		mot_selected[i] = 1;
@@ -612,14 +610,13 @@ int main(int argc, char *argv[])
 	    tmp = atoi(argv[i+1]);
 	    if((tmp != MOT_NOT_SELECTED) && (tmp != MOT_SELECTED))
 	    {
-		fprintf(LOG_ERR,"Valid arguments are:\n"\
-			"\tSelected:\t%d\n"\
-			"\tNot selected:\t%d\n",
-		       MOT_SELECTED, MOT_NOT_SELECTED);
+		err_log("Valid arguments are:");
+		err_log_num("\tEnabled:",MOT_SELECTED);
+		err_log_num("\tDisabled:",MOT_NOT_SELECTED);
 		return -1;
 	    }
 	    mot_selected[i] = (unsigned short) tmp;
-	    fprintf(LOG_ERR,"Mot %d:\t%s\n",i,mot_selected[i]?"Enabled.":"Not enabled");
+	    err_log_num(mot_selected[i]?"Enabled motor num":"DISABLED motor num",i);
 	}
     }
 
@@ -630,25 +627,22 @@ int main(int argc, char *argv[])
     /* mot_selected[3] = MOT_NOT_SELECTED; */
 
     sprintf(filename,"/dev/i2c-%d",adapter_nr);
-    fprintf(LOG_ERR,"Opening %s...\n",filename);
+    err_log_str("Opening: ",filename);
 
     // Open ctrl interface
 
     // Open i2c
 #ifndef PC_TEST
     if ((i2c_file = open(filename,O_RDWR | O_NONBLOCK)) < 0) {
-	fprintf(LOG_ERR,"ERROR! Failed to open %s!\nAborting...\n",filename);
-	fprintf(LOG_ERR,"errno info:\t %s\n",strerror(errno));
-	/* ERROR HANDLING; you can check errno to see what went wrong */
+	err_log_str("ERROR! Failed to open dev! Aborting...",filename);
+	err_log_stderr("open()");
 	return -1;
     }
 #else
 #if DEBUG
     i2c_fake = fopen(FAKE_I2C_PATH,"w");
     if (i2c_fake == NULL) {
-	fprintf(LOG_ERR,"ERROR! Failed to open %s!\nAborting...\n",filename);
-	fprintf(LOG_ERR,"errno info:\t %s\n",strerror(errno));
-	/* ERROR HANDLING; you can check errno to see what went wrong */
+	err_log_stderr("fopen()");
 	return -1;
     }
 #endif
@@ -657,9 +651,11 @@ int main(int argc, char *argv[])
     // Catch signals
     signal(SIGINT, uquad_sig_handler);
     signal(SIGQUIT, uquad_sig_handler);
-    
-    fprintf(LOG_ERR,"%s successfully opened!\n\nEntering loop, Ctrl+C to quit...\n\n",filename);
-    fflush(LOG_ERR);
+
+#if CHECK_STDIN
+    err_log_str("Successfully opened! Entering loop, Ctrl+C to quit...",filename);
+    fflush(stderr);
+#endif // CHECK_STDIN
 
     // -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
     // Loop
@@ -680,16 +676,16 @@ int main(int argc, char *argv[])
 	gettimeofday(&tv_in,NULL);
 	if(err_count > MAX_ERR_CMD)
 	{
-	    log_to_err("## ## ## ## ## ## ##");
-	    log_to_err("ERROR! MOTOR DRIVER ABORTING!");
-	    log_to_err("## ## ## ## ## ## ##");
+	    err_log("## ## ## ## ## ## ##");
+	    err_log("ERROR! MOTOR DRIVER ABORTING!");
+	    err_log("## ## ## ## ## ## ##");
 	    return -1;
 	}
 	if(do_sleep)
 	{
 	    // avoid saturating i2c driver
-	    log_to_err("Will sleep to avoid saturating.");
-	    fflush(LOG_ERR);
+	    err_log("Will sleep to avoid saturating.");
+	    fflush(stderr);
 	    sleep_ms(10);
 	    do_sleep = 0;
 	}
@@ -745,16 +741,16 @@ int main(int argc, char *argv[])
 			     (vels[2] > MIN_SPEED)&&
 			     (vels[3] > MIN_SPEED)))
 	    {
-		log_to_err("Will startup motors...\n");
+		err_log("Will startup motors...");
 		ret = uquad_mot_startup_all(i2c_file);
 		if(ret != OK)
 		{
-		    fprintf(LOG_ERR,"FAILED to startup motors...\n");
+		    err_log("FAILED to startup motors...");
 		    do_sleep = 1;
 		}
 		else
 		{
-		    fprintf(LOG_ERR,"Startup was successfull!...\n");
+		    err_log("Startup was successfull!...\n");
 		    m_status = RUNNING;
 		    gettimeofday(&tv_in,NULL); // Restart timer
 		}
@@ -769,16 +765,16 @@ int main(int argc, char *argv[])
 					   )
 		 )
 	    {
-		log_to_err("Will stop motors...\n");
+		err_log("Will stop motors...\n");
 		ret = uquad_mot_stop_all(i2c_file, vels);
 		if(ret != OK)
 		{
-		    log_to_err("FAILED to stop motors...");
+		    err_log("FAILED to stop motors...");
 		    do_sleep = 1;
 		}
 		else
 		{
-		    log_to_err("Stopping was successfull!...");
+		    err_log("Stopping was successfull!...");
 		    m_status = STOPPED;
 		    gettimeofday(&tv_in,NULL); // Restart timer
 		}
@@ -787,7 +783,7 @@ int main(int argc, char *argv[])
 	    ret = uquad_send_ack();
 	    if(ret != OK)
 	    {
-		log_to_err("Failed to send ack!");
+		err_log("Failed to send ack!");
 		err_count++;
 	    }
 	    // continue
@@ -807,11 +803,11 @@ int main(int argc, char *argv[])
 		if(tv_diff.tv_sec > 0)
 		{
 		    tv2double(dtmp,tv_diff);
-		    fprintf(LOG_ERR,"ERR: Loop took too long! (%0.6f)\nAborting...", dtmp);
+		    err_log_double("ERR: Loop took too long! Aborting...!", dtmp);
 		}
 		else
 		{
-		    fprintf(LOG_ERR, "WARN: Loop should be %lu but was %lu\n", LOOP_T_US, tv_diff.tv_usec);
+		    err_log_tv("WARN: Loop took:", tv_diff);
 		}
 	    }
 #endif
@@ -819,7 +815,7 @@ int main(int argc, char *argv[])
 	else
 	{
 #ifndef PC_TEST
-	    log_to_err("WARN: Absurd timing!");
+	    err_log("WARN: Absurd timing!");
 #endif // PC_TEST
 	    err_count++;
 	}

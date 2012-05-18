@@ -1,4 +1,4 @@
-#!/bin/bash -E
+#!/bin/bash -e
 # Start up gpsd
 
 baudrate=38400
@@ -9,6 +9,13 @@ then
 else
     serial_port=/dev/ttyUSB0
 fi
+
+if [ ! -e "$serial_port" ]
+then
+  echo GPS: Cannot run GPS, ${serial_port} not found...
+  exit
+fi
+
 echo Using ${serial_port}...
 
 echo "Configuring ${serial_port} for ${baudrate}..."
