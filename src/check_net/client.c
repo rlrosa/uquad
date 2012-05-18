@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
 	hold_on_sec = 2,
 	retval;
     uquad_bool_t
-	udp = true;
+	udp = false;
 
     if (argc > 4)
     {
