@@ -1,4 +1,4 @@
-#!/bin/bash -E
+#!/bin/bash -e
 
 if [ "$1" == "-a" ]; then
     CURR_DIR=`pwd`
@@ -15,6 +15,7 @@ SCAN_DIRS=(imu
 	   main
 	   i2c_beagle
            common
+           check_net
            gps
            kernel_msgq
 	   math

@@ -42,6 +42,7 @@
 //#include <ncurses.h> // Timing unnacceptable when using (linking) ncurses!
 #include <stdio.h>
 #include <uquad_error_codes.h>
+#include <uquad_check_net.h>
 #include <uquad_types.h>
 #include <macros_misc.h>
 #include <uquad_aux_io.h>
@@ -56,6 +57,7 @@
 #endif
 
 #include <sys/signal.h>   // for SIGINT and SIGQUIT
+#include <sys/wait.h>     // for waitpid()
 #include <unistd.h>       // for STDIN_FILENO
 
 #define QUIT           27
@@ -182,6 +184,7 @@ uquad_mat_t *x = NULL;
 imu_data_t imu_data;
 struct timeval tv_start = {0,0};
 state_t uquad_state = ST_RAMPING_UP;
+pid_t check_net_chld = -1;
 uquad_bool_t
 /**
  * Flag to allow state estimation to keep running
@@ -408,6 +411,18 @@ void uquad_sig_handler(int signal_num)
     quit();
 }
 
+void uquad_conn_lost_handler(int signal_num)
+{
+    pid_t p;
+    int status;
+    p = waitpid(-1, &status, WNOHANG);
+    if(p == check_net_chld && running)
+    {
+	err_log_num("WARN: check_net client died, will ramp down motors! sig num:", signal_num);
+	uquad_state = ST_RAMPING_DOWN;
+    }
+}
+
 int main(int argc, char *argv[]){
     int
 	retval = ERROR_OK,
@@ -460,6 +475,25 @@ int main(int argc, char *argv[]){
     // Catch signals
     signal(SIGINT, uquad_sig_handler);
     signal(SIGQUIT, uquad_sig_handler);
+
+    /**
+     * Start a child process that will ping use UDP packages
+     * to verify connectivity with server (laptop)/
+     * If connection is lost, then motors should be shutoff.
+     */
+    check_net_chld = uquad_check_net_client(CHECK_NET_SERVER_IP,
+					    CHECK_NET_PORT,
+					    true);
+#if !CHECK_NET_BYPASS
+    if(check_net_chld < 0)
+    {
+	quit_log_if(ERROR_FAIL,"Failed to connect to check_net server!");
+    }
+    else
+    {
+	signal(SIGCHLD, uquad_conn_lost_handler);
+    }
+#endif // CHECK_NET_BYPASS
 
     retval = gettimeofday(&tv_start,NULL);
     err_log_std(retval);

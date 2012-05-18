@@ -9,10 +9,14 @@
 #include <stdio.h>
 #include <stdint.h>
 
+#if DEBUG
+//#define DEBUG_MOT
+#endif
+
 #define MOT_I2C_MAX         220     // i2c
 #define MOT_I2C_IDLE        50      // i2c
-#define MOT_W_MAX           387.0   // rad/s (match MOT_MAX_I2C)
-#define MOT_W_IDLE          109.0   // rad/s (match MOT_IDLE_I2C)
+#define MOT_W_MAX           368.0   // rad/s (match MOT_MAX_I2C)
+#define MOT_W_IDLE          106.0   // rad/s (match MOT_IDLE_I2C)
 #define MOT_C               4
 
 #define MOT_UPDATE_MAX_US   2000    // us

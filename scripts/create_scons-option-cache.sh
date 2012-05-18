@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 cd submodules/gpsd/
 rm .scons-option-cache;touch .scons-option-cache
 echo "ncurses = False" >> .scons-option-cache

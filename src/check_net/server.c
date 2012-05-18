@@ -1,6 +1,6 @@
 #include <uquad_check_net.h>
 
-#define USAGE "usage:\n\t./server <portno> [<TCP/!UDP>]\n"
+#define USAGE "usage:\n\t./server <portno> [<UDP/!TCP>]\n"
 
 int main(int argc, char *argv[])
 {
@@ -8,19 +8,27 @@ int main(int argc, char *argv[])
 	 portno,
 	 retval;
      uquad_bool_t
-	 tcp = true;
+	 udp = true;
 
-     if (argc < 2 || argc > 3)
+     if (argc > 3)
      {
 	 err_check(ERROR_INVALID_ARG, USAGE);
      }
      if (argc > 2)
      {
-	 tcp = atoi(argv[2]);
+	 udp = atoi(argv[2]);
      }
-     portno = atoi(argv[1]);
+     if (argc > 1)
+     {
+	 portno = atoi(argv[1]);
+     }
+     else
+     {
+	 err_log_num("Using default port:", CHECK_NET_PORT);
+	 portno = CHECK_NET_PORT;
+     }
 
-     retval = uquad_check_net_server(portno, tcp);
+     retval = uquad_check_net_server(portno, udp);
      err_check(retval, "server() failed!");
 
      exit(retval);

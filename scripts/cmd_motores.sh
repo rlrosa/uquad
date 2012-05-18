@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 while sleep 0.002; do
 	i2cset -y 2 0x68 0xA2 $1

@@ -1,4 +1,4 @@
-#!/bin/bash -E
+#!/bin/bash -e
 # Check if comm with server is running, if not, kill cmd.
 
 # Check if we have working wireless connection

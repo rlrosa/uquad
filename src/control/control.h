@@ -16,12 +16,20 @@
  * using LQR.
  */
   #if CTRL_INTEGRAL
-    #define CTRL_MAT_K_NAME   "K_prop_full.txt"
-  #else
-    #define CTRL_MAT_K_NAME   "K_full.txt"
+    #if CTRL_INTEGRAL_ANG
+      #define CTRL_MAT_K_NAME   "K_prop_full_pptz.txt"
+    #else // CTRL_INTEGRAL_ANG
+      #define CTRL_MAT_K_NAME   "K_prop_full.txt"
+    #endif // CTRL_INTEGRAL_ANG
+  #else // CTRL_INTEGRAL
+    #define CTRL_MAT_K_NAME     "K_full.txt"
   #endif // CTRL_INTEGRAL
-  #define CTRL_MAT_K_INT_NAME "K_int_full.txt"
 
+  #if CTRL_INTEGRAL_ANG
+    #define CTRL_MAT_K_INT_NAME "K_int_full_pptz.txt"
+  #else // CTRL_INTEGRAL_ANG
+    #define CTRL_MAT_K_INT_NAME "K_int_full.txt"
+  #endif // CTRL_INTEGRAL_ANG
 #else // FULL_CONTROL
 /**
  * These matrices are loaded when partial control
@@ -43,7 +51,7 @@
  */
 #define CTRL_INT_DELTA_MAX_PSI   1.74e-3// [rad*s] - @Ts=10ms, max 10° expected
 #define CTRL_INT_DELTA_MAX_PHI   1.74e-3// [rad*s] - @Ts=10ms, max 10° expected
-#define CTRL_INT_DELTA_MAX_THETA 1.74e-3// [rad*s]
+#define CTRL_INT_DELTA_MAX_THETA 1.74e-1// [rad*s]
 #define CTRL_INT_DELTA_MAX_Z     1e-5   // [m*s]
 #define CTRL_INT_DELTA_MAX_Y     1.0    // [m*s]
 #define CTRL_INT_DELTA_MAX_X     1.0    // [m*s]

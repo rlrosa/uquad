@@ -43,7 +43,7 @@ typedef enum STATE_VECTOR{
 #define DRAG_A2           -0.00013205 // drag = w^2*A2 + w*A1
 #define DRIVE_A1          4.60160135072435e-05 // drive = w^2*A2 + w*A1
 #define DRIVE_A2          -0.00103822726273726 // drive = w^2*A2 + w*A1
-#define MASA_DEFAULT      (1.550)     // Weight of the quadcopter [kg]
+#define MASA_DEFAULT      (1.600)     // Weight of the quadcopter [kg]
 #define STATE_COUNT       12          // State vector length
 #define LENGTH_INPUT      4           // Input vector length
 
@@ -74,4 +74,6 @@ typedef enum STATE_VECTOR{
 #define CHECK_NET_MSG_T_MS     950  // [ms] - time between pings
 #define CHECK_NET_RETRY_MS     50   // [ms] - time between requests for ack
 #define CHECK_NET_TO_S         1    // [s]  - timeout
+#define CHECK_NET_SERVER_IP    "10.42.43.1"
+#define CHECK_NET_PORT         12341234
 #endif

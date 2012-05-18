@@ -78,7 +78,7 @@ Q = diag([evalin('base','Q1') evalin('base','Q2') evalin('base','Q3') evalin('ba
         evalin('base','Q6') evalin('base','Q7') evalin('base','Q8') evalin('base','Q9') evalin('base','Q10')...
             evalin('base','Q11') evalin('base','Q12') evalin('base','Q13') evalin('base','Q14') evalin('base','Q15')...
                 evalin('base','Q16')]);
-R = evalin('base','R')*diag([1 1 1 1]);
+R = evalin('base','rho')*diag([1 1 1 1]);
 
  switch ctrl
      case 2
