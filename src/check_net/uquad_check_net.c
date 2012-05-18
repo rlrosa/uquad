@@ -29,6 +29,9 @@ int uquad_check_net_server(int portno, uquad_bool_t udp)
 	cleanup_if(ERROR_FAIL);
     }
 
+    err_log_num(udp?"UDP server running on port:":"TCP server running on port:"
+		,portno);
+
     if(!udp)
     {
 	if(listen(sockfd,5) < 0)
@@ -45,8 +48,6 @@ int uquad_check_net_server(int portno, uquad_bool_t udp)
 	}
     }
 
-    err_log_num(udp?"UDP server running on port:":"TCP server running on port:"
-		,portno);
     while(1)
     {
 	n = recvfrom(!udp?newsockfd:sockfd,buff_i,CHECK_NET_MSG_LEN,0,(struct sockaddr *)&cliaddr,&len);
