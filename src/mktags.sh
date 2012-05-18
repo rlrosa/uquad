@@ -15,6 +15,7 @@ SCAN_DIRS=(imu
 	   main
 	   i2c_beagle
            common
+           check_net
            gps
            kernel_msgq
 	   math
