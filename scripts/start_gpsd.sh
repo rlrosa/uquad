@@ -12,7 +12,7 @@ fi
 
 if [ ! -e "$serial_port" ]
 then
-  echo "Cannot run GPS..."
+  echo GPS: Cannot run GPS, ${serial_port} not found...
   exit
 fi
 
