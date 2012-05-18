@@ -1,3 +1,4 @@
+#!/bin/bash -e
 ## Input control
 HELP="./boot_script.sh <device_name> <files_dir>"
 if [ "$#" -ne "2" ]

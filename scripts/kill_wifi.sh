@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 rmmod rt73usb
 rmmod rt2x00usb

@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
     uquad_bool_t
 	udp = true;
 
-    if (argc < 3 || argc > 4)
+    if (argc > 4)
     {
 	err_check(ERROR_INVALID_ARG, USAGE);
     }
@@ -19,10 +19,23 @@ int main(int argc, char *argv[])
     {
 	udp = atoi(argv[3]);
     }
+    if (argc > 2)
+    {
+	portno = atoi(argv[2]);
+    }
+    else
+    {
+	err_log_num("Using default port:", CHECK_NET_PORT);
+	portno = CHECK_NET_PORT;
+    }
+    if (argc <= 1)
+    {
+	err_log_str("Using default checknet IP:", CHECK_NET_SERVER_IP);
+    }
 
-    portno = atoi(argv[2]);
-
-    retval = uquad_check_net_client(argv[1], portno, udp);
+    retval = uquad_check_net_client((argc > 1)?argv[1]:CHECK_NET_SERVER_IP,
+				    portno,
+				    udp);
     if(retval < 0)
     {
 	err_check(retval, "client() failed!");
