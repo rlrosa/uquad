@@ -9,6 +9,13 @@ then
 else
     serial_port=/dev/ttyUSB0
 fi
+
+if [ ! -e "$serial_port" ]
+then
+  echo "Cannot run GPS..."
+  exit
+fi
+
 echo Using ${serial_port}...
 
 echo "Configuring ${serial_port} for ${baudrate}..."
