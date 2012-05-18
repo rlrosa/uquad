@@ -1,6 +1,10 @@
 % Correr un plot_c antes y esto anda todo
 
-acc_orig = imu_data(:,4:6);
+% imu_file=[path 'imu_raw.log'  ];
+% [acrud,wcrud,mcrud,tcrud,bcrud,~,~,T] = mong_read(imu_file,0,1);
+% [a,w,euler] = mong_conv(acrud,wcrud,mcrud,0,tcrud,T);
+
+acc_orig = a;
 
 a=[0.4 0.3 0.15 0.15];
 b=[0.2 0.2 0.2 0.2 0.1 0.1];
@@ -29,12 +33,13 @@ figure;plot(acc_orig(:,2),'r');hold on;plot(promedioy);legend('a_y','filtrado 2 
 
 %%
 
-wint7=(cumsum(imu_data(1500:end,7))*10e-3);
+wint7=(cumsum(w(1:end,3))*10e-3);
 
 figure;
     hold on
-    plot(imu_data(1500:end,10),'r')
-    plot(wint7,'b')
-    legend('psi sacado con acc','integral del gyro')
+    plot(180/pi*euler(1:end,3),'r')
+    plot(180/pi*wint7,'b')
+%     plot(x_hat_c(:,4),'g')
+    legend('\psi sacado con acc','integral del gyro','\psi kalman')
     title('\fontsize{16}x')
     axis tight
