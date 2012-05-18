@@ -1,5 +1,6 @@
 #include <uquad_check_net.h>
 #include <sys/wait.h>     // for waitpid()
+#include <limits.h>       // for INT_MAX
 
 
 #define USAGE "usage:\n\t./client <host IP> <port> [<UDP/!TCP>]\n"
@@ -60,7 +61,8 @@ int main(int argc, char *argv[])
 	child_pid = retval;
 	retval = ERROR_OK;
 	err_log_num("Client running! Child pid:",child_pid);
-	for(;;);
+	for(;;)
+	    sleep(INT_MAX);
     }
     return retval;
 }
