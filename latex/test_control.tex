@@ -10,6 +10,25 @@ El controlador diseñado se comporta adecuadamente en lo que respecta a las simu
 
 Para lograr el correcto funcionamiento del cuadric\'optero es fundamental que el control sobre los \'angulos de Pitch y de Roll se comporte de buena forma. Estos \'angulos son claves, a modo de ejemplo, es imposible lograr el equilibrio mec\'anico si dichos \'angulos difieren de cero. Por dicha raz\'on previo a realizar pruebas sobre el sistema completo es necesario asegurarnos que los subsistemas del  Roll y del Pitch funcionan correctamente. De acuerdo al modelo f\'isico del sistema desarrollado en \ref{chap:modelo_fisico} ni el Roll ni el Pitch son subsistemas independientes entre s\'i, adem\'as ambos dependen de la velocidad angular seg\'un $\vec{k}_q$. Sin embargo, dichos \'angulos toman valores cercanos a cero en las trayectorias de inter\'es, en este caso se puede realizar la aproximaci\'on de que ambos sistemas son independientes.\\
 
-A partir de esta consideraci\'on se procede a fijar al cuadric\'optero sobre dos gu\'ias como se muestra en la figurea de forma de eliminar todos los grados de libertad del sistema excepto el \'angulo de Roll y la velocidad angular correspondiente al eje de rotaci\'on del Roll. Se realizan dos pruebas: la primera consiste en que el sistema alcance la posic\'on de equilibrio ($\psi = 0$), la segunda consiste en alejar al sistema del equilibrio y lograr que vuelva al punto de equilibrio.
+\begin{wrapfigure}{r}{0.55\textwidth}
+	\vspace{-20pt}
+	\centering
+	\includegraphics[width=0.4\textwidth]{./pics_test_control/dispositivo_psi.pdf}
+	\caption{Dispositivo de prueba de $\psi$}
+	\label{fig:psidisp}
+\end{wrapfigure}
+
+A partir de esta consideraci\'on se procede a fijar al cuadric\'optero sobre dos gu\'ias como se muestra en la figura \ref{fig:psidisp}, de forma de eliminar todos los grados de libertad del sistema excepto el \'angulo de Roll y la velocidad angular correspondiente al eje de rotaci\'on del Roll. Se realizan dos pruebas: la primera consiste en que el sistema alcance la posic\'on de equilibrio ($\psi = 0$), la segunda consiste en alejar al sistema del equilibrio y lograr que vuelva al punto de equilibrio.
+
+\section{Control del subsistema del $\theta$}
+
+De manera análoga al caso anterior, es importante verificar el buen funcionamiento del control sobre el giro en ``z'', para lo cual se utiliza un dispositivo de prueba que restringe los grados de libertad del cuadricóptero. En este caso se lo sujeta con una cuerda desde arriba de los cuatro brazos de modo de realizar la fuerza lo más pareja posible. El cuadricóptero queda sujetado colgando horizontal y conserva el libre giro según ``x'' ($\theta$).
+Se setea una velocidad de \emph{hovering} inferior a la necesaria para levantar vuelo, de modo que el cuadricóptero no se eleve y la cuerda quede siempre tensa. Para el giro bajo estudio no es relevante el valor absoluto de la velocidad de giro de cada motor, ya que depende exclusivamente de la diferencia de velocidades angulares. Por ello los resultados de realizar las pruebas con una velocidad de \emph{hovering} inferior a la real son extrapolables a la situación de vuelo libre, sin pérdida de generalidad.\\
+
+El giro en $\theta$ es generado por un desequilibrio entre los pares ejercidos por las hélices. Si el par neto de todas las hélices resulta por ejemplo positivo, el cuadricóptero realizará un movimiento hacia los negativos, equilibrando el par, como se explica en el capítulo \ref{chap:general}.\\
+
+Para la estimación de $\theta$ se utiliza por un lado la integral de la velocidad angular en el eje ``z'' y por otro la proyección del vector del campo magnético medido sobre el plano horizontal, medidas que son combinadas en el filtro de Kalman. El dato obtenido del magnetómetro no distingue entre giros de $360^o$, limitando el valor al rango [$-180^o$ - $180^o$]. Es necesario entonces realizar un reajuste de la medida deducida del campo magnético para lograr la continuidad en el ángulo estimado.\\
+
+TODO: FOTO
 
 \end{document}

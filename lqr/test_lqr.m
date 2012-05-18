@@ -14,26 +14,32 @@ wq1=0; wq2=0; wq3=0;
 w1=316; w2=316; w3=316; w4=316;
 
 Ah=eval(A);
+Ah(:,7:8)=[];
+Ah(:,1:2)=[];
+Ah(7:8,:)=[];
+Ah(1:2,:)=[];
 Bh=eval(B);
+Bh(7:8,:)=[];
+Bh(1:2,:)=[];
 
-aux = [ 1 0 0 0 0 0 0 0 0 0 0 0 ;
-        0 1 0 0 0 0 0 0 0 0 0 0 ;
-        0 0 1 0 0 0 0 0 0 0 0 0 ;
-        0 0 0 0 0 1 0 0 0 0 0 0 ];
+aux = [ 1 0 0 0 0 0 0 0 ;
+        0 1 0 0 0 0 0 0 ;
+        0 0 1 0 0 0 0 0 ;
+        0 0 0 1 0 0 0 0 ];
 
-A = [Ah zeros(12,4);aux zeros(4)];
+A = [Ah zeros(8,4);aux zeros(4)];
 B = [Bh;zeros(4,4)];
-Q=diag([1 1 1 1e2 1e2 1e2 1 1 1 1 1 1 1 1 1 1]);
+Q=diag([1 1e2 1e2 1e2 1 1 1 1 1 1 1 1]);
 R=diag([1e-2 1e-2 1e-2 1e-2]);
 
 %K_u=uquad_lqr(Ah,Bh,Q,R);
-K_u=uquad_dlqr(A,B,Q,R);
-K_m=lqrd(A,B,Q,R,1e-2);
+% K_u=uquad_dlqr(A,B,Q,R);
+% K_m=lqrd(A,B,Q,R,1e-2);
 
 %% Controlabilidad - Observabilidad - Estabilidad
 
-ctl  = rank(ctrb(A,B)) == 16;
-obs  = rank(obsv(A,eye(16))) == 16;
+ctl  = rank(ctrb(A,B)) == 12;
+obs  = rank(obsv(A,eye(12))) == 12;
 stab = ctl & obs;
 
 if(stab)
