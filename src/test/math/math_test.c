@@ -15,6 +15,7 @@ enum test_type{
     MATRIX_EXP,
     ROTATE,
     POL2,
+    ABS,
     TEST_COUNT
 };
 
@@ -88,6 +89,23 @@ int load_m1_m2(void)
     err_propagate(retval);
     retval = load_m(m2);
     err_propagate(retval);
+    return ERROR_OK;
+}
+
+#define print_abs(dtmp)					\
+    {							\
+	printf("abs(%0.4f)\t=\t%0.4f\n",dtmp,		\
+	       uquad_abs(dtmp));			\
+    }
+
+int abs_test(void)
+{
+    printf("uquad_abs() test\n");
+    print_abs(0.1);
+    print_abs(-0.1);
+    print_abs(1.1);
+    print_abs(-1.1);
+    print_abs(0.0);
     return ERROR_OK;
 }
 
@@ -396,7 +414,7 @@ int main(void){
     int retval = ERROR_OK;
     enum test_type sel_test;
     int cmd;
-    printf("Select test:\n\t%d:Matrix product\n\t%d:Matrix det\n\t%d:Matrix inv\n\t%d:Matrix add\n\t%d:Matrix sub\n\t%d:Matrix mul k\n\t%d:Matrix div k\n\t%d:Linear system\n\t%d:Expnential Matrix\n\t%d:Rotate\n\t%d:Pol2\n",
+    printf("Select test:\n\t%d:Matrix product\n\t%d:Matrix det\n\t%d:Matrix inv\n\t%d:Matrix add\n\t%d:Matrix sub\n\t%d:Matrix mul k\n\t%d:Matrix div k\n\t%d:Linear system\n\t%d:Expnential Matrix\n\t%d:Rotate\n\t%d:Pol2\n\t%d:abs\n",
 	   MATRIX_PROD,
 	   MATRIX_DET,
 	   MATRIX_INV,
@@ -407,13 +425,19 @@ int main(void){
 	   LIN_SOLVE,
 	   MATRIX_EXP,
 	   ROTATE,
-	   POL2);
+	   POL2,
+	   ABS);
     scanf("%d",&cmd);
     if(cmd<0 || cmd > TEST_COUNT)
     {
 	err_check(ERROR_FAIL,"Invalid input.");
     }
     sel_test = cmd;
+    printf("\n");
+    printf("-- -- -- -- -- -- --");
+    printf("-- -- -- -- -- -- --\tinit\t-- -- -- -- -- -- --");
+    printf("-- -- -- -- -- -- --");
+    printf("\n\n");
     switch(sel_test)
     {
     case MATRIX_PROD:
@@ -446,10 +470,18 @@ int main(void){
     case POL2:
 	retval = pol2_test();
 	break;
+    case ABS:
+	retval = abs_test();
+	break;
     default:
 	err_check(ERROR_FAIL,"This shouldn't happen.");
 	break;
     }
+    printf("\n");
+    printf("-- -- -- -- -- -- --");
+    printf("-- -- -- -- -- -- --\tend\t-- -- -- -- -- -- --");
+    printf("-- -- -- -- -- -- --");
+    printf("\n");
 
     uquad_mat_free(m1);
     uquad_mat_free(m2);

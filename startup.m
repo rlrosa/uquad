@@ -17,3 +17,6 @@ addpath(genpath(sprintf('%s%ctest_control',uquad_root,slash)));
 
 % set format to avoid confusing GPS data
 format long g
+
+%  load colors
+uquad_colors
