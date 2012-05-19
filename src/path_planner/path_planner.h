@@ -35,14 +35,11 @@ typedef struct path_planner{
 
 path_planner_t *pp_init(void);
 
-int pp_update_setpoint(path_planner_t *pp, uquad_mat_t *x, double w_hover);
+int pp_update_setpoint(path_planner_t *pp, uquad_mat_t *x, double w_hover, uquad_bool_t *ctrl_outdated);
+
+#warning "implement!"
+int pp_new_setpoint(void);
 
 void pp_deinit(path_planner_t *pp);
 
-int pp_update_K(path_planner_t *pp, double weight);
-
-int pp_lqr(uquad_mat_t *K, uquad_mat_t *phi, uquad_mat_t *gamma, uquad_mat_t *Q, uquad_mat_t *R);
-int pp_disc(uquad_mat_t *phi,uquad_mat_t *gamma,uquad_mat_t *A,uquad_mat_t *B, double Ts);
-#endif //PATH_PLANNER_H
-
-int pp_lin_model(uquad_mat_t *A, uquad_mat_t *B, path_type_t pt, set_point_t *sp, double weight);
+#endif // PATH_PLANNER_H
