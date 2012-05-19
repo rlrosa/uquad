@@ -67,9 +67,6 @@
 #define START_JITTER              25
 #define STARTUP_SWAP              0
 
-#define OK                        0
-#define NOT_OK                    -1
-
 #define UQUAD_STARTUP_RETRIES     100
 #define UQUAD_STOP_RETRIES        1000
 #define UQUAD_USE_DIFF            0
@@ -189,7 +186,7 @@ int uquad_mot_i2c_addr_open(int i2c_dev, int addr){
 	err_log_num("Failed to select slave at i2c addr:", addr);
 	err_log_stderr("ioctl()");
 	fflush(stderr);
-	return NOT_OK;
+	return ERROR_FAIL;
     }
 #ifdef LOG_TIMING_KERNEL_CALLS
     else
@@ -208,7 +205,7 @@ int uquad_mot_i2c_addr_open(int i2c_dev, int addr){
     fprintf(i2c_fake,"%d",addr);
 #endif
 #endif
-    return OK;
+    return ERROR_OK;
 }
 
 int uquad_mot_i2c_send_byte(int i2c_dev, __u8 reg, __u8 value){
@@ -223,6 +220,7 @@ int uquad_mot_i2c_send_byte(int i2c_dev, __u8 reg, __u8 value){
 	err_log_num_num("Failed to send i2c data (value/reg):!",(int)value,(int)reg);
 	err_log_stderr("i2c_smbus_write_byte_data()");
 	fflush(stderr);
+	return ERROR_FAIL;
     }
 #ifdef LOG_TIMING_KERNEL_CALLS
     else
@@ -243,21 +241,21 @@ int uquad_mot_i2c_send_byte(int i2c_dev, __u8 reg, __u8 value){
     fprintf(i2c_fake,"\t%d\t%d\t%ld\n",(int)reg, (int)value,(long int)t.tv_usec);
 #endif
 #endif
-    return OK;
+    return ERROR_OK;
 }
 
 int uquad_mot_i2c_send(int i2c_dev, int i2c_addr, __u8 reg, __u8 val){
     if(uquad_mot_i2c_addr_open(i2c_dev, i2c_addr) < 0)
     {
 	backtrace();
-	return NOT_OK;
+	return ERROR_FAIL;
     }
     if(uquad_mot_i2c_send_byte(i2c_dev,reg,val) < 0)
     {
 	backtrace();
-	return NOT_OK;
+	return ERROR_FAIL;
     }
-    return OK;
+    return ERROR_OK;
 }
 
 int uquad_mot_enable(int i2c_dev, int mot_i2c_addr){
@@ -283,9 +281,9 @@ int uquad_mot_enable_all(int i2c_dev){
     if(i<MOT_COUNT)
     {
 	backtrace();
-	return NOT_OK;
+	return ERROR_FAIL;
     }
-    return OK;
+    return ERROR_OK;
 }
 
 int uquad_mot_disable(int i2c_dev, int mot_i2c_addr){
@@ -311,9 +309,9 @@ int uquad_mot_disable_all(int i2c_dev){
     if(i<MOT_COUNT)
     {
 	backtrace();
-	return NOT_OK;
+	return ERROR_FAIL;
     }
-    return OK;
+    return ERROR_OK;
 }
 
 int uquad_mot_set_speed(int i2c_dev, int mot_i2c_addr, __u8 val){
@@ -344,9 +342,9 @@ int uquad_mot_set_speed_all(int i2c_dev, __u8 *v, int swap_order){
     if(i<MOT_COUNT)
     {
 	backtrace();
-	return NOT_OK;
+	return ERROR_FAIL;
     }
-    return OK;
+    return ERROR_OK;
 }
 
 #define STARTUPS 1 // send startup command repeatedly
@@ -357,7 +355,7 @@ int uquad_mot_startup_all(int i2c_file){
     if(uquad_mot_set_speed_all(i2c_file, NULL,1) < 0)
     {
 	backtrace();
-	return NOT_OK;
+	return ERROR_FAIL;
     }
 #endif
     while(uquad_mot_enable_all(i2c_file) < 0 || ++enable_counts < STARTUPS)
@@ -367,7 +365,7 @@ int uquad_mot_startup_all(int i2c_file){
 	if(++watchdog == UQUAD_STARTUP_RETRIES)
 	{
 	    backtrace();
-	    return NOT_OK;
+	    return ERROR_FAIL;
 	}
     }	    
     sleep_ms(420);
@@ -384,7 +382,7 @@ int uquad_mot_startup_all(int i2c_file){
 	    uquad_mot_set_speed_all(i2c_file, tmp_vel,0);
 	}
     }
-    return OK;
+    return ERROR_OK;
 }
 
 int uquad_mot_stop_all(int i2c_file, __u8 *v){
@@ -392,7 +390,7 @@ int uquad_mot_stop_all(int i2c_file, __u8 *v){
     if(uquad_mot_set_speed_all(i2c_file, v,1) < 0)
     {
 	backtrace();
-	return NOT_OK;
+	return ERROR_FAIL;
     }	
     while(uquad_mot_disable_all(i2c_file) < 0)
     {
@@ -400,20 +398,20 @@ int uquad_mot_stop_all(int i2c_file, __u8 *v){
 	if(++watchdog == UQUAD_STOP_RETRIES)
 	{
 	    backtrace();
-	    return NOT_OK;
+	    return ERROR_FAIL;
 	}
     }
-    return OK;
+    return ERROR_OK;
 }
 	
 void uquad_sig_handler(int signal_num){
-    int ret = OK;
+    int ret = ERROR_OK;
     err_log_num("Caught signal: ",signal_num);
     fflush(stderr);
     if( i2c_file>= 0 )
     {
 	err_log("Shutting down motors...");
-	while(uquad_mot_disable_all(i2c_file) != OK)
+	while(uquad_mot_disable_all(i2c_file) != ERROR_OK)
 	{
 	    err_log("Failed to shutdown motors!... Retrying...");
 	    fflush(stderr);
@@ -452,7 +450,7 @@ int uquad_send_ack()
     {
 	err_log_stderr("msgget()");
 	fflush(stderr);
-	return NOT_OK;
+	return ERROR_FAIL;
     }
     ack_msg.mtext[0] = 'A';
     ack_msg.mtext[1] = 'C';
@@ -464,16 +462,16 @@ int uquad_send_ack()
     {
 	err_log_stderr("msgsnd()");
 	fflush(stderr);
-	return NOT_OK;
+	return ERROR_FAIL;
     }
-    return OK;
+    return ERROR_OK;
 }
 
 #ifdef CHECK_STDIN
 static int itmp[MOT_COUNT] = {0,0,0,0};
 #endif
 int uquad_read(void){
-    int retval = OK, i;
+    int retval = ERROR_OK, i;
     
 #ifdef CHECK_STDIN
     fd_set rfds;
@@ -492,16 +490,16 @@ int uquad_read(void){
     if (retval < 0)
     {
 	err_log("select()");
-	return NOT_OK;
+	return ERROR_FAIL;
     }
     else
     {
 	if (retval == 0)
-	    return NOT_OK;
+	    return ERROR_FAIL;
 	else
 	{
 	    if(!FD_ISSET(STDIN_FILENO, &rfds))
-		return NOT_OK;
+		return ERROR_FAIL;
 	    retval = fscanf(stdin,"%d %d %d %d",
 			 itmp + 0,
 			 itmp + 1,
@@ -509,9 +507,9 @@ int uquad_read(void){
 			 itmp + 3
 			 );
 	    if (retval < MOT_COUNT)
-		return NOT_OK;
+		return ERROR_FAIL;
 	    else
-		retval = OK;
+		retval = ERROR_OK;
 	    for(i=0; i < MOT_COUNT; ++i)
 		if( itmp[i] >= 0 && itmp[i] <= MAX_SPEED)
 	    	{
@@ -520,7 +518,7 @@ int uquad_read(void){
 	    	else
 	    	{
 		    err_log_num("Refused to set m speed, invalid argument.",itmp[i]);
-		    retval = NOT_OK;
+		    retval = ERROR_FAIL;
 	    	}
 #ifdef LOG_VELS
 	    log_vels();
@@ -531,18 +529,18 @@ int uquad_read(void){
     __u8 u8tmp;
     /// get speed data from kernel msgq
     if ((msqid = msgget(key_s, 0666)) < 0)
-	return NOT_OK;
+	return ERROR_FAIL;
     
     /*
      * Receive an answer of message type 1.
      */
     if (msgrcv(msqid, &rbuf, 4, 1, IPC_NOWAIT) < 0)
-	return NOT_OK;
+	return ERROR_FAIL;
 
     /*
      * Print the answer.
      */
-    if(retval == OK)
+    if(retval == ERROR_OK)
     {
 	for(i=0; i < MOT_COUNT; ++i)
 	{
@@ -552,7 +550,7 @@ int uquad_read(void){
 	    else
 	    {
 		err_log_num("Refused to set m speed, invalid argument.",(int)u8tmp);
-		retval = NOT_OK;
+		retval = ERROR_FAIL;
 	    }
 	}
 #ifdef LOG_VELS
@@ -669,7 +667,7 @@ int main(int argc, char *argv[])
     if(ret<0)
     {
 	backtrace();
-	return NOT_OK;
+	return ERROR_FAIL;
     }
     for(;;)
     {
@@ -708,7 +706,7 @@ int main(int argc, char *argv[])
 				      mot_i2c_addr[i],
 				      mot_selected[i]?
 				      (__u8) (((double)vels[i])+dtmp):0);
-	    if(ret != OK)
+	    if(ret != ERROR_OK)
 	    {
 		backtrace();
 		do_sleep = 1;
@@ -716,7 +714,7 @@ int main(int argc, char *argv[])
 		break;
 	    }
 	}
-	if (ret != OK)
+	if (ret != ERROR_OK)
 	{
 	    do_sleep = 1;
 	    continue;
@@ -728,7 +726,7 @@ int main(int argc, char *argv[])
 		err_count--;
 	}
 	ret = uquad_read();
-	if(ret == OK)
+	if(ret == ERROR_OK)
 	{
 	    /// we got new a new speed setting, apply it and ack.
 
@@ -743,7 +741,7 @@ int main(int argc, char *argv[])
 	    {
 		err_log("Will startup motors...");
 		ret = uquad_mot_startup_all(i2c_file);
-		if(ret != OK)
+		if(ret != ERROR_OK)
 		{
 		    err_log("FAILED to startup motors...");
 		    do_sleep = 1;
@@ -756,7 +754,7 @@ int main(int argc, char *argv[])
 		}
 	    }
 	    // stop
-	    if ( (ret == OK) &&
+	    if ( (ret == ERROR_OK) &&
 		 (m_status == RUNNING) && (
 					   (vels[0] == 0) ||
 					   (vels[1] == 0) ||
@@ -767,7 +765,7 @@ int main(int argc, char *argv[])
 	    {
 		err_log("Will stop motors...\n");
 		ret = uquad_mot_stop_all(i2c_file, vels);
-		if(ret != OK)
+		if(ret != ERROR_OK)
 		{
 		    err_log("FAILED to stop motors...");
 		    do_sleep = 1;
@@ -781,7 +779,7 @@ int main(int argc, char *argv[])
 	    }
 	    /// send ack
 	    ret = uquad_send_ack();
-	    if(ret != OK)
+	    if(ret != ERROR_OK)
 	    {
 		err_log("Failed to send ack!");
 		err_count++;

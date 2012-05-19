@@ -130,7 +130,7 @@
  *        altitud changes a lot, then the controller will attempt to
  *        fix it, going against the purpose of a ramp down.
  */
-#define RAMP_DOWN_SAMPLES 600
+#define RAMP_DOWN_SAMPLES 300
 
 /**
  * Access to SD card on beagleboard has proven to be VERY slow,
@@ -1467,6 +1467,8 @@ int main(int argc, char *argv[]){
 		// Euler angles
 		pp->sp->x->m_full[SV_THETA] = imu_data.magn->m_full[2];
 		pp->sp->x->m_full[SV_PSI]   = 0.0; // [rad]
+		pp->sp->x->m_full[SV_PHI]   = 0.0; // [rad]
+		pp->sp->x->m_full[SV_Z]     = 1.5; // [rad]
 		// Motor speed
 		for(i=0; i<MOT_C; ++i)
 		{
