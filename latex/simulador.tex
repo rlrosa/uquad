@@ -11,14 +11,14 @@ Luego de desarrollado un modelo f\'isico resulta fundamental disponer de un ento
 \section{Estructura del Simulador}
 
 
-El simulador se compone de dos elementos fundamentales. El lazo abierto, es decir las ecuaciones que gobiernan al cuadric\'optero. En dicho sistema tenemos como entradas las velocidades angulares del sistema sobre las cuales realizaremos las acciones de control y como salidas tenemos el vector de estados del sistema en todos los instantes desde el tiempo inicial establecido en la simulaci\'on hasta el tiempo final. La otra parte se encarga de simular las acciones de control.
+El simulador se compone de dos partes fundamentales. La primera es el lazo abierto, es decir las ecuaciones que gobiernan al cuadric\'optero, donde se consideran como entradas las velocidades angulares del sistema sobre las cuales realizaremos las acciones de control y como salidas tenemos el vector de estados del sistema en todos los instantes desde el tiempo inicial establecido en la simulaci\'on hasta el tiempo final. La otra parte se encarga de simular las acciones de control.
 
 \subsection{Lazo Abierto}
 
 La estructura que se eligi\'o para desarrollar esta secci\'on se corresponde en buena forma con el camino que se recorri\'o para determinar el modelo f\'isico. El lazo abierto consta de tres bloques principales. En primer lugar tenemos un bloque encargado de generar las fuerzas y momentos a partir de las velocidades angulares de las h\'elices. Luego tenemos un bloque que se encarga de resolver la din\'amica del sistema y un cuarto bloque encargado de la cinem\'atica. En la figura \ref{fig:lazo_abierto} se observa la estructura global del lazo abierto. En la figura \ref{fig:vista} se observa una captura de pantalla que representa la vista general de la parte encargada de simular el lazo abierto.
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=1\textwidth]{./pics_simulador/lazo_abierto.png}
+	\includegraphics[width=1\textwidth]{./pics_simulador/lazo_abierto.pdf}
 	\caption{Bloque de lazo abierto}
 	\label{fig:lazo_abierto}
 \end{figure}
@@ -31,7 +31,7 @@ La estructura que se eligi\'o para desarrollar esta secci\'on se corresponde en 
 \end{figure}
 \subsubsection{Cinem\'atica}
 
-En la figura \ref{fig:cinematica} se puede observar un diagrama de bloques de la parte del sistema que transforma las velocidades lineales y angulares en posiciones y ángulos de Euler. Se distinguen dos sub-bloques principales, uno encargado de devolver la  posici\'on y otro encargado de devolver los \'angulos de Euler
+En la figura \ref{fig:cinematica} se puede observar un diagrama de bloques de la parte del sistema que transforma las velocidades lineales y angulares en posiciones y \'angulos de Euler. Se distinguen dos sub-bloques principales, uno encargado de devolver la  posici\'on y otro encargado de devolver los \'angulos de Euler
 \begin{figure} [h!]
   \centering
   \subfloat[Bloque cinem\'atica]{\label{fig:cinematica}
@@ -77,9 +77,7 @@ Como se explic\'o en la secci\'on \ref{chap:general} el control ser\'a realizado
  
 Se observa claramente un deterioro de la performance en la subida al aumentar el per\'iodo de muestreo y de de acci\'on sobre los motores. Por dicho motivo es importante incluir esta variable a la hora de realizar diversas simulaciones ya que el sistema real debe realizar una gran cantidad de operaciones y si bien su capacidad es considerable no es infinita. Esto puede producir que se tenga acotado interiormente el per\'iodo de muestreo.\\
 
-Por \'ultimo, se desea incluir la posibilidad de agregar ruido a los estados medidos y de perturbaciones en las velocidades angulares de los motores. Las medidas que se obtienen de los sensores no son exactas, por dicho motivo la posibilidad de agregar ruido es muy interesante de modo de testear la robustez del controlador implementado. Asimismo, la velocidad angular de los motores no es exactamente la que se espera de acuerdo a la caracterización de los motores realizada (ver cap\'itulo \ref{chap:test_motores}), por el contrario, se producen variaciones en la velocidad angular de los mismos dada una velocidad angular objetivo.  
-
-
+Por \'ultimo, se desea incluir la posibilidad de agregar ruido a los estados medidos y de perturbaciones en las velocidades angulares de los motores. Las medidas que se obtienen de los sensores no son exactas, por dicho motivo la posibilidad de agregar ruido es muy interesante de modo de testear la robustez del controlador implementado. Asimismo, la velocidad angular de los motores no es exactamente la que se espera de acuerdo a la caracterizaci\'on de los motores realizada (ver cap\'itulo \ref{chap:test_motores}), por el contrario, se producen variaciones en la velocidad angular de los mismos dada una velocidad angular objetivo.
   \begin{figure}[h!]
 	\centering
 	\includegraphics[width=1\textwidth]{./pics_simulador/vistac.pdf}
@@ -131,7 +129,7 @@ Se realiza la misma simulaci\'on que en la secci\'on anterior excepto que se ini
 
 \subsubsection{Condici\'on de Hovering}
 
-Se aplica una fuerza constante en los cuatro motores tal que la resultante es igual al peso. Las condiciones iniciales son todas nulas. Excepto $Z_0=10m$. Se logra el equilibrio mec\'anico. Todas las variables permanecen constantes. Se simula durante diez segundos
+Se aplica una fuerza constante en los cuatro motores tal que la resultante es igual al peso. Las condiciones iniciales son todas nulas, excepto $Z_0=10m$. Se logra el equilibrio mec\'anico. Todas las variables permanecen constantes. Se simula durante diez segundos
 
 \subsubsection{Giro seg\'un el eje $\vec{k}$}
 
@@ -179,6 +177,6 @@ Con condiciones inicial nulas, excepto por $Z_0 = 10m$ y $\varphi = 30 ^{\circ}$
 	\label{fig:recta}
 \end{figure}
 
-Hasta aqu\'i hemos testeado el simulador en situaciones conocidas. De acuerdo a las pruebas realizadas puede afirmarse que su funcionamiento es el adecuado ya que en ninguna prueba se obtuvieron errores considerables. Sin embargo, es fundamental aclarar que hasta aquí no es posible afirmar que el modelado del sistema sea adecuado, lo \'unico que puede concluirse es que el simulador representa fielmente las ecuaciones que han sido deducidas hasta el momento. Un error en las ecuaciones no se reflejar\'a hasta el momento de testear el cuadric\'optero. Sin embargo el trabajo realizado a la hora del modelado y la comparaci\'on con diversas bibliograf\'ias nos permite a esta altura estar convencidos de que dichas ecuaciones son adecuadas para modelar el sistema.
+Hasta aqu\'i hemos testeado el simulador en situaciones conocidas. De acuerdo a las pruebas realizadas puede afirmarse que su funcionamiento es el adecuado ya que en ninguna prueba se obtuvieron errores considerables. Sin embargo, es fundamental aclarar que hasta aqu\'i no es posible afirmar que el modelado del sistema sea adecuado, lo \'unico que puede concluirse es que el simulador representa fielmente las ecuaciones que han sido deducidas hasta el momento. Un error en las ecuaciones no se reflejar\'a hasta el momento de testear el cuadric\'optero. Sin embargo el trabajo realizado a la hora del modelado y la comparaci\'on con diversas bibliograf\'ias nos permite a esta altura estar convencidos de que dichas ecuaciones son adecuadas para modelar el sistema.
 
 \end{document}
