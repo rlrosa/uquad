@@ -76,4 +76,20 @@ typedef enum STATE_VECTOR{
 #define CHECK_NET_TO_S         1    // [s]  - timeout
 #define CHECK_NET_SERVER_IP    "10.42.43.1"
 #define CHECK_NET_PORT         12341234
+
+/**
+ * Limits for sanity check.
+ * If the state estimation is out of bounds for SANITY_MAX samples, then
+ * some action should be taken (abort, etc). If out of bound, our linear
+ * model will not be valid, and the chances of recovering are very low, so
+ * it's probably better to fall with the motores turned off...
+ * Possibles causes:
+ *     - psi/phi: Diverging controller, wind, impact against something.
+ *     - temp   : short in the ESCs, fire, etc.
+ */
+#define SANITY_MAX      20
+#define SANITY_MAX_TEMP 55.0 // [°C]
+#define SANITY_MAX_PSI  1.4  // [rad]
+#define SANITY_MAX_PHI  1.4  // [rad]
+
 #endif

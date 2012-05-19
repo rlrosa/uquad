@@ -1,4 +1,4 @@
-function [kin, imu_raw, imu_data, x_hat_c, wlog, z] = plot_c(path)
+% function [kin, imu_raw, imu_data, x_hat_c, wlog, z, int] = plot_c(path)
 % -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 % function [kin, imu_data, x_hat_c, wlog, z] = plot_c(path)
 % -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
@@ -11,11 +11,14 @@ if(~exist('path','var'))
   fprintf('Using default path: %s\n',path);
 end
 
+z = [];
+
 kin      = load([path 'kalman_in.log']);
 x_hat_c  = load([path 'x_hat.log'    ]);
 wlog     = load([path 'w.log'        ]);
 imu_raw  = load_if_exist([path 'imu_raw.log'  ]);
-imu_data = load_if_exist([path 'imu_data.log']);
+imu_data = load_if_exist([path 'imu_data.log' ]);
+int      = load_if_exist([path 'int.log'      ]);
 
 lens     = [length(kin)      ...
             length(x_hat_c)  ...
