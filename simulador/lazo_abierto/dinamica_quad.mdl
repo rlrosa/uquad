@@ -1,6 +1,6 @@
 Model {
   Name			  "dinamica_quad"
-  Version		  7.6
+  Version		  7.7
   MdlSubVersion		  0
   GraphicalInterface {
     NumRootInports	    4
@@ -82,7 +82,7 @@ Model {
       Name		      "wq3"
     }
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.114"
+    ComputedModelVersion    "1.116"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -111,11 +111,11 @@ Model {
   Creator		  "pater"
   UpdateHistory		  "UpdateHistoryNever"
   ModifiedByFormat	  "%<Auto>"
-  LastModifiedBy	  "pater"
+  LastModifiedBy	  "mat"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Sun May  6 19:44:53 2012"
-  RTWModifiedTimeStamp	  258234291
-  ModelVersionFormat	  "1.%<AutoIncrement:114>"
+  LastModifiedDate	  "Sat May 19 13:09:24 2012"
+  RTWModifiedTimeStamp	  259333556
+  ModelVersionFormat	  "1.%<AutoIncrement:116>"
   ConfigurationManager	  "None"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -190,13 +190,13 @@ Model {
     Dimension		    1
     Simulink.ConfigSet {
       $ObjectID		      2
-      Version		      "1.10.0"
+      Version		      "1.11.0"
       Array {
 	Type			"Handle"
 	Dimension		9
 	Simulink.SolverCC {
 	  $ObjectID		  3
-	  Version		  "1.10.0"
+	  Version		  "1.11.0"
 	  StartTime		  "0.0"
 	  StopTime		  "10.0"
 	  AbsTol		  "auto"
@@ -230,7 +230,7 @@ Model {
 	}
 	Simulink.DataIOCC {
 	  $ObjectID		  4
-	  Version		  "1.10.0"
+	  Version		  "1.11.0"
 	  Decimation		  "1"
 	  ExternalInput		  "[t, u]"
 	  FinalStateName	  "xFinal"
@@ -242,6 +242,7 @@ Model {
 	  SaveFinalState	  off
 	  SaveCompleteFinalSimState off
 	  SaveFormat		  "Array"
+	  SignalLoggingSaveFormat "ModelDataLogs"
 	  SaveOutput		  on
 	  SaveState		  off
 	  SignalLogging		  on
@@ -261,7 +262,7 @@ Model {
 	}
 	Simulink.OptimizationCC {
 	  $ObjectID		  5
-	  Version		  "1.10.0"
+	  Version		  "1.11.0"
 	  Array {
 	    Type		    "Cell"
 	    Dimension		    8
@@ -312,10 +313,11 @@ Model {
 	  BufferReusableBoundary  on
 	  SimCompilerOptimization "Off"
 	  AccelVerboseBuild	  off
+	  AccelParallelForEachSubsystem	on
 	}
 	Simulink.DebuggingCC {
 	  $ObjectID		  6
-	  Version		  "1.10.0"
+	  Version		  "1.11.0"
 	  RTPrefix		  "error"
 	  ConsistencyChecking	  "none"
 	  ArrayBoundsChecking	  "none"
@@ -386,6 +388,7 @@ Model {
 	  ModelReferenceExtraNoncontSigs "error"
 	  StateNameClashWarn	  "warning"
 	  SimStateInterfaceChecksumMismatchMsg "warning"
+	  SimStateOlderReleaseMsg "error"
 	  InitInArrayFormatMsg	  "warning"
 	  StrictBusMsg		  "ErrorLevel1"
 	  BusNameAdapt		  "WarnAndRepair"
@@ -400,7 +403,7 @@ Model {
 	}
 	Simulink.HardwareCC {
 	  $ObjectID		  7
-	  Version		  "1.10.0"
+	  Version		  "1.11.0"
 	  ProdBitPerChar	  8
 	  ProdBitPerShort	  16
 	  ProdBitPerInt		  32
@@ -437,7 +440,7 @@ Model {
 	}
 	Simulink.ModelReferenceCC {
 	  $ObjectID		  8
-	  Version		  "1.10.0"
+	  Version		  "1.11.0"
 	  UpdateModelReferenceTargets "IfOutOfDateOrStructuralChange"
 	  CheckModelReferenceTargetMessage "error"
 	  EnableParallelModelReferenceBuilds off
@@ -452,7 +455,7 @@ Model {
 	}
 	Simulink.SFSimCC {
 	  $ObjectID		  9
-	  Version		  "1.10.0"
+	  Version		  "1.11.0"
 	  SFSimEnableDebug	  on
 	  SFSimOverflowDetection  on
 	  SFSimEcho		  on
@@ -467,7 +470,7 @@ Model {
 	Simulink.RTWCC {
 	  $BackupClass		  "Simulink.RTWCC"
 	  $ObjectID		  10
-	  Version		  "1.10.0"
+	  Version		  "1.11.0"
 	  Array {
 	    Type		    "Cell"
 	    Dimension		    7
@@ -510,6 +513,7 @@ Model {
 	  GenerateTraceReportEml  off
 	  GenerateCodeInfo	  off
 	  GenerateSLWebview	  off
+	  GenerateCodeMetricsReport off
 	  RTWCompilerOptimization "Off"
 	  CheckMdlBeforeBuild	  "Off"
 	  CustomRebuildMode	  "OnUpdate"
@@ -518,7 +522,7 @@ Model {
 	    Dimension		    2
 	    Simulink.CodeAppCC {
 	      $ObjectID		      11
-	      Version		      "1.10.0"
+	      Version		      "1.11.0"
 	      Array {
 		Type			"Cell"
 		Dimension		21
@@ -583,7 +587,7 @@ Model {
 	    Simulink.GRTTargetCC {
 	      $BackupClass	      "Simulink.TargetCC"
 	      $ObjectID		      12
-	      Version		      "1.10.0"
+	      Version		      "1.11.0"
 	      Array {
 		Type			"Cell"
 		Dimension		16
@@ -611,6 +615,8 @@ Model {
 	      TargetFunctionLibrary   "ANSI_C"
 	      UtilityFuncGeneration   "Auto"
 	      ERTMultiwordTypeDef     "System defined"
+	      FunctionExecutionProfile off
+	      CodeExecutionProfiling  off
 	      ERTCodeCoverageTool     "None"
 	      ERTMultiwordLength      256
 	      MultiwordLength	      2048
@@ -656,6 +662,7 @@ Model {
 	      RTWCAPISignals	      off
 	      RTWCAPIParams	      off
 	      RTWCAPIStates	      off
+	      RTWCAPIRootIO	      off
 	      GenerateASAP2	      off
 	    }
 	    PropName		    "Components"
@@ -663,7 +670,7 @@ Model {
 	}
 	hdlcoderui.hdlcc {
 	  $ObjectID		  13
-	  Version		  "1.10.0"
+	  Version		  "1.11.0"
 	  Description		  "HDL Coder custom configuration component"
 	  Name			  "HDL Coder"
 	  Array {
@@ -678,7 +685,7 @@ Model {
       }
       Name		      "Configuration"
       CurrentDlgPage	      "Solver"
-      ConfigPrmDlgPosition    " [ 225, 24, 1141, 759 ] "
+      ConfigPrmDlgPosition     [ 225, 24, 1141, 759 ] 
     }
     PropName		    "ConfigurationSets"
   }
@@ -753,6 +760,7 @@ Model {
     Block {
       BlockType		      Inport
       Port		      "1"
+      OutputFunctionCall      off
       OutMin		      "[]"
       OutMax		      "[]"
       OutDataTypeStr	      "Inherit: auto"
@@ -868,7 +876,7 @@ Model {
   }
   System {
     Name		    "dinamica_quad"
-    Location		    [0, 53, 1366, 768]
+    Location		    [0, 53, 1280, 800]
     Open		    on
     ModelBrowserVisibility  off
     ModelBrowserWidth	    200
@@ -929,8 +937,8 @@ Model {
       MaskHideContents	      off
       System {
 	Name			"Subsystem"
-	Location		[1, 82, 1367, 821]
-	Open			off
+	Location		[0, 53, 1280, 800]
+	Open			on
 	ModelBrowserVisibility	off
 	ModelBrowserWidth	200
 	ScreenColor		"white"
@@ -978,7 +986,7 @@ Model {
 	  Name			  "Dinámica"
 	  SID			  "1509"
 	  Ports			  [14, 6]
-	  Position		  [435, 97, 700, 458]
+	  Position		  [335, 97, 600, 458]
 	  MinAlgLoopOccurrences	  off
 	  PropExecContextOutsideSubsystem off
 	  RTWSystemCode		  "Auto"
@@ -3931,7 +3939,7 @@ Model {
 	  Name			  "Fuerzas y Torques"
 	  SID			  "1890"
 	  Ports			  [4, 8]
-	  Position		  [140, 32, 260, 223]
+	  Position		  [135, 157, 255, 348]
 	  MinAlgLoopOccurrences	  off
 	  PropExecContextOutsideSubsystem off
 	  RTWSystemCode		  "Auto"
@@ -3941,7 +3949,7 @@ Model {
 	  MaskHideContents	  off
 	  System {
 	    Name		    "Fuerzas y Torques"
-	    Location		    [0, 53, 1366, 768]
+	    Location		    [54, 82, 1334, 797]
 	    Open		    off
 	    ModelBrowserVisibility  off
 	    ModelBrowserWidth	    200
@@ -4130,7 +4138,7 @@ Model {
 	      MaskHideContents	      off
 	      System {
 		Name			"Fuerza Motor2"
-		Location		[0, 53, 1366, 768]
+		Location		[54, 82, 1334, 797]
 		Open			off
 		ModelBrowserVisibility	off
 		ModelBrowserWidth	200
@@ -5199,7 +5207,7 @@ Model {
 	  Name			  "cinematica"
 	  SID			  "1365"
 	  Ports			  [6, 6]
-	  Position		  [910, 92, 1175, 468]
+	  Position		  [745, 92, 1010, 468]
 	  MinAlgLoopOccurrences	  off
 	  PropExecContextOutsideSubsystem off
 	  RTWSystemCode		  "Auto"
@@ -5209,8 +5217,8 @@ Model {
 	  MaskHideContents	  off
 	  System {
 	    Name		    "cinematica"
-	    Location		    [0, 53, 1366, 768]
-	    Open		    off
+	    Location		    [54, 82, 1334, 797]
+	    Open		    on
 	    ModelBrowserVisibility  off
 	    ModelBrowserWidth	    200
 	    ScreenColor		    "white"
@@ -7835,20 +7843,23 @@ Model {
 	    Annotation {
 	      Position		      [950, 399]
 	    }
+	    Annotation {
+	      Position		      [731, 365]
+	    }
 	  }
 	}
 	Block {
 	  BlockType		  Outport
 	  Name			  "x"
 	  SID			  "1874"
-	  Position		  [1395, 123, 1425, 137]
+	  Position		  [1115, 123, 1145, 137]
 	  IconDisplay		  "Port number"
 	}
 	Block {
 	  BlockType		  Outport
 	  Name			  "y"
 	  SID			  "1875"
-	  Position		  [1395, 183, 1425, 197]
+	  Position		  [1115, 183, 1145, 197]
 	  Port			  "2"
 	  IconDisplay		  "Port number"
 	}
@@ -7856,7 +7867,7 @@ Model {
 	  BlockType		  Outport
 	  Name			  "z"
 	  SID			  "1876"
-	  Position		  [1395, 243, 1425, 257]
+	  Position		  [1115, 243, 1145, 257]
 	  Port			  "3"
 	  IconDisplay		  "Port number"
 	}
@@ -7864,7 +7875,7 @@ Model {
 	  BlockType		  Outport
 	  Name			  "psi"
 	  SID			  "1877"
-	  Position		  [1395, 303, 1425, 317]
+	  Position		  [1115, 303, 1145, 317]
 	  Port			  "4"
 	  IconDisplay		  "Port number"
 	}
@@ -7872,7 +7883,7 @@ Model {
 	  BlockType		  Outport
 	  Name			  "phi"
 	  SID			  "1879"
-	  Position		  [1395, 363, 1425, 377]
+	  Position		  [1115, 363, 1145, 377]
 	  Port			  "5"
 	  IconDisplay		  "Port number"
 	}
@@ -7880,7 +7891,7 @@ Model {
 	  BlockType		  Outport
 	  Name			  "theta"
 	  SID			  "1882"
-	  Position		  [1395, 423, 1425, 437]
+	  Position		  [1115, 423, 1145, 437]
 	  Port			  "6"
 	  IconDisplay		  "Port number"
 	}
@@ -7888,7 +7899,7 @@ Model {
 	  BlockType		  Outport
 	  Name			  "vq1"
 	  SID			  "1884"
-	  Position		  [1395, 483, 1425, 497]
+	  Position		  [1115, 483, 1145, 497]
 	  Port			  "7"
 	  IconDisplay		  "Port number"
 	}
@@ -7896,7 +7907,7 @@ Model {
 	  BlockType		  Outport
 	  Name			  "vq2"
 	  SID			  "1885"
-	  Position		  [1395, 523, 1425, 537]
+	  Position		  [1115, 513, 1145, 527]
 	  Port			  "8"
 	  IconDisplay		  "Port number"
 	}
@@ -7904,7 +7915,7 @@ Model {
 	  BlockType		  Outport
 	  Name			  "vq3"
 	  SID			  "1886"
-	  Position		  [1395, 573, 1425, 587]
+	  Position		  [1115, 543, 1145, 557]
 	  Port			  "9"
 	  IconDisplay		  "Port number"
 	}
@@ -7912,7 +7923,7 @@ Model {
 	  BlockType		  Outport
 	  Name			  "wq1"
 	  SID			  "1887"
-	  Position		  [1395, 633, 1425, 647]
+	  Position		  [1115, 578, 1145, 592]
 	  Port			  "10"
 	  IconDisplay		  "Port number"
 	}
@@ -7920,7 +7931,7 @@ Model {
 	  BlockType		  Outport
 	  Name			  "wq2"
 	  SID			  "1888"
-	  Position		  [1395, 688, 1425, 702]
+	  Position		  [1115, 608, 1145, 622]
 	  Port			  "11"
 	  IconDisplay		  "Port number"
 	}
@@ -7928,7 +7939,7 @@ Model {
 	  BlockType		  Outport
 	  Name			  "wq3"
 	  SID			  "1889"
-	  Position		  [1395, 748, 1425, 762]
+	  Position		  [1115, 643, 1145, 657]
 	  Port			  "12"
 	  IconDisplay		  "Port number"
 	}
@@ -7953,13 +7964,13 @@ Model {
 	Line {
 	  SrcBlock		  "cinematica"
 	  SrcPort		  4
-	  Points		  [65, 0]
+	  Points		  [35, 0]
 	  Branch {
 	    DstBlock		    "psi"
 	    DstPort		    1
 	  }
 	  Branch {
-	    Points		    [0, -250; -825, 0]
+	    Points		    [0, -225; -730, 0]
 	    DstBlock		    "Dinámica"
 	    DstPort		    1
 	  }
@@ -7967,13 +7978,13 @@ Model {
 	Line {
 	  SrcBlock		  "cinematica"
 	  SrcPort		  5
-	  Points		  [100, 0]
+	  Points		  [55, 0]
 	  Branch {
 	    DstBlock		    "phi"
 	    DstPort		    1
 	  }
 	  Branch {
-	    Points		    [0, -335; -875, 0; 0, 105]
+	    Points		    [0, -300; -760, 0; 0, 70]
 	    DstBlock		    "Dinámica"
 	    DstPort		    2
 	  }
@@ -7989,12 +8000,12 @@ Model {
 	  SrcPort		  1
 	  Points		  [25, 0]
 	  Branch {
-	    Points		    [335, 0]
+	    Points		    [235, 0]
 	    DstBlock		    "Dinámica"
 	    DstPort		    12
 	  }
 	  Branch {
-	    Points		    [0, -280]
+	    Points		    [0, -155]
 	    DstBlock		    "Fuerzas y Torques"
 	    DstPort		    2
 	  }
@@ -8002,13 +8013,13 @@ Model {
 	Line {
 	  SrcBlock		  "w3"
 	  SrcPort		  1
-	  Points		  [50, 0]
+	  Points		  [35, 0]
 	  Branch {
 	    DstBlock		    "Dinámica"
 	    DstPort		    13
 	  }
 	  Branch {
-	    Points		    [0, -265]
+	    Points		    [0, -140]
 	    DstBlock		    "Fuerzas y Torques"
 	    DstPort		    3
 	  }
@@ -8016,13 +8027,13 @@ Model {
 	Line {
 	  SrcBlock		  "w4"
 	  SrcPort		  1
-	  Points		  [75, 0; 0, -10]
+	  Points		  [45, 0]
 	  Branch {
-	    Points		    [0, 10]
 	    DstBlock		    "Dinámica"
 	    DstPort		    14
 	  }
 	  Branch {
+	    Points		    [0, -120]
 	    DstBlock		    "Fuerzas y Torques"
 	    DstPort		    4
 	  }
@@ -8030,9 +8041,9 @@ Model {
 	Line {
 	  SrcBlock		  "Dinámica"
 	  SrcPort		  6
-	  Points		  [5, 0]
+	  Points		  [30, 0]
 	  Branch {
-	    Points		    [0, 325]
+	    Points		    [0, 220]
 	    DstBlock		    "wq3"
 	    DstPort		    1
 	  }
@@ -8044,56 +8055,48 @@ Model {
 	Line {
 	  SrcBlock		  "Fuerzas y Torques"
 	  SrcPort		  1
-	  Points		  [130, 0; 0, 125]
 	  DstBlock		  "Dinámica"
 	  DstPort		  3
 	}
 	Line {
 	  SrcBlock		  "Fuerzas y Torques"
 	  SrcPort		  2
-	  Points		  [110, 0; 0, 125]
 	  DstBlock		  "Dinámica"
 	  DstPort		  4
 	}
 	Line {
 	  SrcBlock		  "Fuerzas y Torques"
 	  SrcPort		  3
-	  Points		  [100, 0; 0, 125]
 	  DstBlock		  "Dinámica"
 	  DstPort		  5
 	}
 	Line {
 	  SrcBlock		  "Fuerzas y Torques"
 	  SrcPort		  4
-	  Points		  [90, 0; 0, 125]
 	  DstBlock		  "Dinámica"
 	  DstPort		  6
 	}
 	Line {
 	  SrcBlock		  "Fuerzas y Torques"
 	  SrcPort		  5
-	  Points		  [45, 0; 0, 125]
 	  DstBlock		  "Dinámica"
 	  DstPort		  7
 	}
 	Line {
 	  SrcBlock		  "Fuerzas y Torques"
 	  SrcPort		  6
-	  Points		  [35, 0; 0, 125]
 	  DstBlock		  "Dinámica"
 	  DstPort		  8
 	}
 	Line {
 	  SrcBlock		  "Fuerzas y Torques"
 	  SrcPort		  7
-	  Points		  [20, 0; 0, 125]
 	  DstBlock		  "Dinámica"
 	  DstPort		  9
 	}
 	Line {
 	  SrcBlock		  "Fuerzas y Torques"
 	  SrcPort		  8
-	  Points		  [5, 0; 0, 125]
 	  DstBlock		  "Dinámica"
 	  DstPort		  10
 	}
@@ -8102,12 +8105,12 @@ Model {
 	  SrcPort		  1
 	  Points		  [15, 0]
 	  Branch {
-	    Points		    [345, 0]
+	    Points		    [245, 0]
 	    DstBlock		    "Dinámica"
 	    DstPort		    11
 	  }
 	  Branch {
-	    Points		    [0, -300]
+	    Points		    [0, -175]
 	    DstBlock		    "Fuerzas y Torques"
 	    DstPort		    1
 	  }
@@ -8115,7 +8118,7 @@ Model {
 	Line {
 	  SrcBlock		  "Dinámica"
 	  SrcPort		  1
-	  Points		  [160, 0]
+	  Points		  [105, 0]
 	  Branch {
 	    DstBlock		    "cinematica"
 	    DstPort		    1
@@ -8129,13 +8132,13 @@ Model {
 	Line {
 	  SrcBlock		  "Dinámica"
 	  SrcPort		  2
-	  Points		  [135, 0]
+	  Points		  [110, 0]
 	  Branch {
 	    DstBlock		    "cinematica"
 	    DstPort		    2
 	  }
 	  Branch {
-	    Points		    [0, 340]
+	    Points		    [-20, 0; 0, 330]
 	    DstBlock		    "vq2"
 	    DstPort		    1
 	  }
@@ -8143,13 +8146,13 @@ Model {
 	Line {
 	  SrcBlock		  "Dinámica"
 	  SrcPort		  3
-	  Points		  [100, 0]
+	  Points		  [110, 0]
 	  Branch {
 	    DstBlock		    "cinematica"
 	    DstPort		    3
 	  }
 	  Branch {
-	    Points		    [0, 330]
+	    Points		    [-35, 0; 0, 300]
 	    DstBlock		    "vq3"
 	    DstPort		    1
 	  }
@@ -8157,13 +8160,13 @@ Model {
 	Line {
 	  SrcBlock		  "Dinámica"
 	  SrcPort		  4
-	  Points		  [50, 0]
+	  Points		  [150, 0]
 	  Branch {
 	    DstBlock		    "cinematica"
 	    DstPort		    4
 	  }
 	  Branch {
-	    Points		    [0, 330]
+	    Points		    [-90, 0; 0, 275]
 	    DstBlock		    "wq1"
 	    DstPort		    1
 	  }
@@ -8171,13 +8174,13 @@ Model {
 	Line {
 	  SrcBlock		  "Dinámica"
 	  SrcPort		  5
-	  Points		  [30, 0]
+	  Points		  [130, 0]
 	  Branch {
 	    DstBlock		    "cinematica"
 	    DstPort		    5
 	  }
 	  Branch {
-	    Points		    [0, 325]
+	    Points		    [-85, 0; 0, 245]
 	    DstBlock		    "wq2"
 	    DstPort		    1
 	  }
