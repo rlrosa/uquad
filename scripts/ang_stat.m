@@ -57,4 +57,4 @@ switch(eul)
 	case 3
 		str = '\theta';
 end
-title(str)
+title(str,'fontsize',16)
