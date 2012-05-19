@@ -1476,6 +1476,10 @@ int main(int argc, char *argv[]){
 		    w_forced->m_full[i] = mot->w_min;
 		    w->m_full[i]      = mot->w_hover;
 		}
+		retval = control_update_K(ctrl, pp, mot->weight);
+		quit_log_if(retval, "Failed to update control matrix! Aborting...");
+		retval = control_dump(ctrl, log_err);
+		quit_log_if(retval, "Failed to dump new control matrix! Aborting...");
 	    }
 
 	    /**
@@ -1679,7 +1683,7 @@ int main(int argc, char *argv[]){
 	/// -- -- -- -- -- -- -- --
 	if(ctrl_outdated)
 	{
-	    retval = control_update_K(pp, mot->weight);
+	    retval = control_update_K(ctrl, pp, mot->weight);
 	    quit_log_if(retval, "Failed to update control matrix! Aborting...");
 	    retval = control_dump(ctrl, log_err);
 	    quit_log_if(retval, "Failed to dump new control matrix! Aborting...");

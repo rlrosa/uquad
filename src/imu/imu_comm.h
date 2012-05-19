@@ -34,11 +34,6 @@
  * format of the log file.
  */
 #define IMU_COMM_FAKE                     0
-/**
- * Definition of default sampling period, in microseconds.
- * Should match code running on IMU.
- */
-#define TS_DEFAULT_US                     10000L
 
 #define IMU_FRAME_ELEMENTS                12
 #define IMU_FRAME_ALTERNATES_INIT         0

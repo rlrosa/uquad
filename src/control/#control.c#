@@ -31,6 +31,7 @@ ctrl_t *control_init(void)
     ctrl->A = uquad_mat_alloc(STATES_CONTROLLED,STATES_CONTROLLED);
     ctrl->B = uquad_mat_alloc(STATES_CONTROLLED,LENGTH_INPUT);
     ctrl->Q = uquad_mat_alloc(STATES_CONTROLLED,STATES_CONTROLLED);
+#warning 
     ctrl->R = uquad_mat_alloc(LENGTH_INPUT, LENGTH_INPUT);
     tmp_sub_sp_x = uquad_mat_alloc(STATE_COUNT,1);
     w_tmp = uquad_mat_alloc(LENGTH_INPUT,1);

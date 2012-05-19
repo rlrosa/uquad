@@ -69,6 +69,17 @@ typedef struct ctrl{
     uquad_mat_t *K_int; // Integral gain
     uquad_mat_t *x_int; // Integral term
 #endif
+    uquad_mat_t *A;
+    uquad_mat_t *Acirc;
+    uquad_mat_t *B;
+    uquad_mat_t *Qhov;
+    uquad_mat_t *Rhov;
+    uquad_mat_t *Qrec;
+    uquad_mat_t *Rrec;
+    uquad_mat_t *Qcirc;
+    uquad_mat_t *Rcirc;
+    uquad_mat_t *Q;
+    uquad_mat_t *R;
 }ctrl_t;
 
 /**
@@ -106,12 +117,13 @@ int control(ctrl_t *ctrl, uquad_mat_t *w, uquad_mat_t *x, set_point_t *sp, doubl
  *     phi=exp(A*Ts)
  *     gama=int(exp(A*s),0,Ts)
  *
+ * @param ctrl
  * @param pp current pp, will be updated.
  * @param weight weight of the quadcopter.
  *
  * @return error code
  */
-int control_update_K(path_planner_t *pp, double weight);
+int control_update_K(ctrl_t *ctrl, path_planner_t *pp, double weight);
 
 /**
  * Solves Riccati equation, using an algorithm by Anders Friis Sorensen

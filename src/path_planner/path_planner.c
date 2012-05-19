@@ -23,7 +23,7 @@ set_point_t *setpoint_init(void)
     memset(sp,0,sizeof(set_point_t));
     sp->x = uquad_mat_alloc(STATE_COUNT,1);
     mem_alloc_check(sp->x);
-    sp->w = uquad_mat_alloc(4,1);
+    sp->w = uquad_mat_alloc(LENGTH_INPUT,1);
     mem_alloc_check(sp->w);
     retval = uquad_mat_zeros(sp->x);
     if(retval != ERROR_OK)
@@ -67,6 +67,22 @@ int pp_update_setpoint(path_planner_t *pp, uquad_mat_t *x, double w_hover, uquad
 	err_check(ERROR_FAIL, "Not implemented!");
     }
     return ERROR_OK;
+}
+
+int pp_new_setpoint(path_planner_t *pp, uquad_mat_t *x, uquad_mat_t *w)
+{
+    int retval = ERROR_OK;
+    if(x != NULL)
+    {
+	retval = uquad_mat_copy(pp->sp->x, x);
+	err_propagate(retval);
+    }
+    if(w != NULL)
+    {
+	retval = uquad_mat_copy(pp->sp->w, w);
+	err_propagate(retval);
+    }
+    return retval;
 }
 
 void pp_deinit(path_planner_t *pp)
