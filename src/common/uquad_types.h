@@ -43,7 +43,7 @@ typedef enum STATE_VECTOR{
 #define DRAG_A2           -0.00013205 // drag = w^2*A2 + w*A1
 #define DRIVE_A1          4.60160135072435e-05 // drive = w^2*A2 + w*A1
 #define DRIVE_A2          -0.00103822726273726 // drive = w^2*A2 + w*A1
-#define MASA_DEFAULT      (1.600)     // Weight of the quadcopter [kg]
+#define MASA_DEFAULT      (1.750)     // Weight of the quadcopter [kg]
 #define STATE_COUNT       12          // State vector length
 #define LENGTH_INPUT      4           // Input vector length
 
@@ -76,4 +76,20 @@ typedef enum STATE_VECTOR{
 #define CHECK_NET_TO_S         1    // [s]  - timeout
 #define CHECK_NET_SERVER_IP    "10.42.43.1"
 #define CHECK_NET_PORT         12341234
+
+/**
+ * Limits for sanity check.
+ * If the state estimation is out of bounds for SANITY_MAX samples, then
+ * some action should be taken (abort, etc). If out of bound, our linear
+ * model will not be valid, and the chances of recovering are very low, so
+ * it's probably better to fall with the motores turned off...
+ * Possibles causes:
+ *     - psi/phi: Diverging controller, wind, impact against something.
+ *     - temp   : short in the ESCs, fire, etc.
+ */
+#define SANITY_MAX      20
+#define SANITY_MAX_TEMP 55.0 // [°C]
+#define SANITY_MAX_PSI  1.4  // [rad]
+#define SANITY_MAX_PHI  1.4  // [rad]
+
 #endif
