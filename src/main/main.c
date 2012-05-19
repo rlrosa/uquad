@@ -426,19 +426,19 @@ void uquad_conn_lost_handler(int signal_num)
 void sanity_check(imu_data_t *imu_data, uquad_mat_t *x_hat, uquad_bool_t *insane)
 {
     *insane = false;
-    if(imu_data->temp > SANITY_MAX_TEMP)
+    if((imu_data != NULL) && imu_data->temp > SANITY_MAX_TEMP)
     {
 	*insane = true;
 	err_log_double("WARN! Sanity check alert\t-\ttemp!\t", imu_data->temp);
 	return;
     }
-    if(uquad_abs(x_hat->m_full[SV_PSI]) > SANITY_MAX_PSI)
+    if((x_hat != NULL) && (uquad_abs(x_hat->m_full[SV_PSI]) > SANITY_MAX_PSI))
     {
 	err_log_double("WARN! Sanity check alert\t-\tpsi!\t", x_hat->m_full[SV_PSI]);
 	*insane = true;
 	return;
     }
-    if(uquad_abs(x_hat->m_full[SV_PHI]) > SANITY_MAX_PHI)
+    if((x_hat != NULL) && (uquad_abs(x_hat->m_full[SV_PHI]) > SANITY_MAX_PHI))
     {
 	err_log_double("WARN! Sanity check alert\t-\tpsi!\t", x_hat->m_full[SV_PHI]);
 	*insane = true;
