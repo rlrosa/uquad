@@ -49,7 +49,7 @@ En este capítulo se analiza la performance del GPS Canmore GT-730F. Se intenta 
 
 En esta prueba se busca caracterizar el error del GPS fundamentalmente en latitud y longitud. Adicionalmente se realiza un an\'alisis del error del GPS en altura.
 
-El experimento que se diseñó consiste en marcar un rectángulo sobre el suelo, utilizando 6 puntos, con la disposición de la figura \ref{fig:pol-pedorro}. Todas líneas punteadas son de 6m de largo. Resulta en un rectángulo de 6m por 12m.
+El experimento que se dise\~nó consiste en marcar un rectángulo sobre el suelo, utilizando 6 puntos, con la disposición de la figura \ref{fig:pol-pedorro}. Todas líneas punteadas son de 6m de largo. Resulta en un rectángulo de 6m por 12m.
 
 Los pasos a seguir son los siguientes:
 
@@ -89,7 +89,7 @@ Para tomar datos se conectó el GPS, que env\'ia información mediante USB-serie
 El GPS emite sentencias NMEA a través de un puerto USB serie, a 38400bps. Trabaja con sentencias:
 \begin{itemize}
 \item GPGGA - \textit{Global Positioning System Fix Data}: Información sobre la fecha, posición y datos relevantes sobre el \textit{fix}.
-\item GPGSV - \textit{Satellites in view}: Información sobre la cantidad de satélites detectados, y la calidad de la señal proveniente de cada uno.
+\item GPGSV - \textit{Satellites in view}: Información sobre la cantidad de satélites detectados, y la calidad de la se\~nal proveniente de cada uno.
 \item GPGSA - \textit{DOP and active satellites}: Información sobre DOP\footnote{\textit{Dilution of precision} - Ver \ref{sec:dop}.} y satélites activos.
 \item GPRMC - \textit{Recommended minimum specific GPS/Transit data}: Sentencia mínima recomendada, trae suficiente información como para poder trabajar con el GPS.
 \item GPVTG - \textit{Track Made Good and Ground Speed}: Información sobre la dirección y la velocidad (\textbf{no} sobre la posición absoluta).
@@ -202,11 +202,11 @@ En las figuras \ref{fig:or2_todos_sat_mal.png} y \ref{fig:punto_fijo_dos_minutos
   \caption{Datos con solamente 4 satélites. Orientación: \textbf{3}.}
   \label{fig:or2_todos_sat_mal.png}
 \end{wrapfigure}
-La teoría dice que con 4 satélites debería alcanzar para obtener un \textit{fix 3D}, es decir, estimar la posición sobre la esfera terrestre, y la distancia (altura) a la misma. Se recomienda tener no menos de 6 sat\'elites. Durante el experimento de la figura \ref{fig:or2_todos_cut.png}, hubo un per\'iodo de tiempo en el cual el GPS perdió la señal, y el número de satélites disponibles, que usualmente es 9 o 10, pasó a ser 4. Los datos correspondientes se muestran en la figura \ref{fig:or2_todos_sat_mal.png}. El trazo naranja, con un error de hasta 23 metros, corresponde a instantes donde la cantidad de satélites era entre 4 y 5. Luego de volver a 9 o 10 satélites, los datos tienen errores razonables.\\
+La teoría dice que con 4 satélites debería alcanzar para obtener un \textit{fix 3D}, es decir, estimar la posición sobre la esfera terrestre, y la distancia (altura) a la misma. Se recomienda tener no menos de 6 sat\'elites. Durante el experimento de la figura \ref{fig:or2_todos_cut.png}, hubo un per\'iodo de tiempo en el cual el GPS perdió la se\~nal, y el número de satélites disponibles, que usualmente es 9 o 10, pasó a ser 4. Los datos correspondientes se muestran en la figura \ref{fig:or2_todos_sat_mal.png}. El trazo naranja, con un error de hasta 23 metros, corresponde a instantes donde la cantidad de satélites era entre 4 y 5. Luego de volver a 9 o 10 satélites, los datos tienen errores razonables.\\
 
 
 
-En la figura \ref{fig:or2_todos_cut.png} se observa el mismo log que en \ref{fig:or2_todos_sat_mal.png}, pero luego de haber quitado las muestras correspondientes al período donde se deterioró la señal.
+En la figura \ref{fig:or2_todos_cut.png} se observa el mismo log que en \ref{fig:or2_todos_sat_mal.png}, pero luego de haber quitado las muestras correspondientes al período donde se deterioró la se\~nal.
 
 No se pudo encontrar una explicación para la mala calidad de las muestras correspondientes al punto 5 en la figura \ref{fig:or2_todos_cut.png}. La cantidad de satélites disponibles se mantuvo estable en 9 o 10 durante la adquisición de esos datos.
 
@@ -373,7 +373,7 @@ La posición parece tender a estabilizarse una vez que se llega al destino final
 \section{Error en altura}
 \label{sec:error-en-altura}
 
-Para determinar el error la información sobre la altura que provee el GPS, se diseñó un experimento, que consiste en tomar medidas en una perpendicular a la esfera terrestre, a 4 alturas diferentes: 0m, 1m, 2m y 3m respecto al suelo.
+Para determinar el error la información sobre la altura que provee el GPS, se dise\~nó un experimento, que consiste en tomar medidas en una perpendicular a la esfera terrestre, a 4 alturas diferentes: 0m, 1m, 2m y 3m respecto al suelo.
 
 \begin{wrapfigure}{r}{0.6\textwidth}
 \vspace{-30pt}
@@ -403,7 +403,7 @@ El tiempo que demora el GPS en adquirir un \textit{fix} depende de si estaba apa
 \item \textbf{Caliente}: Entre 3 y 5 segundos.
 \end{itemize}
 
-Esto implicaría que al prender el cuadricóptero, habría que esperar unos 40 segundos para obtener señal del GPS, y que si por algún motivo se pierde la conexión con el GPS, habrá que esperar entre 3 y 5 segundo antes de contar con datos útiles nuevamente.
+Esto implicaría que al prender el cuadricóptero, habría que esperar unos 40 segundos para obtener se\~nal del GPS, y que si por algún motivo se pierde la conexión con el GPS, habrá que esperar entre 3 y 5 segundo antes de contar con datos útiles nuevamente.
 
 \section{Tasa de muestreo}
 \label{sec:tasa-de-muestreo}
