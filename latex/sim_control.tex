@@ -9,7 +9,6 @@
 El objetivo de la presente secci\'on es el de analizar el desempeño del controlador. En primer lugar realizaremos un estudio en lo que respecta a la respuesta al escal\'on para las tres trayectorias definidas en el cap\'itulo \ref{chap:linealizacion}, luego analizaremos como es el comportamiento del sistema frente a medidas con ruido para finalmente estudiar el desempeño del controlador frente a errores y no idealidades en el modelado del sistema.\\
 
 En lo que respecta al an\'alisis de la respuesta del controlador ante la presencia de ruido en las medidas se utilizar\'a la funci\'on del simulador desarrollado que nos permite agregar a cada estado un ruido que cumple con el siguiente modelo:
-
 \begin{equation}
 \label{eq:noise}
 \eta_i = A_i\cos(\omega t)+\varepsilon(\mu_i,\sigma_i)
@@ -34,21 +33,21 @@ No se aprecian variaciones en ninguna de las variables de estado excepto en la p
   \centering
   \subfloat[Escal\'on de altura 1 m]{\label{fig:z_1}
   		\includegraphics[width=0.5\textwidth]
-  			{./pics_test_control/hov/z_1.pdf}}
+  			{./pics_sim_control/hov/z_1.pdf}}
   \subfloat[Escal\'on de altura 7 m]{\label{fig:z_7}
   		\includegraphics[width=0.5\textwidth]
-  			{./pics_test_control/hov/z_7.pdf}}
+  			{./pics_sim_control/hov/z_7.pdf}}
   \caption{Respuesta al escal\'on en la altura}
   \label{fig:hov_esc_z}
 \end{figure}
 
 El tiempo de \emph{rise} de ambas respuestas al escal\'on es considerado ampliamente satisfactorio. El sobretiro obtenido es superior a lo deseable, siendo aproximadamente un $40\%$ del valor en r\'egimen. El mismo puede reducirse otorgando un peso menor en la matriz \ref{eq:Q} a los t\'erminos asociados al estado integrado de la altura. Esta modificaci\'on produce a la vez que el controlador se comporte considerablemente peor frente a variaciones en el sistema. Esto ser\'a analizado con mayor detalle en la secci\'on \ref{sec:robustez}. Existe un compromiso entre los fen\'omenos descriptos, la matriz de realimentaci\'on escogida busca contemplarlos a ambos determinando un valor considerado como \'optimo.\\ 
 
-En la figura \ref{fig:w_z_7} se observa la velocidad angular de uno de los motores para el escal\'on de altura $7m$. Se observa que en los instantes iniciales la velocidad angular de uno de los motores alcanza su valor m\'aximo ($387rad s^{-1}$), por lo tanto no se puede asegurar el perfecto funcionamiento para escalones de mayor altura. Por otra parte se observa en ambas pruebas que una vez alcanzado el valor objetivo se mantiene perfectamente.\\
+En la figura \ref{fig:w_z_7} se observa la velocidad angular de uno de los motores para el escal\'on de altura $7m$. Se observa que en los instantes iniciales la velocidad angular de uno de los motores alcanza su valor m\'aximo ($387rad/s$), por lo tanto no se puede asegurar el perfecto funcionamiento para escalones de mayor altura. Por otra parte se observa en ambas pruebas que una vez alcanzado el valor objetivo se mantiene perfectamente.\\
 
-\begin{figure}
+\begin{figure}[h!]
   \centering
-	\includegraphics[width=0.5\textwidth]{./pics_test_control/hov/w_z_7.pdf}
+	\includegraphics[width=0.5\textwidth]{./pics_sim_control/hov/w_z_7.pdf}
   \caption{Velocidad angular del motor 1 durante un escal\'on de altura $7m$}
   \label{fig:w_z_7}
 \end{figure}
@@ -62,19 +61,19 @@ Partiendo de condiciones iniciales nulas excepto la altura donde se considera $z
 
 En la figura \ref{fig:hov_esc_x} se observan las car\'acteristicas m\'as importantes de la trayectoria. Para lograr un desplazamiento en alguna direcci\'on horizontal el cuadric\'optero debe realizar al menos un giro seg\'un los \'angulos de pitch o roll. Esto se observa claramente en la figura \ref{fig:axis_x_5}. Este giro produce una variaci\'on en la altura. Para el caso considerado, dicha variaci\'on es inferior a los $25cm$, valor que se considera aceptable. Para mayores escalones en la direcci\'on horizontal se observan variaciones de altura no deseables. Por otra parte en lo que respecta a la respuesta al escal\'on en la direcci\'on $\vec{i}_I$ se tiene un tiempo de \emph{rise} y un sobretiro muy similar que en el caso del escal\'on vertical.\\
 
-En resumen, el controlador diseñado se comporta adecuadamente para la condici\'on de hovering, cabe recordar que la linealizaci\'on realizada para dicha trayectoria supone el reposo del sistema y los desplazamientos no se encuentran a priori contemplados en dicha trayectoria. El controlador diseñado nos permite algunos desplazamientos con un buen tiempo de respuesta, para desplazamientos de mayores distancias se debe trabajar o bien con rectas o c\'irculos. 
+En resumen, el controlador diseñado se comporta adecuadamente para la condici\'on de hovering. Cabe recordar que la linealizaci\'on realizada para dicha trayectoria supone el reposo del sistema y los desplazamientos no se encuentran a priori contemplados en dicha trayectoria. El controlador diseñado nos permite algunos desplazamientos con un buen tiempo de respuesta. Para desplazamientos de mayores distancias se debe trabajar con rectas o c\'irculos. 
 
-\begin{figure}
+\begin{figure}[h!]
   \centering
   \subfloat[Ejes solidarios al cuadric\'optero a lo largo del tiempo]{\label{fig:axis_x_5}
   		\includegraphics[width=0.35\textwidth]
-  			{./pics_test_control/hov/axis_x_5.pdf}}
+  			{./pics_sim_control/hov/axis_x_5.pdf}}
   \subfloat[Posici\'on seg\'un $\vec{i}_I$]{\label{fig:x_5}
   		\includegraphics[width=0.35\textwidth]
-  			{./pics_test_control/hov/x_5.pdf}}
+  			{./pics_sim_control/hov/x_5.pdf}}
   \subfloat[Altura en m]{\label{fig:z_x_5}
   		\includegraphics[width=0.35\textwidth]
-  			{./pics_test_control/hov/z_x_5.pdf}}
+  			{./pics_sim_control/hov/z_x_5.pdf}}
  
   \caption{Escal\'on de 2m en la direcci\'on horizontal}
   \label{fig:hov_esc_x}
@@ -86,50 +85,52 @@ Se realizan dos pruebas para testear el desempeño del controlador en vuelos en 
 \subsubsection*{Escal\'on en la direcci\'on $\vec{i}_q$}
 Para alcanzar un velocidad superior a la inicial en la direcci\'on $\vec{i}_q$ es necesario que el cuadric\'optero modifique su \'angulo de pitch. Esto produce que la fuerza neta en la direcci\'on vertical sea inicialmente inferior a la necesaria para mantener el equilibrio, produciendo as\'i un descenso en la altura. Para que el resultado obtenido sea aceptable dicha modificaci\'on no puede ser significativa. Del mismo modo se busca que el valor de velocidad en r\'egimen se alcance en un tiempo razonable, as\'i como se busca que el sistema sea capaz de seguir en posici\'on a la integral de la velocidad de setpoint. En la figura \ref{fig:rec_esc_x} se observa la altura del sistema, la velocidad en la direcci\'on $\vec{i}_q$ y la posici\'on del cuadric\'optero seg\'un $\vec{i}_I$. 
 
-\begin{figure}
+\begin{figure}[h!]
   \centering
   \subfloat[Altura ]{\label{fig:z}
   		\includegraphics[width=0.35\textwidth]
-  			{./pics_test_control/rec/z.pdf}}
+  			{./pics_sim_control/rec/z.pdf}}
   \subfloat[Velocidad seg\'un $\vec{i}_q$]{\label{fig:vqx}
   		\includegraphics[width=0.35\textwidth]
-  			{./pics_test_control/rec/vqx.pdf}}
+  			{./pics_sim_control/rec/vqx.pdf}}
   \subfloat[Posici\'on seg\'un $\vec{i}_I$]{\label{fig:x}
   		\includegraphics[width=0.35\textwidth]
-  			{./pics_test_control/rec/x.pdf}}
+  			{./pics_sim_control/rec/x.pdf}}
  
   \caption{Escal\'on de $5m s^{-1}$ en la direcci\'on $\vec{i}_q$}
   \label{fig:rec_esc_x}
 \end{figure}
 
 La respuesta del sistema es r\'apida, alcanzando el $90\%$ del valor de r\'egimen en $0.57s$, as\'imismo como puede observarse en \ref{fig:x} la posici\'on se sigue de forma muy acertada. Finalmente cabe observar que la m\'axima variaci\'on en la altura es cercana a los $20cm$. Para poder seguir la posici\'on es necesaria la presencia de un sobretiro en la velocidad, en caso contrario la velocidad es siempre inferior a la velocidad objetivo y por ende la posici\'on real no puede alcanzar la posici\'on de setpoint.
-\subsection*{Escal\'on en la direcci\'on $\vec{k}_q$}
-En la figura \ref{fig:rec_esc_z} se puede observar la respuesta al escal\'on para la velocidad seg\'un $\vec{k}_q$ y la altura. Nuevamente los tiempos de rise resultan satisfactorios, as\'i como el seguimiento de la posic\'on tambi\'en, alcanzando nuevamente un error igual a cero. 
 
-\begin{figure}
-  \centering
-  \subfloat[Altura ]{\label{fig:z2}
-  		\includegraphics[width=0.5\textwidth]
-  			{./pics_test_control/rec/z2.pdf}}
-  \subfloat[Velocidad seg\'un $\vec{k}_q$]{\label{fig:vqz}
-  		\includegraphics[width=0.5\textwidth]
-  			{./pics_test_control/rec/vqz.pdf}}
+%\subsection*{Escal\'on en la direcci\'on $\vec{k}_q$}
+%En la figura \ref{fig:rec_esc_z} se puede observar la respuesta al escal\'on para la velocidad seg\'un $\vec{k}_q$ y la altura. Nuevamente los tiempos de rise resultan satisfactorios, as\'i como el seguimiento de la posic\'on tambi\'en, alcanzando nuevamente un error igual a cero.
+%
+%\begin{figure}[h!]
+%  \centering
+%  \subfloat[Altura ]{\label{fig:z2}
+%  		\includegraphics[width=0.5\textwidth]
+%  			{./pics_sim_control/rec/z2.pdf}}
+%  \subfloat[Velocidad seg\'un $\vec{k}_q$]{\label{fig:vqz}
+%  		\includegraphics[width=0.5\textwidth]
+%  			{./pics_sim_control/rec/vqz.pdf}}
+%
+%  \caption{Escal\'on de $5m s^{-1}$ en la direcci\'on $\vec{k}_q$}
+%  \label{fig:rec_esc_z}
+%\end{figure}
 
-  \caption{Escal\'on de $5m s^{-1}$ en la direcci\'on $\vec{k}_q$}
-  \label{fig:rec_esc_z}
-\end{figure}
 \section{Robustez frente a la presencia de ruido de medici\'on}
 
 Hasta aqu\'i hemos evaluado las caracter\'isticas del controlador diseñado en situaciones en las cuales se conoce exactamente el vector de estados, evidentemente la situaci\'on de vuelo real no se corresponde con esta idealidad. Las medidas realizadas tienen ruido intr\'inseco, muy superior a los considerados en las pruebas de calibraci\'on y caracterizaci\'on de los sensores. El aumento de este ruido se debe principalmente a las vibraciones mec\'anicas que introducen las h\'elices.\\
 
 Resulta fundamental conocer en forma aproximada el comportamiento de los ruidos de medida. Con dicho fin se realiz\'o una prueba de vuelo en la cual el cuadric\'optero estaba sujeto por arriba y por debajo quedando imposibilitado de realizar movimientos. Se comandaron los motores a la velocidad de hovering. En la presente secci\'on se presentan los par\'ametros de la ecuaci\'on \ref{eq:noise} que mejor ajustan el ruido. Si bien se podr\'ia haber realizado dicho ajuste utilizando m\'inimos cuadrados, al menos para la parte del ruido no aleatorio, se opt\'o por realizar dicho ajuste en forma iterativa.\\
 
-Dado que los \'angulos de pitch y de roll se obtienen directamente con los aceler\'ometros los ruidos asociados a ambas medidas son id\'enticas. Por dicho motivo consideraremos un solo ruido replicado en ambas variables. En el caso de las velocidades angulares y de la posici\'on horizontal (medida con el GPS), trabajaremos de la misma forma.\\ 
+Dado que los \'angulos de pitch y de roll se obtienen directamente con los aceler\'ometros, los ruidos asociados a ambas medidas son id\'enticas. Por dicho motivo consideraremos un solo ruido replicado en ambas variables. En el caso de las velocidades angulares y de la posici\'on horizontal (medida con el GPS), trabajaremos de la misma forma.\\ 
 
 Finalmente cabe aclarar que se espera que los ruidos obtenidos sean independientes del tipo de trayectoria realizada, por lo tanto los ruidos obtenidos para la trayectoria de hovering ser\'an los utilizados para las restantes. 
 \subsection{Hovering}
 
-Para el ruido asociado a las medidas de los \'angulos de pitch y de roll se escogieron los siguientes par\'ametros:
+Basados en el ruido presente en las medidas de los \'angulos de pitch y de roll obtenidas de los sensores en situaci\'on de vuelo, que es mayormente mec\'anico debido a las perturbaciones de los motores, se escogen los siguientes par\'ametros:
 
 \begin{itemize}
 \item $A_{roll} = 0.05^\circ$
@@ -137,19 +138,19 @@ Para el ruido asociado a las medidas de los \'angulos de pitch y de roll se esco
 \item $\sigma_{roll} = 6.05^\circ$
 \item $\mu_{roll} = 0.27 ^\circ$
 \end{itemize}
-  
-En la figura \ref{fig:ruido_roll} pueden compararse los ruidos obtendidos en la ``situaci\'on de vuelo'' descripta anteriormente y el ruido en la simulaci\'on. Asimismo puede observarse como, a pesar de la gran presencia de ruido la variable de estado de inter\'es se mantiene controlada muy cercana al valor deseado. El valor m\'aximo y m\'inimo de roll alcanzados son $6.48^\circ$ y $-6.41^\circ$.\\
 
-En la figura \ref{fig:roll_vuelo} se observan tres amplitudes de ruido bien marcadas. La primera corresponde a las medidas con los motores apagados, la segunda a partir del segundo 20.5 donde los motores operan a velocidad m\'inima ($109 rev s^{-1}$) y la tercera a partir del segundo 34 donde la velocidad angular de los motores es igual a la velocidad de hovering. En lo que sigue del an\'alisis nos concentraremos exclusivamente en esta tercer etapa.\\
+En la figura \ref{fig:ruidos_roll} pueden compararse los ruidos obtendidos en la ``situaci\'on de vuelo'' descripta anteriormente y el ruido en la simulaci\'on. Asimismo, en la figura \ref{fig:roll_noise} puede observarse como, a pesar de la gran presencia de ruido, la variable de estado de inter\'es se mantiene controlada muy cercana al valor deseado. El valor m\'aximo y m\'inimo de roll alcanzados son $6.48^\circ$ y $-6.41^\circ$.\\
 
-\begin{figure}
+En la figura \ref{fig:roll_vuelo} se observan tres amplitudes de ruido bien marcadas. La primera corresponde a las medidas con los motores apagados, la segunda a partir del segundo 20.5 donde los motores operan a velocidad m\'inima ($109 \: rev/s$) y la tercera a partir del segundo 34 donde la velocidad angular de los motores es igual a la velocidad de hovering. En lo que sigue del an\'alisis nos concentraremos exclusivamente en esta tercer etapa.\\
+
+\begin{figure}[h!]
   \centering
   \subfloat[Medida del \'angulo de Roll en ``situaci\'on de vuelo'']{\label{fig:roll_vuelo}
   		\includegraphics[width=0.5\textwidth]
-  			{./pics_test_control/ruido/roll_vuelo.pdf}}
+  			{./pics_sim_control/ruido/roll_vuelo.pdf}}
   \subfloat[Ruido de Roll simulado y Roll efectivo ]{\label{fig:roll_noise}
   		\includegraphics[width=0.5\textwidth]
-  			{./pics_test_control/ruido/roll_noise.pdf}}
+  			{./pics_sim_control/ruido/roll_noise.pdf}}
   \caption{Ruidos de Roll}
   \label{fig:ruidos_roll}
 \end{figure}
@@ -163,34 +164,34 @@ El \'angulo de Yaw se determina adem\'as utilizando la lectura del magnet\'ometr
 \item $\mu_{yaw} = 0$
 \end{itemize}
 
-En la figura \ref{fig:ruidos_yaw} puede observarse como, a pesar del ruido en la medida el controlador se mantiene robusto apart\'ndose del valor objetivo $0.96^\circ$ en el peor de los casos. El resultado en lo que respecta al control de la velocidad angular del sistema es similar. En la figura \ref{fig:ruidos_wqx} pueden observarse las gr\'aficas de los ruidos medido y simulado, adem\'as de la velocidad angular ``real''. Se trabaja en este caso con la velocidad angular $\omega_{q_x}$. Los par\'ametros de ruido escogidos son:
+En la figura \ref{fig:ruidos_yaw} puede observarse como, a pesar del ruido en la medida el controlador se mantiene robusto apart\'andose del valor objetivo $0.96^\circ$ en el peor de los casos. El resultado en lo que respecta al control de la velocidad angular del sistema es similar. En la figura \ref{fig:ruidos_wqx} pueden observarse las gr\'aficas de los ruidos medido y simulado, adem\'as de la velocidad angular ``real''. Se trabaja en este caso con la velocidad angular $\omega_{q_x}$. Los par\'ametros de ruido escogidos son:
 \begin{itemize}
 \item $A_{\omega_{q_x}} = 0.03^\circ s^{-1}$
 \item $\omega_{\omega_{q_x}} = 2\pi 0.03 rad s^{-1}$
 \item $\sigma_{\omega_{q_x}} = 0.64\circ s^{-1}$
 \item $\mu_{\omega_{q_x}} = 0$
 \end{itemize}
-\begin{figure}
+\begin{figure}[h!]
   \centering
   \subfloat[Medida del \'angulo de Yaw en ``situaci\'on de vuelo'']{\label{fig:yaw_vuelo}
   		\includegraphics[width=0.5\textwidth]
-  			{./pics_test_control/ruido/yaw_vuelo.pdf}}
+  			{./pics_sim_control/ruido/yaw_vuelo.pdf}}
   \subfloat[Ruido de Yaw simulado y Yaw efectivo ]{\label{fig:yaw_noise}
   		\includegraphics[width=0.5\textwidth]
-  			{./pics_test_control/ruido/yaw_noise.pdf}}
+  			{./pics_sim_control/ruido/yaw_noise.pdf}}
   \caption{Ruidos de Yaw}
   \label{fig:ruidos_yaw}
 \end{figure}
 
 
-\begin{figure}
+\begin{figure}[h!]
   \centering
   \subfloat[Medida de $\omega_{q_x}$ en ``situaci\'on de vuelo'']{\label{fig:wqx_vuelo}
   		\includegraphics[width=0.5\textwidth]
-  			{./pics_test_control/ruido/wqx_vuelo.pdf}}
+  			{./pics_sim_control/ruido/wqx_vuelo.pdf}}
   \subfloat[Ruido de $\omega_{q_x}$ simulado y $\omega_{q_x}$ efectivo ]{\label{fig:wqx_noise}
   		\includegraphics[width=0.5\textwidth]
-  			{./pics_test_control/ruido/wqx_noise.pdf}}
+  			{./pics_sim_control/ruido/wqx_noise.pdf}}
   \caption{Ruidos de $\omega_{q_x}$}
   \label{fig:ruidos_wqx}
 \end{figure}
@@ -205,39 +206,39 @@ Los ruidos observados hasta el momento son preponderamente blancos. Por dicho mo
 \item $\mu_{z} = 0.94 m$
 \end{itemize}
 
-\begin{figure}
+\begin{figure}[h!]
   \centering
   \subfloat[Medida de z en ``situaci\'on de vuelo'']{\label{fig:z_vuelo}
   		\includegraphics[width=0.5\textwidth]
-  			{./pics_test_control/ruido/z_vuelo.pdf}}
+  			{./pics_sim_control/ruido/z_vuelo.pdf}}
   \subfloat[Ruido de z simulado y z efectivo ]{\label{fig:z_noise}
   		\includegraphics[width=0.5\textwidth]
-  			{./pics_test_control/ruido/z_noise.pdf}}
+  			{./pics_sim_control/ruido/z_noise.pdf}}
   \caption{Ruidos de z}
   \label{fig:ruidos_z}
 \end{figure}
 
-En la figura \ref{fig:z_noise} se aprecia claramente la acci\'on del control ya que para medidas que superan el valor deseado de \emph{setpoint} el control act\'ua en sentido contrario, sucede lo mismo para las medidas que son inferiores al \emph{setpoint}.
+En la figura \ref{fig:z_noise} se aprecia claramente la acci\'on del control ya que para medidas que superan el valor deseado de \emph{setpoint} el control act\'ua en sentido contrario, sucede lo mismo para las medidas que son inferiores al \emph{setpoint}.\\
 
-Los ruidos que se han menejado hasta aqu\'i corresponden a las medidas directa de los sensores. Al someter estas medidas al filtro de Kalman (ver cap\'itulo \ref{chap:kalman}) tendremos ruidos muy inferiores. Por lo tanto podemos asumir que el sistema se comportar\'a a\'un mejor de lo que se evalu\'o en esta secci\'on.\\
+Los ruidos que se han menejado hasta aqu\'i corresponden a las medidas directa de los sensores. Al realizar la estimaci\'on del estado con filtro de Kalman (ver cap\'itulo \ref{chap:kalman}) se obtendr\'a un ruido sensiblemente inferior al obtenido directamente de los sensores. Por lo tanto podemos asumir que el sistema se comportar\'a a\'un mejor de lo que se evalu\'o en esta secci\'on.\\
 
-En lo que respecta al ruido de la velocidad no se puede trabajar simplemente con las medidas de los sensores ya que no se tiene ninguna medida directa de la velocidad. La \'unica medida que se tiene es la aceleraci\'on, se podr\'ia integrar dicha medida para obtener valores de velocidad, pero el error introducido en la aceleraci\'on lleva a que la velocidad tenga una deriva, no tiene sentido en pensar esta magnitud con un ruido asociado, excepto que trabajemos en este caso con las estimaciones del vector de estados.\\ 
+En lo que respecta al ruido de la velocidad no se puede trabajar simplemente con las medidas de los sensores ya que no se tiene ninguna medida directa de la velocidad. Se podr\'ia integrar la medida de aceleraci\'on obtenida de los aceler\'ometros para obtener valores de velocidad, pero el error introducido en la integraci\'on implican una deriva en la velocidad inaceptable, por lo que no tiene sentido en pensar esta magnitud con un ruido asociado, excepto que se trabaje con las estimaci\'on del vector de estados.\\ 
 
 \section{Robustez frente a variaciones en el modelo}
 
-En este punto nos concentraremos en analizar el comprtamiento del sistema realimentado frente a algunas variaciones en el mismo. Trabajaremos con la trayectoria de hovering, imponiendo como setpoint el reposo y partiendo de esta misma situaci\'on. Analizaremos los dos casos que tienen m\'as importancia pr\'actica: la variaci\'on de la masa y el hecho de que las velocidades angulares de los motores no son id\'enticas.\\ 
+En este punto nos concentraremos en analizar el comprtamiento del sistema realimentado frente a algunas variaciones en el mismo. Trabajaremos con la trayectoria de hovering, imponiendo como \emph{setpoint} el reposo y partiendo de esta misma situaci\'on. Analizaremos los dos casos que tienen m\'as importancia pr\'actica: la variaci\'on de la masa y el hecho de que los motores no son perfectamente id\'enticos, causando que sus respuestas al mismo comando $i^2c$ no sea la misma.
 \subsection*{Variaci\'on de la masa}
 Con condiciones iniciales nulas excepto por la altura que se fija a $3m$, se aumenta la masa del sistema ($1.541kg$) en $200 g$. En la figura \ref{fig:masa} se observa la variaci\'on de la altura por el agregado de masa.
 
 
-\begin{figure}
+\begin{figure}[h!]
   \centering
-	\includegraphics[width=0.5\textwidth]{./pics_test_control/robustez/masa.pdf}
+	\includegraphics[width=0.5\textwidth]{./pics_sim_control/robustez/masa.pdf}
   \caption{Variaci\'on de la altura al agregar una masa adicional de 200g}
   \label{fig:masa}
 \end{figure}
 
-La respuesta frente a la variaci\'on de la masa es buena, en menos de diez segundos se vuelve a obtener la altura inicial, adicionalmente la variaci\'on de la altura es inferior a los $90 cm$.  \\
+La respuesta frente a la variaci\'on de la masa es buena ya que en menos de diez segundos se vuelve a obtener la altura inicial. Adicionalmente la variaci\'on de la altura es inferior a los $90 cm$.
 
 \subsection*{Diferencias entre las velocidades angulares de los motores}
 
@@ -246,33 +247,31 @@ En las mismas condiciones que en la situaci\'on anterior se impone que la veloci
 \omega_2 = \omega_4 + 15.2rad s^{-1}
 \end{equation}
 
-La diferencia de $15.2rads^{-1}$ corresponde a la m\'axima diferencia entre las velocidades angulares de los motores. A priori se espera que esta diferencia produzca un giro positivo en el \'angulo de Roll y un desplazamiento en la direcci\'on $-\vec{j}_I$. Se espera tambi\'en un desplazamiento en la direcci\'on vertical debido a que la fuerza neta es mayor, ya que continuamos asumiendo que $\omega_1 = \omega_2 = \omega_3 =\omega_{hovering}$.\\
+La diferencia de $15.2rads^{-1}$ corresponde a la m\'axima diferencia observada entre las velocidades angulares de los motores. A priori se espera que esta diferencia produzca un giro positivo en el \'angulo de Roll y un desplazamiento en la direcci\'on $-\vec{j}_I$. Se espera tambi\'en un desplazamiento en la direcci\'on vertical debido a que la fuerza neta es mayor, ya que continuamos asumiendo que $\omega_1 = \omega_3 = \omega_4 =\omega_{hovering}$.\\
 
 En la figura  \ref{fig:motor} se observa la variaci\'on de estas tres variables en funci\'on del tiempo. La inclusi\'on del bloque integrador es fundamental para poder controlar el sistema frente a esta variaci\'on en las velocidades angulares de los motores. Sin dicho bloque el sistema se estabiliza, pero en una posici\'on diferente de la deseada.\\
 
 \begin{figure}
   \centering
   \subfloat[\'Angulo de roll en funci\'on del tiempo]{\label{fig:roll}
-  		\includegraphics[width=0.35\textwidth]
-  			{./pics_test_control/robustez/roll.pdf}}
+  		\includegraphics[width=0.32\textwidth]
+  			{./pics_sim_control/robustez/roll.pdf}}
   \subfloat[Posici\'on seg\'un $\vec{j}_I$]{\label{fig:y}
-  		\includegraphics[width=0.35\textwidth]
-  			{./pics_test_control/robustez/y.pdf}}
+  		\includegraphics[width=0.32\textwidth]
+  			{./pics_sim_control/robustez/y.pdf}}
   \subfloat[Altura en m]{\label{fig:z}
-  		\includegraphics[width=0.35\textwidth]
-  			{./pics_test_control/robustez/z.pdf}}
+  		\includegraphics[width=0.32\textwidth]
+  			{./pics_sim_control/robustez/z.pdf}}
  
   \caption{Diferencia de $15.2 rad s^{-1}$ entre las velocidades angulares de los motores 2 y 4.}
   \label{fig:motor}
 \end{figure}
 
 
-En resumen el controlador diseñado se presenta como satisfactorio ya que permite seguir las trayectorias deseadas con buenos tiempos de respuesta. Por otra parte, su respuesta frente a medidas extremamente ruidosas (en la pr\'actica se trabaja con estados mejor estimados) es muy buena, ya que mantiene al sistema en torno al valor objetivo evidentemente presenta algunas variaciones debidas al error en la medida. Finalmente cabe señalar la robustez del mismo frente a variaciones en el sistema como ser la masa y una diferencia entre las velocidades angulares de los motores.\\
+En resumen el controlador diseñado se presenta como satisfactorio ya que permite seguir las trayectorias deseadas con buenos tiempos de respuesta. Por otra parte, su respuesta frente a medidas extremamente ruidosas (en la pr\'actica se trabaja con estados mejor estimados) es muy buena, ya que mantiene al sistema en torno al valor objetivo, aunque evidentemente presenta algunas variaciones debidas al error en la medida, que son completamente aceptables. Finalmente cabe señalar la robustez del mismo frente a variaciones en el sistema como ser la masa y una diferencia entre las velocidades angulares de los motores.\\
 
-El sobretiro en la respuesta al escal\'on parece superior a lo desead y es un punto que debe mejorarse en el futuro si se desea un control m\'as preciso del sistema. En esta primer aproximaci\'on al problema los sobretiros presentados son aceptables. La mayor dificultad que se encontr\'o al intentar reducir el sobretiro es que el sistema presenta mayores variaciones frente a variaciones de masa o de las velocidades angulares de los motores. Una posibilidad es la de imponer valores mayores en la diagonal de la matriz R definida en \ref{eq:R}. Sin embargo esta soluci\'on implica que el sistema tenga tiempos de respuesta m\'as lentos.\\
+El sobretiro en la respuesta al escal\'on parece superior al deseado y es un punto que debe mejorarse en el futuro si se desea un control m\'as preciso del sistema. En esta primer aproximaci\'on al problema los sobretiros presentados son aceptables. La mayor dificultad que se encontr\'o al intentar reducir el sobretiro es que el sistema presenta mayores variaciones frente a variaciones de masa o de las velocidades angulares de los motores. Una posibilidad es la de imponer valores mayores en la diagonal de la matriz R definida en \ref{eq:R}. Sin embargo esta soluci\'on implica que el sistema tenga tiempos de respuesta m\'as lentos.\\
 
-La posibilidad de agregar control sobre las derivadas del vector de estados es una linea que no se lleg\'o a investigar debido al tiempo acotado del proyecto. 
-
-
+La posibilidad de agregar control sobre las derivadas del vector de estados es una l\'inea que no se lleg\'o a investigar debido al tiempo acotado del proyecto.
 
 \end{document}
