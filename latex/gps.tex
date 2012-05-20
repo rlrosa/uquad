@@ -7,12 +7,12 @@
 
 \section{Objetivos}
 
-En este capítulo se analiza la performance del GPS. Se intenta reconstruir un polígono, y se analiza el error al estimar la posición de un punto fijo.
+En este capítulo se analiza la performance del GPS Canmore GT-730F. Se intenta reconstruir un polígono, y se analiza el error al estimar la posición de un punto fijo.
 
 \section{Materiales}
 
 \begin{itemize}
-\item GPS.
+\item GPS Canmore GT-730F.
 \item Laptop.
 \item Trípode (de fotografía).
 \item Cinta métrica, pintura y cuerda.
@@ -47,9 +47,9 @@ En este capítulo se analiza la performance del GPS. Se intenta reconstruir un p
 \label{fig:pol-pedorro}
 \end{wrapfigure}
 
-En esta prueba se busca caracterizar el error del GPS en latitud y longitud.
+En esta prueba se busca caracterizar el error del GPS fundamentalmente en latitud y longitud. Adicionalmente se realiza un an\'alisis del error del GPS en altura.
 
-El experimento que se diseñó consiste en marcar un rectángulo sobre el suelo, utilizando 6 puntos, con la disposición de la figura \ref{fig:pol-pedorro}. Todas líneas punteadas son de 6m de largo. Resulta en un rectángulo de 6m por 12m.
+El experimento que se dise\~nó consiste en marcar un rectángulo sobre el suelo, utilizando 6 puntos, con la disposición de la figura \ref{fig:pol-pedorro}. Todas líneas punteadas son de 6m de largo. Resulta en un rectángulo de 6m por 12m.
 
 Los pasos a seguir son los siguientes:
 
@@ -69,14 +69,14 @@ Los pasos a seguir son los siguientes:
 \begin{wrapfigure}{r}{0.6\textwidth}
   \vspace{-30pt}
   \centering
-  \subfloat[Trípode de fotografía, con el GPS atado en lugar de una cámara.]{\label{fig:tripode_con_plomada.jpg}
+  \subfloat[GPS sobre trípode de fotografía.]{\label{fig:tripode_con_plomada.jpg}
     \includegraphics[width=0.2\textwidth]{./pics_gps/tripode_con_plomada.jpg}}
   \subfloat[GPS amarrado al trípode.]{\label{fig:vista_usb.jpg}
     \includegraphics[width=0.2\textwidth]{./pics_gps/vista_usb.jpg}}
 \vspace{-10pt}
-  \caption{GPS + Atril}
+  \caption{GPS y Atril}
   \label{fig:rebotes}
-  \vspace{-50pt}
+  \vspace{-20pt}
 \end{wrapfigure}
 
 En la figura \ref{fig:tripode_con_plomada.jpg} se observa el trípode que sostiene al GPS. Se busca tener el GPS a una altura fija, y separado del piso. Al nivel del piso los rebotes degradan seriamente la performance del GPS. La cuerda que marca el lado del polígono, junto con las patas del trípode, se utilizaron para fijar la orientación del GPS durante el experimento.
@@ -84,12 +84,12 @@ En la figura \ref{fig:tripode_con_plomada.jpg} se observa el trípode que sostie
 \subsection{Adquisición de datos}
 \label{sec:adquisicion-de-datos}
 
-Para tomar datos se conectó el GPS, que manda información mediante USB-serie, al puerto USB de una computadora. En la computadora se utilizó el \href{http://catb.org/gpsd/}{GPSD}, un software open-source que hace de \textit{daemon}, y se encarga de transformar lo que llega del GPS a una estructura de datos fácil de manejar en \verb+C+.
+Para tomar datos se conectó el GPS, que env\'ia información mediante USB-serie, al puerto USB de una computadora. En la computadora se utilizó \href{http://catb.org/gpsd/}{GPSD}, un software open-source que hace de \textit{daemon}, y se encarga de transformar los datos del GPS a una estructura de datos fácil de manejar en \verb+C+.
 
-El GPS emite sentencias NMEA a través de USB serie, a 38400bps. Trabaja con sentencias:
+El GPS emite sentencias NMEA a través de un puerto USB serie, a 38400bps. Trabaja con sentencias:
 \begin{itemize}
 \item GPGGA - \textit{Global Positioning System Fix Data}: Información sobre la fecha, posición y datos relevantes sobre el \textit{fix}.
-\item GPGSV - \textit{Satellites in view}: Información sobre la cantidad de satélites detectados, y la calidad de la señal proveniente de cada uno.
+\item GPGSV - \textit{Satellites in view}: Información sobre la cantidad de satélites detectados, y la calidad de la se\~nal proveniente de cada uno.
 \item GPGSA - \textit{DOP and active satellites}: Información sobre DOP\footnote{\textit{Dilution of precision} - Ver \ref{sec:dop}.} y satélites activos.
 \item GPRMC - \textit{Recommended minimum specific GPS/Transit data}: Sentencia mínima recomendada, trae suficiente información como para poder trabajar con el GPS.
 \item GPVTG - \textit{Track Made Good and Ground Speed}: Información sobre la dirección y la velocidad (\textbf{no} sobre la posición absoluta).
@@ -145,9 +145,7 @@ El polígono resultante se observa en la figura \ref{fig:pol_mc.png}. El error r
 \item $4.65\%$ en promedio.
 \end{itemize}
 
-Se considera que el error, siendo  menor al 10\% en el peor caso, es aceptable.
-
-Se podría hacer una figura irregular cualquiera, y tomarlo en cuanto en el resto del experimento, pero complicaría la interpretación intuitiva de los resultados.
+Se puede trabajar con el pol\'igono irregular que fue efectivamente construido en el resto del experimento, pero la interpretación de los resultados se torna poco intuitiva. Considerando que el error es inferior al 10\% en el peor caso, se opta por continuar el experimento considerando que el pol\'igono es un rect\'angulo de lados 12 y 6 metros.
 
 \subsection{Punto fijo - 2 minutos}
 \label{sec:gps2-punto-fijo-2-minutos}
@@ -166,11 +164,7 @@ Se tomaron datos durante aproximadamente 2 minutos ($\approx$ 120 muestras) en c
 \vspace{-20pt}
 \end{wrapfigure}
 
-En las siguiente figuras se muestran los datos luego de restar el promedio, o sea que se muestra el error respecto al valor promedio. Si el GPS fuese perfecto, entonces todas las muestras coincidirían con el promedio, y estarían ubicadas en el punto \verb+[0,0]+. El círculo negro tiene 2.5m de radio, las muestras que caen fuera de él están a más de 2.5m del valor promedio. En la leyenda se muestra qué porcentaje de las muestras caen fuera del círculo.
-
-Este experimento también se hizo tomando 10 minutos de muestras por punto, los resultados fueron muy similares.
-
-Se orientó el GPS de 3 maneras distintas, siempre alineando el trípode con uno de los lados de 12m del rectángulo:
+En las figuras \ref{fig:or2_todos_sat_mal.png} y \ref{fig:punto_fijo_dos_minutos} se muestran los datos luego de restar el promedio, o sea que se muestra el error respecto al valor promedio. Si el GPS careciera de error relativo, entonces todas las muestras coincidirían con el promedio, y estarían ubicadas en el punto \verb+[0,0]+. En dichas figuras el círculo negro tiene 2.5m de radio. En la leyenda se muestra qué porcentaje de las muestras se encuentran fuera del círculo. Se Repite el experimento tomando datos durante 10 minutos por punto obteniendo resultados fueron muy similares. Se orientó el GPS de 3 maneras distintas, siempre alineando el trípode con uno de los lados de 12m del rectángulo:
 
 \begin{enumerate}
 \item USB hacia la calle, LED hacia el estacionamiento, como en la figura \ref{fig:or3.jpg}.
@@ -193,23 +187,26 @@ Se orientó el GPS de 3 maneras distintas, siempre alineando el trípode con uno
   \subfloat[Orientación: \textbf{4}]{\label{fig:or3_todos.png}
     \includegraphics[width=.6\textwidth]{./pics_gps/or3_todos.png}}
 \vspace{-20pt}
+\label{fig:punto_fijo_dos_minutos}
 \end{figure}
 
 \vspace{-20pt}
 \subsubsection{Punto fijo: Análisis - \textbf{satélites disponibles}}
 \label{sec:gps2-punto-fijo-analisis-sat-count}
 
-La teoría dice que con 4 satélites debería alcanzar para obtener un \textit{fix 3D}, es decir, estimar la posición sobre la esfera terrestre, y la distancia (altura) a la misma. Se recomienda tener no menos de 6. Durante el experimento de la figura \ref{fig:or2_todos_cut.png}, en un momento el GPS perdió señal, y el número de satélites disponibles, que usualmente anda por los 9 o 10, pasó a ser 4. Los datos correspondientes se muestran en la figura \ref{fig:or2_todos_sat_mal.png}. El trazo naranja, con un error de hasta 23 metros, corresponde a instantes donde la cantidad de satélites era entre 4 y 5. Luego de volver a 9 o 10 satélites, los datos vuelven a ser más razonables.
-
 \begin{wrapfigure}{r}{0.65\textwidth}
-\vspace{-30pt}
-  \includegraphics[width=.6\textwidth]{./pics_gps/or2_todos_sat_mal.png}
+\vspace{-25pt}
+
+  \includegraphics[width=.55\textwidth]{./pics_gps/or2_todos_sat_mal.png}
+  \vspace{-15pt}
   \caption{Datos con solamente 4 satélites. Orientación: \textbf{3}.}
   \label{fig:or2_todos_sat_mal.png}
-\vspace{-50pt}
 \end{wrapfigure}
+La teoría dice que con 4 satélites debería alcanzar para obtener un \textit{fix 3D}, es decir, estimar la posición sobre la esfera terrestre, y la distancia (altura) a la misma. Se recomienda tener no menos de 6 sat\'elites. Durante el experimento de la figura \ref{fig:or2_todos_cut.png}, hubo un per\'iodo de tiempo en el cual el GPS perdió la se\~nal, y el número de satélites disponibles, que usualmente es 9 o 10, pasó a ser 4. Los datos correspondientes se muestran en la figura \ref{fig:or2_todos_sat_mal.png}. El trazo naranja, con un error de hasta 23 metros, corresponde a instantes donde la cantidad de satélites era entre 4 y 5. Luego de volver a 9 o 10 satélites, los datos tienen errores razonables.\\
 
-En la figura \ref{fig:or2_todos_cut.png} se observa el mismo log que en \ref{fig:or2_todos_sat_mal.png}, pero luego de haber quitado las muestras correspondientes al período donde se deterioró la señal.
+
+
+En la figura \ref{fig:or2_todos_cut.png} se observa el mismo log que en \ref{fig:or2_todos_sat_mal.png}, pero luego de haber quitado las muestras correspondientes al período donde se deterioró la se\~nal.
 
 No se pudo encontrar una explicación para la mala calidad de las muestras correspondientes al punto 5 en la figura \ref{fig:or2_todos_cut.png}. La cantidad de satélites disponibles se mantuvo estable en 9 o 10 durante la adquisición de esos datos.
 
@@ -238,7 +235,7 @@ Los resultados del experimento se observan en la figura.
 No se encontró una correlación entre la orientación del GPS y el error en las medidas.
 El experimento se realizó con cielo abierto, con una buena geometría, en términos de distribución de satélites. Tal vez en situaciones de visibilidad limitada se podría observar una correlación, ya que si la dirección en la que la antena recibe mejor coincide con el lugar donde hay pocos satélites, entonces la cantidad de información sería menor/peor que en otras orientaciones.
 
-Tener visibilidad limitada por obstáculos, o tener una mala geometría deteriora la performance del GPS. No es el objetivo de este informe evaluar la performance en ambientes complicados.
+Tener visibilidad limitada por obstáculos, o tener una mala geometría deteriora la performance del GPS. En este trabajo no se considerara la situaci\'on en la cual se tiene una performance deficiente, o bien se utilizar\'a el GPS a cielo abierto o bien se trabajar\'a sin el bajo techo.
 
 %El impacto de la geometría se analiza en la sección \ref{sec:geometria}.
 
@@ -328,9 +325,9 @@ Los resultados se resumen en la tabla \ref{tab:err-rectas}.
 
 En la tabla \ref{tab:err-rectas} se observa, cómo es de esperarse, que el error relativo disminuye al intentar estimar distancias mayores. Asumiendo que el error en la estimación de la posición de cada punto \verb+A+, \verb+B+ es similar, entonces para cometer un error de \verb+P+\% en la estimación de una distancia \verb+X+ (medida con el metro) entre \verb+A+ y \verb+B+, el GPS debe equivocarse en $\frac{P}{100}X\frac{1}{2}$ en la estimación de la posición de \verb+A+ y \verb+B+.
 
-Resulta que el error en la estimación de la posición de un punto es de aproximadamente 4.5m. Esto es coherente con los resultados sobre la estimación de un punto fijo. Si las medidas para la posición de un punto fijo en general caen dentro de un círculo de 2.5m de radio, entonces, asumiendo que la posición real cae dentro del círculo, en un peor caso se tendría un error de 5m. 
+Resulta que el error en la estimación de la distancia entre dos puntos es aproximadamente 4.5m. Esto es coherente con los resultados sobre la estimación de un punto fijo. Si las medidas para la posición de un punto fijo en general caen dentro de un círculo de 2.5m de radio, entonces, el error en el peor caso en la distancia es de 5m.
 
-Nuevamente, no se cuenta con información sobre la posición real, pero parece razonable asumir que la ubicación real es cercana al promedio de los datos provenientes del GPS. Evidencia a favor de esto se observa en la figura \ref{fig:10m_mapa.png}. Se trata este tema un poco más en la sección \ref{sec:posicion-absoluta}.
+Nuevamente, no se cuenta con información sobre la posición real, pero parece razonable asumir que la ubicación real es cercana al promedio de los datos provenientes del GPS. Evidencia a favor de esto se observa en la figura \ref{fig:10m_mapa.png}. En la sección \ref{sec:posicion-absoluta} se profundiza en este aspecto.
 
 \vspace{-20pt}
 \section{Caminata por el borde del polígono}
@@ -338,7 +335,7 @@ Nuevamente, no se cuenta con información sobre la posición real, pero parece r
 
 Para simular una situación más parecida a la que se tendrá con el GPS montado sobre el cuadricóptero, se colocó el trípode con el GPS en un mochila, y se procedió a recorrer el polígono con con la mochila puesta.
 
-Los errores en la medida de un punto fijo hacen pensar que sería posible que la trayectoria determinada por el GPS luego de este experimento fuese algo parecido a un rectángulo.
+Los errores en la medida de un punto fijo hacen pensar que sería posible que la trayectoria determinada por el GPS luego de este experimento fuese similar a un rectángulo.
 
 En las figuras siguientes se observan los datos tomados durante 3 caminatas siguiendo el contorno del polígono, siguiendo la secuencia \verb+1-2-3-6-5-4-1+\footnote{Notar que \textbf{no} se recorre en el mismo orden en el que se numeran los puntos del rectángulo}. Se empezó a loguear datos en el punto 1, y se terminó nuevamente en el punto 1.
 
@@ -376,7 +373,7 @@ La posición parece tender a estabilizarse una vez que se llega al destino final
 \section{Error en altura}
 \label{sec:error-en-altura}
 
-Para determinar el error la información sobre la altura que provee el GPS, se diseñó un experimento, que consiste en tomar medidas en una perpendicular a la esfera terrestre, a 4 alturas diferentes: 0m, 1m, 2m y 3m respecto al suelo.
+Para determinar el error la información sobre la altura que provee el GPS, se dise\~nó un experimento, que consiste en tomar medidas en una perpendicular a la esfera terrestre, a 4 alturas diferentes: 0m, 1m, 2m y 3m respecto al suelo.
 
 \begin{wrapfigure}{r}{0.6\textwidth}
 \vspace{-30pt}
@@ -395,27 +392,27 @@ Se colocó una escalera en el medio del estacionamiento de atrás de la Facultad
 
 En la figura \ref{fig:altura_punto_fijo_fing.png} se observan los resultados del experimento. Es de esperarse que el error sea mayor al estar apoyado sobre el suelo, ya que los rebotes (\textit{multipath}) pueden deteriorar el sistema. El error a 1m de altura es mayor al que se obtuvo con el GPS en el suelo, una posible explicación para esto sería que el GPS estaba muy cerca de la escalera metálica, lo cual podría introducir una cantidad significativa de rebotes.
 
-Los resultados de este experimento llevan a pensar que el GPS da información estable si se encuentra a al menos 2m del suelo. Esto no parece ser un problema, ya que el cuadricóptero volará a más de 2m de altura.
+Los resultados de este experimento llevan a pensar que el GPS da información estable si se encuentra a al menos 2m del suelo. Esto no parece ser un problema, ya que el cuadricóptero volará a alturas superiores.
 
 \section{Tiempo de \textit{warmup}}
 \label{sec:tiempo-de-warmup}
 
-El tiempo que demora el GPS en adquirir un \textit{fix} depende de si estaba frío, o si estaba andando previamente.
+El tiempo que demora el GPS en adquirir un \textit{fix} depende de si estaba apagado, o si estaba previamente en funcionamiento.
 \begin{itemize}
 \item \textbf{Frío}: Aproximadamente 40 segundos.
 \item \textbf{Caliente}: Entre 3 y 5 segundos.
 \end{itemize}
 
-Esto implicaría que al prender el cuadricóptero, habría que esperar unos 40 segundos para obtener señal del GPS, y que si por algún motivo se pierde la conexión con el GPS, habrá que esperar entre 3 y 5 segundo antes de contar con datos útiles nuevamente.
+Esto implicaría que al prender el cuadricóptero, habría que esperar unos 40 segundos para obtener se\~nal del GPS, y que si por algún motivo se pierde la conexión con el GPS, habrá que esperar entre 3 y 5 segundo antes de contar con datos útiles nuevamente.
 
 \section{Tasa de muestreo}
 \label{sec:tasa-de-muestreo}
 
 El GPS bajo funcionamiento normal trabaja a 1Hz. Se observó que estando quieto, a veces repite información, y la etiqueta como ``válida''. Se observó este comportamiento durante los experimentos de punto fijo, llegando a pasar 30 segundos registrando exactamente la misma información.
 
-Se compararon los datos crudos provenientes del GPS con los que devuelve el GPSD, y se concluyó que el GPSD \textbf{no} es responsable de la repetición de datos, es decir, no es un problema de software, sino que el GPS es el que a veces repite datos.
+Se compararon los datos crudos provenientes del GPS con los que devuelve el GPSD, y se concluyó que el GPSD \textbf{no} es responsable de la repetición de datos, es decir, no es un problema de software, sino que el GPS es quien env\'ia datos repetidos.
 
-Al loguear trayectorias de movimiento permanente, como un recorrido en bicicleta de 15 minutos, no se observó más de 4 segundo de corrido de datos repetidos.
+Al loguear trayectorias de movimiento permanente, como un recorrido en bicicleta de 15 minutos, no se observaron  datos repetiduos durante más de 4 segundos.
 
 No parece razonable que el cálculo de la posición dé \textit{exactamente} lo mismo durante varias medidas sucesivas, probablemente se trate de un problema interno del GPS.
 
@@ -439,9 +436,9 @@ Se realizaron varios experimentos para analizar si la ubicación que daba el GPS
 
 Sobre un mapa de Montevideo, se graficaron trayectorias conocidas, con el objetivo de verificar que los datos provenientes del GPS eran ``razonables''.
 
-No se observo un offset evidente y constante, por lo que se asume el GPS \textbf{no} introduce un offset, o por lo menos no una constante, que se pueda compensar corriendo todos los datos por una cantidad fija.
+No se observo un corrimiento de los datos evidente y constante, por lo que se asume el GPS \textbf{no} introduce un offset.
 
-En la figura \ref{fig:ponce.png} se observa una trayectoria realizada en bicicleta, con el GPS colocado sobre el trípode, asomando de una mochila. El recorrido fue hacia el sur-oeste, sobre la senda derecha, contra el lado derecho (cerca del cordón). No se observa un offset constante. Se analizaron otras figuras, y se llegaron a conclusiones similares.
+En la figura \ref{fig:ponce.png} se observa una trayectoria realizada en bicicleta, con el GPS colocado sobre el trípode, asomando de una mochila. El recorrido fue hacia el sur-oeste, sobre el cord\'on nor-oeste. No se observa un offset constante. Se analizaron otras figuras, y se lleg\'o a las mismas conclusiones.
 
 \section{Conclusiones}
 \label{sec:conclusion}
@@ -449,15 +446,13 @@ En la figura \ref{fig:ponce.png} se observa una trayectoria realizada en bicicle
 Los siguientes items servirán de guía para la utilización del GPS como instrumento de navegación:
 
 \begin{itemize}
-\item \textbf{Error en las medidas}: Bajo las condiciones anteriores, se concluye que es razonable asumir que las medidas del GPS tienen un \textbf{error menor a 5m}. Esto es un poco menor a las especificaciones dadas por el fabricante del GPS, 5m \emph{CEP}\footnote{\textit{CEP} de Xm: Garantiza que el 50\% de la muestras caerán en un círculo de radio X y centro el promedio de las muestras.}. Es de esperarse que la performance se reduzca al utilizar el GPS en un entorno más agresivo, como el que resultará al colocar el GPS sobre el cuadricóptero, donde estará sujeto a  interferencia electromagnética de los motores, vibraciones, etc.
+\item \textbf{Error en las medidas}: Bajo las condiciones anteriores, se concluye que es razonable asumir que las medidas del GPS tienen un \textbf{error t\'ipico menor a 2.5m}. Los errores son \textbf{siempre inferiores a los 5m\footnote{Con una geometr\'ia adecuada}}. Es de esperarse que la performance se reduzca al utilizar el GPS en un entorno más agresivo, como el que resultará al colocar el GPS sobre el cuadricóptero, donde estará sujeto a  interferencia electromagnética de los motores, vibraciones, etc.
 \item \textbf{Visibilidad}: Es importante asegurar buena visibilidad, la performance del GPS se reduce drásticamente si pierde satélites.
-\item \textbf{Promedios}: Promedios de 2 minutos son suficientes para reducir el error a 2.5m, con una probabilidad del 75\%.
 \item \textbf{Resolución}: El GPS \textbf{no} es adecuado para tareas de navegación con restricciones del orden del metro, pero sí para distancias del orden de decenas de metros.
 \item \textbf{Tasa de muestreo}: El GPS normalmente muestrea a \textbf{1Hz}. Cabe destacar que debe ignorarse información repetida (muestras sucesivas que sea idénticas).
 \item \textbf{Error en altura}: El GPS \textbf{no} es adecuado para determinar la elevación durante el aterrizaje/despegue, ya que a menos de 2m del piso, la estimación de la elevación es muy mala. Será necesario otro sensor (sensor de presión, IR, etc) para asistir durante el despegue/aterrizaje.
 \item \textbf{Tiempo de \textit{fix}}: En frío demora alrededor de 40 segundos, en caliente entre 3 y 5 segundos.
 \end{itemize}
 
-Por último, cabe destacar que los resultados de este informe dan una idea de la performance del GPS en condiciones ``ideales''. Será importante analizar el efecto de las vibraciones y la interferencia electromagnética que introducirá la presencia del cuadricóptero, de manera de ajustar los márgenes de error al contexto en el que se utilizará el GPS.
 
 \end{document}
