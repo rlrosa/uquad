@@ -6,14 +6,14 @@
 \chapter{Diseño del controlador}
 \label{chap:control}
 
-Dentro del ``mundo'' del control lineal, existen diversas t\'ecnicas que nos permiten alcanzar el objetivo trazado de lograr que el cuadric\'optero siga alguna de las trayectorias espec\'ificadas en el cap\'itulo \ref{chap:linealizacion}. Algunas de las t\'ecnicas m\'as utilizadas se centran en el diseño de controladores PID\footnote{Proporcional, integral y derivativo} o LQR\footnote{Linear quadratic regulator}. Ambas t\'ecnicas presentan ventajas y desventajas. En el trabajo realizado en \ref{bib:quadrotor-bible} se propone el control de un cuadric\'optero utilizando un controlador PID. La gran mayor\'ia de controladores en aplicaciones industriales son de este tipo, la principal ventaja que presentan es que se trata de un diseño que tiene una estructura simple y es adecuado para la gran mayor\'ia de procesadores ya que el costo computacional del mismo es pr\'acticamente nulo. El concepto principal es que la señal de entrada a la planta es una funci\'on del error entre el estado deseado y el estado estimado.
+Dentro del ``mundo'' del control lineal, existen diversas t\'ecnicas que nos permiten alcanzar el objetivo trazado de lograr que el cuadric\'optero siga alguna de las trayectorias espec\'ificadas en el cap\'itulo \ref{chap:linealizacion}. Algunas de las t\'ecnicas m\'as utilizadas se centran en el diseño de controladores PID\footnote{Proporcional, integral y derivativo} o LQR\footnote{Linear quadratic regulator}. Ambas t\'ecnicas presentan ventajas y desventajas. En el trabajo realizado en \cite{bib:quadrotor-bible} se propone el control de un cuadric\'optero utilizando un controlador PID. La gran mayor\'ia de controladores en aplicaciones industriales son de este tipo, la principal ventaja que presentan es que se trata de un diseño que tiene una estructura simple y es adecuado para la gran mayor\'ia de procesadores ya que el costo computacional del mismo es pr\'acticamente nulo. El concepto principal es que la señal de entrada a la planta es una funci\'on del error entre el estado deseado y el estado estimado.
 \begin{equation}
 u(t) = K_pe(t)+K_I\int_0^t e(\tau) d\tau +K_d\frac{de(t)}{dt}
 \end{equation}
 
 donde $e(t) = X_d-\hat{X}$, siendo $X_d$ el vector de estados deseado.\\
 
-Es fundamental en esta t\'ecnica de control la determinaci\'on de las constantes. En \ref{bib:quadrotor-bible} se limitan las trayectorias a trayectorias de hovering. En ese supuesto, se realizan algunas aproximaciones que permiten reducir el sistema f\'isico a las siguientes ecuaciones
+Es fundamental en esta t\'ecnica de control la determinaci\'on de las constantes. En \cite{bib:quadrotor-bible} se limitan las trayectorias a trayectorias de hovering. En ese supuesto, se realizan algunas aproximaciones que permiten reducir el sistema f\'isico a las siguientes ecuaciones
 \begin{equation}
 \left(
 \begin{array}{c}
@@ -34,7 +34,7 @@ Donde $U_1, U_2, U_3$ y $U_4$ son combinaciones lineales de los cuadrados de las
 
 Si se intenta controlar el sistema de inter\'es en este trabajo utilizando esta t\'ecnica, nos enfrentar\'iamos al problema de determinar al menos una matriz de realimentaci\'on (si trabajamos solamente con un controlador proporcional). Dicha matriz, debe ser de $12\times4$, es decir que se deben determinar los 48 elementos de la matriz de forma de lograr que la respuesta del sistema sea la deseada. Esta tarea no resulta sencilla, ya que es extremadamente dificultoso comprender exactamente la influencia de cada par\'ametro de la matriz de realimentaci\'on en la ubicaci\'on de los polos en el sistema realimentado incluso para asegurar algo elemental y necesario como la estabilidad del sistema.\\
 
-Por dicho motivo se opto por explorar el camino propuesto por otros trabajos como \ref{bib:lqr-discreto}, donde la t\'ecnica elegida para realizar el control del cuadric\'optero es LQR.
+Por dicho motivo se opto por explorar el camino propuesto por otros trabajos como \cite{bib:lqr-discreto}, donde la t\'ecnica elegida para realizar el control del cuadric\'optero es LQR.
 
 
 \section{Conceptos generales sobre LQR}
@@ -101,7 +101,7 @@ donde:
 \begin{equation}
 \Phi = e^{AT_s} \quad \Gamma = \int_0^{T_s} e^{A s} ds B
 \end{equation}
-Estas relaciones surgen de discretizar el sistema considerando muestreadores de \'orden cero. Por m\'as detalles de este proceso puede consultarse \ref{bib:hakas}.\\
+Estas relaciones surgen de discretizar el sistema considerando muestreadores de \'orden cero. Por m\'as detalles de este proceso puede consultarse \cite{bib:hakas}.\\
 
 El problema de encontrar un regulador \'optimo tambi\'en puede ser planteado en un sisetma discreto si reescribimos la ecuaci\'on \ref{eq:lqr}. 
 \begin{equation}
@@ -109,7 +109,7 @@ El problema de encontrar un regulador \'optimo tambi\'en puede ser planteado en 
 J_{DLQR} = \sum_0^\infty X_k^T Q X_k + U_k^T R U_k
 \end{equation}
 
-En el trabajo realizado en \ref{bib:lqr-discreto} se propone un algoritmo iterativo para obtener la matriz de realimentaci\'on que minimiza $J_{DLQR}$. Debido a las pequeñas diferencias encontradas entre este algor\'itmo y la funci\'on \emph{lqrd} de \emph{MatLab}  se opt\'o por reproducir exactamente este \'ultimo.
+En el trabajo realizado en \cite{bib:lqr-discreto} se propone un algoritmo iterativo para obtener la matriz de realimentaci\'on que minimiza $J_{DLQR}$. Debido a las pequeñas diferencias encontradas entre este algor\'itmo y la funci\'on \emph{lqrd} de \emph{MatLab}  se opt\'o por reproducir exactamente este \'ultimo.
 
 \subsection{Agregado de integradores}
 
@@ -119,6 +119,7 @@ Realizando diversas pruebas se ha comprobado que seg\'un el nivel de bater\'ia d
 
 Surge entonces la necesidad de agregar al controlador cierta robustez frente a errores de caracterizaci\'on del sistema o frente a variaciones del mismo, por ejemplo la tensi\'on de la bater\'ia o un cambio en la masa del sistema\footnote{Para realizar pruebas se disponen de bater\'ias de diverso tamaño (y peso), no parece pr\'actico modificar constantemente la masa del sistema seg\'un la bater\'ia con la que se realiza una determinada prueba.} Esto \'ultimo es fundamental si se planea utilizar el cuadric\'optero por ejemplo para transportar alguna carga \'util.\\
 
+%TODO no existe la fig:bloque2
 El camino a explorar es el de agregar un bloque integrador. El esquema de controlador es ahora el de la figura \ref{fig:bloque2}. Para explicar la utilidad del mismo, continuaremos trabajando con el ejemplo de una trayectoria de hovering en la cual $\omega^*$ est\'a subestimado. En dichas condiciones se obtiene un nuevo punto de equilibro con altura inferior a la deseada. Si realimentamos la integral de la diferencia de altura tenemos una entrada que aumenta con el tiempo hasta que la diferencia de altura sea cero. En este punto el t\'ermino correspondiente a la integral de la diferencia de altura se mantiene constante en un valor positivo y el t\'ermino correspondiente a la realimentaci\'on proporcional es cero, compensando el error en el modelado.\\
 
 El agregado de un bloque integrador lo podemos entender como una ampliaci\'on del vector de estados. La salida del bloque integrador verifica que $\dot{X}_I = X$. Donde $X_I$ corresponde a los estados integrados. La din\'amica del sistema puede ser escrita de la siguiente forma:
@@ -195,7 +196,7 @@ x,y,z,\psi,\varphi,\theta,v_{q_x},v_{q_y},v_{q_z},\omega_{q_x},\omega_{q_y},\ome
 
 \section{Matriz de realimentaci\'on}
 
-Como se explic\'o anteriormente, la matriz de realimentaci\'on es obtenida num\'ericamente gracias al algor\'itmo presentado en \ref{bib:lqr-discreto}. Dicha matriz depende del sistema lineal con el cual se representa cada trayectoria. Por lo tanto para cada trayectoria tendremos que calcular una nueva matriz de realimentaci\'on. Lo fundamental es entonces determinar adecuadamente las matrices Q y R presentadas en \ref{eq:dlqr} de forma de obtener trayectorias adecuadas. Estas matrices fueron determinadas en forma iterativa, modificando los par\'ametros hasta obtener un comportamiento satisfactorio en cuanto a tiempos de respuesta y robustez.\\
+Como se explic\'o anteriormente, la matriz de realimentaci\'on es obtenida num\'ericamente gracias al algor\'itmo presentado en \cite{bib:lqr-discreto}. Dicha matriz depende del sistema lineal con el cual se representa cada trayectoria. Por lo tanto para cada trayectoria tendremos que calcular una nueva matriz de realimentaci\'on. Lo fundamental es entonces determinar adecuadamente las matrices Q y R presentadas en \ref{eq:dlqr} de forma de obtener trayectorias adecuadas. Estas matrices fueron determinadas en forma iterativa, modificando los par\'ametros hasta obtener un comportamiento satisfactorio en cuanto a tiempos de respuesta y robustez.\\
 
 Se entiende que los par\'ametros fundamentales a controlar son los \'angulos de Euler, si el control sobre estos no se hace en forma r\'apida la performance del sistema puede verse afectada.  Las condiciones de vuelo determinadas dependen de que los \'angulos de Pitch y de Roll se encuentren perfectamente ajustados. Consideremos la condici\'on de hovering a modo de ejemplo, si estos \'angulos no son nulos se tiene un sistema que acelera indefinidamente en alguna direcci\'on. Por lo tanto parece importante darle un peso superior al control de estas variables de estado respecto a las restantes. Las matrices de realimentaci\'on se construyen a partir de:
 
