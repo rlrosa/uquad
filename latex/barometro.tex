@@ -64,7 +64,7 @@ Donde:
 \item p0: 	Presión atmosférica estándar a nivel del mar -	101325 Pa.
 \item L :	Gradiente de temperatura\footnote{Tasa de incremento de la temperatura con la altura (es negativa).} -	0.0065 K/m
 \item T0:	Temperatura estándar a nivel del mar -	288.15 K
-\item g :	Constante de gravitación universal -	9.80665 m/s2
+\item g :	Constante de gravitación terrestre -	9.80665 m/s2
 \item M :	Masa molar del aire seco -	0.0289644 kg/mol
 \item R :	Constante universal de los gases - 	8.31447 J/(mol$\cdot$K)
 \end{itemize}
@@ -130,7 +130,7 @@ Se repite este experimento varias veces. En las figuras \ref{fig:1hora_04.pdf} y
 
 Se observa que existe un tiempo de \textit{warm-up} bastante extenso, pero con un rango pequeño. La temperatura tarda entre 15 y 45 minutos en estabilizarse, y en el proceso varía menos de 2\degc. Las muestras del barómetro no parecen estar directamente correlacionadas con la temperatura.
 
-El barómetro no parece ser adecuado para medir la elevación absoluta. En los datos de las figuras \ref{fig:1hora_01.pdf} y \ref{fig:1hora_04.pdf} se observan variaciones de hasta 3 metros en la estimación de la altura en un período de 1 hora. Sin embargo, el error en el corto plazo es significativamente menor que en el largo plazo, parece viable el uso del barómetro como estimador de la altura en el corto plazo. Esto se analiza más adelante.
+El barómetro no parece ser adecuado para medir la elevación absoluta. En los datos de las figuras \ref{fig:1hora_01.pdf} y \ref{fig:1hora_04.pdf} se observan variaciones de hasta 3 metros en la estimación de la altura en un período de 1 hora. Sin embargo, el error en el corto plazo es significativamente menor que en el largo plazo, parece viable el uso del barómetro como estimador de la altura en el corto plazo. Analizaremos este aspecto en secciones posteriores.
 
 \subsection{Caracterización del ruido}
 \label{sec:caract-ruido}
@@ -145,7 +145,7 @@ En los logs de la sección \ref{sec:drift-y-warm-up}, se observa que:
 
 Analizando el ruido en intervalos más pequeños, donde el proceso se puede considerar estacionario, el comportamiento del ruido es muy similar al del ruido blanco.
 
-En la figura \ref{fig:autocorr} se observa la autocorrelación de la muestras tomadas con el barómetro en intervalos de tiempo de 5 minutos, 2 minutos, y 15 segundos.
+En la figura \ref{fig:autocorr} se observa la autocorrelación de la muestras tomadas con el barómetro en intervalos de tiempo de 5 minutos, 2 minutos, 20 segundos y 15 segundos.
 
 Cabe destacar que el ruido se puede considerar estacionario si se usan intervalos de tiempo menores a 15 segundos.
 
@@ -158,7 +158,7 @@ Cabe destacar que el ruido se puede considerar estacionario si se usan intervalo
 	\subfloat[15 segundos]{\label{autocorr_15s_log04.pdf}
 	\includegraphics[width=0.3\textwidth]
 		{./pics_barom/autocorr_15s_log04.pdf}}
-	\subfloat[15 segundos]{\label{autocorr_15s_log04.pdf}
+	\subfloat[Funciones de autocorrelaci\'on para medidas tomadas durante 5 minutos,2 minutos 20 segundos y 15 segundos]{\label{autocorr_15s_log04.pdf}
 	\includegraphics[width=.3\textwidth]
 		{./pics_barom/autocorr.pdf}}
   \caption{Autocorrelación de las muestras del barómetro.}
@@ -169,7 +169,7 @@ Cabe destacar que el ruido se puede considerar estacionario si se usan intervalo
 \subsubsection{Modos de funcionamiento}
 
 \begin{wraptable}{r}{0.45\textwidth}
-\vspace{-40pt}
+\vspace{-20pt}
 \centering
 \begin{tabular}{c|c|c|c|} 
 \cline{2-4}
@@ -197,9 +197,7 @@ La resolución más atractiva parece ser la número 2, en la cual se promedian 4
 
 \subsubsection{Resolución del instrumento}
 
-En la figura \ref{fig:barom_hist_exp4.pdf} se observa un histograma de las diferencias entre muestras sucesivas de los datos del barómetro. Se observa que la mayor parte de los datos saltan de a 25cm. Se esperaba una discretización en niveles de  aproximadamente 8cm, correspondientes a variaciones de presión de 1Pa (la resolución del instrumento).
-
-Puede resultar difícil ver que hay muestras en todos los bins, pero mirando con detalle se puede. Puede deberse a un problema del firmware del sensor, o la construcción del sensor en sí.
+En la figura \ref{fig:barom_hist_exp4.pdf} se observa un histograma de las diferencias entre muestras sucesivas de los datos del barómetro. Se observa que la mayor parte de los datos presentan saltos de25cm. Se esperaba una discretización en niveles de  aproximadamente 8cm, correspondientes a variaciones de presión de 1Pa (la resolución del instrumento). Aunque es dif\'icil de observar se encuentran muestras en todos los bins.
 
 \subsection{Altura absoluta}
 
@@ -221,9 +219,9 @@ En las siguientes figuras se observan los resultados del experimento. Las línea
 
 En la figura \ref{fig:metros-s1.pdf} se observa que para cuando se termina de recorrer la escalera, el error acumulado se llega a los 3 metros. En la \ref{fig:metros-b1.pdf} se observan resultados mejores que en la figura \ref{fig:metros-s1.pdf}. Se repite la subida, y se obtienen resultados similares a los de la figura \ref{fig:subida-bajada-1-2}.
 
-Cabe destacar que la performance durant ela bajada rápida (figura \ref{fig:metros-rapido.pdf}) es muy similar a la que se obtuvo tomando muestras durante 1 minuto, por lo que 
+Cabe destacar que la performance durante la bajada rápida (figura \ref{fig:metros-rapido.pdf}) es muy similar a la que se obtuvo tomando muestras durante 1 minuto, por lo que 
 
-En la figura \ref{fig:metros-err-accum.pdf} se observa la evolución del error acumulado para 2 subidas\footnote{No se incluye una gráfica de la segundo subida, ya es muy similar, en cuanto al error, a la de la primera bajada, pero con un error del orden del de la primer bajada.}, 1 bajada y una bajada rápida.
+En la figura \ref{fig:metros-err-accum.pdf} se observa la evolución del error acumulado para dos subidas\footnote{No se incluye una gráfica de la segunda subida, ya que es similar, en cuanto al error, a la de la primera bajada.}, una bajada y una bajada rápida.
 
 El error en la determinación de la distancia entre un piso y el siguiente se observa en la figura \ref{fig:metros-err-piso-a-piso.pdf}. Dicho error es relativo a la altura de cada piso, que es de aproximadamente 4.3m. Analizando los números con cuidado, se llega a que el error es siempre menor al 10\%.
 
@@ -293,21 +291,7 @@ La altura absoluta registrada por el barómetro cambia considerablemente de una 
 
 En la figura \ref{fig:1-metro-err} se muestra la evolución de los errores relativo y acumulado.
 
-\begin{wrapfigure}{r}{0.34\textwidth}
-\vspace{-10pt}
-	\subfloat[Error acumulado.]
-        {\label{fig:1-metro-error-accum.pdf}
-	\includegraphics[width=.35\textwidth]
-        {./pics_barom/1-metro-error-accum.pdf}}
 
-	\subfloat[Error en la distancia entre pisos.]
-        {\label{fig:1-metro-err-piso-a-piso.pdf}
-	\includegraphics[width=0.35\textwidth]
-        {./pics_barom/1-metro-err-punto-a-punto.pdf}}
-  \caption{}
-\label{fig:1-metro-err}
-\vspace{-110pt}
-\end{wrapfigure}
 
 Del análisis de cada serie de manera independiente:
 \begin{itemize}
@@ -327,9 +311,24 @@ Si se trabaja con las dos series de datos, se obtienen:
 
 \begin{itemize}
 \item Error promedio: $0.07m$
-\item Desviación estándar: $0.38m$
+\item Desviación estándar: $0.38m$\\
 \end{itemize}
 
+\begin{wrapfigure}{r}{0.35\textwidth}
+\vspace{-10pt}
+	\subfloat[Error acumulado.]
+        {\label{fig:1-metro-error-accum.pdf}
+	\includegraphics[width=.35\textwidth]
+        {./pics_barom/1-metro-error-accum.pdf}}
+
+	\subfloat[Error en la distancia entre pisos.]
+        {\label{fig:1-metro-err-piso-a-piso.pdf}
+	\includegraphics[width=0.35\textwidth]
+        {./pics_barom/1-metro-err-punto-a-punto.pdf}}
+  \caption{}
+\label{fig:1-metro-err}
+\vspace{-110pt}
+\end{wrapfigure}
 Pese a tener pocas muestras, a partir de los datos anteriores se puede suponer que el $95.5 \%$ de las veces se tendrán errores inferiores a $0.76m$ en diferencias de un metro. El error se mantiene por debajo de $1m$ al usar pocas (4 muestras, 8, 10, etc) muestras para cada punto. Este error depende del drift del barómetro, y se puede reducir incorporando, de manera periódica, información externa (GPS) sobre la altura absoluta.
 
 En la figura \ref{fig:variando} se observa la variación en la altura absoluta. Si bien cada tramo comienza y termina a una altura que cae dentro del error esperado, hay tramos del principio y del final del experimento (barómetro apoyado en el suelo) entre los que se observa una diferencia en altura de 1.5m. Esto no cae dentro del error esperado. El problema se ve luego de transcurridos varios minutos, tiempo mucho mayor al sugerido en la sección \ref{sec:caract-ruido}. Puede ser causado por el drift y/o por cambios en las condiciones atmosféricas.
