@@ -184,4 +184,5 @@ end
 
 %% Plots
 
-plot_main(x_hat,z,T);
+T_cumsum = cumsum(T);
+plot_main(x_hat,T_cumsum,z,T_cumsum);
