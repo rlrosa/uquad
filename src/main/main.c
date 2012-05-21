@@ -418,8 +418,8 @@ void uquad_conn_lost_handler(int signal_num)
     p = waitpid(-1, &status, WNOHANG);
     if(p == check_net_chld && running)
     {
-	err_log_num("WARN: check_net client died, will ramp down motors! sig num:", signal_num);
-	uquad_state = ST_RAMPING_DOWN;
+	err_log_num("WARN: check_net client died, will kill motors! sig num:", signal_num);
+	quit();
     }
 }
 
