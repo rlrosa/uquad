@@ -154,6 +154,12 @@
 #define LOG_BUKAKE_NAME    "buk"
 
 /**
+ * Display current state estimation on console every X_HAT_STDOUT samples.
+ * If set to 0, then nothing will be displayed.
+ */
+#define X_HAT_STDOUT       300
+
+/**
  * Frequency at which motor controller is updated
  * Must be at least MOT_UPDATE_MAX_US
  *
@@ -457,6 +463,9 @@ int main(int argc, char *argv[]){
 	runs_down   = 0,
 	insane      = 0,
 	ctrl_samples= 0,
+#if X_HAT_STDOUT
+	x_hat_cnt   = 0,
+#endif // X_HAT_STDOUT
 	ts_error    = 0,
 	err_imu     = ERROR_OK,
 	err_gps     = ERROR_OK;
@@ -1781,6 +1790,14 @@ int main(int argc, char *argv[]){
 #endif // LOG_IMU_DATA
 	    end_log_imu:;
 #endif // LOG_IMU_RAW || LOG_IMU_DATA
+
+#if X_HAT_STDOUT
+	    if(x_hat_cnt > X_HAT_STDOUT)
+	    {
+		uquad_mat_dump_vec(kalman->x_hat,stdout,true);
+		x_hat_cnt = 0;
+	    }
+#endif // X_HAT_STDOUT
 
 #if LOG_BUKAKE
 	    uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
