@@ -470,7 +470,7 @@ int main(int argc, char *argv[]){
 	kalman_loops   = 0,
 	ts_error_wait  = 0;
     unsigned char
-	tmp_buff[2];
+	tmp_buff[2] = {0,0};
 
     uquad_bool_t
 	read_ok     = false,
@@ -932,12 +932,12 @@ int main(int argc, char *argv[]){
 	    log_n_continue(retval, "Failed to check stdin for input!");
 	    if(!read_ok)
 		goto end_stdin;
-	    retval = fread(tmp_buff,sizeof(unsigned char),2,stdin);
+	    retval = fread(tmp_buff,sizeof(unsigned char),1,stdin);
 	    if(retval <= 0)
 	    {
 		log_n_jump(ERROR_READ, end_stdin,"No user input detected!");
 	    }
-	    if((retval == 2) && (tmp_buff[0] == RAMP_DOWN))
+	    if(tmp_buff[0] == RAMP_DOWN)
 	    {
 		if(uquad_state != ST_RUNNING)
 		{
