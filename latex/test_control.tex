@@ -8,7 +8,7 @@ El controlador diseñado se comporta adecuadamente en lo que respecta a las simu
 
 \section{Control del subsistema del Roll}
 
-Para lograr el correcto funcionamiento del cuadric\'optero es fundamental que el control sobre los \'angulos de Pitch y de Roll se comporte de buena forma. A modo de ejemplo, es imposible lograr el equilibrio mec\'anico si dichos \'angulos difieren de cero. Por dicha raz\'on, previo a realizar pruebas sobre el sistema completo es necesario asegurarnos que los subsistemas del  Roll y del Pitch funcionan correctamente. De acuerdo al modelo f\'isico del sistema desarrollado en \ref{chap:modelo_fisico} ni el Roll ni el Pitch son subsistemas independientes entre s\'i, adem\'as ambos dependen de la velocidad angular seg\'un $\vec{k}_q$. Sin embargo, dichos \'angulos toman valores cercanos a cero en las trayectorias de inter\'es, en este caso se puede realizar la aproximaci\'on de que ambos sistemas son independientes.\\
+Para lograr el correcto funcionamiento del cuadric\'optero es fundamental que el control sobre los \'angulos de Pitch y de Roll se comporte de buena forma. A modo de ejemplo, es imposible lograr el equilibrio mec\'anico si dichos \'angulos difieren de cero. Por dicha raz\'on, previo a realizar pruebas sobre el sistema completo es necesario asegurarnos que los subsistemas del  Roll y del Pitch funcionan correctamente. De acuerdo al modelo f\'isico del sistema desarrollado en \ref{chap:modelo} ni el Roll ni el Pitch son subsistemas independientes entre s\'i, adem\'as ambos dependen de la velocidad angular seg\'un $\vec{k}_q$. Sin embargo, dichos \'angulos toman valores cercanos a cero en las trayectorias de inter\'es, en este caso se puede realizar la aproximaci\'on de que ambos sistemas son independientes.\\
 
 \begin{wrapfigure}{r}{0.55\textwidth}
 	\vspace{-20pt}
@@ -21,7 +21,10 @@ Para lograr el correcto funcionamiento del cuadric\'optero es fundamental que el
 A partir de esta consideraci\'on se procede a fijar al cuadric\'optero sobre dos gu\'ias como se muestra en la figura \ref{fig:psidisp}, de forma de eliminar todos los grados de libertad del sistema excepto el \'angulo de Roll y la velocidad angular correspondiente al eje de rotaci\'on del Roll. Se realizan dos pruebas: la primera consiste en que el sistema alcance la posic\'on de equilibrio ($\psi = 0$), la segunda consiste en alejar al sistema del equilibrio y lograr que vuelva al punto de equilibrio. 
 
 \subsection{Equilibrio}
-A partir de la matriz determinada originalmente en las simulaciones se realizaron algunas modificaciones a efectos de lograr una performance m\'as adecuada del sistema. En lo que respecta al control del \'angulo en cuesti\'on la relaci\'on entre el coeficiente de la matriz \ref{eq:Qlqr}
+A partir de la matriz determinada originalmente en las simulaciones se realizaron algunas modificaciones a efectos de lograr una performance m\'as adecuada del sistema.
+
+%TODO terminar
+%En lo que respecta al control del \'angulo en cuesti\'on la relaci\'on entre el coeficiente de la matriz \ref{eq:Qlqr}
 
 \section{Control del subsistema del Yaw}
 

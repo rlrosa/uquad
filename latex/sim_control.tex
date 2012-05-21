@@ -225,6 +225,7 @@ Los ruidos que se han menejado hasta aqu\'i corresponden a las medidas directa d
 En lo que respecta al ruido de la velocidad no se puede trabajar simplemente con las medidas de los sensores ya que no se tiene ninguna medida directa de la velocidad. Se podr\'ia integrar la medida de aceleraci\'on obtenida de los aceler\'ometros para obtener valores de velocidad, pero el error introducido en la integraci\'on implican una deriva en la velocidad inaceptable, por lo que no tiene sentido en pensar esta magnitud con un ruido asociado, excepto que se trabaje con las estimaci\'on del vector de estados.\\ 
 
 \section{Robustez frente a variaciones en el modelo}
+\label{sec:robustez}
 
 En este punto nos concentraremos en analizar el comprtamiento del sistema realimentado frente a algunas variaciones en el mismo. Trabajaremos con la trayectoria de hovering, imponiendo como \emph{setpoint} el reposo y partiendo de esta misma situaci\'on. Analizaremos los dos casos que tienen m\'as importancia pr\'actica: la variaci\'on de la masa y el hecho de que los motores no son perfectamente id\'enticos, causando que sus respuestas al mismo comando $i^2c$ no sea la misma.
 \subsection*{Variaci\'on de la masa}
