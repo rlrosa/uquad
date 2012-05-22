@@ -287,11 +287,7 @@ int imu_comm_calibration_abort(imu_t *imu);
 
 int imu_comm_calibration_get(imu_t *imu, imu_calib_t **calib);
 
-int imu_comm_get_lpf_unread(imu_t *imu, imu_data_t *data);
-
 #endif // IMU_COMM_H
-
-
 
 
 
