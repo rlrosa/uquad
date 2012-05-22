@@ -504,7 +504,9 @@ int imu_comm_init_calibration(imu_t *imu)
  */
 imu_t *imu_comm_init(const char *device){
     imu_t *imu;
-    int retval = ERROR_OK;
+    int
+	i,
+	retval = ERROR_OK;
     imu = (imu_t *)malloc(sizeof(imu_t));
     mem_alloc_check(imu);
     memset(imu,0,sizeof(imu_t));
@@ -515,6 +517,11 @@ imu_t *imu_comm_init(const char *device){
     m3x1_1 = uquad_mat_alloc(3,1);
     if(m3x3 == NULL || m3x1_0 == NULL || m3x1_1 == NULL)
 	goto cleanup;
+    for(i=0; i<IMU_FRAME_BUFF_SIZE; ++i)
+    {
+	retval = imu_data_alloc(imu->data_buff + i);
+	cleanup_if(retval);
+    }
 
     // now connect to the imu
     retval = imu_comm_connect(imu,device);

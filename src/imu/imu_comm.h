@@ -225,6 +225,7 @@ typedef struct imu{
     imu_calib_t calib;
     /// data
     imu_raw_t frame_buff[IMU_FRAME_BUFF_SIZE];
+    imu_data_t data_buff[IMU_FRAME_BUFF_SIZE];
     int frame_buff_latest; // last sample is here
     int frame_buff_next;   // new data will go here
     int unread_data;
