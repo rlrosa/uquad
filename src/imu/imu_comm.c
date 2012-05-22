@@ -84,16 +84,16 @@ int imu_data_zero(imu_data_t *imu_data)
     return retval;
 }
 
-/** 
+/**
  * Copies the data in src to dest.
  * Must previously allocate mem for dest.
  * 
- * @param src 
  * @param dest 
+ * @param src
  * 
  * @return 
  */
-int imu_comm_copy_data(imu_data_t *src, imu_data_t *dest)
+int imu_comm_copy_data(imu_data_t *dest, imu_data_t *src)
 {
     int retval = ERROR_OK;
     if(src == NULL || dest == NULL)
@@ -105,20 +105,20 @@ int imu_comm_copy_data(imu_data_t *src, imu_data_t *dest)
     err_propagate(retval);
     uquad_mat_copy(dest->magn,src->magn);
     err_propagate(retval);
-    dest->temp = src->temp;
-    dest->alt = src->alt;
+    dest->temp      = src->temp;
+    dest->alt       = src->alt;
     dest->timestamp = src->timestamp;
-    return ERROR_OK;
+    return retval;
 }
 
-/** 
+/**
  * Copies the data in src to dest.
  * Must previously allocate mem for dest.
- * 
- * @param src 
- * @param dest 
- * 
- * @return 
+ *
+ * @param src
+ * @param dest
+ *
+ * @return error code
  */
 int imu_comm_copy_frame(imu_raw_t *src, imu_raw_t *dest)
 {
@@ -716,11 +716,11 @@ int imu_comm_calibration_start(imu_t *imu){
     return ERROR_OK;
 }
 
-/** 
- *Abort current IMU calibration process. All progress will be lost.
- *If a previous calibration existed, it will be preserved.
+/**
+ * Abort current IMU calibration process. All progress will be lost.
+ * If a previous calibration existed, it will be preserved.
  *
- *@param imu 
+ *@param imu
  *
  *@return error code
  */
@@ -737,11 +737,11 @@ int imu_comm_calibration_abort(imu_t *imu){
 }
 
 static struct timeval calibration_start_time;
-/** 
- *Integrate calibration data into IMU.
- *Replaces previous calibration, if any existed.
+/**
+ * Integrate calibration data into IMU.
+ * Replaces previous calibration, if any existed.
  *
- *@param imu 
+ *@param imu
  *@param timestamp on the last sample used for the calibration
  *
  *@return error code.
@@ -793,7 +793,7 @@ int imu_comm_calibration_finish(imu_t *imu){
 	imu_data_free(&imu_data_tmp);
     err_propagate(retval);
 
-    imu_comm_copy_data(&imu_data_tmp, &imu->calib.null_est_data);
+    imu_comm_copy_data(&imu->calib.null_est_data, &imu_data_tmp);
     imu_data_free(&imu_data_tmp);
     err_propagate(retval);
 
@@ -810,11 +810,11 @@ int imu_comm_calibration_finish(imu_t *imu){
     return ERROR_OK;
 }
 
-/** 
- *Add frame info to build up calibration.
- *Will divide by frame count after done gathering, to avoid loosing info.
+/**
+ * Add frame info to build up calibration.
+ * Will divide by frame count after done gathering, to avoid loosing info.
  *
- *@param imu 
+ *@param imu
  *
  *@return error code
  */
@@ -856,11 +856,11 @@ int imu_comm_calibration_continue(imu_t *imu){
     return ERROR_OK;
 }
 
-/** 
+/**
  * Add frame to buff
  * Updates unread data and frame_count.
  *
- *@param imu 
+ *@param imu
  *@param new_frame frame to add
  *
  *@return error code
@@ -869,10 +869,13 @@ int imu_comm_add_frame(imu_t *imu, imu_raw_t *new_frame){
     int retval;
 
     retval = imu_comm_copy_frame(new_frame, imu->frame_buff + imu->frame_buff_next);
+    err_propagate(retval);
+    retval = imu_comm_raw2data(imu, new_frame, imu->data_buff + imu->frame_buff_next);
+    err_propagate(retval);
     imu->frame_buff_latest = imu->frame_buff_next;
     imu->frame_buff_next = (imu->frame_buff_next + 1)%IMU_FRAME_BUFF_SIZE;
     ++imu->unread_data;
-    imu->frame_count = uquad_min(imu->frame_count + 1,IMU_AVG_COUNT);
+    imu->frame_count = uquad_min(imu->frame_count + 1,IMU_FILTER_LEN);
 
     err_propagate(retval);
 
@@ -880,7 +883,7 @@ int imu_comm_add_frame(imu_t *imu, imu_raw_t *new_frame){
 }
 
 #if !IMU_COMM_FAKE
-/** 
+/**
  *Takes an array of bytes and parses them according to the format
  *of the frames sent by the IMU, generating an imu_raw_t structure.
  *
@@ -1305,17 +1308,17 @@ int convert_2_euler(imu_data_t *data)
     return ERROR_OK;
 }
 
-/** 
+/**
  * Uses linear model provided by calib to convert raw into valid
  * real world data.
  * Assumes raw is an array of length 3.
- * 
+ *
  * @param imu 
  * @param raw input.
  * @param conv Answer is returned here.
  * @param calib Calibration to use for conversion.
- * 
- * @return 
+ *
+ * @return error code
  */
 static int imu_comm_convert_lin(imu_t *imu, int16_t *raw, uquad_mat_t *conv, imu_calib_lin_t *calib)
 {
@@ -1484,9 +1487,9 @@ int imu_comm_set_z0(imu_t *imu, double z0)
     return ERROR_OK;
 }
 
-/** 
- *Converts raw IMU data to real world data.
- *Requires calibration.
+/**
+ * Converts raw IMU data to real world data.
+ * Requires calibration.
  *
  *@param data raw data
  *@param measurements converted to real world data
@@ -1579,7 +1582,7 @@ int imu_comm_get_raw_latest_unread(imu_t *imu, imu_raw_t *raw){
     return retval;
 }
 
-/** 
+/**
  * Calculates value of the sensor readings from the RAW data, using current imu calibration.
  * This requires a reasonable calibration.
  * Mem must be previously allocated for answer.
@@ -1592,14 +1595,13 @@ int imu_comm_get_raw_latest_unread(imu_t *imu, imu_raw_t *raw){
 int imu_comm_get_data_latest(imu_t *imu, imu_data_t *data){
     int retval = ERROR_OK;
 
-    imu_raw_t *frame = imu->frame_buff + imu->frame_buff_latest;
-    retval = imu_comm_raw2data(imu, frame, data);
+    retval = imu_comm_copy_data(data, imu->data_buff + imu->frame_buff_latest);
     err_propagate(retval);
 
     return retval;
 }
 
-/** 
+/**
  *If unread data exists, then calculates the latest value of the sensor readings
  *from the raw data, using current imu calibration.
  *This requires a reasonable calibration.
@@ -1618,20 +1620,19 @@ int imu_comm_get_data_latest_unread(imu_t *imu, imu_data_t *data){
 	err_check(ERROR_FAIL,"No unread data available.");
     }
 
-    imu_raw_t *frame = imu->frame_buff + imu->frame_buff_latest;
-    retval = imu_comm_raw2data(imu, frame, data);
+    retval = imu_comm_get_data_latest(imu, data);
     err_propagate(retval);
 
     imu->unread_data -= 1;
     return retval;
 }
 
-/** 
- *If unread data exists, gets the latest value of the sensor readings. (raw data).
+/**
+ * If unread data exists, gets the latest value of the sensor readings. (raw data).
  *
- *Decrements the unread count.
+ * Decrements the unread count.
  *
- *@param imu 
+ *@param imu
  *@param data Answer is returned here
  *
  *@return error code
@@ -1649,11 +1650,11 @@ int imu_comm_get_data_raw_latest_unread(imu_t *imu, imu_raw_t *data){
     return retval;
 }
 
-/** 
+/**
  *Return file descriptor corresponding to the IMU.
  *This should be used when polling devices from the main control loop.
  *
- *@param imu 
+ *@param imu
  *@param fds file descriptor is returned here
  *
  *@return error code
@@ -1677,19 +1678,19 @@ int imu_comm_get_fds(imu_t *imu,int *fds)
 // -- -- -- -- -- -- -- -- -- -- -- --
 // Calibration
 // -- -- -- -- -- -- -- -- -- -- -- --
-/** 
+/**
  * Returns true iif calibration data has been loaded from file
- * 
- * @param imu 
- * 
- * @return 
+ *
+ * @param imu
+ *
+ * @return
  */
 uquad_bool_t imu_comm_calib_file(imu_t *imu)
 {
     return imu->calib.calib_file_ready;
 }	
 
-/** 
+/**
  * Returns true iif calibration data has been estimated
  * by calling imu_comm_calibration_start()
  * 
@@ -1723,14 +1724,14 @@ int imu_comm_calib_save(imu_t *imu, const char *filename)
     return ERROR_OK;
 }
 
-/** 
+/**
  *Get IMU calibration.
  *Currently only calibration is null estimation.
  * //TODO:
  *  - gain
  *  - non linearity
  *
- *@param imu 
+ *@param imu
  *@param calibration return data here (check return error code before using)
  *
  *@return error code
@@ -1757,7 +1758,7 @@ int imu_comm_calibration_get(imu_t *imu, imu_calib_t **calib){
  */
 uquad_bool_t imu_comm_avg_ready(imu_t *imu)
 {
-    return imu->frame_count >= IMU_AVG_COUNT;
+    return imu->frame_count >= IMU_FILTER_LEN;
 }
 
 /**
@@ -1780,6 +1781,29 @@ int imu_comm_add_data(imu_data_t *A, imu_data_t *B)
     err_propagate(retval);
     A->temp += B->temp;
     A->alt += B->alt;
+    return retval;
+}
+
+/**
+ * Multiplies a data struct by a scalar value (in place).
+ * After execution, A == (A*k)
+ *
+ * @param A
+ * @param k scalar value.
+ *
+ * @return error code.
+ */
+int imu_comm_scalmul_data(imu_data_t *A, double k)
+{
+    int retval = ERROR_OK;
+    retval = uquad_mat_scalar_mul(A->acc,NULL,k);
+    err_propagate(retval);
+    retval = uquad_mat_scalar_mul(A->gyro,NULL,k);
+    err_propagate(retval);
+    retval = uquad_mat_scalar_mul(A->magn,NULL,k);
+    err_propagate(retval);
+    A->temp *= k;
+    A->alt  *= k;
     return retval;
 }
 
@@ -1831,33 +1855,36 @@ int circ_buff_prev_index(int curr_index, int buff_len)
 }
 
 /**
- * Calculates average based on IMU_AVG_COUNT samples.
- * Will sum up, and then normalize.
+ * Filters data using h().
  *
  * @param imu
  * @param data answer is returned here.
  *
  * @return error code.
  */
-int imu_comm_get_avg(imu_t *imu, imu_data_t *data)
+int imu_comm_get_filtered(imu_t *imu, imu_data_t *data)
 {
     int retval, i, j;
-    if(imu->frame_count < IMU_AVG_COUNT)
+    static double h[IMU_FILTER_LEN]={0.2, 0.2, 0.2, 0.2, 0.1, 0.1};
+    if(imu->frame_count < IMU_FILTER_LEN)
     {
-	err_check(ERROR_IMU_AVG_NOT_ENOUGH,"Not enough samples to average!");
+	err_check(ERROR_IMU_FILTER_LEN_NOT_ENOUGH,"Not enough samples to average!");
     }
     j = imu->frame_buff_latest;
-    for(i = 0; i < IMU_AVG_COUNT; ++i)
+    for(i = 0; i < IMU_FILTER_LEN; ++i)
     {
 	if(i == 0)
 	{
 	    /// initialize sum
-	    retval = imu_comm_raw2data(imu, imu->frame_buff + j,data);
+	    retval = imu_comm_copy_data(data, imu->data_buff + j);
 	    err_propagate(retval);
+	    retval = imu_comm_scalmul_data(data,h[i]);
 	}
 	else
 	{
-	    retval = imu_comm_raw2data(imu, imu->frame_buff + j,&imu->tmp_avg);
+	    retval = imu_comm_copy_data(&imu->tmp_avg,imu->data_buff + j);
+	    err_propagate(retval);
+	    retval = imu_comm_scalmul_data(&imu->tmp_avg, h[i]);
 	    err_propagate(retval);
 	    /// add to sum
 	    retval = imu_comm_add_data(data, &imu->tmp_avg);
@@ -1865,14 +1892,12 @@ int imu_comm_get_avg(imu_t *imu, imu_data_t *data)
 	}
 	j = circ_buff_prev_index(j,IMU_FRAME_BUFF_SIZE);
     }
-    retval = imu_data_normalize(data, IMU_AVG_COUNT);
-    err_propagate(retval);
     return retval;
 }
 
 
 /**
- * Get average using the latest data, with at least 1
+ * Get filtered data using the latest data, with at least 1
  * unread sample.
  *
  *
@@ -1881,14 +1906,14 @@ int imu_comm_get_avg(imu_t *imu, imu_data_t *data)
  *
  * @return
  */
-int imu_comm_get_avg_unread(imu_t *imu, imu_data_t *data)
+int imu_comm_get_filtered_unread(imu_t *imu, imu_data_t *data)
 {
     int retval;
     if(!imu_comm_unread(imu))
     {
 	err_check(ERROR_IMU_NO_UPDATES,"No unread data!");
     }
-    retval = imu_comm_get_avg(imu,data);
+    retval = imu_comm_get_filtered(imu,data);
     err_propagate(retval);
     --imu->unread_data;
     return ERROR_OK;
