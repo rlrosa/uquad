@@ -1288,7 +1288,7 @@ int main(int argc, char *argv[]){
 	    }
 
 	    /// Get new unread data
-	    if(!imu_comm_unread(imu) || !imu_comm_avg_ready(imu))
+	    if(!imu_comm_unread(imu) || !imu_comm_filter_ready(imu))
 	    {
 		// we only used averaged data
 		goto end_imu;
@@ -1296,10 +1296,10 @@ int main(int argc, char *argv[]){
 
 	    gettimeofday(&tv_tmp,NULL);
 
-	    //	    err_imu = imu_comm_get_avg_unread(imu,&imu_data);
-	    //	    log_n_jump(err_imu,end_imu,"IMU did not have new avg!");
-	    err_imu = imu_comm_get_lpf_unread(imu,&imu_data);
-	    log_n_jump(err_imu,end_imu,"LPF failed");
+	    err_imu = imu_comm_get_filtered_unread(imu,&imu_data);
+	    log_n_jump(err_imu,end_imu,"IMU did not have new avg!");
+	    //	    err_imu = imu_comm_get_lpf_unread(imu,&imu_data);
+	    //	    log_n_jump(err_imu,end_imu,"LPF failed");
 
 	    err_imu = uquad_timeval_substract(&tv_diff,tv_tmp,tv_last_imu);
 	    if(err_imu < 0)

@@ -528,7 +528,7 @@ imu_t *imu_comm_init(const char *device){
     cleanup_if(retval);
 
     // Get aux memory
-    retval = imu_data_alloc(&imu->tmp_avg);
+    retval = imu_data_alloc(&imu->tmp_filt);
     cleanup_if(retval);
 
     // Send default values to IMU, then get it running, just in case it wasn't
@@ -567,15 +567,21 @@ imu_t *imu_comm_init(const char *device){
  * @return 
  */
 int imu_comm_deinit(imu_t *imu){
-    int retval = ERROR_OK;
+    int
+	i,
+	retval = ERROR_OK;
     if(imu == NULL)
     {
 	err_log("WARN: Nothing to free.");
 	return ERROR_OK;
     }
+    for(i=0; i<IMU_FRAME_BUFF_SIZE; ++i)
+    {
+	imu_data_free(imu->data_buff + i);
+    }
     retval = imu_comm_disconnect(imu);
     // ignore answer and keep dying, leftovers are not reliable
-    imu_data_free(&imu->tmp_avg);
+    imu_data_free(&imu->tmp_filt);
     //TODO chec if more to free
     imu_comm_free_calib(imu->calib);
     uquad_mat_free(m3x3);
@@ -1756,7 +1762,7 @@ int imu_comm_calibration_get(imu_t *imu, imu_calib_t **calib){
  *
  * @return if true, the can perform average
  */
-uquad_bool_t imu_comm_avg_ready(imu_t *imu)
+uquad_bool_t imu_comm_filter_ready(imu_t *imu)
 {
     return imu->frame_count >= IMU_FILTER_LEN;
 }
@@ -1882,12 +1888,12 @@ int imu_comm_get_filtered(imu_t *imu, imu_data_t *data)
 	}
 	else
 	{
-	    retval = imu_comm_copy_data(&imu->tmp_avg,imu->data_buff + j);
+	    retval = imu_comm_copy_data(&imu->tmp_filt,imu->data_buff + j);
 	    err_propagate(retval);
-	    retval = imu_comm_scalmul_data(&imu->tmp_avg, h[i]);
+	    retval = imu_comm_scalmul_data(&imu->tmp_filt, h[i]);
 	    err_propagate(retval);
 	    /// add to sum
-	    retval = imu_comm_add_data(data, &imu->tmp_avg);
+	    retval = imu_comm_add_data(data, &imu->tmp_filt);
 	    err_propagate(retval);
 	}
 	j = circ_buff_prev_index(j,IMU_FRAME_BUFF_SIZE);

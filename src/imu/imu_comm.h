@@ -230,9 +230,9 @@ typedef struct imu{
     int frame_buff_next;   // new data will go here
     int unread_data;
 
-    /// avg
-    int frame_count;       // # of frames available for avg
-    imu_data_t tmp_avg;    // Aux mem used for avg.
+    /// filtered data
+    int frame_count;       // # of frames available for filtering
+    imu_data_t tmp_filt;    // Aux mem used for filter.
 }imu_t;
 
 imu_t *imu_comm_init(const char *device);
@@ -263,9 +263,9 @@ int imu_comm_get_data_latest_unread(imu_t *imu, imu_data_t *data);
 int imu_comm_get_raw_latest(imu_t *imu, imu_raw_t *raw);
 int imu_comm_get_raw_latest_unread(imu_t *imu, imu_raw_t *raw);
 
-uquad_bool_t imu_comm_avg_ready(imu_t *imu);
-int imu_comm_get_avg(imu_t *imu, imu_data_t *data);
-int imu_comm_get_avg_unread(imu_t *imu, imu_data_t *data);
+uquad_bool_t imu_comm_filter_ready(imu_t *imu);
+int imu_comm_get_filtered(imu_t *imu, imu_data_t *data);
+int imu_comm_get_filtered_unread(imu_t *imu, imu_data_t *data);
 
 int imu_comm_raw2data(imu_t *imu, imu_raw_t *raw, imu_data_t *data);
 
