@@ -131,7 +131,15 @@ Se deduce entonces que el vuelo en l\'inea recta queda determinado al fijar las 
 
 Con las ecuaciones desarrolladas hasta este instante nos es imposible realizar movimientos con velocidades angulares distintas de cero sin que el sistema resultante sea variante en el tiempo. Si imponemos que la velocidad angular del sistema sea distinta a cero se tiene que al menos una de las derivadas de los \'agulos de Euler es distinta de cero. Por lo tanto tenemos al menos alg\'un \'angulo de Euler variante en el tiempo. Para poder obtener un movimiento circular se realiza el cambio de variable en el MVE en lo que respecta a las ecuaciones de la derivada de la posici\'on propuesto en \cite{bib:auion}. \\
 
-%TODO faltan imagenes para explicar el mov circular
+\begin{wrapfigure}{l}{0.50\textwidth}
+  \begin{center}
+  \vspace{-10pt}
+    \includegraphics[width=0.40\textwidth]{./pics_linealizacion/circulo.pdf}
+  \end{center}
+  \caption{Vuelo en c\'iculo}
+  \label{fig:circulo}
+\end{wrapfigure}
+
 El cambio de variables en cuesti\'on consiste en expresar la posici\'on (exclusivamente para los movimientos circulares) en la base del cuadric\'optero. Supongamos que el cuadric\'optero se encuentra realizando un movimiento tal que su proyecci\'on sobre el plano horizontal ($z=0$) es circular. Podemos describir la posici\'on en todo momento tomando como origen el centro de dicho c\'irculo. Como se observa en la figura \ref{fig:circulo} la posici\'on en dicho plano se puede expresar como $-R\vec{j}_1$\footnote{Esto es debido a que se elige que el vector $\vec{i}_q$ sea tangente a los c\'irculos descriptos. El razonamiento es an\'alogo si se desea que el vector $\vec{j}_q$ sea tangente al c\'irculo, en este caso debe expresarse la posic\'on del sistema como $R\vec{i}_1$}. Donde $R$, es el radio del c\'irculo y $\vec{j}_1$ es un vector de la base que se obtiene al realizar la primera rotaci\'on de Euler definida en \ref{eq:bases}. Multiplicando el vector $-R\vec{j_1}$ por la matriz cambio de base $H_2^qH_1^2$ definida en \ref{eq:bases} se obtiene la posici\'on expresada en el sistema $S_q$. Como $\vec{j}_1$ es invariante frente a la rotaci\'on $H_1^2$, alcanza con multiplicar dicho vector por $H_2^q$ obteniendo as\'i:
 \begin{equation}
 \label{eq:pos_circ}

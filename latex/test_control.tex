@@ -18,13 +18,83 @@ Para lograr el correcto funcionamiento del cuadric\'optero es fundamental que el
 	\label{fig:psidisp}
 \end{wrapfigure}
 
-A partir de esta consideraci\'on se procede a fijar al cuadric\'optero sobre dos gu\'ias como se muestra en la figura \ref{fig:psidisp}, de forma de eliminar todos los grados de libertad del sistema excepto el \'angulo de Roll y la velocidad angular correspondiente al eje de rotaci\'on del Roll. Se realizan dos pruebas: la primera consiste en que el sistema alcance la posic\'on de equilibrio ($\psi = 0$), la segunda consiste en alejar al sistema del equilibrio y lograr que vuelva al punto de equilibrio. 
+A partir de esta consideraci\'on se procede a fijar al cuadric\'optero sobre dos gu\'ias como se muestra en la figura \ref{fig:psidisp}, de forma de eliminar todos los grados de libertad del sistema excepto el \'angulo de Roll y la velocidad angular correspondiente al eje de rotaci\'on del Roll. Se realizan dos pruebas: la primera consiste en que el sistema alcance la posic\'on de equilibrio ($\psi = 0$), la segunda consiste en alejar al sistema del equilibrio y lograr que vuelva al punto de equilibrio.\\
 
-\subsection{Equilibrio}
-A partir de la matriz determinada originalmente en las simulaciones se realizaron algunas modificaciones a efectos de lograr una performance m\'as adecuada del sistema.
+El controlador posee dos terminos proporcionales: uno para el \'angulo $\psi$ y el otro para la velocidad angular $\omega_{qx}$ y un t\'ermino integral asociado a la integral de $\psi$. El modelo de este subsistema es el siguiente: 
 
-%TODO terminar
-%En lo que respecta al control del \'angulo en cuesti\'on la relaci\'on entre el coeficiente de la matriz \ref{eq:Qlqr}
+\begin{equation}
+\left(\begin{array}{c}
+\dot{\psi}\\
+\dot{\omega}_{qx}\\
+\dot{\psi_I}
+\end{array}\right) = \left(\begin{array}{ccc}
+0 & 1 & 0\\
+-\frac{MgL^\prime}{I_{xx}} & 0 & 0\\
+1 & 0 &1
+\end{array}\right) + b\left(\begin{array}{cc}
+0 & 0\\
+1 & -1\\
+0 & 0\\
+\end{array}\right) \left(\begin{array}{c}
+\omega_2 \\
+\omega_4
+\end{array}\right)
+\end{equation}
+
+Donde $b$ y $\frac{MgL^\prime}{I_{xx}}$ son los obtenidos en la secci\'on \ref{chap:verificaciones}. La matriz de realimentaci\'on obtenida trabajando con las matrices $Q$ y $R$ definidas en \ref{eq:Q_R_roll} es:
+
+\begin{equation}
+\label{K_roll}
+K = \left( \begin{array}{ccc}
+44.43 & 10.78 &21.36\\
+-44.430 & -10.78 &-21.36
+\end{array}\right)
+\end{equation}
+\begin{equation}
+\label{eq:Q_R_roll}
+Q = \left(\begin{array}{ccc}
+1000 & 0 & 0\\
+0 & 1 & 0\\
+0 & 0 & 100 
+\end{array} \right) \quad R =\left(\begin{array}{cc}
+0.1 & 0 \\
+0 & 0.1
+\end{array}\right)
+\end{equation}\\	
+
+
+\begin{wrapfigure}{r}{0.55\textwidth}
+	\vspace{-20pt}
+	\centering
+	\includegraphics[width=0.4\textwidth]{./pics_test_control/psi.pdf}
+	\caption{\'Angulo de Roll en lazo cerrado}
+	\label{fig:psi}
+\end{wrapfigure}
+
+En la figura \ref{fig:psi} se observa la respuesta del \'angulo de Roll en lazo cerrado. Con el setpoint fijo en $\psi = 0$ se observa que el m\'odulo del \'angulo es siempre inferior a los $2^\circ$ a excepci\'on del arranque y en un pico cerca de los 23 segundos. En este sentido se puede afirmar que el control implementado es exitoso, ya que logra el objetivo planteado. Puede observarse adem\'as que una vez que el controlador comienza a actuar se produce un cambio en el \'angulo alcanzando un valor cercano a los $5 ^\circ$. Este error es producido por la diferencia del empuje de los motores frente a una misma orden. El control integral es el encargado de corregir esta diferencia en aproximadamente $2.5$ segundos, un tiempo que es considerado aceptable.\\
+
+\begin{wrapfigure}{l}{0.55\textwidth}
+	\vspace{-20pt}
+	\centering
+	\includegraphics[width=0.4\textwidth]{./pics_test_control/psi_sin_con_int.pdf}
+	\caption{\'Angulo de Roll en lazo cerrado}
+	\label{fig:psi_sin_con_int}
+\end{wrapfigure}
+
+En la figura \ref{fig:psi_sin_con_int} se puede observar la diferencia entre utilizar un controlador puramente proporcional y un controlador proporcional con una correcci\'on integral. El primero no logra corregir el error sistem\'atico debido a la diferencia en el empuje de los motores alcanzando as\'i un punto de equilibrio distinto del \emph{set point}. El controlador con el t\'ermino integral si logra corregir este error y el \'angulo $\psi$ toma valores en el entorno del \emph{set point}.\\
+
+
+\begin{wrapfigure}{r}{0.50\textwidth}
+	\vspace{10pt}
+	\centering
+	\includegraphics[width=0.4\textwidth]{./pics_test_control/psi_esc.pdf}
+	\caption{Respuesta al escal\'on del \'angulo de Roll en lazo cerrado}
+	\label{fig:psi_esc}
+\end{wrapfigure}
+
+Resulta fundamental entender como es la respuesta del sistema realimentado para apartamientos considerables respecto del equilibrio. Dicha situaci\'on puede producirse por diversas razones, un leve golpe de alg\'un agente externo o una simple turbulencia. En la figura \ref{fig:psi_esc} puede observarse la respuesta al escal\'on del sistema en lazo cerrado	con \'angulo inicial de aproximadamente $23 ^\circ$ y \emph{set point} $0 ^\circ$. La respuesta del sistema es muy buena, ya que se logra el valor de \emph{set point} en aproximadamente un segundo y la misma presenta un sobretiro del orden del $10\%$. \\
+
+Con este an\'alisis se concluye que la matriz de realimentaci\'on obtenida es adecuada para controlar el subsistema del \'angulo de Roll. El comportamiento del \'angulo de Pitch es similar al de Roll y por dicho motivo no ser\'a presentado. 
 
 \section{Control del subsistema del Yaw}
 
