@@ -1474,10 +1474,10 @@ int main(int argc, char *argv[]){
 		quit_log_if(retval, "Failed to initiate kalman pos estimator from GPS data!");
 #endif // USE_GPS
 		// Euler angles
-		pp->sp->x->m_full[SV_THETA] = imu_data.magn->m_full[2];
+		pp->sp->x->m_full[SV_THETA] = imu_data.magn->m_full[2]; // [rad]
 		pp->sp->x->m_full[SV_PSI]   = 0.0; // [rad]
 		pp->sp->x->m_full[SV_PHI]   = 0.0; // [rad]
-		pp->sp->x->m_full[SV_Z]     = 1.5; // [rad]
+		pp->sp->x->m_full[SV_Z]     = 1.5; // [m]
 		// Motor speed
 		for(i=0; i<MOT_C; ++i)
 		{
@@ -1499,7 +1499,6 @@ int main(int argc, char *argv[]){
 	    //	    quit_log_if(retval, "Failed to initiate kalman vel estimator from GPS data!");
 #endif // USE_GPS
 	    // Euler angles
-	    pp->sp->x->m_full[SV_Z] = 0;
 	    kalman->x_hat->m_full[SV_PSI]   = imu_data.magn->m_full[0];
 	    kalman->x_hat->m_full[SV_PHI]   = imu_data.magn->m_full[1];
 	    kalman->x_hat->m_full[SV_THETA] = imu_data.magn->m_full[2];
