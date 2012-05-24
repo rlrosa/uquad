@@ -1,6 +1,7 @@
 #include "imu_comm.h"
 #include <uquad_aux_io.h>
 #include <uquad_aux_time.h>
+#include <macros_misc.h>
 #include <math.h> // for pow()
 #include <fcntl.h> // for open()
 /// Aux mem
@@ -477,6 +478,14 @@ imu_t *imu_comm_init(const char *device){
 	cleanup_if(retval);
     }
 
+    // Set up filter, must have IMU_FILTER_LEN coefs
+    imu->h[0] = 0.2;
+    imu->h[1] = 0.2;
+    imu->h[2] = 0.2;
+    imu->h[3] = 0.2;
+    imu->h[4] = 0.1;
+    imu->h[5] = 0.1;
+
     // now connect to the imu
     retval = imu_comm_connect(imu,device);
     cleanup_if(retval);
@@ -670,6 +679,32 @@ int imu_comm_calibration_abort(imu_t *imu){
     return ERROR_OK;
 }
 
+/**
+ * Updates values of converted IMU data, using current
+ * calibration.
+ *
+ * @param imu
+ *
+ * @return error code.
+ */
+int imu_comm_update_filtered(imu_t *imu)
+{
+    int
+	i,
+	j,
+	retval = ERROR_OK;
+    j = imu->frame_buff_latest;
+    for(i = 0; i < IMU_FILTER_LEN; ++i)
+    {
+	retval = imu_comm_raw2data(imu,
+				   imu->frame_buff +j,
+				   imu->data_buff  +j);
+	err_propagate(retval);
+	j = circ_buff_prev_index(j,IMU_FRAME_BUFF_SIZE);
+    }
+    return retval;
+}
+
 static struct timeval calibration_start_time;
 /**
  * Integrate calibration data into IMU.
@@ -741,6 +776,9 @@ int imu_comm_calibration_finish(imu_t *imu){
     imu->calib.calib_estim_ready = true;
     imu->status = IMU_COMM_STATE_RUNNING;
 
+    retval = imu_comm_update_filtered(imu);
+    err_propagate(retval);
+
     return ERROR_OK;
 }
 
@@ -782,6 +820,8 @@ int imu_comm_calibration_continue(imu_t *imu){
     calib_accum.temp += (uint32_t) new_frame.temp;
     calib_accum.pres += (uint64_t) new_frame.pres;
 
+    --imu->unread_data;
+
     if(--imu->calib.calibration_counter == 0){
 	retval = imu_comm_calibration_finish(imu);
 	err_propagate(retval);
@@ -804,14 +844,16 @@ int imu_comm_add_frame(imu_t *imu, imu_raw_t *new_frame){
 
     retval = imu_comm_copy_frame(imu->frame_buff + imu->frame_buff_next, new_frame);
     err_propagate(retval);
-    retval = imu_comm_raw2data(imu, new_frame, imu->data_buff + imu->frame_buff_next);
-    err_propagate(retval);
+    if(imu_comm_calib_estim(imu))
+    {
+	/// save converted data only if we have a calibration to convert with.
+	retval = imu_comm_raw2data(imu, new_frame, imu->data_buff + imu->frame_buff_next);
+	err_propagate(retval);
+    }
     imu->frame_buff_latest = imu->frame_buff_next;
     imu->frame_buff_next = (imu->frame_buff_next + 1)%IMU_FRAME_BUFF_SIZE;
     ++imu->unread_data;
     imu->frame_count = uquad_min(imu->frame_count + 1,IMU_FILTER_LEN);
-
-    err_propagate(retval);
 
     return ERROR_OK;
 }
@@ -1623,25 +1665,9 @@ int imu_data_normalize(imu_data_t *data, int k)
     return retval;
 }
 
-/**
- * Get previous index of circ buffer
- *
- * @param curr_index
- *
- * @return answer
- */
-int circ_buff_prev_index(int curr_index, int buff_len)
-{
-    curr_index -= 1;
-    if(curr_index < 0)
-	curr_index += buff_len;
-    return curr_index;
-}
-
 int imu_comm_get_filtered(imu_t *imu, imu_data_t *data)
 {
     int retval, i, j;
-    static double h[IMU_FILTER_LEN]={0.2, 0.2, 0.2, 0.2, 0.1, 0.1};
     if(imu->frame_count < IMU_FILTER_LEN)
     {
 	err_check(ERROR_IMU_FILTER_LEN_NOT_ENOUGH,"Not enough samples to average!");
@@ -1654,13 +1680,14 @@ int imu_comm_get_filtered(imu_t *imu, imu_data_t *data)
 	    /// initialize sum
 	    retval = imu_comm_copy_data(data, imu->data_buff + j);
 	    err_propagate(retval);
-	    retval = imu_comm_scalmul_data(data,h[i]);
+	    retval = imu_comm_scalmul_data(data,imu->h[i]);
+	    err_propagate(retval);
 	}
 	else
 	{
 	    retval = imu_comm_copy_data(&imu->tmp_filt,imu->data_buff + j);
 	    err_propagate(retval);
-	    retval = imu_comm_scalmul_data(&imu->tmp_filt, h[i]);
+	    retval = imu_comm_scalmul_data(&imu->tmp_filt, imu->h[i]);
 	    err_propagate(retval);
 	    /// add to sum
 	    retval = imu_comm_add_data(data, &imu->tmp_filt);

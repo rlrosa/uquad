@@ -33,7 +33,7 @@
  * See imu_comm_read_frame_ascii() for details on the
  * format of the log file.
  */
-#define IMU_COMM_FAKE                     0
+#define IMU_COMM_FAKE                     1
 /**
  * Definition of default sampling period, in microseconds.
  * Should match code running on IMU.
@@ -233,6 +233,7 @@ typedef struct imu{
     /// filtered data
     int frame_count;       // # of frames available for filtering
     imu_data_t tmp_filt;    // Aux mem used for filter.
+    double h[IMU_FILTER_LEN];
 }imu_t;
 
 /**
