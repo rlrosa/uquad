@@ -80,7 +80,7 @@ gps_file  = [log_path '/gps.log'];
 %% Load IMU data
 
 % Imu
-imu_file = 'tests/main/logs/2012_05_20_01_feito/imu_raw.log';
+imu_file = 'tests/main/logs/2012_05_21_5_02_ruidos_kalman_nuevos_nuevos/imu_raw.log';
 % imu_file = './tests/mongoose/acc/logs_zparriba/z00y45.txt';
 % imu_file = [p{12} 'imu_raw.log'];
 [acrud,wcrud,mcrud,tcrud,bcrud,~,~,T]=mong_read(imu_file,0,1);
@@ -209,19 +209,22 @@ end
 %% Constantes, entradas, observaciones e inicialización
 
 % Constantes
-N       = size(a,1);                   % Quantity of observation samples
-Ns      = 15;                          % N states: cantidad de variables de estado de Kalman
-Ngps    = 6;                           % N gps: cantidad de variables corregidas por gps
-masa    = 1.55;                        % Quadcopter weight
-w_hover = calc_omega(9.81*masa/4);     % At this velocity, motor's force equals weight
-w_max   = 387;                         % Definition
-w_min   = w_hover - (w_max - w_hover); % Only for simetry
+N         = size(a,1);                   % Quantity of observation samples
+Ns        = 15;                          % N states: cantidad de variables de estado de Kalman
+Ngps      = 6;                           % N gps: cantidad de variables corregidas por gps
+masa      = 1.20; fprintf('Ojo q la masa esta mal\n'); % Quadcopter weight
+% masa      = 1.75;
+w_hover   = calc_omega(9.81*masa/4);     % At this velocity, motor's force equals weight
+w_max     = 368;
+w_min     = w_hover - (w_max - w_hover); % Only for simetry
+DELTA_MAX = [1.74e-3 1.74e-3 1e-5 7.0e-3];
+INT_MAX   = [0.35 0.35 9.42 1.39];
 
 %                  x   y   z  psi  phi  thet vqx vqy vqz wqx wqy wqz ax  ay  az
-Q_imu_gps = diag([1e2 1e2 1e2 1e-3 1e-3 1e-6 1e2 1e2 1e2 1e1 1e1 1e1 1e0 1e0 1e0 ]);
+Q_imu_gps = diag([1e2 1e2 1e2 1e-3 1e-3 1e-5 1e2 1e2 1e2 1e-1 1e-1 1e-1 1e0 1e0 1e0 ]);
 %                 psi phi the ax  ay  az  wqx wqy wqz  x   y   z
-% R_imu_gps = diag([1e3 1e3 1e6 1e4 1e4 1e4 1e-3 1e-3 1e-3 1e2 1e2 1e5]);
-R_imu_gps = diag([1e3 1e3 1e6 1e4 1e4 1e4 1e1  1e1  1e1  1e2 1e2 1e5]);
+R_imu_gps = diag([1e3 1e3 1e5 1e4 1e4 1e4 1e-3 1e-3 1e-3 1e2 1e2 1e5]);
+% R_imu_gps = diag([1e3 1e3 1e6 1e4 1e4 1e4 1e1  1e1  1e1  1e2 1e2 1e5]);
 % %                  x   y   z  vqx vqy vqz
 % Q_gps     = diag([1e2 1e2 1e2 1e2 1e2 1e2]);
 % %                  x   y   z  vqx vqy vqz
@@ -233,27 +236,27 @@ R_imu     = diag([Rdiag(1:end-3); Rdiag(end)]);
 
 
 if(use_n_states == 0)
-    K    = load('src/control/K.txt');
+    Kp   = load('src/control/K.txt');
     sp_x = [0;0;0;theta0;0;0;0;0];
     Nctl = 8;
 elseif(use_n_states == 1)
     Kp = load('src/control/K_prop.txt');
     Ki = load('src/control/K_int.txt');
-    K = [Kp Ki];
+%     K = [Kp Ki];
     sp_x = [0;0;0;0;0;theta0;0;0;0;0];
     Nctl = 10;
     x_hat_integrals = zeros(1,2);
 elseif(use_n_states == 2)
-    K    = load('src/control/K_full.txt');
+    Kp   = load('src/control/K_full.txt');
     sp_x = [0;0;0;0;0;theta0;0;0;0;0;0;0];
     Nctl = 12;
 elseif(use_n_states == 3)
-    fprintf('WARN: Matrix != main\n');
+%     fprintf('WARN: Matrix != main\n');
     Kp = load('src/control/K_prop_full_pptz.txt');
     Ki = load('src/control/K_int_full_pptz.txt');
-    K = [Kp Ki];
+%     K = [Kp Ki];
 
-    sp_x = [0;0;0;0;0;theta0;0;0;0;0;0;0;0;0;0;0];
+    sp_x = [0;0;0;0;0;theta0;0;0;0;0;0;0];
     Nctl = 16;
     x_hat_integrals = zeros(1,4);
 end
@@ -280,7 +283,7 @@ gps_index      = 1;
 
 x_hat(1,4:6) = [psi0, phi0, theta0];
 x_hat(1,13:15) = acc0 - [0 0 9.81];
-x_hat_integrals = zeros(1,4);
+x_hat_integrals = zeros(N,4);
 
 %% Kalman
 
@@ -354,18 +357,31 @@ for i=2:N
 		if(use_n_states == 0)
 			x_hat_ctl(i,:) = [x_hat(i,3), x_hat(i,4), x_hat(i,5), x_hat(i,6), ...
 				x_hat(i,9), x_hat(i,10), x_hat(i,11), x_hat(i,12)];
+            w_control(i,:) = (sp_w + Kp*(sp_x - x_hat(i,:)'))';
 		elseif(use_n_states == 1)
-			x_hat_integrals = x_hat_integrals + (Dt)*([sp_x(9:end)' - x_hat(i,3) x_hat(i,6)]);
+			x_hat_integrals(i,:) = x_hat_integrals(i-1,:) + (Dt)*([sp_x(9:end)' - x_hat(i,3) x_hat(i,6)]);
 			x_hat_ctl(i,:) = [x_hat(i,3), x_hat(i,4), x_hat(i,5), x_hat(i,6), ...
-				x_hat(i,9), x_hat(i,10), x_hat(i,11), x_hat(i,12) x_hat_integrals];
+				x_hat(i,9), x_hat(i,10), x_hat(i,11), x_hat(i,12)];
+            w_control(i,:) = (sp_w + Kp*(sp_x - x_hat_ctl(i,:)'))';
+            w_control(i,:) = w_control(i,:) + Ki*x_hat_integrals(:,i);
 		elseif(use_n_states == 2)
 			x_hat_ctl(i,:) = x_hat(i,1:12);
+            w_control(i,:) = (sp_w + Kp*(sp_x - x_hat_ctl(i,:)'))';
 		elseif(use_n_states == 3)
-			x_hat_integrals = x_hat_integrals + (Dt)*(sp_x(13:end)'-[x_hat(i,4:5) x_hat(i,3) x_hat(i,6)]);
-			x_hat_ctl(i,:)  = [x_hat(i,1:12) x_hat_integrals];
-		end
+            delta = (Dt)*([sp_x(4:5)' sp_x(3) sp_x(6)] - [x_hat(i,4:5) x_hat(i,3) x_hat(i,6)]);
+            delta = sign(delta).*min(DELTA_MAX,abs(delta));
+			x_hat_integrals(i,:) = x_hat_integrals(i-1,:) + delta;
+            x_hat_integrals(i,:) = sign(x_hat_integrals(i,:)).*min(INT_MAX,abs(x_hat_integrals(i,:)));
 
-		w_control(i,:) = (sp_w + K*(sp_x - x_hat_ctl(i,:)'))';
+            w_control(i,:) = (sp_w + Kp*(sp_x - x_hat(i,1:12)'))';
+            w_control(i,:) = w_control(i,:) + (Ki*x_hat_integrals(i,:)')';
+            
+%             x_hat_integrals(i,:) = x_hat_integrals(i-1,:) + (Dt)*([sp_x(4:5)' sp_x(3) sp_x(6)] - [x_hat(i,4:5) x_hat(i,3) x_hat(i,6)]);
+% 			x_hat_ctl(i,:)  = [x_hat(i,1:12) x_hat_integrals(i,:)];
+%             K=[Kp Ki];
+%             w_control(i,:) = (sp_w + K*([sp_x;0;0;0;0] - x_hat_ctl(i,:)'))';
+
+        end
 		for j=1:4
 			if(w_control(i,j) < w_min)
 				w_control(i,j) = w_min;
