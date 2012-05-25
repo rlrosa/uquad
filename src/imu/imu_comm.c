@@ -274,10 +274,12 @@ static int imu_comm_connect(imu_t *imu, const char *device){
     imu->device = fopen(device,"rb+");
     if(imu->device == NULL)
     {
-	err_log_str("Device %s not found.\n",device);
+	err_log_stderr("fopen()");
 	err_propagate(ERROR_OPEN);
     }
 #else
+    char str[256];
+    int retval;
     if( (strlen(device) < 3) || (strncmp(device,"/dev/",5) != 0))
     {
 	err_check(ERROR_INVALID_ARG,
@@ -287,8 +289,20 @@ static int imu_comm_connect(imu_t *imu, const char *device){
     imu->device = open(device,O_RDWR | O_NOCTTY | O_NONBLOCK);
     if(imu->device < 0)
     {
-	err_log_stderr("Failed to open dev!");
-	err_propagate(ERROR_IO);
+	err_log_stderr("open()");
+	err_propagate(ERROR_OPEN);
+    }
+    retval = sprintf(str,"stty -F %s 115200 -echo raw",device);
+    if(retval < 0)
+    {
+	err_log_stderr("sprintf()");
+	return ERROR_FAIL;
+    }
+    retval = system(str);
+    if(retval != 0)
+    {
+	err_log_stderr("system()");
+	return ERROR_IO;
     }
 #endif
     return ERROR_OK;
@@ -1095,9 +1109,6 @@ typedef enum read_status{
     END_SYNC_DONE,
     READ_STATE_COUNT
 } read_status_t;
-#if TIMING_IMU
-static struct timeval tv_init, tv_end, tv_diff;
-#endif
 /**
  *Attempts to sync with IMU, and read data.
  *Reading is performed 1 byte at a time, so if select() has
