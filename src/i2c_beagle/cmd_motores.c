@@ -161,10 +161,10 @@ static unsigned short mot_selected[MOT_COUNT] = {MOT_NOT_SELECTED,
 						 MOT_NOT_SELECTED,
 						 MOT_NOT_SELECTED,
 						 MOT_NOT_SELECTED};
-static int mot_offset[MOT_COUNT] = {10,
-				    10,
-				    -12,
-				    -8};
+static int mot_offset[MOT_COUNT] = {15,
+				    15,
+				    -17,
+				    -13};
 static __u8 vels[MOT_COUNT] = {0,0,0,0};
 
 #ifdef LOG_VELS
