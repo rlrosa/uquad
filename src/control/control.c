@@ -81,6 +81,14 @@ ctrl_t *control_init(void)
     retval = control_clear_int(ctrl);
     cleanup_log_if(retval, "Failed to clear integral term!");
 
+#if CTRL_INTEGRAL_ANG
+    /// Avoid unstable startup caused by motor differences
+    ctrl->x_int->m_full[ctrl->x_int->r - 4] = -(CTRL_INT_ACCUM_MAX_PSI/2.8);
+    ctrl->x_int->m_full[ctrl->x_int->r - 3] = -(CTRL_INT_ACCUM_MAX_PHI/6.6);
+    ctrl->x_int->m_full[ctrl->x_int->r - 2] = 0.0;
+    ctrl->x_int->m_full[ctrl->x_int->r - 1] = -(CTRL_INT_ACCUM_MAX_THETA/1.6);
+#endif // CTRL_INTEGRAL_ANG
+
     file_mat = fopen(CTRL_MAT_K_INT_NAME,"r");
     if(file_mat == NULL)
     {
