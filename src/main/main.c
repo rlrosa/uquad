@@ -110,8 +110,12 @@
  * the motors, and these differences are what the controller has determined
  * necessary to mantain a stable attitud.
  * So we get a stable ramp :)
+ *
+ * If RAMP_LINEAR, then linear ramp will be used, otherwise a x^2 ramp will
+ * be used.
  */
 #define STARTUP_SAMPLES 100
+#define RAMP_LINEAR     0
 
 /**
  * To avoid a violent stop, pull motor speed down until
@@ -1461,10 +1465,8 @@ int main(int argc, char *argv[]){
 #endif // USE_GPS && !GPS_ZERO
 
 	    /**
-	     * Startup:
+	     * Startup setpoint:
 	     *  - Kalman estimator from calibration & GPS, if available.
-	     *  - If hovering, set initial position as setpoint. This will avoid
-	     *    rough movements on startup (setpoint will match current state).
 	     */
 	    if(pp->pt == HOVER)
 	    {
@@ -1488,7 +1490,8 @@ int main(int argc, char *argv[]){
 
 	    /**
 	     * Startup Kalman estimator
-	     *
+	     *  - If hovering, set initial position as setpoint. This will avoid
+	     *    rough movements on startup (setpoint will match current state)	     *
 	     */
 #if USE_GPS
 	    // Position
@@ -1720,8 +1723,12 @@ int main(int argc, char *argv[]){
 		     * Ramp them up, but keep controlling to maintain
 		     * balance.
 		     */
+#if RAMP_LINEAR
+		    dtmp = -(mot->w_hover - mot->w_min)*(1.0 - 1.0/(STARTUP_SAMPLES*STARTUP_SAMPLES)*(runs_kalman*runs_kalman));
+#else // RAMP_LINEAR
 		    dtmp = - (STARTUP_SAMPLES - runs_kalman)
 			*((mot->w_hover - mot->w_min)/STARTUP_SAMPLES);
+#endif // RAMP_LINEAR
 		    break;
 		case ST_RAMPING_DOWN:
 		    /**
