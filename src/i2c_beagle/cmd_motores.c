@@ -627,7 +627,9 @@ int main(int argc, char *argv[])
     /* mot_selected[3] = MOT_NOT_SELECTED; */
 
     sprintf(filename,"/dev/i2c-%d",adapter_nr);
+#if !PC_TEST
     err_log_str("Opening: ",filename);
+#endif // !PC_TEST
 
     // Open ctrl interface
 
