@@ -1,9 +1,8 @@
 #include <uquad_config.h>
 #if DEBUG // The following define will affect includes
 #define TIMING             0
-#define TIMING_KALMAN      0
-#define TIMING_IMU         1
-#define TIMING_IO          0
+#define TIMING_KALMAN      (1 && TIMING)
+#define TIMING_IMU         (0 && TIMING)
 
 #define LOG_ERR            1
 #define LOG_W              1
@@ -549,7 +548,7 @@ int main(int argc, char *argv[]){
     gettimeofday(&tv_last_io_ok,NULL);
     gettimeofday(&tv_pgm,NULL);
 #endif
-#if TIMING && TIMING_IMU
+#if TIMING_IMU
     struct timeval tv_last_imu_read, tv_imu_start;
     gettimeofday(&tv_last_imu_read,NULL);
 #endif
@@ -1141,27 +1140,13 @@ int main(int argc, char *argv[]){
 		}
 		imu_update = false;
             }
-#if TIMING && TIMING_IO
-	    err_imu = uquad_timeval_substract(&tv_diff,tv_tmp,tv_last_io_ok);
-	    if(err_imu < 0)
-	    {
-		err_log("Timing error!");
-	    }
-	    err_imu = gettimeofday(&tv_last_io_ok,NULL);
-	    err_log_std(err_imu);
-	    err_imu = gettimeofday(&tv_pgm,NULL);
-	    err_log_std(err_imu);
-	    printf("IO:\t%ld\t\t%ld.%06ld\n", tv_diff.tv_usec,
-		   tv_pgm.tv_sec - tv_start.tv_sec,
-		   tv_pgm.tv_usec);
-#endif
-#if TIMING && TIMING_IMU
+#if TIMING_IMU
 	    err_imu = gettimeofday(&tv_imu_start,NULL);
 	    err_log_std(err_imu);
-#endif
+#endif // TIMING_IMU
 
 	    err_imu = imu_comm_read(imu, &aux_bool);
-	    log_n_jump(err_imu,end_imu,"imu_comm_read() failed!");
+	    jump_if(err_imu, end_imu);
 	    if(!aux_bool)
 	    {
 		goto end_imu;
@@ -1200,7 +1185,7 @@ int main(int argc, char *argv[]){
 	    err_imu = ERROR_OK;
 #endif // LOG_IMU_RAW || LOG_IMU_DATA
 
-#if TIMING && TIMING_IMU
+#if TIMING_IMU
             if(runs_kalman > 0)
             {
                 err_imu = gettimeofday(&tv_tmp,NULL);
@@ -1536,12 +1521,10 @@ int main(int argc, char *argv[]){
 	    {
 		log_n_continue(ERROR_TIMING,"Absurd timing!");
 	    }
-#if TIMING && TIMING_KALMAN
+#if TIMING_KALMAN
 	    gettimeofday(&tv_pgm,NULL);
-	    printf("KALMAN:\t%ld\t\t%ld.%06ld\n", tv_diff.tv_usec,
-		   tv_pgm.tv_sec - tv_start.tv_sec,
-		   tv_pgm.tv_usec);
-#endif
+	    err_log_tv_num("Kalman:", tv_diff,(int)tv_diff.tv_usec);
+#endif // TIMING_KALMAN
 	    /// Check sampling period jitter
 	    retval = in_range_us(tv_diff, TS_MIN, TS_MAX);
 	    kalman_loops = (kalman_loops+1)%32768;// avoid overflow
