@@ -63,8 +63,8 @@
 #define RAMP_DOWN      'q'
 
 #define UQUAD_HOW_TO   "./main <imu_device> /path/to/log/"
-#define MAX_ERRORS     20
-#define FIXED          3
+#define MAX_ERRORS     10
+#define FIXED          10
 
 /**
  * Before running, we'll check if we have a stable sampling period.
@@ -465,6 +465,7 @@ int main(int argc, char *argv[]){
 	runs_kalman = 0,
 	runs_down   = 0,
 	insane      = 0,
+	skipped     = 0,
 	ctrl_samples= 0,
 #if X_HAT_STDOUT
 	x_hat_cnt   = 0,
@@ -1133,11 +1134,7 @@ int main(int argc, char *argv[]){
 	{
             if(imu_update)
             {
-		if(!interrupted)
-		{
-		    /// Don't be annoying if we were already killed
-		    err_log_tv("Skipped IMU!...",tv_diff);
-		}
+		skipped++;
 		imu_update = false;
             }
 #if TIMING_IMU
@@ -1221,6 +1218,10 @@ int main(int argc, char *argv[]){
 		{
 		    if(imu_ts_ok++ >= DISCARD_RUNS)
 		    {
+			if(runs_imu > DISCARD_RUNS + 10)
+			{
+			    quit_log_if(ERROR_IO, "WARN: IMU stabilization took too long, something is not working correctly...");
+			}
 			err_log_num("IMU: Frames read out during stabilization:",runs_imu);
 			runs_imu = IMU_TS_OK; // so re-entry doesn't happen
 			tv_last_imu = tv_tmp;
@@ -1413,7 +1414,20 @@ int main(int argc, char *argv[]){
 	     */
 	    continue;
         else
+	{
             imu_update = false; // mark data as used
+	    if(skipped > 0)
+	    {
+		err_log("");
+		err_log("");
+		err_log("-- --");
+		err_log_num("WARN: Skipped IMU!", skipped);
+		err_log("-- --");
+		err_log("");
+		err_log("");
+		skipped = 0;
+	    }
+	}
 	/// -- -- -- -- -- -- -- --
 	/// Startup Kalman estimator
 	/// -- -- -- -- -- -- -- --
@@ -1546,7 +1560,7 @@ int main(int argc, char *argv[]){
 		    }
 		    else
 		    {
-			err_log_tv("WARN: Too many timing errors!! Kalman Ts:", tv_diff);
+			quit_log_if(ERROR_TIMING,"ERR: Timing unacceptable! Aborting!");
 		    }
 		    if(ts_error_wait == TS_ERROR_WAIT)
 		    {
@@ -1555,6 +1569,12 @@ int main(int argc, char *argv[]){
 		    }
 		}
 		ts_error_wait++;
+		if(tv_diff.tv_sec > 0)
+		{
+		    /// Be carefull with really bad timing
+		    ts_error += (MAX_ERRORS >> 1);
+		    ts_error_wait = TS_ERROR_WAIT;
+		}
 		/// Lie to kalman, avoid large drifts
 		tv_diff.tv_usec = (retval > 0) ? TS_MAX:TS_MIN;
 	    }
