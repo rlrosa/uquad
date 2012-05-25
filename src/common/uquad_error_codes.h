@@ -263,8 +263,8 @@ enum UQUAD_ERROR_CODES{
     }
 
 /**
- * Print timeval message with unsigned long to stderr
- * 
+ * Print timeval message with int to stderr
+ *
  */
 #define err_log_tv_num(msg,tv,num)		\
     {						\
@@ -292,7 +292,7 @@ enum UQUAD_ERROR_CODES{
 
 /**
  * If @retval is an error, then propagate error without printing anything.
- * 
+ *
  */
 #define err_propagate(retval)				\
     if(retval!=ERROR_OK)				\
@@ -415,12 +415,22 @@ enum UQUAD_ERROR_CODES{
 
 /**
  * If @retval is an error, then log and jump to label
- * 
+ *
  */
 #define log_n_jump(retval,label,msg)		\
     if(retval!=ERROR_OK)			\
     {						\
 	err_log(msg);				\
+	goto label;				\
+    }
+
+/**
+ * If @retval is an error, then log and jump to label
+ *
+ */
+#define jump_if(retval,label)			\
+    if(retval!=ERROR_OK)			\
+    {						\
 	goto label;				\
     }
 

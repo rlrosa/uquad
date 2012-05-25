@@ -19,8 +19,6 @@
 #define PRESS_EXP_INV              5.255L
 #define PRESS_K                    44330.0
 
-#define IMU_DEBUG                  0
-
 #define IMU_COMM_PRINT_DATA_FORMAT "%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\n"
 #define IMU_COMM_PRINT_RAW_FORMAT  "%u\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%u\t%u\n"
 
