@@ -1098,7 +1098,7 @@ typedef enum read_status{
 #if TIMING_IMU
 static struct timeval tv_init, tv_end, tv_diff;
 #endif
-/** 
+/**
  *Attempts to sync with IMU, and read data.
  *Reading is performed 1 byte at a time, so if select() has
  *been checked previously, reading will not block.
@@ -1127,56 +1127,27 @@ int imu_comm_read(imu_t *imu, uquad_bool_t *ready){
 	/// -- -- -- -- -- -- -- -- -- -- -- --
 	/// 1 - sync init
 	/// -- -- -- -- -- -- -- -- -- -- -- --
-#if TIMING_IMU
-	gettimeofday(&tv_init,NULL);//TODO testing
-#endif // TIMING_IMU
-	// sync by getting init frame char
 	retval = imu_comm_get_sync_init(imu,&ok);
 	err_propagate(retval);
 	if(ok)
 	    status++;
-#if TIMING_IMU
-	gettimeofday(&tv_end,NULL);//TODO testing
-	retval = uquad_timeval_substract(&tv_diff,tv_end,tv_init);//TODO testing
-	if(retval < 0)//TODO testing
-	{//TODO testing
-	    err_check(ERROR_TIMING,"Absurd timing!");//TODO testing
-	}//TODO testing
-	printf("%ld\t", tv_diff.tv_usec);//TODO testing
-#endif // TIMING_IMU
 	break;
     case INIT_SYNC_DONE:
 	/// -- -- -- -- -- -- -- -- -- -- -- --
 	/// 2 - frame
 	/// -- -- -- -- -- -- -- -- -- -- -- --
-	// sync worked, now get data
 	retval = imu_comm_read_frame_binary(imu, &new_frame, &ok);
 	err_propagate(retval);
 	if(ok)
 	{
 	    // frame completed!
 	    status++;
-#if TIMING_IMU
-	    gettimeofday(&tv_end,NULL);//TODO testing
-	    retval = uquad_timeval_substract(&tv_diff,tv_end,tv_init);//TODO testing
-	    if(retval < 0)//TODO testing
-	    {//TODO testing
-		err_check(ERROR_TIMING,"Absurd timing!");//TODO testing
-	    }//TODO testing
-	    printf("%ld\t", tv_diff.tv_usec);//TODO testing
-	    gettimeofday(&tv_init,NULL);//TODO testing
-#endif // TIMING_IMU
 	}
 	break;
     case READ_FRAME_DONE:
 	/// -- -- -- -- -- -- -- -- -- -- -- --
 	/// 3 - sync end
 	/// -- -- -- -- -- -- -- -- -- -- -- --
-#if TIMING_IMU
-	gettimeofday(&tv_init,NULL);//TODO testing
-#endif
-
-	// verify sync by getting end of frame char
 	retval = imu_comm_get_sync_end(imu);
 	if(retval == ERROR_READ_SYNC)
 	{
@@ -1186,75 +1157,29 @@ int imu_comm_read(imu_t *imu, uquad_bool_t *ready){
 	err_propagate(retval);
 	status++;
 
-#if TIMING_IMU
-	gettimeofday(&tv_end,NULL);//TODO testing
-	retval = uquad_timeval_substract(&tv_diff,tv_end,tv_init);//TODO testing
-	if(retval < 0)//TODO testing
-	{//TODO testing
-	    err_check(ERROR_TIMING,"Absurd timing!");//TODO testing
-	}//TODO testing
-	printf("%ld\t", tv_diff.tv_usec);//TODO testing
-#endif
 	//break; // Do not break here, keep going!
 #endif // IMU_COMM_FAKE
     case END_SYNC_DONE:
 	/// -- -- -- -- -- -- -- -- -- -- -- --
 	/// 4 - add
 	/// -- -- -- -- -- -- -- -- -- -- -- --
-#if TIMING_IMU
-	gettimeofday(&tv_init,NULL);//TODO testing
-#endif
-
 	// add the frame to the buff
 	retval = imu_comm_add_frame(imu, &new_frame);
 	err_propagate(retval);
-
 	if(imu_comm_get_status(imu) == IMU_COMM_STATE_CALIBRATING)
 	{
 	    // Add to calibration
 	    retval = imu_comm_calibration_continue(imu);
 	    err_propagate(retval);
 	}
-
 	*ready = true;
 	status = IDLE; //restart
-
-#if TIMING_IMU
-	gettimeofday(&tv_end,NULL);//TODO testing
-	retval = uquad_timeval_substract(&tv_diff,tv_end,tv_init);//TODO testing
-	if(retval < 0)//TODO testing
-	{//TODO testing
-	    err_check(ERROR_TIMING,"Absurd timing!");//TODO testing
-	}//TODO testing
-	printf("%ld\t", tv_diff.tv_usec);//TODO testing
-#endif
 	break;
     default:
 	status = IDLE;
 	err_check(ERROR_FAIL,"Invalid status! Restarting...");
 	break;
     }
-
-#if IMU_DEBUG
-    if(*ready)
-    {
-	/// -- -- -- -- -- -- -- -- -- -- -- --
-	/// 5 - print
-	/// -- -- -- -- -- -- -- -- -- -- -- --
-#if TIMING_IMU
-	gettimeofday(&tv_init,NULL);//TODO testing
-	gettimeofday(&tv_end,NULL);//TODO testing
-	retval = uquad_timeval_substract(&tv_diff,tv_end,tv_init);//TODO testing
-	if(retval < 0)//TODO testing
-	{//TODO testing
-	    err_check(ERROR_TIMING,"Absurd timing!");//TODO testing
-	}//TODO testing
-	printf("%ld\t", tv_diff.tv_usec);//TODO testing
-	printf("\n");//TODO testing
-#endif
-    }
-#endif // IMU_DEBUG
-
     return ERROR_OK;
 }
 
