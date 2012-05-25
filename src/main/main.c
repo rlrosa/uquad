@@ -522,8 +522,7 @@ int main(int argc, char *argv[]){
 #if !CHECK_NET_BYPASS
     if(check_net_chld < 0)
     {
-	//	quit_log_if(ERROR_FAIL,"Failed to connect to check_net server!");
-	#warning checknet disabled
+	quit_log_if(ERROR_FAIL,"Failed to connect to check_net server!");
     }
     else
     {
