@@ -62,9 +62,10 @@
 #define QUIT           27
 #define RAMP_DOWN      'q'
 
-#define UQUAD_HOW_TO   "./main <imu_device> /path/to/log/"
-#define MAX_ERRORS     10
-#define FIXED          10
+#define UQUAD_HOW_TO     "./main <imu_device> /path/to/log/"
+#define MAX_ERRORS       10 // Abort if more than MAX_ERRORS errors.
+#define MAX_NO_UPDATES_S 1  // Abort if more than MAX_NO_UPDATES_S sec without data.
+#define FIXED            10 // Consider system OK after FIXED loops without errors.
 
 /**
  * Before running, we'll check if we have a stable sampling period.
@@ -293,11 +294,8 @@ void quit()
     /* clear(); */
     /* endwin(); */
     gettimeofday(&tv_tmp, NULL);
-    retval = uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
-    if(retval > 0)
-    {
-	err_log_tv("main deinit started...",tv_diff);
-    }
+    uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
+    err_log_tv("main deinit started...",tv_diff);
 
     /// IO manager
     retval = io_deinit(io);
@@ -464,6 +462,7 @@ int main(int argc, char *argv[]){
 	runs_imu    = 0,
 	runs_kalman = 0,
 	runs_down   = 0,
+	time_ret    = 0,
 	insane      = 0,
 	skipped     = 0,
 	ctrl_samples= 0,
@@ -523,7 +522,8 @@ int main(int argc, char *argv[]){
 #if !CHECK_NET_BYPASS
     if(check_net_chld < 0)
     {
-	quit_log_if(ERROR_FAIL,"Failed to connect to check_net server!");
+	//	quit_log_if(ERROR_FAIL,"Failed to connect to check_net server!");
+	#warning checknet disabled
     }
     else
     {
@@ -908,7 +908,7 @@ int main(int argc, char *argv[]){
 	    if(count_err++ > MAX_ERRORS)
 	    {
 		gettimeofday(&tv_tmp,NULL);
-		retval = uquad_timeval_substract(&tv_diff, tv_tmp, tv_start);
+		time_ret = uquad_timeval_substract(&tv_diff, tv_tmp, tv_start);
 		err_log_tv("Too many errors! Aborting...",tv_diff);
 		quit();
 		/// program ends here
@@ -974,8 +974,8 @@ int main(int argc, char *argv[]){
 #if LOG_TV
 	    // save to log file
 	    gettimeofday(&tv_tmp,NULL);
-	    retval = uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
-	    if(retval <= 0)
+	    time_ret = uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
+	    if(time_ret <= 0)
 	    {
 		err_log("Absurd timing!");
 	    }
@@ -986,11 +986,10 @@ int main(int argc, char *argv[]){
 	    //	    input = getch();
 	    if(input > 0 && running)
 	    {
-		if(retval <= 0)
+		if(time_ret <= 0)
 		{
 		    err_log("Absurd timing!");
 		}
-		retval = ERROR_OK; // clear error
 		dtmp = 0.0;
 		if(input == QUIT)
 		{
@@ -1372,7 +1371,7 @@ int main(int argc, char *argv[]){
 	if(!gps_update)
 	{
 	    gettimeofday(&tv_tmp,NULL);
-	    retval = uquad_timeval_substract(&tv_diff, tv_tmp, tv_gps_last);
+	    time_ret = uquad_timeval_substract(&tv_diff, tv_tmp, tv_gps_last);
 	    if( (runs_kalman > 0) && (tv_diff.tv_sec > 0) )
 	    {
 		// gps_dat is set to 0 when allocated, so just use it.
@@ -1383,7 +1382,7 @@ int main(int argc, char *argv[]){
 		    quit_log_if(ERROR_GPS, "Fake GPS does not make sense if not hovering!");
 		}
 #if LOG_GPS
-		retval = uquad_timeval_substract(&tv_diff, tv_tmp, tv_start);
+		time_ret = uquad_timeval_substract(&tv_diff, tv_tmp, tv_start);
 		log_tv_only(log_gps, tv_diff);
 		log_eol(log_gps);
 #endif
@@ -1392,7 +1391,6 @@ int main(int argc, char *argv[]){
 	    {
 		gps_update = false;
 	    }
-	    retval = ERROR_OK; // clear retval
 	}
 #endif // GPS_ZERO
 #endif // USE_GPS
@@ -1412,7 +1410,31 @@ int main(int argc, char *argv[]){
 	     * running: If main was interrupted, then we want to
 	     * log data but the motors should not be controlled any more.
 	     */
+	{
+	    if(uquad_state == ST_RUNNING)
+	    {
+		/**
+		 * If IMU has bad communication, it may be able to get the sync char
+		 * frequently enough to keep main running, but it may not get a full
+		 * frame. Here we verify that we haven't spent too long without a new
+		 * IMU sample.
+		 */
+		gettimeofday(&tv_tmp,NULL);
+		time_ret = uquad_timeval_substract(&tv_diff, tv_tmp, tv_last_kalman);
+		if(time_ret < 0)
+		{
+		    err_log("Absurd timing!");
+		}
+		else
+		{
+		    if(tv_diff.tv_sec >= MAX_NO_UPDATES_S)
+		    {
+			quit_log_if(ERROR_TIMING, "ERR: Too long without new IMU samples!");
+		    }
+		}
+	    }
 	    continue;
+	}
         else
 	{
             imu_update = false; // mark data as used
@@ -1444,8 +1466,8 @@ int main(int argc, char *argv[]){
 			    "is only valid when in HOVER mode");
 	    }
 	    gettimeofday(&tv_tmp,NULL); // Will be used later
-	    retval = uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
-	    err_log_tv((retval < 0)?"Absurd IMU calibration time!":
+	    time_ret = uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
+	    err_log_tv((time_ret < 0)?"Absurd IMU calibration time!":
 		       "IMU calibration completed, running kalman+control+ramp",
 		       tv_diff);
 	    retval = imu_comm_raw2data(imu, &imu->calib.null_est, &imu_data);
@@ -1530,8 +1552,8 @@ int main(int argc, char *argv[]){
 	}
 	else
 	{
-	    retval = uquad_timeval_substract(&tv_diff,tv_tmp,tv_last_kalman);
-	    if(retval < 0)
+	    time_ret = uquad_timeval_substract(&tv_diff,tv_tmp,tv_last_kalman);
+	    if(time_ret < 0)
 	    {
 		log_n_continue(ERROR_TIMING,"Absurd timing!");
 	    }
@@ -1632,13 +1654,13 @@ int main(int argc, char *argv[]){
 	    if(runs_kalman == STARTUP_SAMPLES)
 	    {
 		gettimeofday(&tv_tmp,NULL);
-		retval = uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
-		if(retval < 0)
+		time_ret = uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
+		if(time_ret < 0)
 		{
 		    err_log("Absurd Kalman startup time!");
+		    retval = ERROR_TIMING;
 		    continue;
 		}
-		retval = ERROR_OK;
 		// save to error log
 		err_log("-- --");
 		err_log("-- -- -- -- -- -- -- --");
