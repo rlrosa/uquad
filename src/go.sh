@@ -37,11 +37,6 @@ echo Will save logs to ${log_path}
 
 err_pipe=err.p
 
-# configure serial port
-echo Configuring ${serial_port} for IMU
-stty -F ${serial_port} 115200 -echo raw
-sleep 0.5
-
 # build
 cd i2c_beagle; make ${pc_test};
 cd ../

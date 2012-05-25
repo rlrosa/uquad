@@ -43,7 +43,7 @@ typedef enum STATE_VECTOR{
 #define DRAG_A2           -0.00013205 // drag = w^2*A2 + w*A1
 #define DRIVE_A1          4.60160135072435e-05 // drive = w^2*A2 + w*A1
 #define DRIVE_A2          -0.00103822726273726 // drive = w^2*A2 + w*A1
-#define MASA_DEFAULT      (1.650)     // Weight of the quadcopter [kg]
+#define MASA_DEFAULT      (1.550)     // Weight of the quadcopter [kg]
 #define STATE_COUNT       12          // State vector length
 #define LENGTH_INPUT      4           // Input vector length
 
@@ -89,7 +89,7 @@ typedef enum STATE_VECTOR{
  */
 #define SANITY_MAX      20
 #define SANITY_MAX_TEMP 55.0 // [°C]
-#define SANITY_MAX_PSI  1.4  // [rad]
-#define SANITY_MAX_PHI  1.4  // [rad]
+#define SANITY_MAX_PSI  1.0  // [rad]
+#define SANITY_MAX_PHI  1.0  // [rad]
 
 #endif
