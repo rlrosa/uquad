@@ -966,8 +966,9 @@ int main(int argc, char *argv[]){
 		}
 		else
 		{
-		    err_log("WARN: Ramping down motors...");
-		    uquad_state = ST_RAMPING_DOWN;
+		    err_log("WARN: Ramping down motors does not work correctly, ignoring...");
+		    //		    err_log("WARN: Ramping down motors...");
+		    //		    uquad_state = ST_RAMPING_DOWN;
 		}
 	    }
 #if LOG_TV
