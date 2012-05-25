@@ -1798,9 +1798,16 @@ int main(int argc, char *argv[]){
 #endif // LOG_IMU_RAW || LOG_IMU_DATA
 
 #if X_HAT_STDOUT
-	    if(x_hat_cnt > X_HAT_STDOUT)
+	    if(x_hat_cnt++ > X_HAT_STDOUT)
 	    {
+		fprintf(stdout,
+			"x\ty\tz\t"					\
+			"psi\tphi\tthe\t"				\
+			"vqx\tvqy\tvqz\t"				\
+			"wqx\twqy\twqz\t"				\
+			"ax\tay\taz\n");
 		uquad_mat_dump_vec(kalman->x_hat,stdout,true);
+		fprintf(stdout,"\n");
 		x_hat_cnt = 0;
 	    }
 #endif // X_HAT_STDOUT
