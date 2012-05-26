@@ -246,10 +246,9 @@ La segunda cardinal para un sistema de part\'iculas toma la forma:
 \begin{equation}
 \frac{d\vec{L_Q}}{dt} =M_Q^{ext}+M\vec{v_G}\ \times \dot{\vec{r_Q}} 
 \end{equation}
-Donde $L_Q$ y $M_Q$ son el momento angular y el torque respecto del punto Q.
-Asumiendo simetr\'ia del sistema, se puede considerar que el centro de masa del sistema se encuentra en el centro de la esfera principal del mismo. Esto no es completamente cierto ya que existen algunas asimetr\'ias en el sistema, a modo de ejemplo se puede nombrar que la bater\'ia del UAV queda por fuera de la esfera y los apoyos tambi\'en, sin embargo en una primera aproximaci\'on del modelo se asume la simetr\'ia respecto al plano que intersecta la esfera en el ecuador. Realizada dicha suposici\'on y planteando la segunda cardinal en el centro de masa obtenemos una expresi\'on m\'as sencilla:
+Donde $L_Q$ y $M_Q$ son el momento angular y el torque respecto del punto Q. En el presente trabajo los movimientos que realizar\'a el cuadric\'optero no implicar\'an velocidades angulares considerables respecto de otro eje distinto de $\vec{k}_q$ como se desarrollar\'a en el cap\'itulo \ref{chap:linealizacion}. Adicionalmente la distancia entre el centro de masa del sistema y del centro de coordenadas del sistema $S_q$ es pequeña (inferior a los $10cm$). Estas consideraciones permiten afirmar que $\vec{V}_G \approx \dot{\vec{r_Q}}$, podemos obtener entonces una expresi\'on simplificada para la segunda cardinal:
 \begin{equation}
-\frac{d\vec{L_G}}{dt} =M_G^{ext}
+\frac{d\vec{L_O^{\prime}}}{dt} =M_{O^{\prime}}^{ext}
 \end{equation}
 Por otra parte el momento angular del sistema se compone del momento angular del cuadric\'optero y el momento angular de cada motor. Consideraremos el cuadric\'optero sin los motores como un primer r\'igido y los motores como cuatro r\'igidos independientes.
 
@@ -259,11 +258,18 @@ El momento angular de un r\'igido respecto a un punto Q del mismo puede calcular
 \end{equation}
 donde $M_i$, $G_i$, $\Pi_{Q}$ y $\vec{\Omega_i}$ son la masa de cada r\'igido, su centro de masa, su tensor de inercia y su velocidad angular respectivamente.\\
 
-Asumiendo que los cuatro motores son id\'enticos podemos escribir el momento angular del cuadric\'optero sin los motores como:
+La derivada de dicho momento tiene la forma:
 \begin{equation}
-\vec{L_{O\prime}} = (M-4 M_m)(\vec{O^\prime-O^\prime})\times\vec{V_{O^\prime}}+\Pi_{O\prime_q}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}\vec{w_q}=\Pi_{O\prime_q}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}\vec{\omega_q}
+\dot{\vec{L}}_{Q^{\prime}} = M_i(\vec{v}_G-\dot{Q})+M(G-Q) \times \frac{d\vec{v}_Q}{dt}+\frac{d\Pi_{Q}\vec{\Omega_i}}{dt}
 \end{equation}
-Para el c\'alculo del momento \'angular del motor 1 respecto del punto $O\prime$ supondremos por simplicidad que el motor se compone de elementos de masa discretos. En este caso, por definici\'on de momento angular tenemos que:
+
+Nuevamente asumiendo que la velocidad del centro de masa y la velocidad del origen del sistema de coordenadas $S_q$ son similares y agregando que las aceleraciones del centro de masa ser\'an de valores pequeños podemos despreciar los t\'erminos $ M_i(\vec{v}_G-\dot{Q})$ y $M(G-Q) \times \frac{d\vec{v}_Q}{dt}$. \\
+Asumiendo que los cuatro motores son id\'enticos podemos escribir que:
+\begin{equation}
+\frac{d\vec{L_{O\prime}}}{dt} = \frac{d\Pi_{O\prime_q}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}\vec{\omega_q}}{dt}
+\end{equation}
+
+Donde $d$ es la distancia entre el centro de masa del sistema y el centro de coordenadas del sistema solidario al cuadric\'optero. Para el c\'alculo del momento \'angular del motor 1 respecto del punto $O\prime$ supondremos por simplicidad que el motor se compone de elementos de masa discretos. En este caso, por definici\'on de momento angular tenemos que:
 \begin{equation}
 \vec{L}_{O\prime_{m_1}} = \sum m_i\vec{r}_i\prime \times \vec{v}_i
 \end{equation}
@@ -280,9 +286,9 @@ Calculando en forma an\'aloga los momentos angulares de los restantes motores se
 \begin{equation}
 \vec{L}_{O\prime_{motores}}=4\Pi_{O\prime_m}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}\vec{\omega_q}+\Pi_{G_{M_{m}}}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}(\vec{\omega_1}-\vec{\omega_2}+\vec{\omega_3}-\vec{\omega_4})
 \end{equation}
-Adicionando el momento angular de los motores al del cuadric\'optero y teniendo en cuenta que el punto $O\prime$ coincide con el centro de masa del sistema ($G$) se obtiene:
+Adicionando el momento angular de los motores al del cuadric\'optero se obtiene:
 \begin{equation}
-\vec{L}_{G}=\Pi_{G}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}\vec{\omega_q}+\Pi_{G_{M_{m}}}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}(\vec{\omega_1}-\vec{\omega_2}+\vec{\omega_3}-\vec{\omega_4})
+\vec{L}_{O^{\prime}}=\Pi_{O^\prime}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}\vec{\omega_q}+\Pi_{G_{M_{m}}}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}(\vec{\omega_1}-\vec{\omega_2}+\vec{\omega_3}-\vec{\omega_4})+(M-4 M_m)(d\vec{k}_q)\times\vec{V_{O^\prime}}
 \end{equation}
 Tanto las velocidades angulares como los tensores de inercia que componen la ecuaci\'on anterior se encuentran expresados en la base solidaria al cuadric\'optero. Para realizar dicha derivada se utiliza nuevamente la f\'ormula de la derivada de un vector:
 \begin{equation}
@@ -316,23 +322,30 @@ A partir del c\'alculo de esta derivada podemos reescribir la segunda cardinal:
 
 Para completar el an\'alisis del sistema es fundamental conocer las expresiones de las fuerzas y los momentos involucrados. Por un lado se debe considerar la acci\'on del peso en el sistema. Adem\'as debemos conocer con precisi\'on las fuerzas y momentos que introducen las h\'elices del cuadric\'optero ya que son estos los elementos sobre los cuales se pueden realizar las acciones de control. Recordamos que las bajas velocidades a las que el sistema se mueve nos permiten despreciar las fuerzas aerodin\'amicas, a excepci\'on de aquellas que tienen como origen el giro de las h\'elices.
 \subsection{Peso}
-Como ya se aclar\'o anteriormente, debido a la peque\~na variaci\'on de la altura, el peso del cuadric\'optero ser\'a considerado constante. Esta fuerza se aplica sobre el centro de masa del sistema, cabe recordar que en el presente an\'alisis se considera la segunda cardinal en torno a dicho punto. Por lo tanto la distancia entre el eje en el cual se calculan los momentos y el punto de aplicaci\'on es cero. Recordando que: $$
-M=\vec{d}\times\vec{F}
-$$
-se deduce trivialmente que el momento del peso es cero. La expresi\'on para el peso es:
-$$
+Como ya se aclar\'o anteriormente, debido a la peque\~na variaci\'on de la altura, el peso del cuadric\'optero ser\'a considerado constante y de valor
+
+\begin{equation}
 \vec{P}=-Mg\vec{k}
-$$
+\end{equation}
 
 Insistimos en el hecho que nos interesa conocer las fuerzas en el sistema solidario al cuadric\'optero. Para expresar esta fuerza en dicho sistema se multiplica el peso por la matriz $H_I^q$. Lo que se obtiene es:
-
-$$
+\begin{equation}
 \vec{P}=\left(\begin{array}{c}
 \sin\varphi\\
 -\cos\varphi\sin\psi\\
 -\cos\varphi\cos\psi\\
 \end{array}\right)Mg
-$$
+\end{equation}
+
+Debido a que el centro de masa se encuentra por debajo del origen de coordenadas de la base solidaria al cuadric\'optero, el peso tiene un momento. El mismo vale:
+\begin{equation}
+\vec{M_P}=\vec{d}\times\vec{P} =-\left(\begin{array}{c}
+\cos\varphi\sin\psi\\
+\sin\varphi   \\
+0\\
+\end{array}\right)dMg
+\end{equation}
+
 \subsection{Fuerzas y momentos de las h\'elices}
 
 La teor\'ia de fluidos que explica el comportamiento de las h\'elices es compleja y ampliamente difundida por lo que no es de inter\'es desarrollarla en profundidad en este trabajo. Diversa bibliograf\'ia puede ser consultada en donde se explican adecuadamente los fen\'omenos involucrados en las fuerzas aerodin\'amicas presentes en una h\'elice. Sin embargo si parece pertinente realizar un breve resumen de dichas fuerzas. Para el presente an\'alisis consideraremos una h\'elice rotando en sentido antihorario, el razonamiento para una h\'elice rotando en sentido opuesto es an\'alogo. En la figura \ref{fig:helice} \footnote{Imagen tomada de \cite{bib:fuerzas-helices}} se observan dos vistas de la misma h\'elice. En la figura \ref{fig:helice_arriba} puede observarse una hoja de la h\'elice. En la figura \ref{fig:fuerza-helice} se representa una vista transversal de la h\'elice con las fuerzas aerodin\'amicas involucradas.\\ 
@@ -446,8 +459,8 @@ El modelo en variables de estado resulta:
 &\dot{v_{q_x}}=v_{q_y} \omega_{q_z} - v_{q_z} \omega_{q_y}+g\sin\varphi\\
 &\dot{v_{q_y}}=v_{q_z} \omega_{q_x} - v_{q_x} \omega_{q_z}-g\cos\varphi\sin\psi\\
 &\dot{v_{q_z}}=v_{q_x} \omega_{q_y} - v_{q_y} \omega_{q_x}-g\cos\varphi\cos\psi+\frac{1}{M}\sum_{i=1}^4T_i\\
-&\dot{\omega_{q_x}}=\frac{\omega_{q_y}\omega_{q_z}(I_{yy}-I_{zz})+\omega_{q_y}I_{zz_m}(\omega_1-\omega_2+\omega_3-\omega_4)}{I_{xx}}+\frac{L(T_2-T_4)}{I_{xx}}\\
-&\dot{\omega_{q_y}}=\frac{\omega_{q_x}\omega_{q_z}(-I_{xx}+I_{zz})+\omega_{q_x}I_{zz_m}(\omega_1-\omega_2+\omega_3-\omega_4)}{{I_{yy}}}+\frac{L(T_3-T_1)}{I_{yy}}\\
+&\dot{\omega_{q_x}}=\frac{\omega_{q_y}\omega_{q_z}(I_{yy}-I_{zz})+\omega_{q_y}I_{zz_m}(\omega_1-\omega_2+\omega_3-\omega_4)-dMg\cos\varphi\sin\psi}{I_{xx}}+\frac{L(T_2-T_4)}{I_{xx}}\\
+&\dot{\omega_{q_y}}=\frac{\omega_{q_x}\omega_{q_z}(-I_{xx}+I_{zz})+\omega_{q_x}I_{zz_m}(\omega_1-\omega_2+\omega_3-\omega_4)-dMg\sin\varphi}{{I_{yy}}}+\frac{L(T_3-T_1)}{I_{yy}}\\
 &\dot{\omega_{q_z}}=\frac{-Q_1+Q_2-Q_3+Q_4}{I_{zz}}\\
 %\frac{-I_{zz_m}(\dot{w_1}-\dot{w_2}+\dot{w_3}-\dot{w_4})}{I_{zz}}+
 \end{aligned}}
