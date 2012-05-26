@@ -1469,7 +1469,7 @@ int main(int argc, char *argv[]){
 	    err_log_tv((time_ret < 0)?"Absurd IMU calibration time!":
 		       "IMU calibration completed, running kalman+control+ramp",
 		       tv_diff);
-	    retval = imu_comm_raw2data(imu, &imu->calib.null_est, &imu_data);
+	    retval = imu_comm_raw2data(imu, &imu->calib.null_est, NULL, &imu_data);
 	    quit_log_if(retval,"Failed to correct setpoint!");
 
 #if USE_GPS && !GPS_ZERO

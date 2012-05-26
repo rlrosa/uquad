@@ -223,14 +223,14 @@ typedef struct imu{
     imu_calib_t calib;
     /// data
     imu_raw_t frame_buff[IMU_FRAME_BUFF_SIZE];
-    imu_data_t data_buff[IMU_FRAME_BUFF_SIZE];
     int frame_buff_latest; // last sample is here
     int frame_buff_next;   // new data will go here
     int unread_data;
 
     /// filtered data
     int frame_count;       // # of frames available for filtering
-    imu_data_t tmp_filt;    // Aux mem used for filter.
+    imu_data_t tmp_filt;   // Aux mem used for filter.
+    imu_raw_t tmp_raw;     // Aux mem used for filter.
     double h[IMU_FILTER_LEN];
 }imu_t;
 
@@ -422,13 +422,16 @@ int imu_comm_get_filtered_unread(imu_t *imu, imu_data_t *data);
 /**
  * Converts raw IMU data to real world data.
  * Requires calibration.
+ * NOTE: Either raw or raw_db must be NULL.
  *
- *@param data raw data
- *@param measurements converted to real world data
+ *@param imu
+ *@param raw raw data
+ *@param raw_db raw data casted to doubles (for example for filtering)
+ *@param data Converted data, using current calibration.
  *
  *@return error code
  */
-int imu_comm_raw2data(imu_t *imu, imu_raw_t *raw, imu_data_t *data);
+int imu_comm_raw2data(imu_t *imu, imu_raw_t *raw, imu_data_t *raw_db, imu_data_t *data);
 
 int imu_comm_print_data(imu_data_t *data, FILE *stream);
 int imu_comm_print_raw(imu_raw_t *frame, FILE *stream);

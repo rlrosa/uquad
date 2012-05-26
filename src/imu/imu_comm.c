@@ -474,7 +474,6 @@ int imu_comm_init_calibration(imu_t *imu)
 imu_t *imu_comm_init(const char *device){
     imu_t *imu;
     int
-	i,
 	retval = ERROR_OK;
     imu = (imu_t *)malloc(sizeof(imu_t));
     mem_alloc_check(imu);
@@ -486,11 +485,6 @@ imu_t *imu_comm_init(const char *device){
     m3x1_1 = uquad_mat_alloc(3,1);
     if(m3x3 == NULL || m3x1_0 == NULL || m3x1_1 == NULL)
 	goto cleanup;
-    for(i=0; i<IMU_FRAME_BUFF_SIZE; ++i)
-    {
-	retval = imu_data_alloc(imu->data_buff + i);
-	cleanup_if(retval);
-    }
 
     // Set up filter, must have IMU_FILTER_LEN coefs
     imu->h[0] = 0.2;
@@ -536,16 +530,11 @@ imu_t *imu_comm_init(const char *device){
 
 int imu_comm_deinit(imu_t *imu){
     int
-	i,
 	retval = ERROR_OK;
     if(imu == NULL)
     {
 	err_log("WARN: Nothing to free.");
 	return ERROR_OK;
-    }
-    for(i=0; i<IMU_FRAME_BUFF_SIZE; ++i)
-    {
-	imu_data_free(imu->data_buff + i);
     }
     retval = imu_comm_disconnect(imu);
     // ignore answer and keep dying, leftovers are not reliable
@@ -693,32 +682,6 @@ int imu_comm_calibration_abort(imu_t *imu){
     return ERROR_OK;
 }
 
-/**
- * Updates values of converted IMU data, using current
- * calibration.
- *
- * @param imu
- *
- * @return error code.
- */
-int imu_comm_update_filtered(imu_t *imu)
-{
-    int
-	i,
-	j,
-	retval = ERROR_OK;
-    j = imu->frame_buff_latest;
-    for(i = 0; i < IMU_FILTER_LEN; ++i)
-    {
-	retval = imu_comm_raw2data(imu,
-				   imu->frame_buff +j,
-				   imu->data_buff  +j);
-	err_propagate(retval);
-	j = circ_buff_prev_index(j,IMU_FRAME_BUFF_SIZE);
-    }
-    return retval;
-}
-
 static struct timeval calibration_start_time;
 /**
  * Integrate calibration data into IMU.
@@ -771,6 +734,7 @@ int imu_comm_calibration_finish(imu_t *imu){
     // update offset estimation
     retval = imu_comm_raw2data(imu,
 			       &imu->calib.null_est,
+			       NULL,
 			       &imu_data_tmp);
     if(retval != ERROR_OK)
 	imu_data_free(&imu_data_tmp);
@@ -789,9 +753,6 @@ int imu_comm_calibration_finish(imu_t *imu){
 
     imu->calib.calib_estim_ready = true;
     imu->status = IMU_COMM_STATE_RUNNING;
-
-    retval = imu_comm_update_filtered(imu);
-    err_propagate(retval);
 
     return ERROR_OK;
 }
@@ -858,12 +819,6 @@ int imu_comm_add_frame(imu_t *imu, imu_raw_t *new_frame){
 
     retval = imu_comm_copy_frame(imu->frame_buff + imu->frame_buff_next, new_frame);
     err_propagate(retval);
-    if(imu_comm_calib_estim(imu))
-    {
-	/// save converted data only if we have a calibration to convert with.
-	retval = imu_comm_raw2data(imu, new_frame, imu->data_buff + imu->frame_buff_next);
-	err_propagate(retval);
-    }
     imu->frame_buff_latest = imu->frame_buff_next;
     imu->frame_buff_next = (imu->frame_buff_next + 1)%IMU_FRAME_BUFF_SIZE;
     ++imu->unread_data;
@@ -1225,14 +1180,17 @@ int convert_2_euler(imu_data_t *data)
  * real world data.
  * Assumes raw is an array of length 3.
  *
+ * NOTE: Either raw or raw_db must be NULL.
+ *
  * @param imu 
  * @param raw input.
+ * @param raw_db input, casted to doubles.
  * @param conv Answer is returned here.
  * @param calib Calibration to use for conversion.
  *
  * @return error code
  */
-static int imu_comm_convert_lin(imu_t *imu, int16_t *raw, uquad_mat_t *conv, imu_calib_lin_t *calib)
+static int imu_comm_convert_lin(imu_t *imu, int16_t *raw, uquad_mat_t *raw_db, uquad_mat_t *conv, imu_calib_lin_t *calib)
 {
     int i,retval = ERROR_OK;
     if(!imu->calib.calib_file_ready && !imu->calib.calib_estim_ready)
@@ -1240,8 +1198,20 @@ static int imu_comm_convert_lin(imu_t *imu, int16_t *raw, uquad_mat_t *conv, imu
 	err_check(ERROR_IMU_NOT_CALIB,"Cannot convert without calibration!");
     }
 
-    for(i=0; i < 3; ++i)
-	m3x1_0->m_full[i] = ((double) raw[i]);
+    if((raw == NULL) == (raw_db == NULL))
+    {
+	err_check(ERROR_INVALID_ARG, "Either raw or raw_db must be NULL!");
+    }
+    if(raw != NULL)
+    {
+	for(i=0; i < 3; ++i)
+	    m3x1_0->m_full[i] = ((double) raw[i]);
+    }
+    else
+    {
+	retval = uquad_mat_copy(m3x1_0, raw_db);
+	err_propagate(retval);
+    }
     /// m3x1_0 has tmp answer
     /// tmp = raw - b
     retval = uquad_mat_sub(m3x1_1,m3x1_0, calib->b);
@@ -1254,21 +1224,24 @@ static int imu_comm_convert_lin(imu_t *imu, int16_t *raw, uquad_mat_t *conv, imu
     return retval;
 }
 
-/** 
- *Converts raw acc data to m/s^2
- *Model:
- *  T*inv(K)*(raw - offset + b_t*(temp - temp_0))
+/**
+ * Converts raw acc data to m/s^2
+ * Model:
+ *   T*inv(K)*(raw - offset + b_t*(temp - temp_0))
+ *
+ * NOTE: Either raw or raw_db must be NULL.
  *
  *@param imu 
- *@param frame Raw data from IMU
+ *@param raw Raw data from IMU
+ *@param raw_db Raw data from IMU, casted to doubles.
  *@param acc_reading Acceleration, in m/s^2
  *
  *@return error code
  */
-static int imu_comm_acc_convert(imu_t *imu, int16_t *raw, uquad_mat_t *acc, double temp)
+static int imu_comm_acc_convert(imu_t *imu, int16_t *raw, uquad_mat_t *raw_db, uquad_mat_t *acc, double temp)
 {
     int retval = ERROR_OK;
-    retval = imu_comm_convert_lin(imu, raw, acc, imu->calib.m_lin);    
+    retval = imu_comm_convert_lin(imu, raw, raw_db, acc, imu->calib.m_lin);
     err_propagate(retval);
     // temperature correction
     retval = uquad_mat_scalar_mul(m3x1_0,
@@ -1281,20 +1254,22 @@ static int imu_comm_acc_convert(imu_t *imu, int16_t *raw, uquad_mat_t *acc, doub
 }
 
 /**
- *Convert raw gyro data using calibration
+ * Convert raw gyro data using calibration and current temperature.
  *
+ * NOTE: Either raw or raw_db must be NULL.
  *
  *@param imu 
- *@param data Raw gyro data.
+ *@param raw Raw gyro data.
+ *@param raw_db Raw gyro data, casted to doubles.
  *@param gyro Rate in rad/s
  *@param temp current temperature in °C
  *
  *@return error code
  */
-static int imu_comm_gyro_convert(imu_t *imu, int16_t *raw, uquad_mat_t *gyro, double temp)
+static int imu_comm_gyro_convert(imu_t *imu, int16_t *raw, uquad_mat_t *raw_db, uquad_mat_t *gyro, double temp)
 {
     int retval = ERROR_OK;
-    retval = imu_comm_convert_lin(imu, raw, gyro, imu->calib.m_lin + 1);
+    retval = imu_comm_convert_lin(imu, raw, raw_db, gyro, imu->calib.m_lin + 1);
     err_propagate(retval);
     // temperature compensation
     retval = uquad_mat_scalar_mul(m3x1_0,
@@ -1310,19 +1285,21 @@ static int imu_comm_gyro_convert(imu_t *imu, int16_t *raw, uquad_mat_t *gyro, do
 }
 
 /**
- * Convert raw magn data using calibration
+ * Convert raw magn data using current calibration.
  *
+ * NOTE: Either raw or raw_db must be NULL.
  *
  *@param imu 
- *@param data Raw magn data.
- *@param magn_reading //TODO ?
+ *@param raw Raw magnetometer data.
+ *@param raw_db Raw magnetometer data, casted to doubles.
+ *@param magn Converted magnetometer data.
  *
  *@return error code
  */
-static int imu_comm_magn_convert(imu_t *imu, int16_t *raw, uquad_mat_t *magn)
+static int imu_comm_magn_convert(imu_t *imu, int16_t *raw, uquad_mat_t *raw_db, uquad_mat_t *magn)
 {
     int retval = ERROR_OK;
-    retval = imu_comm_convert_lin(imu, raw, magn, imu->calib.m_lin + 2);
+    retval = imu_comm_convert_lin(imu, raw, raw_db, magn, imu->calib.m_lin + 2);
     err_propagate(retval);
     return retval;
 }
@@ -1331,20 +1308,33 @@ static int imu_comm_magn_convert(imu_t *imu, int16_t *raw, uquad_mat_t *magn)
  * Convert raw temperature data to °C.
  * Not much fun.
  *
+ * NOTE: Either data or data_db must be NULL.
  *
  *@param imu 
  *@param data Raw temp data.
+ *@param data_db Raw temp data, casted to double.
  *@param temp Temperature in °C
  *
  *@return error code
  */
-static int imu_comm_temp_convert(imu_t *imu, uint16_t *data, double *temp)
+static int imu_comm_temp_convert(imu_t *imu, uint16_t *data, double *data_db, double *temp)
 {
     if(imu == NULL)
     {
 	err_check(ERROR_NULL_POINTER,"Invalid argument.");
     }
-    *temp = ((double) *data)/10;
+    if((data == NULL) == (data_db == NULL))
+    {
+	err_check(ERROR_INVALID_ARG, "Either data or data_db must be NULL!");
+    }
+    if(data != NULL)
+    {
+	*temp = ((double) *data)/10;
+    }
+    else
+    {
+	*temp = (*data_db)/10;
+    }
     return ERROR_OK;
 }
 
@@ -1353,16 +1343,22 @@ static int imu_comm_temp_convert(imu_t *imu, uint16_t *data, double *temp)
  * The first call to this function will set a reference pressure, which
  * will correspond to altitud 0m. Succesive calls wil return altitud
  * relative to initial altitud.
+ * NOTE: Either data or data_db must be NULL.
  *
  *@param imu 
  *@param data Raw press data.
+ *@param data_db Raw press data, casted to double
  *@param temp Temperature in °C
  *
  *@return error code
  */
-static int imu_comm_pres_convert(imu_t *imu, uint32_t *data, double *alt)
+static int imu_comm_pres_convert(imu_t *imu, uint32_t *data, double *data_db, double *alt)
 {
     double p0;
+    if((data == NULL) == (data_db == NULL))
+    {
+	err_check(ERROR_INVALID_ARG, "Either data or data_db must be NULL!");
+    }
     if(imu->calib.p_z0 >= 0)
 	p0 = imu->calib.p_z0;
     else
@@ -1374,7 +1370,10 @@ static int imu_comm_pres_convert(imu_t *imu, uint32_t *data, double *alt)
 	    IMU_P0_DEFAULT;
     }
 
-    *alt = PRESS_K*(1- pow((((double)(*data))/p0),PRESS_EXP));
+    if(data != NULL)
+	*alt = PRESS_K*(1- pow((((double)(*data))/p0),PRESS_EXP));
+    else
+	*alt = PRESS_K*(1- pow(((*data_db)/p0),PRESS_EXP));
     return ERROR_OK;
 }
 
@@ -1388,37 +1387,70 @@ int imu_comm_set_z0(imu_t *imu, double z0)
     return ERROR_OK;
 }
 
-int imu_comm_raw2data(imu_t *imu, imu_raw_t *raw, imu_data_t *data){
+int imu_comm_raw2data(imu_t *imu, imu_raw_t *raw, imu_data_t *raw_db, imu_data_t *data){
     int retval;
-    if(imu == NULL || raw == NULL || data == NULL){
+    if(imu == NULL || data == NULL){
 	err_check(ERROR_NULL_POINTER,"Non null pointers required as args...");
     }
+    if((raw == NULL) == (raw_db == NULL))
+    {
+	err_check(ERROR_INVALID_ARG, "Either raw or raw_db must be NULL!");
+    }
+
     // Get timestamp
-    data->timestamp = raw->timestamp;
-    data->T_us = (double) raw->T_us;//TODO check!
-    
-    // Convert temperature readings
-    retval = imu_comm_temp_convert(imu, &(raw->temp), &(data->temp));
-    err_propagate(retval);
+    if(raw != NULL)
+    {
+	data->timestamp = raw->timestamp;
+	data->T_us = (double) raw->T_us;//TODO check!
 
-    // Convert accelerometer readings    
-    retval = imu_comm_acc_convert(imu, raw->acc, data->acc, data->temp);
-    err_propagate(retval);
+	// Convert temperature readings
+	retval = imu_comm_temp_convert(imu, &(raw->temp), NULL, &(data->temp));
+	err_propagate(retval);
 
-    // Convert gyroscope readings
-    retval = imu_comm_gyro_convert(imu, raw->gyro, data->gyro, data->temp);
-    err_propagate(retval);
+	// Convert accelerometer readings
+	retval = imu_comm_acc_convert(imu, raw->acc, NULL, data->acc, data->temp);
+	err_propagate(retval);
 
-    // Convert magnetometer readings
-    retval = imu_comm_magn_convert(imu, raw->magn, data->magn);
-    err_propagate(retval);
+	// Convert gyroscope readings
+	retval = imu_comm_gyro_convert(imu, raw->gyro, NULL, data->gyro, data->temp);
+	err_propagate(retval);
+
+	// Convert magnetometer readings
+	retval = imu_comm_magn_convert(imu, raw->magn, NULL, data->magn);
+	err_propagate(retval);
+
+	// Convert altitud readings
+	retval = imu_comm_pres_convert(imu, &(raw->pres), NULL, &(data->alt));
+	err_propagate(retval);
+    }
+    else
+    {
+	data->timestamp = raw_db->timestamp;
+	data->T_us = raw_db->T_us;//TODO check!
+
+	// Convert temperature readings
+	retval = imu_comm_temp_convert(imu, NULL, &raw_db->temp, &(data->temp));
+	err_propagate(retval);
+
+	// Convert accelerometer readings
+	retval = imu_comm_acc_convert(imu, NULL, raw_db->acc, data->acc, data->temp);
+	err_propagate(retval);
+
+	// Convert gyroscope readings
+	retval = imu_comm_gyro_convert(imu, NULL, raw_db->gyro, data->gyro, data->temp);
+	err_propagate(retval);
+
+	// Convert magnetometer readings
+	retval = imu_comm_magn_convert(imu, NULL, raw_db->magn, data->magn);
+	err_propagate(retval);
+
+	// Convert altitud readings
+	retval = imu_comm_pres_convert(imu, NULL, &(raw_db->alt), &(data->alt));
+	err_propagate(retval);
+    }
 
     retval = convert_2_euler(data);
     err_propagate(retval);  
-
-    // Convert altitud readings
-    retval = imu_comm_pres_convert(imu, &(raw->pres), &(data->alt));
-    err_propagate(retval);
 
     return ERROR_OK;
 }
@@ -1451,7 +1483,10 @@ int imu_comm_get_raw_latest_unread(imu_t *imu, imu_raw_t *raw){
 int imu_comm_get_data_latest(imu_t *imu, imu_data_t *data){
     int retval = ERROR_OK;
 
-    retval = imu_comm_copy_data(data, imu->data_buff + imu->frame_buff_latest);
+    retval = imu_comm_raw2data(imu,
+			       imu->frame_buff + imu->frame_buff_latest,
+			       NULL,
+			       data);
     err_propagate(retval);
 
     return retval;
@@ -1611,9 +1646,25 @@ int imu_data_normalize(imu_data_t *data, int k)
     return retval;
 }
 
+static void imu_comm_cast_raw2data(imu_data_t *out, imu_raw_t *in)
+{
+    int i;
+    for(i=0; i<3; ++i)
+    {
+	out->acc->m_full[i]  = (double) in->acc[i];
+	out->gyro->m_full[i] = (double) in->gyro[i];
+	out->magn->m_full[i] = (double) in->magn[i];
+    }
+    out->T_us      = (double) in->T_us;
+    out->temp      = (double) in->temp;
+    out->alt       = (double) in->pres; // THIS IS NOT ALT, IT'S PRES
+    out->timestamp = in->timestamp;
+}
+
 int imu_comm_get_filtered(imu_t *imu, imu_data_t *data)
 {
     int retval, i, j;
+    imu_raw_t *raw_curr;
     if(imu->frame_count < IMU_FILTER_LEN)
     {
 	err_check(ERROR_IMU_FILTER_LEN_NOT_ENOUGH,"Not enough samples to average!");
@@ -1621,29 +1672,29 @@ int imu_comm_get_filtered(imu_t *imu, imu_data_t *data)
     j = imu->frame_buff_latest;
     for(i = 0; i < IMU_FILTER_LEN; ++i)
     {
+	raw_curr = imu->frame_buff + j;
 	if(i == 0)
 	{
 	    /// initialize sum
-	    retval = imu_comm_copy_data(data, imu->data_buff + j);
-	    err_propagate(retval);
-	    retval = imu_comm_scalmul_data(data,imu->h[i]);
+	    imu_comm_cast_raw2data(&imu->tmp_filt, raw_curr);
+	    retval = imu_comm_scalmul_data(&imu->tmp_filt,imu->h[i]);
 	    err_propagate(retval);
 	}
 	else
 	{
-	    retval = imu_comm_copy_data(&imu->tmp_filt,imu->data_buff + j);
-	    err_propagate(retval);
-	    retval = imu_comm_scalmul_data(&imu->tmp_filt, imu->h[i]);
+	    imu_comm_cast_raw2data(data, raw_curr);
+	    retval = imu_comm_scalmul_data(data, imu->h[i]);
 	    err_propagate(retval);
 	    /// add to sum
-	    retval = imu_comm_add_data(data, &imu->tmp_filt);
+	    retval = imu_comm_add_data(&imu->tmp_filt, data);
 	    err_propagate(retval);
 	}
 	j = circ_buff_prev_index(j,IMU_FRAME_BUFF_SIZE);
     }
+    retval = imu_comm_raw2data(imu,NULL,&imu->tmp_filt, data);
+    err_propagate(retval);
     return retval;
 }
-
 
 int imu_comm_get_filtered_unread(imu_t *imu, imu_data_t *data)
 {
@@ -1723,6 +1774,45 @@ int imu_comm_print_calib(imu_calib_t *calib, FILE *stream){
 
 #if 0
 /// unused code
+
+static void imu_comm_cast_data2raw(imu_raw_t *out, imu_data_t *in)
+{
+    int i;
+    for(i=0; i<3; ++i)
+    {
+	out->acc[i]  = (int16_t) in->acc->m_full[i];
+	out->gyro[i] = (int16_t) in->gyro->m_full[i];
+	out->magn[i] = (int16_t) in->magn->m_full[i];
+    }
+    if(in->T_us < 0.0)
+    {
+	err_log_double("WARN: Cannot cast negative T_us, using 0.0:", in->T_us);
+	out->T_us = 0;
+    }
+    else
+    {
+	out->T_us = (uint16_t) in->T_us;
+    }
+    if(in->temp < 0.0)
+    {
+	err_log_double("WARN: Cannot cast negative temp, using 0.0:", in->temp);
+	out->temp = 0;
+    }
+    else
+    {
+	out->temp = (uint16_t) in->temp;
+    }
+    if(in->alt < 0)
+    {
+	err_log_double("WARN: Cannot cast negative pressure, using 0.0:", in->alt);
+	out->pres = 0;
+    }
+    else
+    {
+	out->pres = (uint32_t) in->alt;
+    }
+    out->timestamp = in->timestamp;
+}
 
 /** 
  *Checks if samples used for avg fall withing a certain interval.
