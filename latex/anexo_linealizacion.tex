@@ -1,5 +1,5 @@
-%\documentclass[main]{subfiles}
-%\begin{document}
+\documentclass[main]{subfiles}
+\begin{document}
 
 %\appendix
 
@@ -29,7 +29,7 @@ A(t)=\left(\begin{array}{cccc}
 0 & A_{12} & A_{13} & 0 \\
 0 & A_{22} & 0      & A_{24}\\
 0 & A_{32} & A_{33} & A_{34}\\
-0 & A_{42}     & A_{43}      & A_{44} \\    
+0 & A_{42}     & 0      & A_{44} \\    
 \end{array}\right)
 \end{equation}\\
 
@@ -109,12 +109,7 @@ A_{42}=Mgd\left(\begin{array}{ccc}
 \end{array}\right)
 \end{equation}\\
 \begin{equation}
-A_{43}=Mgd\left(\begin{array}{ccc}
-0 & \frac{d}{I{xx}} & 0 \\
-\frac{d}{I{yy}} & 0 &0 \\
-0 & 0& 0 \\
-\end{array}\right)
-\end{equation}\\
+
 \begin{equation}
 A_{44}=\left(\begin{array}{ccc}
 0 &\frac{I_{zzm}}{I_{xx}}(\omega_1-\omega_2+\omega_3-\omega_4) + \frac{I_{yy}-I_{zz}}{I_{xx}}\omega_{qz}& \frac{I_{yy}-I_{zz}}{I_{xx}}\omega_{qy} \\
@@ -147,7 +142,7 @@ A_{hov}=\left(\begin{array}{cccc}
 0 & 0 & A_{hov_{13}} & 0 \\
 0 & 0 & 0      & Id\\
 0 & A_{hov_{32}} & 0 & 0\\
-0 & A_{hov_{42}}      & A_{hov_{43}} & 0 \\    
+0 & A_{hov_{42}}      &  & 0 \\    
 \end{array}\right)
 \end{equation}\\
 
@@ -162,7 +157,7 @@ B_{hov_{41}}
 \end{array}\right)
 \end{equation}\\
 
-Donde $Id$ es la matriz identidad y las matrices $A_{hov_{13}}$,$A_{hov_{32}}$, $B_{hov_{31}}$, $A_{hov_{41}}$, $A_{hov_{42}}$ y $A_{hov_{43}}$ son:
+Donde $Id$ es la matriz identidad y las matrices $A_{hov_{13}}$,$A_{hov_{32}}$, $B_{hov_{31}}$, $A_{hov_{41}}$ y $A_{hov_{42}}$ son:
 \begin{equation}
 A_{hov_{13}}=\left(\begin{array}{ccc}
 \cos\theta & -\sin\theta & 0 \\
@@ -183,9 +178,6 @@ A_{hov{42}} =Mgd\left(\begin{array}{ccc}
 \end{array}\right)
 \end{equation}
 
-\begin{equation}
-A_{hov_{43}} = A_{43}
-\end{equation}
 \begin{equation}
 B_{hov_{31}}=\left(\begin{array}{cccc}
 0&0&0&0\\
@@ -212,7 +204,7 @@ A_{rec}=\left(\begin{array}{cccc}
 0 & A_{rec_{12}} & A_{rec_{13}} & 0 \\
 0 & 0 & 0      & Id\\
 0 & A_{rec_{32}} & 0 & A_{rec_{34}}\\
-0 &  A_{rec_{42}}       &  A_{rec_{43}}  & 0 \\    
+0 &  A_{rec_{42}}       &  0  & 0 \\    
 \end{array}\right)
 \end{equation}\\
 
@@ -227,7 +219,7 @@ B_{rec_{41}}
 \end{array}\right)
 \end{equation}\\
 
-Donde $A_{rec_{13}}=A_{hov_{13}}$, $A_{rec_{32}}=A_{hov_{32}}$, $A_{rec_{42}}=A_{hov_{42}}$,$A_{rec_{43}}=A_{hov_{43}}$,    $B_{rec}=B_{hov}$ y 
+Donde $A_{rec_{13}}=A_{hov_{13}}$, $A_{rec_{32}}=A_{hov_{32}}$, $A_{rec_{42}}=A_{hov_{42}}$,    $B_{rec}=B_{hov}$ y 
 
 \begin{equation}
 A_{rec_{12}}=\left(\begin{array}{ccc}
@@ -249,7 +241,7 @@ A(t)=\left(\begin{array}{cccc}
 A_{cir_{11}} & 0 & Id & A{_cir_{14}}  \\
 0 & A_{22} & 0      & A_{24}\\
 0 & A_{32} & A_{33} & A_{34}\\
-0 & A_{42}      & A_{43}      & A_{44} \\    
+0 & A_{42}      & 0      & A_{44} \\    
 \end{array}\right)
 \end{equation}\\
 
@@ -278,4 +270,4 @@ y_{q} & -x_{q} &0\\
 \end{array}\right)
 \end{equation}
 
-%\end{document}
+\end{document}

@@ -248,7 +248,7 @@ La segunda cardinal para un sistema de part\'iculas toma la forma:
 \end{equation}
 Donde $L_Q$ y $M_Q$ son el momento angular y el torque respecto del punto Q. En el presente trabajo los movimientos que realizar\'a el cuadric\'optero no implicar\'an velocidades angulares considerables respecto de otro eje distinto de $\vec{k}_q$ como se desarrollar\'a en el cap\'itulo \ref{chap:linealizacion}. Adicionalmente la distancia entre el centro de masa del sistema y del centro de coordenadas del sistema $S_q$ es pequeña (inferior a los $10cm$). Estas consideraciones permiten afirmar que $\vec{V}_G \approx \dot{\vec{r_Q}}$, podemos obtener entonces una expresi\'on simplificada para la segunda cardinal:
 \begin{equation}
-\frac{d\vec{L_G}}{dt} =M_G^{ext}
+\frac{d\vec{L_O^{\prime}}}{dt} =M_{O^{\prime}}^{ext}
 \end{equation}
 Por otra parte el momento angular del sistema se compone del momento angular del cuadric\'optero y el momento angular de cada motor. Consideraremos el cuadric\'optero sin los motores como un primer r\'igido y los motores como cuatro r\'igidos independientes.
 
@@ -258,9 +258,15 @@ El momento angular de un r\'igido respecto a un punto Q del mismo puede calcular
 \end{equation}
 donde $M_i$, $G_i$, $\Pi_{Q}$ y $\vec{\Omega_i}$ son la masa de cada r\'igido, su centro de masa, su tensor de inercia y su velocidad angular respectivamente.\\
 
-Asumiendo que los cuatro motores son id\'enticos podemos escribir el momento angular del cuadric\'optero sin los motores como:
+La derivada de dicho momento tiene la forma:
 \begin{equation}
-\vec{L_{O\prime}} = (M-4 M_m)(d\vec{k}_q)\times\vec{V_{O^\prime}}+\Pi_{O\prime_q}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}\vec{w_q}=\Pi_{O\prime_q}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}\vec{\omega_q}
+\dot{\vec{L}}_{Q^{\prime}} = M_i(\vec{v}_G-\dot{Q})+M(G-Q) \times \frac{d\vec{v}_Q}{dt}+\frac{d\Pi_{Q}\vec{\Omega_i}}{dt}
+\end{equation}
+
+Nuevamente asumiendo que la velocidad del centro de masa y la velocidad del origen del sistema de coordenadas $S_q$ son similares y agregando que las aceleraciones del centro de masa ser\'an de valores pequeños podemos despreciar los t\'erminos $ M_i(\vec{v}_G-\dot{Q})$ y $M(G-Q) \times \frac{d\vec{v}_Q}{dt}$. \\
+Asumiendo que los cuatro motores son id\'enticos podemos escribir que:
+\begin{equation}
+\frac{d\vec{L_{O\prime}}}{dt} = \frac{d\Pi_{O\prime_q}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}\vec{\omega_q}}{dt}
 \end{equation}
 
 Donde $d$ es la distancia entre el centro de masa del sistema y el centro de coordenadas del sistema solidario al cuadric\'optero. Para el c\'alculo del momento \'angular del motor 1 respecto del punto $O\prime$ supondremos por simplicidad que el motor se compone de elementos de masa discretos. En este caso, por definici\'on de momento angular tenemos que:
@@ -280,9 +286,9 @@ Calculando en forma an\'aloga los momentos angulares de los restantes motores se
 \begin{equation}
 \vec{L}_{O\prime_{motores}}=4\Pi_{O\prime_m}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}\vec{\omega_q}+\Pi_{G_{M_{m}}}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}(\vec{\omega_1}-\vec{\omega_2}+\vec{\omega_3}-\vec{\omega_4})
 \end{equation}
-Adicionando el momento angular de los motores al del cuadric\'optero y teniendo en cuenta que el punto $O\prime$ coincide con el centro de masa del sistema ($G$) se obtiene:
+Adicionando el momento angular de los motores al del cuadric\'optero se obtiene:
 \begin{equation}
-\vec{L}_{G}=\Pi_{G}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}\vec{\omega_q}+\Pi_{G_{M_{m}}}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}(\vec{\omega_1}-\vec{\omega_2}+\vec{\omega_3}-\vec{\omega_4})
+\vec{L}_{O^{\prime}}=\Pi_{O^\prime}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}\vec{\omega_q}+\Pi_{G_{M_{m}}}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}(\vec{\omega_1}-\vec{\omega_2}+\vec{\omega_3}-\vec{\omega_4})+(M-4 M_m)(d\vec{k}_q)\times\vec{V_{O^\prime}}
 \end{equation}
 Tanto las velocidades angulares como los tensores de inercia que componen la ecuaci\'on anterior se encuentran expresados en la base solidaria al cuadric\'optero. Para realizar dicha derivada se utiliza nuevamente la f\'ormula de la derivada de un vector:
 \begin{equation}
@@ -301,9 +307,9 @@ A partir del c\'alculo de esta derivada podemos reescribir la segunda cardinal:
 \dot{\omega_{q_y}}\\
 \dot{\omega_{q_z}}\\
 \end{array}\right) = \left(\begin{array}{c}
-\omega_{q_y}\omega_{q_z}(I_{yy}-I_{zz})-\omega_{q_y}I_{zz_m}(\omega_1-\omega_2+\omega_3-\omega_4)-dv_{qy}\\
+\omega_{q_y}\omega_{q_z}(I_{yy}-I_{zz})-\omega_{q_y}I_{zz_m}(\omega_1-\omega_2+\omega_3-\omega_4)\\
 
-\omega_{q_x}\omega_{q_z}(-I_{xx}+I_{zz})+\omega_{q_x}I_{zz_m}(\omega_1-\omega_2+\omega_3-\omega_4)+dv_{qx}\\
+\omega_{q_x}\omega_{q_z}(-I_{xx}+I_{zz})+\omega_{q_x}I_{zz_m}(\omega_1-\omega_2+\omega_3-\omega_4)\\
 
 -I_{zz_m}(\dot{\omega_1}-\dot{\omega_2}+\dot{\omega_3}-\dot{\omega_4})\\
 
@@ -453,8 +459,8 @@ El modelo en variables de estado resulta:
 &\dot{v_{q_x}}=v_{q_y} \omega_{q_z} - v_{q_z} \omega_{q_y}+g\sin\varphi\\
 &\dot{v_{q_y}}=v_{q_z} \omega_{q_x} - v_{q_x} \omega_{q_z}-g\cos\varphi\sin\psi\\
 &\dot{v_{q_z}}=v_{q_x} \omega_{q_y} - v_{q_y} \omega_{q_x}-g\cos\varphi\cos\psi+\frac{1}{M}\sum_{i=1}^4T_i\\
-&\dot{\omega_{q_x}}=\frac{\omega_{q_y}\omega_{q_z}(I_{yy}-I_{zz})+\omega_{q_y}I_{zz_m}(\omega_1-\omega_2+\omega_3-\omega_4)-dv_{qy}-dMg\cos\varphi\sin\psi}{I_{xx}}+\frac{L(T_2-T_4)}{I_{xx}}\\
-&\dot{\omega_{q_y}}=\frac{\omega_{q_x}\omega_{q_z}(-I_{xx}+I_{zz})+\omega_{q_x}I_{zz_m}(\omega_1-\omega_2+\omega_3-\omega_4)+dv_{qx}-dMg\sin\varphi}{{I_{yy}}}+\frac{L(T_3-T_1)}{I_{yy}}\\
+&\dot{\omega_{q_x}}=\frac{\omega_{q_y}\omega_{q_z}(I_{yy}-I_{zz})+\omega_{q_y}I_{zz_m}(\omega_1-\omega_2+\omega_3-\omega_4)-dMg\cos\varphi\sin\psi}{I_{xx}}+\frac{L(T_2-T_4)}{I_{xx}}\\
+&\dot{\omega_{q_y}}=\frac{\omega_{q_x}\omega_{q_z}(-I_{xx}+I_{zz})+\omega_{q_x}I_{zz_m}(\omega_1-\omega_2+\omega_3-\omega_4)-dMg\sin\varphi}{{I_{yy}}}+\frac{L(T_3-T_1)}{I_{yy}}\\
 &\dot{\omega_{q_z}}=\frac{-Q_1+Q_2-Q_3+Q_4}{I_{zz}}\\
 %\frac{-I_{zz_m}(\dot{w_1}-\dot{w_2}+\dot{w_3}-\dot{w_4})}{I_{zz}}+
 \end{aligned}}
