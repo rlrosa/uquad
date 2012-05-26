@@ -123,5 +123,5 @@ R = evalin('base','rho')*diag([1 1 1 1]);
         Q(:,1:2) = [];
  end
 
-K=uquad_dlqr(Aext,Bext,Q,R); 
+    K=uquad_dlqr(Aext,Bext,Q,R); 
  

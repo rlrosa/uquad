@@ -3,8 +3,7 @@
 % function [kin, imu_data, x_hat_c, wlog, z] = plot_c(path)
 % -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
-% path =
-% 'tests/main/logs/2012_05_01_1_04_K_full_con_ceros_en_x_y_vqx_vqy_anduvo_espantoso/';
+path ='tests/main/logs/2012_05_25_1_04_prolijo_solo/';
 
 if(~exist('path','var'))
   path = 'src/build/main/';
@@ -46,12 +45,16 @@ else
   t = kin(:,1);
 end
 
+%% Plots
+
 % timestamp kin coincide con x_hat_c, por eso x_hat_c no tiene.
 plot_main(x_hat_c,t,z,t);
-
 plot_w(wlog)
+figure
+    plot(int(:,1),int(:,2:5),'linewidth',2.5);
+    legend('psi','phi','z','theta','location','SouthWest')
 
-% figure; 
-%     plot(wlog(:,2)+wlog(:,4)-wlog(:,3)-wlog(:,5),'r','linewidth',3); 
-%     title('diferencia entre velocidades angulares (adelante+atras)-(derecha+izquierda)'); 
-%     legend('Giro en z')
+figure; 
+    plot(wlog(:,2)+wlog(:,4)-wlog(:,3)-wlog(:,5),'r','linewidth',3); 
+    title('diferencia entre velocidades angulares (adelante+atras)-(derecha+izquierda)'); 
+    legend('Giro en z')
