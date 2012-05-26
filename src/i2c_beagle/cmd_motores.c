@@ -161,7 +161,10 @@ static unsigned short mot_selected[MOT_COUNT] = {MOT_NOT_SELECTED,
 						 MOT_NOT_SELECTED,
 						 MOT_NOT_SELECTED,
 						 MOT_NOT_SELECTED};
-
+static int mot_offset[MOT_COUNT] = {15,
+				    15,
+				    -17,
+				    -13};
 static __u8 vels[MOT_COUNT] = {0,0,0,0};
 
 #ifdef LOG_VELS
@@ -443,7 +446,7 @@ static inline void log_vels(void)
 static char ack_counter = 0;
 int uquad_send_ack()
 {
-    int msqid, retries;
+    int msqid;
     message_buf_t ack_msg;
     ack_msg.mtype = 1;
     if ((msqid = msgget(key_c, IPC_CREAT | 0666 )) < 0)
@@ -457,7 +460,6 @@ int uquad_send_ack()
     ack_msg.mtext[2] = 'K';
     ack_msg.mtext[3] = ack_counter++;
     /// send msg
-    retries = 0;
     if (msgsnd(msqid, &ack_msg, MOT_COUNT, IPC_NOWAIT) < 0)
     {
 	err_log_stderr("msgsnd()");
@@ -625,7 +627,9 @@ int main(int argc, char *argv[])
     /* mot_selected[3] = MOT_NOT_SELECTED; */
 
     sprintf(filename,"/dev/i2c-%d",adapter_nr);
+#if !PC_TEST
     err_log_str("Opening: ",filename);
+#endif // !PC_TEST
 
     // Open ctrl interface
 
@@ -693,7 +697,7 @@ int main(int argc, char *argv[])
 	{
 #if UQUAD_USE_SIN
 	    tv2double(dtmp,tv_in);
-	    dtmp = 5.0*sin(2.0*3.14*3.0*dtmp); // 17Hz sin()
+	    dtmp = 5.0*sin(2.0*3.14*3.0*dtmp); // 3Hz sin()
 #else // UQUAD_USE_SIN
 #endif // UQUAD_USE_SIN
 	}
@@ -704,8 +708,11 @@ int main(int argc, char *argv[])
 	{
 	    ret = uquad_mot_set_speed(i2c_file,
 				      mot_i2c_addr[i],
-				      mot_selected[i]?
-				      (__u8) (((double)vels[i])+dtmp):0);
+				      (mot_selected[i] && (m_status == RUNNING))?
+				      (__u8) (((double)vels[i])
+					      +dtmp
+					      +mot_offset[i])
+				      :0);
 	    if(ret != ERROR_OK)
 	    {
 		backtrace();

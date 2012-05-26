@@ -37,7 +37,7 @@
  *   [SV_X, SV_Y, SV_Z, SV_VQX, SV_VQY, SV_VQZ]
  * This is a requirement, otherwise system will not be controllable.
  */
-#define CTRL_INTEGRAL_ANG 0
+#define CTRL_INTEGRAL_ANG 1
 
 /**
  * Apply control on all 12 states, as documented in uquad_kalman.h
