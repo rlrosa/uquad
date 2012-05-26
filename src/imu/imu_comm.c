@@ -726,7 +726,7 @@ int imu_comm_calibration_finish(imu_t *imu){
     imu->calib.null_est.temp =
 	(uint16_t)(calib_accum.temp/IMU_CALIB_SIZE);
     imu->calib.null_est.pres =
-	(uint32_t)(calib_accum.pres/IMU_CALIB_SIZE);
+	(uint32_t)floor((((double)calib_accum.pres)/IMU_CALIB_SIZE));
 
     imu->calib.calibration_counter = -1;
     imu->calib.timestamp_estim = tv_end;
@@ -740,9 +740,9 @@ int imu_comm_calibration_finish(imu_t *imu){
 	imu_data_free(&imu_data_tmp);
     err_propagate(retval);
 
-    imu_comm_copy_data(&imu->calib.null_est_data, &imu_data_tmp);
-    imu_data_free(&imu_data_tmp);
+    retval = imu_comm_copy_data(&imu->calib.null_est_data, &imu_data_tmp);
     err_propagate(retval);
+    imu_data_free(&imu_data_tmp);
 
     // If external altitud available, use it to determine p0
     if(imu->calib.z0 >= 0)
@@ -1371,9 +1371,9 @@ static int imu_comm_pres_convert(imu_t *imu, uint32_t *data, double *data_db, do
     }
 
     if(data != NULL)
-	*alt = PRESS_K*(1- pow((((double)(*data))/p0),PRESS_EXP));
+	*alt = PRESS_K*(1.0 - pow((((double)(*data))/p0),PRESS_EXP));
     else
-	*alt = PRESS_K*(1- pow(((*data_db)/p0),PRESS_EXP));
+	*alt = PRESS_K*(1.0 - pow(((*data_db)/p0),PRESS_EXP));
     return ERROR_OK;
 }
 

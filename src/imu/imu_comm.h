@@ -15,8 +15,8 @@
 /// Default path for calibration file.
 #define IMU_DEFAULT_CALIB_PATH     "imu_calib.txt"
 
-#define PRESS_EXP                  0.190294957183635L // 1/5.255 = 0.190294957183635
-#define PRESS_EXP_INV              5.255L
+#define PRESS_EXP                  0.191387559808612 // 1/5.255 = 0.191387559808612
+#define PRESS_EXP_INV              5.255
 #define PRESS_K                    44330.0
 
 #define IMU_COMM_PRINT_DATA_FORMAT "%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\n"
@@ -31,7 +31,7 @@
  * See imu_comm_read_frame_ascii() for details on the
  * format of the log file.
  */
-#define IMU_COMM_FAKE                     1
+#define IMU_COMM_FAKE                     0
 /**
  * Definition of default sampling period, in microseconds.
  * Should match code running on IMU.
