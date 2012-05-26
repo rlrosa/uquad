@@ -1,10 +1,9 @@
-% function [kin, imu_raw, imu_data, x_hat_c, wlog, z, int] = plot_c(path)
+% function [kin, imu_raw, imu_data, x_hat_c, wlog, z, int, imu_avg] = plot_c(path)
 % -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 % function [kin, imu_data, x_hat_c, wlog, z] = plot_c(path)
 % -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
-% path =
-% 'tests/main/logs/2012_05_01_1_04_K_full_con_ceros_en_x_y_vqx_vqy_anduvo_espantoso/';
+path ='tests/main/logs/2012_05_25_1_04_prolijo_solo/';
 
 if(~exist('path','var'))
   path = 'src/build/main/';
@@ -18,6 +17,7 @@ x_hat_c  = load([path 'x_hat.log'    ]);
 wlog     = load([path 'w.log'        ]);
 imu_raw  = load_if_exist([path 'imu_raw.log'  ]);
 imu_data = load_if_exist([path 'imu_data.log' ]);
+imu_avg  = load_if_exist([path 'imu_avg.log' ]);
 int      = load_if_exist([path 'int.log'      ]);
 
 lens     = [length(kin)      ...
@@ -45,12 +45,16 @@ else
   t = kin(:,1);
 end
 
+%% Plots
+
 % timestamp kin coincide con x_hat_c, por eso x_hat_c no tiene.
 plot_main(x_hat_c,t,z,t);
-
 plot_w(wlog)
+figure
+    plot(int(:,1),int(:,2:5),'linewidth',2.5);
+    legend('psi','phi','z','theta','location','SouthWest')
 
-% figure; 
-%     plot(wlog(:,2)+wlog(:,4)-wlog(:,3)-wlog(:,5),'r','linewidth',3); 
-%     title('diferencia entre velocidades angulares (adelante+atras)-(derecha+izquierda)'); 
-%     legend('Giro en z')
+figure; 
+    plot(wlog(:,2)+wlog(:,4)-wlog(:,3)-wlog(:,5),'r','linewidth',3); 
+    title('diferencia entre velocidades angulares (adelante+atras)-(derecha+izquierda)'); 
+    legend('Giro en z')

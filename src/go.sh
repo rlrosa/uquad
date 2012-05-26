@@ -12,6 +12,23 @@ function ctrl_c() {
     exit
 }
 
+# use correct calibration file
+if [ ! -e `pwd`/build/main/imu_calib.txt ];
+then
+    ln -s `pwd`/imu/imu_calib.txt `pwd`/build/main/imu_calib.txt
+fi
+
+# use correct control gain
+for file in control/K*.txt
+do
+    file=${file##*/}
+    if [ ! -e `pwd`/build/main/${file} ];
+    then
+	ln -s `pwd`/control/${file} `pwd`/build/main/${file}
+	echo "Created link for ${file} in build/main"
+    fi
+done
+
 if [ $1 ];
 then
     serial_port=$1
@@ -42,23 +59,6 @@ cd i2c_beagle; make ${pc_test};
 cd ../
 cd build/main; make;
 cd ../../
-
-# use correct calibration file
-if [ ! -e `pwd`/build/main/imu_calib.txt ];
-then
-    ln -s `pwd`/imu/imu_calib.txt `pwd`/build/main/imu_calib.txt
-fi
-
-# use correct control gain
-for file in control/K*.txt
-do
-    file=${file##*/}
-    if [ ! -e `pwd`/build/main/${file} ];
-    then
-	ln -s `pwd`/control/${file} `pwd`/build/main/${file}
-	echo "Created link for ${file} in build/main"
-    fi
-done
 
 # prepare motor command
 mv i2c_beagle/cmd${pc_test} build/main/cmd

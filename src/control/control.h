@@ -17,7 +17,7 @@
  */
   #if CTRL_INTEGRAL
     #if CTRL_INTEGRAL_ANG
-      #define CTRL_MAT_K_NAME   "K_prop_full_pptz.txt"
+      #define CTRL_MAT_K_NAME   "K_prop_full_ppzt.txt"
     #else // CTRL_INTEGRAL_ANG
       #define CTRL_MAT_K_NAME   "K_prop_full.txt"
     #endif // CTRL_INTEGRAL_ANG
@@ -26,7 +26,7 @@
   #endif // CTRL_INTEGRAL
 
   #if CTRL_INTEGRAL_ANG
-    #define CTRL_MAT_K_INT_NAME "K_int_full_pptz.txt"
+    #define CTRL_MAT_K_INT_NAME "K_int_full_ppzt.txt"
   #else // CTRL_INTEGRAL_ANG
     #define CTRL_MAT_K_INT_NAME "K_int_full.txt"
   #endif // CTRL_INTEGRAL_ANG

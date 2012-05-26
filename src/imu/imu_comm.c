@@ -436,6 +436,22 @@ int imu_comm_load_calib(imu_t *imu, const char *path)
 			   imu->calib.m_lin[1].b,
 			   m3x1_0);
     err_propagate(retval);
+    // load gyro calibration temp
+    retval = fscanf(calib_file,"%lf",&dtmp);
+    if(retval <= 0)
+    {
+	if(retval < 0)
+	{
+	    err_log_stderr("fscanf() - gyro_to");
+	    return ERROR_IO;
+	}
+	else
+	{
+	    err_check(ERROR_READ, "Failed to read gyro_to");
+	}
+    }
+    imu->calib.gyro_to = dtmp;
+    retval = ERROR_OK; // clear error
 
     fclose(calib_file);
     imu->calib.calib_file_ready = true;
