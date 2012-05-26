@@ -1812,7 +1812,7 @@ int main(int argc, char *argv[]){
 	    fflush(log_imu_raw);
 #endif // LOG_IMU_RAW
 #if LOG_IMU_DATA
-	    retval = imu_comm_raw2data(imu, &imu_frame, &imu_data);
+	    retval = imu_comm_raw2data(imu, &imu_frame, NULL, &imu_data);
 	    log_n_jump(retval,end_log_imu,"could not convert new raw...");
 	    log_tv_only(log_imu_data,tv_raw_sample);
 	    retval = imu_comm_print_data(&imu_data, log_imu_data);
