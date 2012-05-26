@@ -400,6 +400,7 @@ void log_configuration(void)
     err_log_num("DEBUG",DEBUG);
     err_log_num("KALMAN_BIAS",KALMAN_BIAS);
     err_log_num("CTRL_INTEGRAL",CTRL_INTEGRAL);
+    err_log_num("CTRL_INTEGRAL_ANG",CTRL_INTEGRAL_ANG);
     err_log_num("FULL_CONTROL",FULL_CONTROL);
     err_log_num("USE_GPS",USE_GPS);
     err_log_num("GPS_ZERO",GPS_ZERO);
