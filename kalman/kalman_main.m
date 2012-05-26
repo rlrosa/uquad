@@ -166,7 +166,7 @@ acc0   = a_calib;
 psi0   = euler_calib(:,1);
 phi0   = euler_calib(:,2);
 theta0 = euler_calib(:,3);
-b0     = mean(bcrud_calib);
+b0     = floor(mean(bcrud_calib));
 
 % averages are used
 acrud(:,1) = moving_avg(acrud(:,1),avg); acrud(:,2) = moving_avg(acrud(:,2),avg); acrud(:,3) = moving_avg(acrud(:,3),avg);
@@ -191,12 +191,14 @@ aux = conv(mcrud(:,3),h); mcrud(hlen:end,3) = aux(hlen:end-hlen+1);
 aux = conv(tcrud,h);      tcrud(hlen:end)   = aux(hlen:end-hlen+1);
 
 % first imu_calib values are not used for kalman/control/etc
-acrud = acrud(imu_calib+1:end,:);
-wcrud = wcrud(imu_calib+1:end,:);
-mcrud = mcrud(imu_calib+1:end,:);
-bcrud = bcrud(imu_calib+1:end,:);
-tcrud = tcrud(imu_calib+1:end,:);
-T     = T(imu_calib+1:end,:);
+% There's a couple of samples of offset with respect to C code, not sure
+% why.
+acrud = acrud(imu_calib+3:end,:);
+wcrud = wcrud(imu_calib+3:end,:);
+mcrud = mcrud(imu_calib+3:end,:);
+bcrud = bcrud(imu_calib+3:end,:);
+tcrud = tcrud(imu_calib+3:end,:);
+T     = T(imu_calib+3:end,:);
 
 [a,w,euler] = mong_conv(acrud,wcrud,mcrud,0,tcrud,T);
 b=altitud(bcrud,b0);
@@ -212,18 +214,17 @@ end
 N         = size(a,1);                   % Quantity of observation samples
 Ns        = 15;                          % N states: cantidad de variables de estado de Kalman
 Ngps      = 6;                           % N gps: cantidad de variables corregidas por gps
-masa      = 1.60; fprintf('Ojo q la masa esta mal\n'); % Quadcopter weight
-% masa      = 1.75;
+masa      = 1.550;% fprintf('Ojo q la masa esta mal\n'); % Quadcopter weight
 w_hover   = calc_omega(9.81*masa/4);     % At this velocity, motor's force equals weight
 w_max     = 368;
 w_min     = w_hover - (w_max - w_hover); % Only for simetry
-DELTA_MAX = [1.74e-3 1.74e-3 1e-5 7.0e-3];
-INT_MAX   = [0.35 0.35 9.42 1.39];
+DELTA_MAX = [1.0e-3 1.0e-3 0.5e-2 7.0e-3];
+INT_MAX   = [1.0 1.0 2.0 2.0];
 
 %                  x   y   z  psi  phi  thet vqx vqy vqz wqx wqy wqz ax  ay  az
-Q_imu_gps = diag([1e2 1e2 1e2 1e-3 1e-3 1e-5 1e2 1e2 1e2 1e-1 1e-1 1e-1 1e0 1e0 1e0 ]);
+Q_imu_gps = diag([1e2 1e2 1e2 1e-2 1e-2 1e-5 1e2 1e2 1e2 1e-1 1e-1 1e-1 1e0 1e0 1e0 ]);
 %                 psi phi the ax  ay  az  wqx wqy wqz  x   y   z
-R_imu_gps = diag([1e3 1e3 1e5 1e4 1e4 1e4 1e-3 1e-3 1e-3 1e2 1e2 1e5]);
+R_imu_gps = diag([1e2 1e2 1e5 1e4 1e4 1e4 1e-3 1e-3 1e-3 1e2 1e2 1e5]);
 % R_imu_gps = diag([1e3 1e3 1e6 1e4 1e4 1e4 1e1  1e1  1e1  1e2 1e2 1e5]);
 % %                  x   y   z  vqx vqy vqz
 % Q_gps     = diag([1e2 1e2 1e2 1e2 1e2 1e2]);
@@ -250,6 +251,7 @@ elseif(use_n_states == 2)
     Kp   = load('src/control/K_full.txt');
     sp_x = [0;0;0;0;0;theta0;0;0;0;0;0;0];
     Nctl = 12;
+		x_hat_integrals = zeros(N,4);
 elseif(use_n_states == 3)
 %     fprintf('WARN: Matrix != main\n');
     Kp = load('src/control/K_prop_full_pptz.txt');
@@ -257,8 +259,8 @@ elseif(use_n_states == 3)
 %     K = [Kp Ki];
 
     sp_x = [0;0;1.5;0;0;theta0;0;0;0;0;0;0];
+		x_hat_integrals = INT_MAX.*[1/-5.0 1/-6.0 0 0];
     Nctl = 16;
-    x_hat_integrals = zeros(1,4);
 end
 sp_w    = ones(4,1)*w_hover;
 
@@ -283,7 +285,6 @@ gps_index      = 1;
 
 x_hat(1,4:6) = [psi0, phi0, theta0];
 x_hat(1,13:15) = acc0 - [0 0 9.81];
-x_hat_integrals = zeros(N,4);
 
 %% Kalman
 
