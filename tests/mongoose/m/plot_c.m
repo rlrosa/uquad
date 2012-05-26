@@ -1,4 +1,4 @@
-% function [kin, imu_raw, imu_data, x_hat_c, wlog, z, int] = plot_c(path)
+% function [kin, imu_raw, imu_data, x_hat_c, wlog, z, int, imu_avg] = plot_c(path)
 % -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 % function [kin, imu_data, x_hat_c, wlog, z] = plot_c(path)
 % -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
@@ -18,6 +18,7 @@ x_hat_c  = load([path 'x_hat.log'    ]);
 wlog     = load([path 'w.log'        ]);
 imu_raw  = load_if_exist([path 'imu_raw.log'  ]);
 imu_data = load_if_exist([path 'imu_data.log' ]);
+imu_avg  = load_if_exist([path 'imu_avg.log' ]);
 int      = load_if_exist([path 'int.log'      ]);
 
 lens     = [length(kin)      ...
