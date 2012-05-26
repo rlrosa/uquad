@@ -18,17 +18,25 @@ B=Matrices.B;
 Ac = Matrices.Acirc;
      
 Ts=evalin('base','Ts');
-
-%Auxiliar matrix to add integrators
-Id = zeros(4,12);
-Id(1,1)=1;
-Id(2,2)=1;
-Id(3,3)=1;
-Id(4,6)=1;
-
 Z1 = zeros(12,4);
 Z2 = zeros(4,4);
 ZB = zeros(4,4);
+
+if ctrl <3
+    %Auxiliar matrix to add integrators
+    Id = zeros(4,12);
+    Id(1,1)=1;
+    Id(2,2)=1;
+    Id(3,3)=1;
+    Id(4,6)=1;
+ 
+else
+    Id = zeros(4,12);
+    Id(1,4)=1;
+    Id(2,5)=1;
+    Id(3,3)=1;
+    Id(4,6)=1;
+end
 
 w1 = w(1); w2 = w(2); w3 = w(3); w4 = w(4);
 %% Linealización en Hovering
@@ -88,24 +96,18 @@ R = evalin('base','rho')*diag([1 1 1 1]);
         Q(13:16,:) = [];
         Q(:,13:16) = [];
      case 3
-        Aext(13:14,:) = [];
-        Aext(:,13:14)= [];
         Aext(7:8,:) = [];
         Aext(:,7:8)= [];
         Aext(1:2,:) = [];
         Aext(:,1:2)= [];
-        Bext(13:14,:) = [];
         Bext(7:8,:) = [];
         Bext(1:2,:) = [];
-        Q(13:14,:) = [];
-        Q(:,13:14) = [];
         Q(7:8,:) = [];
         Q(:,7:8) = [];
         Q(1:2,:) = [];
         Q(:,1:2) = [];
     case 4
-        Aext(13:16,:) = [];
-        Aext(:,13:16)= [];
+        
         Aext(7:8,:) = [];
         Aext(:,7:8)= [];
         Aext(1:2,:) = [];

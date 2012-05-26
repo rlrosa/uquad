@@ -63,7 +63,7 @@ switch evalin('base','control')
         K = [K zeros(4,4)];
         
     case 3
-        K = [zeros(4,2) K(:,1:4) zeros(4,2) K(:,5:8) zeros(4,2) K(:,9:10)];
+        K = [zeros(4,2) K(:,1:4) zeros(4,2) K(:,5:8) K(:,9:12)];
     case 4
         K = [zeros(4,2) K(:,1:4) zeros(4,2) K(:,5:8) zeros(4,4)];
 end
