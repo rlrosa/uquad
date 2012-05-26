@@ -187,7 +187,7 @@ aux = conv(wcrud(:,3),h); wcrud(hlen:end,3) = aux(hlen:end-hlen+1);
 aux = conv(mcrud(:,1),h); mcrud(hlen:end,1) = aux(hlen:end-hlen+1);
 aux = conv(mcrud(:,2),h); mcrud(hlen:end,2) = aux(hlen:end-hlen+1);
 aux = conv(mcrud(:,3),h); mcrud(hlen:end,3) = aux(hlen:end-hlen+1);
-% aux = conv(bcrud,h);      bcrud(hlen:end)   = aux(hlen:end-hlen+1);
+aux = conv(bcrud ,h);      bcrud(hlen:end)   = aux(hlen:end-hlen+1);
 aux = conv(tcrud,h);      tcrud(hlen:end)   = aux(hlen:end-hlen+1);
 
 % first imu_calib values are not used for kalman/control/etc
