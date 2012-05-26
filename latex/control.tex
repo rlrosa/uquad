@@ -119,7 +119,14 @@ Realizando diversas pruebas se ha comprobado que seg\'un el nivel de bater\'ia d
 
 Surge entonces la necesidad de agregar al controlador cierta robustez frente a errores de caracterizaci\'on del sistema o frente a variaciones del mismo, por ejemplo la tensi\'on de la bater\'ia o un cambio en la masa del sistema\footnote{Para realizar pruebas se disponen de bater\'ias de diverso tamaño (y peso), no parece pr\'actico modificar constantemente la masa del sistema seg\'un la bater\'ia con la que se realiza una determinada prueba.} Esto \'ultimo es fundamental si se planea utilizar el cuadric\'optero por ejemplo para transportar alguna carga \'util.\\
 
-%TODO no existe la fig:bloque2
+\begin{figure}[h!]
+	\centering
+	\vspace{-20pt}
+	\includegraphics[width=0.85\textwidth]{./pics_control/diagrama_bloques_completo.pdf}
+	\caption{Diagrama de bloques final uilizado}
+	\label{fig:bloque2}
+\end{figure}
+
 El camino a explorar es el de agregar un bloque integrador. El esquema de controlador es ahora el de la figura \ref{fig:bloque2}. Para explicar la utilidad del mismo, continuaremos trabajando con el ejemplo de una trayectoria de hovering en la cual $\omega^*$ est\'a subestimado. En dichas condiciones se obtiene un nuevo punto de equilibro con altura inferior a la deseada. Si realimentamos la integral de la diferencia de altura tenemos una entrada que aumenta con el tiempo hasta que la diferencia de altura sea cero. En este punto el t\'ermino correspondiente a la integral de la diferencia de altura se mantiene constante en un valor positivo y el t\'ermino correspondiente a la realimentaci\'on proporcional es cero, compensando el error en el modelado.\\
 
 El agregado de un bloque integrador lo podemos entender como una ampliaci\'on del vector de estados. La salida del bloque integrador verifica que $\dot{X}_I = X$. Donde $X_I$ corresponde a los estados integrados. La din\'amica del sistema puede ser escrita de la siguiente forma:
