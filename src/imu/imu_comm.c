@@ -1646,7 +1646,7 @@ int imu_data_normalize(imu_data_t *data, int k)
     return retval;
 }
 
-static void imu_comm_cast_raw2data(imu_data_t *out, imu_raw_t *in)
+static void imu_comm_cast_raw2data(imu_raw_db_t *out, imu_raw_t *in)
 {
     int i;
     for(i=0; i<3; ++i)
@@ -1676,13 +1676,13 @@ int imu_comm_get_filtered(imu_t *imu, imu_data_t *data)
 	if(i == 0)
 	{
 	    /// initialize sum
-	    imu_comm_cast_raw2data(&imu->tmp_filt, raw_curr);
+	    imu_comm_cast_raw2data((imu_raw_db_t *)&imu->tmp_filt, raw_curr);
 	    retval = imu_comm_scalmul_data(&imu->tmp_filt,imu->h[i]);
 	    err_propagate(retval);
 	}
 	else
 	{
-	    imu_comm_cast_raw2data(data, raw_curr);
+	    imu_comm_cast_raw2data((imu_raw_db_t *)data, raw_curr);
 	    retval = imu_comm_scalmul_data(data, imu->h[i]);
 	    err_propagate(retval);
 	    /// add to sum
@@ -1775,7 +1775,7 @@ int imu_comm_print_calib(imu_calib_t *calib, FILE *stream){
 #if 0
 /// unused code
 
-static void imu_comm_cast_data2raw(imu_raw_t *out, imu_data_t *in)
+static void imu_comm_cast_data2raw(imu_raw_t *out, imu_raw_db_t *in)
 {
     int i;
     for(i=0; i<3; ++i)

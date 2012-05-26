@@ -141,6 +141,15 @@ typedef struct imu_data{
 }imu_data_t;
 
 /**
+ * Structure to hold raw data, but casted to double. This
+ * is usefull for filtering without lose of resolution.
+ *
+ * NOTE: The altitud field will not hold an altitud [m],
+ *       it will have a pressure [Pa] casted to double.
+ */
+typedef imu_data_t imu_raw_db_t;
+
+/**
  * Acc, gyro and magn use a linear model:
  *   data = T*K_inv*(raw - b)
  *   - raw  : Raw data from sensor, in bits
