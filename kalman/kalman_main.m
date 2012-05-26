@@ -80,7 +80,7 @@ gps_file  = [log_path '/gps.log'];
 %% Load IMU data
 
 % Imu
-imu_file = 'tests/main/logs/2012_05_21_5_02_ruidos_kalman_nuevos_nuevos/imu_raw.log';
+imu_file = 'tests/main/logs/2012_05_17_2_02_quieto/imu_raw.log';
 % imu_file = './tests/mongoose/acc/logs_zparriba/z00y45.txt';
 % imu_file = [p{12} 'imu_raw.log'];
 [acrud,wcrud,mcrud,tcrud,bcrud,~,~,T]=mong_read(imu_file,0,1);
@@ -187,7 +187,7 @@ aux = conv(wcrud(:,3),h); wcrud(hlen:end,3) = aux(hlen:end-hlen+1);
 aux = conv(mcrud(:,1),h); mcrud(hlen:end,1) = aux(hlen:end-hlen+1);
 aux = conv(mcrud(:,2),h); mcrud(hlen:end,2) = aux(hlen:end-hlen+1);
 aux = conv(mcrud(:,3),h); mcrud(hlen:end,3) = aux(hlen:end-hlen+1);
-aux = conv(bcrud,h);      bcrud(hlen:end)   = aux(hlen:end-hlen+1);
+% aux = conv(bcrud,h);      bcrud(hlen:end)   = aux(hlen:end-hlen+1);
 aux = conv(tcrud,h);      tcrud(hlen:end)   = aux(hlen:end-hlen+1);
 
 % first imu_calib values are not used for kalman/control/etc
@@ -212,7 +212,7 @@ end
 N         = size(a,1);                   % Quantity of observation samples
 Ns        = 15;                          % N states: cantidad de variables de estado de Kalman
 Ngps      = 6;                           % N gps: cantidad de variables corregidas por gps
-masa      = 1.20; fprintf('Ojo q la masa esta mal\n'); % Quadcopter weight
+masa      = 1.60; fprintf('Ojo q la masa esta mal\n'); % Quadcopter weight
 % masa      = 1.75;
 w_hover   = calc_omega(9.81*masa/4);     % At this velocity, motor's force equals weight
 w_max     = 368;
@@ -256,7 +256,7 @@ elseif(use_n_states == 3)
     Ki = load('src/control/K_int_full_pptz.txt');
 %     K = [Kp Ki];
 
-    sp_x = [0;0;0;0;0;theta0;0;0;0;0;0;0];
+    sp_x = [0;0;1.5;0;0;theta0;0;0;0;0;0;0];
     Nctl = 16;
     x_hat_integrals = zeros(1,4);
 end
