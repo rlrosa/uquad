@@ -74,6 +74,9 @@
  * 	- Information in the logs is in ASCII, rather than binary (normal mode read binary
  * 	data).
  *
+ * Examples:
+ *   - src/main/main.c
+ *   - src/test/imu_comm_test/imu_comm_test.c
  */
 #ifndef IMU_COMM_H
 #define IMU_COMM_H
