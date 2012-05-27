@@ -167,17 +167,23 @@ Con condiciones iniciales nulas, en condici\'on de hovering se aumenta la veloci
   \label{fig:escalon}
 \end{figure}
 
-\subsubsection*{Vuelo en linea recta}
+\subsubsection*{Cambio en el Pitch y el Roll}
+Con condiciones iniciales nulas excepto la altura fijada en $z=10$, se realiza un giro seg\'un $\vec{i}_q$ y seg\'un $\vec{j}_q$. En el primer caso se aumenta la velocidad del motor 2 en tres radianes por segundo y se disminuye la velocidad del motor 4 en la misma cantidad. Para la segunda simulaci\'on se aumenta en tres radianes por segundo la velocidad del motor 3 y se disminuye en la misma cantidad la velocidad del motor 1. Los resultados obtenidos se muestran en la figura \ref{fig:giros}
 
-Con condiciones inicial nulas, excepto por $Z_0 = 10m$ y $\varphi = 30 ^{\circ}$. Se simula durante diez segundos. En la figura \ref{fig:recta} se observa un vuelo en linea recta en la direcci\'on $\vec{i}$. Como es de esperar el vuelo ser\'a uniformemente acelerado ya que la fuerza es siempre en el sentido de $\vec{k_q}$. La simulaci\'on arroja que al cabo de diez segundos el desplazamiento es de $293.19m$, mientras que en la teor\'ia se obtiene un desplazamiento de $283.19m$	. Nuevamente se concluye que los resultados arrojados por el simulador son satisfactorios.\\
-
-\begin{figure}[h!]
-	\centering
-	\includegraphics[width=0.8\textwidth]{./pics_simulador/recta.pdf}
-	\caption{Vuelo en linea recta}
-	\label{fig:recta}
+\begin{figure} 
+  \centering
+  \subfloat[Roll funci\'on del tiempo]{\label{fig:roll}
+  		\includegraphics[width=0.5\textwidth]
+  			{./pics_simulador/roll.pdf}}
+   \subfloat[Pitch funci\'on del tiempo]{\label{fig:pitch} 
+  	\includegraphics[width=0.5\textwidth]
+  			{./pics_simulador/pitch.pdf}} 
+  \caption{Aumento en los \'angulos de Pitch y Roll}
+  \label{fig:giros}
 \end{figure}
 
-Hasta aqu\'i hemos testeado el simulador en situaciones conocidas. De acuerdo a las pruebas realizadas puede afirmarse que su funcionamiento es el adecuado ya que en ninguna prueba se obtuvieron errores considerables. Sin embargo, es fundamental aclarar que hasta aqu\'i no es posible afirmar que el modelado del sistema sea adecuado, lo \'unico que puede concluirse es que el simulador representa fielmente las ecuaciones que han sido deducidas hasta el momento. Un error en las ecuaciones no se reflejar\'a hasta el momento de testear el cuadric\'optero. Sin embargo el trabajo realizado a la hora del modelado y la comparaci\'on con diversas bibliograf\'ias nos permite a esta altura estar convencidos de que dichas ecuaciones son adecuadas para modelar el sistema.
+En estos dos casos tambi\'en se obtiene un resultado acorde a lo esperado. En ambos casos el \'angulo aumenta de forma cuadr\'atica en la zona donde el \'angulo es inferior a los dos grados, en esta zona puede despreciarse el momento realizado por el peso, por lo tanto se tiene una aceleraci\'on angular constante, lo cual explica el comportamiento del \'angulo. Para \'angulos superiores dicho torque del peso comienza a ser considerable respecto del torque producido por los motores y se observa que el \'angulo crece con menor pendiente.\\
+
+Hasta aqu\'i hemos testeado el simulador en situaciones conocidas. Nos concentramos en analizar la caida libre y las cuatro acciones de control b\'asicas que se pueden realizar descriptas en \ref{chap:general}. De acuerdo a las pruebas realizadas puede afirmarse que su funcionamiento es el adecuado ya que en ninguna prueba se obtuvieron errores considerables. Sin embargo, es fundamental aclarar que hasta aqu\'i no es posible afirmar que el modelado del sistema sea adecuado, lo \'unico que puede concluirse es que el simulador representa fielmente las ecuaciones que han sido deducidas hasta el momento. Un error en las ecuaciones no se reflejar\'a hasta el momento de testear el cuadric\'optero. Sin embargo el trabajo realizado a la hora del modelado y la comparaci\'on con diversas bibliograf\'ias nos permite a esta altura estar convencidos de que dichas ecuaciones son adecuadas para modelar el sistema.
 
 \end{document}

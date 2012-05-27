@@ -1989,8 +1989,8 @@ function edit46_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-set(hObject,'String','0.01');
-    assignin('base','rho',0.01)
+set(hObject,'String','0.1');
+    assignin('base','rho',0.1)
 
 
 
