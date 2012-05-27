@@ -4,11 +4,12 @@
 
 
 \chapter{Pruebas del controlador}
-El controlador diseñado se comporta adecuadamente en lo que respecta a las simulaciones, sin embargo debido a que la caracterizaci\'on del sistema puede contener errores se proceden a realizar algunas pruebas sobre los subsistemas que componen al sistema global. Estas pruebas son de utilidad para verificar el correcto funcionamiento del controlador diseñado y/o para realizar los ajustes que sean necesarios en el mismo.
+El controlador diseñado se comporta adecuadamente en lo que respecta a las simulaciones, sin embargo debido a que la caracterizaci\'on del sistema puede contener errores se proceden a realizar algunas pruebas sobre los subsistemas que componen al sistema global, como paso intermedio antes de realizar una prueba de vuelo real. Estas pruebas son de utilidad para verificar el correcto funcionamiento del controlador diseñado y/o para realizar los ajustes que sean necesarios en el mismo.
 
-\section{Control del subsistema del Roll}
+\section{Control de subsistemas Roll y Pitch}
 
-Para lograr el correcto funcionamiento del cuadric\'optero es fundamental que el control sobre los \'angulos de Pitch y de Roll se comporte de buena forma. A modo de ejemplo, es imposible lograr el equilibrio mec\'anico si dichos \'angulos difieren de cero. Por dicha raz\'on, previo a realizar pruebas sobre el sistema completo es necesario asegurarnos que los subsistemas del  Roll y del Pitch funcionan correctamente. De acuerdo al modelo f\'isico del sistema desarrollado en \ref{chap:modelo} ni el Roll ni el Pitch son subsistemas independientes entre s\'i, adem\'as ambos dependen de la velocidad angular seg\'un $\vec{k}_q$. Sin embargo, dichos \'angulos toman valores cercanos a cero en las trayectorias de inter\'es, en este caso se puede realizar la aproximaci\'on de que ambos sistemas son independientes.\\
+Para lograr que el cuadric\'optero se mantenga horizontal, es fundamental que el control sobre los \'angulos de Pitch y de Roll se comporten de acuerdo a lo esperado. A modo de ejemplo, es imposible lograr el equilibrio mec\'anico si dichos \'angulos difieren de cero. Por dicha raz\'on, previo a realizar pruebas sobre el sistema completo es necesario asegurarnos que los subsistemas de  Roll y Pitch funcionan correctamente. De acuerdo al modelo f\'isico del sistema desarrollado en \ref{chap:modelo} ni el Roll ni el Pitch son subsistemas independientes entre s\'i, adem\'as ambos dependen de la velocidad angular seg\'un $\vec{k}_q$. Sin embargo, dichos \'angulos toman valores cercanos a cero en las trayectorias de inter\'es, caso en el cual se puede realizar la aproximaci\'on de que ambos sistemas son independientes.\\
+A continuación se explicará el funcionamiento para el ángulo de Roll, ya que para Pitch el procedimiento es completamente análogo.\\
 
 \begin{wrapfigure}{r}{0.55\textwidth}
 	\vspace{-20pt}
@@ -16,12 +17,12 @@ Para lograr el correcto funcionamiento del cuadric\'optero es fundamental que el
 	\includegraphics[width=0.4\textwidth]{./pics_test_control/dispositivo_psi.pdf}
 	\caption{Dispositivo de prueba de Roll}
 	\label{fig:psidisp}
+	\vspace{-10pt}
 \end{wrapfigure}
 
-A partir de esta consideraci\'on se procede a fijar al cuadric\'optero sobre dos gu\'ias como se muestra en la figura \ref{fig:psidisp}, de forma de eliminar todos los grados de libertad del sistema excepto el \'angulo de Roll y la velocidad angular correspondiente al eje de rotaci\'on del Roll. Se realizan dos pruebas: la primera consiste en que el sistema alcance la posic\'on de equilibrio ($\psi = 0$), la segunda consiste en alejar al sistema del equilibrio y lograr que vuelva al punto de equilibrio.\\
+A partir de esta consideraci\'on se procede a fijar al cuadric\'optero sobre dos gu\'ias como se muestra en la figura \ref{fig:psidisp}, de forma de eliminar todos los grados de libertad del sistema excepto el \'angulo de Roll ($\psi$) y la velocidad angular correspondiente al eje de rotaci\'on de este ángulo. Se realizan dos pruebas: la primera consiste en que el sistema alcance la posic\'on de equilibrio ($\psi = 0$), la segunda consiste en alejar al sistema del equilibrio y lograr que vuelva al punto de equilibrio.\\
 
-El controlador posee dos terminos proporcionales: uno para el \'angulo $\psi$ y el otro para la velocidad angular $\omega_{qx}$ y un t\'ermino integral asociado a la integral de $\psi$. El modelo de este subsistema es el siguiente: 
-
+El controlador posee dos términos proporcionales: uno para el \'angulo $\psi$ y el otro para la velocidad angular $\omega_{qx}$. Además se considera un t\'ermino integral asociado a la integral de $\psi$. El modelo de este subsistema es el siguiente:
 \begin{equation}
 \left(\begin{array}{c}
 \dot{\psi}\\
@@ -30,8 +31,14 @@ El controlador posee dos terminos proporcionales: uno para el \'angulo $\psi$ y 
 \end{array}\right) = \left(\begin{array}{ccc}
 0 & 1 & 0\\
 -\frac{MgL^\prime}{I_{xx}} & 0 & 0\\
-1 & 0 &1
-\end{array}\right) + b\left(\begin{array}{cc}
+1 & 0 &0
+\end{array}\right) 
+\left(\begin{array}{c}
+{\psi}\\
+{\omega}_{qx}\\
+{\psi_I}
+\end{array}\right)
++ b\left(\begin{array}{cc}
 0 & 0\\
 1 & -1\\
 0 & 0\\
@@ -41,15 +48,7 @@ El controlador posee dos terminos proporcionales: uno para el \'angulo $\psi$ y 
 \end{array}\right)
 \end{equation}
 
-Donde $b$ y $\frac{MgL^\prime}{I_{xx}}$ son los obtenidos en la secci\'on \ref{chap:verificaciones}. La matriz de realimentaci\'on obtenida trabajando con las matrices $Q$ y $R$ definidas en \ref{eq:Q_R_roll} es:
-
-\begin{equation}
-\label{K_roll}
-K = \left( \begin{array}{ccc}
-44.43 & 10.78 &21.36\\
--44.430 & -10.78 &-21.36
-\end{array}\right)
-\end{equation}
+donde $b$ y $\frac{MgL^\prime}{I_{xx}}$ son los obtenidos en la secci\'on \ref{chap:verificaciones}. Trabajando con las matrices $Q$ y $R$:\\
 \begin{equation}
 \label{eq:Q_R_roll}
 Q = \left(\begin{array}{ccc}
@@ -60,23 +59,31 @@ Q = \left(\begin{array}{ccc}
 0.1 & 0 \\
 0 & 0.1
 \end{array}\right)
-\end{equation}\\	
+\end{equation}
+la matriz de realimentaci\'on obtenida es la mostrada en la ecuación \ref{K_roll}
+\begin{equation}
+\label{K_roll}
+K = \left( \begin{array}{ccc}
+44.43 & 10.78 &21.36\\
+-44.430 & -10.78 &-21.36
+\end{array}\right)
+\end{equation}
 
-
-\begin{wrapfigure}{r}{0.55\textwidth}
-	\vspace{-20pt}
+\begin{wrapfigure}{r}{0.6\textwidth}
+	\vspace{-10pt}
 	\centering
-	\includegraphics[width=0.4\textwidth]{./pics_test_control/psi.pdf}
+	\includegraphics[width=0.52\textwidth]{./pics_test_control/psi.pdf}
 	\caption{\'Angulo de Roll en lazo cerrado}
 	\label{fig:psi}
 \end{wrapfigure}
+\vspace{10pt}
+En la figura \ref{fig:psi} se observa la respuesta del \'angulo de Roll en lazo cerrado, con el setpoint fijo en $\psi = 0$. Se observa que el m\'odulo del \'angulo es siempre inferior a los $2^\circ$ a excepci\'on del arranque y algún pico aislado. Se puede decir que presenta un error típico de $\pm 1^\circ$. En este sentido se puede afirmar que el control implementado es exitoso, ya que logra el objetivo planteado. Puede observarse adem\'as que una vez que el controlador comienza a actuar se produce un cambio en el \'angulo alcanzando un valor cercano a los $5 ^\circ$. Este error es producido por la diferencia del empuje de los motores frente a una misma orden. El control integral es el encargado de corregir esta diferencia en aproximadamente $2.5$ segundos, tiempo que dependiendo de la aplicación puede ser o no aceptable. Un ángulo de algunos grados durante 2 segundos provocará un desplazamiento que puede llegar a ser inaceptable dependiendo de la aplicación. Como se sabe que es causado por una no idealidad sobre el empuje de los motores ante igual comando, es posible evitar este desplazamiento inicial muy fácilmente con tan solo inicializar al integrador en algún valor apropiado (distinto de cero). De esta forma se logra un despegue más prolijo ya que el ángulo $\psi$ permanecerá todo el tiempo más cerca de cero.\\
 
-En la figura \ref{fig:psi} se observa la respuesta del \'angulo de Roll en lazo cerrado. Con el setpoint fijo en $\psi = 0$ se observa que el m\'odulo del \'angulo es siempre inferior a los $2^\circ$ a excepci\'on del arranque y en un pico cerca de los 23 segundos. En este sentido se puede afirmar que el control implementado es exitoso, ya que logra el objetivo planteado. Puede observarse adem\'as que una vez que el controlador comienza a actuar se produce un cambio en el \'angulo alcanzando un valor cercano a los $5 ^\circ$. Este error es producido por la diferencia del empuje de los motores frente a una misma orden. El control integral es el encargado de corregir esta diferencia en aproximadamente $2.5$ segundos, un tiempo que es considerado aceptable.\\
+Ante este tipo de imperfecciones el control proporcional es el encargado de volver a estabilizar al cuadricóptero, pero lo hará en algún otro punto de equilibrio que no necesariamente es el deseado. Por otro lado es el control integral el encargado de que el cuadricóptero alcance el equilibrio deseado, que será probablemente distinto al equilibrio hallado por el proporcional.\\
 
-\begin{wrapfigure}{l}{0.55\textwidth}
-	\vspace{-20pt}
+\begin{wrapfigure}{r}{0.57\textwidth}
 	\centering
-	\includegraphics[width=0.4\textwidth]{./pics_test_control/psi_sin_con_int.pdf}
+	\includegraphics[width=0.48\textwidth]{./pics_test_control/psi_sin_con_int.pdf}
 	\caption{\'Angulo de Roll en lazo cerrado}
 	\label{fig:psi_sin_con_int}
 \end{wrapfigure}
@@ -84,20 +91,19 @@ En la figura \ref{fig:psi} se observa la respuesta del \'angulo de Roll en lazo 
 En la figura \ref{fig:psi_sin_con_int} se puede observar la diferencia entre utilizar un controlador puramente proporcional y un controlador proporcional con una correcci\'on integral. El primero no logra corregir el error sistem\'atico debido a la diferencia en el empuje de los motores alcanzando as\'i un punto de equilibrio distinto del \emph{set point}. El controlador con el t\'ermino integral si logra corregir este error y el \'angulo $\psi$ toma valores en el entorno del \emph{set point}.\\
 
 
-\begin{wrapfigure}{r}{0.50\textwidth}
-	\vspace{10pt}
+\begin{wrapfigure}{l}{0.52\textwidth}
+	\vspace{-10pt}
 	\centering
-	\includegraphics[width=0.4\textwidth]{./pics_test_control/psi_esc.pdf}
-	\caption{Respuesta al escal\'on del \'angulo de Roll en lazo cerrado}
+	\includegraphics[width=0.48\textwidth]{./pics_test_control/psi_esc.pdf}
+	\caption{Respuesta al escal\'on de Roll\\ en lazo cerrado}
 	\label{fig:psi_esc}
 \end{wrapfigure}
 
-Resulta fundamental entender como es la respuesta del sistema realimentado para apartamientos considerables respecto del equilibrio. Dicha situaci\'on puede producirse por diversas razones, un leve golpe de alg\'un agente externo o una simple turbulencia. En la figura \ref{fig:psi_esc} puede observarse la respuesta al escal\'on del sistema en lazo cerrado	con \'angulo inicial de aproximadamente $23 ^\circ$ y \emph{set point} $0 ^\circ$. La respuesta del sistema es muy buena, ya que se logra el valor de \emph{set point} en aproximadamente un segundo y la misma presenta un sobretiro del orden del $10\%$. \\
+Resulta fundamental entender como es la respuesta del sistema realimentado para apartamientos considerables respecto del equilibrio. Dicha situaci\'on puede producirse por diversas razones, un leve golpe de alg\'un agente externo o una simple turbulencia. En la figura \ref{fig:psi_esc} puede observarse la respuesta al escal\'on del sistema en lazo cerrado	con \'angulo inicial de aproximadamente $23 ^\circ$ y \emph{set point} $0 ^\circ$. La respuesta del sistema es muy buena, ya que se logra el valor de \emph{set point} en aproximadamente un segundo y la misma presenta un sobretiro del orden del $10\%$, obteniendo un resultado sumamente satisfactorio.\\
 
-Con este an\'alisis se concluye que la matriz de realimentaci\'on obtenida es adecuada para controlar el subsistema del \'angulo de Roll. El comportamiento del \'angulo de Pitch es similar al de Roll y por dicho motivo no ser\'a presentado. 
+Con este an\'alisis se concluye que la matriz de realimentaci\'on obtenida es adecuada para controlar el subsistema del \'angulo de Roll.
 
 \section{Control del subsistema del Yaw}
-
 
 De manera an\'aloga al caso anterior, es importante verificar el buen funcionamiento del control sobre el giro en ``z'', para lo cual se utiliza un dispositivo de prueba que restringe los grados de libertad del cuadric\'optero. En este caso se lo sujeta con una cuerda desde arriba de los cuatro brazos de modo de realizar la fuerza lo m\'as pareja posible. El cuadric\'optero queda sujetado colgando horizontal y conserva el libre giro seg\'un ``z'' ($\theta$).
 Se setea una velocidad de \emph{hovering} inferior a la necesaria para levantar vuelo, de modo que el cuadric\'optero no se eleve y la cuerda quede siempre tensa. Para el giro bajo estudio no es relevante el valor absoluto de la velocidad de giro de cada motor, ya que depende exclusivamente de la diferencia de velocidades angulares. Por ello los resultados de realizar las pruebas con una velocidad de \emph{hovering} inferior a la real son extrapolables a la situaci\'on de vuelo libre, sin p\'erdida de generalidad.\\
@@ -113,5 +119,135 @@ Se setea una velocidad de \emph{hovering} inferior a la necesaria para levantar 
 El giro en $\theta$ es generado por un desequilibrio entre los pares ejercidos por las h\'elices. Si el par neto de todas las h\'elices resulta por ejemplo positivo, el cuadric\'optero realizar\'a un movimiento hacia los negativos, equilibrando el par, como se explica en el cap\'itulo \ref{chap:general}.\\
 
 Para la estimaci\'on de $\theta$ se utiliza por un lado la integral de la velocidad angular en el eje ``z'' y por otro la proyecci\'on del vector del campo magn\'etico medido sobre el plano horizontal, medidas que son combinadas en el filtro de Kalman. El dato obtenido del magnet\'ometro no distingue entre giros de $360^o$, limitando el valor al rango [$-180^o$ - $180^o$]. Es necesario entonces realizar un reajuste de la medida deducida del campo magn\'etico para lograr la continuidad en el \'angulo estimado.\\
+
+Análogamente a la parte anterior se realizan 2 pruebas, la primera dejando que el sistema alcance su posición de equilibrio en $\theta = \theta_{inicial}$, y la segunda apartándolo del equilibrio y dejándolo regresar a su punto de equilibrio.\\
+
+El controlador, análogamente que para los anteriores 2 ángulos ($\psi$ y $\phi$), el controlador consta de 2 términos proporcionales, uno para $\theta$ y otro para $w_{qz}$, además de un término integral en $\theta$. El subsistema queda descripto por la siguiente ecuación:
+
+\begin{equation}
+\left(\begin{array}{c}
+\dot{\theta}\\
+\dot{\omega}_{qz}\\
+\dot{\theta_I}
+\end{array}\right) = 
+\left(\begin{array}{ccc}
+0 & 1 & 0\\
+0 & 0 & 0\\
+1 & 0 & 0
+\end{array}\right) 
+\left(\begin{array}{c}
+{\theta}\\
+{\omega}_{qz}\\
+{\theta_I}
+\end{array}\right)
++ b \left(\begin{array}{cccc}
+0  & 0 &  0 & 0 \\
+-1 & 1 & -1 & 1 \\
+0  & 0 &  0 & 0
+\end{array}\right) \left(\begin{array}{c}
+\omega_1 \\
+\omega_2 \\
+\omega_3 \\
+\omega_4
+\end{array}\right)
+\end{equation}
+
+En este caso la matriz de realimentación utilizada es la siguiente:
+
+\begin{equation}
+\label{K_theta}
+K = \left( \begin{array}{ccc}
+-48.93 & -7.51 & -14.73\\
+ 48.93 &  7.51 &  14.73\\
+-48.93 & -7.51 & -14.73\\
+ 48.93 &  7.51 &  14.73\\
+\end{array}\right)
+\end{equation}
+\vspace{10pt}
+
+Los resultados obtenidos se  muestran en las siguientes figuras. Se analiza en primer lugar el comportamiento del cuadricóptero dejándolo en equilibrio, luego se analiza la respuesta al escalón del subsistema en $\theta$ y por último se compara el comportamiento si se utiliza o no el término del integrador.
+
+\begin{wrapfigure}{r}{0.6\textwidth}
+	\vspace{-20pt}
+	\centering
+	\includegraphics[width=0.52\textwidth]{./pics_test_control/theta.pdf}
+	\caption{\'Angulo de Theta en lazo cerrado}
+	\label{fig:theta}
+\end{wrapfigure}
+
+En la figura \ref{fig:theta} se observa la dinámica del ángulo $\theta$ obtenida en el dispositivo de prueba de la figura \ref{fig:thetadisp} utilizando un integrador en dicho ángulo. Nuevamente se puede observar un crecimiento al principio que es ocasionado por las diferencias de las respuestas de los motores. Rápidamente el integrador actúa integrando la diferencia con el \emph{set poit} y corrigiendo el error cometido. Luego, en régimen, el ángulo en cuestión presenta un error típico de $\pm 2^\circ$, lo cual resulta completamente aceptable.\\
+
+
+\begin{wrapfigure}{l}{0.6\textwidth}
+	\vspace{-10pt}
+	\centering
+	\includegraphics[width=0.52\textwidth]{./pics_test_control/theta_esc.pdf}
+	\caption{Respuesta al escal\'on de Theta en\\ lazo cerrado}
+	\label{fig:theta_esc}
+\end{wrapfigure}
+
+En la figura \ref{fig:theta_esc} se muestra la respuesta al escalón del ángulo en cuestión al apartarlo de su equilibrio aproximadamente $90^\circ$. Puede notarse claramente que el cuadricóptero vuelve a su equilibrio en forma satisfactoria en aproximadamente 6 segundos, tiempo que parece aceptable. Es importante destacar, de todas formas, que presenta un sobretiro considerable, llegando a pasarse $60^\circ$ del equilibrio. Si bien es posible mejorar este aspecto, no resulta conveniente ya que en ese caso demora un tiempo sensiblemente mayor en volver al equilibrio. A su vez, el sobretiro en $\theta$ no parece ocasionar problemas de vuelo considerables para la mayoría de las aplicaciones.\\
+
+\begin{wrapfigure}{r}{0.6\textwidth}
+	\centering
+	\vspace{-10pt}
+	\includegraphics[width=0.52\textwidth]{./pics_test_control/theta_sin_con_int.pdf}
+	\caption{\'Angulo de Theta en lazo cerrado}
+	\label{fig:theta_sin_con_int}
+\end{wrapfigure}
+
+Por último en la figura \ref{fig:theta_sin_con_int} se evidencia la necesidad del término integral. Mientras que las diferencias entre los motores que ocasionan un aumento en el ángulo son corregidas rápidamente si se controla con el término integral, no ocurre lo mismo al utilizar un control solamente proporcional. Se puede observar que en este último caso el cuadricóptero llega a un equilibrio en $\theta$ distinto al \emph{set point}. A su vez el movimiento al inicio de dicho ángulo es mayor al utilizar el control solamente proporcional.\\
+
+Al igual que en el análisis de \emph{Roll} y \emph{Pitch}, se concluye que la matriz de realimentación utilizada, es adecuada para controlar de buena forma al ángulo \emph{Yaw}. \\
+
+En la siguiente sección se presentarán los resultados del control completo del cuadricóptero en condiciones de vuelo, extendiendo la matriz a las variables de estado necesarias para lograr el control deseado.
+
+\section{Control del sistema completo}
+
+\begin{wrapfigure}{l}{0.6\textwidth}
+	\centering
+	\vspace{-10pt}
+	\includegraphics[width=0.52\textwidth]{./pics_test_control/euler.pdf}
+	\caption{Ángulos de Euler}
+	\label{fig:euler}
+\end{wrapfigure}
+
+\begin{wrapfigure}{l}{0.6\textwidth}
+	\centering
+	\vspace{-10pt}
+	\includegraphics[width=0.52\textwidth]{./pics_test_control/wq.pdf}
+	\caption{Velocidades angulares del cuadricóptero}
+	\label{fig:wq}
+\end{wrapfigure}
+
+\begin{wrapfigure}{l}{0.6\textwidth}
+	\centering
+	\vspace{-10pt}
+	\includegraphics[width=0.52\textwidth]{./pics_test_control/z.pdf}
+	\caption{Altura}
+	\label{fig:z}
+\end{wrapfigure}
+
+\begin{wrapfigure}{l}{0.6\textwidth}
+	\centering
+	\vspace{-10pt}
+	\includegraphics[width=0.52\textwidth]{./pics_test_control/w.pdf}
+	\caption{Velocidades angulares de los motores}
+	\label{fig:w}
+\end{wrapfigure}
+
+\begin{wrapfigure}{l}{0.6\textwidth}
+	\centering
+	\vspace{-10pt}
+	\includegraphics[width=0.52\textwidth]{./pics_test_control/int.pdf}
+	\caption{Integrales}
+	\label{fig:int}
+\end{wrapfigure}
+
+offsets en cmdmotores
+
+
+
+
 
 \end{document}
