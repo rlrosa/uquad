@@ -760,6 +760,13 @@ int imu_comm_calibration_finish(imu_t *imu){
     err_propagate(retval);
     imu_data_free(&imu_data_tmp);
 
+    /**
+     * The converted altitud will be different from 0, since the calibration
+     * is not yet ready. Starting position (z) is assumed as 0, so force it
+     * here.
+     */
+    imu->calib.null_est_data.alt = 0.0;
+
     // If external altitud available, use it to determine p0
     if(imu->calib.z0 >= 0)
     {
