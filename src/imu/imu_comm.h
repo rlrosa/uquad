@@ -117,11 +117,11 @@
 #define IMU_FILTER_LEN                    6 // Reduce noise by filtering
 #define IMU_CALIB_SIZE                    512
 
-#define IMU_GYRO_DEFAULT_GAIN             14.375L // Not used
-#define IMU_P0_DEFAULT                    101325.0L // Value used if no calibration is available.
+#define IMU_GYRO_DEFAULT_GAIN             14.375 // Not used
+#define IMU_P0_DEFAULT                    101325.0 // Value used if no calibration is available.
 
-#define IMU_TH_DEADLOCK_ACC               9.72L // m/s^2
-#define IMU_TH_DEADLOCK_ANG               0.17069L // rad
+#define IMU_TH_DEADLOCK_ACC               9.72 // m/s^2
+#define IMU_TH_DEADLOCK_ANG               0.17069 // rad
 #define IMU_TH_DEADLOCK_ACC_NORM          (IMU_TH_DEADLOCK_ACC/GRAVITY)
 
 #define IMU_BYTES_T_US                    4
