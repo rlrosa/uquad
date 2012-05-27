@@ -23,7 +23,7 @@ El código se encuentre en el repositorio git, en la carpeta \verb+src/+. Todas 
 \label{fig:codigo:code.png}
 \end{wrapfigure}
 
-El código tiene una estructura modular, está escrito en C, y cada bloque está implementado como una librería. La estructura general del código se resume en la figura \ref{fig:codigo:code.png}. Por claridad, no se muestran bloques intermedios, utilizados para intercomunicar las distintas partes.
+El código tiene una estructura modular, está escrito en C, y cada bloque está implementado como una biblioteca. La estructura general del código se resume en la figura \ref{fig:codigo:code.png}. Por claridad, no se muestran bloques intermedios, utilizados para intercomunicar las distintas partes.
 
 Un loop normal, ejecutado por el programa principal (de ahora en más: \textit{main}) consiste en las siguiente etapas:
 \begin{enumerate}
@@ -47,14 +47,14 @@ src/README
 % \subsection{\textit{imu\_comm}}
 % \label{sec:codigo:imu_comm}
 
-% La función de esta librería es hacer de interfaz con la IMU. Se encarga se presentar la información que la IMU envía mediante un puerto serie, armando una estructura con campos para cada sensor, timestamps, etc.
+% La función de esta biblioteca es hacer de interfaz con la IMU. Se encarga se presentar la información que la IMU envía mediante un puerto serie, armando una estructura con campos para cada sensor, timestamps, etc.
 
 % Algunas funciones:
 % \begin{itemize}
 % \item \textbf{Calibración:} un conjunto de muestras que después se utilizan para estimar el offset de los giróscopos, y la altura inicial.
 % \item \textbf{Conversión:} Cargando parámetros de calibración, convierte datos crudos provenientes de los sensores (bits) en datos útiles (aceleraciones, velocidades angulares, etc).
 % \item \textbf{Ángulos de Euler:} Utilizando la información proveniente de acelerómetros y magnetómetro, calcula los tres ángulos de Euler.
-% \item \textbf{Modo \textit{FAKE}:} Seteando \verb+IMU_COMM_FAKE+ a 1, la librería leerá de un log, en lugar de utilizar el puerto serie. Las características fundamentales del modo \textit{FAKE} son:
+% \item \textbf{Modo \textit{FAKE}:} Seteando \verb+IMU_COMM_FAKE+ a 1, la biblioteca leerá de un log, en lugar de utilizar el puerto serie. Las características fundamentales del modo \textit{FAKE} son:
 %   \begin{itemize}
 %   \item Los tiempos no son un problema crítico, ya que no correrá en tiempo real.
 %   \item La información en los logs está guardaba en \verb+ascii+ (la IMU trabaja en binario).
@@ -397,12 +397,46 @@ bitbake -c clean u-boot
 \section{IMU}
 \label{sec:codigo:imu}
 
-%TODO
-% arduino, ftdi, mongoose, etc
+La Mongoose viene cargada con un bootloader Arduino, que permite bajarle código mediante el puerto serie.
+
+El código original que trae la Mongoose fue modificado. El problema principal que tenía era que la frequencia de muestreo no era estable.
+\begin{itemize}
+\item Se implementó transmisión de datos en segundo plano, mediante interrupciones, evitando trancar el loop principal al momento de transmitir.
+\item Se agregó la posibilidad transmitir en binario (se mantuvo el modo \verb+ASCII+, pero no es posible transmitir a 10ms en dicho modo).
+\item El barómetro demora varios milisegundos entre que se le pide un dato y que lo tiene disponible. El código original esperaba durante este tiempo. La versión modificada sigue trabajando y vuelve para recoger el dato luego que transcurrió el tiempo en cuestión.
+\end{itemize}
+
+\subsection{Compilación}
+\label{sec:codigo:compilacion-mongoose}
+
+Para programar la Mongoose se utiliza Arduino. Para instalarlo hacer:
+\begin{quote}
+\begin{quote}
+\begin{verbatim}
+sudo apt-get install arduino
+\end{verbatim}
+\end{quote}
+\end{quote}
+
+El código utiliza una biblioteca que no viene con Arduino. Asumiendo que el repositorio git fue descargado a \verb+~/uquad+, para agregar la biblioteca al Arduino, hacer:
+\begin{quote}
+\begin{quote}
+\begin{verbatim}
+sudo ln -s ${HOME}/uquad/src/mongoose_fw/HMC58X3/\
+ /usr/share/arduino/libraries/HMC58X3
+\end{verbatim}
+\end{quote}
+\end{quote}
 
 \section{Trabajo a futuro}
 \label{sec:codigo:trabajo-a-futuro}
 
+\begin{itemize}
+\item \textbf{Control:} La matriz de control se carga de un archivo de texto. Para automatizar el cálculo de dicha matriz, permitiendo cambiar de trayectoria en tiempo real, habría que implementar el cálculo en \verb+C+. Está lista una implementación del algoritmo LQR en \verb+C+, falta implementar la linealización del sistema según la trayectoria elegida.
+\item \textbf{Path planner:} Solamente está implementada la modalidad de \textit{hovering}. Queda pendiente implementar rectas y círculos, y un sistema de \textit{waypoints} que permita ir recorriendo trayectorias.
+\item \textbf{Visión:} Queda pendiente implementar en \verb+C+ el algoritmo descrito en \ref{chap:camara}.
+\item \textbf{logger:} Una mejora sería que el \textit{logger} guarde información en binario en lugar de usar \verb+ASCII+, lo que permitiría ahorrar RAM. De cualquier forma, el RAM no es un problema por ahora.
+\end{itemize}
 %TODO
 % no esta implementado el path planner
 % no anda bien lo de la matriz K en C, en realidad lo de la linealizacion (capaz es choto)
