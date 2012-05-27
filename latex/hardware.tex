@@ -3,7 +3,7 @@
 \begin{document}
 
 \chapter{Hardware}
-La elecci\'on del Hardware significa una parte muy importante del Proyecto, ya que las decisiones tomadas condicionan el resto del mismo. Una mala elecci\'on de alguno de los componentes puede resultar en complicaciones no previstas a la hora de la ejecuci\'on, causando contratiempos inesperados y trabajo excesivo. Es necesario, entonces, el estudio detallado de cada uno de los componentes a utilizar, comparando caracter\'isticas, rendimientos y utilidades.\\
+La elecci\'on del Hardware significa una parte muy importante del Proyecto, ya que las decisiones tomadas condicionan el resto del mismo. Una mala elecci\'on de alguno de los componentes puede acarrear complicaciones no previstas a la hora de la ejecuci\'on, causando contratiempos inesperados y trabajo excesivo. Es necesario, entonces, el estudio detallado de cada uno de los componentes a utilizar, comparando caracter\'isticas, rendimientos y utilidades.\\
 
 
 
@@ -50,17 +50,17 @@ Lamentablemente el software presente en la CPU es privativo por lo tanto reutili
 
 Adem\'as de la plataforma f\'isica, deben seleccionarse componentes electr\'onicos capaces de procesar la informaci\'on proveniente de los sensores, computar y ejecutar los algoritmos de control y generar las se\~nales necesarias para transmitir las instrucciones a los motores.\\
 
-La soluci\'on implementada se basa en la plataforma de desarrollo \emph{Beagleboard}. Esta plataforma posee un microprosesador TI ARM Cortex A8 de 1GHz y un DSP TMS320C64x+ de 800MHz, la memor\'ia RAM de la misma es de 512 Mb y si bien no tiene memoria no volatil soporta tarjetas SD de hasta 4GB. Ver figura \ref{fig:beagle}.
+La soluci\'on implementada se basa en la plataforma de desarrollo \emph{Beagleboard}. Esta plataforma posee un microprosesador TI ARM Cortex A8 de 1GHz y un DSP TMS320C64x+ de 800MHz, la memor\'ia RAM de la misma es de 512 Mb y si bien no tiene memoria no volatil soporta tarjetas SD de hasta 4GB. Ver figura \ref{fig:beagleboard}.
 
 \begin{figure}[!h]
 	\centering
 	\includegraphics[width=0.35\textwidth]{./pics_eleccion_hardware/beagle.pdf}
 	\caption{Beagleboard}
-	\label{fig:beagle}
+	\label{fig:beagleboard}
 \end{figure}
 \subsection*{Dimensiones y peso}
 
-Si bien no resulta una caracetr\'istica determinante, es conveniente que las dimensiones y peso de la placa elegida sean lo menores posibles, de forma de no ocupar gran parte de la carga \'util del cuadric\'optero con electr\'onica asociada a la inteligencia implementada. El peso de la Beagleboard y una bater\'ia asociada diseñada especialmente para esta plataforma es de 76 gramos y sus dimensiones son $10cm\times8.5cm\times2cm$. La autonom\'ia de la bater\'ia es de aproximadamente 2 horas. \\
+Si bien no resulta una caracetr\'istica determinante, es conveniente que las dimensiones y peso de la placa elegida sean lo menor posible, de forma de no ocupar gran parte de la carga \'util del cuadric\'optero con electr\'onica asociada a la inteligencia implementada. El peso de la Beagleboard y una bater\'ia asociada diseñada especialmente para esta plataforma es de 220 gramos y sus dimensiones son $10cm\times8.5cm\times5cm$. La autonom\'ia de la bater\'ia es de aproximadamente 2 horas. \\
 
 \subsection*{Programaci\'on y Sistema Operativo}
 
@@ -110,7 +110,7 @@ Un gir\'oscopo es un instrumento que mide la velocidad angular del sistema en un
 Desde el punto de vista te\'orico, procesando la informaci\'on obtenida a partir del aceler\'ometro y del gir\'oscopo se puede conocer en todo momento la posici\'on del sistema y su orientaci\'on a partir de las condiciones iniciales.\\
 
 En la pr\'actica, sin embargo, esto no sucede as\'i. Todas las medidas realizadas tienen un cierto error. Para obtener la orientaci\'on y la posici\'on a cada instante se deben integrar las medidas obtenidas, por lo tanto, se integra tambi\'en el error cometido. Esto produce una acumulaci\'on de errores que afecta de forma considerable el resultado final luego de cierta cantidad de muestras.\\
-Parece razonable, entonces, poder cotejar los datos que se obtienen mediante este m\'etodo con datos obtenidos mediante otras fuentes. Es a partir de esta problem\'atica que surge la necesidad de contar con un GPS. Se puede, cada cierto intervalo de tiempo, observar en cuanto difieren los resultados obtenidos integrando las medidas de los sensores con los datos que aporta el GPS, logrando de esta forma corregir los errores debido al \emph{integration drift}.
+Parece razonable, entonces, poder cotejar los datos que se obtienen mediante este m\'etodo con datos obtenidos mediante otras fuentes. Es a partir de esta problem\'atica que surge la necesidad de contar con un GPS. Se puede, cada cierto intervalo de tiempo, observar en cuanto difieren los resultados obtenidos integrando las medidas de los sensores con los datos que aporta el GPS, logrando de esta forma corregir los errores debido al \emph{integration drift}, o utilizando alg\'un otro m\'etodo de integraci\'on de medidas como por ejemplo un filtro de Kalman.
 
 \subsubsection{Sensor de presi\'on}
 
@@ -143,7 +143,7 @@ La Mongoose 9DoF IMU posee todos los sensores que se han nombrado hasta aqu\'i e
 
 \subsection{GPS}
 
-La elecci\'on del GPS se bas\'o cas\'i totalmente en lograr la simplicidad del sistema. Exist\'ian muchas opciones, placas de diversos tama\~nos, con diversos tama\~nos de antenas, pero todas con similares especificaciones.\\
+La elecci\'on del GPS se bas\'o fundamentalmente en lograr la simplicidad del sistema. Exist\'ian muchas opciones, placas de diversos tama\~nos, con diversos tama\~nos de antenas, pero todas con especificaciones similares.\\
 
 Las placas candidatas a estar a cargo de la inteligencia contaban con interfaces USB, por lo que se opt\'o por comprar un dongle GPS, cuyas especificaciones son similares a las del resto de las opciones, y se puede comunicar via USB gracias a drivers ya existentes para linux. Se opt\'o por utilizar un GPS \textit{Canmore GT-730F}.
 
