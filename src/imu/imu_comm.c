@@ -1798,6 +1798,22 @@ int imu_comm_print_calib(imu_calib_t *calib, FILE *stream){
 #if 0
 /// unused code
 
+/**
+ * If IMU setting were to be modified from imu_comm, the
+ * current setting should be stored here.
+ * //TODO use or remove
+ *
+ */
+typedef struct imu_settings{
+    // sampling frequency
+    //    int fs;
+    // sampling period
+    //    double T;
+    // sens index
+    //    int acc_sens;
+    //    int frame_width_bytes;
+}imu_settings_t;
+
 static void imu_comm_cast_data2raw(imu_raw_t *out, imu_raw_db_t *in)
 {
     int i;
