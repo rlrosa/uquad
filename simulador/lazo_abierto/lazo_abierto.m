@@ -447,7 +447,7 @@ function pushbutton1_Callback(hObject, eventdata, handles)
     %recta(9) la fuerza tiene que ser, en la situación inicial,
     %igual al peso (hovering)
     %Se calcula la velocidad angular necesaria para lograr el hovering
-    if (ind~=1) && (ind~=9) && (ind~=10)
+    if (ind~=1) 
         fuerza_hov=m*9.81/4;
         val_hov=calc_omega(fuerza_hov);
         w1(time>(ti-1)) = val_hov; 
@@ -458,22 +458,22 @@ function pushbutton1_Callback(hObject, eventdata, handles)
     
     switch ind  % Con esto se termina de calcular la velocidad angular de 
                 % cada motor en cada caso particular
-        
-        case 3 %Escalón en el motor 1
-            w1(time>tf/2) = val_hov+100;            
-        case 4 %Escalón en el motor 2                   
-            w2(time>tf/2) = val_hov+100;            
-        case 5 %Escalón en el motor 3                     
-            w3(time>tf/2) = val_hov+100;         
-        case 6 %Escalón en el motor 4 
-             w4(time>tf/2) = val_hov+100;
-        case 7 %Escalón en los cuatro motores
+
+        case 3 %Escalón en los cuatro motores
             w1(time>tf/2) = val_hov+100;
             w2(time>tf/2) = val_hov+100;
             w3(time>tf/2) = val_hov+100;
             w4(time>tf/2) = val_hov+100;
+                
+        case 4 %Giro en Roll
+            w2(time>tf/2) = val_hov+3;            
+            w4(time>tf/2) = val_hov-3;
+        case 5 %Giro en pitch                   
+             w3(time>tf/2) = val_hov+3;            
+             w1(time>tf/2) = val_hov-3;            
         
-        case 8  %Giro según K
+        
+        case 6  %Giro según Yaw
          
             %Tengo que subir la veocidad angular de dos motores y bajar la de 
             %los otros dos. La fuerza total tiene que ser constante.
@@ -495,45 +495,9 @@ function pushbutton1_Callback(hObject, eventdata, handles)
             w1(time>tf/2) = val_menos;
             w3(time>tf/2) = val_menos;
             
-        case 9 %Caso vuelo en linea recta  
-            
-            %La fuerza para mantener la altura depende de los ángulos de
-            %pitch y roll. Calculo esa fuerza
-            fuerza_rec=9.81*m/(4*cos(psio)*cos(phio));
-            
-            %Calculo la velocidad angular necesaria para tener esa fuerza
-            val_rec=calc_omega(fuerza_rec);
-            
-             %Le asigno esa velocidad angular a los cuatro motores 
-             w1(time>(ti-1)) = val_rec;
-             w2(time>(ti-1)) = val_rec;
-             w3(time>(ti-1)) = val_rec;
-             w4(time>(ti-1)) = val_rec;    
-             
-        case 10 % Vuelo en circulo
-            
-            %Determino los parámetros del circulo
-            G=trim_circ(1,1/5);
-            assignin('base','psi0',G(1));
-            assignin('base','phi0',G(2));
-            assignin('base','theta0',0);
-            assignin('base','vq10',G(3));
-            assignin('base','vq20',G(4));
-            assignin('base','vq30',G(5));
-            assignin('base','wq10',G(6));
-            assignin('base','wq20',G(7));
-            assignin('base','wq30',G(8));
-           
-            w1(time>(ti-1)) = G(9);
-            w2(time>(ti-1)) = G(10);
-            w3(time>(ti-1)) = G(11);
-            w4(time>(ti-1)) = G(12); 
+       
     end
     
-    if ind~=10
-    %Calculo las velocidades iniciales en el sistema del quadricoptero
-    determinar_vel;
-    end
     %Simulo el sistema en lazo abierto
     [t,X]=sim_lazo_abierto(ti,tf,w1,w2,w3,w4);
     
