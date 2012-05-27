@@ -24,6 +24,7 @@
  */
 #include <uquad_aux_math.h>
 #include <path_planner.h>
+#include <control.h>
 #include <stdlib.h>
 
 int main(){
@@ -38,21 +39,41 @@ int main(){
     FILE *matrix = NULL;
 
     matrix = fopen("A","r");
+    if(matrix == NULL)
+    {
+	err_log_stderr("fopen(A)");
+	cleanup_if(ERROR_IO);
+    }
     A = uquad_mat_alloc(12,12);
     retval = uquad_mat_load(A, matrix);
     cleanup_if(retval);
 
     matrix = fopen("B","r");
+    if(matrix == NULL)
+    {
+	err_log_stderr("fopen(B)");
+	cleanup_if(ERROR_IO);
+    }
     B = uquad_mat_alloc(12,4);
     retval = uquad_mat_load(B,matrix);
     cleanup_if(retval);	
     
     matrix = fopen("Q","r"); 
+    if(matrix == NULL)
+    {
+	err_log_stderr("fopen(Q)");
+	cleanup_if(ERROR_IO);
+    }
     Q = uquad_mat_alloc(12,12);
     retval = uquad_mat_load(Q,matrix);
     cleanup_if(retval);
        
     matrix = fopen("R","r"); 
+    if(matrix == NULL)
+    {
+	err_log_stderr("fopen(R)");
+	cleanup_if(ERROR_IO);
+    }
     R = uquad_mat_alloc(4,4);
     retval = uquad_mat_load(R,matrix);
     cleanup_if(retval);
@@ -61,9 +82,9 @@ int main(){
     gamma = uquad_mat_alloc(B->r, B->c);
     K = uquad_mat_alloc(4,12);
 
-    retval = pp_disc(phi,gamma,A,B,10e-3);
+    retval = control_disc(phi,gamma,A,B,10e-3);
     cleanup_if(retval);
-    retval = pp_lqr(K,phi,gamma,Q,R);
+    retval = control_lqr(K,phi,gamma,Q,R);
     cleanup_if(retval);
 
     uquad_mat_dump(K,0);

@@ -77,6 +77,13 @@ typedef enum STATE_VECTOR{
 #define LENGTH_INPUT      4           // Input vector length
 
 /**
+ * Definition of default sampling period, in microseconds.
+ * Should match code running on IMU.
+ */
+#define TS_DEFAULT_US     10000L
+#define TS_DEFAULT_US_DBL ((double)TS_DEFAULT_US)
+
+/**
  *
  * Sampling time within [TS_MIN,TS_MAX] will be used for
  * kalman filtering. If out of range, using it within the kalman filter

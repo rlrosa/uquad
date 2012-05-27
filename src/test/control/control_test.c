@@ -65,6 +65,7 @@ int main(int argc, char *argv[])
     int retval;
     FILE *file;
     uquad_mat_t *x, *w;
+    uquad_bool_t ctrl_outdated = false;
 
     if(argc < 2)
     {
@@ -107,7 +108,7 @@ int main(int argc, char *argv[])
 	    quit_log_if(retval, "End of log?");
 	}
 	#warning "w_hover esta mal!"
-	retval = pp_update_setpoint(pp, x, 0);
+	retval = pp_update_setpoint(pp, x, 0, &ctrl_outdated);
 	quit_if(retval);
 	retval = control(ctrl, w, x, pp->sp, TS_DEFAULT_US);
 	quit_if(retval);

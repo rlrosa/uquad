@@ -1,27 +1,3 @@
-/**
- * control: lib for determing control actions.
- * Copyright (C) 2012  Rodrigo Rosa <rodrigorosa.lg gmail.com>, Matias Tailanian <matias tailanian.com>, Santiago Paternain <spaternain gmail.com>
- *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- * @file   control.c
- * @author Rodrigo Rosa <rodrigorosa.lg gmail.com>, Matias Tailanian <matias tailanian.com>, Santiago Paternain <spaternain gmail.com>
- * @date   Sun May 27 11:08:44 2012
- *
- * @brief  lib for determing control actions.
- *
- */
 #include "control.h"
 #include <uquad_error_codes.h>
 #include <math.h>
@@ -55,6 +31,7 @@ ctrl_t *control_init(void)
     ctrl->A = uquad_mat_alloc(STATES_CONTROLLED,STATES_CONTROLLED);
     ctrl->B = uquad_mat_alloc(STATES_CONTROLLED,LENGTH_INPUT);
     ctrl->Q = uquad_mat_alloc(STATES_CONTROLLED,STATES_CONTROLLED);
+#warning 
     ctrl->R = uquad_mat_alloc(LENGTH_INPUT, LENGTH_INPUT);
     tmp_sub_sp_x = uquad_mat_alloc(STATE_COUNT,1);
     w_tmp = uquad_mat_alloc(LENGTH_INPUT,1);
@@ -111,14 +88,6 @@ ctrl_t *control_init(void)
     }
     retval = control_clear_int(ctrl);
     cleanup_log_if(retval, "Failed to clear integral term!");
-
-#if CTRL_INTEGRAL_ANG
-    /// Avoid unstable startup caused by motor differences
-    ctrl->x_int->m_full[ctrl->x_int->r - 4] = -(CTRL_INT_ACCUM_MAX_PSI/5.0); // PSI
-    ctrl->x_int->m_full[ctrl->x_int->r - 3] = -(CTRL_INT_ACCUM_MAX_PHI/6.6); // PHI
-    ctrl->x_int->m_full[ctrl->x_int->r - 2] = 0.0;                           // Z
-    ctrl->x_int->m_full[ctrl->x_int->r - 1] = 0.0;                           // THETA
-#endif // CTRL_INTEGRAL_ANG
 
     file_mat = fopen(CTRL_MAT_K_INT_NAME,"r");
     if(file_mat == NULL)

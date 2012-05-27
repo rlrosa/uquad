@@ -757,23 +757,36 @@ int imu_comm_calibration_finish(imu_t *imu){
     {
 	imu->calib.null_est.acc[i]  =
 	    (uint16_t)(calib_accum.acc[i]/IMU_CALIB_SIZE);
+	imu->tmp_filt.acc->m_full[i] =
+	    ((double)calib_accum.acc[i])/IMU_CALIB_SIZE;
+
 	imu->calib.null_est.gyro[i] =
 	    (uint16_t)(calib_accum.gyro[i]/IMU_CALIB_SIZE);
+	imu->tmp_filt.gyro->m_full[i] =
+	    ((double)calib_accum.gyro[i])/IMU_CALIB_SIZE;
+
 	imu->calib.null_est.magn[i] =
 	    (uint16_t)(calib_accum.magn[i]/IMU_CALIB_SIZE);
+	imu->tmp_filt.magn->m_full[i] =
+	    ((double)calib_accum.magn[i])/IMU_CALIB_SIZE;
     }
     imu->calib.null_est.temp =
 	(uint16_t)(calib_accum.temp/IMU_CALIB_SIZE);
+    imu->tmp_filt.temp =
+	((double)calib_accum.temp)/IMU_CALIB_SIZE;
+
     imu->calib.null_est.pres =
 	(uint32_t)floor((((double)calib_accum.pres)/IMU_CALIB_SIZE));
+    imu->tmp_filt.alt =
+	floor((((double)calib_accum.pres)/IMU_CALIB_SIZE));
 
     imu->calib.calibration_counter = -1;
     imu->calib.timestamp_estim = tv_end;
 
     // update offset estimation
     retval = imu_comm_raw2data(imu,
-			       &imu->calib.null_est,
 			       NULL,
+			       &imu->tmp_filt,
 			       &imu_data_tmp);
     if(retval != ERROR_OK)
 	imu_data_free(&imu_data_tmp);

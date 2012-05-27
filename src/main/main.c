@@ -490,19 +490,19 @@ void uquad_conn_lost_handler(int signal_num)
 void sanity_check(imu_data_t *imu_data, uquad_mat_t *x_hat, uquad_bool_t *insane)
 {
     *insane = false;
-    if(imu_data->temp > SANITY_MAX_TEMP)
+    if((imu_data != NULL) && imu_data->temp > SANITY_MAX_TEMP)
     {
 	*insane = true;
 	err_log_double("WARN! Sanity check alert\t-\ttemp!\t", imu_data->temp);
 	return;
     }
-    if(uquad_abs(x_hat->m_full[SV_PSI]) > SANITY_MAX_PSI)
+    if((x_hat != NULL) && (uquad_abs(x_hat->m_full[SV_PSI]) > SANITY_MAX_PSI))
     {
 	err_log_double("WARN! Sanity check alert\t-\tpsi!\t", x_hat->m_full[SV_PSI]);
 	*insane = true;
 	return;
     }
-    if(uquad_abs(x_hat->m_full[SV_PHI]) > SANITY_MAX_PHI)
+    if((x_hat != NULL) && (uquad_abs(x_hat->m_full[SV_PHI]) > SANITY_MAX_PHI))
     {
 	err_log_double("WARN! Sanity check alert\t-\tpsi!\t", x_hat->m_full[SV_PHI]);
 	*insane = true;
@@ -542,12 +542,13 @@ int main(int argc, char *argv[]){
 	tmp_buff[2] = {0,0};
 
     uquad_bool_t
-	read_ok     = false,
-	write_ok    = false,
-	imu_update  = false,
-	reg_stdin   = true,
-        aux_bool    = false,
-	manual_mode = false;
+	read_ok       = false,
+	write_ok      = false,
+	imu_update    = false,
+	reg_stdin     = true,
+        aux_bool      = false,
+	ctrl_outdated = false,
+	manual_mode   = false;
     struct timeval
 	tv_tmp, tv_diff,
 	tv_last_m_cmd,
@@ -861,18 +862,18 @@ int main(int argc, char *argv[]){
 	quit_log_if(ERROR_FAIL,"kalman init failed!");
     }
 
-    /// Control module
-    ctrl = control_init();
-    if(ctrl == NULL)
-    {
-	quit_log_if(ERROR_FAIL,"control init failed!");
-    }
-
     /// Path planner module
     pp = pp_init();
     if(pp == NULL)
     {
 	quit_log_if(ERROR_FAIL,"path planner init failed!");
+    }
+
+    /// Control module
+    ctrl = control_init();
+    if(ctrl == NULL)
+    {
+	quit_log_if(ERROR_FAIL,"control init failed!");
     }
 
     /// Global vars
@@ -1564,6 +1565,11 @@ int main(int argc, char *argv[]){
 		    w_forced->m_full[i] = mot->w_min;
 		    w->m_full[i]      = mot->w_hover;
 		}
+		//TODO Update control matrix - not implemented yet
+		/* retval = control_update_K(ctrl, pp, mot->weight); */
+		/* quit_log_if(retval, "Failed to update control matrix! Aborting..."); */
+		/* retval = control_dump(ctrl, log_err); */
+		/* quit_log_if(retval, "Failed to dump new control matrix! Aborting..."); */
 	    }
 
 	    /**
@@ -1595,6 +1601,7 @@ int main(int argc, char *argv[]){
 	    }
 	    retval = ERROR_OK;// ignore error
 	    fflush(stderr);
+
 	}
 
 	/// -- -- -- -- -- -- -- --
@@ -1762,8 +1769,19 @@ int main(int argc, char *argv[]){
 	/// -- -- -- -- -- -- -- --
 	/// Update setpoint
 	/// -- -- -- -- -- -- -- --
-	retval = pp_update_setpoint(pp, kalman->x_hat, mot->w_hover);
+	retval = pp_update_setpoint(pp, kalman->x_hat, mot->w_hover, &ctrl_outdated);
 	log_n_continue(retval,"Kalman update failed");
+
+	/// -- -- -- -- -- -- -- --
+	/// Update control matrices
+	/// -- -- -- -- -- -- -- --
+	if(ctrl_outdated)
+	{
+	    retval = control_update_K(ctrl, pp, mot->weight);
+	    quit_log_if(retval, "Failed to update control matrix! Aborting...");
+	    retval = control_dump(ctrl, log_err);
+	    quit_log_if(retval, "Failed to dump new control matrix! Aborting...");
+	}
 
 	/// -- -- -- -- -- -- -- --
 	/// Run control

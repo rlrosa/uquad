@@ -23,6 +23,7 @@
  *
  */
 #include <path_planner.h>
+#include <control.h>
 #include <uquad_aux_math.h>
 #include <macros_misc.h>
 #include <stdlib.h>
@@ -156,7 +157,7 @@ int update_k_test(void)
     pp->R = R;
     pp->Ts = Ts;
     pp->K = uquad_mat_alloc(4,24);
-    retval =  pp_update_K(pp,0);
+    retval =  control_update_K(pp,0);
     cleanup_if(retval);
 
     cleanup:
