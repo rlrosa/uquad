@@ -73,6 +73,8 @@
  *         - Timing is not critical, since it will not run in real time.
  * 	- Information in the logs is in ASCII, rather than binary (normal mode read binary
  * 	data).
+ * NOTES:
+ *   - For non-blocking performance, select() should be called before imu_comm_read().
  *
  * Examples:
  *   - src/main/main.c
