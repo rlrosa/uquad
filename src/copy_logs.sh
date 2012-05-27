@@ -1,5 +1,8 @@
 #!/bin/bash -e
-
+#
+# Will copy *.log from $1 to $2
+# If $2 already exists, then an error will be triggered.
+#
 EXPECTED_ARGS=2
 
 if [ $# -ne $EXPECTED_ARGS ]
@@ -25,7 +28,7 @@ else
     cd $2
     dest_dir=`pwd`
     # Copy logs
-    ls ${1}/ | grep '.log' | xargs -I '{}' mv -v ${1}'{}' .
+    ls ${1}/ | grep '.log' | xargs -I '{}' cp -v ${1}'{}' .
     # Remove last line
     ls | grep '.log' | xargs -I '{}' sed -i '$d' '{}'
     cd ../

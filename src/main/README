@@ -8,27 +8,47 @@ It will perform the following:
      - GPS
      - STDIN
      - motors
-   - Discard STARTUP_RUNS samples from the IMU, to get rid of old data accumulated in the uart.
-   - Calibrate IMU using IMU_CALIB_SIZE samples, to get an estimation of:
-     - pressure at the current height (to determine current altitud).
-     - current heading (theta/yaw), to use as setpoint (and keep looking forward).
-   - Use STARTUP_KALMAN samples to:
-     - let intertial kalman filter reach a steady state.
-     - ramp up motor speed from MOT_W_IDLE to MOT_W_HOVER
+   - Read out from the IMU dev, to discard data accumulated between the moment the /dev/tty 
+   was opened and now, when we will start reading from it.
+   - Calibrate IMU.
+   - Update heading (theta/yaw) setpoint using calibration.
+   - Use STARTUP_SAMPLES samples to ramp motors from min to hovering speed.
    - Run main loop, which will:
      - Check for updates from IO: IMU/GPS
      - Update state estimation.
      - Update set point based on current position.
      - Update motor speed according to control.
 
+# Configuration
+
+Configuration settings are defined in src/common/uquad_config.h, and global parameters are
+in src/common/uquad_types.h
+
+Enabling/disabling GPS is configured in src/CMakelists.txt
+
 # How to run
 
-For normal use, ie, to fly the quadcopter, a script go.sh is available in src/. Running it should build/copy/organize everything necessary to get the control loop running, and also run some scripts to shutdown motors if wireless connection is lost.
+For normal use, ie, to fly the quadcopter, a script <code>go.sh</code> is available in <code>src/</code>. Running it should build/copy/organize everything necessary to get the control loop running.
 
 The program will not run on its own, it requires:
-    - logger: main.c writes data to pipes (which are Kernel structures located in RAM), to avoid IO blocking. A an instance of logger is called for each pipe, to read the pipe and save to a log file.
+    - A server running on <code>10.42.43.1</code>, enabling main to terminate if wireless connection is lost.
+    - GPS: main can run with or without a GPS device. To enable using GPS, set USE_GPS to 1 
+    in src/CMakelists.txt.
+    If a fake GPS (all zeros) is desired, for example for indoor testing, then GPS_ZERO must
+    be set to 1 in src/common/uquad_config.h
     - cmd: this is the motor driver. It will continuosly send commands to the motors, and update the value send according to what main.c sends via kernel message queues. NOTE: If i2c is not available, ie, if testing on a PC, the cmd must be compiled to fake i2c. To do this, go to src/i2c_beagle and run:<pre><code>make pc_test
 </code></pre>
-This will generate an executable cmdpc_test, which must be copied to src/build/main/ and renamed to cmd.
-    - imu_calib.txt: IMU module expects a calibration file.
-    - An IMU connected to a serial line. If IMU is not available, an ascii log file may be used. It must have the same format as the IMU uses when running in ascii mode (default). The IMU module must be compiled setting IMU_COMM_FAKE to 1.
+This will generate an executable cmdpc_test, which must be copied to <code>src/build/main/</code> and renamed to cmd.
+    - An IMU connected to a serial line. If IMU is not available, an ascii log file may be used. It must have the same format as the IMU uses when running in ascii mode (default). The IMU module must be compiled setting <code>IMU_COMM_FAKE</code> to 1.
+    - imu_calib.txt: IMU module expects a calibration file. (should be taken care of by <code>go.sh</code>).
+    - Control gain matrices (should be taken care of by <code>go.sh</code>).
+
+# Output handling
+
+If in debug mode (<code>DEBUG</code> set to 1 in <code>src/common/uquad_config.h</code>) then main will save data to log
+files, in a folder specified at startup. Defaults to /media/sda1/
+These files can be copied to a new directory using the script <code>src/copy_logs.sh</code>
+
+A MatLab script to load and plot is available at <code>tests/mongoose/m/plot_c.m</code>
+
+Logs are enabled by setting defines to 1/0 in main.c

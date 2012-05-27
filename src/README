@@ -2,27 +2,47 @@
 #. Code structure
 # -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
-All explanations assume you start from uquad/src/
+src/main:
+	The main control loop is main/main.c. See main/README for more info.
 
-Main:	The main control loop is main/main.c. See main/README for more info.
-	It will consists of a loop in which:
-	   - all the io devices are polled.
-	   - those input devices with data ready are handled (new data is read)
-	   - the state estimation is updated with the new data
-	   - actions are performed in order to achieve whatever goal has been set (hover, go forward, track an object, etc)
+Devices:
+	Each device should have it's own API, in a separate folder (example: imu/).
+	A control loop will check with device has data available, and read only from the devices that do have data, avoiding locking. this is done via select().
+	Each device should provide a way to access their file descriptor, and a function to update/read data once it is available.
 
-Devices: Each device should have it's own API, in a separate folder (example: imu/).
-	 A control loop will check with device has data available, and read only from the devices that do have data, avoiding locking. this is done via select().
-	 Each device should provide a way to access their file descriptor, and a function to update/read data once it is available.
+src/common:
+	Code that can be used in a general context (several devices, control loop, etc) such as io, error handling, logging, etc goes in common/
 
-Common:	 Code that can be used in a general context (several devices, control loop, etc) such as io, error handling, logging, etc goes in common/
-
-Test programs:
-     Test programs have their individual directory within test/
+src/test:
+	Test programs have their individual directory within test/
 
 Build system:
-      Build system is based on cmake. Instruction follow on how to get it running without reading much.
+      Build system is based on cmake. Instructions follow on how to get it running without reading much.      
       Basic intro: http://mathnathan.com/2010/07/11/getting-started-with-cmake/
+
+
+# -- -- -- -- -- -- -- -- -- -- -- -- -- --
+#. Navigating through code
+# -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+To access implementation of functions or definition of structures using emacs do:
+   cd src/
+   ./mktags.sh
+This will generate src/TAGS. Now go to emacs and do:
+   M-x visit-tags-table RET src/TAGS RET
+Now to go to a def place the cursor on it and do:
+   Alt+.
+To go back, do
+   Alt+*
+
+The emacs configuration file used for code indentation is in src/emacs_config
+
+# -- -- -- -- -- -- -- -- -- -- -- -- -- --
+#. gpsd
+# -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+  gpsd is not within the cmake build system. It must be manually compiled by running scons
+in src/submodules/gpsd/
 
 # -- -- -- -- -- -- -- -- -- -- -- -- -- --
 #. CMake basics
@@ -38,15 +58,15 @@ Each subdirectory has a CMakeLists.txt of its own, that can point deeper into th
 #. Setting up the build system
 # -- -- -- -- -- -- -- -- -- -- -- -- -- --
 To setup the build system do
-   sh run_cmake.sh
+   ./run_cmake.sh
    
 
 Optional arguments to the script are:
    - debug: Will build code with debug symbols.
-   - arm: Use cross compiler, generate code that will run on the beagle.
-   - help: Show possible arguments.
+   - arm  : Use cross compiler, generate code that will run on the beagle.
+   - help : Show possible arguments.
 
-This will setup everything in src/build/
+This will setup everything in src/build/ (or src/arm_build/)
 To compile a test program, for example imu_comm_test
    cd build/
    make imu_comm_test

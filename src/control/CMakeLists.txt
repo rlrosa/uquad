@@ -3,3 +3,4 @@
 add_library (control control)
 
 target_link_libraries(control uquad_math)
+target_link_libraries(control uquad_time)

@@ -1,22 +1,96 @@
-#include <uquad_config.h>
-#if DEBUG // The following define will affect includes
+/**
+ * main: uquad autopilot software
+ * Copyright (C) 2012  Rodrigo Rosa <rodrigorosa.lg gmail.com>, Matias Tailanian <matias tailanian.com>, Santiago Paternain <spaternain gmail.com>
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @file   main.c
+ * @author Rodrigo Rosa <rodrigorosa.lg gmail.com>, Matias Tailanian <matias tailanian.com>, Santiago Paternain <spaternain gmail.com>
+ * @date   Sun May 27 11:08:44 2012
+ *
+ * @brief  uquad autopilot software
+ *
+ * See src/main/README for information regarding how to run, configure, etc.
+ *
+ */
+#include <uquad_config.h> // debug mode is emabled/disabled here
+#if DEBUG
+/**
+ * Show timing information on console.
+ *
+ * NOTE: Should not be enabled when running real time, since
+ *       ssh traffic will severely deteriorate performance.
+ */
 #define TIMING             0
 #define TIMING_KALMAN      (1 && TIMING)
 #define TIMING_IMU         (0 && TIMING)
 
-#define LOG_ERR            1
-#define LOG_W              1
-#define LOG_W_CTRL         0
-#define LOG_IMU_RAW        1
-#define LOG_IMU_DATA       0
-#define LOG_IMU_AVG        0
-#define DEBUG_X_HAT        1
-#define LOG_GPS            1
-#define DEBUG_KALMAN_INPUT 1
-#define LOG_TV             1
-#define LOG_T_ERR          1
-#define LOG_INT            (1 && CTRL_INTEGRAL)
-#define LOG_BUKAKE         0
+/**
+ * The following defines configures what data should be save to
+ * log files.
+ * Each item will reserve LOG_RAM_MB megabytes of ram. A trade-off
+ * must be made between how many logs are desired and the time each
+ * one should last.
+ *
+ * LOG_ERR          : Everything printed to stderr.
+ * LOG_W            : Output of control() successfully sent to mot_control
+ * LOG_W_CTRL       : Output of control()
+ * LOG_IMU_RAW      : Raw data from IMU.
+ * LOG_IMU_DATA     : Converted data from IMU.
+ * LOG_IMU_AVG      : Converted and filtered data from IMU.
+ * LOG_X_HAT        : State estimation.
+ * LOG_GPS          : GPS data.
+ * LOG_KALMAN_INPUT : Converted IMU data, with continuity applied to theta.
+ * LOG_TV           : Each time user hits RET, the timestamp will be recorded.
+ * LOG_T_ERR        : Timing errors (too slow).
+ * LOG_INT          : Error accumulated by integral term in control()
+ * LOG_BUKAKE       : Print a bunch of data on console. Usefull if out of RAM.
+ *
+ */
+#define LOG_ERR          1
+#define LOG_W            1
+#define LOG_W_CTRL       0
+#define LOG_IMU_RAW      1
+#define LOG_IMU_DATA     0
+#define LOG_IMU_AVG      0
+#define LOG_X_HAT        1
+#define LOG_GPS          1
+#define LOG_KALMAN_INPUT 1
+#define LOG_TV           1
+#define LOG_T_ERR        1
+#define LOG_INT          (1 && CTRL_INTEGRAL)
+#define LOG_BUKAKE       0
+/**
+ * Access to SD card on beagleboard has proven to be VERY slow,
+ * using an external flash drive is much faster.
+ */
+#define LOG_DIR_DEFAULT    "/media/sda1/"
+
+#define LOG_W_NAME         "w"
+#define LOG_W_CTRL_NAME    "w_ctrl"
+
+#define LOG_ERR_NAME       "err"
+#define LOG_IMU_RAW_NAME   "imu_raw"
+#define LOG_IMU_DATA_NAME  "imu_data"
+#define LOG_IMU_AVG_NAME   "imu_avg"
+#define LOG_X_HAT_NAME     "x_hat"
+#define LOG_KALMAN_IN_NAME "kalman_in"
+#define LOG_GPS_NAME       "gps"
+#define LOG_TV_NAME        "tv"
+#define LOG_T_ERR_NAME     "t_err"
+#define LOG_INT_NAME       "int"
+#define LOG_BUKAKE_NAME    "buk"
 
 /**
  * Realtime logging to SD card has proven to destroy performance, so
@@ -29,6 +103,9 @@
  *
  * If LOG_RAM_MB == 0, then realtime logging will be used.
  *
+ * NOTE: Logs grow at different rates. If available RAM becomes a limitation,
+ *       then the bigger logs can be given more RAM, and the smaller ones less
+ *       to get complete data for a longer period of time.
  */
 #define LOG_RAM_MB         10 // If 0, will log to disk (SD, flash drive, etc).
 #endif
@@ -60,7 +137,7 @@
 #include <unistd.h>       // for STDIN_FILENO
 
 #define QUIT           27
-#define RAMP_DOWN      'q'
+#define RAMP_DOWN      'q' // This is unstable, currently disabled.
 
 #define UQUAD_HOW_TO     "./main <imu_device> /path/to/log/"
 #define MAX_ERRORS       10 // Abort if more than MAX_ERRORS errors.
@@ -137,27 +214,6 @@
 #define RAMP_DOWN_SAMPLES 300
 
 /**
- * Access to SD card on beagleboard has proven to be VERY slow,
- * using an external flash drive is much faster.
- */
-#define LOG_DIR_DEFAULT    "/media/sda1/"
-
-#define LOG_W_NAME         "w"
-#define LOG_W_CTRL_NAME    "w_ctrl"
-
-#define LOG_ERR_NAME       "err"
-#define LOG_IMU_RAW_NAME   "imu_raw"
-#define LOG_IMU_DATA_NAME  "imu_data"
-#define LOG_IMU_AVG_NAME   "imu_avg"
-#define LOG_X_HAT_NAME     "x_hat"
-#define LOG_KALMAN_IN_NAME "kalman_in"
-#define LOG_GPS_NAME       "gps"
-#define LOG_TV_NAME        "tv"
-#define LOG_T_ERR_NAME     "t_err"
-#define LOG_INT_NAME       "int"
-#define LOG_BUKAKE_NAME    "buk"
-
-/**
  * Display current state estimation on console every X_HAT_STDOUT samples.
  * If set to 0, then nothing will be displayed.
  */
@@ -232,13 +288,13 @@ FILE *log_w = NULL;
 #if LOG_W
 FILE *log_w_ctrl = NULL;
 #endif //LOG_W
-#if DEBUG_X_HAT
+#if LOG_X_HAT
 FILE *log_x_hat = NULL;
 uquad_mat_t *x_hat_T = NULL;
-#endif //DEBUG_X_HAT
-#if DEBUG_KALMAN_INPUT
+#endif //LOG_X_HAT
+#if LOG_KALMAN_INPUT
 FILE *log_kalman_in = NULL;
-#endif //DEBUG_KALMAN_INPUT
+#endif //LOG_KALMAN_INPUT
 #if LOG_GPS && USE_GPS
 FILE *log_gps = NULL;
 #endif // LOG_GPS && USE_GPS
@@ -355,11 +411,11 @@ void quit()
 #if LOG_W_CTRL
     uquad_logger_remove(log_w_ctrl);
 #endif //LOG_W_CTRL
-#if DEBUG_X_HAT
+#if LOG_X_HAT
     uquad_logger_remove(log_x_hat);
     uquad_mat_free(x_hat_T);
-#endif //DEBUG_X_HAT
-#if DEBUG_KALMAN_INPUT
+#endif //LOG_X_HAT
+#if LOG_KALMAN_INPUT
     uquad_logger_remove(log_kalman_in);
 #endif
 #if LOG_GPS && USE_GPS
@@ -434,19 +490,19 @@ void uquad_conn_lost_handler(int signal_num)
 void sanity_check(imu_data_t *imu_data, uquad_mat_t *x_hat, uquad_bool_t *insane)
 {
     *insane = false;
-    if(imu_data->temp > SANITY_MAX_TEMP)
+    if((imu_data != NULL) && imu_data->temp > SANITY_MAX_TEMP)
     {
 	*insane = true;
 	err_log_double("WARN! Sanity check alert\t-\ttemp!\t", imu_data->temp);
 	return;
     }
-    if(uquad_abs(x_hat->m_full[SV_PSI]) > SANITY_MAX_PSI)
+    if((x_hat != NULL) && (uquad_abs(x_hat->m_full[SV_PSI]) > SANITY_MAX_PSI))
     {
 	err_log_double("WARN! Sanity check alert\t-\tpsi!\t", x_hat->m_full[SV_PSI]);
 	*insane = true;
 	return;
     }
-    if(uquad_abs(x_hat->m_full[SV_PHI]) > SANITY_MAX_PHI)
+    if((x_hat != NULL) && (uquad_abs(x_hat->m_full[SV_PHI]) > SANITY_MAX_PHI))
     {
 	err_log_double("WARN! Sanity check alert\t-\tpsi!\t", x_hat->m_full[SV_PHI]);
 	*insane = true;
@@ -486,12 +542,13 @@ int main(int argc, char *argv[]){
 	tmp_buff[2] = {0,0};
 
     uquad_bool_t
-	read_ok     = false,
-	write_ok    = false,
-	imu_update  = false,
-	reg_stdin   = true,
-        aux_bool    = false,
-	manual_mode = false;
+	read_ok       = false,
+	write_ok      = false,
+	imu_update    = false,
+	reg_stdin     = true,
+        aux_bool      = false,
+	ctrl_outdated = false,
+	manual_mode   = false;
     struct timeval
 	tv_tmp, tv_diff,
 	tv_last_m_cmd,
@@ -652,15 +709,15 @@ int main(int argc, char *argv[]){
 	quit();
     }
 #endif //LOG_W_CTRL
-#if DEBUG_X_HAT
+#if LOG_X_HAT
     log_x_hat = uquad_logger_add(LOG_X_HAT_NAME, log_path, LOG_RAM_MB);
     if(log_x_hat == NULL)
     {
 	err_log("Failed to open x_hat!");
 	quit();
     }
-#endif //DEBUG_X_HAT
-#if DEBUG_KALMAN_INPUT
+#endif //LOG_X_HAT
+#if LOG_KALMAN_INPUT
     log_kalman_in = uquad_logger_add(LOG_KALMAN_IN_NAME, log_path, LOG_RAM_MB);
     if(log_kalman_in == NULL)
     {
@@ -805,18 +862,18 @@ int main(int argc, char *argv[]){
 	quit_log_if(ERROR_FAIL,"kalman init failed!");
     }
 
-    /// Control module
-    ctrl = control_init();
-    if(ctrl == NULL)
-    {
-	quit_log_if(ERROR_FAIL,"control init failed!");
-    }
-
     /// Path planner module
     pp = pp_init();
     if(pp == NULL)
     {
 	quit_log_if(ERROR_FAIL,"path planner init failed!");
+    }
+
+    /// Control module
+    ctrl = control_init();
+    if(ctrl == NULL)
+    {
+	quit_log_if(ERROR_FAIL,"control init failed!");
     }
 
     /// Global vars
@@ -833,14 +890,14 @@ int main(int argc, char *argv[]){
 	quit();
     }
 
-#if DEBUG_X_HAT
+#if LOG_X_HAT
     x_hat_T = uquad_mat_alloc(1,STATE_COUNT+STATE_BIAS);
     if(x_hat_T == NULL)
     {
 	err_log("Failed alloc x_hat_T!");
 	quit();
     }
-#endif // DEBUG_X_HAT
+#endif // LOG_X_HAT
 
     /**
      * Save configuration to log file
@@ -1508,6 +1565,11 @@ int main(int argc, char *argv[]){
 		    w_forced->m_full[i] = mot->w_min;
 		    w->m_full[i]      = mot->w_hover;
 		}
+		//TODO Update control matrix - not implemented yet
+		/* retval = control_update_K(ctrl, pp, mot->weight); */
+		/* quit_log_if(retval, "Failed to update control matrix! Aborting..."); */
+		/* retval = control_dump(ctrl, log_err); */
+		/* quit_log_if(retval, "Failed to dump new control matrix! Aborting..."); */
 	    }
 
 	    /**
@@ -1539,6 +1601,7 @@ int main(int argc, char *argv[]){
 	    }
 	    retval = ERROR_OK;// ignore error
 	    fflush(stderr);
+
 	}
 
 	/// -- -- -- -- -- -- -- --
@@ -1631,18 +1694,18 @@ int main(int argc, char *argv[]){
 
 
 #if DEBUG
-#if DEBUG_KALMAN_INPUT
+#if LOG_KALMAN_INPUT
 	uquad_timeval_substract(&tv_diff,tv_last_kalman,tv_start);
 	log_tv_only(log_kalman_in,tv_diff);
 	retval = imu_comm_print_data(&imu_data, log_kalman_in);
 	fflush(log_kalman_in);
-#endif //DEBUG_KALMAN_INPUT
-#if DEBUG_X_HAT
+#endif //LOG_KALMAN_INPUT
+#if LOG_X_HAT
 	retval = uquad_mat_transpose(x_hat_T, kalman->x_hat);
 	quit_if(retval);
 	uquad_mat_dump(x_hat_T,log_x_hat);
 	fflush(log_x_hat);
-#endif //DEBUG_X_HAT
+#endif //LOG_X_HAT
 #endif //DEBUG
 	if(uquad_state == ST_RAMPING_UP)
 	{
@@ -1706,8 +1769,19 @@ int main(int argc, char *argv[]){
 	/// -- -- -- -- -- -- -- --
 	/// Update setpoint
 	/// -- -- -- -- -- -- -- --
-	retval = pp_update_setpoint(pp, kalman->x_hat, mot->w_hover);
+	retval = pp_update_setpoint(pp, kalman->x_hat, mot->w_hover, &ctrl_outdated);
 	log_n_continue(retval,"Kalman update failed");
+
+	/// -- -- -- -- -- -- -- --
+	/// Update control matrices
+	/// -- -- -- -- -- -- -- --
+	if(ctrl_outdated)
+	{
+	    retval = control_update_K(ctrl, pp, mot->weight);
+	    quit_log_if(retval, "Failed to update control matrix! Aborting...");
+	    retval = control_dump(ctrl, log_err);
+	    quit_log_if(retval, "Failed to dump new control matrix! Aborting...");
+	}
 
 	/// -- -- -- -- -- -- -- --
 	/// Run control

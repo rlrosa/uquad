@@ -1,3 +1,39 @@
+/**
+ * control: lib for determing control actions.
+ * Copyright (C) 2012  Rodrigo Rosa <rodrigorosa.lg gmail.com>, Matias Tailanian <matias tailanian.com>, Santiago Paternain <spaternain gmail.com>
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @file   control.h
+ * @author Rodrigo Rosa <rodrigorosa.lg gmail.com>, Matias Tailanian <matias tailanian.com>, Santiago Paternain <spaternain gmail.com>
+ * @date   Sun May 27 11:08:44 2012
+ *
+ * @brief  lib for determing control actions.
+ *
+ * Expects to load gain matrices from text files. The number and name of the matrices depends
+ * on the mode being used.
+ *
+ * //TODO:
+ * An implementation of the LQR algorithm is complete, this should allow to calculate the gain
+ * matrices on-the-go, allowing to change trajectories.
+ * The missing element is the linealization function, it is not working yet. LQR requires a
+ * linear version of the system as input.
+ *
+ * Examples:
+ *   - src/test/control/control_test.c
+ *   - src/main/main.c
+ */
 #ifndef CONTROL_H
 #define CONTROL_H
 
@@ -69,6 +105,17 @@ typedef struct ctrl{
     uquad_mat_t *K_int; // Integral gain
     uquad_mat_t *x_int; // Integral term
 #endif
+    uquad_mat_t *A;
+    uquad_mat_t *Acirc;
+    uquad_mat_t *B;
+    uquad_mat_t *Qhov;
+    uquad_mat_t *Rhov;
+    uquad_mat_t *Qrec;
+    uquad_mat_t *Rrec;
+    uquad_mat_t *Qcirc;
+    uquad_mat_t *Rcirc;
+    uquad_mat_t *Q;
+    uquad_mat_t *R;
 }ctrl_t;
 
 /**
@@ -77,22 +124,83 @@ typedef struct ctrl{
  *   - Proportional gain matrix.
  *   - Integral gain matrix.
  *
- * @return
+ * @return structure or NULL if error.
  */
 ctrl_t *control_init(void);
 
-/** 
+/**
  * Calculates action (motor speed) that should be performed on system.
- * 
+ *
  * @param ctrl 
  * @param w Answer                           [rad/s]
  * @param x Current state estimation
  * @param sp Current setpoint
  * @param T_us Time since las control action [us]
- * 
- * @return 
+ *
+ * @return error code
  */
 int control(ctrl_t *ctrl, uquad_mat_t *w, uquad_mat_t *x, set_point_t *sp, double T_us);
+
+
+/**
+ * This functions returns the discrete LQR realimentation matrix.
+ * If a continuous time system verifies:
+ *     \dot{X}=AX+BU
+ * where X is the state vector and u the input of the system, then
+ * the discretization of the system is:
+ *     X(k+1)=phi*X(k)+gamma*U
+ * where:
+ *     phi=exp(A*Ts)
+ *     gama=int(exp(A*s),0,Ts)
+ *
+ * @param ctrl
+ * @param pp current pp, will be updated.
+ * @param weight weight of the quadcopter.
+ *
+ * @return error code
+ */
+int control_update_K(ctrl_t *ctrl, path_planner_t *pp, double weight);
+
+/**
+ * Solves Riccati equation, using an algorithm by Anders Friis Sorensen
+ *
+ * @param K
+ * @param A
+ * @param B 
+ * @param Q
+ * @param R
+ * 
+ * @return error code
+ */
+int control_lqr(uquad_mat_t *K, uquad_mat_t *phi, uquad_mat_t *gamma, uquad_mat_t *Q, uquad_mat_t *R);
+
+/**
+ * Returns the discrete form X(k+1)=phi*X(k)+gamma*U of a
+ * system \dot{x} = AX+BU
+ *
+ * @param phi
+ * @param gamma
+ * @param A
+ * @param B
+ * @param Ts sampling period [s]
+ *
+ * @return error code
+ */
+int control_disc(uquad_mat_t *phi,uquad_mat_t *gamma,uquad_mat_t *A,uquad_mat_t *B, double Ts);
+
+/**
+ * Performs the linearization of the physic model of the quadrotor:
+ *      \dot{X} = A*X+B*U
+ * 
+ * @param A
+ * @param B
+ * @param pt type of trajectory
+ * @param sp current set point
+ * @param weight of the quadcopter
+ * 
+ * @return error code
+ */
+int control_lin_model(uquad_mat_t *A, uquad_mat_t *B, path_type_t pt, set_point_t *sp, double weight);
 
 void control_deinit(ctrl_t *ctrl);
 

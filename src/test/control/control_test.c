@@ -1,3 +1,27 @@
+/**
+ * control_test: test program for control lib
+ * Copyright (C) 2012  Rodrigo Rosa <rodrigorosa.lg gmail.com>, Matias Tailanian <matias tailanian.com>, Santiago Paternain <spaternain gmail.com>
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @file   control_test.c
+ * @author Rodrigo Rosa <rodrigorosa.lg gmail.com>, Matias Tailanian <matias tailanian.com>, Santiago Paternain <spaternain gmail.com>
+ * @date   Sun May 27 11:08:44 2012
+ *
+ * @brief  test program for control lib.
+ *
+ */
 #include <control.h>
 #include <path_planner.h>
 #include <uquad_aux_math.h>
@@ -41,6 +65,7 @@ int main(int argc, char *argv[])
     int retval;
     FILE *file;
     uquad_mat_t *x, *w;
+    uquad_bool_t ctrl_outdated = false;
 
     if(argc < 2)
     {
@@ -83,7 +108,7 @@ int main(int argc, char *argv[])
 	    quit_log_if(retval, "End of log?");
 	}
 	#warning "w_hover esta mal!"
-	retval = pp_update_setpoint(pp, x, 0);
+	retval = pp_update_setpoint(pp, x, 0, &ctrl_outdated);
 	quit_if(retval);
 	retval = control(ctrl, w, x, pp->sp, TS_DEFAULT_US);
 	quit_if(retval);

@@ -1,3 +1,37 @@
+/**
+ * uquad_aux_math: lib for matrix math
+ * Copyright (C) 2012  Rodrigo Rosa <rodrigorosa.lg gmail.com>, Matias Tailanian <matias tailanian.com>, Santiago Paternain <spaternain gmail.com>
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @file   uquad_aux_math.h
+ * @author Rodrigo Rosa <rodrigorosa.lg gmail.com>, Matias Tailanian <matias tailanian.com>, Santiago Paternain <spaternain gmail.com>
+ * @date   Sun May 27 11:08:44 2012
+ *
+ * @brief  lib for matrix math
+ *
+ * Most of the implementations were taken from code by:
+ *    Dick Horn - mathretprogr at gmail com
+ *    http://www.mymathlib.com
+ * We are truly thankfull to him for his contribution.
+ *
+ * Examples:
+ *   - src/main/main.c
+ *   - src/test/math/math_test.c
+ *   - src/imu/imu_comm.c
+ *   - src/kalman/uquad_kalman.c
+ */
 #ifndef UQUAD_AUX_MATH_H
 #define UQUAD_AUX_MATH_H
 
@@ -319,6 +353,15 @@ int uquad_mat_set_subm(uquad_mat_t *A, int r, int c, uquad_mat_t *S);
  */
 int uquad_mat_copy(uquad_mat_t *dest, uquad_mat_t *src);
 
+/**
+ * Computes matrix exponencial:
+ *   expA = e^(A)
+ * 
+ * @param expA 
+ * @param A 
+ * 
+ * @return 
+ */
 int uquad_mat_exp(uquad_mat_t *expA, uquad_mat_t *A);
 
 /**
@@ -343,7 +386,6 @@ double uquad_mat_norm( uquad_mat_t *A);
  * @return
  */
 int uquad_mat_int(uquad_mat_t *B, uquad_mat_t *A, double ti, double tf, double step);
-int uquad_mat_mirror_rows(uquad_mat_t *H, uquad_mat_t *S, int n);
 
 /**
  * Builds a rotation matrix R from phi,psi,theta, and performs Vr = R*V
