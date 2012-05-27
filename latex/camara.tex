@@ -38,7 +38,7 @@ Por un lado se tienen las coordenadas del ``mundo'', representadas en la figura 
 
 Además, y no menos importantes están las coordenadas de la foto. Son coordenadas en el plano y por lo tanto en 2 dimensiones. ``$M$'' representa un punto en el espacio con coordenadas ``en el mundo'' según $(i,j,k)$. A su vez es posible expresar las coordenadas de ``$M$'' en el marco de referencia de la cámara según los versores $(ic,jc,kc)$.\\
 
-El pasaje entre las coordenadas "del mundo" y las coordenadas "de la cámara" se realiza mediante la rotación R y la translación T.
+El pasaje entre las coordenadas ``del mundo'' y las coordenadas ``de la cámara'' se realiza mediante la rotación R y la translación T.
 Siendo ``$X$'' las coordenadas del mundo de ``$M$'' y ``$X_c$'' las coordenadas de ``$M$'' referenciadas a la cámara. Entonces se puede afirmar:
 $$X_c = R X + T$$
 
@@ -46,7 +46,7 @@ $$X_c = R X + T$$
 
 \section{Marcadores}
 
-El marcador consta básicamente de 3 bloques de cuadrados concéntricos. $El 4^o$ lugar será ocupado por algún identificador para diferenciar distintos marcadores. El hecho de que tenga 3 bloques en 3 esquinas distintas permite conocer con facilidad la orientación del mismo. El tamaño del marcador es de 20x29,7 cm, el tamaño de una hoja A4 y se puede observar en la figura \ref{fig:marcador}.
+El marcador consta básicamente de 3 bloques de cuadrados concéntricos. El $4^o$ lugar será ocupado por algún identificador para diferenciar distintos marcadores. El hecho de que tenga 3 bloques en 3 esquinas distintas permite conocer con facilidad la orientación del mismo. El tamaño del marcador es de 20x29,7 cm, el tamaño de una hoja A4 y se puede observar en la figura \ref{fig:marcador}.
 
 \begin{wrapfigure}{l}{0.5\textwidth}
 	\begin{center}
@@ -110,6 +110,8 @@ Se muestran a continuación únicamente los resultados obtenidos para la prueba 
 
 Al ejecutar el programa se obtiene la siguiente salida:
 
+\begin{quote}
+\begin{quote}
 \begin{verbatim}
 roll   = 357.34º
 pitch  = 5.68º
@@ -119,8 +121,10 @@ y      = -0.58mm
 z      = 521.36mm
 El marcador tiene en el 4o lugar una barra horizontal.
 \end{verbatim}
+\end{quote}
+\end{quote}
 
-Como se puede observar los resultados son muy aceptables, obteniendo un error de unos pocos grados en los ángulos, y apenas 2 centímetros en la posición. Además es importante destacar que se cometió un error sistemático en el proceso de adquisición ya que la distancia en el eje ``$z$'' se midió desde el marcador hasta el extremo del lente más cercano. En su lugar se debería haber considerado la distancia hasta donde se forma la imagen en la cámara, que es un tanto más adentro. Si se hubiera considerado este aspecto, la medida sería aún más fidedigna, ya que la distancia del lente al centro del plano de proyección sobre el que se forma la imagen en la cámara, sumaría un par de centímetros a la medida realizada.
+Como se puede observar los resultados son aceptables, obteniendo un error de unos pocos grados en los ángulos, y apenas 2 centímetros en la posición. Además es importante destacar que se cometió un error sistemático en el proceso de adquisición ya que la distancia en el eje ``$z$'' se midió desde el marcador hasta el extremo del lente más cercano. En su lugar se debería haber considerado la distancia hasta donde se forma la imagen en la cámara, que es un tanto más adentro. Si se hubiera considerado este aspecto, la medida sería aún más fidedigna, ya que la distancia del lente al centro del plano de proyección sobre el que se forma la imagen en la cámara, sumaría un par de centímetros a la medida realizada.
 
 \subsubsection*{Reproyección}
 
@@ -135,7 +139,7 @@ Como se puede observar los resultados son muy aceptables, obteniendo un error de
 
 Este es quizás el método más confiable para determinar si los resultados obtenidos son correctos. En la figura \ref{fig:resultado_rp} se muestra con círculos azules las esquinas detectadas en la foto y con cruces rojas se indican la proyecciones de las coordenadas de la estructura 3D del marcador, utilizando las matrices \textbf{R} y \textbf{T} obtenidas. Puede verse claramente la cercanía entre los cículos azules y las cruces rojas, indicando que el conjunto de parámetros extrínsecos obtenidos son los correctos.\\
 
-Es importante destacar, de todas maneras, que esta verificación no es 100\% confiable ya que pueden haber diferenctes combinaciones de parámetros intrínsecos de la cámara que determinen la misma reproyección. Por ejemplo los siguientes 2 juegos de parámetros:
+Es importante destacar, de todas maneras, que esta verificación no es 100\% confiable ya que pueden haber diferentes combinaciones de parámetros intrínsecos de la cámara que determinen la misma reproyección. Por ejemplo los siguientes 2 juegos de parámetros:
 \begin{itemize}
 \item Field of view = A   ; Distancia = B
 \item Field of view = A/2 ; Distancia = 2*B
@@ -174,6 +178,6 @@ Por último y a modo didáctico, se presenta un ejemplo de Realidad Aumentada. S
 
 Se añade un cubo con una de las caras coincidente con uno de los cuadrados del marcador, y sobre el aparece parado un fosforito. Los resultados se pueden apreciar en la figura \ref{fig:resultado_ar}.\\[25pt]
 
-\underline{Nota general:} Si bien el algoritmo fue implementado y testeado, todo el trabajo fue realizado en $MatLab$. Por razones del tiempo acotado del proyecto no se puedo portar el código a $C$, quedando como trabajo a ser realizado en el futuro. A su vez se cuenta con todo el hardware necesario para su implementación ya que la $BeagleBoard$ tiene capacidad para procesar video en tiempo real, cuenta con librerías especiales para el tratamiento de imágenes y se adquirió una cámara pensada para la placa que tiene las ventajas de un fácil montaje y compatibilidad asegurada.
+\underline{Nota general:} Si bien el algoritmo fue implementado y testeado, todo el trabajo fue realizado en $MatLab$. Por razones del tiempo acotado del proyecto no se pudo portar el código a $C$, quedando como trabajo a ser realizado en el futuro. Se cuenta con todo el hardware necesario para su implementación ya que la $BeagleBoard$ tiene capacidad para procesar video en tiempo real, cuenta con librerías especiales para el tratamiento de imágenes y se adquirió una cámara pensada para la placa que tiene las ventajas de un fácil montaje y compatibilidad asegurada.
 
 \end{document}
