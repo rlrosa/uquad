@@ -3,9 +3,9 @@
 \begin{document}
 \chapter{Visi\'on general del proyecto}
 \label{chap:general}
-Consideramos importante explicar superficialmente las distintas partes que componen el proyecto de forma de que el lector se haga una idea general de los distintos bloques que componen al sistema para luego ir profundizando sobre cada uno de ellos en los siguientes cap\'itulos.\\
+Se considera importante explicar brevemente las distintas partes que componen el proyecto de forma de que el lector se haga una idea general del mismo.\\
 
-El esquema general de un cuadric\'optero es el que se puede apreciar en la figura \ref{fig:cuad}, el mismo se compone de dos ejes perpendiculares, en cuyos extremos se ubican los propulsores (motores y h\'elices). Las velocidades angulares de dichos motores ($\omega$), as\'i como las fuerzas ($T$) y torques ($M$) producidos por ellos se presentan tambi\'en en la figura \ref{fig:cuad}. Tanto los torques como las fuerzas de los propulsores dependen de la velocidad angular de las h\'elices. Por dicho motivo, lo que se busca es actuar sobre los motores variando la velocidad angular de los mismos para realizar las distintas acciones de control.
+El esquema general de un cuadric\'optero se puede apreciar en la figura \ref{fig:cuad}. Se compone de dos ejes perpendiculares, en cuyos extremos se ubican los propulsores (motores y h\'elices). En la figura \ref{fig:cuad} tambi\'en se observan las velocidades angulares de los motores ($\omega$), as\'i como las fuerzas ($T$) y torques ($M$) producidos por ellos. Tanto los torques como las fuerzas de los propulsores dependen de la velocidad angular de las h\'elices. Por dicho motivo, lo que se busca es actuar sobre los motores, variando su velocidad angular para realizar las distintas acciones de control.
 
 \begin{figure}
 \centering
@@ -14,7 +14,7 @@ El esquema general de un cuadric\'optero es el que se puede apreciar en la figur
 \label{fig:cuad}
 \end{figure}
 \section{Acciones de control b\'asicas}
-Existe una velocidad angular de los motores para la cual la fuerza total producida es igual al peso, esa velocidad angular permite que el cuadric\'optero permanezca suspendido con velocidad nula, esta situaci\'on es conocida como \emph{hovering}.\\ Si aumentamos uniformemente la velocidad angular de los motores la fuerza producida por los mismos supera al peso y el sistema se acelera hacia arriba. Por el contrario si la velocidad angular es inferior a la velocidad angular de hovering el sistema se acelera hacia el centro de la Tierra.\\
+Existe una velocidad angular de los motores para la cual la fuerza total producida es igual al peso, esa velocidad angular permite que el cuadric\'optero permanezca suspendido con velocidad vertical nula, situaci\'on conocida como \emph{hovering}.\\ Si se aumenta uniformemente la velocidad angular de los motores la fuerza producida por los mismos supera al peso y el sistema se acelera hacia arriba. La reducción de la velocidad angular produce el efecto contrario.\\
 
 \begin{figure}
 \centering
@@ -25,7 +25,7 @@ Existe una velocidad angular de los motores para la cual la fuerza total produci
 \caption{}
 \end{figure}
 
-Para realizar una rotaci\'on se debe crear un desbalance entre los torques producidos por los motores. Si se desea realizar aumentar el \'angulo de Roll ($\psi$), debe disminuirse la velocidad  angular del motor 4 y aumentar la del motor 2 manteniendo la fuerza neta igual a la fuerza necesaria para lograr el hovering. Esta situaci\'on se encuentra representada en la figura \ref{fig:cuad_roll}. Del mismo modo, como se observa en la figura \ref{fig:cuad_pitch} para aumentar el \'angulo de Pitch debe aumentarse la velocidad angular del motor 3 y disminuir la velocidad angular del motor 1. Finalmente si se desea aumentar el \'angulo de Yaw se debe disminuir la velocidad de la velocidad de los motores 1 y 3 y aumentar la de los motores 2 y 4, manteniendo la fuerza neta igual a la fuerza de hovering. Esta \'ultima situaci\'on es la presentada en la figura \ref{fig:quad_theta}.
+Para realizar una rotaci\'on se debe crear un desbalance entre los torques producidos por los motores. Si se desea aumentar el \'angulo de Roll ($\psi$), debe disminuirse la velocidad  angular del motor 4 y aumentar la del motor 2, manteniendo la fuerza neta igual a la fuerza necesaria para lograr el hovering. Esta situaci\'on se encuentra representada en la figura \ref{fig:cuad_roll}. Análogamente, para aumentar el \'angulo de Pitch debe aumentarse la velocidad angular del motor 3 y disminuir la velocidad angular del motor 1 (ver figura \ref{fig:cuad_pitch} ). Finalmente, si se desea aumentar el \'angulo de Yaw se debe disminuir la velocidad de la velocidad de los motores 1 y 3 y aumentar la de los motores 2 y 4, manteniendo la fuerza neta igual a la fuerza de hovering. Esta \'ultima situaci\'on es la presentada en la figura \ref{fig:quad_theta}.
 
 
 
@@ -35,16 +35,15 @@ Para realizar una rotaci\'on se debe crear un desbalance entre los torques produ
 \caption{Cambio en el \'angulo de Yaw}
 \label{fig:quad_theta}
 \end{figure}
-Las acciones de control descriptas anteriormente pueden ser combinadas de forma de lograr trayectorias m\'as complejas, gran parte de los cap\'itulos siguientes intentan explicar que acci\'on debe realizarse sobre cada motor para lograr el objetivo planteado.
+Las acciones de control descriptas anteriormente pueden ser combinadas de forma de lograr trayectorias m\'as complejas, gran parte de los cap\'itulos siguientes intentan explicar que acci\'on debe realizarse sobre cada motor para lograr diversos objetivos.
 
 \section{Componentes del sistema y su interacci\'on}
 
-En la proxima secci\'on se ver\'a en detalle el hardware utilizado durante el presente proyecto, sin embargo daremos una visi\'on general del sistema que se desea implementar. En la figura \ref{fig:bloques} se presenta un diagrama de bloques del sistema.\\
+A continuaci\'on se dar\'a una visi\'on general del sistema que se desea implementar. En la figura \ref{fig:esquema_gral} se presenta un diagrama de bloques del mismo. En la proxima secci\'on se ver\'a en detalle el hardware utilizado.\\
 
+La plataforma elegida es un cuadric\'optero comercial radio controlado. Viene con los elementos indispensables para poder volarlo manualmente: transmisor, receptor, CPU1, motores y ESCs\footnote{Electronic Speed Controller}.\\   
 
-La plataforma elegida es un cuadric\'optero comercial radio controlado, por dicho motivo una parte del sistema se encuentra ya diseñada, esta incluye los elementos indispensables para poder volar manualmente el cuadric\'optero, es decir transmisor, receptor, CPU1, motores y ESCs\footnote{Electronic speed controllers}.\\   
-
-Una de las señales del receptor ser\'a utilizada para definir si el control de los motores estar\'a comandado por la CPU1 o por la CPU2 (piloto autom\'atico). Esta \'ultima es el centro del sistema de control que se desea implementar. Para determinar las acciones a realizar sobre los motores es imprescindible contar con cierta instrumentaci\'on (IMU\footnote{Inertial Measurement Unit} y GPS) que permita estimar las variables de inter\'es.\\
+Una de las señales del receptor ser\'a utilizada para definir si el control de los motores estar\'a comandado por la CPU1 o por la CPU2 (piloto autom\'atico). La CPU2 ser\'a el centro del sistema de control a implementar. Para determinar las acciones a realizar sobre los motores es imprescindible contar con cierta instrumentaci\'on (IMU\footnote{Inertial Measurement Unit} y GPS) que permita estimar las variables de inter\'es.\\
 
 Se desea adem\'as que la CPU2 tenga una comunicaci\'on con el mundo exterior de forma de facilitar la programaci\'on de los algor\'itmos y de modificar o agregar waypoints durante el vuelo.\\ 
 
