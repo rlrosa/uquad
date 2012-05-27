@@ -20,8 +20,8 @@ No debe perderse de vista que el cuadric\'optero con el que se trabaja fue dise\
 La Tierra {\bf no} es un sistema de referencia inercial ya que la misma se encuentra sometida a la traslaci\'on en torno al Sol y a una rotaci\'on en sobre su eje. Supongamos una part\'icula que se encuentra en movimiento relativo a la Tierra. Su aceleraci\'on respecto de un sistema verdaderamente inercial puede escribirse como:
 \begin{equation}
 \vec{a}=\vec{a^\prime}+\vec{a_T} +\vec{a_C}
-\end{equation}.
-
+\end{equation}
+Donde:
 \begin{equation}
 \vec{a_T}=\vec{a_{O^\prime}}+\dot{\vec{\omega}}\times\vec{r^\prime}+\vec{\omega}\times (\vec{\omega}\times\vec{r^\prime})
 \end{equation}
@@ -29,13 +29,13 @@ La Tierra {\bf no} es un sistema de referencia inercial ya que la misma se encue
 \begin{equation}
 \vec{a_C}=2\vec{\omega}\times\vec{v^\prime}
 \end{equation}
-En las ecuaciones anteriores $\vec{a^\prime}$ es la aceleraci\'on de la part\'icula en el sistema relativo, $\vec{v^\prime}$ es la velocidad relativa de la part\'icula, $\vec{r^\prime}$ la posici\'on relativa, $\vec{\omega}$ es la velocidad angular de la Tierra y $\vec{a_{O^\prime}}$ es la aceleraci\'on del centro de masa de la Tierra. A $a_T$ se le llama aceleraci\'on de transporte, y a $a_C$ aceleraci\'on de Coriolis. El objetivo es ahora analizar si es posible considerar $\vec{a}\approx\vec{a^\prime}$. Si esto \'ultimo se cumple se puede aproximar a la Tierra como un sistema inercial.\\
+En las ecuaciones anteriores $\vec{a^\prime}$ es la aceleraci\'on de la part\'icula en el sistema relativo, $\vec{v^\prime}$ es la velocidad relativa de la part\'icula, $\vec{r^\prime}$ la posici\'on relativa, $\vec{\omega}$ es la velocidad angular de la Tierra y $\vec{a_{O^\prime}}$ es la aceleraci\'on del centro de masa de la Tierra. $a_T$ y $a_C$ son la aceleraci\'on de transporte y de Coriolis respectivamente. El objetivo es ahora analizar si es posible considerar $\vec{a}\approx\vec{a^\prime}$. Si esto \'ultimo se cumple se puede aproximar a la Tierra como un sistema inercial.\\
 
-El radio promedio de la \'orbita Helioc\'entrica($R_H$) es de $1.5\times10^8Km$, dicha \'orbita se recorre en 365 d\'ias lo que nos da una velocidad promedio de:
+El radio promedio de la \'orbita Helioc\'entrica ($R_H$) es de $1.5\times10^8Km$, dicha \'orbita se recorre en 365 d\'ias lo que nos da una velocidad promedio de:
 \begin{equation}
 V_T=\frac{2\pi\times1.5\times10^{11}m}{365\times24\times60\times60s}\approx29.89\times10^3ms^{-1}
 \end{equation}
-Esta velocidad implica que la aceleraci\'on del centro de masa de la Tierra($\vec{a_{O^\prime}}$) es de aproximadamente:
+Esta velocidad implica que la aceleraci\'on del centro de masa de la Tierra ($\vec{a_{O^\prime}}$) es de aproximadamente:
 \begin{equation}
 a_{O^\prime}=\frac{V_T^2}{R_H}\approx5.95\times10^{-3}ms^{-2}
 \end{equation}
@@ -260,17 +260,17 @@ donde $M_i$, $G_i$, $\Pi_{Q}$ y $\vec{\Omega_i}$ son la masa de cada r\'igido, s
 
 La derivada de dicho momento tiene la forma:
 \begin{equation}
-\dot{\vec{L}}_{Q^{^\prime}} = M_i(\vec{v}_G-\dot{Q})+M(G-Q) \times \frac{d\vec{v}_Q}{dt}+\frac{d\Pi_{Q}\vec{\Omega_i}}{dt}
+\dot{\vec{L}}_{Q^{^\prime}} = M_i(\vec{v}_G-\dot{Q})\times\vec{v}_Q+M(G-Q) \times \frac{d\vec{v}_Q}{dt}+\frac{d\Pi_{Q}\vec{\Omega_i}}{dt}
 \end{equation}
 
-Nuevamente asumiendo que la velocidad del centro de masa y la velocidad del origen del sistema de coordenadas $S_q$ son similares y agregando que las aceleraciones del centro de masa ser\'an de valores pequeños podemos despreciar los t\'erminos $ M_i(\vec{v}_G-\dot{Q})$ y $M(G-Q) \times \frac{d\vec{v}_Q}{dt}$. \\
+Nuevamente asumiendo que la velocidad del centro de masa y la velocidad del origen del sistema de coordenadas $S_q$ son similares y agregando que las aceleraciones del centro de masa ser\'an de valores pequeños podemos despreciar los t\'erminos $ M_i(\vec{v}_G-\dot{Q})\times \vec{v}_Q$ y $M(G-Q) \times \frac{d\vec{v}_Q}{dt}$. \\
 Asumiendo que los cuatro motores son id\'enticos podemos escribir que:
 \begin{equation}
 \label{eq:dmomento}
 \frac{d\vec{L_{O^\prime}}}{dt} = \frac{d\Pi_{O^\prime_q}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}\vec{\omega_q}}{dt}
 \end{equation}
 
-Donde $d$ es la distancia entre el centro de masa del sistema y el centro de coordenadas del sistema solidario al cuadric\'optero y $\Pi_{O^\prime_q}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}$ el tensor de inercia del cuadric\'optero sin considerar los motores.\\
+Donde  $\Pi_{O^\prime_q}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}$ el tensor de inercia del cuadric\'optero sin considerar los motores.\\
 
 Para el c\'alculo del momento \'angular del motor 1 respecto del punto $O^\prime$ supondremos por simplicidad que el motor se compone de elementos de masa discretos. En este caso, por definici\'on de momento angular tenemos que:
 \begin{equation}
@@ -343,6 +343,7 @@ Debido a que el centro de masa se encuentra por debajo del origen de coordenadas
 \end{array}\right)dMg
 \end{equation}
 
+Donde $d$ es la distancia entre el centro de masa del sistema y el origen del sistema $S_q$.
 \subsection{Fuerzas y momentos de las h\'elices}
 
 La teor\'ia de fluidos que explica el comportamiento de las h\'elices es compleja y ampliamente difundida por lo que no es de inter\'es desarrollarla en profundidad en este trabajo. Diversa bibliograf\'ia puede ser consultada en donde se explican adecuadamente los fen\'omenos involucrados en las fuerzas aerodin\'amicas presentes en una h\'elice. Sin embargo si parece pertinente realizar un breve resumen de dichas fuerzas. Para el presente an\'alisis consideraremos una h\'elice rotando en sentido antihorario, el razonamiento para una h\'elice rotando en sentido opuesto es an\'alogo. En la figura \ref{fig:helice} \footnote{Imagen tomada de \cite{bib:fuerzas-helices}} se observan dos vistas de la misma h\'elice. En la figura \ref{fig:helice_arriba} puede observarse una hoja de la h\'elice. En la figura \ref{fig:fuerza-helice} se representa una vista transversal de la h\'elice con las fuerzas aerodin\'amicas involucradas.\\ 
