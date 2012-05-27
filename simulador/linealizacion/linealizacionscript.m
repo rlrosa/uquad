@@ -18,7 +18,7 @@ Iyy=2.32e-02;
 Izz=4.37e-02;
 Izzm=1.54e-05;
 g=9.81;
-   
+d=0.07;
 %Fuerzas y torques de los motores
 T1=4.60160135072435e-05*w1^2-0.00103822726273726*w1;
 T2=4.60160135072435e-05*w2^2-0.00103822726273726*w2;
@@ -41,8 +41,8 @@ dX = [vq1*cos(phi)*cos(theta)+vq2*(cos(theta)*sin(phi)*sin(psis)-cos(phi)*sin(th
       vq2*wq3-vq3*wq2+g*sin(phi);
       vq3*wq1-vq1*wq3-g*cos(phi)*sin(psis);
       vq1*wq2-vq2*wq1-g*cos(phi)*cos(psis)+(T1+T2+T3+T4)/M;
-      (wq2*wq3*(Iyy-Izz)+L*(T2-T4)+wq2*Izzm*(w1-w2+w3-w4))/Ixx;
-      (wq1*wq3*(Izz-Ixx)+L*(T3-T1)+wq1*Izz*(w1-w2+w3-w4))/Iyy;
+      (wq2*wq3*(Iyy-Izz)+L*(T2-T4)+wq2*Izzm*(w1-w2+w3-w4)-cos(phi)*sin(psis)*M*g*d)/Ixx;
+      (wq1*wq3*(Izz-Ixx)+L*(T3-T1)+wq1*Izz*(w1-w2+w3-w4)-M*g*d*sin(phi))/Iyy;
 	  -(Q1-Q2+Q3-Q4)/Izz];
    
 dX=eval(dX);
@@ -62,4 +62,4 @@ dXcirc(1:3,1)= [vq1-wq2*z+wq3*y;
 A3primeras=[diff(dXcirc,x) diff(dXcirc,y) diff(dXcirc,z)  diff(dXcirc,psis) diff(dXcirc,phi) diff(dXcirc,theta) diff(dXcirc,vq1) diff(dXcirc,vq2) diff(dXcirc,vq3)  diff(dXcirc,wq1) diff(dXcirc,wq2) diff(dXcirc,wq3)];
 Acirc=[A3primeras;A(4:12,1:12)];
 
-save('./simulador/lazo_cerrado/linealizacion','A','B','Acirc','-mat'); 
+save('simulador/lazo_cerrado/linealizacion.mat','A','B','Acirc','-mat'); 

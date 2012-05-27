@@ -1,3 +1,73 @@
+/**
+ * cmd_motores: driver for controlling motors over i2c
+ * Copyright (C) 2012  Rodrigo Rosa <rodrigorosa.lg gmail.com>, Matias Tailanian <matias tailanian.com>, Santiago Paternain <spaternain gmail.com>
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @file   cmd_motores.c
+ * @author Rodrigo Rosa <rodrigorosa.lg gmail.com>, Matias Tailanian <matias tailanian.com>, Santiago Paternain <spaternain gmail.com>
+ * @date   Sun May 27 11:08:44 2012
+ *
+ * @brief  driver for controlling motors over i2c
+ *
+ * Driver for controlling motors over i2c, should be driven by the motor lib in src/motor/,
+ * and must be matched in terms of timing, limits, etc.
+ *
+ * Expects commands from a kernel message queue, and will ACK if a new message is received.
+ *
+ * Features;
+ *   - startup:
+ *       When motors are first started, a ramp will be issued. This makes startup more
+ *       fail less often, better than the performance achieved by the the x720 people.
+ *
+ *   - motor offset:
+ *       Motors have proven to make an uneven force. This is not modeled in the control
+ *       algorithm. This program sends a constant offset to each motor in order to reduce
+ *       the impact of this issue.
+ *       At different levels, motor offsets should be different. ie, motor A will beat motor
+ *       B at speed X, but motor B may beat motor A at speed 2*x.
+ *       Offset in use is constante, estimated by trial and error near hover speed.
+ *
+ *   - Fake mode:
+ *       If PC_TEST is defined, then no commands will be sent over i2c, but the rest of the
+ *       program will run, so main.c can communicate with this fake program and run happily,
+ *       without having to run the motors. This is usefull for debugging.
+ *       Check the makefile for the name of the target that will enable this mode.
+ *
+ *   - stdin mode:
+ *       If CHECK_STDIN is defined, then instead of expecting commands from a kernel
+ *       message queue, the stdin will be checked for input.
+ *       Check the makefile for the name of the target that will enable this mode.
+ *
+ * NOTES:
+ *   - Motor ESCs are very sensitive to timing. If timing is incorrect, motors will slow down,
+ *   and if i2c communication is lost, the motors will stop (which is a bit slower than telling
+ *   then to brake).
+ *   - i2c should be configured to run a 333kHz.
+ *   - This program is not included in the cmake build system because the header file:
+ *       linux/i2c-dev-user.h
+ *   was not found on the pc, only on the beagleboard, so the whole system would fail to
+ *   build because of this error.
+ *   - Limits on i2c levels are for security, setting very low speeds will make motors run
+ *   incorrectly (stop, start, stop), and setting high speed may melt cable connectors and
+ *   short stuff.
+ *   -
+ *
+ * //TODO
+ *   - Implement a lookup table to enable variable offsets in motor speeds.
+ *   - Implement this driver in kernel space to improve timing.
+ */
 #include <errno.h> 
 #include <math.h>
 #include <string.h> 
@@ -161,7 +231,10 @@ static unsigned short mot_selected[MOT_COUNT] = {MOT_NOT_SELECTED,
 						 MOT_NOT_SELECTED,
 						 MOT_NOT_SELECTED,
 						 MOT_NOT_SELECTED};
-
+static int mot_offset[MOT_COUNT] = {15,
+				    15,
+				    -17,
+				    -13};
 static __u8 vels[MOT_COUNT] = {0,0,0,0};
 
 #ifdef LOG_VELS
@@ -443,7 +516,7 @@ static inline void log_vels(void)
 static char ack_counter = 0;
 int uquad_send_ack()
 {
-    int msqid, retries;
+    int msqid;
     message_buf_t ack_msg;
     ack_msg.mtype = 1;
     if ((msqid = msgget(key_c, IPC_CREAT | 0666 )) < 0)
@@ -457,7 +530,6 @@ int uquad_send_ack()
     ack_msg.mtext[2] = 'K';
     ack_msg.mtext[3] = ack_counter++;
     /// send msg
-    retries = 0;
     if (msgsnd(msqid, &ack_msg, MOT_COUNT, IPC_NOWAIT) < 0)
     {
 	err_log_stderr("msgsnd()");
@@ -625,7 +697,9 @@ int main(int argc, char *argv[])
     /* mot_selected[3] = MOT_NOT_SELECTED; */
 
     sprintf(filename,"/dev/i2c-%d",adapter_nr);
+#if !PC_TEST
     err_log_str("Opening: ",filename);
+#endif // !PC_TEST
 
     // Open ctrl interface
 
@@ -693,7 +767,7 @@ int main(int argc, char *argv[])
 	{
 #if UQUAD_USE_SIN
 	    tv2double(dtmp,tv_in);
-	    dtmp = 5.0*sin(2.0*3.14*3.0*dtmp); // 17Hz sin()
+	    dtmp = 5.0*sin(2.0*3.14*3.0*dtmp); // 3Hz sin()
 #else // UQUAD_USE_SIN
 #endif // UQUAD_USE_SIN
 	}
@@ -704,8 +778,11 @@ int main(int argc, char *argv[])
 	{
 	    ret = uquad_mot_set_speed(i2c_file,
 				      mot_i2c_addr[i],
-				      mot_selected[i]?
-				      (__u8) (((double)vels[i])+dtmp):0);
+				      (mot_selected[i] && (m_status == RUNNING))?
+				      (__u8) (((double)vels[i])
+					      +dtmp
+					      +mot_offset[i])
+				      :0);
 	    if(ret != ERROR_OK)
 	    {
 		backtrace();

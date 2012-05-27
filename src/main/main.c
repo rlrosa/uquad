@@ -1,23 +1,96 @@
-#include <uquad_config.h>
-#if DEBUG // The following define will affect includes
+/**
+ * main: uquad autopilot software
+ * Copyright (C) 2012  Rodrigo Rosa <rodrigorosa.lg gmail.com>, Matias Tailanian <matias tailanian.com>, Santiago Paternain <spaternain gmail.com>
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @file   main.c
+ * @author Rodrigo Rosa <rodrigorosa.lg gmail.com>, Matias Tailanian <matias tailanian.com>, Santiago Paternain <spaternain gmail.com>
+ * @date   Sun May 27 11:08:44 2012
+ *
+ * @brief  uquad autopilot software
+ *
+ * See src/main/README for information regarding how to run, configure, etc.
+ *
+ */
+#include <uquad_config.h> // debug mode is emabled/disabled here
+#if DEBUG
+/**
+ * Show timing information on console.
+ *
+ * NOTE: Should not be enabled when running real time, since
+ *       ssh traffic will severely deteriorate performance.
+ */
 #define TIMING             0
-#define TIMING_KALMAN      0
-#define TIMING_IMU         1
-#define TIMING_IO          0
+#define TIMING_KALMAN      (1 && TIMING)
+#define TIMING_IMU         (0 && TIMING)
 
-#define LOG_ERR            1
-#define LOG_W              1
-#define LOG_W_CTRL         0
-#define LOG_IMU_RAW        1
-#define LOG_IMU_DATA       0
-#define LOG_IMU_AVG        0
-#define DEBUG_X_HAT        1
-#define LOG_GPS            1
-#define DEBUG_KALMAN_INPUT 1
-#define LOG_TV             1
-#define LOG_T_ERR          1
-#define LOG_INT            (1 && CTRL_INTEGRAL)
-#define LOG_BUKAKE         0
+/**
+ * The following defines configures what data should be save to
+ * log files.
+ * Each item will reserve LOG_RAM_MB megabytes of ram. A trade-off
+ * must be made between how many logs are desired and the time each
+ * one should last.
+ *
+ * LOG_ERR          : Everything printed to stderr.
+ * LOG_W            : Output of control() successfully sent to mot_control
+ * LOG_W_CTRL       : Output of control()
+ * LOG_IMU_RAW      : Raw data from IMU.
+ * LOG_IMU_DATA     : Converted data from IMU.
+ * LOG_IMU_AVG      : Converted and filtered data from IMU.
+ * LOG_X_HAT        : State estimation.
+ * LOG_GPS          : GPS data.
+ * LOG_KALMAN_INPUT : Converted IMU data, with continuity applied to theta.
+ * LOG_TV           : Each time user hits RET, the timestamp will be recorded.
+ * LOG_T_ERR        : Timing errors (too slow).
+ * LOG_INT          : Error accumulated by integral term in control()
+ * LOG_BUKAKE       : Print a bunch of data on console. Usefull if out of RAM.
+ *
+ */
+#define LOG_ERR          1
+#define LOG_W            1
+#define LOG_W_CTRL       0
+#define LOG_IMU_RAW      1
+#define LOG_IMU_DATA     0
+#define LOG_IMU_AVG      0
+#define LOG_X_HAT        1
+#define LOG_GPS          1
+#define LOG_KALMAN_INPUT 1
+#define LOG_TV           1
+#define LOG_T_ERR        1
+#define LOG_INT          (1 && CTRL_INTEGRAL)
+#define LOG_BUKAKE       0
+/**
+ * Access to SD card on beagleboard has proven to be VERY slow,
+ * using an external flash drive is much faster.
+ */
+#define LOG_DIR_DEFAULT    "/media/sda1/"
+
+#define LOG_W_NAME         "w"
+#define LOG_W_CTRL_NAME    "w_ctrl"
+
+#define LOG_ERR_NAME       "err"
+#define LOG_IMU_RAW_NAME   "imu_raw"
+#define LOG_IMU_DATA_NAME  "imu_data"
+#define LOG_IMU_AVG_NAME   "imu_avg"
+#define LOG_X_HAT_NAME     "x_hat"
+#define LOG_KALMAN_IN_NAME "kalman_in"
+#define LOG_GPS_NAME       "gps"
+#define LOG_TV_NAME        "tv"
+#define LOG_T_ERR_NAME     "t_err"
+#define LOG_INT_NAME       "int"
+#define LOG_BUKAKE_NAME    "buk"
 
 /**
  * Realtime logging to SD card has proven to destroy performance, so
@@ -30,6 +103,9 @@
  *
  * If LOG_RAM_MB == 0, then realtime logging will be used.
  *
+ * NOTE: Logs grow at different rates. If available RAM becomes a limitation,
+ *       then the bigger logs can be given more RAM, and the smaller ones less
+ *       to get complete data for a longer period of time.
  */
 #define LOG_RAM_MB         10 // If 0, will log to disk (SD, flash drive, etc).
 #endif
@@ -61,11 +137,12 @@
 #include <unistd.h>       // for STDIN_FILENO
 
 #define QUIT           27
-#define RAMP_DOWN      'q'
+#define RAMP_DOWN      'q' // This is unstable, currently disabled.
 
-#define UQUAD_HOW_TO   "./main <imu_device> /path/to/log/"
-#define MAX_ERRORS     20
-#define FIXED          3
+#define UQUAD_HOW_TO     "./main <imu_device> /path/to/log/"
+#define MAX_ERRORS       10 // Abort if more than MAX_ERRORS errors.
+#define MAX_NO_UPDATES_S 1  // Abort if more than MAX_NO_UPDATES_S sec without data.
+#define FIXED            10 // Consider system OK after FIXED loops without errors.
 
 /**
  * Before running, we'll check if we have a stable sampling period.
@@ -110,8 +187,12 @@
  * the motors, and these differences are what the controller has determined
  * necessary to mantain a stable attitud.
  * So we get a stable ramp :)
+ *
+ * If RAMP_LINEAR, then linear ramp will be used, otherwise a x^2 ramp will
+ * be used.
  */
 #define STARTUP_SAMPLES 100
+#define RAMP_LINEAR     0
 
 /**
  * To avoid a violent stop, pull motor speed down until
@@ -133,25 +214,10 @@
 #define RAMP_DOWN_SAMPLES 300
 
 /**
- * Access to SD card on beagleboard has proven to be VERY slow,
- * using an external flash drive is much faster.
+ * Display current state estimation on console every X_HAT_STDOUT samples.
+ * If set to 0, then nothing will be displayed.
  */
-#define LOG_DIR_DEFAULT    "/media/sda1/"
-
-#define LOG_W_NAME         "w"
-#define LOG_W_CTRL_NAME    "w_ctrl"
-
-#define LOG_ERR_NAME       "err"
-#define LOG_IMU_RAW_NAME   "imu_raw"
-#define LOG_IMU_DATA_NAME  "imu_data"
-#define LOG_IMU_AVG_NAME   "imu_avg"
-#define LOG_X_HAT_NAME     "x_hat"
-#define LOG_KALMAN_IN_NAME "kalman_in"
-#define LOG_GPS_NAME       "gps"
-#define LOG_TV_NAME        "tv"
-#define LOG_T_ERR_NAME     "t_err"
-#define LOG_INT_NAME       "int"
-#define LOG_BUKAKE_NAME    "buk"
+#define X_HAT_STDOUT       300
 
 /**
  * Frequency at which motor controller is updated
@@ -222,13 +288,13 @@ FILE *log_w = NULL;
 #if LOG_W
 FILE *log_w_ctrl = NULL;
 #endif //LOG_W
-#if DEBUG_X_HAT
+#if LOG_X_HAT
 FILE *log_x_hat = NULL;
 uquad_mat_t *x_hat_T = NULL;
-#endif //DEBUG_X_HAT
-#if DEBUG_KALMAN_INPUT
+#endif //LOG_X_HAT
+#if LOG_KALMAN_INPUT
 FILE *log_kalman_in = NULL;
-#endif //DEBUG_KALMAN_INPUT
+#endif //LOG_KALMAN_INPUT
 #if LOG_GPS && USE_GPS
 FILE *log_gps = NULL;
 #endif // LOG_GPS && USE_GPS
@@ -284,11 +350,8 @@ void quit()
     /* clear(); */
     /* endwin(); */
     gettimeofday(&tv_tmp, NULL);
-    retval = uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
-    if(retval > 0)
-    {
-	err_log_tv("main deinit started...",tv_diff);
-    }
+    uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
+    err_log_tv("main deinit started...",tv_diff);
 
     /// IO manager
     retval = io_deinit(io);
@@ -348,11 +411,11 @@ void quit()
 #if LOG_W_CTRL
     uquad_logger_remove(log_w_ctrl);
 #endif //LOG_W_CTRL
-#if DEBUG_X_HAT
+#if LOG_X_HAT
     uquad_logger_remove(log_x_hat);
     uquad_mat_free(x_hat_T);
-#endif //DEBUG_X_HAT
-#if DEBUG_KALMAN_INPUT
+#endif //LOG_X_HAT
+#if LOG_KALMAN_INPUT
     uquad_logger_remove(log_kalman_in);
 #endif
 #if LOG_GPS && USE_GPS
@@ -393,6 +456,7 @@ void log_configuration(void)
     err_log_num("DEBUG",DEBUG);
     err_log_num("KALMAN_BIAS",KALMAN_BIAS);
     err_log_num("CTRL_INTEGRAL",CTRL_INTEGRAL);
+    err_log_num("CTRL_INTEGRAL_ANG",CTRL_INTEGRAL_ANG);
     err_log_num("FULL_CONTROL",FULL_CONTROL);
     err_log_num("USE_GPS",USE_GPS);
     err_log_num("GPS_ZERO",GPS_ZERO);
@@ -418,8 +482,8 @@ void uquad_conn_lost_handler(int signal_num)
     p = waitpid(-1, &status, WNOHANG);
     if(p == check_net_chld && running)
     {
-	err_log_num("WARN: check_net client died, will ramp down motors! sig num:", signal_num);
-	uquad_state = ST_RAMPING_DOWN;
+	err_log_num("WARN: check_net client died, will kill motors! sig num:", signal_num);
+	quit();
     }
 }
 
@@ -455,8 +519,13 @@ int main(int argc, char *argv[]){
 	runs_imu    = 0,
 	runs_kalman = 0,
 	runs_down   = 0,
+	time_ret    = 0,
 	insane      = 0,
+	skipped     = 0,
 	ctrl_samples= 0,
+#if X_HAT_STDOUT
+	x_hat_cnt   = 0,
+#endif // X_HAT_STDOUT
 	ts_error    = 0,
 	err_imu     = ERROR_OK,
 	err_gps     = ERROR_OK;
@@ -470,7 +539,7 @@ int main(int argc, char *argv[]){
 	kalman_loops   = 0,
 	ts_error_wait  = 0;
     unsigned char
-	tmp_buff[2];
+	tmp_buff[2] = {0,0};
 
     uquad_bool_t
 	read_ok       = false,
@@ -537,7 +606,7 @@ int main(int argc, char *argv[]){
     gettimeofday(&tv_last_io_ok,NULL);
     gettimeofday(&tv_pgm,NULL);
 #endif
-#if TIMING && TIMING_IMU
+#if TIMING_IMU
     struct timeval tv_last_imu_read, tv_imu_start;
     gettimeofday(&tv_last_imu_read,NULL);
 #endif
@@ -640,15 +709,15 @@ int main(int argc, char *argv[]){
 	quit();
     }
 #endif //LOG_W_CTRL
-#if DEBUG_X_HAT
+#if LOG_X_HAT
     log_x_hat = uquad_logger_add(LOG_X_HAT_NAME, log_path, LOG_RAM_MB);
     if(log_x_hat == NULL)
     {
 	err_log("Failed to open x_hat!");
 	quit();
     }
-#endif //DEBUG_X_HAT
-#if DEBUG_KALMAN_INPUT
+#endif //LOG_X_HAT
+#if LOG_KALMAN_INPUT
     log_kalman_in = uquad_logger_add(LOG_KALMAN_IN_NAME, log_path, LOG_RAM_MB);
     if(log_kalman_in == NULL)
     {
@@ -821,14 +890,14 @@ int main(int argc, char *argv[]){
 	quit();
     }
 
-#if DEBUG_X_HAT
+#if LOG_X_HAT
     x_hat_T = uquad_mat_alloc(1,STATE_COUNT+STATE_BIAS);
     if(x_hat_T == NULL)
     {
 	err_log("Failed alloc x_hat_T!");
 	quit();
     }
-#endif // DEBUG_X_HAT
+#endif // LOG_X_HAT
 
     /**
      * Save configuration to log file
@@ -896,7 +965,7 @@ int main(int argc, char *argv[]){
 	    if(count_err++ > MAX_ERRORS)
 	    {
 		gettimeofday(&tv_tmp,NULL);
-		retval = uquad_timeval_substract(&tv_diff, tv_tmp, tv_start);
+		time_ret = uquad_timeval_substract(&tv_diff, tv_tmp, tv_start);
 		err_log_tv("Too many errors! Aborting...",tv_diff);
 		quit();
 		/// program ends here
@@ -933,12 +1002,12 @@ int main(int argc, char *argv[]){
 	    log_n_continue(retval, "Failed to check stdin for input!");
 	    if(!read_ok)
 		goto end_stdin;
-	    retval = fread(tmp_buff,sizeof(unsigned char),2,stdin);
+	    retval = fread(tmp_buff,sizeof(unsigned char),1,stdin);
 	    if(retval <= 0)
 	    {
 		log_n_jump(ERROR_READ, end_stdin,"No user input detected!");
 	    }
-	    if((retval == 2) && (tmp_buff[0] == RAMP_DOWN))
+	    if(tmp_buff[0] == RAMP_DOWN)
 	    {
 		if(uquad_state != ST_RUNNING)
 		{
@@ -954,15 +1023,16 @@ int main(int argc, char *argv[]){
 		}
 		else
 		{
-		    err_log("WARN: Ramping down motors...");
-		    uquad_state = ST_RAMPING_DOWN;
+		    err_log("WARN: Ramping down motors does not work correctly, ignoring...");
+		    //		    err_log("WARN: Ramping down motors...");
+		    //		    uquad_state = ST_RAMPING_DOWN;
 		}
 	    }
 #if LOG_TV
 	    // save to log file
 	    gettimeofday(&tv_tmp,NULL);
-	    retval = uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
-	    if(retval <= 0)
+	    time_ret = uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
+	    if(time_ret <= 0)
 	    {
 		err_log("Absurd timing!");
 	    }
@@ -973,11 +1043,10 @@ int main(int argc, char *argv[]){
 	    //	    input = getch();
 	    if(input > 0 && running)
 	    {
-		if(retval <= 0)
+		if(time_ret <= 0)
 		{
 		    err_log("Absurd timing!");
 		}
-		retval = ERROR_OK; // clear error
 		dtmp = 0.0;
 		if(input == QUIT)
 		{
@@ -1121,34 +1190,16 @@ int main(int argc, char *argv[]){
 	{
             if(imu_update)
             {
-		if(!interrupted)
-		{
-		    /// Don't be annoying if we were already killed
-		    err_log_tv("Skipped IMU!...",tv_diff);
-		}
+		skipped++;
 		imu_update = false;
             }
-#if TIMING && TIMING_IO
-	    err_imu = uquad_timeval_substract(&tv_diff,tv_tmp,tv_last_io_ok);
-	    if(err_imu < 0)
-	    {
-		err_log("Timing error!");
-	    }
-	    err_imu = gettimeofday(&tv_last_io_ok,NULL);
-	    err_log_std(err_imu);
-	    err_imu = gettimeofday(&tv_pgm,NULL);
-	    err_log_std(err_imu);
-	    printf("IO:\t%ld\t\t%ld.%06ld\n", tv_diff.tv_usec,
-		   tv_pgm.tv_sec - tv_start.tv_sec,
-		   tv_pgm.tv_usec);
-#endif
-#if TIMING && TIMING_IMU
+#if TIMING_IMU
 	    err_imu = gettimeofday(&tv_imu_start,NULL);
 	    err_log_std(err_imu);
-#endif
+#endif // TIMING_IMU
 
 	    err_imu = imu_comm_read(imu, &aux_bool);
-	    log_n_jump(err_imu,end_imu,"imu_comm_read() failed!");
+	    jump_if(err_imu, end_imu);
 	    if(!aux_bool)
 	    {
 		goto end_imu;
@@ -1187,7 +1238,7 @@ int main(int argc, char *argv[]){
 	    err_imu = ERROR_OK;
 #endif // LOG_IMU_RAW || LOG_IMU_DATA
 
-#if TIMING && TIMING_IMU
+#if TIMING_IMU
             if(runs_kalman > 0)
             {
                 err_imu = gettimeofday(&tv_tmp,NULL);
@@ -1223,6 +1274,10 @@ int main(int argc, char *argv[]){
 		{
 		    if(imu_ts_ok++ >= DISCARD_RUNS)
 		    {
+			if(runs_imu > DISCARD_RUNS + 10)
+			{
+			    quit_log_if(ERROR_IO, "WARN: IMU stabilization took too long, something is not working correctly...");
+			}
 			err_log_num("IMU: Frames read out during stabilization:",runs_imu);
 			runs_imu = IMU_TS_OK; // so re-entry doesn't happen
 			tv_last_imu = tv_tmp;
@@ -1280,7 +1335,7 @@ int main(int argc, char *argv[]){
 	    }
 
 	    /// Get new unread data
-	    if(!imu_comm_unread(imu) || !imu_comm_avg_ready(imu))
+	    if(!imu_comm_unread(imu) || !imu_comm_filter_ready(imu))
 	    {
 		// we only used averaged data
 		goto end_imu;
@@ -1288,10 +1343,10 @@ int main(int argc, char *argv[]){
 
 	    gettimeofday(&tv_tmp,NULL);
 
-	    //	    err_imu = imu_comm_get_avg_unread(imu,&imu_data);
-	    //	    log_n_jump(err_imu,end_imu,"IMU did not have new avg!");
-	    err_imu = imu_comm_get_lpf_unread(imu,&imu_data);
-	    log_n_jump(err_imu,end_imu,"LPF failed");
+	    err_imu = imu_comm_get_filtered_unread(imu,&imu_data);
+	    log_n_jump(err_imu,end_imu,"IMU did not have new avg!");
+	    //	    err_imu = imu_comm_get_lpf_unread(imu,&imu_data);
+	    //	    log_n_jump(err_imu,end_imu,"LPF failed");
 
 	    err_imu = uquad_timeval_substract(&tv_diff,tv_tmp,tv_last_imu);
 	    if(err_imu < 0)
@@ -1373,7 +1428,7 @@ int main(int argc, char *argv[]){
 	if(!gps_update)
 	{
 	    gettimeofday(&tv_tmp,NULL);
-	    retval = uquad_timeval_substract(&tv_diff, tv_tmp, tv_gps_last);
+	    time_ret = uquad_timeval_substract(&tv_diff, tv_tmp, tv_gps_last);
 	    if( (runs_kalman > 0) && (tv_diff.tv_sec > 0) )
 	    {
 		// gps_dat is set to 0 when allocated, so just use it.
@@ -1384,7 +1439,7 @@ int main(int argc, char *argv[]){
 		    quit_log_if(ERROR_GPS, "Fake GPS does not make sense if not hovering!");
 		}
 #if LOG_GPS
-		retval = uquad_timeval_substract(&tv_diff, tv_tmp, tv_start);
+		time_ret = uquad_timeval_substract(&tv_diff, tv_tmp, tv_start);
 		log_tv_only(log_gps, tv_diff);
 		log_eol(log_gps);
 #endif
@@ -1393,7 +1448,6 @@ int main(int argc, char *argv[]){
 	    {
 		gps_update = false;
 	    }
-	    retval = ERROR_OK; // clear retval
 	}
 #endif // GPS_ZERO
 #endif // USE_GPS
@@ -1413,9 +1467,46 @@ int main(int argc, char *argv[]){
 	     * running: If main was interrupted, then we want to
 	     * log data but the motors should not be controlled any more.
 	     */
+	{
+	    if(uquad_state == ST_RUNNING)
+	    {
+		/**
+		 * If IMU has bad communication, it may be able to get the sync char
+		 * frequently enough to keep main running, but it may not get a full
+		 * frame. Here we verify that we haven't spent too long without a new
+		 * IMU sample.
+		 */
+		gettimeofday(&tv_tmp,NULL);
+		time_ret = uquad_timeval_substract(&tv_diff, tv_tmp, tv_last_kalman);
+		if(time_ret < 0)
+		{
+		    err_log("Absurd timing!");
+		}
+		else
+		{
+		    if(tv_diff.tv_sec >= MAX_NO_UPDATES_S)
+		    {
+			quit_log_if(ERROR_TIMING, "ERR: Too long without new IMU samples!");
+		    }
+		}
+	    }
 	    continue;
+	}
         else
+	{
             imu_update = false; // mark data as used
+	    if(skipped > 0)
+	    {
+		err_log("");
+		err_log("");
+		err_log("-- --");
+		err_log_num("WARN: Skipped IMU!", skipped);
+		err_log("-- --");
+		err_log("");
+		err_log("");
+		skipped = 0;
+	    }
+	}
 	/// -- -- -- -- -- -- -- --
 	/// Startup Kalman estimator
 	/// -- -- -- -- -- -- -- --
@@ -1432,11 +1523,11 @@ int main(int argc, char *argv[]){
 			    "is only valid when in HOVER mode");
 	    }
 	    gettimeofday(&tv_tmp,NULL); // Will be used later
-	    retval = uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
-	    err_log_tv((retval < 0)?"Absurd IMU calibration time!":
+	    time_ret = uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
+	    err_log_tv((time_ret < 0)?"Absurd IMU calibration time!":
 		       "IMU calibration completed, running kalman+control+ramp",
 		       tv_diff);
-	    retval = imu_comm_raw2data(imu, &imu->calib.null_est, &imu_data);
+	    retval = imu_comm_raw2data(imu, &imu->calib.null_est, NULL, &imu_data);
 	    quit_log_if(retval,"Failed to correct setpoint!");
 
 #if USE_GPS && !GPS_ZERO
@@ -1453,10 +1544,8 @@ int main(int argc, char *argv[]){
 #endif // USE_GPS && !GPS_ZERO
 
 	    /**
-	     * Startup:
+	     * Startup setpoint:
 	     *  - Kalman estimator from calibration & GPS, if available.
-	     *  - If hovering, set initial position as setpoint. This will avoid
-	     *    rough movements on startup (setpoint will match current state).
 	     */
 	    if(pp->pt == HOVER)
 	    {
@@ -1466,10 +1555,10 @@ int main(int argc, char *argv[]){
 		quit_log_if(retval, "Failed to initiate kalman pos estimator from GPS data!");
 #endif // USE_GPS
 		// Euler angles
-		pp->sp->x->m_full[SV_THETA] = imu_data.magn->m_full[2];
+		pp->sp->x->m_full[SV_THETA] = imu_data.magn->m_full[2]; // [rad]
 		pp->sp->x->m_full[SV_PSI]   = 0.0; // [rad]
 		pp->sp->x->m_full[SV_PHI]   = 0.0; // [rad]
-		pp->sp->x->m_full[SV_Z]     = 1.5; // [rad]
+		pp->sp->x->m_full[SV_Z]     = 1.5; // [m]
 		// Motor speed
 		for(i=0; i<MOT_C; ++i)
 		{
@@ -1484,7 +1573,8 @@ int main(int argc, char *argv[]){
 
 	    /**
 	     * Startup Kalman estimator
-	     *
+	     *  - If hovering, set initial position as setpoint. This will avoid
+	     *    rough movements on startup (setpoint will match current state)	     *
 	     */
 #if USE_GPS
 	    // Position
@@ -1495,7 +1585,6 @@ int main(int argc, char *argv[]){
 	    //	    quit_log_if(retval, "Failed to initiate kalman vel estimator from GPS data!");
 #endif // USE_GPS
 	    // Euler angles
-	    pp->sp->x->m_full[SV_Z] = 0;
 	    kalman->x_hat->m_full[SV_PSI]   = imu_data.magn->m_full[0];
 	    kalman->x_hat->m_full[SV_PHI]   = imu_data.magn->m_full[1];
 	    kalman->x_hat->m_full[SV_THETA] = imu_data.magn->m_full[2];
@@ -1525,17 +1614,15 @@ int main(int argc, char *argv[]){
 	}
 	else
 	{
-	    retval = uquad_timeval_substract(&tv_diff,tv_tmp,tv_last_kalman);
-	    if(retval < 0)
+	    time_ret = uquad_timeval_substract(&tv_diff,tv_tmp,tv_last_kalman);
+	    if(time_ret < 0)
 	    {
 		log_n_continue(ERROR_TIMING,"Absurd timing!");
 	    }
-#if TIMING && TIMING_KALMAN
+#if TIMING_KALMAN
 	    gettimeofday(&tv_pgm,NULL);
-	    printf("KALMAN:\t%ld\t\t%ld.%06ld\n", tv_diff.tv_usec,
-		   tv_pgm.tv_sec - tv_start.tv_sec,
-		   tv_pgm.tv_usec);
-#endif
+	    err_log_tv_num("Kalman:", tv_diff,(int)tv_diff.tv_usec);
+#endif // TIMING_KALMAN
 	    /// Check sampling period jitter
 	    retval = in_range_us(tv_diff, TS_MIN, TS_MAX);
 	    kalman_loops = (kalman_loops+1)%32768;// avoid overflow
@@ -1557,7 +1644,7 @@ int main(int argc, char *argv[]){
 		    }
 		    else
 		    {
-			err_log_tv("WARN: Too many timing errors!! Kalman Ts:", tv_diff);
+			quit_log_if(ERROR_TIMING,"ERR: Timing unacceptable! Aborting!");
 		    }
 		    if(ts_error_wait == TS_ERROR_WAIT)
 		    {
@@ -1566,6 +1653,12 @@ int main(int argc, char *argv[]){
 		    }
 		}
 		ts_error_wait++;
+		if(tv_diff.tv_sec > 0)
+		{
+		    /// Be carefull with really bad timing
+		    ts_error += (MAX_ERRORS >> 1);
+		    ts_error_wait = TS_ERROR_WAIT;
+		}
 		/// Lie to kalman, avoid large drifts
 		tv_diff.tv_usec = (retval > 0) ? TS_MAX:TS_MIN;
 	    }
@@ -1600,18 +1693,18 @@ int main(int argc, char *argv[]){
 
 
 #if DEBUG
-#if DEBUG_KALMAN_INPUT
+#if LOG_KALMAN_INPUT
 	uquad_timeval_substract(&tv_diff,tv_last_kalman,tv_start);
 	log_tv_only(log_kalman_in,tv_diff);
 	retval = imu_comm_print_data(&imu_data, log_kalman_in);
 	fflush(log_kalman_in);
-#endif //DEBUG_KALMAN_INPUT
-#if DEBUG_X_HAT
+#endif //LOG_KALMAN_INPUT
+#if LOG_X_HAT
 	retval = uquad_mat_transpose(x_hat_T, kalman->x_hat);
 	quit_if(retval);
 	uquad_mat_dump(x_hat_T,log_x_hat);
 	fflush(log_x_hat);
-#endif //DEBUG_X_HAT
+#endif //LOG_X_HAT
 #endif //DEBUG
 	if(uquad_state == ST_RAMPING_UP)
 	{
@@ -1623,13 +1716,13 @@ int main(int argc, char *argv[]){
 	    if(runs_kalman == STARTUP_SAMPLES)
 	    {
 		gettimeofday(&tv_tmp,NULL);
-		retval = uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
-		if(retval < 0)
+		time_ret = uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
+		if(time_ret < 0)
 		{
 		    err_log("Absurd Kalman startup time!");
+		    retval = ERROR_TIMING;
 		    continue;
 		}
-		retval = ERROR_OK;
 		// save to error log
 		err_log("-- --");
 		err_log("-- -- -- -- -- -- -- --");
@@ -1729,8 +1822,12 @@ int main(int argc, char *argv[]){
 		     * Ramp them up, but keep controlling to maintain
 		     * balance.
 		     */
+#if RAMP_LINEAR
+		    dtmp = -(mot->w_hover - mot->w_min)*(1.0 - 1.0/(STARTUP_SAMPLES*STARTUP_SAMPLES)*(runs_kalman*runs_kalman));
+#else // RAMP_LINEAR
 		    dtmp = - (STARTUP_SAMPLES - runs_kalman)
 			*((mot->w_hover - mot->w_min)/STARTUP_SAMPLES);
+#endif // RAMP_LINEAR
 		    break;
 		case ST_RAMPING_DOWN:
 		    /**
@@ -1789,7 +1886,7 @@ int main(int argc, char *argv[]){
 	    fflush(log_imu_raw);
 #endif // LOG_IMU_RAW
 #if LOG_IMU_DATA
-	    retval = imu_comm_raw2data(imu, &imu_frame, &imu_data);
+	    retval = imu_comm_raw2data(imu, &imu_frame, NULL, &imu_data);
 	    log_n_jump(retval,end_log_imu,"could not convert new raw...");
 	    log_tv_only(log_imu_data,tv_raw_sample);
 	    retval = imu_comm_print_data(&imu_data, log_imu_data);
@@ -1798,6 +1895,21 @@ int main(int argc, char *argv[]){
 #endif // LOG_IMU_DATA
 	    end_log_imu:;
 #endif // LOG_IMU_RAW || LOG_IMU_DATA
+
+#if X_HAT_STDOUT
+	    if(x_hat_cnt++ > X_HAT_STDOUT)
+	    {
+		fprintf(stdout,
+			"x\ty\tz\t"					\
+			"psi\tphi\tthe\t"				\
+			"vqx\tvqy\tvqz\t"				\
+			"wqx\twqy\twqz\t"				\
+			"ax\tay\taz\n");
+		uquad_mat_dump_vec(kalman->x_hat,stdout,true);
+		fprintf(stdout,"\n");
+		x_hat_cnt = 0;
+	    }
+#endif // X_HAT_STDOUT
 
 #if LOG_BUKAKE
 	    uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);

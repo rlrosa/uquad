@@ -35,7 +35,7 @@
 
 %% Config
 
-use_n_states = 2; % Regulates number of variables to control. Can be:
+use_n_states = 3; % Regulates number of variables to control. Can be:
                     % 0: uses 8 states      -> [z psi phi tehta vqz wqx wqy wqz]
                     % 1: uses 8 states and their integrals
                     % 2: uses all 12 states -> [x y z psi phi tehta vqx vqy vqz wqx wqy wqz]
@@ -68,10 +68,11 @@ end
 if(stabilize_ts)
 	warning('Should be set to 0 for logs dated 2012-05-13 and later!')
 end
+
 %% Source
-%  log_path = 'src/build/main/';
+log_path = 'src/build/main/';
 if(~exist('log_path','var'))
-  error('Must define a variable log_path to read from!');
+	error('Must define a variable log_path to read from!');
 end
 imu_file  = [log_path '/imu_raw.log'];
 gps_file  = [log_path '/gps.log'];
@@ -79,7 +80,8 @@ gps_file  = [log_path '/gps.log'];
 %% Load IMU data
 
 % Imu
-% imu_file = 'tests/main/logs/2012_05_12_1_02_quieto.bien.patadas.mal/imu_raw.log';
+imu_file = 'tests/main/logs/2012_05_26_1_04_theta_quieto_con_integrador/imu_raw.log';
+% imu_file = './tests/mongoose/acc/logs_zparriba/z00y45.txt';
 % imu_file = [p{12} 'imu_raw.log'];
 [acrud,wcrud,mcrud,tcrud,bcrud,~,~,T]=mong_read(imu_file,0,1);
 
@@ -90,34 +92,34 @@ startup_samples = 100;
 
 % Fake T
 if(use_fake_T)
-  T = [1:length(T)]'*mean(diff(T));
+	T = [1:length(T)]'*mean(diff(T));
 end
 
 %% Load GPS data
 if(use_gps)
-  if(use_fake_gps)
-    % Fake input, clear relevant data
-    easting   = 0; westing = -easting;
-    northing  = 0;
-    elevation = 0;
-    vx_gps    = 0;
-    vy_gps    = 0;
-    vz_gps    = 0;
-    T_gps     = 10e-3;
-  else
-    % gps_file = '~/Escritorio/car/01.log';
-    % [easting, northing, elevation, utmzone, sat, lat, lon, dop] = ...
-    %     gpxlogger_xml_handler(gps_file, 1);
-    % save('kalman/gps','easting','northing','elevation','utmzone','sat','lat','lon','dop');
-    GPS       = load(gps_file);
-    T_gps     = GPS(:,1);
-    easting   = GPS(:,4); westing = -easting;
-    northing  = GPS(:,5);
-    elevation = GPS(:,6);
-    vx_gps    = GPS(:,7);
-    vy_gps    = GPS(:,8);
-    vz_gps    = GPS(:,9);
-  end
+	if(use_fake_gps)
+		% Fake input, clear relevant data
+		easting   = 0; westing = -easting;
+		northing  = 0;
+		elevation = 0;
+		vx_gps    = 0;
+		vy_gps    = 0;
+		vz_gps    = 0;
+		T_gps     = 10e-3;
+	else
+		% gps_file = '~/Escritorio/car/01.log';
+		% [easting, northing, elevation, utmzone, sat, lat, lon, dop] = ...
+		%     gpxlogger_xml_handler(gps_file, 1);
+		% save('kalman/gps','easting','northing','elevation','utmzone','sat','lat','lon','dop');
+		GPS       = load(gps_file);
+		T_gps     = GPS(:,1);
+		easting   = GPS(:,4); westing = -easting;
+		northing  = GPS(:,5);
+		elevation = GPS(:,6);
+		vx_gps    = GPS(:,7);
+		vy_gps    = GPS(:,8);
+		vz_gps    = GPS(:,9);
+	end
 end
 
 % %% Re-calibrate sensors
@@ -164,7 +166,7 @@ acc0   = a_calib;
 psi0   = euler_calib(:,1);
 phi0   = euler_calib(:,2);
 theta0 = euler_calib(:,3);
-b0     = mean(bcrud_calib);
+b0     = floor(mean(bcrud_calib));
 
 % averages are used
 acrud(:,1) = moving_avg(acrud(:,1),avg); acrud(:,2) = moving_avg(acrud(:,2),avg); acrud(:,3) = moving_avg(acrud(:,3),avg);
@@ -185,16 +187,18 @@ aux = conv(wcrud(:,3),h); wcrud(hlen:end,3) = aux(hlen:end-hlen+1);
 aux = conv(mcrud(:,1),h); mcrud(hlen:end,1) = aux(hlen:end-hlen+1);
 aux = conv(mcrud(:,2),h); mcrud(hlen:end,2) = aux(hlen:end-hlen+1);
 aux = conv(mcrud(:,3),h); mcrud(hlen:end,3) = aux(hlen:end-hlen+1);
-aux = conv(bcrud,h);      bcrud(hlen:end)   = aux(hlen:end-hlen+1);
+aux = conv(bcrud ,h);      bcrud(hlen:end)   = aux(hlen:end-hlen+1);
 aux = conv(tcrud,h);      tcrud(hlen:end)   = aux(hlen:end-hlen+1);
 
 % first imu_calib values are not used for kalman/control/etc
-acrud = acrud(imu_calib+1:end,:);
-wcrud = wcrud(imu_calib+1:end,:);
-mcrud = mcrud(imu_calib+1:end,:);
-bcrud = bcrud(imu_calib+1:end,:);
-tcrud = tcrud(imu_calib+1:end,:);
-T     = T(imu_calib+1:end,:);
+% There's a couple of samples of offset with respect to C code, not sure
+% why.
+acrud = acrud(imu_calib+3:end,:);
+wcrud = wcrud(imu_calib+3:end,:);
+mcrud = mcrud(imu_calib+3:end,:);
+bcrud = bcrud(imu_calib+3:end,:);
+tcrud = tcrud(imu_calib+3:end,:);
+T     = T(imu_calib+3:end,:);
 
 [a,w,euler] = mong_conv(acrud,wcrud,mcrud,0,tcrud,T);
 b=altitud(bcrud,b0);
@@ -207,22 +211,25 @@ end
 %% Constantes, entradas, observaciones e inicialización
 
 % Constantes
-N       = size(a,1);                   % Quantity of observation samples
-Ns      = 15;                          % N states: cantidad de variables de estado de Kalman
-Ngps    = 6;                           % N gps: cantidad de variables corregidas por gps
-masa    = 1.741-0.091;                 % Quadcopter weight
-w_hover = calc_omega(9.81*masa/4);     % At this velocity, motor's force equals weight
-w_max   = 387;                         % Definition
-w_min   = w_hover - (w_max - w_hover); % Only for simetry
+N         = size(a,1);                   % Quantity of observation samples
+Ns        = 15;                          % N states: cantidad de variables de estado de Kalman
+Ngps      = 6;                           % N gps: cantidad de variables corregidas por gps
+masa      = 1.550;% fprintf('Ojo q la masa esta mal\n'); % Quadcopter weight
+w_hover   = calc_omega(9.81*masa/4);     % At this velocity, motor's force equals weight
+w_max     = 368;
+w_min     = w_hover - (w_max - w_hover); % Only for simetry
+DELTA_MAX = [1.0e-3 1.0e-3 0.5e-2 7.0e-3];
+INT_MAX   = [1.0 1.0 2.0 2.0];
 
 %                  x   y   z  psi  phi  thet vqx vqy vqz wqx wqy wqz ax  ay  az
-Q_imu_gps = diag([1e2 1e2 1e2 1e-3 1e-3 1e-3 1e2 1e2 1e2 1e1 1e1 1e1 1e0 1e0 1e0 ]);
+Q_imu_gps = diag([1e2 1e2 1e2 1e-2 1e-2 1e-5 1e2 1e2 1e2 1e-1 1e-1 1e-1 1e0 1e0 1e0 ]);
 %                 psi phi the ax  ay  az  wqx wqy wqz  x   y   z
-R_imu_gps = diag([1e3 1e3 1e3 1e4 1e4 1e4 1e1 1e1 1e1 1e2 1e2 1e5]);
-%                  x   y   z  vqx vqy vqz
-Q_gps     = diag([1e2 1e2 1e2 1e2 1e2 1e2]);
-%                  x   y   z  vqx vqy vqz
-R_gps     = diag([1e0 1e0 1e5 1e0 1e0 1e5]);
+R_imu_gps = diag([1e2 1e2 1e5 1e4 1e4 1e4 1e-3 1e-3 1e-3 1e2 1e2 1e5]);
+% R_imu_gps = diag([1e3 1e3 1e6 1e4 1e4 1e4 1e1  1e1  1e1  1e2 1e2 1e5]);
+% %                  x   y   z  vqx vqy vqz
+% Q_gps     = diag([1e2 1e2 1e2 1e2 1e2 1e2]);
+% %                  x   y   z  vqx vqy vqz
+% R_gps     = diag([1e0 1e0 1e5 1e0 1e0 1e5]);
 
 Q_imu     = Q_imu_gps;
 Rdiag     = diag(R_imu_gps);
@@ -230,29 +237,30 @@ R_imu     = diag([Rdiag(1:end-3); Rdiag(end)]);
 
 
 if(use_n_states == 0)
-    K    = load('src/control/K.txt');
+    Kp   = load('src/control/K.txt');
     sp_x = [0;0;0;theta0;0;0;0;0];
     Nctl = 8;
 elseif(use_n_states == 1)
     Kp = load('src/control/K_prop.txt');
     Ki = load('src/control/K_int.txt');
-    K = [Kp Ki];
+%     K = [Kp Ki];
     sp_x = [0;0;0;0;0;theta0;0;0;0;0];
     Nctl = 10;
     x_hat_integrals = zeros(1,2);
 elseif(use_n_states == 2)
-    K    = load('src/control/K_full.txt');
+    Kp   = load('src/control/K_full.txt');
     sp_x = [0;0;0;0;0;theta0;0;0;0;0;0;0];
     Nctl = 12;
+		x_hat_integrals = zeros(N,4);
 elseif(use_n_states == 3)
-    fprintf('WARN: Matrix != main\n');
-    Kp = load('src/control/K_prop_full.txt');
-    Ki = load('src/control/K_int_full.txt');
-    K = [Kp Ki];
+%     fprintf('WARN: Matrix != main\n');
+    Kp = load('src/control/K_prop_full_ppzt.txt');
+    Ki = load('src/control/K_int_full_ppzt.txt');
+%     K = [Kp Ki];
 
-    sp_x = [0;0;0;0;0;theta0;0;0;0;0;0;0;0;0;0;0];
+    sp_x = [0;0;1.5;0;0;theta0;0;0;0;0;0;0];
+		x_hat_integrals = INT_MAX.*[1/-5.0 1/-6.6 0 0];
     Nctl = 16;
-    x_hat_integrals = zeros(1,4);
 end
 sp_w    = ones(4,1)*w_hover;
 
@@ -281,106 +289,131 @@ x_hat(1,13:15) = acc0 - [0 0 9.81];
 %% Kalman
 
 for i=2:N
-    Dt = T(i) - T(i-1);
-    Dt = min(Dt,12000e-6);Dt = max(Dt,000e-6); % Matches C 
-    
-		if ~allin1
-			% Kalman inercial - Use control output as current w
-			[x_hat(i,:),P,z(i,3)] = kalman_imu(x_hat(i-1,:),P,Q_imu,R_imu,Dt,...
-					w_control(i - 1,:)',z(i,:)', w_hover);
-			% Kalman GPS
-			if(use_gps)
-				if(T(i) >= T_gps(gps_index))
-					[aux,P_gps]  = kalman_gps(x_hat(i-1,1:9),P_gps,Q_gps,R_gps,...
-						[northing(gps_index); westing(gps_index); elevation(gps_index); ...
-						vx_gps(gps_index); vy_gps(gps_index); vz_gps(gps_index)]);
-					x_hat(i,1:3) = aux(1:3);
-					if use_gps_vel
-						x_hat(i,7:9) = aux(4:6);
-					end
-					if(~use_fake_gps)
-						gps_index = gps_index + 1;
-					else
-						% Fake gps is of size 1, so force gps_index==1 to always be true
-						if(length(T) >= i + 100)
-							% Call again after 100 samples at 10ms -> 1sec
-							T_gps = T(i+100);
-						else
-							% No more GPS
-							T_gps = inf;
-						end
-					end
+	Dt = T(i) - T(i-1);
+	Dt = min(Dt,12000e-6);Dt = max(Dt,000e-6); % Matches C
+
+	if ~allin1
+		% Kalman inercial - Use control output as current w
+		[x_hat(i,:),P,z(i,3)] = kalman_imu(x_hat(i-1,:),P,Q_imu,R_imu,Dt,...
+			w_control(i - 1,:)',z(i,:)', w_hover);
+		% Kalman GPS
+		if(use_gps)
+			if(T(i) >= T_gps(gps_index))
+				[aux,P_gps]  = kalman_gps(x_hat(i-1,1:9),P_gps,Q_gps,R_gps,...
+					[northing(gps_index); westing(gps_index); elevation(gps_index); ...
+					vx_gps(gps_index); vy_gps(gps_index); vz_gps(gps_index)]);
+				x_hat(i,1:3) = aux(1:3);
+				if use_gps_vel
+					x_hat(i,7:9) = aux(4:6);
 				end
-			end
-		else % All in 1 big Kalman Filter
-			% Use control output as current w
-			if(use_gps)
-				if(T(i) >= T_gps(gps_index))
-					% Sin velocidades del GPS
-					[x_hat(i,:),P,z(i,3)] = kalman_imu_gps(x_hat(i-1,:),P,Q_imu_gps,...
-						R_imu_gps,Dt,w_control(i - 1,:)',...
-						[z(i,1:end-1)';northing(gps_index);westing(gps_index);...
-						elevation(gps_index)], w_hover);
-					% Con velocidades del GPS
-					%                     [x_hat(i,:),P,z(i,3)] = kalman_imu_gps(x_hat(i-1,:),P,Q_imu,...
-					%                         [R_imu(1:end-1,1:end-1) zeros(9,6);zeros(6,9) R_gps],Dt,...
-					%                         w_control(i - 1,:)',[z(i,1:end-1)';northing(gps_index);...
-					%                         westing(gps_index); elevation(gps_index); vx_gps(gps_index);...
-					%                         vy_gps(gps_index); vz_gps(gps_index)], w_hover);
-					if(~use_fake_gps)
-						gps_index = gps_index + 1;
-					else
-						% Fake gps is of size 1, so force gps_index==1 to always be true
-						if(length(T) >= i + 100)
-							% Call again after 100 samples at 10ms -> 1sec
-							T_gps = T(i+100);
-						else
-							% No more GPS
-							T_gps = inf;
-						end
-					end
+				if(~use_fake_gps)
+					gps_index = gps_index + 1;
 				else
-					[x_hat(i,:),P,z(i,3)] = kalman_imu(x_hat(i-1,:),P,Q_imu,R_imu,Dt,...
-						w_control(i - 1,:)',z(i,:)', w_hover);
+					% Fake gps is of size 1, so force gps_index==1 to always be true
+					if(length(T) >= i + 100)
+						% Call again after 100 samples at 10ms -> 1sec
+						T_gps = T(i+100);
+					else
+						% No more GPS
+						T_gps = inf;
+					end
 				end
 			end
 		end
-
-    % Control
-		if(use_n_states == 0)
-			x_hat_ctl(i,:) = [x_hat(i,3), x_hat(i,4), x_hat(i,5), x_hat(i,6), ...
-				x_hat(i,9), x_hat(i,10), x_hat(i,11), x_hat(i,12)];
-		elseif(use_n_states == 1)
-			x_hat_integrals = x_hat_integrals + (Dt)*([x_hat(i,3) x_hat(i,6)] -sp_x(9:end)');
-			x_hat_ctl(i,:) = [x_hat(i,3), x_hat(i,4), x_hat(i,5), x_hat(i,6), ...
-				x_hat(i,9), x_hat(i,10), x_hat(i,11), x_hat(i,12) x_hat_integrals];
-		elseif(use_n_states == 2)
-			x_hat_ctl(i,:) = x_hat(i,1:12);
-		elseif(use_n_states == 3)
-			x_hat_integrals = x_hat_integrals + (Dt)*([x_hat(i,1:3) x_hat(i,6)] -sp_x(13:end)');
-			x_hat_ctl(i,:)  = [x_hat(i,1:12) x_hat_integrals];
-		end
-
-		w_control(i,:) = (sp_w + K*(sp_x - x_hat_ctl(i,:)'))';
-		for j=1:4
-			if(w_control(i,j) < w_min)
-				w_control(i,j) = w_min;
+	else % All in 1 big Kalman Filter
+		% Use control output as current w
+		if(use_gps)
+			if(T(i) >= T_gps(gps_index))
+				% Sin velocidades del GPS
+				[x_hat(i,:),P,z(i,3)] = kalman_imu_gps(x_hat(i-1,:),P,Q_imu_gps,...
+					R_imu_gps,Dt,w_control(i - 1,:)',...
+					[z(i,1:end-1)';northing(gps_index);westing(gps_index);...
+					elevation(gps_index)], w_hover);
+				% Con velocidades del GPS
+				%                     [x_hat(i,:),P,z(i,3)] = kalman_imu_gps(x_hat(i-1,:),P,Q_imu,...
+				%                         [R_imu(1:end-1,1:end-1) zeros(9,6);zeros(6,9) R_gps],Dt,...
+				%                         w_control(i - 1,:)',[z(i,1:end-1)';northing(gps_index);...
+				%                         westing(gps_index); elevation(gps_index); vx_gps(gps_index);...
+				%                         vy_gps(gps_index); vz_gps(gps_index)], w_hover);
+				if(~use_fake_gps)
+					gps_index = gps_index + 1;
+				else
+					% Fake gps is of size 1, so force gps_index==1 to always be true
+					if(length(T) >= i + 100)
+						% Call again after 100 samples at 10ms -> 1sec
+						T_gps = T(i+100);
+					else
+						% No more GPS
+						T_gps = inf;
+					end
+				end
+			else
+				[x_hat(i,:),P,z(i,3)] = kalman_imu(x_hat(i-1,:),P,Q_imu,R_imu,Dt,...
+					w_control(i - 1,:)',z(i,:)', w_hover);
 			end
-			if (w_control(i,j) > w_max)
-				w_control(i,j) = w_max;
-			end
 		end
-		% Simulate C code ramp
-		if~(i > startup_samples + 1)
-			w_c(i,:) = w_control(i,:) - ...
-				(startup_samples - i + 1)*(w_hover - w_min)/startup_samples;
-		else
-			w_c(i,:) = w_control(i,:);
+	end
+
+	% Control
+	if(use_n_states == 0)
+		x_hat_ctl(i,:) = [x_hat(i,3), x_hat(i,4), x_hat(i,5), x_hat(i,6), ...
+			x_hat(i,9), x_hat(i,10), x_hat(i,11), x_hat(i,12)];
+		w_control(i,:) = (sp_w + Kp*(sp_x - x_hat(i,:)'))';
+	elseif(use_n_states == 1)
+		x_hat_integrals(i,:) = x_hat_integrals(i-1,:) + (Dt)*([sp_x(9:end)' - x_hat(i,3) x_hat(i,6)]);
+		x_hat_ctl(i,:) = [x_hat(i,3), x_hat(i,4), x_hat(i,5), x_hat(i,6), ...
+			x_hat(i,9), x_hat(i,10), x_hat(i,11), x_hat(i,12)];
+		w_control(i,:) = (sp_w + Kp*(sp_x - x_hat_ctl(i,:)'))';
+		w_control(i,:) = w_control(i,:) + Ki*x_hat_integrals(:,i);
+	elseif(use_n_states == 2)
+		x_hat_ctl(i,:) = x_hat(i,1:12);
+		w_control(i,:) = (sp_w + Kp*(sp_x - x_hat_ctl(i,:)'))';
+	elseif(use_n_states == 3)
+		delta = (Dt)*([sp_x(4:5)' sp_x(3) sp_x(6)] - [x_hat(i,4:5) x_hat(i,3) x_hat(i,6)]);
+		delta = sign(delta).*min(DELTA_MAX,abs(delta));
+		x_hat_integrals(i,:) = x_hat_integrals(i-1,:) + delta;
+		x_hat_integrals(i,:) = sign(x_hat_integrals(i,:)).*min(INT_MAX,abs(x_hat_integrals(i,:)));
+
+		w_control(i,:) = (sp_w + Kp*(sp_x - x_hat(i,1:12)'))';
+		w_control(i,:) = w_control(i,:) + (Ki*x_hat_integrals(i,:)')';
+
+		%             x_hat_integrals(i,:) = x_hat_integrals(i-1,:) + (Dt)*([sp_x(4:5)' sp_x(3) sp_x(6)] - [x_hat(i,4:5) x_hat(i,3) x_hat(i,6)]);
+		% 			x_hat_ctl(i,:)  = [x_hat(i,1:12) x_hat_integrals(i,:)];
+		%             K=[Kp Ki];
+		%             w_control(i,:) = (sp_w + K*([sp_x;0;0;0;0] - x_hat_ctl(i,:)'))';
+
+	end
+	for j=1:4
+		if(w_control(i,j) < w_min)
+			w_control(i,j) = w_min;
 		end
+		if (w_control(i,j) > w_max)
+			w_control(i,j) = w_max;
+		end
+	end
+	% Simulate C code ramp
+	if~(i > startup_samples + 1)
+		w_c(i,:) = w_control(i,:) - ...
+			(startup_samples - i + 1)*(w_hover - w_min)/startup_samples;
+	else
+		w_c(i,:) = w_control(i,:);
+	end
 
 end
 
 %% Plots
+
+figure;
+plot(T,180/pi*x_hat(:,6),'color',green1,'linewidth',2)
+hold on
+line([T(1) T(end)],[180/pi*theta0 180/pi*theta0],'color',blue1,'linewidth',2)
+% title('\fontsize{16}\theta')
+grid
+xlabel('\fontsize{16}Tiempo (s)')
+ylabel('\fontsize{16}\theta (grados)')
+legend('\fontsize{18}\theta','\fontsize{18}\theta_0')
+
+break 
 
 % figure; 
 %     plot(w_control(:,1)+w_control(:,3)-w_control(:,2)-w_control(:,4),'r','linewidth',3); 

@@ -1,3 +1,26 @@
+/**
+ * uquad_error_codes: macros for error handling
+ * Copyright (C) 2012  Rodrigo Rosa <rodrigorosa.lg gmail.com>, Matias Tailanian <matias tailanian.com>, Santiago Paternain <spaternain gmail.com>
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @file   uquad_error_codes.h
+ * @author Rodrigo Rosa <rodrigorosa.lg gmail.com>, Matias Tailanian <matias tailanian.com>, Santiago Paternain <spaternain gmail.com>
+ * @date   Sun May 27 11:20:03 2012
+ *
+ * @brief macros for error handling
+ */
 #ifndef UQUAD_ERROR_CODES_H
 #define UQUAD_ERROR_CODES_H
 
@@ -30,7 +53,7 @@ enum UQUAD_ERROR_CODES{
     ERROR_OPEN,
     ERROR_CLOSE,
     ERROR_MALLOC,
-    ERROR_IMU_AVG_NOT_ENOUGH,
+    ERROR_IMU_FILTER_LEN_NOT_ENOUGH,
     ERROR_IMU_NO_UPDATES,
     ERROR_IO,
     ERROR_INVALID_PIPE_NAME,
@@ -263,8 +286,8 @@ enum UQUAD_ERROR_CODES{
     }
 
 /**
- * Print timeval message with unsigned long to stderr
- * 
+ * Print timeval message with int to stderr
+ *
  */
 #define err_log_tv_num(msg,tv,num)		\
     {						\
@@ -292,7 +315,7 @@ enum UQUAD_ERROR_CODES{
 
 /**
  * If @retval is an error, then propagate error without printing anything.
- * 
+ *
  */
 #define err_propagate(retval)				\
     if(retval!=ERROR_OK)				\
@@ -415,12 +438,22 @@ enum UQUAD_ERROR_CODES{
 
 /**
  * If @retval is an error, then log and jump to label
- * 
+ *
  */
 #define log_n_jump(retval,label,msg)		\
     if(retval!=ERROR_OK)			\
     {						\
 	err_log(msg);				\
+	goto label;				\
+    }
+
+/**
+ * If @retval is an error, then log and jump to label
+ *
+ */
+#define jump_if(retval,label)			\
+    if(retval!=ERROR_OK)			\
+    {						\
 	goto label;				\
     }
 

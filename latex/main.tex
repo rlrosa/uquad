@@ -33,6 +33,7 @@
 \setlength{\columnsep}{0cm}
 \begin{document}
 \subfile{portada}
+\tableofcontents
 \subfile{introduccion}
 \part{Descripción del sistema}
 \subfile{general}
@@ -43,20 +44,19 @@
 \part{Motores}
 \subfile{sniffer}
 \subfile{test_motores}
-\part{Calibración y caracterizaci\'on de los sensores}
+\part{Sensores y estimaci\'on del estado}
 \subfile{acc_mongoose}
 \subfile{gyro_mongoose}
 \subfile{magnetometro}
-\subfile{barometro}
 \subfile{gps}
-\part{Estimaci\'on del estado}
+\subfile{barometro}
 \subfile{kalman}
 \part{Desarrollo del controlador}
 \subfile{linealizacion}
 \subfile{control}
 \subfile{sim_control}
 \subfile{test_control}
-
+\subfile{conclusion}
 \cleardoublepage
 \addappheadtotoc
 \renewcommand{\appendixpagename}{Anexos}
@@ -66,10 +66,14 @@
 
 
 \appendix %Tuve que ponerlos con include porque con el subfile quedaban todos numerados con A
-\include{anexo_mongoose}
-\include{anexo_tensores} 
-\include{anexo_linealizacion}
-\include{anexo_gps_dop}
+\subfile{camara.tex}
+\subfile{anexo_mongoose}
+\subfile{anexo_tensores}
+\subfile{anexo_linealizacion}
+\subfile{anexo_gps_dop}
+\subfile{montaje}
+\subfile{anexo_codigo}
+
 \bibliographystyle{plain} 
 \bibliography{biblio}
 \end{document}

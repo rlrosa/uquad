@@ -126,22 +126,20 @@ Si bien el control del sistema no depende directamente de la temperatura, los in
 
 La Mongoose 9DoF IMU posee todos los sensores que se han nombrado hasta aqu\'i excepto el GPS. La misma posee adem\'as un micropresador con facilidades para ser programado, puediendo as\'i realizar un preprocesamiento de los datos antes de realizar la estimaci\'on del estado. Entre las modificaciones realizadas las m\'as importantes son un aumento y una estabilizaci\'on de la frecuencia de muestreo y la conversi\'on de los datos de salida de formato ASCII a binario. Esto \'ultimo permite una mayor velocidad de transmisi\'on de los mismos a trav\'es del puerto serie de la Mongoose. En la figura \ref{fig:mongoose} se puede observar dicha placa de instrumentaci\'on. Las caracter\'isticas de dicha placa pueden consultarse en el anexo  \ref{chap:anexo_mongoose}.
 
-
 \begin{figure} 
+  \vspace{-40pt}
   \centering
   \subfloat[Mongoose]{\label{fig:mongoose}
-  		\includegraphics[width=0.15\textwidth]
+  \vspace{-40pt}
+  		\includegraphics[width=0.3\textwidth]
   			{./pics_eleccion_hardware/Mongoose.png}}\hspace{2cm}
   \subfloat[Canmore GT-730F]{\label{fig:gps} 
-  		\includegraphics[width=0.15\textwidth]
+  		\includegraphics[width=0.3\textwidth]
   			{./pics_eleccion_hardware/gps.jpg}}
   
   \caption{Instrumentaci\'on}
   \label{fig:intrumentacion}
 \end{figure}
-
-
-
 
 \subsection{GPS}
 

@@ -10,24 +10,16 @@
 % Citar un item:
 % 1. En el archivo .tex que se desea realizar una cita hay que poner el comando /cite como sigue:
 %... en \cite{bib:referencia-a-biblio} se muestra que la idea es una cagada
-% 2. Luego abrir biblio.bib y agregar un bloquecito como el que sigue:
-% @misc{bib:referencia-a-biblio,
-% author="Yo",
-% title="El titulo",
-% year="el año q viene",
-% url="www.mi-pagina-web.com"
-% }
-% 3. Apretar F11 (compilar como BibTex) por lo menos un par de veces para q las referencias queden bien
+% 2. Luego abrir biblio.bib y agregar un bloque nuevo.
+% 3. Para compilar el bibtex:
+%      - Texmaker: Apretar F11 (compilar como BibTex) por lo menos un par de veces para q las referencias queden bien
+%      - emacs:
+%         C-c C-c Bibtex
+%      - Sino desde consola hacer:
+%         bibtex main.aux
 %
 % Las referencias a la bibliografía solo van a quedar bien al compilar el main.tex. Al compilar cada archivo por separado no lo va a entender pero no hay q asustarse. 
 % 4. Compilar el main.tex
-
-% @misc{bib:jj_9dof,
-% author="José Julio",
-% title="Visual Python for Gyroscope Utilization",
-% year="2009",
-% url="http://edge.rit.edu/content/EDGE/public/Home"
-% }
 
 % CALIBRACION
 @misc{bib:calib_imu,
@@ -35,10 +27,11 @@ author="Isaac Skog, Peter Händel",
 title="Calibration of a MEMS inertial measurment unit",
 year="2006"
 }
-
-
-
-
+@misc{bib:bola,
+author="Christopher Konvalin Memsense",
+title="Compensating for Tilt, Hard Iron and Soft Iron Effects",
+year="2008"
+}
 % GPS
 @misc{bib:sat-dop-values,
 title="Meaning of DOP values",
@@ -82,7 +75,7 @@ year="2008"
 % CONTROL
 @misc{bib:lqr-discreto,
 title="Autonomous Control of a Miniature Quadrotor Following Fast Trajectories",
-author="Anders Friis S\oslashrensen",
+author="Anders Friis Soslashrensen",
 year="2009-2010"
 }
 @misc{bib:lqrnotes,
@@ -95,6 +88,11 @@ title="Sistemas de Control en Tiempo Discreto (transparencias)",
 author="Michel Hakas",
 year="2005"
 }
+@misc{bib:auion,
+title="Automatización Del Vuelo De Un Avión",
+author="Alonso, Rodrigo and Hernández, Guzmán and Iturralde, Pablo",
+year="2009"
+}
 % KALMAN
 @misc{bib:kalman,
 title="Motion Measurement Using Inertial Sensors, Ultrasonic Sensors, and Magnetometers with Extended Kalman Filter for Data Fusion",
@@ -103,7 +101,7 @@ year="2011"
 }
 @misc{bib:kalman2,
 title="State Estimation Based on Kalman Filtering Techniques in Navigation",
-author="L. Tamás, Gh. Lazea, R. Robotin, C. Marcu, S. Herle Z. Szekely",
+author="Tamás, L. and Lazea, Gh. and Robotin, R. and Marcu, C. and Herle, S. and Szekely, Z.",
 year="2008"
 }
 @misc{bib:euler_magneto_acc,
@@ -125,6 +123,15 @@ year = {2011},
 OPTvolume = {1}
 }
 
+% Kernel
+@misc{bib:oe-capture-changes,
+title="Capture OE source changes",
+author="Brake, Cliff",
+url="http://bec-systems.com/site/456/capture-oe-source-changes"
+}
 
-
-
+@misc{bib:oe-angstrom-kernel-workflow,
+title="Openembedded Angstrom kernel work flow",
+author="SlimLogic",
+url="http://www.slimlogic.co.uk/2011/05/openembeddedangstrom-kernel-workflow/"
+}

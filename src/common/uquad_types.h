@@ -1,3 +1,27 @@
+/**
+ * uquad_types: General definitions used all over the code.
+ * Copyright (C) 2012  Rodrigo Rosa <rodrigorosa.lg gmail.com>, Matias Tailanian <matias tailanian.com>, Santiago Paternain <spaternain gmail.com>
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @file   uquad_types.c
+ * @author Rodrigo Rosa <rodrigorosa.lg gmail.com>, Matias Tailanian <matias tailanian.com>, Santiago Paternain <spaternain gmail.com>
+ * @date   Sun May 27 11:20:03 2012
+ *
+ * @brief general definitions used all over the code.
+ *
+ */
 #ifndef UQUAD_TYPES_H
 #define UQUAD_TYPES_H
 
@@ -11,21 +35,26 @@
 typedef UQUAD_BOOL uquad_bool_t;
 
 typedef enum STATE_VECTOR{
-    SV_X = 0,
-    SV_Y,
-    SV_Z,
-    SV_PSI,
-    SV_PHI,
-    SV_THETA,
-    SV_VQX,
-    SV_VQY,
-    SV_VQZ,
-    SV_WQX,
-    SV_WQY,
-    SV_WQZ,
-    SV_BAX,
-    SV_BAY,
-    SV_BAZ
+    /// Cartesian coordinates
+    SV_X = 0, /* [m]     */
+    SV_Y,     /* [m]     */
+    SV_Z,     /* [m]     */
+    /// Euler angles
+    SV_PSI,   /* [rad]   */
+    SV_PHI,   /* [rad]   */
+    SV_THETA, /* [rad]   */
+    /// Velocity - Non-inertial
+    SV_VQX,   /* [m/s]   */
+    SV_VQY,   /* [m/s]   */
+    SV_VQZ,   /* [m/s]   */
+    /// Angular velocity - Non-inertial
+    SV_WQX,   /* [rad/s] */
+    SV_WQY,   /* [rad/s] */
+    SV_WQZ,   /* [rad/s] */
+    /// Accelerometer bias estimation
+    SV_BAX,   /* [m/s^2] */
+    SV_BAY,   /* [m/s^2] */
+    SV_BAZ    /* [m/s^2] */
 }STATE_VECTOR_T;
 
 #define GRAVITY           9.81 	      // Aceleracion gravitatoria
@@ -43,7 +72,7 @@ typedef enum STATE_VECTOR{
 #define DRAG_A2           -0.00013205 // drag = w^2*A2 + w*A1
 #define DRIVE_A1          4.60160135072435e-05 // drive = w^2*A2 + w*A1
 #define DRIVE_A2          -0.00103822726273726 // drive = w^2*A2 + w*A1
-#define MASA_DEFAULT      (1.750)     // Weight of the quadcopter [kg]
+#define MASA_DEFAULT      (1.550)     // Weight of the quadcopter [kg]
 #define STATE_COUNT       12          // State vector length
 #define LENGTH_INPUT      4           // Input vector length
 
@@ -68,23 +97,6 @@ typedef enum STATE_VECTOR{
 #define TS_MIN             (TS_DEFAULT_US - TS_JITTER)
 
 /**
- * check_net macros
- *
- * In a worst case scenario, check_net will take a max
- * of CHECK_NET_TO_S [s] + CHECK_NET_MSG_T_MS [ms] to
- * detect loss of connectivity.
- */
-#define CHECK_NET_ACK          "OK"
-#define CHECK_NET_PING         "HI"
-#define CHECK_NET_KILL_RETRIES 10
-#define CHECK_NET_MSG_LEN      2    // [bytes]
-#define CHECK_NET_MSG_T_MS     950  // [ms] - time between pings
-#define CHECK_NET_RETRY_MS     50   // [ms] - time between requests for ack
-#define CHECK_NET_TO_S         1    // [s]  - timeout
-#define CHECK_NET_SERVER_IP    "10.42.43.1"
-#define CHECK_NET_PORT         12341234
-
-/**
  * Limits for sanity check.
  * If the state estimation is out of bounds for SANITY_MAX samples, then
  * some action should be taken (abort, etc). If out of bound, our linear
@@ -96,7 +108,7 @@ typedef enum STATE_VECTOR{
  */
 #define SANITY_MAX      20
 #define SANITY_MAX_TEMP 55.0 // [°C]
-#define SANITY_MAX_PSI  1.4  // [rad]
-#define SANITY_MAX_PHI  1.4  // [rad]
+#define SANITY_MAX_PSI  1.0  // [rad]
+#define SANITY_MAX_PHI  1.0  // [rad]
 
 #endif

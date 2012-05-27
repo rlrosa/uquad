@@ -4,7 +4,8 @@ close all
 clear all
 clc
 
-x=load('./i2c_vs_todo/notas_cuad.txt');
+warning('carga el script viejo!')
+x=load('tests/Motores/data/i2c_vs_todo/notas_cuad.txt');
 
 i2c   = x(:,1);                % Comando i2c
 assignin('base','gi2c',i2c);
@@ -14,7 +15,7 @@ assignin('base','gw',w);
 % PLOT VELOCIDADES DE LOS 4 MOTORES
 
 figure
-    plot(i2c,x(:,4),'s-'); hold on; 
+    plot(i2c,x(:,4),'s-'); hold on; grid on; 
     plot(i2c,x(:,5),'r+-');
     plot(i2c,x(:,6),'g*-');
     plot(i2c,x(:,3),'k^-');
@@ -25,7 +26,7 @@ figure
 
     
  figure
-    plot(i2c,x(:,4)-mean(x(:,3:6)')','s-'); hold on; 
+    plot(i2c,x(:,4)-mean(x(:,3:6)')','s-'); hold on; grid on; 
     plot(i2c,x(:,5)-mean(x(:,3:6)')','r+-');
     plot(i2c,x(:,6)-mean(x(:,3:6)')','g*-');
     plot(i2c,x(:,3)-mean(x(:,3:6)')','k^-');
@@ -50,12 +51,12 @@ figure
     title('\fontsize{16}Velocidad angular vs. fuerza')
     xlabel('\fontsize{13}Velocidad angular (rad/s)')
     ylabel('\fontsize{13}Fuerza (N)')
-    hold on
+    hold on; grid on
     plot(wtest,Ftest_cuad_FW,'r')
     plot(wtest,Ftest_cub_FW,'b')
     %plot(wtest,Ftest_viejos,'k')
-    legend('\fontsize{13}Medias experimentales','\fontsize{13}Curva modelo cuadrático',...
-        '\fontsize{13}Curva modelo cúbico','location','northwest')
+    legend('\fontsize{13}Medias experimentales','\fontsize{13}Curva modelo cuadratico',...
+        '\fontsize{13}Curva modelo cubico','location','northwest')
 
 %% i2c vs. Fuerza
 
@@ -78,12 +79,12 @@ figure
     title('\fontsize{16}Comando i^2c vs. fuerza')
     xlabel('\fontsize{13}Comando i^2c')
     ylabel('\fontsize{13}Fuerza (N)')
-    hold on
+    hold on; grid on
     %plot(i2ctest,Ftest_lin,'k')
     plot(i2ctest,Ftest_cuad_FI,'r')
     plot(i2ctest,Ftest_cub_FI)
-    legend('\fontsize{13}Medias experimentales','\fontsize{13}Curva modelo cuadrático',...
-        '\fontsize{13}Curva modelo cúbico','location','northwest')
+    legend('\fontsize{13}Medias experimentales','\fontsize{13}Curva modelo cuadratico',...
+        '\fontsize{13}Curva modelo cubico','location','northwest')
 
 %% i2c vs. Velocidad Angular
 
@@ -107,12 +108,12 @@ figure
     title('\fontsize{16}Comando i^2c vs. velocidad angular')
     xlabel('\fontsize{13}Comando i^2c')
     ylabel('\fontsize{13}Velocidad angular (rad/s)')
-    hold on
+    hold on; grid on
     plot(i2ctest,Ftest_cuad_IW,'r')
     plot(i2ctest,Ftest_cub_IW,'g')
     plot(i2ctest,Ftest_monod)
-        legend('\fontsize{13}Medias experimentales','\fontsize{13}Curva modelo cuadrático',...
-        '\fontsize{13}Curva modelo cúbico',...,
+        legend('\fontsize{13}Medias experimentales','\fontsize{13}Curva modelo cuadratico',...
+        '\fontsize{13}Curva modelo cubico',...,
         '\fontsize{13}Curva modelo Monod','location','northeast')
 
 %% Velocidad Angular vs. i2c 
@@ -127,11 +128,11 @@ figure
     title('\fontsize{16}Comando i^2c vs. velocidad angular')
     xlabel('\fontsize{13}Velocidad angular (rad/s)')
     ylabel('\fontsize{13}Comando i^2c')
-    hold on
+    hold on; grid on
     plot(wtest,Ftest_cuad_IW2,'r')
     plot(wtest,Ftest_cub_IW2)
-    legend('\fontsize{13}Medias experimentales','\fontsize{13}Curva modelo cuadrático',...
-        '\fontsize{13}Curva modelo cúbico','location','northwest')
+    legend('\fontsize{13}Medias experimentales','\fontsize{13}Curva modelo cuadratico',...
+        '\fontsize{13}Curva modelo cubico','location','northwest')
   
 % B_4      = [w.^4 w.^3 w.^2 w ];
 % p_4      = (B_4'*B_4)\(B_4'*i2c);
@@ -140,6 +141,6 @@ figure
 % e_4      = i2c-(p_4(1)*w.^4+p_4(2)*w.^3+p_4(3)*w.^2+p_4(4)*w);
 % e_4_prom = mean(e_4);
 % sigma_4  = std(e_4);
-% fprintf('\nModelo Cuatroático\n\tError: %d\n\tSigma: %d',e_4_prom,sigma_4)
-% fprintf('\nEl modelo cuatroático es casi idéntico al cúbico. El término en w^4 es 6 órdenes más chico que el de w^3\n')
+% fprintf('\nModelo Cuatroatico\n\tError: %d\n\tSigma: %d',e_4_prom,sigma_4)
+% fprintf('\nEl modelo cuatroatico es casi identico al cubico. El termino en w^4 es 6 órdenes mas chico que el de w^3\n')
 

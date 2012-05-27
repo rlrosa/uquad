@@ -3,6 +3,7 @@
 \begin{document}
 
 \chapter{Filtro de Kalman}
+\label{chap:kalman}
 
 Se desea implementar algún algoritmo de estimación de estados que, corriendo en tiempo real, mantenga una estimación del estado mejor que la que se obtendría utilizando solamente las medidas de los sensores, agregando robustez a las medidas obtenidas, y logrando estimar variables de estado que no se miden directamente de los sensores.\\
 
@@ -31,7 +32,7 @@ El sistema dinámico que queremos estimar, como se puede ver en el capítulo \re
 
 \section{Filtro de Kalman Extendido (EKF)}
 
-El filtro de \emph{Kalman extendido (EKF)} es la versión no lineal del filtro de Kalman. Linealiza en torno a una estimación de la media y la covarianza. En caso de conocer con exactitud el modelo de transición de estados, el EKF se considera el standard en la estimación no lineal de sistemas de navegación.\\
+El filtro de \emph{Kalman extendido (EKF)} es la versión no lineal del filtro de Kalman. Linealiza en torno a una estimación de la media y la covarianza. En caso de conocer con exactitud el modelo de transición de estados, el EKF se considera el estándar en la estimación no lineal aplicada a sistemas de navegación.\\
 
 \subsection{Modelo matemático}
 
@@ -81,10 +82,10 @@ $$ { \mathbf{H}_{k}} = \left . \frac{\partial h}{\partial \mathbf{x} } \right \v
 Los datos (en algunos casos redundantes) obtenidos de los diferentes sensores son combinados usando un filtro de Kalman Extendido para determinar el vector de estados, detallado en \ref{chap:modelo}:
 \begin{equation}
   \label{eq:estado}
-  X=\left\lbrace  x,y,z, \theta,\varphi,\psi, v_{q_z},v_{q_y},v_{q_z},\omega_{q_x},\omega_{q_y},\omega_{q_z} \right\rbrace
+  X=\left\lbrace  x,y,z,\psi,\varphi,\theta, v_{q_x},v_{q_y},v_{q_z},\omega_{q_x},\omega_{q_y},\omega_{q_z} \right\rbrace
 \end{equation}
 
-De la caracterización de los motores, capítulo \ref{chap:motores}, se obtiene la relación matemática entre la fuerza realizada por cada uno de los motores contra la velocidad de giro del mismo y la relación entre la el torque de \emph{drag} realizado por cada motor y su velocidad de giro. Por lo tanto basta con controlar la velocidad de giro de los motores para poder determinar todas las entradas al sistema. Se considerará entonces como entrada al sistema las velocidades angulares $w_1$, $w_2$, $w_3$, $w_4$ de los 4 motores.\\
+De la caracterización de los motores, capítulo \ref{chap:test_motores}, se obtienen las ecuaciones que rigen la fuerza y el torque de \emph{drag} de cada motor, funciones que dependen solamente de su velocidad de giro. Por lo tanto, basta con controlar la velocidad de giro de los motores para poder determinar todas las entradas al sistema. Se considerará entonces como entrada al sistema las velocidades angulares $w_1$, $w_2$, $w_3$, $w_4$ de los 4 motores.\\
 
 El esquema general del integración de los sensores se puede ver en la figura \ref{fig:diagrama_kalman}, el cual se pasa a describir a continuación.
 
@@ -96,10 +97,10 @@ El esquema general del integración de los sensores se puede ver en la figura \r
 \end{figure}
 
 Básicamente se utilizan 2 filtros de Kalman distintos.\\
-El primero (Kalman inercial) se encarga de estimar los 12 estados del vector $X$ considerando solamente las medidas obtenidas del sensor inercial (\textbf{IMU}): acelerómetros, giróscopos, magnetómetro, barómetro y termómetro. Para la estimación de los ángulos se utiliza una combinación entre las medidas obtenidas del acelerómetro y del magnetómetro, para la estimación de las velocidades angulares se utiliza directamente la medida arrojada por el giróscopo y para las velocidades lineales se trabaja con las medidas arrojadas por el acelerómetro. A su vez, al estar considerado el modelo físico dentro del filtro, se utilizan las estimaciones de todas las variables para determinar las predicciones del resto. Para la estimación de la posición en ``x'' y en ``y'' no se tiene ninguna medida de corrección, por lo que quedará determinado únicamente por la predicción del modelo físico, lo cual resulta en una acumulación significativo de error.
+El primero (Kalman inercial) se encarga de estimar los 12 estados del vector $X$ considerando solamente las medidas obtenidas del sensor inercial (\textbf{IMU}): acelerómetros, giróscopos, magnetómetro, barómetro y termómetro. Para la estimación de los ángulos se utiliza una combinación entre las medidas obtenidas del acelerómetro y del magnetómetro, para la estimación de las velocidades angulares se utiliza directamente la medida arrojada por el giróscopo y para las velocidades lineales se trabaja con las medidas arrojadas por el acelerómetro. A su vez, al estar considerado el modelo físico dentro del filtro, se utilizan las estimaciones de todas las variables para determinar las predicciones del resto. Para la estimación de la posición en ``x'' y en ``y'' no se tiene ninguna medida de corrección, por lo que quedará determinado únicamente por la predicción del modelo físico, lo cual resulta en una acumulación significativa de error.
 El segundo se encarga de la integración de los datos recogidos por el GPS, logrando una corrección en las posiciones y velocidades lineales gracias a la realimentación de la posición entregada por el GPS. En este caso se resuelve el problema de acumulación de error del filtro inercial.\\
 
-La separación en 2 filtros distintos otorga una interesante flexibilidad. Es posible utilizar una estimación del estado estando a puertas cerradas, sin la necesidad de señal de GPS, a costas de una peor estimación de las posiciones y velocidades lineales en ``x'' e ``y''. Además la frecuencia de muestreo del GPS es mucho más baja que la del resto de los sensores, por lo cual se hace imprescindible la utilización de un filtro meramente inercial. Los datos de la imu llegan cada $10ms$, mientras que los del GPS cada $1s$, entonces mientras no se tiene un dato nuevo de GPS, se utiliza la estimación inercial de las posiciones y cuando llega un dato nuevo de GPS es utilizado como corrección, dándole mucho más peso que a la estimación inercial, para evitar el $drift$ mencionado.
+La separación en 2 filtros distintos otorga una interesante flexibilidad. Es posible utilizar una estimación del estado estando a puertas cerradas, sin la necesidad de señal de GPS, a costas de una peor estimación de las posiciones y velocidades lineales en ``x'' e ``y''. Además la frecuencia de muestreo del GPS es mucho más baja que la del resto de los sensores, por lo cual se hace imprescindible la utilización de un filtro meramente inercial. Los datos de la IMU llegan cada $10ms$, mientras que los del GPS cada $1s$, entonces mientras no se tiene un dato nuevo de GPS, se utiliza la estimación inercial de las posiciones y cuando llega un dato nuevo de GPS es utilizado como corrección, dándole mucho más peso que a la estimación inercial, para evitar el $drift$ mencionado.
 
 \subsubsection*{Orientación}
 
@@ -108,7 +109,7 @@ En estado estático, los ángulos de \emph{pitch} y \emph{roll} pueden ser deter
 \subsubsection{Aceleración}
 
 Para poder obtener la transformación entre el vector de estados y la observación es necesario entender qué aceleración medirá el acelerómetro. Como se explica en \ref{acelerometro}, dicho dispositivo referencia su medida a un sistema en caída libre, por lo que por ejemplo al estar quieto se deberá medir la aceleración gravitatoria ($g$).\\
-Como se puede ver en el esquema mostrado en la figura \ref{fig:diagrama_kalman}, el acelerómetro es utilizado para estimar las variables de estado $v_{qx}$, $v_{qy}$ y $v_{qz}$, correspondientes a las velocidades lineales medidas en el sistema del cuadricóptero. No se debe confundir la derivada de estas variables con la aceleración medida por el acelerómetro. Por un lado se debe realizar el pasaje del sistema de referencia del cuadricóptero hasta un sistema de referencia inercial fijo en el mundo, y por otro lado se debe tener en cuenta el pasaje de este último hasta el sistema de referencia del acelerómtro (el sistema en caída libre), por ello es que se incluye el bloque ``-g'' en el diagrama de la figura \ref{fig:diagrama_kalman}.
+Como se puede ver en el esquema mostrado en la figura \ref{fig:diagrama_kalman}, el acelerómetro es utilizado para estimar las variables de estado $v_{qx}$, $v_{qy}$ y $v_{qz}$, correspondientes a las velocidades lineales medidas en el sistema del cuadricóptero. No se debe confundir la derivada de estas variables con la aceleración medida por el acelerómetro. Por un lado se debe realizar el pasaje del sistema de referencia del cuadricóptero hasta un sistema de referencia inercial fijo en el mundo, y por otro lado se debe tener en cuenta el pasaje de este último hasta el sistema de referencia del acelerómetro (el sistema en caída libre), por ello es que se incluye el bloque ``-g'' en el diagrama de la figura \ref{fig:diagrama_kalman}.
 
 % TODO hablar de Q y R. capaz poner 2 ejemplos de lo mismo q den bien distinto
 
@@ -132,7 +133,7 @@ Se presentan a continuación algunos resultados de la implementación del filtro
 
 En la figura \ref{fig:wq} se muestra la estimación de las velocidades angulares, junto con las medidas del giróscopo. Se puede ver claramente que la estimación del estado sigue a las medidas del giróscopo, suavizándolas y logrando robustez frente a ruidos inherentes al sensor.
 
-Por otro lado en la figura \ref{fig:euler} se muestra tanto la orientación estimada por el filtro de Kalman, como la deducida directamente a partir de las medidas de los acelerómetros y magnetómetros de la IMU. Nuevamente se puede apreciar el buen comportamiento del filtro, suavizando notoriamente las medidas otorgadas por la imu. Además resulta intersante analizar el transitorio de la estimación del estado, es decir, el tiempo que el filtro tarda en estimar al estado. En este caso el estimador tarda aproximadamente 7 segundos en pasar de $\theta = 0$ hasta $\theta = 170$, lo cual sin duda es un tiempo totalmente inaceptable en vuelo. Este es uno de los casos más extremos ya que el ángulo $\theta$ es cercano a 180 grados. De todas maneras es un problema muy facilmente solucionable ya que esta etapa de \emph{calentamiento} del filtro puede realizarse antes de que el cuadricóptero levante vuelo. A su vez, ajustando las matrices de covarianza \textbf{Q} y \textbf{R}, presentadas anteriormente, se puede lograr muy fácilmente que la estimación se acerque mucho más rápido a la medida del sensor.\\
+Por otro lado en la figura \ref{fig:euler} se muestra tanto la orientación estimada por el filtro de Kalman, como la deducida directamente a partir de las medidas de los acelerómetros y magnetómetros de la IMU. Nuevamente se puede apreciar el buen comportamiento del filtro, suavizando notoriamente las medidas otorgadas por la imu. Además resulta intersante analizar el transitorio de la estimación del estado, es decir, el tiempo que el filtro tarda en estimar al estado. En este caso el estimador tarda aproximadamente 7 segundos en pasar de $\theta = 0$ hasta $\theta = 170$, lo cual sin duda es un tiempo totalmente inaceptable en vuelo. Este es uno de los casos más extremos ya que el ángulo $\theta$ es cercano a 180 grados. De todas maneras es un problema fácil de solucionar, se puede tomar algunas muestras de la IMU y usarlas como semilla para el filtro, y/o agregar una etapa de \emph{calentamiento} del filtro antes de que el cuadricóptero levante vuelo. A su vez, ajustando las matrices de covarianza \textbf{Q} y \textbf{R}, presentadas anteriormente, se puede lograr muy fácilmente que la estimación se acerque mucho más rápido a la medida del sensor.\\
 
 Del resto de las variables de estado, $x$, $y$, $z$, $v_{qx}$, $v_{qy}$ y $v_{qz}$, la única que tiene realimentación, considerando una estimación de estado puramente inercial, es $z$. El resto quedan determinadas únicamente por el modelo físico, en el cual se basa la etapa de predicción del filtro de Kalman. Dicho de otro modo, la etapa de actualización/corrección del filtro no surte efecto sobre dichas variables de estado.\\
 
@@ -150,23 +151,24 @@ Como se puede ver en la figura \ref{fig:posyvel}, la estimación de los estados 
 
 \subsubsection{Situación imposible}
 
-Se simula una situación donde todos los motores se setean a una velocidad $w_{hover}$, como en el caso anterior, pero en esta oportunidad el cuadricóptero se dispone con un ángulo de $\varphi = 45^o$. Claramente es una situación de vuelo imposible ya que con esa velocidad en los motores el cuadicóptero no podría quedarse quieto en un lugar. Se puede analizar la estimación de la orientación obtenida por el filtro en la figura \ref{fig:45}.
+Se simula una situación donde todos los motores se setean a una velocidad $w_{hover}$, como en el caso anterior, pero en esta oportunidad el cuadricóptero se dispone con un ángulo de $\varphi = 45^o$. Claramente es una situación de vuelo imposible ya que con esa velocidad en los motores el cuadricóptero no podría quedarse quieto en un lugar, y perdería altura. Se puede analizar la estimación de la orientación obtenida por el filtro en la figura \ref{fig:45}.
 
 \begin{wrapfigure}{r}{0.6\textwidth}
 	\begin{center}	
-	\vspace{-10pt}
+	\vspace{-20pt}
 	\includegraphics[width=0.45\textwidth]
-		{./pics_kalman/45.pdf}
+		{./pics_kalman/altura_inclinado_45.pdf}
 	\end{center}
-	\caption{Ángulos de Euler - $\phi = 45^o$}
+	\caption{Altura - $\phi = 45^o$}
+	\vspace{-20pt}
 	\label{fig:45}
 \end{wrapfigure}
 
-Lo que sucede en esta situación es que la predicción de la orientación realizada en el filtro de Kalman no coincide con las medidas otorgadas por los sensores. El desempeño del filtro en este caso estará determinado por la relación entre el peso que se le de a la observación y el que se le de a la predicción. En este caso el peso de la predicción es lo suficientemente grande como para que el filtro estime un estado distinto al que otorgan los sensores.
+Lo que sucede en esta situación es que la predicción de altura dice que el cuadricóptero descenderá, pero el barómetro indica altura constante. El desempeño del filtro en este caso estará determinado por la relación entre el peso que se le de a la observación y el que se le de a la predicción. En este caso el peso de la predicción es lo suficientemente grande como para que el filtro estime un estado distinto al que otorgan los sensores.
 
 \subsection{Vuelo real}
 
-Si bien las simulaciones resultan importantes para analizar el comportamiento del filtro en diferentes situaciones, se presenta la limitación de poder simular situaciones de vuelo real. Además al estar prendidos lo motores se generan vibraciones e interferencias que provocan un aumento en el ruido de las medidas obtenidas mediante los sensores. Por estos motivos es de vital importancia analizar el comportamiento del filtro sobre una situación real de vuelo.\\
+Si bien las simulaciones resultan importantes para analizar el comportamiento del filtro en diferentes situaciones, tienen limitaciones importantes al intentar simular situaciones de vuelo reales, ya que las predicciones no serán correctas debido a la influencia de fuerzas externas no consideradas en el modelo físico (y por lo tanto, tampoco en la predicción), como estar apoyado sobre una mesa, etc. Por este motivo, es de vital importancia analizar el comportamiento del filtro sobre una situación real de vuelo.\\
 
 %\begin{figure}[h!]
 %	\centering
@@ -175,9 +177,11 @@ Si bien las simulaciones resultan importantes para analizar el comportamiento de
 %	\label{fig:andando}
 %\end{figure}
 \begin{wrapfigure}{l}{0.6\textwidth}
-	\begin{center}	
-	\vspace{-20pt}
-	\includegraphics[width=0.45\textwidth]
+	\vspace{-40pt}
+	\begin{center}
+          \hspace{-50pt}
+	\vspace{-30pt}
+	\includegraphics[width=0.65\textwidth]
 		{./pics_kalman/andando.pdf}
 	\end{center}
 	\caption{Estimación en vuelo real}

@@ -1,3 +1,27 @@
+/**
+ * uquad_kalman: lib for EKF.
+ * Copyright (C) 2012  Rodrigo Rosa <rodrigorosa.lg gmail.com>, Matias Tailanian <matias tailanian.com>, Santiago Paternain <spaternain gmail.com>
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @file   uquad_kalman.c
+ * @author Rodrigo Rosa <rodrigorosa.lg gmail.com>, Matias Tailanian <matias tailanian.com>, Santiago Paternain <spaternain gmail.com>
+ * @date   Sun May 27 11:08:44 2012
+ *
+ * @brief  lib for EKF.
+ *
+ */
 #include <math.h>
 #include "uquad_kalman.h"
 #include <uquad_types.h>
@@ -834,30 +858,30 @@ kalman_io_t* kalman_init()
     kd->Q->m[0][0] = 100;
     kd->Q->m[1][1] = 100;
     kd->Q->m[2][2] = 100;
-    kd->Q->m[3][3] = 1e-3;
-    kd->Q->m[4][4] = 1e-3;
-    kd->Q->m[5][5] = 1e-6;
+    kd->Q->m[3][3] = 1e-2;
+    kd->Q->m[4][4] = 1e-2;
+    kd->Q->m[5][5] = 1e-5;
     kd->Q->m[6][6] = 100;
     kd->Q->m[7][7] = 100;
     kd->Q->m[8][8] = 100;
-    kd->Q->m[9][9] = 10;
-    kd->Q->m[10][10] = 10;
-    kd->Q->m[11][11] = 10;
+    kd->Q->m[9][9] = 1e-1;
+    kd->Q->m[10][10] = 1e-1;
+    kd->Q->m[11][11] = 1e-1;
 #if KALMAN_BIAS
     kd->Q->m[12][12] = 1;
     kd->Q->m[13][13] = 1;
     kd->Q->m[14][14] = 1;
 #endif // KALMAN_BIAS
 
-    kd->R->m[0][0] = 1e3;
-    kd->R->m[1][1] = 1e3;
-    kd->R->m[2][2] = 1e6;
+    kd->R->m[0][0] = 1e2;
+    kd->R->m[1][1] = 1e2;
+    kd->R->m[2][2] = 1e5;
     kd->R->m[3][3] = 1e4;
     kd->R->m[4][4] = 1e4;
     kd->R->m[5][5] = 1e4;
-    kd->R->m[6][6] = 1e1;
-    kd->R->m[7][7] = 1e1;
-    kd->R->m[8][8] = 1e1;
+    kd->R->m[6][6] = 1e-3;
+    kd->R->m[7][7] = 1e-3;
+    kd->R->m[8][8] = 1e-3;
     kd->R->m[9][9] = 1e5;
 
     kd->R_imu_gps->m[0][0] = kd->R->m[0][0];
@@ -917,7 +941,7 @@ kalman_io_t* kalman_init()
     return NULL;
 }
 
-int uquad_kalman(kalman_io_t * kd, uquad_mat_t* w, imu_data_t* data, double T, double weight, gps_comm_data_t *gps_i_data)
+int uquad_kalman(kalman_io_t * kd, uquad_mat_t* w, imu_data_t* data, double T_us, double weight, gps_comm_data_t *gps_i_data)
 {
     int retval;
     uquad_bool_t is_gps = (gps_i_data != NULL);
@@ -956,7 +980,7 @@ int uquad_kalman(kalman_io_t * kd, uquad_mat_t* w, imu_data_t* data, double T, d
 	    data->magn->m_full[2] = data->magn->m_full[2]-fix((data->magn->m_full[2]-kd->x_hat->m_full[SV_THETA]-PI)/(2.0*PI))*2.0*PI;
     }
 
-    retval = store_data(kd, w, data, T, weight, gps_i_data);
+    retval = store_data(kd, w, data, T_us, weight, gps_i_data);
     err_propagate(retval);
 
     // Prediction
