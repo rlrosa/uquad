@@ -80,7 +80,7 @@ gps_file  = [log_path '/gps.log'];
 %% Load IMU data
 
 % Imu
-imu_file = 'tests/main/logs/2012_05_17_2_02_quieto/imu_raw.log';
+imu_file = 'tests/main/logs/2012_05_26_1_04_theta_quieto_con_integrador/imu_raw.log';
 % imu_file = './tests/mongoose/acc/logs_zparriba/z00y45.txt';
 % imu_file = [p{12} 'imu_raw.log'];
 [acrud,wcrud,mcrud,tcrud,bcrud,~,~,T]=mong_read(imu_file,0,1);
@@ -402,6 +402,18 @@ for i=2:N
 end
 
 %% Plots
+
+figure;
+plot(T,180/pi*x_hat(:,6),'color',green1,'linewidth',2)
+hold on
+line([T(1) T(end)],[180/pi*theta0 180/pi*theta0],'color',blue1,'linewidth',2)
+% title('\fontsize{16}\theta')
+grid
+xlabel('\fontsize{16}Tiempo (s)')
+ylabel('\fontsize{16}\theta (grados)')
+legend('\fontsize{18}\theta','\fontsize{18}\theta_0')
+
+break 
 
 % figure; 
 %     plot(w_control(:,1)+w_control(:,3)-w_control(:,2)-w_control(:,4),'r','linewidth',3); 
