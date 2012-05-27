@@ -1,3 +1,27 @@
+/**
+ * kalman_test: test for EKF lib.
+ * Copyright (C) 2012  Rodrigo Rosa <rodrigorosa.lg gmail.com>, Matias Tailanian <matias tailanian.com>, Santiago Paternain <spaternain gmail.com>
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @file   kalman_test.c
+ * @author Rodrigo Rosa <rodrigorosa.lg gmail.com>, Matias Tailanian <matias tailanian.com>, Santiago Paternain <spaternain gmail.com>
+ * @date   Sun May 27 11:08:44 2012
+ *
+ * @brief  test for EKF lib.
+ *
+ */
 #include <imu_comm.h>
 #include <uquad_error_codes.h>
 #include <sys/time.h>
@@ -12,11 +36,18 @@
 #define CMD_CHAR_1 'c'
 #define SHOW_CHAR 's'
 
-#define KALMAN_TEST_HOW_TO "\nIncorrect arguments!\nUsage: ./imu_comm_test /dev/tty# log_to_file\n\nIf last argument is supplied (it can be any string) then the program will log raw data and\n processed data to two files, named according to the current timestamp."
+#define KALMAN_TEST_HOW_TO				\
+    "\nIncorrect arguments!\nUsage:"			\
+    " ./imu_comm_test /dev/tty# log_to_file\n\n"	\
+    "If last argument is supplied (it can be any"	\
+    " string) then the program will log raw data"	\
+    " and\n processed data to two files, named"		\
+    " according to the current timestamp."
+
 #define WAIT_COUNTER_MAX 10
 #define IMU_COMM_TEST_EOL_LIM 128
 
-#define wait_for_enter printf("ERROR!\n") //while(fread(tmp,1,1,stdin) == 0)
+#define wait_for_enter printf("ERROR wait_for_enter not implemented!\n") //while(fread(tmp,1,1,stdin) == 0)
 
 static int generate_log_name(char * log_name, char * start_string){
     time_t rawtime;

@@ -14,6 +14,12 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @file   imu_comm.c
+ * @author Rodrigo Rosa <rodrigorosa.lg gmail.com>, Matias Tailanian <matias tailanian.com>, Santiago Paternain <spaternain gmail.com>
+ * @date   Sun May 27 10:02:32 2012
+ *
+ * @brief  Interface to IMU streaming data over serial line ("/dev/tty*")
  */
 #include "imu_comm.h"
 #include <uquad_aux_io.h>

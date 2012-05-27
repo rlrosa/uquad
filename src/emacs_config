@@ -1,0 +1,150 @@
+(custom-set-variables
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(cua-mode t nil (cua-base))
+ '(ecb-options-version "2.32")
+ '(inhibit-startup-screen t)
+ '(scroll-bar-mode (quote right)))
+(custom-set-faces
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(default ((t (:inherit nil :stipple nil :background "white" :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 83 :width normal :foundry "unknown" :family "DejaVu Sans Mono")))))
+
+;; -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+;; begin:Latex stuff
+;; -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+;; Set AucTex mode
+(setq-default TeX-master nil)
+(add-hook 'TeX-mode-hook '(lambda () (TeX-PDF-mode 1)))
+
+;; Set evince as default pdf viewer
+(setq TeX-view-program-list '(("Evince" "evince %o")))
+;;(setq TeX-view-program-list '(("Evince" "evince --page-index=%(outpage) %o")))
+(setq TeX-view-program-selection '((output-pdf "Evince")))
+
+;; Enable source correlation
+(add-hook 'LaTeX-mode-hook 'TeX-source-correlate-mode)
+(setq TeX-source-correlate-start-server t)
+
+;; Ctrl+click on pdf will bring up source code
+(require 'dbus)
+(defun th-evince-sync (file linecol)
+   (let ((buf (get-buffer file))
+         (line (car linecol))
+         (col (cadr linecol)))
+     (if (null buf)
+         (message "Sorry, %s is not opened..." file)
+       (switch-to-buffer buf)
+       (goto-line (car linecol))
+       (unless (= col -1)
+         (move-to-column col)))))
+
+(when (and
+       (eq window-system 'x)
+       (fboundp 'dbus-register-signal))
+  (dbus-register-signal
+   :session nil "/org/gnome/evince/Window/0"
+   "org.gnome.evince.Window" "SyncSource"
+   'th-evince-sync))
+;; end:Latex stuff
+;; -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+;; Remove toolbar
+(tool-bar-mode -1)
+
+;; Remove scrollbar
+(scroll-bar-mode -1)
+
+;; Remove menu bar
+(menu-bar-mode -1)
+
+;; -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+;; begin:indentation in line with Evolution standard.
+;; -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+(defun my-c-mode-common-hook ()
+  ;; my customizations for all of c-mode, c++-mode, objc-mode,
+  ;; java-mode
+  (c-set-style "java")
+  (c-set-offset 'substatement-open 0)
+  (c-set-offset 'inline-open 0)
+  (c-set-offset 'topmost-intro-cont 0)
+  (c-set-offset 'access-label '-)
+  ;; other customizations can go here
+  )
+
+(add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
+
+;; Make find-tag (M-.) work.  Change the path to reflect
+;; your setup.
+;;(setq tags-file-name "~/evolution-core/TAGS")
+
+;; Python looks better this way.
+(setq py-indent-offset 2)
+
+;; Don't use tabs.
+(setq indent-tabs-mode 'nil)
+;; end:indentation in line with Evolution standard.
+;; -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+;; -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+;; begin:Revert all open buffers
+;; -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+(defun rva ()
+  "Refreshes all open buffers from their respective files"
+  (interactive)
+  (let* ((list (buffer-list))
+	 (buffer (car list)))
+    (while buffer
+      (when (and (buffer-file-name buffer) 
+		 (not (buffer-modified-p buffer)))
+	(set-buffer buffer)
+	(revert-buffer t t t))
+      (setq list (cdr list))
+      (setq buffer (car list))))
+  (message "Refreshed open files"))
+;; -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+;; end:Revert all open buffers
+;; -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+;; -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+;; begin:Disable auto-save mode for all open buffers
+;; -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+(defun ats ()
+  "Disables auto-save mode for all open buffers from their respective files"
+  (interactive)
+  (let* ((list (buffer-list))
+	 (buffer (car list)))
+    (while buffer
+      (when (and (buffer-file-name buffer) 
+		 (not (buffer-modified-p buffer)))
+	(set-buffer buffer)
+	(auto-save-mode -1))
+      (setq list (cdr list))
+      (setq buffer (car list))))
+  (message "Disabled autosave mode for all open files"))
+;; -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+;; end:Disable auto-save mode for all open buffers
+;; -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+;; -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+;; begin:use scp for remote file editing
+;; -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+(require 'tramp)
+(setq tramp-default-method "scp")
+
+;; -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+;; end:use scp for remote file editing
+;; -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+
+;; -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+;; begin:open arduino file in c-mode
+;; -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+(add-to-list 'auto-mode-alist '("\\.pde\\'" . c-mode))
+;; -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+;; end: open arduino files in c-mode
+;; -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --

@@ -1,3 +1,36 @@
+/**
+ * uquad_logger: lib for logging
+ * Copyright (C) 2012  Rodrigo Rosa <rodrigorosa.lg gmail.com>, Matias Tailanian <matias tailanian.com>, Santiago Paternain <spaternain gmail.com>
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @file   uquad_logger.h
+ * @author Rodrigo Rosa <rodrigorosa.lg gmail.com>, Matias Tailanian <matias tailanian.com>, Santiago Paternain <spaternain gmail.com>
+ * @date   Sun May 27 11:08:44 2012
+ *
+ * @brief  lib for logging.
+ *
+ * Allows forking a child process that will read out data writen by the parent to a pipe,
+ * and either save it to a file (without halting the parent in case of IO delays) or store
+ * it in RAM until parent finished, then dump it to non volatile memory.
+ * If running on RAM, logger will save data until it runs out of space, it will not allocate
+ * more memory. When out of space, data will be read from pipe and then discarded.
+ *
+ * Examples:
+ *   - src/main/main.c
+ *   - src/tests/pipes/forker.c
+ */
 #ifndef UQUAD_LOGGER_H
 #define UQUAD_LOGGER_H
 

@@ -1,3 +1,39 @@
+/**
+ * control: lib for determing control actions.
+ * Copyright (C) 2012  Rodrigo Rosa <rodrigorosa.lg gmail.com>, Matias Tailanian <matias tailanian.com>, Santiago Paternain <spaternain gmail.com>
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @file   control.h
+ * @author Rodrigo Rosa <rodrigorosa.lg gmail.com>, Matias Tailanian <matias tailanian.com>, Santiago Paternain <spaternain gmail.com>
+ * @date   Sun May 27 11:08:44 2012
+ *
+ * @brief  lib for determing control actions.
+ *
+ * Expects to load gain matrices from text files. The number and name of the matrices depends
+ * on the mode being used.
+ *
+ * //TODO:
+ * An implementation of the LQR algorithm is complete, this should allow to calculate the gain
+ * matrices on-the-go, allowing to change trajectories.
+ * The missing element is the linealization function, it is not working yet. LQR requires a
+ * linear version of the system as input.
+ *
+ * Examples:
+ *   - src/test/control/control_test.c
+ *   - src/main/main.c
+ */
 #ifndef CONTROL_H
 #define CONTROL_H
 
@@ -77,20 +113,20 @@ typedef struct ctrl{
  *   - Proportional gain matrix.
  *   - Integral gain matrix.
  *
- * @return
+ * @return structure or NULL if error.
  */
 ctrl_t *control_init(void);
 
-/** 
+/**
  * Calculates action (motor speed) that should be performed on system.
- * 
+ *
  * @param ctrl 
  * @param w Answer                           [rad/s]
  * @param x Current state estimation
  * @param sp Current setpoint
  * @param T_us Time since las control action [us]
- * 
- * @return 
+ *
+ * @return error code
  */
 int control(ctrl_t *ctrl, uquad_mat_t *w, uquad_mat_t *x, set_point_t *sp, double T_us);
 

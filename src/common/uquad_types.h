@@ -1,3 +1,27 @@
+/**
+ * uquad_types: General definitions used all over the code.
+ * Copyright (C) 2012  Rodrigo Rosa <rodrigorosa.lg gmail.com>, Matias Tailanian <matias tailanian.com>, Santiago Paternain <spaternain gmail.com>
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @file   uquad_types.c
+ * @author Rodrigo Rosa <rodrigorosa.lg gmail.com>, Matias Tailanian <matias tailanian.com>, Santiago Paternain <spaternain gmail.com>
+ * @date   Sun May 27 11:20:03 2012
+ *
+ * @brief general definitions used all over the code.
+ *
+ */
 #ifndef UQUAD_TYPES_H
 #define UQUAD_TYPES_H
 
@@ -11,21 +35,26 @@
 typedef UQUAD_BOOL uquad_bool_t;
 
 typedef enum STATE_VECTOR{
-    SV_X = 0,
-    SV_Y,
-    SV_Z,
-    SV_PSI,
-    SV_PHI,
-    SV_THETA,
-    SV_VQX,
-    SV_VQY,
-    SV_VQZ,
-    SV_WQX,
-    SV_WQY,
-    SV_WQZ,
-    SV_BAX,
-    SV_BAY,
-    SV_BAZ
+    /// Cartesian coordinates
+    SV_X = 0, /* [m]     */
+    SV_Y,     /* [m]     */
+    SV_Z,     /* [m]     */
+    /// Euler angles
+    SV_PSI,   /* [rad]   */
+    SV_PHI,   /* [rad]   */
+    SV_THETA, /* [rad]   */
+    /// Velocity - Non-inertial
+    SV_VQX,   /* [m/s]   */
+    SV_VQY,   /* [m/s]   */
+    SV_VQZ,   /* [m/s]   */
+    /// Angular velocity - Non-inertial
+    SV_WQX,   /* [rad/s] */
+    SV_WQY,   /* [rad/s] */
+    SV_WQZ,   /* [rad/s] */
+    /// Accelerometer bias estimation
+    SV_BAX,   /* [m/s^2] */
+    SV_BAY,   /* [m/s^2] */
+    SV_BAZ    /* [m/s^2] */
 }STATE_VECTOR_T;
 
 #define GRAVITY           9.81 	      // Aceleracion gravitatoria

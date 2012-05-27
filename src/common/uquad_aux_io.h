@@ -1,3 +1,30 @@
+/**
+ * uquad_io: Library to handle a list of io devices, and read/write from them in a non blocking manner.
+ * Copyright (C) 2012  Rodrigo Rosa <rodrigorosa.lg gmail.com>, Matias Tailanian <matias tailanian.com>, Santiago Paternain <spaternain gmail.com>
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @file   uquad_aux_io.h
+ * @author Rodrigo Rosa <rodrigorosa.lg gmail.com>, Matias Tailanian <matias tailanian.com>, Santiago Paternain <spaternain gmail.com>
+ * @date   Sun May 27 11:20:03 2012
+ *
+ * @brief lib to handle a list of IO devices, and read/write from them in a non blocking manner.
+ *
+ * Examples:
+ *   - src/main/main.c
+ *   - test/uquad_aux_io_test/uquad_aux_io_test.c
+ */
 #ifndef UQUAD_AUX_IO_H
 #define UQUAD_AUX_IO_H
 
