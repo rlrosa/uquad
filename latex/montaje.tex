@@ -4,11 +4,11 @@
 \chapter{Montaje}
 \label{chap:montaje}
 
-Al adquirir una plataforma comercial ya diseñada para sus fines, no se dispone de espacio extra para instrumentarla. Además de toda la instrumentación que incluía, se agregó una placa de sensores, una placa de desarrollo, una batería independiente para la electrónica, un GPS y un módulo Wi-Fi USB. Además, para compatibilizar los diferentes voltajes que utilizaba cada placa, fue necesario hacer un circuito impreso que convirtiera los niveles lógicos de las señales.\\
+Al adquirir una plataforma comercial ya diseñada para sus fines, no se dispone de espacio extra para instrumentarla. Además de toda la instrumentación que incluía, se agregó una placa de sensores, una placa de desarrollo, una batería independiente para la electrónica, un GPS y un módulo Wi-Fi USB. Asimismo, para compatibilizar los diferentes voltajes que utilizaba cada placa, fue necesario hacer un circuito impreso que convirtiera los niveles lógicos de las señales.\\
 
 A la hora de realizar el montaje de cada uno de los dispositivos mencionados, fue necesario realizar algunas consideraciones particulares. A continuación se presenta a grandes rasgos el trabajo de montaje realizado.
 
-\section*{BeagleBoard}
+\section{BeagleBoard}
 
 Para la ubicación de la \emph{BeagleBoard} se manejaron diferentes opciones y finalmente se decidió colocarla junto con la batería de la electrónica (la \emph{Beagle-Juice}) en la parte inferior del cuadricóptero. Considerando que la \emph{BeagleBoard} tiene una masa de $70g$ y la \emph{Beagle-Juice} alrededor de $125g$, la ubicación juega un rol fundamental en la posición del centro de masa del sistema global.\\
 
@@ -23,11 +23,11 @@ Para la ubicación de la \emph{BeagleBoard} se manejaron diferentes opciones y f
 %\end{figure}
 \end{wrapfigure}
 
-Por ello se decidió ubicar las placas mencionadas en la parte inferior del cuadricóptero, llevando el centro de masa más abajo del centro geométrico, ayudando a lograr la estabilidad.\\
+Se decidió ubicar las placas mencionadas en la parte inferior del cuadricóptero, implicando que el centro de masa del sistema se ubique algunos centímetros más abajo del centro geométrico, lo cual ayuda al sistema a lograr la estabilidad.\\
 
-La \emph{BeagleBoard} se monta sobre la \emph{Beagle-Juice} mediante 4 tornillos de plástico con un tarugo (también de plástico) entre medio de ambas placas, de manera de mantenerlas solidarias y aisladas. En la imagen \ref{fig:beagle} se muestra la \emph{BeagleBoard} con la batería en una caja de acrílico pensada para protegerlas ante eventuales golpes, la cual será ubicada, como se mencionó, en la parte inferior del cuadricóptero. En la misma figura se puede observar además el módulo \emph{Wi-Fi} que es ubicado lo más hacia el exterior posible, de modo de minimizar los obstáculos a la señal.
+La \emph{BeagleBoard} se monta sobre la \emph{Beagle-Juice} mediante 4 tornillos de plástico con un tarugo (también de plástico) entre medio de ambas placas, de manera de mantenerlas solidarias y aisladas. En la imagen \ref{fig:beagle} se muestra la \emph{BeagleBoard} con la batería en una caja de acrílico pensada para protegerlas ante eventuales golpes. En la misma figura se puede observar además el módulo \emph{Wi-Fi} que es ubicado lo más hacia el exterior posible, de modo de minimizar los obstáculos a la señal.
 
-\section*{IMU}
+\section{IMU}
 
 La ubicación y montaje de la placa de sensores juega un papel fundamental a la hora de obtener las medidas. Se deben tomar algunas consideraciones que juegan un rol fundamental para poder lograr el control del cuadricóptero.\\
 
@@ -39,7 +39,7 @@ La ubicación y montaje de la placa de sensores juega un papel fundamental a la 
 	\label{fig:imu}
 \end{wrapfigure}
 
-En primer lugar se debe ubicar la placa en exactamente el centro del sistema. Más exactamente se deben ubicar a los acelerómetros de la placa en el centro de masa, de modo de poder aproximar las aceleraciones medidas como las del centro de masa del cuadricóptero.\\
+En primer lugar es importante que la placa se ubique en el centro del sistema. Más exactamente se deben ubicar a los acelerómetros de la placa lo más cerca del centro de masa posible, de modo de poder aproximar las aceleraciones medidas como las del centro de masa del cuadricóptero.\\
 
 En la figura \ref{fig:imu} se muestra el montaje de la IMU, donde se utilizaron cuatro apoyos que ya tenía la plataforma, ubicados en el centro de la misma. La IMU se fija a una placa de acrílico que a su vez está fijada a dichos apoyos mediante amortiguadores de doble fuelle. Esto último es sumamente importante para disminuir el ruido de medida. Al encender los motores el ruido mecánico ocasionado provoca un aumento en el ruido de los sensores, llegando a tomar valores 10 veces mayores que con los motores apagados. Por esta razón resulta vital la amortiguación en el montaje de la placa. Los amortiguadores utilizados constan de 1 sola pieza que pasa por un agujero en la placa, logrando que la misma no tenga contacto directo ni con la carrocería ni con el tornillo, dejándola aislada de los elementos que vibran solidarios los motores.\\
 
@@ -48,12 +48,13 @@ En la figura \ref{fig:imu} se muestra el montaje de la IMU, donde se utilizaron 
 		\includegraphics[width=0.5\textwidth]{./pics_montaje/horizontalidad.jpg}
 	\end{center}
 	\caption{Horizontalización}
+	\vspace{-10pt}
 	\label{fig:horizontalidad}
 \end{wrapfigure}
 
-Otro aspecto fundamental para que las medidas de la IMU reflejen la realidad es la necesidad de ubicarla perfectamente horizontal. Para ello se utiliza el sistema mostrado en la figura \ref{fig:horizontalidad}, que aunque parece bastante precario, es efectivo. La idea es apoyar al cuadricóptero en los motores, simulando la fuerza que realizan en vuelo para compensar la fuerza del peso y lograr horizontalizar el plano de los brazos mediante la utilización de un nivel. Luego, ajustando o desajustando los tornillos se ubica la IMU de manera que se mida un ángulo \emph{Roll} y \emph{Pitch} iguales a $0$.
+Otro aspecto fundamental para que las medidas de la IMU reflejen la realidad es la necesidad de ubicarla perfectamente horizontal. Para ello se utiliza el sistema mostrado en la figura \ref{fig:horizontalidad}, que aunque bastante precario, es efectivo. La idea es apoyar al cuadricóptero en los motores, simulando la fuerza que realizan en vuelo para compensar la fuerza del peso y lograr horizontalizar el plano de los brazos mediante la utilización de un nivel. Luego, ajustando o desajustando los tornillos se ubica la IMU de manera de obtener ángulos \emph{Roll} y \emph{Pitch} iguales a $0$.
 
-\section*{GPS}
+\section{GPS}
 
 \begin{wrapfigure}{r}{0.4\textwidth}
 	\begin{center}
@@ -69,7 +70,7 @@ El montaje del GPS se realiza de forma que tenga la mayor visibilidad de satéli
 
 \vspace{25pt}
 
-\section*{Conversor lógico}
+\section{Conversor lógico}
 
 \begin{wrapfigure}{r}{0.5\textwidth}
 	\begin{center}
