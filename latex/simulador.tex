@@ -15,7 +15,7 @@ El simulador se compone de dos partes fundamentales. La primera es el lazo abier
 
 \subsection{Lazo Abierto}
 
-La estructura que se eligi\'o para desarrollar esta secci\'on se corresponde en buena forma con el camino que se recorri\'o para determinar el modelo f\'isico. El lazo abierto consta de tres bloques principales. En primer lugar tenemos un bloque encargado de generar las fuerzas y momentos a partir de las velocidades angulares de las h\'elices. Luego tenemos un bloque que se encarga de resolver la din\'amica del sistema y un cuarto bloque encargado de la cinem\'atica. En la figura \ref{fig:lazo_abierto} se observa la estructura global del lazo abierto. En la figura \ref{fig:vista} se observa una captura de pantalla que representa la vista general de la parte encargada de simular el lazo abierto.
+La estructura que se eligi\'o para desarrollar esta secci\'on se corresponde en buena forma con el camino que se recorri\'o para determinar el modelo f\'isico. El lazo abierto consta de tres bloques principales. En primer lugar tenemos un bloque encargado de generar las fuerzas y momentos a partir de las velocidades angulares de las h\'elices. Luego tenemos un bloque que se encarga de resolver la din\'amica del sistema y un tercer bloque encargado de la cinem\'atica. En la figura \ref{fig:lazo_abierto} se observa la estructura global del lazo abierto. En la figura \ref{fig:vista} se observa una captura de pantalla que representa la vista general de la parte encargada de simular el lazo abierto.
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=1\textwidth]{./pics_simulador/lazo_abierto.pdf}
@@ -55,7 +55,7 @@ Al igual que el bloque anterior, se divide este en dos sub-bloques m\'as (ver fi
 Como se explica en el cap\'itulo \ref{chap:linealizacion} para tratar las trayectorias circulares en el plano horizontal es necesario introducir un cambio de variables en el sistema, este cambio de variables consiste en expresar la posici\'on del cuadric\'optero en el sistema $S_q$ solidiario a \'el y considerando como origen el centro de la trayectoria circular, en lugar de expresar la posici\'on en el sistema cartesiano inercial. Esta modificaci\'on implica realizar un cambio en el modelo para trabajar con dichas trayectorias, simplemente se agrega una matriz de rotaci\'on para trabajar con la posci\'on expresada en el sistema solidario al cuadric\'optero.\\ 
 
 %TODO hacer dibujo!
-La estructura del lazo cerrado es la que se observa en la figura \ref{fig:lazo_cerrado}. Desde la interfaz gr\'afica se puede seleccionar el tipo de trayectoria que se desea realizar, los valores de las variables de estado con las que se desea realizar dicha trayectoria\footnote{Evidentemente existen restricciones a la hora de elegir las variables de estado, a modo de ejemplo no seremos capaces de controlar una trayectoria en linea recta si las velocidades angulares no son nulas}. Las velocidades angulares objetivo para cada motor ser\'an determinadas a partir de la informaci\'on anterior. Al igual que en el simulador de lazo abierto se tiene la posibilidad de establecer tanto el tiempo inicial de la simulaci\'on y las condiciones iniciales. As\'imismo estar\'a determinada por la trayectoria la matriz de realimentaci\'on.\\
+Desde la interfaz gr\'afica se puede seleccionar el tipo de trayectoria que se desea realizar, los valores de las variables de estado con las que se desea realizar dicha trayectoria\footnote{Evidentemente existen restricciones a la hora de elegir las variables de estado, a modo de ejemplo no seremos capaces de controlar una trayectoria en linea recta si las velocidades angulares no son nulas}. Las velocidades angulares objetivo para cada motor ser\'an determinadas a partir de la informaci\'on anterior. Al igual que en el simulador de lazo abierto se tiene la posibilidad de establecer tanto el tiempo inicial de la simulaci\'on y las condiciones iniciales. As\'imismo estar\'a determinada por la trayectoria la matriz de realimentaci\'on.\\
 
 Fue necesario adem\'as acotar la velocidad angular de los motores ya que esta no puede tener cualquier valor, para esto se agregaron los bloques de saturaci\'on a la entrada del subsistema que representa la din\'amica del cuadric\'optero.\\
 
@@ -109,7 +109,7 @@ Se simula una ca\'ida libre con condiciones iniciales nulas excepto la altura qu
 \end{figure}
 
 \subsubsection{Ca\'ida libre con velocidad inicial}
-Se realiza la misma simulaci\'on que en la secci\'on anterior excepto que se inicia el vuelo con $V_0 = 1ms^{-1}\vec{i}+3ms^{-1}\vec{k}$. Los resultados de la simulaci\'on pueden encontrarse expresados graficamente en la figura \ref{fig:caida_libre_vi}. La coordenada de la posici\'on seg\'un $\vec{i}$ aumenta con el tiempo con pendiente igual a la velocidad inicial. La altura cumple que $z(t)=-\frac{gt^2}{2}+3ms^{-1}t+Z_0$. Por lo tanto la misma aumenta hasta un tiempo  $t_{max} / \dot{z}(t)=0$. Lo cual implica que $t_{max}=\frac{3ms^{-1}}{g}\approx0.31s$. Por otra parte tiempo para el cual se da el m\'aximo en la simulaci\'on es $t_{max_{sim}} = 0.306s$. Considerando que las simulaciones se realizan con un paso variable el cual puede ser de hasta $0.01s$ se considera un resultado aceptable. El siguiente valor para el tiempo simulado es $0.316s$, por lo tanto es razonable que dicho valor se presente en $t_{max_{sim}}$. La altura m\'axima te\'orica vale $z_{max_{teo}}=100.459m$, la altura m\'axima obtenida a trav\'es de la simulaci\'on es igual\footnote{Considerando tres cifras despu\'es de la coma}. A partir de este punto tenemos una ca\'ida libre como la que ya estudiamos en el caso anterior. Las alturas finales, tanto en la simulaci\'on como en la teor\'ia valen $64.885m$.
+Se realiza la misma simulaci\'on que en la secci\'on anterior excepto que se inicia el vuelo con $V_0 = 1ms^{-1}\vec{i}+3ms^{-1}\vec{k}$. Los resultados de la simulaci\'on pueden encontrarse expresados graficamente en la figura \ref{fig:caida_libre_vi}. La coordenada de la posici\'on seg\'un $\vec{i}$ aumenta con el tiempo con pendiente igual a la velocidad inicial. La altura cumple que $z(t)=-\frac{gt^2}{2}+3ms^{-1}t+Z_0$. Por lo tanto la misma aumenta hasta un tiempo  $t_{max} / \dot{z}(t)=0$. Lo cual implica que $t_{max}=\frac{3ms^{-1}}{g}\approx0.31s$. Por otra parte tiempo para el cual se da el m\'aximo en la simulaci\'on es $t_{max_{sim}} = 0.306s$. Considerando que las simulaciones se realizan con un paso variable el cual puede ser de hasta $0.01s$ se considera un resultado aceptable. El siguiente valor para el tiempo simulado es $0.316s$, por lo tanto es razonable que dicho valor se presente en $t_{max_{sim}}$. La altura m\'axima te\'orica vale $z_{max_{teo}}=100.459m$, la altura m\'axima obtenida a trav\'es de la simulaci\'on es igual\footnote{Considerando tres cifras despu\'es de la coma}. A partir de este punto tenemos una ca\'ida libre como la que ya estudiamos en el caso anterior. Las alturas finales, tanto en la simulaci\'on como en la teor\'ia son $64.885m$.
 
 \begin{figure} 
   \centering
@@ -132,6 +132,21 @@ Se realiza la misma simulaci\'on que en la secci\'on anterior excepto que se ini
 
 Se aplica una fuerza constante en los cuatro motores tal que la resultante es igual al peso. Las condiciones iniciales son todas nulas, excepto $Z_0=10m$. Se logra el equilibrio mec\'anico. Todas las variables permanecen constantes. Se simula durante diez segundos
 
+\subsubsection{Escal\'on en los cuatro motores}
+Con condiciones iniciales nulas, en condici\'on de hovering se aumenta la velocidad angular de los motores en $100 rads^{-1}$ en $t=5s$. Se simula durante diez segundos. En la figura \ref{fig:escalon} se presentan gr\'aficamente los resultados obtenidos en la simulaci\'on. La altura m\'axima alcanzada por el cuadric\'optero en la simulaci\'on es de $93.61m$ mientras que en la teor\'ia dicha altura es de $93.78m$. Nuevamente la diferencia entre el valor simulado y el esperado difieren de manera despreciable y es atribuible a aproximaciones realizadas.
+
+\begin{figure} [h!]
+  \centering
+  \subfloat[Altura en funci\'on del tiempo]{\label{fig:subidaz}
+  		\includegraphics[width=0.5\textwidth]
+  			{./pics_simulador/subidaz.pdf}}
+   \subfloat[Trayectoria]{\label{fig:subida} 
+  	\includegraphics[width=0.5\textwidth]
+  			{./pics_simulador/subida.pdf}} 
+  \caption{Escal\'on en los cuatro motores}
+  \label{fig:escalon}
+\end{figure}
+
 \subsubsection{Giro seg\'un el eje $\vec{k}$}
 
 En las mismas condiciones que la simulaci\'on anterior, en el tiempo $t=5s$ se aumenta repentinamente la velocidad angular de los motores que rotan en sentido horario con un valor tal que la fuerza de cada uno de esos motores aumenta en $1N$. Para los motores que rotan en sentido anti-horario se disminuye la velocidad angular de forma que la fuerza de cada uno de ellos disminuye $1N$. Estas velocidades son $349.88rads^{-1}$ y $278.09rads^{-1}$ respectivamente. La fuerza neta permanece constante y el momento seg\'un los versores $\vec{i_q}$ y $\vec{j_q} $ es nulo. Sin embargo aparece un torque positivo seg\'un el versor $\vec{k_q}$.\\
@@ -152,20 +167,6 @@ En la figura \ref{fig:hovz} se presenta la altura en funci\'on del tiempo. La mi
   \label{fig:hov}
 \end{figure}
 
-\subsubsection{Escal\'on en los cuatro motores}
-Con condiciones iniciales nulas, en condici\'on de hovering se aumenta la velocidad angular de los motores en $100 rads^{-1}$ en $t=5s$. Se simula durante diez segundos. En la figura \ref{fig:escalon} se presentan gr\'aficamente los resultados obtenidos en la simulaci\'on. La altura m\'axima alcanzada por el cuadric\'optero en la simulaci\'on es de $93.61m$ mientras que en la teor\'ia dicha altura es de $93.78m$. Nuevamente la diferencia entre el valor simulado y el esperado difieren de manera despreciable y es atribuible a aproximaciones realizadas.
-
-\begin{figure} [h!]
-  \centering
-  \subfloat[Altura en funci\'on del tiempo]{\label{fig:subidaz}
-  		\includegraphics[width=0.5\textwidth]
-  			{./pics_simulador/subidaz.pdf}}
-   \subfloat[Trayectoria]{\label{fig:subida} 
-  	\includegraphics[width=0.5\textwidth]
-  			{./pics_simulador/subida.pdf}} 
-  \caption{Escal\'on en los cuatro motores}
-  \label{fig:escalon}
-\end{figure}
 
 \subsubsection*{Cambio en el Pitch y el Roll}
 Con condiciones iniciales nulas excepto la altura fijada en $z=10$, se realiza un giro seg\'un $\vec{i}_q$ y seg\'un $\vec{j}_q$. En el primer caso se aumenta la velocidad del motor 2 en tres radianes por segundo y se disminuye la velocidad del motor 4 en la misma cantidad. Para la segunda simulaci\'on se aumenta en tres radianes por segundo la velocidad del motor 3 y se disminuye en la misma cantidad la velocidad del motor 1. Los resultados obtenidos se muestran en la figura \ref{fig:giros}
