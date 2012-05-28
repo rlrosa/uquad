@@ -20,7 +20,7 @@ Se consideran distintos patrones (marcadores) para identificar las distintas par
 
 Para poder determinar los 6 grados de libertad que tiene el problema son necesarios al menos 3 puntos de correspondencia entre las coordenadas del mundo (3D) y las de la foto (2D), aunque cuantos más puntos se tengan, mejores serán los resultados obtenidos.\\
 
-Es importante destacar que el algoritmo debe ser lo suficientemente rápido como para procesar las imágenes en tiempo real. El cuadricóptero equipado con la cámara estará filmando en todo momento y es necesario obtener la posición sin un retardo demasiado grande. Es evidente que puede ocurrir que durante varios frames no se tenga ningún marcador a la vista, situación en la que se confiará plenamente en la estimación del estado obtenida del filtro de Kalman. Para la estimación de los ángulos esta situación no es tan grave, ya que se puede obtener realimentación mediante el acelerómetro y el giróscopo.
+Es importante destacar que el algoritmo debe ser lo suficientemente rápido como para procesar las imágenes en tiempo real. El cuadricóptero equipado con la cámara estará filmando y es necesario obtener la posición sin un retardo demasiado grande. Es evidente que puede ocurrir que durante varios frames no se tenga ningún marcador a la vista, situación en la que se confiará plenamente en la estimación del estado obtenida del filtro de Kalman. Para la estimación de los ángulos esta situación no es un problema, ya que se puede obtener realimentación mediante el acelerómetro y el giróscopo.
 
 \section{Sistemas de coordenadas}
 
@@ -59,7 +59,7 @@ El marcador consta básicamente de 3 bloques de cuadrados concéntricos. El $4^o
 
 \section{Detección del marcador}
 
-Para la detección del marcador se utilizará como base la detección de segmentos con el algoritmo \textbf{LSD} disponible en la página \url{http://www.ipol.im/pub/algo/gjmr_line_segment_detector/}.\\
+Para la detección del marcador se utilizará como base la detección de segmentos con el algoritmo \textbf{LSD}\footnote{ \url{http://www.ipol.im/pub/algo/gjmr_line_segment_detector/}}.\\
 
 Una vez detectados los segmentos se estudia cuáles de ellos pertenecen a estructuras formadas por 4 segmentos conexos y cerrados, es decir, se conservan solamente los segmentos pertenecientes a algún cuadrilátero. Posteriormente se realiza un nuevo filtrado dejando únicamente a las estructuras compuestas por 3 cuadrados concéntricos.\\
 
@@ -179,7 +179,7 @@ En la figura \ref{fig:plots} se presentan 2 imágenes: la primera basada en las 
 
 Por último y a modo didáctico, se presenta un ejemplo de Realidad Aumentada. Se trata de proyectar en la imagen una estructura tridimensional como si estuviera en la habitación. Resulta interesante ya que se puede apreciar con claridad la perspectiva con la que está mirando al marcador y analizar si la perspectiva del objeto añadido se corresponde.\\
 
-Se añade un cubo con una de las caras coincidente con uno de los cuadrados del marcador, y sobre él aparece parado un fosforito. Los resultados se pueden apreciar en la figura \ref{fig:resultado_ar}.\\[45pt]
+Se añade un cubo con una de las caras coincidente con uno de los cuadrados del marcador, y sobre él aparece parado un ``fosforito''. Los resultados se pueden apreciar en la figura \ref{fig:resultado_ar}.\\[45pt]
 
 \underline{Nota general:} Si bien el algoritmo fue implementado y testeado, todo el trabajo fue realizado en $MatLab$. Por razones del tiempo acotado del proyecto no se pudo portar el código a $C$, quedando como trabajo a ser realizado en el futuro. Se cuenta con todo el hardware necesario para su implementación ya que la $BeagleBoard$ tiene capacidad para procesar video en tiempo real, cuenta con librerías especiales para el tratamiento de imágenes y se adquirió una cámara pensada para la placa que tiene las ventajas de un fácil montaje y compatibilidad asegurada.
 
