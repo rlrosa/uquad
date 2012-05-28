@@ -21,7 +21,7 @@ A continuación se explicará solamente el funcionamiento para el ángulo de Rol
 	\vspace{-20pt}
 \end{wrapfigure}
 
-A partir de esta consideraci\'on se procede a fijar al cuadric\'optero sobre dos gu\'ias como se muestra en la figura \ref{fig:psidisp}, de forma de eliminar todos los grados de libertad del sistema excepto el \'angulo de Roll ($\psi$) y la velocidad angular correspondiente al eje de rotaci\'on de este ángulo. Se realizan dos pruebas: la primera consiste en que el sistema alcance la posic\'on de equilibrio ($\psi = 0$), la segunda consiste en alejar al sistema del equilibrio y lograr que vuelva al punto de equilibrio.\\
+A partir de esta consideraci\'on se procede a fijar al cuadric\'optero sobre dos gu\'ias como se muestra en la figura \ref{fig:psidisp}, de forma de eliminar todos los grados de libertad del sistema excepto el \'angulo de Roll ($\psi$) y la velocidad angular correspondiente al eje de rotaci\'on de este ángulo. Se realizan dos pruebas: la primera consiste en que el sistema alcance la posici\'on de equilibrio ($\psi = 0$), la segunda consiste en alejar al sistema del equilibrio y lograr que vuelva al punto de equilibrio.\\
 
 El controlador posee dos términos proporcionales: uno para el \'angulo $\psi$ y el otro para la velocidad angular $\omega_{qx}$. Además se considera un t\'ermino integral asociado a la integral de $\psi$. El modelo de este subsistema es el siguiente:
 \begin{equation}
@@ -89,7 +89,7 @@ Ante este tipo de imperfecciones el control proporcional es el encargado de volv
 	\label{fig:psi_sin_con_int}
 \end{wrapfigure}
 
-En la figura \ref{fig:psi_sin_con_int} se puede observar la diferencia entre utilizar un controlador puramente proporcional y un controlador proporcional con una correcci\'on integral. El primero no logra corregir el error sistem\'atico debido a la diferencia en el empuje de los motores alcanzando as\'i un punto de equilibrio distinto del \emph{set point}. El controlador con el t\'ermino integral si logra corregir este error y el \'angulo $\psi$ toma valores en el entorno del \emph{set point}.\\
+En la figura \ref{fig:psi_sin_con_int} se puede observar la diferencia entre utilizar un controlador puramente proporcional y un controlador proporcional con una correcci\'on integral. El primero no logra corregir el error sistem\'atico debido a la diferencia en el empuje de los motores alcanzando as\'i un punto de equilibrio distinto del \emph{set point}. El controlador con el t\'ermino integral s\'i logra corregir este error y el \'angulo $\psi$ toma valores en el entorno del \emph{set point}.\\
 
 
 \begin{wrapfigure}{l}{0.52\textwidth}
@@ -123,7 +123,7 @@ Para la estimaci\'on de $\theta$ se utiliza por un lado la integral de la veloci
 
 Análogamente a la parte anterior se realizan 2 pruebas, la primera dejando que el sistema alcance su posición de equilibrio en $\theta = \theta_{inicial}$, y la segunda apartándolo del equilibrio y dejándolo regresar a su punto de \emph{set point}.\\
 
-El controlador, análogamente que para los 2 ángulos anteriores ($\psi$ y $\phi$), consta de 2 términos proporcionales, uno para $\theta$ y otro para $w_{qz}$, además de un término integral en $\theta$. El subsistema queda descripto por la siguiente ecuación:
+El controlador, tal como sucede con los 2 ángulos anteriores ($\psi$ y $\phi$), consta de 2 términos proporcionales, uno para $\theta$ y otro para $w_{qz}$, además de un término integral en $\theta$. El subsistema queda descripto por la siguiente ecuación:
 \begin{equation}
 \left(\begin{array}{c}
 \dot{\theta}\\
@@ -175,7 +175,7 @@ Los resultados obtenidos se  muestran en las siguientes figuras. Se analiza en p
 	\label{fig:theta}
 \end{wrapfigure}
 
-En la figura \ref{fig:theta} se observa la dinámica del ángulo $\theta$ obtenida en el dispositivo de prueba de la figura \ref{fig:thetadisp} utilizando un integrador en dicho ángulo. Nuevamente se puede observar un crecimiento al principio que es ocasionado por las diferencias de las respuestas de los motores. Rápidamente el integrador actúa integrando la diferencia con el \emph{set poit} y corrigiendo el error cometido. Luego, en régimen, el ángulo en cuestión presenta un error típico de $\pm 2^\circ$, lo cual resulta completamente aceptable.\\
+En la figura \ref{fig:theta} se observa la dinámica del ángulo $\theta$ obtenida en el dispositivo de prueba de la figura \ref{fig:thetadisp} utilizando un integrador en dicho ángulo. Nuevamente se puede observar un crecimiento al principio que es ocasionado por las diferencias de las respuestas de los motores. Rápidamente el integrador actúa integrando la diferencia con el \emph{set point} y corrigiendo el error cometido. Luego, en régimen, el ángulo en cuestión presenta un error típico de $\pm 2^\circ$, lo cual resulta aceptable.\\
 
 
 \begin{wrapfigure}{l}{0.6\textwidth}
@@ -204,7 +204,7 @@ Al igual que en el análisis de \emph{Roll} y \emph{Pitch}, se concluye que la m
 En la siguiente sección se presentarán los resultados del control completo del cuadricóptero en condiciones de vuelo, extendiendo la matriz a las variables de estado necesarias para lograr el control deseado.
 
 \section{Control del sistema completo}
-En las presentes pruebas el control realizado no incluye realimentaci\'on de la posici\'on $x$ e $y$ ni de las velocidades $v_{qx}$ y $v_{qy}$. Lo que se puede esperar con este controlador es que el sistema adquiera la orientaci\'on y la altura deseada, sin embargo es altamente probable que se produzca un desplazamiento horizontal. Al trabjar con el GPS se puede obtener una estimaci\'on m\'as adecuada de la posici\'on y de la velocidad horizontal y se la puede incluir en la realimentaci\'on, obteniendo as\'i un mejor controlador.\\
+En las presentes pruebas el control realizado no incluye realimentaci\'on de la posici\'on $x$ e $y$ ni de las velocidades $v_{qx}$ y $v_{qy}$. Lo que se puede esperar con este controlador es que el sistema adquiera la orientaci\'on y la altura deseada, sin embargo es altamente probable que se produzca un desplazamiento horizontal. Al trabajar con el GPS se puede obtener una estimaci\'on m\'as adecuada de la posici\'on y de la velocidad horizontal y se la puede incluir en la realimentaci\'on, obteniendo as\'i un mejor controlador.\\
 
 \begin{wrapfigure}{r}{0.6\textwidth}
 	\centering
@@ -226,7 +226,7 @@ En la figura \ref{fig:euler} se observa la medida y la estimaci\'on de los tres 
 	\label{fig:w}
 \end{wrapfigure}
 
-En el caso del \'angulo de Yaw se observa que el mismo aumenta cerca de $20 ^\circ$ y luego se corrige, volviendo al valor de \emph{set point}. Se observ\'o que algunos motores no se encuentran perfectamente perpendiculares al plano horizontal del cuadric\'optero y la contribuci\'on de cada uno de los motores es tal que a la velocidad \'angular de \emph{setpoint} se produce un giro seg\'un $k_q$.\\ 
+En el caso del \'angulo de Yaw se observa que el mismo aumenta cerca de $20 ^\circ$ y luego se corrige, volviendo al valor de \emph{set point}. Se observ\'o que algunos motores no se encuentran perfectamente perpendiculares al plano horizontal del cuadric\'optero y la contribuci\'on de cada uno de los motores es tal que a la velocidad \'angular de \emph{set point} se produce un giro seg\'un $k_q$.\\ 
 
 Este desperfecto se corrige con el integrador en el \'angulo de Yaw. En la figura \ref{fig:w} se observa claramente el aumento de las velocidades angulares de los motores de adelante y atras y la disminuci\'on en los motores laterales.\\ 
 
@@ -263,7 +263,7 @@ A partir de los resultados analizados hasta el momento se puede asegurar que el 
 
 Por último se centrará la atención en analizar la altura. En la presente prueba se establece como valor objetivo de la altura $1.5m$. En la figura \ref{fig:z} se observa que el valor objetivo es alcanzado en aproximadamente cinco segundos. Nuevamente, cabe destacar la importancia del integrador en la altura. En la figura \ref{fig:int} puede observarse la integral del error en la altura alcanza el valor m\'aximo permitido. En esta situaci\'on se est\'a seteando una velocidad angular mayor a la que se hubiera seteado sin agregar el integrador. Esto implica que sin el integrador no se hubiera podido alcanzar la altura objetivo, logrando un equilibrio a una altura inferior. Como se explic\'o en el cap\'itulo \ref{chap:control}, sin el integrador, variaciones en la masa o errores en la caracterizaci\'on del empuje de los motores implican puntos de equilibrio distintos. \\
 
-En esta secci\'on se pudo verificar el correcto funcionamiento del control diseñado. En esta prueba, como fue alcarado previamente, no se realimenta la informaci\'on de posici\'ones y velocidades horizontales. Los resultados obtenidos son satisfactorios permitiendo al sistema mantener el equilibrio en per\'iodos donde la señal de GPS no se encuentra disponible o se encuentran disponibles muy pocos sat\'elites conduciendo a medidas con errores superiores a lo deseado. Este controlador brinda la posibilidad de ignorar datos sabidos incorrectos del GPS.\\
+En esta secci\'on se pudo verificar el correcto funcionamiento del control diseñado. En esta prueba, como fue aclarado previamente, no se realimenta la informaci\'on de posiciones y velocidades horizontales. Los resultados obtenidos son satisfactorios permitiendo al sistema mantener el equilibrio en per\'iodos donde la señal de GPS no se encuentra disponible o se encuentran disponibles muy pocos sat\'elites conduciendo a medidas con errores superiores a lo deseado. Este controlador permite ignorar datos del GPS si estos est\'an muy contaminados por ru\'ido.\\
 
 El control con señal de GPS no pudo ser verificado, pero es de esperar su correcto funcionamiento debido a que las simulaciones arrojan buenos resultados.
 
