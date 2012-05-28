@@ -142,7 +142,7 @@ En la figura \ref{fig:rrtests} pueden observarse los datos crudos obtenidos de l
 
 \end{figure}
 
-En la figura se observa lo que se espera a priori de acuerdo a la posici\'on del aceler\'ometro, dos medidas cercanas al cero y una medida de valor positivo. Esta \'ultima corresponde a la medida de la aceleraci\'on vertical en el sistema de caida libre. De la observaci\'on de esta serie de datos relativamente extensa podemos afirmar que el ruido observado es asociable a un ruido blanco de media nula y que no existe deriva en las medidas realizadas. A partir de dichas constataciones se puede asegurar que es adecuado trabajar con el promedio de las muestras obtenidas en una posici\'on.
+En la figura se observa lo que se espera a priori de acuerdo a la posici\'on del aceler\'ometro, dos medidas cercanas al cero y una medida de valor positivo. Esta \'ultima corresponde a la medida de la aceleraci\'on vertical en el sistema de caida libre. De la observaci\'on de esta serie de datos, avalados por características de la tecnología del acelerómetro, podemos afirmar que el ruido observado es asociable a un ruido blanco de media nula y que no existe deriva en las medidas realizadas, como era de esperarse. A partir de dichas constataciones se puede asegurar que es adecuado trabajar con el promedio de las muestras obtenidas en una posici\'on.
 
 
 \subsection{Medias estáticas para el acelerómetro}
@@ -220,9 +220,9 @@ Como criterio de ajuste se decide minimizar la suma de los cuadrados de la difer
 \end{equation}
 
 donde M es la cantidad de medidas realizadas, $a_{i}^p$ los valores de aceleración teóricos en cada eje de la plataforma según la posición y orientación de la IMU y $\tilde{\mathbf{a}}_{i}^a$ los valores obtenidos de la IMU.
-Para resolver dicho problema se utiliza el algoritmo \emph{lsqnonlin} de \emph{MatLab}, este es capaz de encontrar los m\'inimos locales de la funci\'on \ref{eq:lsqnonlin} a partir de una semilla.\\
+Para resolver dicho problema se utiliza el algoritmo \emph{lsqnonlin} de \emph{MatLab} que es capaz de encontrar los m\'inimos locales de la funci\'on \ref{eq:lsqnonlin} a partir de una semilla.\\
 
-El rango de aceleraciones manejado en la prueba es de $\pm 16g$. Según la hoja de datos del acelerómetro, se tiene una ganancia de $3.9 mg/LSB$. El valor de la semilla de los t\'erminos que corresponden a la ganancia debe ser entonces $\frac{1}{g \times 3.9 \times 10^{-3}}=26.1376$ para los tres ejes. La IMU expresa las aceleraciones obtenidas en complemento a dos, por lo que una aceleración de 0 equivale a una lectura de 0, por lo tanto el valor de la semilla de los t\'erminos que corresponden al offset debe ser 0. Finalmente, los ángulos se suponen pequeños, por lo tanto una semilla válida parece ser: 
+El rango de aceleraciones manejado en la prueba es de $\pm 16g$. Según la hoja de datos del acelerómetro, se tiene una ganancia de $3.9 mg/LSB$. El valor de la semilla de los t\'erminos que corresponden a la ganancia debe ser entonces $\frac{1}{g \times 3.9 \times 10^{-3}}=26.1376$ para los tres ejes. La IMU expresa las aceleraciones obtenidas en \emph{complemento A2}, por lo que una aceleración de 0 equivale a una lectura de 0, por lo tanto el valor de la semilla de los t\'erminos que corresponden al offset debe ser 0. Finalmente, los ángulos se suponen pequeños, por lo tanto una semilla válida parece ser: 
 \begin{equation}
 \theta_0=\left[ \frac{1}{g \times 3.9 \times 10^{-3}}, \frac{1}{g \times 3.9 \times 10^{-3}}, \frac{1}{g \times 3.9 \times 10^{-3}}, 0, 0, 0, 0, 0, 0, 0, 0, 0 \right]
 \end{equation}
