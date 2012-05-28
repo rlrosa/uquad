@@ -95,9 +95,9 @@ Con un total de 9 configuraciones diferentes, donde cada una de ellas aporta 3 m
   \label{fig:escuadras}
 \end{wrapfigure}
 
-Las medidas consisten básicamente en dejar la IMU girar a la velocidad del tocadiscos en las posiciones listadas en la tabla \ref{tab:gyros}, donde \textbf{EGP} es el eje de giro principal, \textbf{EGS} es el eje de giro secundario, y \textbf{AG} es el ángulo de giro.
+Las medidas consisten básicamente en rotar la IMU a la velocidad del tocadiscos en las posiciones listadas en la tabla \ref{tab:gyros}, donde \textbf{EGP} es el eje de giro principal, \textbf{EGS} es el eje de giro secundario, y \textbf{AG} es el ángulo de giro.
 
-La dirección de giro principal es la dirección de giro del tocadiscos cuando no hay giro en la dirección secundaria. Con el cubo de madera se resuelven las rotaciones de 90 grados para alinear los diferentes ejes de la IMU con el eje de giro del tocadiscos. Los giros en el eje secundario se realizan utilizando las escuadras y la madera de 4 cm de ancho y lados paralelos, como se muestra en la figura \ref{fig:escuadras}. Apoyando el cubo sobre la escuadra se logran los ángulos de $30º$ y $45º$ deseados en las direcciones de giro secundarias.\\
+Con el cubo de madera se resuelven las rotaciones de 90 grados para alinear los tres ejes principales de la IMU con el eje de giro del tocadiscos. Los giros en el eje secundario se realizan utilizando las escuadras y la madera de 4 cm de ancho y lados paralelos, como se muestra en la figura \ref{fig:escuadras}. Apoyando el cubo sobre la escuadra se logran los ángulos de $30º$ y $45º$ deseados en las direcciones de giro secundarias.\\
 
 Si bien la velocidad de giro estándard del tocadiscos es 33.3 rpm, resulta conveniente medir la velocidad del tocadiscos para corroborarla. Se mide la velocidad con el dispositivo IR y se verifica el buen funcionamiento del tocadiscos.\\
 
@@ -117,7 +117,7 @@ Se pone el tocadiscos a girar y mediante la conexión Wi-Fi se indica a la \emph
 
 La IMU arroja datos enteros en complemento a dos. La hoja de datos del fabricante asegura que la relaci\'on entre bits y $grados/segundo$ es: $14.375\quad LDB/(º/s)$. Como se desea trabajar con velocidades angulares en $rad s^{-1}$ se tiene que la ganancia ser\'a $\approx 823.6$.\\
 
-Al igual que con la calibración del acelerómetro (capítulo \ref{chap:calibracion_acelerometro}), se utiliza la función \emph{lsqnonlin} de \emph{Matlab} para ajustar las medidas obtenidas contra los valores teóricos para cada configuración. Dado que las medidas ya vienen expresadas en $(º/s)$ y previamente pre-calibradas internamente a la IMU, se afirma que una buena semilla para las ganancias en los 3 ejes es el vector $G=[823.6;\quad 823.6;\quad 823.6]$. A su vez se supone que cada offset de cada eje será cercano a 0. Además suponiendo que los ángulos de no-ortogonalidad de los ejes es despreciable, se llega a que una buena semilla para la función $lsqnonlin$ es la siguiente:
+Al igual que con la calibración del acelerómetro (capítulo \ref{chap:calibracion_acelerometro}), se utiliza la función \emph{lsqnonlin} de \emph{Matlab} para ajustar las medidas obtenidas contra los valores teóricos para cada configuración. De acuerdo a lo anterior, se supone una semilla para las ganancias en los 3 ejes es el vector $G=[823.6;\quad 823.6;\quad 823.6]$. A su vez se supone que cada offset de cada eje será cercano a 0 y que los ángulos debidos a la no-ortogonalidad de los ejes es despreciable, se llega a que una buena semilla para la función $lsqnonlin$ es la siguiente:
 $$\theta _0=\left(823.6,823.6,823.6,0,0,0,0,0,0,0,0,0\right)$$
 Los parámetros que minimizan la suma de los errores al cuadrado son los siguientes:
 

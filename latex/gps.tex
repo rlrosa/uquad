@@ -164,7 +164,7 @@ Se tomaron datos durante aproximadamente 2 minutos ($\approx$ 120 muestras) en c
 \vspace{-20pt}
 \end{wrapfigure}
 
-En las figuras \ref{fig:or2_todos_sat_mal.png} y \ref{fig:punto_fijo_dos_minutos} se muestran los datos luego de restar el promedio, o sea que se muestra el error respecto al valor promedio. Si el GPS careciera de error relativo, entonces todas las muestras coincidirían con el promedio, y estarían ubicadas en el punto \verb+[0,0]+. En dichas figuras el círculo negro tiene 2.5m de radio. En la leyenda se muestra qué porcentaje de las muestras se encuentran fuera del círculo. Se Repite el experimento tomando datos durante 10 minutos por punto obteniendo resultados fueron muy similares. Se orientó el GPS de 3 maneras distintas, siempre alineando el trípode con uno de los lados de 12m del rectángulo:
+En las figuras \ref{fig:or2_todos_sat_mal.png} y \ref{fig:punto_fijo_dos_minutos} se muestra el error en los datos del GPS respecto al valor promedio. Si este careciera de error relativo, todas las muestras coincidirían con el promedio, y estarían ubicadas en el punto \verb+[0,0]+. En dichas figuras la circunferencia negra es de 2.5m de radio. En la leyenda se muestra qué porcentaje de las muestras se encuentran fuera del círculo. Se Repite el experimento tomando datos durante 10 minutos por punto obteniendo resultados similares. Se orientó el GPS de 3 maneras distintas, siempre alineando el trípode con uno de los lados de 12m del rectángulo:
 
 \begin{enumerate}
 \item USB hacia la calle, LED hacia el estacionamiento, como en la figura \ref{fig:or3.jpg}.
@@ -206,9 +206,7 @@ La teoría dice que con 4 satélites debería alcanzar para obtener un \textit{f
 
 
 
-En la figura \ref{fig:or2_todos_cut.png} se observa el mismo log que en \ref{fig:or2_todos_sat_mal.png}, pero luego de haber quitado las muestras correspondientes al período donde se deterioró la se\~nal.
-
-No se pudo encontrar una explicación para la mala calidad de las muestras correspondientes al punto 5 en la figura \ref{fig:or2_todos_cut.png}. La cantidad de satélites disponibles se mantuvo estable en 9 o 10 durante la adquisición de esos datos.
+En la figura \ref{fig:or2_todos_cut.png} se observa el mismo log que en \ref{fig:or2_todos_sat_mal.png}, pero luego de haber quitado las muestras correspondientes al período donde se deterioró la se\~nal. No se pudo encontrar una explicación para la mala calidad de las muestras correspondientes al punto 5 en la figura \ref{fig:or2_todos_cut.png}. La cantidad de satélites disponibles se mantuvo estable en 9 o 10 durante la adquisición de los datos.
 
 \subsubsection{Punto fijo: Análisis - \textbf{Orientación}}
 \label{sec:gps-orientacion}
@@ -216,7 +214,7 @@ No se pudo encontrar una explicación para la mala calidad de las muestras corre
 Para evaluar si existe una correlación entre la orientación y las medidas del GPS, se hizo el siguiente experimento:
 \begin{enumerate}
 \item Tomar datos durante 10 minutos con el GPS arriba del trípode, dos patas alineadas con una recta fija.
-\item Rotar el trípode 120 grados en sentido horario (visto desde arriba), de manera que otro lado del triángulo que forman las patas del trípode quede alineado con la recta. Tomar datos durante 10 minutos.
+\item Rotar el trípode 120 grados en sentido horario, de manera que otro lado del triángulo que forman las patas del trípode quede alineado con la recta. Tomar datos durante 10 minutos.
 \item Rotar y tomar datos nuevamente.
 \end{enumerate}
 

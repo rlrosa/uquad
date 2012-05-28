@@ -111,7 +111,7 @@ Para realizar una buena calibración es muy importante contar con una figura geo
 
 El prisma que se utilizó fue el cubo de lapacho que puede verse en la figura \ref{fig:cubo}. Los ángulos del mismo son prácticamente rectos difiriendo a lo sumo en medio grado. \\
 
-Se construyo una plataforma de madera en forma de mesa con la tapa superior móvil, de modo que permite el giro sobre uno de sus lados (eje de giro). Se muestra en la figura \ref{fig:mesa-flotando}.  A su vez, es posible ajustar el dispositivo de forma de asegurar que dicho eje se encuentre en posición horizontal, por medio de 3 patas de altura regulable situadas en la parte inferior de la mesa. Para realizar las 27 medidas se irá modificando el ángulo de la tapa móvil de la plataforma y será medido con un semicírculo solidarizado a dicha tapa y un péndulo. En cada posición de la plataforma se tomarán medidas colocando el cubo en 3 posiciones distintas.
+Se construy\'o una plataforma de madera en forma de mesa con la tapa superior móvil, de modo que permite el giro sobre uno de sus lados (eje de giro). Se muestra en la figura \ref{fig:mesa-flotando}.  A su vez, es posible ajustar el dispositivo, de forma de asegurar que dicho eje se encuentre en posición horizontal, por medio de 3 patas de altura regulable situadas en la parte inferior de la mesa. Para realizar las 27 medidas se irá modificando el ángulo de la tapa móvil de la plataforma y será medido con un semicírculo solidarizado a dicha tapa y un péndulo. En cada posición de la plataforma se tomarán medidas colocando el cubo en 3 posiciones distintas.
 
 \begin{figure}[h!]
 	\begin{center}
@@ -125,7 +125,7 @@ Se construyo una plataforma de madera en forma de mesa con la tapa superior móv
 \subsubsection*{Medidas a realizar}
 En reposo el acelerómetro medirá una fuerza igual a \textit{g} en la dirección vertical y en el sentido radial saliente de la Tierra. En cada uno de los ejes de sensibilidad del acelerómetro se medirá la proyección ortogonal de dicho vector gravedad sobre cada eje. De esta forma, con distintas orientaciones se obtiene una descomposición distinta.
 
-\subsection{Variac\'on de la medida con la temperatura}
+\subsection{Variaci\'on de la medida con la temperatura}
 Para obtener una serie de datos adecuada se debe variar la temperatura en un rango que incluya la temperatura interna del cuadric\'optero en funcionamiento y la temperatura ambiente durante la calibraci\'on. Asimismo la variaci\'on de la temperatura no puede ser excesivamente r\'apida. Se procede a calentar la IMU con un secador, una vez alcanzados los $48^\circ C$ se deja enfriar. Se utilizar\'an los datos en la zona en la cual la temperatura disminuye. 
 
 \section{Resultados y análisis}
@@ -206,13 +206,13 @@ El tercer eje se deduce sabiendo que la base es directa. La aceleración medida 
 \label{tab:acc}
 \end{table} 
 
-Para la calibración se consideran solamente 24 de las 27 medidas realizadas. Esto es útil ya que se tienen 3 medidas que no serán tenidas en cuenta en la calibración para realizar una verificación de qué tan buena es la calibración obtenida.
+Para la calibración se consideran solamente 24 de las 27 medidas realizadas. Esto es útil ya que quedan 3 medidas, que no serán tenidas en cuenta en la calibración, para realizar una validaci\'on de la calibración obtenida.
 
 El problema de calibración consiste en encontrar el vector de parámetros $\theta$ que mejor ajusta las medidas obtenidas a los valores teóricos de aceleración. El vector $\theta$ se compone de los elementos de la diagonal de la matriz $K_a$, de los elementos de $b_a$ y de los $\alpha_{ij}$ de la matriz $T_a^p$. Es decir: 
 \begin{equation}
 \theta =\left[ k_{ax} , k_{ay} , k_{az} ,b_{ax} ,b_{ay} ,b_{az}, \alpha_{yz} , \alpha_{zy} , \alpha_{xz} , \alpha_{zx} , \alpha_{xy} , \alpha_{yx} \right]\end{equation}
 
-Como criterio de ajuste se decide minimizar la suma de los cuadrados de las diferencia entre la aceleración teórica y la aceleración medida. Dicho problema se puede expresar matemáticamente como:
+Como criterio de ajuste se decide minimizar la suma de los cuadrados de la diferencia entre la aceleración teórica y la aceleración medida. Dicho problema se puede expresar matemáticamente como:
 
 \begin{equation}
 \label{eq:lsqnonlin}
@@ -222,7 +222,7 @@ Como criterio de ajuste se decide minimizar la suma de los cuadrados de las dife
 donde M es la cantidad de medidas realizadas, $a_{i}^p$ los valores de aceleración teóricos en cada eje de la plataforma según la posición y orientación de la IMU y $\tilde{\mathbf{a}}_{i}^a$ los valores obtenidos de la IMU.
 Para resolver dicho problema se utiliza el algoritmo \emph{lsqnonlin} de \emph{MatLab}, este es capaz de encontrar los m\'inimos locales de la funci\'on \ref{eq:lsqnonlin} a partir de una semilla.\\
 
-El rango de aceleraciones manejado en la prueba es de $\pm 16g$. Según la hoja de datos del acelerómetro, se tiene una ganancia de $3.9 mg/LDB$. El valor de la semilla de los t\'erminos que corresponden a la ganancia debe ser entonces $\frac{1}{g \times 3.9 \times 10^{-3}}=26.1376$ para los tres ejes. La IMU expresa las aceleraciones obtenidas en complemento a dos, por lo que una aceleración de 0 equivale a una lectura de 0, por lo tanto el valor de la semilla de los t\'ermnos que corresponden al offset debe ser 0. Finalmente, los ángulos se suponen pequeños, por lo tanto una semilla válida parece ser: 
+El rango de aceleraciones manejado en la prueba es de $\pm 16g$. Según la hoja de datos del acelerómetro, se tiene una ganancia de $3.9 mg/LSB$. El valor de la semilla de los t\'erminos que corresponden a la ganancia debe ser entonces $\frac{1}{g \times 3.9 \times 10^{-3}}=26.1376$ para los tres ejes. La IMU expresa las aceleraciones obtenidas en complemento a dos, por lo que una aceleración de 0 equivale a una lectura de 0, por lo tanto el valor de la semilla de los t\'erminos que corresponden al offset debe ser 0. Finalmente, los ángulos se suponen pequeños, por lo tanto una semilla válida parece ser: 
 \begin{equation}
 \theta_0=\left[ \frac{1}{g \times 3.9 \times 10^{-3}}, \frac{1}{g \times 3.9 \times 10^{-3}}, \frac{1}{g \times 3.9 \times 10^{-3}}, 0, 0, 0, 0, 0, 0, 0, 0, 0 \right]
 \end{equation}
@@ -265,7 +265,7 @@ Se presenta para las tres medidas la aceleración teórica, la medida convertida
 \label{tab:diff}
 \end{table}
 
-En la verificaci\'on se obtienen valores aceptables aunque en la mayor\'ia de los casos los errores superan la desviaci\'on  est\'andar calculada anteriormente. El error cometido en la calibraci\'on del aceler\'ometro produce inevitablemente un drift en la velocidad y en la posici\'on de la medida del sistema, este drift ser\'a corregido gracias al filtro de Kalman.
+En la verificaci\'on se obtienen valores aceptables aunque en la mayor\'ia de los casos los errores superan la desviaci\'on  est\'andar calculada anteriormente. El error cometido en la calibraci\'on del aceler\'ometro produce inevitablemente un drift en la velocidad y en la posici\'on de la medida del sistema. Este drift ser\'a corregido agregando informaci\'on proveniente de otros sensores, en un filtro de Kalman.
 
 
 \subsection{Variación con la temperatura}
@@ -286,10 +286,14 @@ Para ello se calientan los sensores hasta una temperatura aproximada de $48^oC$,
 En la misma gráfica se muestran las medidas obtenidas de los sensores y la temperatura en función del tiempo. Los ejes rojos corresponden a la aceleración mientras que los ejes en negro corresponden a la temperatura.\\
 
 De la hoja de datos del acelerómetro se puede extraer la siguiente información:
+\begin{quote}
+\begin{quote}
 \begin{description}
 \item [0 g Offset vs. Temperature for X-, Y-Axes:]$\pm 0.4\frac{mg}{^oC}$
 \item [0 g Offset vs. Temperature for Z-Axis:]$\pm 1.2\frac{mg}{^oC}$
 \end{description}
+\end{quote}
+\end{quote}
 la cual indica que la variación con la temperatura de la medida otorgada en \textbf{z} es 3 veces superior que la variación en los otros dos ejes y se puede caracterizar fundamentalmente con un offset que depende de la temperatura. Por ello se propone una compensación por temperatura utilizando un offset solamente para el eje \textbf{z}, de la forma:
 $$ b = b_a + \alpha (t - t_o) $$
 Recordando la ecuación \ref{ec:modelo_acc}, se puede actualizar el modelo del acelerómetro al siguiente modelo:
