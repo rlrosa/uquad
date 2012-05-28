@@ -3,12 +3,12 @@
 \begin{document}
 
 
-\chapter{Linelizaci\'on y puntos de operaci\'on}
+\chapter{Linealizaci\'on y puntos de operaci\'on}
 \label{chap:linealizacion}
 
-Independientemente del sistema bajo estudio, a la hora de elegir la t\'ecnica de control a utilizar se plantean diversas posibilidades. Parece razonable intentar resolver el problema planteado utilizando las t\'ecnicas m\'as sencillas que se disponen, al menos en una primera aproximaci\'on. En caso de que dicha soluci\'on no fuese satisfactoria se puede optar por una t\'ecnica con un mayor grado de complejidad.\\ 
+Independientemente del sistema bajo estudio, a la hora de elegir la t\'ecnica de control a utilizar se plantean diversas posibilidades. Parece razonable intentar resolver el problema planteado utilizando las t\'ecnicas m\'as sencillas de las que se disponen, al menos en una primera aproximaci\'on. En caso de que dicha soluci\'on no fuese satisfactoria se puede optar por una t\'ecnica con un mayor grado de complejidad.\\ 
 
-Las t\'ecnicas de control m\'as sencillas y con las que se tiene mayor experiencia se basan en el estudio de sistemas lineales invariantes en el tiempo (SLIT). Sin embargo el MVE obtenido en el cap\'tulo \ref{chap:modelo} es no lineal. Se propone entonces resolver el problema del control del cuadric\'optero aproximando el sistema por un sistema lineal invariante en el tiempo. En una primera instancia nos concentraremos en determinar bajo que condiciones es posible aproximar el sistema por un SLIT.
+Las t\'ecnicas de control m\'as sencillas y con las que se tiene mayor experiencia se basan en el estudio de sistemas lineales invariantes en el tiempo (SLIT). El MVE obtenido en el cap\'itulo \ref{chap:modelo} es no lineal. Se propone entonces resolver el problema del control del cuadric\'optero aproximando el sistema por un sistema lineal invariante en el tiempo. En una primera instancia nos concentraremos en determinar bajo que condiciones es posible aproximar el sistema por un SLIT.
 
 \section{Concepto general}
 Consideremos un sistema que se rige por la siguiente evoluci\'on de su vector de estados. 
@@ -67,7 +67,7 @@ En los tres casos se tienen que cumplir las restricciones siguientes:
 Cada una de las trayectorias posibles tiene adem\'as sus particularidades, a continuaci\'on nos encargaremos justamente de determinar las restricciones espec\'ificas de cada una de ellas.
 
 \subsection{Hovering}
-En el caso del reposo mec\'anico no solo debe cumplirse las condiciones establecidas en \ref{eq:slit} si no que adem\'as las velocidades del centro de masa y las velocidades angulares deben ser iguales a cero.
+En el caso del reposo mec\'anico no solo deben cumplirse las condiciones establecidas en \ref{eq:slit} sino que adem\'as las velocidades del centro de masa y las velocidades angulares deben ser iguales a cero:
 \begin{equation}
 \label{eq:quieto}
 \left(\begin{array}{c}
@@ -82,13 +82,13 @@ v_{qz}\\
 \end{array}\right)=0
 \end{equation}
 
-Dado que la velocidad y velocidad angular del sistema fue definida como cero, solo quedan por determinar 7 variables: los \'angulos de Euler y las velocidades angulares de los motores. \\
+Dado que la velocidad y velocidad angular del sistema fueron definidas como cero, solo quedan por determinar 7 variables: los \'angulos de Euler y las velocidades angulares de los motores. \\
 
-Al imponer las condiciones de \ref{eq:quieto}, las ecuaciones \ref{eq:euler} y \ref{eq:pospunto} del MVE se cumplen trivialmente. La restricci\'on establecida en \ref{eq:slit} consta de seis ecuaciones. Estas no dependen de $\theta$, obteniendo entonces un sistema de seis ecuaciones y seis inc\'ognitas que debe ser resuelto a fin de determinar las condiciones que permiten el hovering. Ninguna de las seis ecuaciones depende la posici\'on, esto sumado a la independencia de la condici\'on de hovering respecto de $\theta$, nos permite confirmar un resultado evidente: \textbf{el hovering puede lograrse en cualquier punto del espacio con cualquier \'angulo de Yaw}\\
+Al imponer las condiciones de \ref{eq:quieto}, las ecuaciones \ref{eq:euler} y \ref{eq:pospunto} del MVE se cumplen trivialmente. La restricci\'on establecida en \ref{eq:slit} consta de seis ecuaciones. Estas no dependen de $\theta$, obteniendo entonces un sistema de seis ecuaciones y seis inc\'ognitas que debe ser resuelto a fin de determinar las condiciones que permiten el hovering. Ninguna de las seis ecuaciones depende la posici\'on, esto sumado a la independencia de la condici\'on de hovering respecto de $\theta$ nos permite confirmar un resultado evidente: \textbf{el hovering puede lograrse en cualquier punto del espacio con cualquier \'angulo de Yaw}\\
 
 Del an\'alisis de las ecuaciones \ref{eq:slit} se obtiene que:
 \begin{equation}
-\varphi=0 \quad \psi=0 \quad \omega_1=\omega_2=\omega_3=\omega_4=316.10 rad/s
+\varphi=0 \quad \psi=0 \quad \omega_1=\omega_2=\omega_3=\omega_4=\omega_{hover}
 \end{equation}
 
 
@@ -110,7 +110,7 @@ v_{qz}\\
 \end{equation}
 Al imponer que $\vec{\omega}_q=0$ la ecuaci\'on \ref{eq:euler} se verifica trivialmente y las ecuaciones \ref{eq:vpuntos} y \ref{eq:omegas} quedan id\'enticas al caso del sistema en reposo. Por lo tanto, tendremos tambi\'en para el movimiento en linea recta que:
 \begin{equation}
-\varphi=0 \quad ; \quad \psi=0 \quad ; \quad \omega_1=\omega_2=\omega_3=\omega_4 = 316.10 rad/s
+\varphi=0 \quad ; \quad \psi=0 \quad ; \quad \omega_1=\omega_2=\omega_3=\omega_4 = \omega_{hover}
 \end{equation}
 
 Hasta aqu\'i no hemos considerado la ecuaci\'on que relaciona las velocidades lineales en el sistema inercial con las velocidades lineales expresadas en el sistema del cuadric\'optero. Teniendo presente el resultado obtenido sobre $\varphi$ y $\psi$ dichas ecuaciones toman la forma:
@@ -125,7 +125,7 @@ Se deduce entonces que el vuelo en l\'inea recta queda determinado al fijar las 
 
 \subsection{Vuelo en c\'irculos}
 
-Con las ecuaciones desarrolladas hasta este instante nos es imposible realizar movimientos con velocidades angulares distintas de cero sin que el sistema resultante sea variante en el tiempo. Si imponemos que la velocidad angular del sistema sea distinta a cero se tiene que al menos una de las derivadas de los \'agulos de Euler es distinta de cero. Por lo tanto tenemos al menos alg\'un \'angulo de Euler variante en el tiempo. Para poder obtener un movimiento circular se realiza el cambio de variable en el MVE en lo que respecta a las ecuaciones de la derivada de la posici\'on propuesto en \cite{bib:auion}. \\
+Con las ecuaciones desarrolladas hasta este instante nos es imposible realizar movimientos con velocidades angulares distintas de cero sin que el sistema resultante sea variante en el tiempo. Si imponemos que la velocidad angular del sistema sea distinta a cero se tiene que al menos una de las derivadas de los \'angulos de Euler es distinta de cero. Por lo tanto tenemos al menos un \'angulo de Euler variante en el tiempo. Para poder obtener un movimiento circular se realiza el cambio de variable en el MVE en lo que respecta a las ecuaciones de la derivada de la posici\'on propuesto en \cite{bib:auion}. \\
 
 \begin{wrapfigure}{l}{0.50\textwidth}
   \begin{center}
@@ -147,7 +147,7 @@ El cambio de variables en cuesti\'on consiste en expresar la posici\'on (exclusi
 \end{equation}
 Al expresar la posici\'on con este cambio de variables se obtiene la independencia de la misma respecto de dos de los tres \'anglos de Euler: $\varphi$ y $\theta$. En lo que respecta al \'angulo $\varphi$ la independencia de esta variable no nos aporta absolutamente nada ya que para que el movimiento circular a velocidad constante sea posible dicho \'angulo debe ser cero. La raz\'on es que si el \'angulo fuese diferente a cero tendr\'iamos una componente de la fuerza en la direcci\'on tangencial al c\'irculo, por lo tanto una aceleraci\'on en dicha direcci\'on.\\
 
-Sin embargo, la independencia respecto de $\theta$ en la posici\'on es un paso fundamental para lograr el vuelo en c\'irculos ya que las \'unicas ecuaciones del MVE \ref{eq:modelo} que dependen de esta variable son las que refieren a la derivada de la posici\'on. Por lo tanto, seremos capaces de desarrollar un nuevo MVE independiente del \'angulo de Yaw.\\
+Sin embargo, la independencia respecto de $\theta$ en la posici\'on es un paso fundamental para lograr el vuelo en c\'irculos ya que las \'unicas ecuaciones del MVE (\ref{eq:modelo}) que dependen de esta variable son las que refieren a la derivada de la posici\'on. Por lo tanto, seremos capaces de desarrollar un nuevo MVE independiente del \'angulo de Yaw.\\
 
 Nos interesa ahora derivar la posici\'on para terminar de completar el modelo del sistema. Dado que la posici\'on se encuentra expresada en el sistema del cuadric\'optero tendremos que:
 \begin{equation}
