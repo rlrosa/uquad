@@ -5,7 +5,7 @@
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
 \begin{document}
 
-\chapter{Calibración de giróscopo}
+\chapter{Calibración del giróscopo}
 
 \section{Objetivos}
 
@@ -115,7 +115,7 @@ Un esquema completo de la configuración utilizada para la calibración del gir�
 \subsection{Medias para la determinaci\'on de los par\'ametros est\'aticos del giróscopo}
 Se pone el tocadiscos a girar y mediante la conexión Wi-Fi se indica a la \emph{BeagleBoard XM} que empiece y termine de logear los datos. Se trabaja con el promedio de las velocidades angulares obtenidas en series de datos de 20 segundos controlados por cronómetro. La velocidad del tocadiscos permanece constante en todas las pruebas y lo que se varía es el ángulo del plano donde se apoya el cubo, haciendo uso de las escuadras (figura \ref{fig:escuadras}).\\
 
-La IMU arroja datos enteros en complemento a dos. La hoja de datos del fabricante asegura que la relaci\'on entre bits y $grados/segundo$ es: $14.375\quad LDB/(º/s)$. Como se desea trabajar con velocidades angulares en $rad s^{-1}$ se tiene que la ganancia ser\'a $\approx 823.6$.\\
+La IMU arroja datos enteros en complemento a dos. La hoja de datos del fabricante asegura que la relaci\'on entre bits y $grados/segundo$ es: $14.375\quad LSB/(º/s)$. Como se desea trabajar con velocidades angulares en $rad/s$ se tiene que la ganancia ser\'a $\approx 823.6$.\\
 
 Al igual que con la calibración del acelerómetro (capítulo \ref{chap:calibracion_acelerometro}), se utiliza la función \emph{lsqnonlin} de \emph{Matlab} para ajustar las medidas obtenidas contra los valores teóricos para cada configuración. De acuerdo a lo anterior, se supone una semilla para las ganancias en los 3 ejes es el vector $G=[823.6;\quad 823.6;\quad 823.6]$. A su vez se supone que cada offset de cada eje será cercano a 0 y que los ángulos debidos a la no-ortogonalidad de los ejes es despreciable, se llega a que una buena semilla para la función $lsqnonlin$ es la siguiente:
 $$\theta _0=\left(823.6,823.6,823.6,0,0,0,0,0,0,0,0,0\right)$$
@@ -144,7 +144,7 @@ El error promedio corresponde a una velocidad angular de $1.07^\circ/s$ y $2\sig
 
 
 %
-%Como se mencionó anteriormente, en la hoja de datos del giróscopo se indica una ganancia de $14.375\quad LDB/(º/s)$, lo cual implica que un cambio en el bit menos significativo de la medida del giróscopo, se traduce en un cambio de:
+%Como se mencionó anteriormente, en la hoja de datos del giróscopo se indica una ganancia de $14.375\quad LSB/(º/s)$, lo cual implica que un cambio en el bit menos significativo de la medida del giróscopo, se traduce en un cambio de:
 %\begin{equation}
 %r=0.0696 \quad (º/s)
 %\label{ec:fs}
