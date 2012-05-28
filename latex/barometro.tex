@@ -7,15 +7,7 @@
 \chapter{Bar\'ometro}
 \label{chap:barometro}
 
-Como instrumento para determinar la altura del cuadric\'optero se pensaba utilizar un GPS, pero la frecuencia de muestreo del GPS y el error en los datos provenientes del mismo lo hacen insuficiente.
-
-Las caracter\'isticas principales del GPS son:
-\begin{itemize}
-\item Permite obtener un valor para la altura absoluta, libre de bias, pero hace falta promediar muestras durante varios minutos antes de llegar a un datos confiable.
-\item  La precisi\'on del GPS es mala muy cerca del suelo, lo cual representa un problema al intentar despegar y/o aterrizar.
-\end{itemize}
-
-Se opta por incorporar un bar\'ometro, ya que aparentemente dichos sensores padecen de \textit{otros} problemas, y pueden complementar al GPS.
+Como instrumento para determinar la altura del cuadric\'optero se pensaba utilizar un GPS, pero la frecuencia de muestreo del GPS y el error en los datos provenientes del mismo lo hacen insuficiente. Se opta por incorporar un bar\'ometro que por sí solo también lo hacen insuficiente, dichos sensores padecen de \textit{otros} problemas. Ambos sensores permiten obtener una buena estimaci\'on de la altura.
 
 El sensor adquirido es un bar\'ometro digital BOSCH BMP085. Permite medir presi\'on absoluta y, conociendo la presi\'on y la temperatura a nivel del mar, permite calcular la altura absoluta.
 
@@ -195,7 +187,7 @@ La resoluci\'on m\'as atractiva parece ser la n\'umero 2, en la cual se promedia
 
 \subsubsection{Resoluci\'on del instrumento}
 
-En la figura \ref{fig:barom_hist_exp4.pdf} se observa un histograma de las diferencias entre muestras sucesivas de los datos del bar\'ometro. Se observa que la mayor parte de los datos presentan saltos de25cm. Se esperaba una discretizaci\'on en niveles de  aproximadamente 8cm, correspondientes a variaciones de presi\'on de 1Pa (la resoluci\'on del instrumento). Aunque es dif\'icil de observar, hay muestras en todos los bins.
+En la figura \ref{fig:barom_hist_exp4.pdf} se observa un histograma de las diferencias entre muestras sucesivas de los datos del bar\'ometro. Se observa que la mayor parte de los datos presentan saltos de 25cm. Se esperaba una discretizaci\'on en niveles de  aproximadamente 8cm, correspondientes a variaciones de presi\'on de 1Pa (la resoluci\'on del instrumento). Aunque es dif\'icil de observar, hay muestras en todos los bins.
 
 \subsection{Altura absoluta}
 
@@ -285,10 +277,10 @@ En la tabla \ref{tab:alturasm} se muestran los valores de altura obtenidos en la
 
 La altura absoluta registrada por el bar\'ometro cambia considerablemente de una serie a la otra. En la figura \ref{fig:esc2.pdf} las medidas est\'an, en promedio, un metro m\'as arriba que en la \ref{fig:esc1.pdf}. Los puntos que se consideraron fueron los mismos y las medidas fueron realizadas un d\'ia de tormenta. La presi\'on atmosf\'erica es muy cambiante en esos d\'ias. Eso puede explicar dicha diferencia. Otra explicaci\'on puede ser el drift observado en secciones previas.
 
-En la figura \ref{fig:1-metro-err} se muestra la evoluci\'on de los errores relativo y acumulado.
+En la figura \ref{fig:1-metro-err} se muestra la evoluci\'on de los errores relativos y acumulado.
 
 \begin{wrapfigure}{r}{0.35\textwidth}
-\vspace{-40pt}
+\vspace{-25pt}
 	\subfloat[Error acumulado.]
         {\label{fig:1-metro-error-accum.pdf}
 	\includegraphics[width=.35\textwidth]
@@ -379,7 +371,7 @@ Cabe destacar que el error se mantiene por debajo de los 1.2m en el peor caso. L
 \label{sec:conclusiones}
 
 \begin{itemize}
-\item \textbf{Tiempo de \textit{warm-up}}: El circuito tiene un tiempo de \textit{warm-up} de aproximadamente 45 minutos, durante el cual la temperatura sube aproximadamente 1.5\degc. De las especificaciones de los sensores se deduce que una variaci\'on de temperatura tan peque\~na no deber\'ia afectar la performance. De cualquier forma, es de inter\'es analizar analizar, experimentalmente, el efecto de la variaci\'on de la temperatura sobre las lecturas del resto de los sensores de la IMU.
+\item \textbf{Tiempo de \textit{warm-up}}: El circuito tiene un tiempo de \textit{warm-up} de aproximadamente 45 minutos, durante el cual la temperatura sube aproximadamente 1.5\degc. De las especificaciones de los sensores se deduce que una variaci\'on de temperatura tan peque\~na no deber\'ia afectar la performance. De cualquier forma es de inter\'es analizar experimentalmente el efecto de la variaci\'on de la temperatura sobre las lecturas del resto de los sensores de la IMU.
 \item \textbf{Drift y Altura absoluta}: El drift y la sensibilidad a factores externos (clima, etc) hacen que el bar\'ometro \textbf{no} sea adecuado para determinar la altura absoluta. No es posible obtener una mejor estimaci\'on de la altura tomando promedios durante per\'iodos de tiempo mayores, ya que el drift introducir\'ia errores en dicho estimador. Se observa un drift de hasta 0.5m en 1 minuto.
 \item \textbf{Altura relativa}: Estando en reposo, en per\'iodos de tiempo menores a 1 minuto es posible conocer variaciones de altura con una error menor a 0.5m.
 \item \textbf{Rol del bar\'ometro}: Se concluye que el bar\'ometro sirve para determinar variaciones de altura, suavizando la trayectoria, mientras se espera una altura absoluta proveniente del GPS. El bar\'ometro y el GPS se complementan. El bar\'ometro ha de utilizarse con los siguientes par\'ametros:
