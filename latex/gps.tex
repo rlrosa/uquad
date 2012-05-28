@@ -69,9 +69,9 @@ Los pasos a seguir son los siguientes:
 \begin{wrapfigure}{r}{0.6\textwidth}
   \vspace{-30pt}
   \centering
-  \subfloat[GPS sobre trípode de fotografía.]{\label{fig:tripode_con_plomada.jpg}
+  \subfloat[]{\label{fig:tripode_con_plomada.jpg}
     \includegraphics[width=0.2\textwidth]{./pics_gps/tripode_con_plomada.jpg}}
-  \subfloat[GPS amarrado al trípode.]{\label{fig:vista_usb.jpg}
+  \subfloat[]{\label{fig:vista_usb.jpg}
     \includegraphics[width=0.2\textwidth]{./pics_gps/vista_usb.jpg}}
 \vspace{-10pt}
   \caption{GPS y Atril}
@@ -84,7 +84,7 @@ En la figura \ref{fig:tripode_con_plomada.jpg} se observa el trípode que sostie
 \subsection{Adquisición de datos}
 \label{sec:adquisicion-de-datos}
 
-Para tomar datos se conectó el GPS, que env\'ia información mediante USB-serie, al puerto USB de una computadora. En la computadora se utilizó \href{http://catb.org/gpsd/}{GPSD}, un software open-source que hace de \textit{daemon}, y se encarga de transformar los datos del GPS a una estructura de datos fácil de manejar en \verb+C+.
+Para tomar datos se conectó el GPS, que env\'ia información mediante USB-serie, al puerto USB de una computadora. En la computadora se utilizó \textit{GPSD}\footnote{\url{http://catb.org/gpsd/}}, un software open-source que hace de \textit{daemon}, y se encarga de transformar los datos del GPS a una estructura fácil de manejar en \verb+C+.
 
 El GPS emite sentencias NMEA a través de un puerto USB serie, a 38400bps. Trabaja con sentencias:
 \begin{itemize}
@@ -233,14 +233,14 @@ Los resultados del experimento se observan en la figura.
 No se encontró una correlación entre la orientación del GPS y el error en las medidas.
 El experimento se realizó con cielo abierto, con una buena geometría, en términos de distribución de satélites. Tal vez en situaciones de visibilidad limitada se podría observar una correlación, ya que si la dirección en la que la antena recibe mejor coincide con el lugar donde hay pocos satélites, entonces la cantidad de información sería menor/peor que en otras orientaciones.
 
-Tener visibilidad limitada por obstáculos, o tener una mala geometría deteriora la performance del GPS. En este trabajo no se considerara la situaci\'on en la cual se tiene una performance deficiente, o bien se utilizar\'a el GPS a cielo abierto o bien se trabajar\'a sin el bajo techo.
+Tener visibilidad limitada por obstáculos, o tener una mala geometría deteriora la performance del GPS. En este trabajo no se considerar\'a la situaci\'on en la cual se tiene una performance deficiente, o bien se utilizar\'a el GPS a cielo abierto, o se trabajar\'a bajo techo (sin GPS).
 
 %El impacto de la geometría se analiza en la sección \ref{sec:geometria}.
 
 \subsection{Polígono}
 \label{sec:gps2-poligono}
 
-En la figura \ref{fig:10min_pol.png}, la línea en roja representa el polígono resultante de unir el promedio, en cada vértice, de las muestras tomadas durante un experimento de 10 minutos. En la figura \ref{fig:10m_mapa.png} se dicho polígono, proyectado sobre una foto satelital\footnote{El mapa y las fotos se obtuvieron de:\\ \url{http://sig.montevideo.gub.uy/mapas/mapa-principal}}.
+En la figura \ref{fig:10min_pol.png}, la línea en roja representa el polígono resultante de unir el promedio en cada vértice de las muestras tomadas durante un experimento de 10 minutos. En la figura \ref{fig:10m_mapa.png} se dicho polígono, proyectado sobre una foto satelital\footnote{El mapa y las fotos se obtuvieron de:\\ \url{http://sig.montevideo.gub.uy/mapas/mapa-principal}}.
 
 \begin{figure}[h!]
 \vspace{-10pt}
@@ -410,33 +410,29 @@ El GPS bajo funcionamiento normal trabaja a 1Hz. Se observó que estando quieto,
 
 Se compararon los datos crudos provenientes del GPS con los que devuelve el GPSD, y se concluyó que el GPSD \textbf{no} es responsable de la repetición de datos, es decir, no es un problema de software, sino que el GPS es quien env\'ia datos repetidos.
 
-Al loguear trayectorias de movimiento permanente, como un recorrido en bicicleta de 15 minutos, no se observaron  datos repetiduos durante más de 4 segundos.
-
-No parece razonable que el cálculo de la posición dé \textit{exactamente} lo mismo durante varias medidas sucesivas, probablemente se trate de un problema interno del GPS.
-
-Para enfrentar este problema, lo más razonable parece ser que el algoritmo que lea datos del GPS ignore datos repetidos.
+Al loguear trayectorias de movimiento permanente, como un recorrido en bicicleta de 15 minutos, no se observaron  datos repetidos durante más de 4 segundos. No parece razonable que el cálculo de la posición dé \textit{exactamente} lo mismo durante varias medidas sucesivas, probablemente se trate de un problema interno del GPS.
 
 \section{Posición Absoluta}
 \label{sec:posicion-absoluta}
 
 \begin{wrapfigure}{r}{0.5\textwidth}
   \begin{center}
-\vspace{-90pt}
+\vspace{-80pt}
   \includegraphics[height=.5\textwidth]{./pics_gps/ponce.png}
   \end{center}
 \vspace{-20pt}
   \caption{Recorrido en bicicleta.}
   \label{fig:ponce.png}
-\vspace{-20pt}
+\vspace{-10pt}
 \end{wrapfigure}
 
-Se realizaron varios experimentos para analizar si la ubicación que daba el GPS se correspondía con la realidad, ya que algunos GPSs a veces dan un error constante de varios metros, y de ser el caso, se podría compensar este problema una vez detectado.
+Se realizaron varios experimentos para analizar si la ubicación que daba el GPS se correspondía con la realidad, ya que algunos GPSs a veces dan un error constante de varios metros, y de ser el caso, se podría considerar este offset.
 
-Sobre un mapa de Montevideo, se graficaron trayectorias conocidas, con el objetivo de verificar que los datos provenientes del GPS eran ``razonables''.
+Sobre un mapa de Montevideo se graficaron trayectorias conocidas, con el objetivo de verificar que los datos provenientes del GPS eran ``razonables''.
 
 No se observo un corrimiento de los datos evidente y constante, por lo que se asume el GPS \textbf{no} introduce un offset.
 
-En la figura \ref{fig:ponce.png} se observa una trayectoria realizada en bicicleta, con el GPS colocado sobre el trípode, asomando de una mochila. El recorrido fue hacia el sur-oeste, sobre el cord\'on nor-oeste. No se observa un offset constante. Se analizaron otras figuras, y se lleg\'o a las mismas conclusiones.
+En la figura \ref{fig:ponce.png} se observa una trayectoria realizada en bicicleta, con el GPS colocado sobre el trípode, asomando de una mochila. El recorrido fue hacia el sur-oeste, sobre el cord\'on nor-oeste. No se observa un offset en \ref{fig:ponce.png}, ni tampoco en otras figuras, que se analizaron.
 
 \section{Conclusiones}
 \label{sec:conclusion}
@@ -444,7 +440,7 @@ En la figura \ref{fig:ponce.png} se observa una trayectoria realizada en bicicle
 Los siguientes items servirán de guía para la utilización del GPS como instrumento de navegación:
 
 \begin{itemize}
-\item \textbf{Error en las medidas}: Bajo las condiciones anteriores, se concluye que es razonable asumir que las medidas del GPS tienen un \textbf{error t\'ipico menor a 2.5m}. Los errores son \textbf{siempre inferiores a los 5m\footnote{Con una geometr\'ia adecuada}}. Es de esperarse que la performance se reduzca al utilizar el GPS en un entorno más agresivo, como el que resultará al colocar el GPS sobre el cuadricóptero, donde estará sujeto a  interferencia electromagnética de los motores, vibraciones, etc.
+\item \textbf{Error en las medidas}: Bajo las condiciones anteriores, se concluye que es razonable asumir que las medidas del GPS tienen un \textbf{error t\'ipico menor a 2.5m}. Los errores son \textbf{siempre inferiores a los 5m\footnote{Con una geometr\'ia adecuada}}. Es de esperarse que la performance se reduzca al utilizar el GPS en un entorno más ruidoso, como el que resultará al colocar el GPS sobre el cuadricóptero, ya que estará sujeto a interferencia electromagnética de los motores, vibraciones, etc.
 \item \textbf{Visibilidad}: Es importante asegurar buena visibilidad, la performance del GPS se reduce drásticamente si pierde satélites.
 \item \textbf{Resolución}: El GPS \textbf{no} es adecuado para tareas de navegación con restricciones del orden del metro, pero sí para distancias del orden de decenas de metros.
 \item \textbf{Tasa de muestreo}: El GPS normalmente muestrea a \textbf{1Hz}. Cabe destacar que debe ignorarse información repetida (muestras sucesivas que sea idénticas).
