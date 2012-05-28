@@ -30,7 +30,7 @@ Existen diversas no idealidades que afectan la lectura de los valores de acelera
 \end{itemize} 
 
 \subsubsection*{Ruido Inherente}
-Existe un ruido inherente del cual no nos preocuparemos en demasía ya que el mismo se modela como un proceso estocástico de distribución normal y media nula, como veremos luego. Por lo tanto, en esta etapa de calibración donde se tomarán muchas muestras y se promediarán se puede trabajar sin considerar este ruido.
+Existe un ruido inherente del cual no nos preocuparemos en demasía ya que el mismo se modela como un proceso estocástico de distribución normal y media nula, como veremos luego. Por lo tanto, en esta etapa de calibración donde se tomarán cientas de muestras y se promediarán se puede trabajar sin considerar este ruido.
 
 \subsubsection*{Relación no lineal}
 En la hoja de datos del acelerómetro ADXL345 de la \emph{Mongoose 9DOF IMU} se declara que en cualquiera de los tres ejes el error debido a una respuesta no lineal es, en el peor caso, $\pm$ 0.5\% del valor de fondo de escala, por lo tanto se decide considerar para el acelerómetro una respuesta lineal.
@@ -53,7 +53,7 @@ Donde:
 \item $\mathbf{a}^p$ es el vector de aceleración medido en el sistema solidario a la plataforma.
 \end{itemize}
 
-En la figura \ref{fig:ejes}\footnote{Figura extraida de \cite{bib:calib_IMU}} se pueden observar dichos \'angulos expresados gr\'aficamente. Estos son constantes ya que su origen es puramente de construcción y se puede asumir que las orientaciones se mantendrán durante un tiempo suficientemente grande. De todas formas es recomendable realizar calibraciones peri\'odicamente a lo largo de toda la vida útil del sensor.\\
+En la figura \ref{fig:ejes}\footnote{Figura extraida de \cite{bib:calib_IMU}} se pueden observar dichos \'angulos expresados gr\'aficamente. Estos son constantes ya que su origen es puramente de construcción y se puede asumir que las orientaciones se mantendrán lo suficiente como para que no sea necesario realizar re-calibraciones constantemente.\\
 \begin{figure}
   \vspace{-20pt}
   \begin{center}
@@ -68,12 +68,13 @@ En la figura \ref{fig:ejes}\footnote{Figura extraida de \cite{bib:calib_IMU}} se
 
 
 Asumiendo un modelo lineal, la relación entre la aceleración y la medida realizada se puede expresar matricialmente de la siguiente forma:
- 
-$$\tilde{\mathbf{a}}^a = K_a \mathbf{a}^a + \mathbf{b}_a$$ donde $K_a$ es una matriz diagonal que representa el factor de escala para convertir del valor digital a una aceleración correspondiente. $\mathbf{b}_a$ no es otra cosa que un término independiente para corregir la posición del cero. Estos dos parámetros poseen algunas de las fuentes de error que resulta más difícil de corregir. Resulta que dichos parámetros varían con la temperatura, por lo tanto el resultado obtenido durante la calibraci\'on (temperatura ambiente) puede diferir de los valores obtenidos una vez instalado el aceler\'ometro dentro del cuadric\'optero (temperaturas superiores a los $30^\circ C$). A partir de la hoja de datos del fabricante se decide modelar el \emph{offset} mediante una relaci\'on lineal con la temperatura. En una primera aproximaci\'on no se considera este \'ultimo factor.
+\begin{equation}
+\tilde{\mathbf{a}}^a = K_a \mathbf{a}^a + \mathbf{b}_a
+\end{equation} donde $\tilde{\mathbf{a}}^a$ es la aceleraci\'on medida, $K_a$ es una matriz diagonal que representa el factor de escala para convertir del valor digital a una aceleración correspondiente. $\mathbf{b}_a$ no es otra cosa que un término independiente para corregir la posición del cero. Estos dos parámetros poseen algunas de las fuentes de error que resulta más difícil de corregir. Resulta que dichos parámetros varían con la temperatura, por lo tanto el resultado obtenido durante la calibraci\'on (temperatura ambiente) puede diferir de los valores obtenidos una vez instalado el aceler\'ometro dentro del cuadric\'optero (temperaturas superiores a los $30^\circ C$). A partir de la hoja de datos del fabricante se decide modelar el \emph{offset} mediante una relaci\'on lineal con la temperatura. En una primera aproximaci\'on no se considera este \'ultimo factor.
 
 \subsubsection{Modelo del acelerómetro}
 
-A partir del anális realizado se puede concluir que el modelo de acelerómetro que se considerará es el siguiente:
+A partir del anális realizado se decide considerar el siguiente modelo de acelerómetro:
 
 \begin{equation}
 \tilde{\mathbf{a^a}}=K_a(T_a^p)^{-1}\mathbf{a^p}+b_a
@@ -96,7 +97,7 @@ Además se realizará una medida variando la temperatura ambiente a fin de deter
 Como se desprende de la sección anterior, para poder calibrar el acelerómetro se deben determinar 12 parámetros. Por dicho motivo, se precisan obtener al menos 12 ecuaciones diferentes. Típicamente se trabaja con el doble o triple de ecuaciones que de parámetros a determinar. Para mejorar los resultados se trabajará con 27 medidas donde cada una de ellas aporta 3 ecuaciones (una por cada eje), logrando un total de 81 ecuaciones, y se procederá a determinar los parámetros que minimizan el error cuadrático medio entre los valores efectivamente medidos y los valores teóricos. 
 
 \subsubsection*{Preparación}
-Para realizar una buena calibración es muy importante contar con una figura geométrica en forma de paralelepípedo de forma de poder solidarizar la IMU a dicho objeto. De esta forma nos aseguramos que no se introducen errores a la hora de orientar un eje en una dirección particular. Del mismo modo, es ideal disponer de una superficie perpendicular a la vertical y otra paralela, de modo que para rotar 90 grados la IMU, basta con rotar el paralelepípedo ese mismo ángulo, es decir, apoyar otra de las caras del mismo. \\
+Para realizar una buena calibración es muy importante contar con una figura geométrica en forma de paralelepípedo que pueda solidarizarse a la IMU. De esta forma nos aseguramos que no se introducen errores a la hora de orientar un eje en una dirección particular. Del mismo modo, es ideal disponer de una superficie perpendicular a la vertical y otra paralela, de modo que para rotar 90 grados la IMU, basta con rotar el paralelepípedo ese mismo ángulo, es decir, apoyar otra de las caras del mismo. \\
 
 \begin{wrapfigure}{r}{0.5\textwidth}
   \vspace{-20pt}
@@ -108,8 +109,7 @@ Para realizar una buena calibración es muy importante contar con una figura geo
   \label{fig:cubo}
 \end{wrapfigure}
 
-El prisma que se utilizó fue el cubo de lapacho que puede verse en la figura \ref{fig:cubo}. \\
-Los ángulos del mismo son prácticamente rectos difiriendo a lo sumo en medio grado. \\
+El prisma que se utilizó fue el cubo de lapacho que puede verse en la figura \ref{fig:cubo}. Los ángulos del mismo son prácticamente rectos difiriendo a lo sumo en medio grado. \\
 
 Se construyo una plataforma de madera en forma de mesa con la tapa superior móvil, de modo que permite el giro sobre uno de sus lados (eje de giro). Se muestra en la figura \ref{fig:mesa-flotando}.  A su vez, es posible ajustar el dispositivo de forma de asegurar que dicho eje se encuentre en posición horizontal, por medio de 3 patas de altura regulable situadas en la parte inferior de la mesa. Para realizar las 27 medidas se irá modificando el ángulo de la tapa móvil de la plataforma y será medido con un semicírculo solidarizado a dicha tapa y un péndulo. En cada posición de la plataforma se tomarán medidas colocando el cubo en 3 posiciones distintas.
 
@@ -208,26 +208,30 @@ El tercer eje se deduce sabiendo que la base es directa. La aceleración medida 
 
 Para la calibración se consideran solamente 24 de las 27 medidas realizadas. Esto es útil ya que se tienen 3 medidas que no serán tenidas en cuenta en la calibración para realizar una verificación de qué tan buena es la calibración obtenida.
 
-El problema de calibración consiste en encontrar el vector de parámetros $\theta$ que mejor ajusta las medidas obtenidas a los valores teóricos de aceleración. El vector $\theta$ se compone de los elementos de la diagonal de la matriz $K_a$, de los elementos de $b_a$ y de los $\alpha_{ij}$ de la matriz $T_a^p$. Es decir: $$\theta =\left[ k_{ax} , k_{ay} , k_{az} ,b_{ax} ,b_{ay} ,b_{az}, \alpha_{yz} , \alpha_{zy} , \alpha_{xz} , \alpha_{zx} , \alpha_{xy} , \alpha_{yx} \right]$$
+El problema de calibración consiste en encontrar el vector de parámetros $\theta$ que mejor ajusta las medidas obtenidas a los valores teóricos de aceleración. El vector $\theta$ se compone de los elementos de la diagonal de la matriz $K_a$, de los elementos de $b_a$ y de los $\alpha_{ij}$ de la matriz $T_a^p$. Es decir: 
+\begin{equation}
+\theta =\left[ k_{ax} , k_{ay} , k_{az} ,b_{ax} ,b_{ay} ,b_{az}, \alpha_{yz} , \alpha_{zy} , \alpha_{xz} , \alpha_{zx} , \alpha_{xy} , \alpha_{yx} \right]\end{equation}
 
 Como criterio de ajuste se decide minimizar la suma de los cuadrados de las diferencia entre la aceleración teórica y la aceleración medida. Dicho problema se puede expresar matemáticamente como:
 
 \begin{equation}
 \label{eq:lsqnonlin}
-\theta \quad : \quad  min \left\lbrace \sum_{i=1}^{M} {\vert \vert\tilde{\mathbf{a}}_{i}^p-T_a^pK_a^{-1}\left(\tilde{\mathbf{a}}_{i}^a -\mathbf{b}_a \right)\vert \vert} \right\rbrace
+\theta \quad : \quad  min \left\lbrace \sum_{i=1}^{M} {\vert \vert a_{i}^p-T_a^pK_a^{-1}\left(\tilde{\mathbf{a}}_{i}^a -\mathbf{b}_a \right)\vert \vert} \right\rbrace
 \end{equation}
 
-donde M es la cantidad de medidas realizadas, $\tilde{\mathbf{a}}_{i}^p$ los valores de aceleración teóricos en cada eje de la plataforma según la posición y orientación de la IMU y $\tilde{\mathbf{a}}_{i}^a$ los valores obtenidos de la IMU.
+donde M es la cantidad de medidas realizadas, $a_{i}^p$ los valores de aceleración teóricos en cada eje de la plataforma según la posición y orientación de la IMU y $\tilde{\mathbf{a}}_{i}^a$ los valores obtenidos de la IMU.
 Para resolver dicho problema se utiliza el algoritmo \emph{lsqnonlin} de \emph{MatLab}, este es capaz de encontrar los m\'inimos locales de la funci\'on \ref{eq:lsqnonlin} a partir de una semilla.\\
 
 El rango de aceleraciones manejado en la prueba es de $\pm 16g$. Según la hoja de datos del acelerómetro, se tiene una ganancia de $3.9 mg/LDB$. El valor de la semilla de los t\'erminos que corresponden a la ganancia debe ser entonces $\frac{1}{g \times 3.9 \times 10^{-3}}=26.1376$ para los tres ejes. La IMU expresa las aceleraciones obtenidas en complemento a dos, por lo que una aceleración de 0 equivale a una lectura de 0, por lo tanto el valor de la semilla de los t\'ermnos que corresponden al offset debe ser 0. Finalmente, los ángulos se suponen pequeños, por lo tanto una semilla válida parece ser: 
-$$\theta_0=\left[ \frac{1}{g \times 3.9 \times 10^{-3}}, \frac{1}{g \times 3.9 \times 10^{-3}}, \frac{1}{g \times 3.9 \times 10^{-3}}, 0, 0, 0, 0, 0, 0, 0, 0, 0 \right]$$
+\begin{equation}
+\theta_0=\left[ \frac{1}{g \times 3.9 \times 10^{-3}}, \frac{1}{g \times 3.9 \times 10^{-3}}, \frac{1}{g \times 3.9 \times 10^{-3}}, 0, 0, 0, 0, 0, 0, 0, 0, 0 \right]
+\end{equation}
 
 Los parámetros que minimizan la suma de los errores al cuadrado son los siguientes:
 
 \begin{scriptsize}
-$$\theta=\left[ 26.7572 \quad 27.0.0599 \quad 25.9838 \quad 16.9374 \quad -0.2446 \quad -47.7863 \quad 0.0005 \quad 0.0025 \quad 0.0149 \quad 0.0023 \quad 0.0000 \quad -0.0077 \quad \right]$$
-\end{scriptsize}
+\begin{equation}
+\theta=\left[ 26.7572 \quad 27.0.0599 \quad 25.9838 \quad 16.9374 \quad -0.2446 \quad -47.7863 \quad 0.0005 \quad 0.0025 \quad 0.0149 \quad 0.0023 \quad 0.0000 \quad -0.0077 \quad \right]\end{equation}\end{scriptsize}
 
 Luego de realizada la minimización se calcula la media del error cometido y la desviación estándar del error.
 $$\mu=-2.0779 \times 10^{-10} ms^{-2}$$ \\
@@ -266,7 +270,7 @@ En la verificaci\'on se obtienen valores aceptables aunque en la mayor\'ia de lo
 
 \subsection{Variación con la temperatura}
 
-La temperatura de funcionamiento normal de los sensores es mucho mayor a la temperatura ambiente, debido al calor emanado por la electrónica utilizada. Gracias al sensor de temperatura presente en la IMU es posible caracterizar la temperatura de funcionamiento normal de la IMU, que ronda los $35^oC$. Dado que la calibración fue realizada a una temperatura sensiblemente inferior, y para lograr robustez frente a eventuales cambios de temperatura, se realiza una compensación por temperatura de la lectura otorgada por el acelerómetro.\\
+La temperatura de funcionamiento normal de los sensores es mucho mayor a la temperatura ambiente, debido a la potencia disipada por efecto Joule. Gracias al sensor de temperatura presente en la IMU es posible caracterizar la temperatura de funcionamiento normal de la IMU, que ronda los $35^oC$. Dado que la calibración fue realizada a una temperatura sensiblemente inferior, y para lograr robustez frente a eventuales cambios de temperatura, se realiza una compensación por temperatura de la lectura otorgada por el acelerómetro.\\
 
 Para ello se calientan los sensores hasta una temperatura aproximada de $48^oC$, se lo deja enfriar hasta los $35^oC$ y se analiza la variación de las medidas con la temperatura. Al realizar dicho experimento se obtienen los resultados mostrados en la figura \ref{fig:bajada}.
 
