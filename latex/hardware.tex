@@ -27,7 +27,7 @@ Los ESCs inclu\'idos en la plataforma reciben comandos mediante el protocolo $I^
 
 \subsubsection*{Peso}
 
-Adem\'as de toda la instrumentaci\'on que incluye el cuadric\'optero, se incorporar\'a un microprocesador, una IMU, un GPS, una interfaz para comunicaci\'on, y una bater\'ia dedicada exclusivamente a alimentar la electr\'onica agregada. Es de inter\'es conservar la posibilidad de integrar una c\'amara fotogr\'afica. La carga que puede levantar el cuadric\'optero es de 1300g, de la que se debe descontar el peso de las bater\'ias de la electr\'onica y de la alimentaci\'on a los motores.
+Adem\'as de toda la instrumentaci\'on que incluye el cuadric\'optero, se incorporar\'a una placa de desarrollo, una de sensores (IMU), un GPS, una interfaz para comunicaci\'on Wi-Fi, y una bater\'ia dedicada exclusivamente a alimentar la electr\'onica agregada. Es de inter\'es conservar la posibilidad de integrar una c\'amara fotogr\'afica. La carga que puede levantar el cuadric\'optero es de 1300g, de la que se debe descontar el peso de las bater\'ias de la electr\'onica y de la alimentaci\'on a los motores.
 
 \subsubsection*{Tiempo de vuelo}
 
@@ -56,7 +56,7 @@ La soluci\'on implementada se basa en la plataforma de desarrollo \emph{Beaglebo
 
 \subsection*{Dimensiones y peso}
 
-Cuanto menor sean las dimensiones y peso de la placa elegida, mayor carga \'util quedar\'a disponible. El peso total de la BeagleBoard con una bater\'ia, diseñada especialmente alimentarla, es de 220 gramos, y sus dimensiones son de $10cm\times8.5cm\times5cm$. La autonom\'ia de dicha bater\'ia es de aproximadamente 2 horas.
+Cuanto menor sean las dimensiones y peso de la placa elegida, mayor carga \'util quedar\'a disponible. El peso total de la BeagleBoard con una bater\'ia, diseñada especialmente alimentarla es de aproximadamente 200 gramos, y sus dimensiones son de $10cm\times8.5cm\times5cm$. La autonom\'ia de dicha bater\'ia es de aproximadamente 2 horas.
 
 \subsection*{Sistema Operativo, Puertos y I/O}
 
@@ -147,7 +147,7 @@ La Mongoose 9DoF IMU (\ref{fig:mongoose}) posee todos los sensores que se han no
 
 La elecci\'on del GPS se bas\'o fundamentalmente en lograr la simplicidad del sistema. Exist\'ian muchas opciones, placas de diversos tama\~nos, con distintos tipos de antenas, pero todas con especificaciones similares.\\
 
-Las placas candidatas a estar a cargo de la inteligencia contaban con interfaces USB, por lo que se opt\'o por comprar un dongle GPS, cuyas especificaciones son similares a las del resto de las opciones y con el que es posible comunicarse mediante USB usando los drivers ya existenes. Se opt\'o por utilizar un GPS \textit{Canmore GT-730F}.
+Las placas candidatas a estar a cargo de la inteligencia contaban con interfaces USB, por lo que se opt\'o por comprar un dongle GPS, cuyas especificaciones son similares a las del resto de las opciones y con el que es posible comunicarse mediante USB usando los drivers ya existenes. Se opt\'o por utilizar un GPS \textit{Canmore GT-730F}, como el mostrado en la figura \ref{fig:gps}.
 
 
 \end{document}
