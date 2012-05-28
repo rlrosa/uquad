@@ -6,7 +6,7 @@
 \begin{document}
 
 
-\chapter{Magnetómetro}
+\chapter{Calibraci\'on del Magnetómetro}
 \label{chap:magnetometro}
 
 \section{Objetivos}
@@ -21,7 +21,7 @@ $$
 \mathbf{C^p} =K_m (\mathbf{\tilde{C^m}} -  \mathbf{b_m})
 $$
 
-Las principales distorciones que sufre un magnet\'ometro son aquellas debidas a los efectos de \emph{hard iron} y \emph{soft iron}. El primero es debido a la presencia de imanes permanentes, mientras que el segundo se debe a la distorci\'on producida por elementos met\'alicos como por ejemplo tornillos o conectores. Idealmente el campo magn\'etico terrestre medido en diferentes direcciones es constante, por lo tanto la representaci\'on de dichas medidas es una esfera centrada en el origen. Sin embargo, el resultado de los efectos mencionados es que la representaci\'on sea una elipsoide (debido al efecto de \emph{soft iron}) centrada en un punto diferente al origen (debido al efecto de \emph{hard iron}). Por esta raz\'on la calibraci\'on del sensor, a diferencia de la realizada para el aceler\'ometro y el gir\'oscopo debe ser dentro del cuadric\'optero con todos los sistemas operando en condiciones normales\footnote{Incluso con los motores encendidos. Se quitaron las h\'elices.} a fin de poder compensar dicho efecto.\\
+Las principales distorsiones que sufre un magnet\'ometro son debidas a los efectos de \emph{hard iron} y \emph{soft iron}. El primero es debido a la presencia de imanes permanentes, mientras que el segundo se debe a la distorsi\'on producida por elementos met\'alicos como por ejemplo tornillos o conectores. Idealmente el campo magn\'etico terrestre medido en diferentes direcciones es constante, por lo tanto la representaci\'on de dichas medidas es una esfera centrada en el origen. Sin embargo, el resultado de los efectos mencionados es que la representaci\'on sea una elipsoide (debido al efecto de \emph{soft iron}) centrada en un punto diferente al origen (debido al efecto de \emph{hard iron}). Por esta raz\'on la calibraci\'on del sensor, a diferencia de la realizada para el aceler\'ometro y el gir\'oscopo, debe ser dentro del cuadric\'optero con todos los sistemas operando en condiciones normales\footnote{Incluso con los motores encendidos. Se quitaron las h\'elices.} a fin de poder compensar dicho efecto.\\
 
 
 El metodo de calibraci\'on propuesto en \cite{bib:bola} consiste en tomar una serie de medidas de campo magnético terrestre en la mayor cantidad de  orientaciones posibles. Para asegurar la calidad de los datos es recomendable tomar medidas distribuidas uniformemente en todas las direcciones. Se utilizó un algoritmo desarrollado por \emph{Alain Barraud} para realizar la calibración, dicho algoritmo no es otra cosa que la implementación de la minimización presente en el método propuesto por \cite{bib:bola}. El resultado que se obtiene es la matriz y el vector que hacen que las medidas tomadas aproximen una esfera de centro el origen y radio unitario.\\
@@ -45,9 +45,9 @@ $
 
 \item $
 \mathbf{b_m}=\left(\begin{array}{c}
-	-63.16//
-    -209.61//
-    -38.62//
+	-63.16\\
+    -209.61\\
+    -38.62\\
 \end{array}\right)
 $
 \end{itemize}
