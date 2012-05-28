@@ -16,7 +16,7 @@ La elecci\'on del hardware representa una parte muy importante del Proyecto. Una
 \vspace{20pt}
 \end{wrapfigure}
 
-A la hora de la planificaci\'on del Proyecto se plantea la opci\'on de partir de cero, dise\~nando completamente el cuadric\'optero. Si bien esta opci\'on tiene la ventaja de que se puede conocer completamente su funcionamiento, trae problemas de ingenier\'ia mec\'anica que no se pretenden resolver: conocimientos de resistencia, flexibilidad y peso de materiales, as\'i como tambi\'en diversas complicaciones adicionales a la hora de fabricar y armar los distintos componentes. Dados los plazos del proyecto, y que su objetivo se centra en el control del veh\'iculo, la necesidad de partir de hardware ya construido resulta imperiosa.\\
+A la hora de la planificaci\'on del Proyecto se plantea la opci\'on de partir de cero, dise\~nando completamente el cuadric\'optero. Si bien esta opci\'on tiene la ventaja de que se puede conocer completamente su funcionamiento, implica problemas de ingenier\'ia mec\'anica que no se pretenden resolver, conocimientos de resistencia, flexibilidad y peso de materiales, as\'i como tambi\'en diversas complicaciones adicionales a la hora de fabricar y armar los distintos componentes. Dados los plazos del proyecto, y que su objetivo se centra en el control del veh\'iculo, la necesidad de partir de hardware ya construido resulta imperiosa.\\
 
 La plataforma escogida es el cuadric\'optero Turbo Ace X720 (o LotusRc 850). Esta plataforma es controlada por un usuario a trav\'es de un control remoto (Walkera 2801). El sistema receptor se encarga de setear la velocidad angular de cada motor en funci\'on de la se\~nal recibida.
 
@@ -35,7 +35,7 @@ El tiempo de vuelo utilizando una bater\'ia de LiPo de 5300mAh (450g) y una carg
 
 \subsubsection*{Instrumentaci\'on}
 
-	La instrumentaci\'on que el dispositivo trae est\'a destinada al simplificar el manejo a control remoto, estabilizando el sistema. La misma incluye un bar\'ometro y aceler\'ometro y gir\'oscopo de 3 ejes.\\
+	La instrumentaci\'on con la que cuenta el dispositivo est\'a destinada a simplificar el manejo a control remoto, estabilizando el sistema. La misma incluye un bar\'ometro y aceler\'ometro y gir\'oscopo de 3 ejes.\\
 
 No se dispone del c\'odigo del programa presente en la CPU, y por lo tanto no es posible reutilizarlo, ni tampoco obtener la lectura de los sensores presentes. Por dicho motivo se opta por dotar al sistema de instrumentaci\'on adicional. 
 
@@ -52,7 +52,7 @@ No se dispone del c\'odigo del programa presente en la CPU, y por lo tanto no es
 
 Adem\'as de la plataforma f\'isica, deben seleccionarse componentes electr\'onicos capaces de procesar la informaci\'on proveniente de los sensores, computar y ejecutar los algoritmos de control, y generar las se\~nales necesarias para transmitir las instrucciones a los motores.\\
 
-La soluci\'on implementada se basa en la plataforma de desarrollo \emph{Beagleboard}. Esta plataforma posee un microprosesador TI ARM Cortex A8 de 1GHz y un DSP TMS320C64x+ de 800MHz. La memor\'ia RAM es de 512 Mb. No tiene memoria no vol\'atil, pero soporta tarjetas SD de hasta 4GB, y es posible conectar memorias flash USB. Ver figura \ref{fig:beagleboard}.
+La soluci\'on implementada se basa en la plataforma de desarrollo \emph{Beagleboard}. Esta plataforma posee un microprosesador TI ARM Cortex A8 de 1GHz y un DSP TMS320C64x+ de 800MHz. La memor\'ia RAM es de 512 Mb. No tiene memoria no vol\'atil, pero soporta tarjetas SD de hasta 4GB y es posible conectar memorias flash USB. Ver figura \ref{fig:beagleboard}.
 
 \subsection*{Dimensiones y peso}
 
@@ -112,15 +112,15 @@ El aceler\'ometro cumple dos roles fundamentales:
 
 Un gir\'oscopo es un instrumento capaz de medir la velocidad angular de un sistema solidario a si mismo. Las mismas restricciones sobre tama\~no, peso y costo que se aplicaban para el aceler\'ometro se aplican aqu\'i. Se vuelve a optar por tecnolog\'ia MEMS.\\ 
 
-Desde el punto de vista te\'orico, procesando la informaci\'on obtenida a partir del aceler\'ometro y del gir\'oscopo y partiendo de condiciones iniciales conocidas, se puede conocer, en todo momento, la posici\'on del sistema y su orientaci\'on. En la pr\'actica, sin embargo, esto no es as\'i, ya que todas las medidas tienen un cierto error. Para obtener la orientaci\'on y la posici\'on en cada instante se debe integrar y, por lo tanto, se integra tambi\'en el error cometido. Esto produce una acumulaci\'on de errores que afecta, de forma considerable, el resultado final luego de cierta cantidad de muestras. Este problema se puede resolver integrando un GPS. Un GPS permitir\'ia, cada cierto intervalo de tiempo, contar con una medida absoluta para comprar contra los resultados obtenidos de ir integrando las medidas del aceler\'ometro y del gir\'oscopo, permitiendo corregir errores debido al \emph{integration drift}.
+Desde el punto de vista te\'orico, procesando la informaci\'on obtenida a partir del aceler\'ometro y del gir\'oscopo y partiendo de condiciones iniciales conocidas, se puede conocer, en todo momento, la posici\'on del sistema y su orientaci\'on. En la pr\'actica, sin embargo, esto no es as\'i, ya que todas las medidas tienen un cierto error. Para obtener la orientaci\'on y la posici\'on en cada instante se debe integrar y, por lo tanto, se integra tambi\'en el error cometido. Esto produce una acumulaci\'on de errores que afecta, de forma considerable, el resultado final luego de cierta cantidad de muestras. Este problema se puede resolver integrando un GPS. Este \'ultimo permitir\'ia, cada cierto intervalo de tiempo, contar con una medida absoluta para comprar contra los resultados obtenidos de la integral de las medidas del aceler\'ometro y del gir\'oscopo, permitiendo corregir errores debido al \emph{integration drift}.
 
 \subsubsection{Sensor de presi\'on}
 
-El GPS, mencionado en la secci\'on anterior, provee una estimaci\'on de la altura absoluta, pero es poco precisa. Depende fuertemente de la cantidad de sat\'elites disponibles, y se ve fuertemente deteriorada por el efecto del rebote de las ondas en estructuras cercanas (en especial por los rebotes en el piso, que deterioran la precisi\'on en la medida de altura cuando se est\'a muy cerca del suelo). Por este motivo, es necesario contar con otra fuente de informaci\'on. Se opt\'o por incorporar un bar\'ometro que, midiendo la presi\'on absoluta, permite determinar la altura del cuadric\'optero en forma independiente al resto de los sensores.
+El GPS, mencionado en la secci\'on anterior, provee una estimaci\'on de la altura absoluta, pero es poco precisa. Depende fuertemente de la cantidad de sat\'elites disponibles y se ve fuertemente deteriorada por el efecto del rebote de las ondas en estructuras cercanas (en especial por los rebotes en el piso, que deterioran la precisi\'on en la medida de altura cuando se est\'a muy cerca del suelo). Por este motivo es necesario contar con otra fuente de informaci\'on. Se opt\'o por incorporar un bar\'ometro que, midiendo la presi\'on absoluta, permite determinar la altura del cuadric\'optero en forma independiente al resto de los sensores.
 
 \subsubsection{Magnet\'ometro}
 
-El problema del \textit{drift} en la estimaci\'on del \'angulo de Yaw a partir de la integraci\'on de datos del gir\'oscopo, y el de la falta de una referencia absoluta en dicha estimaci\'on, se resuelven agregando un magnet\'ometro. Permite ubicar el norte magn\'etico (medida absoluta), complementando la informaci\'on diferencial obtenida del gir\'oscopo.
+El \textit{drift} en la estimaci\'on del \'angulo de Yaw a partir de la integraci\'on de datos del gir\'oscopo y la falta de una referencia absoluta en dicha estimaci\'on, se resuelven agregando un magnet\'ometro. Permite ubicar el norte magn\'etico (medida absoluta), complementando la informaci\'on diferencial obtenida del gir\'oscopo.
 
 \subsubsection{Sensor de temperatura}
 
@@ -147,7 +147,8 @@ La Mongoose 9DoF IMU (\ref{fig:mongoose}) posee todos los sensores que se han no
 
 La elecci\'on del GPS se bas\'o fundamentalmente en lograr la simplicidad del sistema. Exist\'ian muchas opciones, placas de diversos tama\~nos, con distintos tipos de antenas, pero todas con especificaciones similares.\\
 
-Las placas candidatas a estar a cargo de la inteligencia contaban con interfaces USB, por lo que se opt\'o por comprar un dongle GPS, cuyas especificaciones son similares a las del resto de las opciones, y se puede comunicar via USB gracias a drivers ya existentes para linux. Se opt\'o por utilizar un GPS \textit{Canmore GT-730F}.
+Las placas candidatas a estar a cargo de la inteligencia contaban con interfaces USB, por lo que se opt\'o por comprar un dongle GPS, cuyas especificaciones son similares a las del resto de las opciones y con el que es posible comunicarse mediante USB usando los drivers ya existenes. Se opt\'o por utilizar un GPS \textit{Canmore GT-730F}.
+
 
 \end{document}
 
