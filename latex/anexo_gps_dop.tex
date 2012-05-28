@@ -11,7 +11,7 @@
 \begin{wrapfigure}{r}{0.5\textwidth}
 \vspace{-30pt}
   \begin{center}
-    \includegraphics[width=.5\textwidth]{./pics_gps/dop.png}
+    \includegraphics[width=.45\textwidth]{./pics_gps/dop.png}
   \end{center}
 \vspace{-20pt}
   \caption{DOP en 2 dimensiones.}
@@ -26,7 +26,7 @@ El método que utiliza el GPS para determinar su ubicación consiste básicament
 \item Intersectar las ``cáscaras'' de las esferas de centros $P_i$ y radios $r_i$.
 \end{enumerate}
 
-Las ``cáscaras'' de las esferas no serán de ancho despreciable, ya que hay un cierta incertidumbre asociado a los datos. Esto implica que la intersección será un volumen, en lugar de un punto. La geometría de la distribución de los satélites determinará el tamaño de este volumen, y por lo tanto la incertidumbre en la determinación de la posición. En la figura \ref{fig:dop.png}\footnote{Imagen obtenida de \href{http://en.wikipedia.org/wiki/Dilution\_of\_precision\_(GPS)}{Wikipedia}} se muestra un ejemplo ilustrativo, en dos dimensiones.
+Las ``cáscaras'' de las esferas no serán de ancho despreciable, ya que hay un cierta incertidumbre asociado a los datos. Esto implica que la intersección será un volumen, en lugar de un punto. La geometría de la distribución de los satélites determinará el tamaño de este volumen, y por lo tanto la incertidumbre en la determinación de la posición. En la figura \ref{fig:dop.png}\footnote{Imagen obtenida de \href{http://en.wikipedia.org/wiki/Dilution\_of\_precision\_(GPS)}{Wikipedia}} se muestra un ejemplo ilustrativo, en dos dimensiones.\\
 
 El DOP es el cociente entre la exactitud de la ubicación y exactitud de la medida\cite{bib:sat-pos}:
 \begin{equation*}
@@ -39,7 +39,7 @@ donde
 \item $\sigma_o$: Exactitud de la posición. 
 \end{itemize}
 
- Básicamente, el DOP representa la sensibilidad de localización frente a errores en las medidas, o sea, cuanto te vas a perder si te llego una medida equivocada. Cuanto más bajo sea el DOP, mejor. En la tabla \ref{tab:dop} se muestra como interpretar valores típicos\cite{bib:sat-dop-values}.
+Básicamente, el DOP representa la sensibilidad de localización frente a errores en las medidas. Dicho de otro modo, da una idea de qué tanto error se cometerá en la ubicación ante errores en las medidas. Cuanto más bajo sea el DOP, se cometerá un error menor. En la tabla \ref{tab:dop} se muestra como interpretar valores típicos (información tomada de \cite{bib:sat-dop-values}).
 
 \begin{table}[H]
 \begin{center}

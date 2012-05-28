@@ -108,7 +108,7 @@ En estado estático, los ángulos de \emph{pitch} y \emph{roll} pueden ser deter
 
 \subsubsection{Aceleración}
 
-Para poder obtener la transformación entre el vector de estados y la observación es necesario entender qué aceleración medirá el acelerómetro. Como se explica en \ref{acelerometro}, dicho dispositivo referencia su medida a un sistema en caída libre, por lo que por ejemplo al estar quieto se deberá medir la aceleración gravitatoria ($g$).\\
+Para poder obtener la transformación entre el vector de estados y la observación es necesario entender qué aceleración medirá el acelerómetro. Como se explica en \ref{chap:calibracion_acelerometro}, dicho dispositivo referencia su medida a un sistema en caída libre, por lo que por ejemplo al estar quieto se deberá medir la aceleración gravitatoria ($g$).\\
 Como se puede ver en el esquema mostrado en la figura \ref{fig:diagrama_kalman}, el acelerómetro es utilizado para estimar las variables de estado $v_{qx}$, $v_{qy}$ y $v_{qz}$, correspondientes a las velocidades lineales medidas en el sistema del cuadricóptero. No se debe confundir la derivada de estas variables con la aceleración medida por el acelerómetro. Por un lado se debe realizar el pasaje del sistema de referencia del cuadricóptero hasta un sistema de referencia inercial fijo en el mundo, y por otro lado se debe tener en cuenta el pasaje de este último hasta el sistema de referencia del acelerómetro (el sistema en caída libre), por ello es que se incluye el bloque ``-g'' en el diagrama de la figura \ref{fig:diagrama_kalman}.
 
 % TODO hablar de Q y R. capaz poner 2 ejemplos de lo mismo q den bien distinto
