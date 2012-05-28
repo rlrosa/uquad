@@ -37,25 +37,25 @@ En la imagen \ref{fig:setup}\footnote{Imagen tomada de www.i2c-bus.org} se muest
 	\label{fig:setup}
 \end{figure}
 donde:
-\begin{verbatim}
-	Vcc	 Voltaje de entrada, t\'ipicamente var\'ia entre 1.2 V y 5.5 V
-	GND	 Tierra com\'un
-	SDA	 L\'inea serial de datos
-	SCL	 L\'inea serial de reloj
-	Rp 	 Resistencia de "Pull-up"
-	Rs 	 Resistencia serie
-	Cp 	 Capacitancia del cable
-	Cc 	 Capacitancia de canal cruzado
-\end{verbatim}
+\begin{itemize}
+\item \verb+Vcc+:	 Voltaje de entrada, t\'ipicamente var\'ia entre 1.2 V y 5.5 V
+\item \verb+GND+:	 Tierra com\'un
+\item \verb+SDA+:	 L\'inea serial de datos
+\item \verb+SCL+:	 L\'inea serial de reloj
+\item \verb+Rp+ :	 Resistencia de "Pull-up"
+\item \verb+Rs+ :	 Resistencia serie
+\item \verb+Cp+ :	 Capacitancia del cable
+\item \verb+Cc+ :	 Capacitancia de canal cruzado
+\end{itemize}
 
-Las l\'ineas \textbf{SDA} y \textbf{SCL} son de drenador abierto, lo que significa que tanto el maestro como los esclavos solamente pueden conducir a nivel bajo estas l\'ineas o dejarlos abiertos. Si ning\'un dispositivo $i^2c$ est\'a conduciendo hacia abajo la l\'inea, la resistencia de \emph{pull-up} $R_p$ se encarga de conducir la l\'inea a $V_{cc}$.\\
+Las l\'ineas \textbf{SDA} y \textbf{SCL} son de drenador abierto, lo que significa que tanto el maestro como los esclavos solamente pueden conducir a nivel bajo estas l\'ineas, o dejarlas abiertas. Si ning\'un dispositivo $i^2c$ est\'a conduciendo hacia abajo la l\'inea, la resistencia de \emph{pull-up} $R_p$ se encarga de llevar la l\'inea a $V_{cc}$.\\
 
 Cada dispositivo tiene asignada una direcci\'on que lo identifica. Para establecer una comunicaci\'on la secuencia t\'ipica empieza por el maestro enviando una secuencia de comienzo de conexi\'on, seguida de la direcci\'on del esclavo con el cual desea comunicarse. Seguidamente el maestro env\'ia un bit que determina si la acci\'on que desea realizar es escritura o lectura, a lo que el esclavo correspondiente responde con un bit de \emph{acknowledge} (\textbf{Ack}). Luego el maestro env\'ia la direcci\'on de memoria interna del esclavo donde debe ser almacenada la informaci\'on enviada, y por \'ultimo env\'ia los datos. Para finalizar la conexi\'on, el maestro env\'ia una secuencia de fin de conexi\'on.
 
 \newpage
 \section{Pruebas en r\'egimen}
 
-Como se dijo anteriormente, para realizar el proceso de ingenier\'ia inversa se utiliz\'o el cuadric\'optero y un analizador l\'ogico. La forma de operar es enviar comandos conocidos con el control remoto y analizar los datos que se cursan en las l\'ineas del bus. En la figura \ref{fig:sniffing} se muestra una foto del proceso descripto.
+Como se dijo anteriormente, para realizar el proceso de ingenier\'ia inversa se utiliz\'o el cuadric\'optero y un analizador l\'ogico. La forma de operar es enviar comandos conocidos con el control remoto y analizar el flujo de datos en las l\'ineas del bus. En la figura \ref{fig:sniffing} se muestra una foto del proceso descripto.
 
 \begin{figure}[h!]
 	\centering
@@ -64,7 +64,7 @@ Como se dijo anteriormente, para realizar el proceso de ingenier\'ia inversa se 
 	\label{fig:sniffing}
 \end{figure}
 
-Al realizar este proceso se puede observar que se repiten cada $2ms$ bloques similares al mostrado en la figura \ref{fig:bloque_snif}.
+Al realizar este proceso se puede observar que se repiten, cada $2ms$, bloques similares al mostrado en la figura \ref{fig:bloque_snif}.
 
 \begin{figure}[h!]
 	\centering
@@ -114,7 +114,7 @@ Se analizan las siguientes situaciones:
 \label{tab:pruebas}
 \end{table}
 
-Se realiza un an\'alisis de los resultados obtenidos para cada motor, graficando el contenido del byte de datos que se le transmite a cada motor. Se obtienen representaciones como. la mostrada en la figura \ref{fig:grafica_motores}. En dicha figura puede observarse que los 4 motores reciben un byte con el valor promedio en $50$, el cual corresponde a la m\'inima potencia entregada a los motores para encenderlos.\\
+Se realiza un an\'alisis de los resultados obtenidos para cada motor, graficando el contenido del byte de datos que se le transmite a cada motor. Se obtienen representaciones como la mostrada en la figura \ref{fig:grafica_motores}. En dicha figura puede observarse que los 4 motores reciben un byte con el valor promedio en $50$, el cual corresponde a la m\'inima potencia entregada a los motores para encenderlos.\\
 
 \begin{figure}[h!]
 	\centering
@@ -152,7 +152,7 @@ De dicha tabla se pueden sacar algunas conclusiones que se analizar\'an en la se
 \section{Prueba de arranque}
 \label{sec:arranque}
 
-En esta secci\'on se analiza la secuencia de arranque del cuadric\'optero, para obtener conclusiones sobre la misma. Se parte con la palanca de elevaci\'on al m\'inimo y se procede a moverla para arrancar los motores.\\
+En esta secci\'on se analiza la secuencia de arranque del cuadric\'optero. Se parte con la palanca de elevaci\'on al m\'inimo y se procede a moverla para arrancar los motores.\\
 
 Mientras la palanca de elevaci\'on se mantiene al m\'inimo, se le env\'ia el valor 0 a los cuatro motores. Al mover la palanca, luego de un \emph{tiempo muerto} donde las l\'ineas quedan inactivas, se les empieza a enviar el valor correspondiente a cada motor, como se puede ver en la figura \ref{fig:snif_arranque_lejos}.
 
@@ -236,7 +236,8 @@ En verde se muestra el bit agregado y en rojo el eliminado.
 \label{sec:conclu}
 
 \begin{itemize}
-\item La comunicaci\'on entre el amo y los esclavos por medio del protocolo $i^2c$ se lleva a cabo mediante un  formato del tipo \begin{verbatim} Direcci\'on esclavo - Lugar de memoria donde guardar dato - dato \end{verbatim}
+\item La comunicaci\'on entre el amo y los esclavos por medio del protocolo $i^2c$ se lleva a cabo mediante un  formato del tipo:
+\begin{quote}\textit{Direcci\'on esclavo - Lugar de memoria donde guardar dato - dato}\end{quote}
 \item Dicho formato se repite para todos los esclavos
 \item Cada esclavo recibe una actualizaci\'on de estado (un dato nuevo) cada $2 ms$
 \item La velocidad m\'inima de funcionamiento se logra enviando el valor 50
@@ -245,7 +246,7 @@ En verde se muestra el bit agregado y en rojo el eliminado.
 \item La direcci\'on de memoria interna de todos los esclavos donde se guardan los datos recibidos por el maestro es siempre 0x$A2$ (\'o $162$), a excepci\'on del arranque y el frenado.
 \item El \'ultimo comando enviado antes de arrancar se guarda en el registro 0xA0.
 \item El \'ultimo comando enviado antes de frenar se guarda en el registro 0xA1.
-\item El orden normal en el que se env\'ian los comandos es $D2\rightarrow D4\rightarrow D6\rightarrow D0$, menos en los casos descriptos en los 2 puntos anteriores donde el orden es $D0\rightarrow D2\rightarrow D4\rightarrow D6$.
+\item El orden normal en el que se env\'ian los comandos es $D2\rightarrow D4\rightarrow D6\rightarrow D0$, menos en los casos descriptos en los 2 puntos anteriores donde el orden es $D0\rightarrow D2\rightarrow D4\rightarrow D6$. Se comprobó, experimentalmente, que no es necesario alterar el orden en el que se env\'ian los comandos para lograr arrancar y frenar los motores.
 \item La correspondencia entre las direcciones y los motores se muestra en la figura \ref{fig:correspondencias}. El motor con direcci\'on 0xD0 es el de adelante, el motor con direcci\'on 0xD4 es el de atr\'as y mir\'andolo de frente el de la izquierda se corresponde con 0xD0, y el de la derecha con 0xD6
 \item Las direcciones 0xD0, 0xD2, 0xD4 y 0xD6 (de 8 bits) en realidad no refieren \'unicamente a direccionamiento, sino que incluyen adem\'as el bit de lectura/escritura, por lo cual cada esclavo tendr\'a una \'unica direcci\'on de 7 bits. Notar que las direcciones 0xD0 a 0xD6 al pasarlas a binario todas terminan en 0, lo cual implica que se tratan de comandos de escritura. Al omitir el \'ultimo bit se obtienen las direcciones (sin incluir el bit de lectura/escritura) como se puede ver a continuaci\'on:
 \begin{eqnarray}
