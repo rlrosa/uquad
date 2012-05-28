@@ -6,7 +6,7 @@
 \chapter{Simulaciones del modelo f\'isico}
 \label{chap:simulador}
 
-Luego de desarrollado un modelo f\'isico resulta fundamental disponer de un entorno para realizar simulaciones. Las razones para construir un simulador son evidentes. En primer lugar resulta fundamental para comprobar que el modelo realizado se comporta acorde a lo que uno espera a priori del sistema. Para este tipo de pruebas se trabajar\'a con las situaciones m\'as sencillas en las cuales se puede calcular la trayectoria trivialmente. El segundo objetivo del simulador es poder conocer el comportamiento de nuestro sistema frente a algunas acciones de control determinadas. Por ejemplo conocer la trayectoria que desarrolla el cuadric\'optero si accionamos solamente uno de los motores o cualquier combinaci\'on que sea pertinente de estudio. Por \'ultimo y fundamentalmente el simulador ser\'a clave para testear y mejorar los algoritmos de control desarrollados. Previo a testear con el sistema real y a fin de evitar da\~nos sobre el mismo, se deben verificar dichos algoritmos en el simulador. Por los motivos expresados es necesario que el simulador represente fielmente el modelo f\'isico y se comporte acorde a la realidad. \\
+Luego de desarrollado un modelo f\'isico resulta fundamental disponer de un entorno para realizar simulaciones. Las razones para construir un simulador son evidentes. En primer lugar resulta fundamental para comprobar que el modelo realizado se comporta acorde a lo que uno espera a priori del sistema. Para este tipo de pruebas se trabajar\'a con las situaciones m\'as sencillas en las cuales se puede calcular la trayectoria trivialmente. El segundo objetivo del simulador es poder conocer el comportamiento de nuestro sistema frente a algunas acciones de control determinadas. Por ejemplo conocer la trayectoria que desarrolla el cuadric\'optero si accionamos solamente uno de los motores o cualquier combinaci\'on que sea pertinente de estudio. Por \'ultimo, el simulador ser\'a clave para testear y mejorar los algoritmos de control desarrollados. Previo a testear con el sistema real y a fin de evitar da\~nos sobre el mismo, se deben verificar dichos algoritmos en el simulador. Por los motivos expresados es necesario que el simulador represente fielmente el modelo f\'isico y se comporte acorde a la realidad. \\
 
 \section{Estructura del Simulador}
 
@@ -15,7 +15,11 @@ El simulador se compone de dos partes fundamentales. La primera es el lazo abier
 
 \subsection{Lazo Abierto}
 
+<<<<<<< HEAD
 La estructura que se eligi\'o para desarrollar esta secci\'on se corresponde en buena forma con el camino que se recorri\'o para determinar el modelo f\'isico. El lazo abierto consta de tres bloques principales. En primer lugar tenemos un bloque encargado de generar las fuerzas y momentos a partir de las velocidades angulares de las h\'elices. Luego tenemos un bloque que se encarga de resolver la din\'amica del sistema y un tercer bloque encargado de la cinem\'atica. En la figura \ref{fig:lazo_abierto} se observa la estructura global del lazo abierto. En la figura \ref{fig:vista} se observa una captura de pantalla que representa la vista general de la parte encargada de simular el lazo abierto.
+=======
+La estructura que se eligi\'o para desarrollar esta secci\'on se corresponde en buena forma con el camino que se recorri\'o para determinar el modelo f\'isico. El lazo abierto consta de tres bloques principales. En primer lugar tenemos un bloque encargado de generar las fuerzas y momentos a partir de las velocidades angulares de las h\'elices. Luego tenemos un bloque que se encarga de resolver la din\'amica del sistema, y un cuarto bloque encargado de la cinem\'atica. En la figura \ref{fig:lazo_abierto} se observa la estructura global del lazo abierto. En la figura \ref{fig:vista} se observa una captura de pantalla que representa la vista general de la parte encargada de simular el lazo abierto.
+>>>>>>> c318cd556eb8ebdeda7ab5938ebae181e25c4227
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=1\textwidth]{./pics_simulador/lazo_abierto.pdf}
@@ -48,14 +52,18 @@ En la figura \ref{fig:cinematica} se puede observar un diagrama de bloques de la
 
 \subsubsection{Din\'amica}
 
-Al igual que el bloque anterior, se divide este en dos sub-bloques m\'as (ver figura \ref{fig:dinamica}). Los bloques en este caso son el que devuelve las velocidades angulares y las lineales. 
+Al igual que el bloque anterior, se divide este en dos sub-bloques m\'as (ver figura \ref{fig:dinamica}): El que devuelve las velocidades angulares, y el que devuelve las velocidades lineales. 
 
 \subsection{Lazo cerrado}
 
-Como se explica en el cap\'itulo \ref{chap:linealizacion} para tratar las trayectorias circulares en el plano horizontal es necesario introducir un cambio de variables en el sistema, este cambio de variables consiste en expresar la posici\'on del cuadric\'optero en el sistema $S_q$ solidiario a \'el y considerando como origen el centro de la trayectoria circular, en lugar de expresar la posici\'on en el sistema cartesiano inercial. Esta modificaci\'on implica realizar un cambio en el modelo para trabajar con dichas trayectorias, simplemente se agrega una matriz de rotaci\'on para trabajar con la posci\'on expresada en el sistema solidario al cuadric\'optero.\\ 
+Como se explica en el cap\'itulo \ref{chap:linealizacion}, para tratar las trayectorias circulares en el plano horizontal es necesario introducir un cambio de variables en el sistema. Este cambio de variables consiste en expresar la posici\'on del cuadric\'optero en el sistema $S_q$ solidiario a \'el y considerando como origen el centro de la trayectoria circular, en lugar de expresar la posici\'on en el sistema cartesiano inercial. Esta modificaci\'on implica realizar un cambio en el modelo para trabajar con dichas trayectorias, simplemente se agrega una matriz de rotaci\'on para trabajar con la posci\'on expresada en el sistema solidario al cuadric\'optero.\\ 
 
+<<<<<<< HEAD
 %TODO hacer dibujo!
 Desde la interfaz gr\'afica se puede seleccionar el tipo de trayectoria que se desea realizar, los valores de las variables de estado con las que se desea realizar dicha trayectoria\footnote{Evidentemente existen restricciones a la hora de elegir las variables de estado, a modo de ejemplo no seremos capaces de controlar una trayectoria en linea recta si las velocidades angulares no son nulas}. Las velocidades angulares objetivo para cada motor ser\'an determinadas a partir de la informaci\'on anterior. Al igual que en el simulador de lazo abierto se tiene la posibilidad de establecer tanto el tiempo inicial de la simulaci\'on y las condiciones iniciales. As\'imismo estar\'a determinada por la trayectoria la matriz de realimentaci\'on.\\
+=======
+Desde la interfaz gr\'afica se puede seleccionar el tipo de trayectoria que se desea realizar y los valores de las variables de estado con las que se desea realizar dicha trayectoria\footnote{Evidentemente existen restricciones a la hora de elegir las variables de estado, a modo de ejemplo no seremos capaces de controlar una trayectoria en linea recta si las velocidades angulares no son nulas}. Las velocidades angulares objetivo para cada motor ser\'an determinadas a partir de la informaci\'on anterior. Al igual que en el simulador de lazo abierto, se tiene la posibilidad de establecer tanto el tiempo inicial de la simulaci\'on como las condiciones iniciales. La matriz de realimentaci\'on quedar\'a determinada por la trayectoria.\\
+>>>>>>> c318cd556eb8ebdeda7ab5938ebae181e25c4227
 
 Fue necesario adem\'as acotar la velocidad angular de los motores ya que esta no puede tener cualquier valor, para esto se agregaron los bloques de saturaci\'on a la entrada del subsistema que representa la din\'amica del cuadric\'optero.\\
 
@@ -76,9 +84,9 @@ Como se explic\'o en la secci\'on \ref{chap:general} el control ser\'a realizado
   \label{fig:t_muestreo}
 \end{figure} 
  
-Se observa claramente un deterioro de la performance en la subida al aumentar el per\'iodo de muestreo y de de acci\'on sobre los motores. Por dicho motivo es importante incluir esta variable a la hora de realizar diversas simulaciones ya que el sistema real debe realizar una gran cantidad de operaciones y si bien su capacidad es considerable no es infinita. Esto puede producir que se tenga acotado interiormente el per\'iodo de muestreo.\\
+Se observa claramente un deterioro de la performance en la subida al aumentar el per\'iodo de muestreo y de acci\'on sobre los motores. Por dicho motivo es importante incluir esta variable a la hora de realizar diversas simulaciones ya que el sistema real debe realizar una gran cantidad de operaciones y si bien su capacidad es considerable no es infinita. Esto puede producir que se tenga acotado inferiormente el per\'iodo de muestreo.\\
 
-Por \'ultimo, se desea incluir la posibilidad de agregar ruido a los estados medidos y de perturbaciones en las velocidades angulares de los motores. Las medidas que se obtienen de los sensores no son exactas, por dicho motivo la posibilidad de agregar ruido es muy interesante de modo de testear la robustez del controlador implementado. Asimismo, la velocidad angular de los motores no es exactamente la que se espera de acuerdo a la caracterizaci\'on de los motores realizada (ver cap\'itulo \ref{chap:test_motores}), por el contrario, se producen variaciones en la velocidad angular de los mismos dada una velocidad angular objetivo.
+Por \'ultimo, se desea incluir la posibilidad de agregar ruido a los estados medidos y perturbaciones en las velocidades angulares de los motores. Las medidas que se obtienen de los sensores no son exactas, por dicho motivo la posibilidad de agregar ruido es muy interesante de modo de testear la robustez del controlador implementado. Asimismo, la velocidad angular de los motores no es exactamente la que se espera de acuerdo a la caracterizaci\'on de los motores realizada (ver cap\'itulo \ref{chap:test_motores}), por el contrario, se producen variaciones en la velocidad angular de los mismos dada una velocidad angular objetivo.
   \begin{figure}[h!]
 	\centering
 	\includegraphics[width=1\textwidth]{./pics_simulador/vistac.pdf}
@@ -146,6 +154,7 @@ Con condiciones iniciales nulas, en condici\'on de hovering se aumenta la veloci
   \caption{Escal\'on en los cuatro motores}
   \label{fig:escalon}
 \end{figure}
+<<<<<<< HEAD
 
 \subsubsection{Giro seg\'un el eje $\vec{k}$}
 
@@ -167,6 +176,8 @@ En la figura \ref{fig:hovz} se presenta la altura en funci\'on del tiempo. La mi
   \label{fig:hov}
 \end{figure}
 
+=======
+>>>>>>> c318cd556eb8ebdeda7ab5938ebae181e25c4227
 
 \subsubsection*{Cambio en el Pitch y el Roll}
 Con condiciones iniciales nulas excepto la altura fijada en $z=10$, se realiza un giro seg\'un $\vec{i}_q$ y seg\'un $\vec{j}_q$. En el primer caso se aumenta la velocidad del motor 2 en tres radianes por segundo y se disminuye la velocidad del motor 4 en la misma cantidad. Para la segunda simulaci\'on se aumenta en tres radianes por segundo la velocidad del motor 3 y se disminuye en la misma cantidad la velocidad del motor 1. Los resultados obtenidos se muestran en la figura \ref{fig:giros}
@@ -183,8 +194,26 @@ Con condiciones iniciales nulas excepto la altura fijada en $z=10$, se realiza u
   \label{fig:giros}
 \end{figure}
 
-En estos dos casos tambi\'en se obtiene un resultado acorde a lo esperado. En ambos casos el \'angulo aumenta de forma cuadr\'atica en la zona donde el \'angulo es inferior a los dos grados, en esta zona puede despreciarse el momento realizado por el peso, por lo tanto se tiene una aceleraci\'on angular constante, lo cual explica el comportamiento del \'angulo. Para \'angulos superiores dicho torque del peso comienza a ser considerable respecto del torque producido por los motores y se observa que el \'angulo crece con menor pendiente.\\
+En estos dos casos tambi\'en se obtiene un resultado acorde a lo esperado. En ambos casos el \'angulo aumenta de forma cuadr\'atica en la zona donde el \'angulo es inferior a los dos grados, en esta zona puede despreciarse el momento realizado por el peso, por lo tanto se tiene una aceleraci\'on angular constante, lo cual explica el comportamiento del \'angulo. Para \'angulos superiores dicho torque del peso comienza a ser considerable respecto del torque producido por los motores y se observa que el \'angulo crece con menor pendiente.
 
-Hasta aqu\'i hemos testeado el simulador en situaciones conocidas. Nos concentramos en analizar la caida libre y las cuatro acciones de control b\'asicas que se pueden realizar descriptas en \ref{chap:general}. De acuerdo a las pruebas realizadas puede afirmarse que su funcionamiento es el adecuado ya que en ninguna prueba se obtuvieron errores considerables. Sin embargo, es fundamental aclarar que hasta aqu\'i no es posible afirmar que el modelado del sistema sea adecuado, lo \'unico que puede concluirse es que el simulador representa fielmente las ecuaciones que han sido deducidas hasta el momento. Un error en las ecuaciones no se reflejar\'a hasta el momento de testear el cuadric\'optero. Sin embargo el trabajo realizado a la hora del modelado y la comparaci\'on con diversas bibliograf\'ias nos permite a esta altura estar convencidos de que dichas ecuaciones son adecuadas para modelar el sistema.
+\subsubsection{Giro seg\'un el eje $\vec{k}$}
+
+En las mismas condiciones que la simulaci\'on anterior, en el tiempo $t=5s$ se aumenta repentinamente la velocidad angular de los motores que rotan en sentido horario con un valor tal que la fuerza de cada uno de esos motores aumenta en $1N$. Para los motores que rotan en sentido anti-horario se disminuye la velocidad angular de forma que la fuerza de cada uno de ellos disminuye $1N$. Estas velocidades son $349.88rads^{-1}$ y $278.09rads^{-1}$ respectivamente. La fuerza neta permanece constante y el momento seg\'un los versores $\vec{i_q}$ y $\vec{j_q} $ es nulo. Sin embargo aparece un torque positivo seg\'un el versor $\vec{k_q}$.\\
+
+En la figura \ref{fig:hovz} se presenta la altura en funci\'on del tiempo. La misma deber\'ia permanecer constante, sin embargo se observa una peque\~na diferencia en la altura de $2.3cm$. Esta diferencia es atribuida a la aproximaci\'on realizada al calcular las velocidades con las cuales deben girar los motores. Por otra parte en la figura \ref{fig:hovtheta} se observa como el \'angulo aumenta hasta el valor de $84.43 rad$. El torque neto vale $Q = 0.29Nm $. Por lo tanto en 5 segundos se debe rotar un \'angulo de $\theta_f=84.16rad$. Nuevamente se percibe una peque\~na diferencia entre el valor te\'orico y el simulado, pero dicho error es aceptable. 
+
+\begin{figure} [h!]
+  \centering
+  \subfloat[Altura en funci\'on del tiempo]{\label{fig:hovz}
+  		\includegraphics[width=0.5\textwidth]
+  			{./pics_simulador/hovz.pdf}}
+   \subfloat[\'Angulo de Yaw]{\label{fig:hovtheta} 
+  	\includegraphics[width=0.5\textwidth]
+  			{./pics_simulador/hov_theta.pdf}} 
+  \caption{Giro seg\'un el $\vec{k_q}$}
+  \label{fig:hov}
+\end{figure}
+
+Hasta aqu\'i hemos testeado el simulador en situaciones conocidas. Nos concentramos en analizar la caida libre y las cuatro acciones de control b\'asicas que se pueden realizar descriptas en \ref{chap:general}. De acuerdo a las pruebas realizadas puede afirmarse que su funcionamiento es el adecuado ya que en ninguna prueba se obtuvieron errores considerables. Sin embargo, es fundamental aclarar que hasta aqu\'i no es posible afirmar que el modelado del sistema sea adecuado, lo \'unico que puede concluirse es que el simulador representa fielmente las ecuaciones que han sido deducidas hasta el momento. Un error en las ecuaciones no se reflejar\'a hasta el momento de testear el cuadric\'optero. El trabajo realizado a la hora del modelado y la comparaci\'on con diversas bibliograf\'ias nos permite a esta altura estar convencidos de que dichas ecuaciones son adecuadas para modelar el sistema.
 
 \end{document}
