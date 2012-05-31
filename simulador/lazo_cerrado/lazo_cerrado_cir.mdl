@@ -90,15 +90,15 @@ Model {
     Outport {
       BusObject		      ""
       BusOutputAsStruct	      "off"
-      Name		      "noise1"
+      Name		      "w"
     }
     Outport {
       BusObject		      ""
       BusOutputAsStruct	      "off"
-      Name		      "noise2"
+      Name		      "setpoint"
     }
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.263"
+    ComputedModelVersion    "1.264"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -129,9 +129,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "pater"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Sat May 26 17:50:31 2012"
-  RTWModifiedTimeStamp	  259955430
-  ModelVersionFormat	  "1.%<AutoIncrement:263>"
+  LastModifiedDate	  "Thu May 31 01:44:17 2012"
+  RTWModifiedTimeStamp	  260329453
+  ModelVersionFormat	  "1.%<AutoIncrement:264>"
   ConfigurationManager	  "None"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -944,7 +944,7 @@ Model {
     ShowPageBoundaries	    off
     ZoomFactor		    "100"
     ReportName		    "simulink-default.rpt"
-    SIDHighWatermark	    "3224"
+    SIDHighWatermark	    "3225"
     Block {
       BlockType		      Inport
       Name		      "w1"
@@ -5311,6 +5311,7 @@ Model {
 		    SID			    "3036"
 		    Ports		    [1, 1]
 		    Position		    [535, 812, 595, 848]
+		    LibraryVersion	    "1.225"
 		    SourceBlock		    "simulink/Discrete/Discrete Derivative"
 		    SourceType		    "Discrete Derivative"
 		    ShowPortLabels	    "FromPortIcon"
@@ -5454,7 +5455,7 @@ Model {
 		    Line {
 		    SrcBlock		    "w4"
 		    SrcPort		    1
-		    Points		    [190, 0; 0, -90]
+		    Points		    [190, 0]
 		    DstBlock		    "Sum of\nElements"
 		    DstPort		    4
 		    }
@@ -11361,24 +11362,24 @@ Model {
     Block {
       BlockType		      Outport
       Name		      "noise"
-      SID		      "2448"
-      Position		      [600, 68, 630, 82]
+      SID		      "3225"
+      Position		      [260, 868, 290, 882]
       Port		      "13"
       IconDisplay	      "Port number"
     }
     Block {
       BlockType		      Outport
-      Name		      "noise1"
-      SID		      "2450"
-      Position		      [320, 618, 350, 632]
+      Name		      "w"
+      SID		      "2448"
+      Position		      [600, 68, 630, 82]
       Port		      "14"
       IconDisplay	      "Port number"
     }
     Block {
       BlockType		      Outport
-      Name		      "noise2"
-      SID		      "2451"
-      Position		      [830, 763, 860, 777]
+      Name		      "setpoint"
+      SID		      "2450"
+      Position		      [320, 618, 350, 632]
       Port		      "15"
       IconDisplay	      "Port number"
     }
@@ -11758,23 +11759,24 @@ Model {
     Line {
       SrcBlock		      "Subsystem2"
       SrcPort		      1
-      Points		      [285, 0]
-      DstBlock		      "Sum7"
-      DstPort		      2
+      Points		      [110, 0]
+      Branch {
+	Points			[175, 0]
+	DstBlock		"Sum7"
+	DstPort			2
+      }
+      Branch {
+	Points			[0, -110]
+	DstBlock		"noise"
+	DstPort			1
+      }
     }
     Line {
       SrcBlock		      "Product"
       SrcPort		      1
-      Points		      [20, 0; 0, 50; -435, 0]
-      Branch {
-	Points			[-25, 0; 0, 45; -380, 0]
-	DstBlock		"Vector\nConcatenate"
-	DstPort			1
-      }
-      Branch {
-	DstBlock		"noise2"
-	DstPort			1
-      }
+      Points		      [20, 0; 0, 50; -460, 0; 0, 45; -380, 0]
+      DstBlock		      "Vector\nConcatenate"
+      DstPort		      1
     }
     Line {
       SrcBlock		      "Sum7"
@@ -11884,14 +11886,14 @@ Model {
       }
       Branch {
 	Points			[0, -65]
-	DstBlock		"noise1"
+	DstBlock		"setpoint"
 	DstPort			1
       }
     }
     Line {
       SrcBlock		      "Mux3"
       SrcPort		      1
-      DstBlock		      "noise"
+      DstBlock		      "w"
       DstPort		      1
     }
     Line {

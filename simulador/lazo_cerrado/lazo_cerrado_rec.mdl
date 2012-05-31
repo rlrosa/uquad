@@ -97,7 +97,7 @@ Model {
       Name		      "setpoint"
     }
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.302"
+    ComputedModelVersion    "1.304"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -128,9 +128,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "pater"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Wed May 30 22:41:46 2012"
-  RTWModifiedTimeStamp	  260318505
-  ModelVersionFormat	  "1.%<AutoIncrement:302>"
+  LastModifiedDate	  "Thu May 31 02:08:32 2012"
+  RTWModifiedTimeStamp	  260330901
+  ModelVersionFormat	  "1.%<AutoIncrement:304>"
   ConfigurationManager	  "None"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -956,7 +956,7 @@ Model {
     ShowPageBoundaries	    off
     ZoomFactor		    "100"
     ReportName		    "simulink-default.rpt"
-    SIDHighWatermark	    "2986"
+    SIDHighWatermark	    "2999"
     Block {
       BlockType		      Inport
       Name		      "w1"
@@ -1152,7 +1152,7 @@ Model {
       System {
 	Name			"Setpoint"
 	Location		[0, 53, 1366, 768]
-	Open			off
+	Open			on
 	ModelBrowserVisibility	off
 	ModelBrowserWidth	200
 	ScreenColor		"white"
@@ -1175,7 +1175,7 @@ Model {
 	  BlockType		  Constant
 	  Name			  "Posicion inicial"
 	  SID			  "1781"
-	  Position		  [160, 295, 190, 325]
+	  Position		  [330, 275, 360, 305]
 	  Value			  "[x0; y0; z0]"
 	}
 	Block {
@@ -1219,22 +1219,15 @@ Model {
 	  Name			  "Vector\nConcatenate"
 	  SID			  "1785"
 	  Ports			  [2, 1]
-	  Position		  [430, 201, 435, 239]
+	  Position		  [850, 201, 855, 239]
 	  Mode			  "Vector"
 	}
 	Block {
 	  BlockType		  Constant
 	  Name			  "Vel y angulos"
 	  SID			  "1786"
-	  Position		  [160, 365, 190, 395]
+	  Position		  [570, 365, 600, 395]
 	  Value			  "setpoint"
-	}
-	Block {
-	  BlockType		  Constant
-	  Name			  "Velocidades"
-	  SID			  "1787"
-	  Position		  [160, 190, 190, 220]
-	  Value			  "[setpoint(4) setpoint(5)  setpoint(6)]"
 	}
 	Block {
 	  BlockType		  Constant
@@ -1244,23 +1237,239 @@ Model {
 	  Value			  "ti"
 	}
 	Block {
+	  BlockType		  SubSystem
+	  Name			  "velocidades"
+	  SID			  "2995"
+	  Ports			  [0, 1]
+	  Position		  [40, 263, 175, 387]
+	  MinAlgLoopOccurrences	  off
+	  PropExecContextOutsideSubsystem off
+	  RTWSystemCode		  "Auto"
+	  FunctionWithSeparateData off
+	  Opaque		  off
+	  RequestExecContextInheritance	off
+	  MaskHideContents	  off
+	  System {
+	    Name		    "velocidades"
+	    Location		    [0, 53, 1366, 768]
+	    Open		    off
+	    ModelBrowserVisibility  off
+	    ModelBrowserWidth	    200
+	    ScreenColor		    "white"
+	    PaperOrientation	    "landscape"
+	    PaperPositionMode	    "auto"
+	    PaperType		    "A4"
+	    PaperUnits		    "centimeters"
+	    TiledPaperMargins	    [1.270000, 1.270000, 1.270000, 1.270000]
+	    TiledPageScale	    1
+	    ShowPageBoundaries	    off
+	    ZoomFactor		    "100"
+	    Block {
+	      BlockType		      Constant
+	      Name		      "0"
+	      SID		      "2993"
+	      Position		      [25, 95, 55, 125]
+	      Value		      "0"
+	    }
+	    Block {
+	      BlockType		      Constant
+	      Name		      "1"
+	      SID		      "2994"
+	      Position		      [25, 150, 55, 180]
+	    }
+	    Block {
+	      BlockType		      Reference
+	      Name		      "Create 3x3 Matrix"
+	      SID		      "2988"
+	      Ports		      [9, 1]
+	      Position		      [265, 127, 325, 233]
+	      LibraryVersion	      "1.98"
+	      SourceBlock	      "aerolibutil/Create 3x3 Matrix"
+	      SourceType	      "Create 3x3 Matrix"
+	      ShowPortLabels	      "FromPortIcon"
+	      SystemSampleTime	      "-1"
+	      FunctionWithSeparateData off
+	      RTWMemSecFuncInitTerm   "Inherit from model"
+	      RTWMemSecFuncExecute    "Inherit from model"
+	      RTWMemSecDataConstants  "Inherit from model"
+	      RTWMemSecDataInternal   "Inherit from model"
+	      RTWMemSecDataParameters "Inherit from model"
+	      GeneratePreprocessorConditionals off
+	    }
+	    Block {
+	      BlockType		      Product
+	      Name		      "Product"
+	      SID		      "2999"
+	      Ports		      [2, 1]
+	      Position		      [425, 172, 455, 203]
+	      Multiplication	      "Matrix(*)"
+	      InputSameDT	      off
+	      OutDataTypeStr	      "Inherit: Inherit via internal rule"
+	      SaturateOnIntegerOverflow	off
+	    }
+	    Block {
+	      BlockType		      Trigonometry
+	      Name		      "Trigonometric\nFunction"
+	      SID		      "2990"
+	      Ports		      [1, 1]
+	      Position		      [80, 205, 110, 235]
+	    }
+	    Block {
+	      BlockType		      Trigonometry
+	      Name		      "Trigonometric\nFunction1"
+	      SID		      "2991"
+	      Ports		      [1, 1]
+	      Position		      [95, 340, 125, 370]
+	      Operator		      "cos"
+	    }
+	    Block {
+	      BlockType		      UnaryMinus
+	      Name		      "Unary Minus"
+	      SID		      "2992"
+	      Position		      [130, 135, 160, 165]
+	    }
+	    Block {
+	      BlockType		      Constant
+	      Name		      "Velocidades"
+	      SID		      "1787"
+	      Position		      [130, 460, 160, 490]
+	      Value		      "[setpoint(4) setpoint(5)  setpoint(6)]"
+	    }
+	    Block {
+	      BlockType		      Constant
+	      Name		      "Yaw"
+	      SID		      "2989"
+	      Position		      [30, 280, 60, 310]
+	      Value		      "setpoint(3)"
+	    }
+	    Block {
+	      BlockType		      Outport
+	      Name		      "velocidades"
+	      SID		      "2998"
+	      Position		      [760, 183, 790, 197]
+	      IconDisplay	      "Port number"
+	    }
+	    Line {
+	      SrcBlock		      "Yaw"
+	      SrcPort		      1
+	      Points		      [5, 0]
+	      Branch {
+		Points			[0, 60]
+		DstBlock		"Trigonometric\nFunction1"
+		DstPort			1
+	      }
+	      Branch {
+		Points			[-5, 0]
+		DstBlock		"Trigonometric\nFunction"
+		DstPort			1
+	      }
+	    }
+	    Line {
+	      SrcBlock		      "Trigonometric\nFunction1"
+	      SrcPort		      1
+	      Points		      [60, 0; 0, -175]
+	      Branch {
+		Points			[0, -40]
+		DstBlock		"Create 3x3 Matrix"
+		DstPort			1
+	      }
+	      Branch {
+		DstBlock		"Create 3x3 Matrix"
+		DstPort			5
+	      }
+	    }
+	    Line {
+	      SrcBlock		      "Trigonometric\nFunction"
+	      SrcPort		      1
+	      Points		      [5, 0]
+	      Branch {
+		Points			[125, 0; 0, -70]
+		DstBlock		"Create 3x3 Matrix"
+		DstPort			2
+	      }
+	      Branch {
+		Points			[-5, 0]
+		DstBlock		"Unary Minus"
+		DstPort			1
+	      }
+	    }
+	    Line {
+	      SrcBlock		      "Unary Minus"
+	      SrcPort		      1
+	      Points		      [80, 0; 0, 20]
+	      DstBlock		      "Create 3x3 Matrix"
+	      DstPort		      4
+	    }
+	    Line {
+	      SrcBlock		      "1"
+	      SrcPort		      1
+	      Points		      [50, 0; 0, 35; 140, 0]
+	      DstBlock		      "Create 3x3 Matrix"
+	      DstPort		      9
+	    }
+	    Line {
+	      SrcBlock		      "0"
+	      SrcPort		      1
+	      Points		      [135, 0]
+	      Branch {
+		Points			[0, 50]
+		DstBlock		"Create 3x3 Matrix"
+		DstPort			3
+	      }
+	      Branch {
+		Points			[10, 0]
+		Branch {
+		  Points		  [10, 0]
+		  Branch {
+		    Points		    [30, 0; 0, 100]
+		    DstBlock		    "Create 3x3 Matrix"
+		    DstPort		    8
+		  }
+		  Branch {
+		    Points		    [0, 80]
+		    DstBlock		    "Create 3x3 Matrix"
+		    DstPort		    6
+		  }
+		}
+		Branch {
+		  Points		  [0, 90]
+		  DstBlock		  "Create 3x3 Matrix"
+		  DstPort		  7
+		}
+	      }
+	    }
+	    Line {
+	      SrcBlock		      "Create 3x3 Matrix"
+	      SrcPort		      1
+	      DstBlock		      "Product"
+	      DstPort		      1
+	    }
+	    Line {
+	      SrcBlock		      "Velocidades"
+	      SrcPort		      1
+	      Points		      [245, 0]
+	      DstBlock		      "Product"
+	      DstPort		      2
+	    }
+	    Line {
+	      SrcBlock		      "Product"
+	      SrcPort		      1
+	      DstBlock		      "velocidades"
+	      DstPort		      1
+	    }
+	  }
+	}
+	Block {
 	  BlockType		  Outport
 	  Name			  "set"
 	  SID			  "1789"
-	  Position		  [505, 213, 535, 227]
+	  Position		  [925, 213, 955, 227]
 	  IconDisplay		  "Port number"
-	}
-	Line {
-	  SrcBlock		  "Velocidades"
-	  SrcPort		  1
-	  Points		  [30, 0; 0, -25]
-	  DstBlock		  "Product"
-	  DstPort		  2
 	}
 	Line {
 	  SrcBlock		  "Vel y angulos"
 	  SrcPort		  1
-	  Points		  [45, 0; 0, -150]
+	  Points		  [55, 0; 0, -150]
 	  DstBlock		  "Vector\nConcatenate"
 	  DstPort		  2
 	}
@@ -1273,7 +1482,7 @@ Model {
 	Line {
 	  SrcBlock		  "Posicion inicial"
 	  SrcPort		  1
-	  Points		  [35, 0; 0, -100; 115, 0]
+	  Points		  [5, 0; 0, -80; -25, 0]
 	  DstBlock		  "Sum"
 	  DstPort		  2
 	}
@@ -1307,9 +1516,16 @@ Model {
 	Line {
 	  SrcBlock		  "Sum"
 	  SrcPort		  1
-	  Points		  [25, 0; 0, 35]
+	  Points		  [445, 0; 0, 35]
 	  DstBlock		  "Vector\nConcatenate"
 	  DstPort		  1
+	}
+	Line {
+	  SrcBlock		  "velocidades"
+	  SrcPort		  1
+	  Points		  [30, 0; 0, -145]
+	  DstBlock		  "Product"
+	  DstPort		  2
 	}
       }
     }

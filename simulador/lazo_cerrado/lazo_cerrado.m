@@ -542,21 +542,26 @@ else
     waypoints = evalin('base','waypoints');
     [v,mod]=generador_rutas_rec(waypoints);
     k=1;
-    Nway = evalin('base','Nway');
+    Nway = length(waypoints(:,1));
     ti=evalin('base','ti');
    
     while k<=Nway 
        switch mod(k);
            case 0
                modo = 'hov';
+               setpoint = v(k,1:4);
            case 1
                modo = 'rec';
+               setpoint = v(k,1:4);
+           case 2
+               modo = 'cir';
+               setpoint = [0 v(k,4)];
        end
        
-       setpoint = [v(k,1:3) 0];                            
+                                   
                              
-       [taux,Xaux,Yaux]=sim_lazo_cerrado(ti,v(k,4),setpoint',modo);
-        ti=v(k,4);
+       [taux,Xaux,Yaux]=sim_lazo_cerrado(ti,v(k,5),setpoint',modo);
+        ti=v(k,5);
         assignin('base','ti',ti);
         X0=Yaux(end,1:12);
         assignin('base','x0',X0(1)); assignin('base','y0',X0(2));assignin('base','z0',X0(3));
@@ -2163,7 +2168,8 @@ function pushbutton5_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 assignin('base','Nway',0);
-assignin('base','waypoints',[evalin('base','x0') evalin('base','y0') evalin('base','z0') evalin('base','ti')]);
+assignin('base','waypoints',[evalin('base','x0') evalin('base','y0') evalin('base','z0')...
+    evalin('base','theta0') evalin('base','ti')]);
 ruta;
 
 

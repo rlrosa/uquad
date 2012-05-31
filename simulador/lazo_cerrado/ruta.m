@@ -22,7 +22,7 @@ function varargout = ruta(varargin)
 
 % Edit the above text to modify the response to help ruta
 
-% Last Modified by GUIDE v2.5 30-May-2012 16:04:34
+% Last Modified by GUIDE v2.5 31-May-2012 00:46:30
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -150,7 +150,7 @@ function edit5_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit5 as text
 %        str2double(get(hObject,'String')) returns contents of edit5 as a double
-
+assignin('base','waytheta',str2double(get(hObject,'String')));
 
 % --- Executes during object creation, after setting all properties.
 function edit5_CreateFcn(hObject, eventdata, handles)
@@ -193,7 +193,7 @@ function pushbutton1_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-var = [evalin('base','wayx') evalin('base','wayy') evalin('base','wayz') evalin('base','wayt')];
+var = [evalin('base','wayx') evalin('base','wayy') evalin('base','wayz') evalin('base','waytheta') evalin('base','wayt')];
 var2 = [evalin('base','waypoints');var];
 assignin('base','waypoints',var2);
 assignin('base','Nway',evalin('base','Nway')+1);
