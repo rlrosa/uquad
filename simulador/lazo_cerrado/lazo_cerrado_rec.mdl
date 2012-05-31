@@ -94,10 +94,10 @@ Model {
     Outport {
       BusObject		      ""
       BusOutputAsStruct	      "off"
-      Name		      "noise1"
+      Name		      "setpoint"
     }
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.298"
+    ComputedModelVersion    "1.302"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -128,9 +128,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "pater"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Sat May 26 17:46:12 2012"
-  RTWModifiedTimeStamp	  259955171
-  ModelVersionFormat	  "1.%<AutoIncrement:298>"
+  LastModifiedDate	  "Wed May 30 22:41:46 2012"
+  RTWModifiedTimeStamp	  260318505
+  ModelVersionFormat	  "1.%<AutoIncrement:302>"
   ConfigurationManager	  "None"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -10718,6 +10718,7 @@ Model {
       SID		      "1778"
       Ports		      [1, 1]
       Position		      [95, 690, 125, 720]
+      DelayTime		      "delay"
       InitialOutput	      "[x0 y0 z0 psi0 phi0 theta0 vq10 vq20 vq30 wq10 wq20 wq30]"
     }
     Block {
@@ -10843,9 +10844,9 @@ Model {
     }
     Block {
       BlockType		      Outport
-      Name		      "noise1"
+      Name		      "setpoint"
       SID		      "2986"
-      Position		      [435, 588, 465, 602]
+      Position		      [370, 588, 400, 602]
       Port		      "15"
       IconDisplay	      "Port number"
       PortDimensions	      "12"
@@ -11331,7 +11332,7 @@ Model {
       }
       Branch {
 	Points			[0, -110]
-	DstBlock		"noise1"
+	DstBlock		"setpoint"
 	DstPort			1
       }
     }

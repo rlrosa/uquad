@@ -20,7 +20,7 @@ Model {
       BusObject		      ""
       Name		      "w4"
     }
-    NumRootOutports	    14
+    NumRootOutports	    15
     Outport {
       BusObject		      ""
       BusOutputAsStruct	      "off"
@@ -91,8 +91,13 @@ Model {
       BusOutputAsStruct	      "off"
       Name		      "w"
     }
+    Outport {
+      BusObject		      ""
+      BusOutputAsStruct	      "off"
+      Name		      "setpoint"
+    }
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.344"
+    ComputedModelVersion    "1.346"
     NumModelReferences	    0
     NumTestPointedSignals   0
   }
@@ -123,9 +128,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "pater"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Sat May 26 18:46:13 2012"
-  RTWModifiedTimeStamp	  259958772
-  ModelVersionFormat	  "1.%<AutoIncrement:344>"
+  LastModifiedDate	  "Wed May 30 22:41:38 2012"
+  RTWModifiedTimeStamp	  260318497
+  ModelVersionFormat	  "1.%<AutoIncrement:346>"
   ConfigurationManager	  "None"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
@@ -951,7 +956,7 @@ Model {
     ShowPageBoundaries	    off
     ZoomFactor		    "100"
     ReportName		    "simulink-default.rpt"
-    SIDHighWatermark	    "1981"
+    SIDHighWatermark	    "1982"
     Block {
       BlockType		      Inport
       Name		      "w1"
@@ -3245,7 +3250,7 @@ Model {
       System {
 	Name			"Subsystem1"
 	Location		[9, 82, 1365, 821]
-	Open			on
+	Open			off
 	ModelBrowserVisibility	off
 	ModelBrowserWidth	200
 	ScreenColor		"white"
@@ -9089,7 +9094,7 @@ Model {
 	  System {
 	    Name		    "Fuerzas y Torques"
 	    Location		    [0, 53, 1366, 768]
-	    Open		    on
+	    Open		    off
 	    ModelBrowserVisibility  off
 	    ModelBrowserWidth	    200
 	    ScreenColor		    "white"
@@ -9263,7 +9268,7 @@ Model {
 	      System {
 		Name			"Fuerza Motor2"
 		Location		[0, 53, 1366, 768]
-		Open			on
+		Open			off
 		ModelBrowserVisibility	off
 		ModelBrowserWidth	200
 		ScreenColor		"white"
@@ -10638,6 +10643,7 @@ Model {
       SID		      "1936"
       Ports		      [1, 1]
       Position		      [90, 690, 120, 720]
+      DelayTime		      "delay"
       InitialOutput	      "[x0;y0;z0;0;0;theta0;0;0;0;0;0;0]"
     }
     Block {
@@ -10747,7 +10753,7 @@ Model {
       BlockType		      Outport
       Name		      "noise"
       SID		      "1443"
-      Position		      [460, 568, 490, 582]
+      Position		      [285, 723, 315, 737]
       Port		      "13"
       IconDisplay	      "Port number"
       PortDimensions	      "12"
@@ -10760,6 +10766,15 @@ Model {
       Port		      "14"
       IconDisplay	      "Port number"
       PortDimensions	      "4"
+    }
+    Block {
+      BlockType		      Outport
+      Name		      "setpoint"
+      SID		      "1982"
+      Position		      [270, 608, 300, 622]
+      Port		      "15"
+      IconDisplay	      "Port number"
+      PortDimensions	      "12"
     }
     Line {
       SrcBlock		      "Mux"
@@ -10950,16 +10965,32 @@ Model {
     Line {
       SrcBlock		      "Subsystem"
       SrcPort		      1
-      Points		      [225, 0]
-      DstBlock		      "Sum4"
-      DstPort		      3
+      Points		      [50, 0]
+      Branch {
+	Points			[175, 0]
+	DstBlock		"Sum4"
+	DstPort			3
+      }
+      Branch {
+	Points			[0, -50]
+	DstBlock		"noise"
+	DstPort			1
+      }
     }
     Line {
       SrcBlock		      "Zero-Order\nHold"
       SrcPort		      1
-      Points		      [70, 0; 0, -25]
-      DstBlock		      "Sum4"
-      DstPort		      1
+      Points		      [50, 0]
+      Branch {
+	Points			[20, 0; 0, -25]
+	DstBlock		"Sum4"
+	DstPort			1
+      }
+      Branch {
+	Points			[0, -90]
+	DstBlock		"setpoint"
+	DstPort			1
+      }
     }
     Line {
       SrcBlock		      "Mux2"
@@ -11067,17 +11098,9 @@ Model {
 	DstPort			1
       }
       Branch {
-	Points			[0, -40]
-	Branch {
-	  Points		  [0, -40; 185, 0]
-	  DstBlock		  "Mux2"
-	  DstPort		  1
-	}
-	Branch {
-	  Points		  [-30, 0]
-	  DstBlock		  "noise"
-	  DstPort		  1
-	}
+	Points			[0, -80; 185, 0]
+	DstBlock		"Mux2"
+	DstPort			1
       }
     }
     Line {
