@@ -38,6 +38,7 @@ Los algoritmos de control se encargan de definir la velocidad angular de los mot
 
 
 \subsection{Consideraciones previas}
+\label{sec:test_motores--disp-forma-u}
 
 El detector IR TSOP38256 es sensible a radiaciones infrarrojas moduladas a una frecuencia de $56$ KHz. Si se lo expone a una onda cuadrada de dicha frecuencia la salida del mismo es un ``0'' l\'ogico. Si no recibe dicha radiaci\'on la salida es un ``1'' l\'ogico.\\
 \begin{wrapfigure}{l}{0.55\textwidth}
@@ -47,10 +48,10 @@ El detector IR TSOP38256 es sensible a radiaciones infrarrojas moduladas a una f
   \caption{Dispositivo en forma de U}
   \label{fig:u}
 \end{wrapfigure}
-El dispositivo de medida de velocidad angular se trata de un cuerpo en forma de ``U", de un lado se tiene el LED infrarroja y del otro el detector, tal como se puede ver en la figura \ref{fig:u}.
+El dispositivo de medida de velocidad angular se trata de un cuerpo en forma de ``U", de un lado se tiene el LED infrarrojo y del otro el detector, tal como se puede ver en la figura \ref{fig:u}.
 La idea del dispositivo de medida es sencilla. Se trata de hacer ``pasar'' la radiaci\'on infrarroja emitida por el LED a trav\'es de la h\'elice en funcionamiento de uno de los motores. Esta radiaci\'on es recogida del otro lado por el receptor IR. De este modo tendremos a la salida del detector, pulsos de frecuencia correspondientes a la velocidad con la que la h\'elice obstruye el camino entre el sensor y el LED. \textbf{La velocidad angular ser\'a entonces la mitad de dicha frecuencia}.\\
 
-Como explicamos anteriormente el LED debe ser conmutado con una frecuencia de 56kHz por lo tanto se la alimentar\'a con un generador de se\~nales funcionando como generador de onda cuadrada a dicha frecuencia. Para lograr un correcto funcionamiento de el LED se requiere una corriente superior a los $100mA$. La amplitud de la onda cuadrada se regular\'a a $5V$ y se trabajar\'a con una resistencia de $20\Omega$ en serie. La salida del receptor IR se conecta directamente al osciloscopio digital.\\
+Como explicamos anteriormente el LED debe ser conmutado con una frecuencia de 56kHz por lo tanto se lo alimentar\'a con un generador de se\~nales funcionando como generador de onda cuadrada a dicha frecuencia. Para lograr un correcto funcionamiento del LED se requiere una corriente superior a los $100mA$. La amplitud de la onda cuadrada se regular\'a a $5V$ y se trabajar\'a con una resistencia de $20\Omega$ en serie. La salida del receptor IR se conecta directamente al osciloscopio digital, el cual es capaz de medir frecuencias.\\
 
 \subsection{Relaci\'on entre comando $I^2C$, velocidad angular y empuje}
 
@@ -88,7 +89,8 @@ Si no se env\'ia ning\'un comando $I^2C$ los motores no giran. Es evidente que s
 \subsubsection*{Desarrollo del experimento}
 El procedimiento consiste en enviar distintos comandos $I^2C$ al cuadric\'optero y registrar las diferentes lecturas de masa en la balanza para determinar el empuje de los motores y en registrar las diferentes medidas de frecuencia en el osciloscopio para determinar la velocidad angular de los cuatro motores.
 El setup experimental puede observarse en la figura \ref{fig:setup1}.
-Se solidariza el cuadric\'optero a una base de madera. Sobre esta \'ultima se a\~nade peso suficiente para asegurar que el cuadric\'optero no se eleve, se agregaron 3Kg de sobrepeso para asegurar completamente dicha condici\'on.
+Se solidariza el cuadric\'optero a una base de madera. Sobre esta \'ultima se a\~nade peso suficiente para asegurar que el cuadric\'optero no se eleve, se agregaron 3Kg de sobrepeso.
+
 \begin{wrapfigure}{l}{0.45\textwidth}
 \vspace{-25pt}
   \begin{center}
@@ -130,7 +132,7 @@ Asumiendo que los cuatro motores se comportan en forma similar se tiene que:
 T=-\frac{M_{medida}g}{4}
 \end{equation}
 
-La medida de frecuencia se realiza con el dispositivo IR descrito en la secci\'on anterior. La frecuencia medida ($f_{medida}$) corresponde al inverso del tiempo que transcurre entre el pasaje de una hoja de la h\'elice y la otra. El per\'iodo de la rotaci\'on de la h\'elice es el doble y por ende la frecuencia de la rotaci\'on es la mitad de la frecuencia medida. Por lo tanto se tiene que:
+La medida de frecuencia se realiza con el dispositivo IR descripto en la secci\'on anterior. La frecuencia medida ($f_{medida}$) corresponde al inverso del tiempo que transcurre entre el pasaje de una hoja de la h\'elice y la otra. El per\'iodo de la rotaci\'on de la h\'elice es el doble y por ende la frecuencia de la rotaci\'on es la mitad de la frecuencia medida. Por lo tanto se tiene que:
 \begin{equation}
 \label{eq:omega_ir}
 \omega=2\pi f=\pi f_{medida}
@@ -138,7 +140,7 @@ La medida de frecuencia se realiza con el dispositivo IR descrito en la secci\'o
 
 Se mide la velocidad angular de los cuatro motores y se trabaja con el promedio. En la secci\'on \ref{sec:motores} se ver\'a porqu\'e es adecuado considerar el promedio.
 
-\subsection{Relaci\'on entre velocidad $I^2C$, velocidad angular y torque}
+\subsection{Relaci\'on entre velocidad angular y torque}
 
 \subsubsection*{Objetivos espec\'ificos}
 El objetivo de este experimento es obtener la relaci\'on entre velocidad angular y torque.
@@ -150,7 +152,7 @@ $$Q=a\omega^2+b\omega$$
 
 \subsubsection*{Desarrollo del experimento}
 \label{sub:torque}
-Se ubica el cuadric\'optero sobre la balanza. Se retiran tres de las cuatro h\'elices del cuadric\'optero. La cuarta h\'elice se rota de forma que su eje principal sea paralelo al plano de la balanza. Se ubica el detector IR de forma de poder medir la velocidad angular de la h\'elice. El setup de medida puede verse en la figura \ref{fig:setup2}. De acuerdo a lo estudiado la h\'elice presenta un torque ($Q$) negativo respecto de su eje central si el motor rota en sentido anti-horario. Nos proponemos calcular el torque total respecto de dicho eje. Las fuerzas presentes en el sistema son: el peso, la fuerza de empuje, la resultante de las normales ($N = N1+N2$) y las fuerzas de fricci\'on en el plano del plato de la balanza. Estas \'ultimas y el empuje no realizan ning\'un torque en la direcci\'on de inter\'es. Recordamos que el torque de una fuerza respecto de un eje se calcula como:
+Se ubica el cuadric\'optero sobre la balanza. Se retiran tres de las cuatro h\'elices del cuadric\'optero. La cuarta h\'elice se rota de forma que su eje principal se encuentre paralelo al plano de la balanza. Se ubica el detector IR de forma de poder medir la velocidad angular de la h\'elice. El setup de medida puede verse en la figura \ref{fig:setup2}. De acuerdo a lo estudiado la h\'elice presenta un torque ($Q$) negativo respecto de su eje central si el motor rota en sentido anti-horario. Nos proponemos calcular el torque total respecto de dicho eje. Las fuerzas presentes en el sistema son: el peso, la fuerza de empuje, la resultante de las normales ($N = N1+N2$) y las fuerzas de fricci\'on en el plano del plato de la balanza. Estas \'ultimas y el empuje no realizan ning\'un torque en la direcci\'on de inter\'es. Recordamos que el torque de una fuerza respecto de un eje se calcula como:
 \begin{wrapfigure}{l}{0.55\textwidth}
   \vspace{0pt}
   \begin{center}
@@ -189,7 +191,7 @@ Q=-LM_{medida}g
 \end{equation}
 
 \subsection{Respuesta al Escal\'on}
-Se caracterizar\'a al motor en lo que respecta a su respuesta al escal\'on. Se ver\'a cuanto demora un motor en pasar de la velocidad angular en r\'egimen correspondiente al valor de comando $I^2C$ 50 a la velocidad angular en r\'egimen correspondiente al valor de comando $I^2C$ 150. El osciloscopio no resulta adecuado para observar las diferencias de velocidad angular obtenidas. Se procede a conectar la salida del sensor IR a un \emph{buffer} octal y la salida de este \'ultimo al analizador l\'ogico\footnote{ Esto fue necesario ya que la tensi\'on de la salida del IR disminu\'ia dr\'asticamente al conectarlo directamente al analizador l\'ogico a valores que este \'ultimo no es capaz de identificar como ``1'' l\'ogicos}. El analizador l\'ogico registra la salida del sensor R durante 5 segundos a una tasa de muestreo de 2kHz. Se obtendr\'an las diferencias de tiempos entre flancos de subida sucesivos($t_f$). Cada flanco de subida corresponde a una hoja de la h\'elice siendo detectada por el sensor IR. La velocidad angular de la h\'elice puede calcularse como:
+Se caracterizar\'a al motor en lo que respecta a su respuesta al escal\'on. Se ver\'a cuanto demora un motor en pasar de la velocidad angular en r\'egimen correspondiente al valor de comando $I^2C$ 50 a la velocidad angular en r\'egimen correspondiente al valor de comando $I^2C$ 150. El osciloscopio no resulta adecuado para observar las diferencias de velocidad angular obtenidas. Se procede a conectar la salida del sensor IR a un \emph{buffer} octal y la salida de este \'ultimo al analizador l\'ogico\footnote{ Esto fue necesario ya que la tensi\'on de la salida del IR disminu\'ia dr\'asticamente al conectarlo directamente al analizador l\'ogico a valores que este \'ultimo no es capaz de identificar como ``1'' l\'ogicos.}. El analizador l\'ogico registra la salida del sensor IR durante 5 segundos a una tasa de muestreo de 2kHz. Se obtendr\'an las diferencias de tiempos entre flancos de subida sucesivos($t_f$). Cada flanco de subida corresponde a una hoja de la h\'elice siendo detectada por el sensor IR. La velocidad angular de la h\'elice puede calcularse como:
 
 \begin{equation}
 \omega = 2 \pi \frac{1}{2t_f} = \frac{\pi}{t_f}
@@ -200,7 +202,7 @@ Se caracterizar\'a al motor en lo que respecta a su respuesta al escal\'on. Se v
 \subsection{Comparaci\'on entre motores}
 \label{sec:motores} 
 
-En la tabla \ref{tab:motores} todos los valores obtenidos experimentalmente de acuerdo al procedimiento descrito. 
+En la tabla \ref{tab:motores} se presentan los resultados obtenidos experimentalmente de acuerdo al procedimiento descrito. 
 
 
 \begin{table}[H]
@@ -228,8 +230,7 @@ En la tabla \ref{tab:motores} todos los valores obtenidos experimentalmente de a
 \label{tab:motores}
 \end{table}
 
-En la figura \ref{fig:motores} se presentan las velocidades angulares de los cuatro motores contra el comando $I^2C$, mientras que en la figura \ref{fig:difmotores} se muestra la diferencia entre la velocidad angular de cada motor y el promedio de las mismas para cada comando $I^2C$ enviado.\\
-En la figura \ref{fig:motores} se observa que el comportamiento de los motores es en todos los casos similar. Para velocidades angulares bajas los motores se comportan en forma id\'entica, y comienzan a distanciarse al aumentar la velocidad.\\
+En la figura \ref{fig:motores} se presentan las velocidades angulares de los cuatro motores contra el comando $I^2C$, mientras que en la figura \ref{fig:difmotores} se muestra la diferencia entre la velocidad angular de cada motor y el promedio de las mismas para cada comando $I^2C$ enviado. En la figura \ref{fig:motores} se observa que el comportamiento de los motores es en todos los casos similar. Para velocidades angulares bajas los motores se comportan en forma id\'entica, y comienzan a distanciarse al aumentar la velocidad.\\
  
 
 \begin{figure}[h!]
@@ -276,7 +277,7 @@ Para el modelo c\'ubico se obtiene:
 
 El c\'alculo del error promedio y la desviaci\'on est\'andar no presenta diferencias significativas para uno y otro modelo, por lo tanto se opta por trabajar con el modelo m\'as sencillo, es decir el cuadr\'atico. Se tiene entonces que:
 \begin{equation}
-T=3.5296\times10^{-5}\omega^2-4.9293\times10^{-4}\omega
+T=4.6016\times10^{-5}\omega^2-1.0380\times10^{-3}\omega
 \end{equation}
 
 \begin{figure}[H]
@@ -293,10 +294,8 @@ T=3.5296\times10^{-5}\omega^2-4.9293\times10^{-4}\omega
 
 \subsection{Obtenci\'on de la curva $I^2C$ contra velocidad angular}
 
-A partir de los resultados presentados en la tabla \ref{tab:motores} y la ecuaci\'on \ref{eq:omega_ir} se intenta obtener la relaci\'on entre comando $I^2C$ y velocidad angular. En la figura \ref{fig:iwi} se muestran los datos obtenidos experimentalmente y las curvas predichas por los modelos de ajuste considerados.
-
-A simple vista en la figura ya puede observarse que el modelo c\'ubico aproxima mejor que el modelo cuadr\'atico.
-Los resultados obtenidos para los modelos de ajuste propuesto vienen a confirmar dicha constataci\'on.
+A partir de los resultados presentados en la tabla \ref{tab:motores} y la ecuaci\'on \ref{eq:omega_ir} se intenta obtener la relaci\'on entre comando $I^2C$ y velocidad angular. En la figura \ref{fig:iwi} se muestran los datos obtenidos experimentalmente y las curvas predichas por los modelos de ajuste considerados. A simple vista en la figura puede observarse que el modelo c\'ubico aproxima mejor que el modelo cuadr\'atico.
+Los resultados obtenidos para los modelos de ajuste propuesto vienen a confirmar dicha observaci\'on.\\
 
 Para el modelo cuadr\'atico se obtiene:
 \begin{itemize}
@@ -394,7 +393,7 @@ De acuerdo al procedimiento detallado en \ref{sub:torque} se obtuvieron las sigu
 Recordamos que para la caracterizaci\'on de la respuesta velocidad angular - torque se propuso un modelo cuadr\'atico. Los resultados obtenidos fueron:
 
 \begin{itemize}
-\item Par\'ametros: \newline$a=3.4734\times10^{-6}Nms^2$,\newline$b=-1.3205\times 10 ^{-4} Nms$
+ \item Par\'ametros: \newline$a=3.4734\times10^{-6}Nms^2$,\newline$b=-1.3205\times 10 ^{-4} Nms$
 \item Error promedio:\newline$\mu = 1.7824\times 10^{-6}Nm$
 \item Desviaci\'on est\'andar: \newline$\sigma = 9.2686\times 10^{-4}$ 
 \end{itemize}

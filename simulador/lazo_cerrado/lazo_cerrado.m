@@ -22,7 +22,7 @@ function varargout = lazo_cerrado(varargin)
 
 % Edit the above text to modify the response to help lazo_cerrado
 
-% Last Modified by GUIDE v2.5 04-May-2012 10:55:14
+% Last Modified by GUIDE v2.5 30-May-2012 16:06:40
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -507,36 +507,93 @@ function pushbutton2_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton2 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
-ind=evalin('base','indice');
-
-switch ind
-    case 1 
-        modo='hov';
-        setpoint=[evalin('base','xs') evalin('base','ys') evalin('base','zs')...
-            evalin('base','thetas')];
-        
-    case 2 
-        modo='rec';
-        setpoint=[evalin('base','vq1s') evalin('base','vq2s') evalin('base','vq3s')...
-            evalin('base','thetas')];
-    case 3 
-        modo='cir';
-        setpoint=[evalin('base','vs') evalin('base','thetaps')];
-end
-
 determinar_vel;
-%X0=[x0 y0 z0 psi0 phi0 thetha0 vq10  vq20 vq30 wq10 w20 wq30];
-ti=evalin('base','ti');
-tf=evalin('base','tf');
+assignin('base','delay',0);
+if(~evalin('base','route')) 
+    assignin('base','delay',1);
+    ind=evalin('base','indice');
 
-[t,X,Y]=sim_lazo_cerrado(ti, tf,setpoint',modo);
+    switch ind
+        case 1 
+            modo='hov';
+            setpoint=[evalin('base','xs') evalin('base','ys') evalin('base','zs')...
+                evalin('base','thetas')];
+
+        case 2 
+            modo='rec';
+            setpoint=[evalin('base','vq1s') evalin('base','vq2s') evalin('base','vq3s')...
+                evalin('base','thetas')];
+        case 3 
+            modo='cir';
+            setpoint=[evalin('base','vs') evalin('base','thetaps')];
+    end
+
+    
+
+    ti=evalin('base','ti');
+    tf=evalin('base','tf');
+
+    [t,X,Y]=sim_lazo_cerrado(ti, tf,setpoint',modo);
+  
+
+
+    hold off 
+else
+    waypoints = evalin('base','waypoints');
+    [v,mod]=generador_rutas_rec(waypoints);
+    k=1;
+    Nway = length(waypoints(:,1));
+    ti=evalin('base','ti');
+   
+    while k<=Nway 
+       switch mod(k);
+           case 0
+               modo = 'hov';
+               setpoint = v(k,1:4);
+           case 1
+               modo = 'rec';
+               setpoint = v(k,1:4);
+           case 2
+               modo = 'cir';
+               setpoint = [0 v(k,4)];
+       end
+       
+                                   
+                             
+       [taux,Xaux,Yaux]=sim_lazo_cerrado(ti,v(k,5),setpoint',modo);
+        ti=v(k,5);
+        assignin('base','ti',ti);
+        X0=Yaux(end,1:12);
+        assignin('base','x0',X0(1)); assignin('base','y0',X0(2));assignin('base','z0',X0(3));
+
+        assignin('base','psi0',X0(4));assignin('base','phi0',X0(5));assignin('base','theta0',X0(6));
+
+        assignin('base','vq10',X0(7));assignin('base','vq20',X0(8));assignin('base','vq30',X0(9));
+
+        assignin('base','wq10',X0(10));assignin('base','wq20',X0(11));assignin('base','wq30',X0(12));
+        
+        %Agrego al tiempo y al vector de estados este segmento de
+        %simulación
+        
+        if k==1;
+            t=taux;
+            X=Xaux;
+            Y=Yaux;
+        else
+            t=[t;taux(2:end)]; % No agrego la primer muestra para no tener repetidas
+            X=[X;Xaux(2:end,:)]; %Idem
+            Y=[Y;Yaux(2:end,:)]; %Idem
+            
+        end
+        k = k+1;
+  
+    end
+    
+end
 assignin('base','t',t);
 assignin('base','X',X);
 assignin('base','Y',Y);
 
-
-hold off 
 
 % --- Executes during object creation, after setting all properties.
 function axes1_CreateFcn(hObject, eventdata, handles)
@@ -1589,8 +1646,8 @@ function slider85_CreateFcn(hObject, eventdata, handles)
 if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor',[.9 .9 .9]);
 end
-assignin('base','var_mot',25);
-set(hObject,'Value',0.5);
+assignin('base','var_mot',0);
+set(hObject,'Value',0);
 %set(handles.varmot,'String',num2str(25,'%f1.2'));
 
 
@@ -2103,3 +2160,22 @@ end
 set(hObject,'String','1');
 var=str2double(get(hObject,'String'));
     assignin('base','Q14',var)
+
+
+% --- Executes on button press in pushbutton5.
+function pushbutton5_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton5 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+assignin('base','Nway',0);
+assignin('base','waypoints',[evalin('base','x0') evalin('base','y0') evalin('base','z0')...
+    evalin('base','theta0') evalin('base','ti')]);
+ruta;
+
+
+% --- Executes during object creation, after setting all properties.
+function pushbutton5_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to pushbutton5 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+assignin('base','route',0);

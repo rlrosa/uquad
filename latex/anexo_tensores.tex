@@ -38,59 +38,57 @@ Por último las masas de los elementos en cuestión son:
 
 \label{tensores}
 
-El tensor de inercia del sistema puede calcularse como la suma de los tensores de inercia de los rígidos que lo componen. Se considera como fue expresado anteriormente el centro del cuadricóptero como una esfera maciza. El tensor de inercia de dicha esfera puede calcularse a partir de la definición misma de tensor de inercia, sin embargo por ser una forma geométrica de vasto uso en el campo de la mecánica su tensor de inercia se encuentra ya tabulado. Sucede lo mismo con las restantes formas geométricas que componen al sistema. Los tensores utilizados pueden obtenerse en \cite{bib:inercia} En el caso de la esfera se tiene que el tensor de inercia respecto de  su centro de masa es: 
-
-$$
+El tensor de inercia del sistema puede calcularse como la suma de los tensores de inercia de los rígidos que lo componen. Se considera como fue expresado anteriormente el centro del cuadricóptero como una esfera maciza. El tensor de inercia de dicha esfera puede calcularse a partir de la definición misma de tensor de inercia, sin embargo por ser una forma geométrica de vasto uso en el campo de la mecánica su tensor de inercia se encuentra ya tabulado. Sucede lo mismo con las restantes formas geométricas que componen al sistema. Los tensores utilizados pueden obtenerse en \cite{bib:inercia}. En el caso de la esfera se tiene que el tensor de inercia respecto de  su centro de masa es:
+\begin{equation}
 \Pi_{G_E}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}= M_E\left(\begin{array}{ccc}
 \frac{2R^2}{5}  &0&  0\\
 0  &\frac{2R^2}{5} & 0\\
 0  &0 & \frac{2R^2}{5} \\
-\end{array}\right) \\
-$$
+\end{array}\right) 
+\end{equation}
 
-En este caso el centro de masa del sistema corresponde al centro de masa de la esfera a partir de ciertas suposiciones que se realizan sobre la simetría del sistema. Por dicho motivo podemos afirmar que $\Pi_{G_E}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}} = \Pi_{O\prime _E}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}} $, siendo $O\prime$ el centro de la esfera.
+En este caso el centro de masa del sistema corresponde al centro de masa de la esfera a partir de ciertas suposiciones que se realizan sobre la simetría del sistema. Por dicho motivo podemos afirmar que $\Pi_{G_E}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}} = \Pi_{O^{\prime} _E}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}} $, siendo $O^{\prime}$ el centro de la esfera.\\
 
-Por otra parte el tensor de inercia de una varilla, cuya longitud coincide con el versor $\vec{i_q}$, respecto a su centro de masa tiene la forma:
+Por otra parte el tensor de inercia de una varilla, cuyo eje principal coincide con el versor $\vec{i_q}$, respecto a su centro de masa tiene la forma:
 
-$$
+\begin{equation}
 \Pi_{G_{Vx}}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}= M_V\left(\begin{array}{ccc}
 0  &0&  0\\
 0  &\frac{L^2}{12} & 0\\
 0  &0 & \frac{L^2}{12}  \\
 \end{array}\right) \\ 
-$$
+\end{equation}
 
-Sin embargo resulta mucho ms interesante obtener el tensor de inercia expresado respecto del centro de masa del sistema. Para realizar dicho cambio se utiliza el Teorema de Steiner. Dicho teorema afirma que: $\Pi_Q = \Pi_G +J_Q^{M,G}$, donde los términos de $J_Q^{M,G}$ pueden calcularse como: $(J_Q^{M,G})_{\alpha \beta} = M(G-Q)^2\delta_{\alpha \beta}-M(G-Q)_{\alpha}M(G-Q)_{\beta}$. El término $\delta_{\alpha \beta}$ es conocido como Delta de Kronecker. Su valor es uno si $\alpha =\beta$ y cero si $\alpha \neq \beta$. En el caso en consideración dicha matriz resulta en:
+Sin embargo resulta mucho ms interesante obtener el tensor de inercia expresado respecto del centro de masa del sistema. Para realizar dicho cambio se utiliza el \emph{Teorema de Steiner}. Dicho teorema afirma que: $\Pi_Q = \Pi_G +J_Q^{M,G}$, donde los términos de $J_Q^{M,G}$ pueden calcularse como: $(J_Q^{M,G})_{\alpha \beta} = M(G-Q)^2\delta_{\alpha \beta}-M(G-Q)_{\alpha}M(G-Q)_{\beta}$. El término $\delta_{\alpha \beta}$ es conocido como Delta de Kronecker. Su valor es uno si $\alpha =\beta$ y cero si $\alpha \neq \beta$. En el caso en consideración dicha matriz resulta en:
 
-$$
+\begin{equation}
 J_O\prime^{M_{Vx},G}= M_V \left(\begin{array}{ccc}
 0  &0&  0\\
 0  & (\frac{L}{2}+d_v)^2 & 0\\
 0  &0 & (\frac{L}{2}+d_v)^2  \\
 \end{array}\right) \\
-$$
+\end{equation}
 
 Por lo tanto el momento de inercia total de dicha varilla es:
-$$
-\Pi_{O\prime_{Vx}}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}=M_V \left(\begin{array}{ccc}
+\begin{equation}
+\Pi_{O^{\prime}_{Vx}}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}=M_V \left(\begin{array}{ccc}
 0  &0&  0\\
 0  &\frac{L^2}{3}+(\frac{Ld_v}{2})^2+d_v^2 & 0\\
 0  &0 & \frac{L^2}{3}+(\frac{Ld_v}{2})^2+d_v^2  \\
-\end{array}\right)$$
+\end{array}\right)\end{equation}
 
 
-Análogamente, el tensor de inercia de una varilla cuya longitud se encuentra respecto de la dirección $\vec{j_q}$ respecto del centro de masa del sistema es:
+Análogamente, el tensor de inercia de una varilla cuyo eje principal se encuentra respecto de la dirección $\vec{j_q}$ respecto del centro de masa del sistema es:
 
-$$
-\Pi_{O\prime_{Vy}}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}=M_V \left(\begin{array}{ccc}
+\begin{equation}
+\Pi_{O^{\prime}_{Vy}}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}=M_V \left(\begin{array}{ccc}
 \frac{L^2}{3}+(\frac{Ld_v}{2})^2+d_v^2  &0 & 0\\
 0  &0 & 0\\
 0  &0 & \frac{L^2}{3}+(\frac{Ld_v}{2})^2+d_v^2  \\
-\end{array}\right)$$
+\end{array}\right)\end{equation}
 
 
-Sucede algo similar en lo que respecta a los motores. Tendremos un tensor de inercia para los motores que se encuentran sobre la dirección $\vec{i_q}$ y otro para los motores que se encuentran sobre la dirección $\vec{j_q}$. El momento de inercia de un cilindro en su centro de masa es:
-
+Sucede algo similar en lo que respecta a los motores. Tendremos un tensor de inercia para los motores que se encuentran sobre la dirección $\vec{i_q}$ y otro para los motores que se encuentran sobre la dirección $\vec{j_q}$. El momento de inercia de un cilindro en su centro de masa es:\\
 \begin{equation}
 \label{eq:izzm}
 \Pi_{G_{M}}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}=M_M\left(\begin{array}{ccc}
@@ -99,51 +97,51 @@ Sucede algo similar en lo que respecta a los motores. Tendremos un tensor de ine
 0  &0 & \frac{r^2}{2}  
 \end{array}\right)
 \end{equation}
+
 La entrada $(3,3)$ de la matriz de la ecuación \ref{eq:izzm} la pasaremos a llamar $I_{zzm}$\\
 
 Por lo tanto el momento de inercia respecto del centro de masa del sistema para un cilindro que se encuentra en la dirección $\vec{i_q}$ es:
-$$
-\Pi_{O\prime_{Mx}}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}=M_M\left(\begin{array}{ccc}
+\begin{equation}
+\Pi_{O^{\prime}_{Mx}}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}=M_M\left(\begin{array}{ccc}
 \frac{3r^2+h^2}{12}  &0&  0\\
 0  &\frac{3r^2+h^2}{12} +d_m^2& 0\\
 0  &0 & \frac{r^2}{2}+d_m^2  
 \end{array}\right)
-$$
+\end{equation}
 
 
 En el caso de un cilindro que se encuentra en la dirección $\vec{j_q}$ se tiene que::
-$$
-\Pi_{O\prime_{My}}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}=M_M\left(\begin{array}{ccc}
+\begin{equation}
+\Pi_{O^{\prime}_{My}}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}=M_M\left(\begin{array}{ccc}
 \frac{3r^2+h^2}{12} +d_m^2 &0&  0\\
 0  &\frac{3r^2+h^2}{12} & 0\\
 0  &0 & \frac{r^2}{2}+d_m^2  
 \end{array}\right)
-$$
+\end{equation}
 
 
 Finalmente, el tensor de inercia del sistema, se calcula como la suma de los tensores de inercia de las partes que lo componen:
-$$\Pi_{O\prime}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}} =\Pi_{O\prime_E}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}} + 2 \Pi_{O\prime_{Vx}}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}} + 2 \Pi_{O\prime_{Vy}}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}} + 2 \Pi_{O\prime_{Mx}}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}+ 2 \Pi_{O\prime_{My}}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}$$.
+\begin{equation}
+\Pi_{O^{\prime}}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}} =\Pi_{O^{\prime}_E}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}} + 2 \Pi_{O^{\prime}_{Vx}}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}} + 2 \Pi_{O^{\prime}_{Vy}}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}} + 2 \Pi_{O^{\prime}_{Mx}}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}+ 2 \Pi_{O^{\prime}_{My}}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}
+\end{equation}
 
 Dado que todos los tensores de inercia considerados hasta el momento son diagonales, podemos escribir el tensor de inercia del sistema como:
 
-$$\Pi_{O\prime}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}=\left(\begin{array}{ccc}
+\begin{equation}
+\Pi_{O^{\prime}}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}=\left(\begin{array}{ccc}
 I_{xx}  &0&  0\\
 0  &I_{yy}& 0\\
 0  &0 & I_{zz}  
-\end{array}\right)$$
+\end{array}\right)\end{equation}
 
 \section{Resultados} 
 
-En base al análisis realizado hasta el momento se tiene que: 
+En base al análisis realizado hasta el momento se obtienen los siguientes valores:
 
-$$I_{zmm}=1.54\times10^{-5}kgm^2
-$$
+\begin{itemize}
+\item $I_{zmm}=1.54\times10^{-5}kgm^2$
+\item $I_{xx}=I_{yy}=2.32\times10^{-2}kgm^2$
+\item $I_{zz}=4.37\times10^{-2}kgm^2$
+\end{itemize}
 
-$$
-I_{xx}=I_{yy}=2.32\times10^{-2}kgm^2
-$$
-
-$$
-I_{zz}=4.37\times10^{-2}kgm^2
-$$
 \end{document}

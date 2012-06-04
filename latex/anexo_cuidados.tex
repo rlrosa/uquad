@@ -1,0 +1,56 @@
+\documentclass[main]{subfiles}
+
+\begin{document}
+
+\chapter{Hardware - Cuidados}
+\label{chap:hardware-cuidados}
+
+\section{Baterías del Cuadricóptero (LiPo)}
+\label{sec:hardware-cuidados--baterias-del-cuadricoptero-lipo}
+
+Las baterías que se utilizan para el cuadricóptero son baterías de polímero de litio (LiPo). Pueden resultar peligrosas si se usan de manera inapropiada. A continuación se resumen algunos de los puntos más importantes:
+\begin{itemize}
+\item Nunca dejar cargando sin supervisión (no dejar cargando de noche).
+\item Cargar solamente utilizando cargadores balanceados, como los que fueron adquiridos por el proyecto. Recargar una batería puede llevar entre 4 y 6 horas.
+\item No dejar que se descargue completamente.
+  \begin{itemize}
+  \item Si los motores comienzan a reducir su velocidad, es probable que la batería se esté acabando. Reemplazarla.
+  \item Verificar que la batería quede desconectada de los ESCs al terminar de utilizar el cuadricóptero para evitar que se descarguen completamente.
+  \end{itemize}
+\item Si se observa que la batería se ha inchado dejar de usar inmediatamente, y deshacerse de ella.
+\end{itemize}
+
+Por más información, los foros de \textit{RCGroups} pueden resultar útiles, por ejemplo en \url{http://www.rcgroups.com/forums/showthread.php?t=209187}.
+
+\section{Baterías de la electrónica - Beaglejuice}
+\label{sec:hardware-cuidados-baterias-de-la-electronica-beaglejuice}
+
+La batería que alimenta la electrónica (\textit{Beaglejuice}) fue comprada a la empresa \textit{Liquidware}. Algunas cosas a tomar en cuenta:
+
+\begin{itemize}
+\item Recargar una \textit{Beaglejuice} completamente lleva aproximadamente 12 horas, y el tiempo útil (usando \textit{WiFi} y \textit{GPS}) es de no más de 2 horas. No conviene dejarla cargando de noche, pero se ha hecho muchas veces, debido al tiempo que tardan en cargarse.
+\item No hay documentación sobre estas baterías. Encienden 2 LEDs blancos cuando están prendidas, uno naranja cuando están cargando, y a veces otro LED naranja (de manera intermitente) durante el proceso de carga (no se sabe que significa, y no ha dado problemas).
+\end{itemize}
+
+\section{Motores y Hélices}
+\label{sec:hardware-cuidados--motores-y-helices}
+
+\subsection{Hélices}
+\label{sec:hardware-cuidados--helices}
+
+Antes de realizar cualquier prueba, revisar que las hélices estén bien ajustadas. Se aflojan con el uso, y pueden llegar a salirse.
+
+Se pueden seguir usando si reciben golpes leves, como raspones, etc, pero no conviene usarlas si tienen alguna parte quebrada, ya que se les exige mucho durante el vuelo, y pueden partirse.
+
+Si se desea medir la velocidad de las hélices con el dispositivo de la sección \ref{sec:test_motores--disp-forma-u}, usar lentes de protección, por las dudas que alguna parte de una hélice salga despedida por accidentarse contra el dispositivo.
+
+\subsection{Motores}
+\label{sec:hardware-cuidados--helices}
+
+Se han hecho muchas pruebas usando cuerdas para tener más control sobre el cuadricóptero. En caso de repetirse este tipo de pruebas, verificar que no haya riesgo de enredar cuerdas con motores, ya que este tipo de exigencia ha demostrado ser capaz de dañar permanentemente un motor.
+
+Los motores tiene imanes, y por lo tanto atraen restos ferromagnéticos que se encuentren cerca de ellos. Evitar exponer los motores a este tipo de condiciones, ya que no hay nada que evite el ingreso de partículas ferromagnéticas a las partes móviles de los motores, y podrían afectar su performance.
+
+La aislación de los cables que van de los ESCs a los motores ha demostrado ser de mala calidad. Un cortocircuito a esa altura causó un accidente. Se ha reforzado la aislación entre fases para evitar problemas.
+
+\end{document}

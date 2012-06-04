@@ -107,13 +107,18 @@ A_{42}=Mgd\left(\begin{array}{ccc}
 \end{array}\right)
 \end{equation}\\
 
+$$A_{44}=$$
+\vspace{-20pt}
+{\footnotesize
 \begin{equation}
-A_{44}=\left(\begin{array}{ccc}
+\left(\begin{array}{ccc}
 0 &\frac{I_{zzm}}{I_{xx}}(\omega_1-\omega_2+\omega_3-\omega_4) + \frac{I_{yy}-I_{zz}}{I_{xx}}\omega_{qz}& \frac{I_{yy}-I_{zz}}{I_{xx}}\omega_{qy} \\
-\frac{I_{zzm}}{I_{yy}}(\omega_1-\omega_2+\omega_3-\omega_4) + \frac{-I_{xx}+I_{zz}}{I_{yy}}\omega_{qz} & \frac{-I_{xx}+I_{zz}}{I_{yy}}\omega_{qx}\\
+\frac{I_{zzm}}{I_{yy}}(\omega_1-\omega_2+\omega_3-\omega_4) + \frac{-I_{xx}+I_{zz}}{I_{yy}}\omega_{qz} &
+0 & \frac{-I_{xx}+I_{zz}}{I_{yy}}\omega_{qx}\\
 0&0&0\\
 \end{array}\right)
 \end{equation}\\
+}
 
 \begin{equation}
 B_{31}=\left(\begin{array}{cccc}
@@ -129,7 +134,7 @@ B_{41}=\left(\begin{array}{cccc}
 f_{B_{41_5}}(\omega_1)&0&f_{B_{41_6}}(\omega_3)&0\\
 f_{B_{41_9}}(\omega_1) & f_{B_{41_10}}(\omega_2) & f_{B_{41_11}}(\omega_3) &f_{B_{41_11}}(\omega_4)\\
 \end{array}\right)
-\end{equation}\\
+\end{equation}
 
 \section{Linealizaci\'on para la condici\'on de hovering}
 Con las condiciones \ref{eq:slit} y \ref{eq:quieto} obtenidas en el cap\'itulo \ref{chap:linealizacion} se pueden obtener las matrices A y B en el caso particular de hovering. Adem\'as puede verificarse que todas las entradas de dichas matrices son constantes y que por lo tanto estamos frente a un sistema lineal invariante en el tiempo.
@@ -141,9 +146,7 @@ A_{hov}=\left(\begin{array}{cccc}
 0 & A_{hov_{32}} & 0 & 0\\
 0 & A_{hov_{42}}      &  & 0 \\    
 \end{array}\right)
-\end{equation}\\
-
-
+\end{equation}
 \begin{equation}
 \label{eq:Bhov}
 B_{hov}=\left(\begin{array}{c}
@@ -152,8 +155,7 @@ B_{hov}=\left(\begin{array}{c}
 B_{hov_{31}}\\
 B_{hov_{41}} 
 \end{array}\right)
-\end{equation}\\
-
+\end{equation}
 Donde $Id$ es la matriz identidad y las matrices $A_{hov_{13}}$,$A_{hov_{32}}$, $B_{hov_{31}}$, $A_{hov_{41}}$ y $A_{hov_{42}}$ son:
 \begin{equation}
 A_{hov_{13}}=\left(\begin{array}{ccc}
@@ -203,8 +205,7 @@ A_{rec}=\left(\begin{array}{cccc}
 0 & A_{rec_{32}} & 0 & A_{rec_{34}}\\
 0 &  A_{rec_{42}}       &  0  & 0 \\    
 \end{array}\right)
-\end{equation}\\
-
+\end{equation}
 
 \begin{equation}
 \label{eq:Brec}
@@ -223,7 +224,9 @@ A_{rec_{12}}=\left(\begin{array}{ccc}
 v_{qz}\sin\theta & v_{qz}\cos\theta & -v_{qy}\cos\theta-v_{qx}\sin\theta \\
 -v_{qz}\cos\theta & v_{qz}\sin\theta & v_{qx}\cos\theta-v_{qy}\sin\theta \\
 v_{qy} & -v_{qx} &0\\
-\end{array}\right) \quad 
+\end{array}\right)
+\end{equation}
+\begin{equation}
 A_{hov_{32}}=\left(\begin{array}{ccc}
 0 & -v_{qz} & v_{qy} \\
 v_{qz} & 0 & -v_{qx}\\
@@ -240,8 +243,7 @@ A_{cir_{11}} & 0 & Id & A{_cir_{14}}  \\
 0 & A_{32} & A_{33} & A_{34}\\
 0 & A_{42}      & 0      & A_{44} \\    
 \end{array}\right)
-\end{equation}\\
-
+\end{equation}
 
 \begin{equation}
 B(t)=\left(\begin{array}{c}

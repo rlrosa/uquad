@@ -34,31 +34,26 @@ X=X0;
 
 k2=1; % Cuenta cuantas simulaciones de paso t_p se hacen en cada waypoint.
 
+assignin('base','control',1);
+assignin('base','Ts',10e-3);
+assignin('base','Q1',1); assignin('base','Q2',1); assignin('base','Q3',1);
+assignin('base','Q4',1e3); assignin('base','Q5',1e3); assignin('base','Q6',1e3);
+assignin('base','Q7',1); assignin('base','Q8',1); assignin('base','Q9',1);
+assignin('base','Q10',1); assignin('base','Q11',1); assignin('base','Q12',1);
+assignin('base','Q13',1); assignin('base','Q14',1); assignin('base','Q15',1);
+                assignin('base','Q16',1);
+assignin('base','rho',0.1);
 
 %Loop principal que se encarga de llamar a todas las simulaciones
 while k<Nway 
     
-    posicion_actual=[X0(1) X0(2) X0(3)];
-    posicion_deseada=waypoints(k+1,1:3);
-        
-    %Distancia al waypoint
-    distancia=norm(posicion_deseada-posicion_actual);
-    
-    %Actualizo distancia minima
-    dis_min(k)=min(dis_min(k),distancia);
-    
-    %Me aseguro que sigo en el transitorio
-    transitorio=(k2<5);
-    
-    if distancia > r && (distancia==dis_min(k) || transitorio)
-        
-       setpoint = [v(k,:) 0];                            
+       setpoint = [v(k,1:3) 0];                            
                              
-       [taux,Xaux,Yaux]=sim_lazo_cerrado(ti,ti+t_p,setpoint','rec');
+       [taux,Xaux,Yaux]=sim_lazo_cerrado(ti,v(k,4),setpoint','rec');
         
         %Las condiciones finales de este tramo son las condiciones
         %iniciales del tramo que sigue
-        ti=ti+t_p;
+        ti=v(k,4);
         X0=Xaux(end,:);
         assignin('base','x0',X0(1)); assignin('base','y0',X0(2));assignin('base','z0',X0(3));
 
@@ -73,14 +68,7 @@ while k<Nway
         t=[t;taux(2:end)]; % No agrego la primer muestra para no tener repetidas
         X=[X;Xaux(2:end,1:12)]; %Idem
        
-        k2=k2+1;
-        
-    %Si estoy cerca de la posición deseada me voy a la siguiente 
-    %trayectoria
-    else
-        k=k+1; %Voy al siguiente waypoint            
-        k2=0;  %Seteo en cero el contador que verifica el transitorio
-    end
+        k = k+1;
   
 end
 

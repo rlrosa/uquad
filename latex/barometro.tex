@@ -7,26 +7,16 @@
 \chapter{Bar\'ometro}
 \label{chap:barometro}
 
-Como instrumento para determinar la altura del cuadric\'optero se pensaba utilizar un GPS. La frecuencia de muestreo del GPS y el error en los datos provenientes del mismo lo hacen insuficiente como medio para estimar la elevaci\'on del cuadric\'optero. Esta fue la motivaci\'on para la incorporaci\'on de un bar\'ometro.
+Como instrumento para determinar la altura del cuadric\'optero se pensaba utilizar un GPS, pero la frecuencia de muestreo del GPS y el error en los datos provenientes del mismo lo hacen insuficiente. Se opta por incorporar un bar\'ometro que por sí solo también lo hacen insuficiente, dichos sensores padecen de \textit{otros} problemas. Ambos sensores permiten obtener una buena estimaci\'on de la altura.
 
-Las caracter\'isticas principales del GPS son:
-\begin{itemize}
-\item Permite obtener un valor para la altura absoluta, libre de bias, pero hace falta promediar muestras durante varios minutos antes de llegar a un datos confiable.
-\item  La precisi\'on del GPS es mala muy cerca del suelo, lo cual representa un problema al intentar despegar y/o aterrizar.
-\end{itemize}
+El sensor adquirido es un bar\'ometro digital BOSCH BMP085. Permite medir presi\'on absoluta y, conociendo la presi\'on y la temperatura a nivel del mar, permite calcular la altura absoluta.
 
-Se opta por incorporar un bar\'ometro, ya que aparentemente dichos sensores padecen de \textit{otros} problemas, y pueden complementar al GPS.
-
-El sensor adquirido es un bar\'ometro digital BOSCH BMP085. Permite medir presi\'on absoluta, y, conociendo la presi\'on y la temperatura a nivel del mar, permite calcular la altura absoluta.
-
-Tiene varios modos de funcionamiento, habiendo un compromiso entre el consumo, la tasa de actualizaci\'on, y la resoluci\'on.
+Tiene varios modos de funcionamiento, habiendo un compromiso entre el consumo, la tasa de actualizaci\'on y la resoluci\'on.
 
 \section{Objetivos}
 %\ref{} agregar refs
 
-El objetivo de estas pruebas es determinar como ha de usarse el bar\'ometro BOSCH BMP085, incorporado para asistir en la determinaci\'on de la altura del cuadric\'optero. Para ello se procede a caracterizar el sensor.
-
-Se analizan las siguientes situaciones:
+El objetivo de estas pruebas es determinar como ha de usarse el bar\'ometro BOSCH BMP085. Se analizan las siguientes situaciones:
 
 \begin{itemize}
 \item Reposo: Se analizan per\'iodos de distinta duraci\'on, para cumplir con distintos objetivos:
@@ -76,7 +66,7 @@ Donde:
 \begin{itemize}
 \item \label{sec:drift-y-warm-up} \textbf{Drift y \textit{warm-up:}} En los datos tomados durante varios minutos, se observa lo que parecer\'ia ser un drift en las medidas obtenidas del bar\'ometro. Se toman muestras durante 1 hora, con el bar\'ometro quieto, comenzando con el circuito en fr\'io\footnote{Habiendo estado apagado durante, por lo menos, los 30 minutos previos a la prueba.}.
 
-\item \textbf{Caracterizaci\'on del ruido:} Es de inter\'es caracterizar el ruido en los datos provenientes del bar\'ometro. Si se trata de un proceso estacionario, y de ruido blanco, entonces, promediando se puede reducir el error. Se analizan datos tomados durante diversos per\'iodos de tiempo: 5 minutos, 2 minutos, 20 segundos y 15 segundos. Sobre estos datos se calcula la autocorrelaci\'on de las muestras, y se compara el ruido con los valores dados por la hoja de datos. La hoja de datos especifica ruido RMS t\'ipico para los distintos modos de funcionamiento.
+\item \textbf{Caracterizaci\'on del ruido:} Es de inter\'es caracterizar el ruido en los datos provenientes del bar\'ometro. Si se trata de un proceso estacionario y de ruido blanco entonces se puede reducir el error promediando. Se analizan datos tomados durante diversos per\'iodos de tiempo: 5 minutos, 2 minutos, 20 segundos y 15 segundos. Sobre estos datos se calcula la autocorrelaci\'on de las muestras, y se compara el ruido con los valores dados por la hoja de datos. La hoja de datos especifica ruido RMS t\'ipico para los distintos modos de funcionamiento.
 
   \begin{figure}[h!]
     \vspace{-20pt}
@@ -103,7 +93,7 @@ Donde:
 Se utiliza una cinta de agrimensor, graduada cada 10 cent\'imetros, para medir la distancia de un piso a otro. Luego se toman 1 minuto de datos en cada piso, recorriendo la escalera de un extremo a otro. Se repite este experimento 3 veces (se sube, se baja y se vuelve a subir) y luego se realiza un experimento similar, pero recorriendo la escalera de manera casi continua (Pausa por piso menor a 2 segundos).
 
 \item \textbf{Distancias de un metro:} Se realizan marcas cada un metro, en seis puntos distintos de una tanza. Se ata el cubo de lapacho en un extremo de la tanza, con la \emph{Mongoose} atornillada a \'el. Se lo deja descender desde la escalera del \emph{IMERL}\footnote{Instituto de Matem\'atica y Estad\'istica Rafael Laguardia}. Se suelta tanza hasta que el cubo se apoya contra el piso, de forma que la primer marca en la cuerda se encuentre junto a quien est\'a realizando las medidas. Se hace una peque\~na marca sobre la baranda, en el punto que coincide con la primer marca de la cuerda. Se mide la presi\'on durante un minuto. Luego se sube el cubo hasta que la marca en la baranda coincida con la segunda marca de la cuerda ($\Delta h = 1m$), etc.
-Al comenazar y al terminar se mide la presi\'on a nivel del suelo, para tomar en cuentas cambios meteorol\'ogicos.
+Al comienzo y al final del experimento se mide la presi\'on a nivel del suelo, para tomar en cuenta cambios meteorol\'ogicos.
 
 \item \textbf{Distancias de decenas de cent\'imetros}: Se ubica el cubo de lapacho siempre en la misma orientaci\'on sobre cada uno de los estantes de una estanter\'ia, se mide distancia al piso y se toman datos de la presi\'on durante 5 segundos.
 
@@ -138,7 +128,7 @@ El bar\'ometro no parece ser adecuado para medir la elevaci\'on absoluta. En los
 En los logs de la secci\'on \ref{sec:drift-y-warm-up}, se observa que:
 \begin{itemize}
 \item El comportamiento del ruido en intervalos extensos no es estacionario.
-\item La mayor\'ia de los saltos en la medida de la altura son de aproximadamente 25cm. Esto no es coherente con las especificaciones dan una resoluci\'on de 1Pa, que corresponden a una variaci\'on en altura de aproximadamente 8cm.
+\item La mayor\'ia de los saltos en la medida de la altura son de aproximadamente 25cm. Esto no es coherente con las especificaciones, ya que dan una resoluci\'on de 1Pa, que corresponden a una variaci\'on en altura de aproximadamente 8cm.
 \end{itemize}
 
 \subsubsection{Estacionareidad}
@@ -197,7 +187,7 @@ La resoluci\'on m\'as atractiva parece ser la n\'umero 2, en la cual se promedia
 
 \subsubsection{Resoluci\'on del instrumento}
 
-En la figura \ref{fig:barom_hist_exp4.pdf} se observa un histograma de las diferencias entre muestras sucesivas de los datos del bar\'ometro. Se observa que la mayor parte de los datos presentan saltos de25cm. Se esperaba una discretizaci\'on en niveles de  aproximadamente 8cm, correspondientes a variaciones de presi\'on de 1Pa (la resoluci\'on del instrumento). Aunque es dif\'icil de observar se encuentran muestras en todos los bins.
+En la figura \ref{fig:barom_hist_exp4.pdf} se observa un histograma de las diferencias entre muestras sucesivas de los datos del bar\'ometro. Se observa que la mayor parte de los datos presentan saltos de 25cm. Se esperaba una discretizaci\'on en niveles de  aproximadamente 8cm, correspondientes a variaciones de presi\'on de 1Pa (la resoluci\'on del instrumento). Aunque es dif\'icil de observar, hay muestras en todos los bins.
 
 \subsection{Altura absoluta}
 
@@ -205,7 +195,7 @@ Las figuras \ref{fig:1hora_01.pdf} y \ref{fig:1hora_04.pdf} se corresponden a da
 
 \subsection{Distancias de varios metros}
 
-En las siguientes figuras se observan los resultados del experimento. Las l\'ineas verticales (en negro) representan el comienzo y el fin de la toma de datos en cada piso. No se hace una medida de la altura absoluta, se miden las distancias entre piso y piso (con la cinta m\'etrica), y se usa como origen de coordenadas la altura dada por el promedio de algunas muestras al comienzo del experimento, ya sea en el piso de m\'as arriba, o en el piso de m\'as abajo (bajadas y subidas respectivamente). La coordenada Y de los segmentos en rojo representan la distancia entre el origen y el piso actual. Dicha distancia se mide con la cinta m\'etrica.
+En las siguientes figuras se observan los resultados del experimento. Las l\'ineas verticales (en negro) representan el comienzo y el fin de la toma de datos en cada piso. No se hace una medida de la altura absoluta, se miden las distancias entre piso y piso (con la cinta m\'etrica), y se usa como origen de coordenadas la altura dada por el promedio de algunas muestras al comienzo del experimento, ya sea en el piso de m\'as arriba, o en el piso de m\'as abajo (bajadas y subidas respectivamente). La coordenada \textit{Y} de los segmentos en rojo representan la distancia entre el origen y el piso actual. Dicha distancia se mide con la cinta m\'etrica.
 
 \begin{figure}[h!]
 \centering
@@ -217,9 +207,7 @@ En las siguientes figuras se observan los resultados del experimento. Las l\'ine
 \label{fig:subida-bajada-1-2}
 \end{figure}
 
-En la figura \ref{fig:metros-s1.pdf} se observa que para cuando se termina de recorrer la escalera, el error acumulado se llega a los 3 metros. En la \ref{fig:metros-b1.pdf} se observan resultados mejores que en la figura \ref{fig:metros-s1.pdf}. Se repite la subida, y se obtienen resultados similares a los de la figura \ref{fig:subida-bajada-1-2}.
-
-Cabe destacar que la performance durante la bajada r\'apida (figura \ref{fig:metros-rapido.pdf}) es muy similar a la que se obtuvo tomando muestras durante 1 minuto, por lo que 
+En la figura \ref{fig:metros-s1.pdf} se observa que para cuando se termina de recorrer la escalera, el error acumulado llega a los 3 metros. En la \ref{fig:metros-b1.pdf} se observan resultados mejores que en la figura \ref{fig:metros-s1.pdf}. Se repite la subida, y se obtienen resultados similares a los de la figura \ref{fig:subida-bajada-1-2}. Cabe destacar que la performance durante la bajada r\'apida (figura \ref{fig:metros-rapido.pdf}) es muy similar a la que se obtuvo tomando muestras durante 1 minuto.
 
 En la figura \ref{fig:metros-err-accum.pdf} se observa la evoluci\'on del error acumulado para dos subidas\footnote{No se incluye una gr\'afica de la segunda subida, ya que es similar, en cuanto al error, a la de la primera bajada.}, una bajada y una bajada r\'apida.
 
@@ -227,6 +215,9 @@ El error en la determinaci\'on de la distancia entre un piso y el siguiente se o
 
 De las figuras \ref{fig:metros-rapido.pdf} y \ref{fig:metros-err-accum.pdf} se desprende que utilizando promedios de 20 muestras\footnote{Esta es la cantidad de muestras que se promediaron para determinar la altura cada vez en cada piso en el experimento ``r\'apido''.}, se obtiene un error de aproximadamente 0.5m. El comportamiento del bar\'ometro es aceptable, y se corresponde con las especificaciones de la hoja de datos.
 
+\subsection{Distancias de un metro}
+
+Las figuras \ref{fig:esc1.pdf} y \ref{fig:esc2.pdf} presentan las medidas obtenidas al realizar las medidas est\'aticas a alturas que difieren en 1 metro. La figura \ref{fig:variando} muestra las medidas obtenidas durante el proceso de subir y bajar el bar\'ometro. En las tres figuras se observan los datos obtenidos y la media m\'ovil considerando 20 muestras.
 
 \vspace{-10pt}
 \begin{figure}[h!]
@@ -239,9 +230,6 @@ De las figuras \ref{fig:metros-rapido.pdf} y \ref{fig:metros-err-accum.pdf} se d
 \vspace{-20pt}
 \end{figure}
 
-\subsection{Distancias de un metro}
-
-Las figuras \ref{fig:esc1.pdf} y \ref{fig:esc2.pdf} presentan las medidas obtenidas al realizar las medidas est\'aticas a alturas que difieren en 1 metro. La figura \ref{fig:variando} muestra las medidas obtenidas durante el proceso de subir y bajar el bar\'ometro. En las tres figuras se observan los datos obtenidos y la media m\'ovil considerando 20 muestras.
 
 \begin{figure}[!h]
 \centering
@@ -257,17 +245,17 @@ Las figuras \ref{fig:esc1.pdf} y \ref{fig:esc2.pdf} presentan las medidas obteni
 \end{figure}
 
 \begin{figure}[H]
-\hspace{-40pt}
+\hspace{-10pt}
 \centering
 	\subfloat[Primer serie de medidas cada 1 metro.]{\label{fig:esc1.pdf}
-  \includegraphics[width=.55\textwidth]{./pics_barom/esc1.pdf}}
+  \includegraphics[width=.45\textwidth]{./pics_barom/esc1.pdf}}
 	\subfloat[Segunda serie de medidas cada 1 metro.]{\label{fig:esc2.pdf}
-  \includegraphics[width=.55\textwidth]{./pics_barom/esc2.pdf}}
+  \includegraphics[width=.45\textwidth]{./pics_barom/esc2.pdf}}
   \caption{Distancias de 1 metro.}
 \label{fig:1m}
 \end{figure}
 
-En la tabla \ref{tab:alturasm} se muestran los valores de altura obtenidos en las distintas posiciones en las dos series de datos tomadas. La altura absoluta no es correcta, ya que no se us\'o la presi\'on real a nivel del mar en la ecuaci\'on \ref{eq:press-alt}.
+En la tabla \ref{tab:alturasm} se muestran los valores de altura obtenidos en las distintas posiciones en las dos series de datos. La altura absoluta no es correcta, ya que no se us\'o la presi\'on real a nivel del mar en la ecuaci\'on \ref{eq:press-alt}.
 
 \begin{wraptable}{l}{0.45\textwidth}
 \vspace{-15pt}
@@ -287,11 +275,25 @@ En la tabla \ref{tab:alturasm} se muestran los valores de altura obtenidos en la
 \label{tab:alturasm}
 \end{wraptable}
 
-La altura absoluta registrada por el bar\'ometro cambia considerablemente de una serie a la otra. En la figura \ref{fig:esc2.pdf} las medidas est\'an, en promedio, un metro m\'as arriba que en la \ref{fig:esc1.pdf}. Los puntos que se consideraron fueron los mismos, sin embargo las medidas fueron realizadas un d\'ia de tormenta. La presi\'on atmosf\'erica es muy cambiante en esos d\'ias. Eso puede explicar dicha diferencia. Otra explicaci\'on puede ser el drift observado en secciones previas.
+La altura absoluta registrada por el bar\'ometro cambia considerablemente de una serie a la otra. En la figura \ref{fig:esc2.pdf} las medidas est\'an, en promedio, un metro m\'as arriba que en la \ref{fig:esc1.pdf}. Los puntos que se consideraron fueron los mismos y las medidas fueron realizadas un d\'ia de tormenta. La presi\'on atmosf\'erica es muy cambiante en esos d\'ias. Eso puede explicar dicha diferencia. Otra explicaci\'on puede ser el drift observado en secciones previas.
 
-En la figura \ref{fig:1-metro-err} se muestra la evoluci\'on de los errores relativo y acumulado.
+En la figura \ref{fig:1-metro-err} se muestra la evoluci\'on de los errores relativos y acumulado.
 
+\begin{wrapfigure}{r}{0.35\textwidth}
+\vspace{-25pt}
+	\subfloat[Error acumulado.]
+        {\label{fig:1-metro-error-accum.pdf}
+	\includegraphics[width=.35\textwidth]
+        {./pics_barom/1-metro-error-accum.pdf}}
 
+	\subfloat[Error en la distancia entre pisos.]
+        {\label{fig:1-metro-err-piso-a-piso.pdf}
+	\includegraphics[width=0.35\textwidth]
+        {./pics_barom/1-metro-err-punto-a-punto.pdf}}
+  \caption{}
+\label{fig:1-metro-err}
+\vspace{-110pt}
+\end{wrapfigure}
 
 Del an\'alisis de cada serie de manera independiente:
 \begin{itemize}
@@ -314,22 +316,7 @@ Si se trabaja con las dos series de datos, se obtienen:
 \item Desviaci\'on est\'andar: $0.38m$\\
 \end{itemize}
 
-\begin{wrapfigure}{r}{0.35\textwidth}
-\vspace{-10pt}
-	\subfloat[Error acumulado.]
-        {\label{fig:1-metro-error-accum.pdf}
-	\includegraphics[width=.35\textwidth]
-        {./pics_barom/1-metro-error-accum.pdf}}
-
-	\subfloat[Error en la distancia entre pisos.]
-        {\label{fig:1-metro-err-piso-a-piso.pdf}
-	\includegraphics[width=0.35\textwidth]
-        {./pics_barom/1-metro-err-punto-a-punto.pdf}}
-  \caption{}
-\label{fig:1-metro-err}
-\vspace{-110pt}
-\end{wrapfigure}
-Pese a tener pocas muestras, a partir de los datos anteriores se puede suponer que el $95.5 \%$ de las veces se tendr\'an errores inferiores a $0.76m$ en diferencias de un metro. El error se mantiene por debajo de $1m$ al usar pocas (4 muestras, 8, 10, etc) muestras para cada punto. Este error depende del drift del bar\'ometro, y se puede reducir incorporando, de manera peri\'odica, informaci\'on externa (GPS) sobre la altura absoluta.
+Pese a tener pocas muestras, a partir de los datos anteriores se puede suponer que el $95.5 \%$ de las veces se tendr\'an errores inferiores a $0.76m$ en diferencias de un metro. El error se mantiene por debajo de $1m$ al usar pocas muestras (4, 8, 10, etc) para cada punto. Este error depende del drift del bar\'ometro, y se puede reducir incorporando, de manera peri\'odica, informaci\'on externa (GPS) sobre la altura absoluta.
 
 En la figura \ref{fig:variando} se observa la variaci\'on en la altura absoluta. Si bien cada tramo comienza y termina a una altura que cae dentro del error esperado, hay tramos del principio y del final del experimento (bar\'ometro apoyado en el suelo) entre los que se observa una diferencia en altura de 1.5m. Esto no cae dentro del error esperado. El problema se ve luego de transcurridos varios minutos, tiempo mucho mayor al sugerido en la secci\'on \ref{sec:caract-ruido}. Puede ser causado por el drift y/o por cambios en las condiciones atmosf\'ericas.
 
@@ -371,9 +358,7 @@ Se toman datos durante 5 segundos en casa escal\'on. Repitiendo el an\'alisis re
 
 Como prueba extra, se recorre 4 veces la estanter\'ia sin detenerse cada estante, completando el trayecto de bajar y volver a subir en aproximadamente 7 segundos. Se calcula la distancia recorrida al bajar, la distancia recorrida al subir, y la total, y se compara dichas distancias contra los valores medidos con la cinta m\'etrica. Los resultados se muestran en la tabla \ref{tab:ruido-rms}. Solamente se hicieron 4 experimentos, por lo que los datos estad\'isticos son solamente para dar una idea de la performance frente a movimientos bruscos.
 
-Cabe destacar que el error se mantiene por debajo de los 1.2m en el peor caso.
-
-La figura \ref{fig:estante_veloz.pdf} muestra gr\'aficamente los resultados del experimento.
+Cabe destacar que el error se mantiene por debajo de los 1.2m en el peor caso. La figura \ref{fig:estante_veloz.pdf} muestra gr\'aficamente los resultados del experimento.
 
 \begin{figure}[H]
 \hspace{-25pt}
@@ -385,10 +370,8 @@ La figura \ref{fig:estante_veloz.pdf} muestra gr\'aficamente los resultados del 
 \section{Conclusiones}
 \label{sec:conclusiones}
 
-Conclusiones m\'as importante de las pruebas hechas con el bar\'ometro:
-
 \begin{itemize}
-\item \textbf{Tiempo de \textit{warm-up}}: El circuito tiene un tiempo de \textit{warm-up} de aproximadamente 45 minutos, durante el cual la temperatura sube aproximadamente 1.5\degc. De las especificaciones de los sensores se deduce que una variaci\'on de temperatura tan peque\~na no deber\'ia afectar la performance. De cualquier forma, es de inter\'es analizar analizar, experimentalmente, el efecto de la variaci\'on de la temperatura sobre las lecturas de la IMU.
+\item \textbf{Tiempo de \textit{warm-up}}: El circuito tiene un tiempo de \textit{warm-up} de aproximadamente 45 minutos, durante el cual la temperatura sube aproximadamente 1.5\degc. De las especificaciones de los sensores se deduce que una variaci\'on de temperatura tan peque\~na no deber\'ia afectar la performance. De cualquier forma es de inter\'es analizar experimentalmente el efecto de la variaci\'on de la temperatura sobre las lecturas del resto de los sensores de la IMU.
 \item \textbf{Drift y Altura absoluta}: El drift y la sensibilidad a factores externos (clima, etc) hacen que el bar\'ometro \textbf{no} sea adecuado para determinar la altura absoluta. No es posible obtener una mejor estimaci\'on de la altura tomando promedios durante per\'iodos de tiempo mayores, ya que el drift introducir\'ia errores en dicho estimador. Se observa un drift de hasta 0.5m en 1 minuto.
 \item \textbf{Altura relativa}: Estando en reposo, en per\'iodos de tiempo menores a 1 minuto es posible conocer variaciones de altura con una error menor a 0.5m.
 \item \textbf{Rol del bar\'ometro}: Se concluye que el bar\'ometro sirve para determinar variaciones de altura, suavizando la trayectoria, mientras se espera una altura absoluta proveniente del GPS. El bar\'ometro y el GPS se complementan. El bar\'ometro ha de utilizarse con los siguientes par\'ametros:

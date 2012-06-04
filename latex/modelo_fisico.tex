@@ -20,8 +20,8 @@ No debe perderse de vista que el cuadric\'optero con el que se trabaja fue dise\
 La Tierra {\bf no} es un sistema de referencia inercial ya que la misma se encuentra sometida a la traslaci\'on en torno al Sol y a una rotaci\'on en sobre su eje. Supongamos una part\'icula que se encuentra en movimiento relativo a la Tierra. Su aceleraci\'on respecto de un sistema verdaderamente inercial puede escribirse como:
 \begin{equation}
 \vec{a}=\vec{a^\prime}+\vec{a_T} +\vec{a_C}
-\end{equation}.
-
+\end{equation}
+Donde:
 \begin{equation}
 \vec{a_T}=\vec{a_{O^\prime}}+\dot{\vec{\omega}}\times\vec{r^\prime}+\vec{\omega}\times (\vec{\omega}\times\vec{r^\prime})
 \end{equation}
@@ -29,13 +29,13 @@ La Tierra {\bf no} es un sistema de referencia inercial ya que la misma se encue
 \begin{equation}
 \vec{a_C}=2\vec{\omega}\times\vec{v^\prime}
 \end{equation}
-En las ecuaciones anteriores $\vec{a^\prime}$ es la aceleraci\'on de la part\'icula en el sistema relativo, $\vec{v^\prime}$ es la velocidad relativa de la part\'icula, $\vec{r^\prime}$ la posici\'on relativa, $\vec{\omega}$ es la velocidad angular de la Tierra y $\vec{a_{O^\prime}}$ es la aceleraci\'on del centro de masa de la Tierra. A $a_T$ se le llama aceleraci\'on de transporte, y a $a_C$ aceleraci\'on de Coriolis. El objetivo es ahora analizar si es posible considerar $\vec{a}\approx\vec{a^\prime}$. Si esto \'ultimo se cumple se puede aproximar a la Tierra como un sistema inercial.\\
+En las ecuaciones anteriores $\vec{a^\prime}$ es la aceleraci\'on de la part\'icula en el sistema relativo, $\vec{v^\prime}$ es la velocidad relativa de la part\'icula, $\vec{r^\prime}$ la posici\'on relativa, $\vec{\omega}$ es la velocidad angular de la Tierra y $\vec{a_{O^\prime}}$ es la aceleraci\'on del centro de masa de la Tierra. $a_T$ y $a_C$ son la aceleraci\'on de transporte y de Coriolis respectivamente. El objetivo es ahora analizar si es posible considerar $\vec{a}\approx\vec{a^\prime}$. Si esto \'ultimo se cumple se puede aproximar a la Tierra como un sistema inercial.\\
 
-El radio promedio de la \'orbita Helioc\'entrica($R_H$) es de $1.5\times10^8Km$, dicha \'orbita se recorre en 365 d\'ias lo que nos da una velocidad promedio de:
+El radio promedio de la \'orbita Helioc\'entrica ($R_H$) es de $1.5\times10^8Km$, dicha \'orbita se recorre en 365 d\'ias lo que nos da una velocidad promedio de:
 \begin{equation}
 V_T=\frac{2\pi\times1.5\times10^{11}m}{365\times24\times60\times60s}\approx29.89\times10^3ms^{-1}
 \end{equation}
-Esta velocidad implica que la aceleraci\'on del centro de masa de la Tierra($\vec{a_{O^\prime}}$) es de aproximadamente:
+Esta velocidad implica que la aceleraci\'on del centro de masa de la Tierra ($\vec{a_{O^\prime}}$) es de aproximadamente:
 \begin{equation}
 a_{O^\prime}=\frac{V_T^2}{R_H}\approx5.95\times10^{-3}ms^{-2}
 \end{equation}
@@ -50,7 +50,7 @@ a_T \approx 4.18\times10^{-2}m^{s-2}
 
 Para que el t\'ermino de la aceleraci\'on de Coriolis sea comparable con la aceleraci\'on de transporte las velocidades del cuadric\'optero relativas a la Tierra deber\'ian ser del orden de cientos de metros por segundo, condici\'on que evidentemente no se cumple, por lo tanto este t\'ermino puede ser despreciado.\\ 
 
-La aceleraci\'on relativa al sistema de la Tierra difiere de  aproximadamente $4.18\times10^{-2}ms^{-2}$ de la aceleraci\'on medida en un sistema verdaderamente inercial. Por otra parte la resoluci\'on del aceler\'ometro utilizado es de $4mg\approx 4.81\times10^{-2}ms^{-2}$. Con el sensor elegido para trabajar es imposible distinguir entre ambas aceleraciones, por dicho motivo parece razonable despreciar el t\'ermino de la aceleraci\'on que corresponde a la aceleraci\'on de transporte. Esto nos permite afirmar que la Tierra puede aproximarse como un sistema de referencia inercial y por lo tanto se cumple que:
+La aceleraci\'on relativa al sistema de la Tierra difiere en aproximadamente $4.18\times10^{-2}ms^{-2}$ de la aceleraci\'on medida en un sistema verdaderamente inercial. Por otra parte la resoluci\'on del aceler\'ometro utilizado es de $4mg\approx 4.81\times10^{-2}ms^{-2}$. Con el sensor elegido para trabajar es imposible distinguir entre ambas aceleraciones, por dicho motivo parece razonable despreciar el t\'ermino de la aceleraci\'on que corresponde a la aceleraci\'on de transporte. Esto nos permite afirmar que la Tierra puede aproximarse como un sistema de referencia inercial y por lo tanto se cumple que:
 
 \begin{equation}
 \sum \vec{F_{ext}}=m\vec{a}\approx m\vec{a^\prime}
@@ -208,17 +208,17 @@ v_{q_x} \cos \varphi \sin \theta + v_{q_y} (\cos \psi \cos \theta + \sin \theta 
 \end{equation}
 \end{footnotesize} 
 
-Hasta aqu\'i hemos obtenido simplemente relaciones cinem\'aticas; por un lado entre la velocidad angular del sistema $S_q$ y las derivadas de los \'angulos de Euler, por el otro se tiene el v\'inculo entre las derivadas de la posici\'on expresadas en el sistema $S_I$ y la velocidad absoluta expresada en el sistema $S_q$ y los \'angulos de Euler. Sin embargo a\'un no conocemos cuales son las Fuerzas y Momentos presentes en el sistema, ni que efectos producen sobre el mismo. Es aqu\'i que nos detendremos en el an\'alisis cinem\'atico para considerar la din\'amica del sistema. 
+Hasta aqu\'i hemos obtenido simplemente relaciones cinem\'aticas; por un lado entre la velocidad angular del sistema $S_q$ y las derivadas de los \'angulos de Euler, por el otro se tiene el v\'inculo entre las derivadas de la posici\'on expresadas en el sistema $S_I$ y la velocidad absoluta expresada en el sistema $S_q$ y los \'angulos de Euler. Sin embargo a\'un no conocemos cuales son las Fuerzas y Momentos presentes en el sistema, ni que efectos producen sobre el mismo. Dejaremos de lado la cinem\'atica del sistema y pasaremos a analizar la din\'amica del mismo.
 
 \section{Din\'amica del Sistema}
-Existen diversas formas de atacar el problema de la din\'amica de un sistema, en particular se puede encarar el problema desde la mec\'anica anal\'itica o realizando consideraciones energ\'eticas, sin embargo en este caso se elije trabajar con las ecuaciones cardinales. 
+Existen diversas formas de atacar el problema de la din\'amica de un sistema, en particular se puede encarar el problema desde la mec\'anica anal\'itica o realizando consideraciones energ\'eticas. Se elije trabajar con las ecuaciones cardinales. 
 \subsection{Primera Cardinal}
  
 La primer cardinal indica que en un sistema de referencia inercial la suma de las fuerzas externas a un objeto es igual a su masa total por su aceleraci\'on. Esto se puede escribir:
 \begin{equation}
 \sum \vec{F_{ext}} = M\vec{a}
 \end{equation}
-Anteriormente fue expresado el inter\'es de trabajar en el sistema solidario al cuadric\'optero. 
+Anteriormente fue expresado el inter\'es de trabajar en el sistema de referencia solidario al cuadric\'optero. 
 El vector aceleraci\'on se puede obtener derivando la velocidad. Para realizar la derivada de un vector expresado en un sistema m\'ovil puede utilizarse la siguiente formula:
 \begin{equation}
 \frac{d\vec{A}}{dt} =\frac{d^\prime\vec{A}}{dt}+\vec{\Omega}\times\vec{A} \\
@@ -246,7 +246,7 @@ La segunda cardinal para un sistema de part\'iculas toma la forma:
 \begin{equation}
 \frac{d\vec{L_Q}}{dt} =M_Q^{ext}+M\vec{v_G}\ \times \dot{\vec{r_Q}} 
 \end{equation}
-Donde $L_Q$ y $M_Q$ son el momento angular y el torque respecto del punto Q. En el presente trabajo los movimientos que realizar\'a el cuadric\'optero no implicar\'an velocidades angulares considerables respecto de otro eje distinto de $\vec{k}_q$ como se desarrollar\'a en el cap\'itulo \ref{chap:linealizacion}. Adicionalmente la distancia entre el centro de masa del sistema y del centro de coordenadas del sistema $S_q$ es pequeña (inferior a los $10cm$). Estas consideraciones permiten afirmar que $\vec{V}_G \approx \dot{\vec{r_Q}}$, podemos obtener entonces una expresi\'on simplificada para la segunda cardinal:
+Donde $L_Q$ y $M_Q$ son el momento angular y el torque respecto del punto Q. En el presente trabajo los movimientos que realizar\'a el cuadric\'optero no implicar\'an velocidades angulares considerables respecto de otro eje distinto de $\vec{k}_q$ (esto se desarrollar\'a en el cap\'itulo \ref{chap:linealizacion}). Adicionalmente, la distancia entre el centro de masa del sistema y del centro de coordenadas del sistema $S_q$ es pequeña (inferior a los $10cm$). Estas consideraciones permiten afirmar que $\vec{V}_G \approx \dot{\vec{r_Q}}$, podemos obtener entonces una expresi\'on simplificada para la segunda cardinal:
 \begin{equation}
 \frac{d\vec{L_O^{^\prime}}}{dt} =M_{O^{^\prime}}^{ext}
 \end{equation}
@@ -260,23 +260,23 @@ donde $M_i$, $G_i$, $\Pi_{Q}$ y $\vec{\Omega_i}$ son la masa de cada r\'igido, s
 
 La derivada de dicho momento tiene la forma:
 \begin{equation}
-\dot{\vec{L}}_{Q^{^\prime}} = M_i(\vec{v}_G-\dot{Q})+M(G-Q) \times \frac{d\vec{v}_Q}{dt}+\frac{d\Pi_{Q}\vec{\Omega_i}}{dt}
+\dot{\vec{L}}_{Q^{^\prime}} = M_i(\vec{v}_G-\dot{Q})\times\vec{v}_Q+M(G-Q) \times \frac{d\vec{v}_Q}{dt}+\frac{d\Pi_{Q}\vec{\Omega_i}}{dt}
 \end{equation}
 
-Nuevamente asumiendo que la velocidad del centro de masa y la velocidad del origen del sistema de coordenadas $S_q$ son similares y agregando que las aceleraciones del centro de masa ser\'an de valores pequeños podemos despreciar los t\'erminos $ M_i(\vec{v}_G-\dot{Q})$ y $M(G-Q) \times \frac{d\vec{v}_Q}{dt}$. \\
+Nuevamente, asumiendo que la velocidad del centro de masa y la velocidad del origen del sistema de coordenadas $S_q$ son similares, y agregando que las aceleraciones del centro de masa ser\'an de valores pequeños podemos despreciar los t\'erminos $ M_i(\vec{v}_G-\dot{Q})\times \vec{v}_Q$ y $M(G-Q) \times \frac{d\vec{v}_Q}{dt}$. \\
 Asumiendo que los cuatro motores son id\'enticos podemos escribir que:
 \begin{equation}
 \label{eq:dmomento}
 \frac{d\vec{L_{O^\prime}}}{dt} = \frac{d\Pi_{O^\prime_q}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}\vec{\omega_q}}{dt}
 \end{equation}
 
-Donde $d$ es la distancia entre el centro de masa del sistema y el centro de coordenadas del sistema solidario al cuadric\'optero y $\Pi_{O^\prime_q}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}$ el tensor de inercia del cuadric\'optero sin considerar los motores.\\
+Donde  $\Pi_{O^\prime_q}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}$ el tensor de inercia del cuadric\'optero sin considerar los motores.\\
 
-Para el c\'alculo del momento \'angular del motor 1 respecto del punto $O^\prime$ supondremos por simplicidad que el motor se compone de elementos de masa discretos. En este caso, por definici\'on de momento angular tenemos que:
+Para el c\'alculo del momento \'angular del motor 1 respecto del punto $O^\prime$ supondremos, por simplicidad, que el motor se compone de elementos de masa discretos. En este caso, por definici\'on de momento angular tenemos que:
 \begin{equation}
 \vec{L}_{O^\prime_{m_1}} = \sum m_i\vec{r}_i^\prime \times \vec{v}_i
 \end{equation}
-Donde $\vec{r}_i^\prime$ corresponde a la posici\'on de cada elemento de masa ($m_i$) respecto de $O^\prime$ y $\vec{v}_i$ es la velocidad absoluta de cada elemento de masa. Del Teorema de Roverbal se puede expresar dicha velocidad como:
+Donde $\vec{r}_i^\prime$ corresponde a la posici\'on de cada elemento de masa ($m_i$) respecto de $O^\prime$ y $\vec{v}_i$ es la velocidad absoluta de cada elemento de masa. Del Teorema de Roverbal, se puede expresar dicha velocidad como:
 \begin{equation}
 \vec{v}_i = \vec{v}_{O^\prime} + \vec{\omega}_q \times \vec{r}_i^\prime + \vec{\omega}_1 \times \vec{r}_i^{\prime\prime}
 \end{equation}
@@ -284,13 +284,13 @@ En la ecuaci\'on anterior $\vec{r}_i^{\prime\prime}$ es la posici\'on de cada el
 \begin{equation}
 \vec{L}_{O^\prime_{m_1}} = M_m d_v\vec{i}_q\times \vec{v}_{O^\prime} +\Pi_{O^\prime_m}^{\{\vec{i}_q, \vec{j}_q, \vec{k}_q\}}\vec{\omega}_q+ \Pi_{G_{m1}}^{\{\vec{i}_q, \vec{j}_q, \vec{k}_q\}}\vec{\omega}_1
 \end{equation}
-Donde $d_v$ es la distancia entre el origen del sistema solidario al cuadric\'optero y el eje del motor 1, Al considerar los cuatro motores el primer t\'ermino del momento angular del motor 1 se anula con el primer t\'ermino del momento angular del motor 3. Sucede lo mismo con los motores 2 y 4.
+Donde $d_v$ es la distancia entre el origen del sistema solidario al cuadric\'optero y el eje del motor 1, Al considerar los cuatro motores, el primer t\'ermino del momento angular del motor 1 se anula con el primer t\'ermino del momento angular del motor 3. Sucede lo mismo con los motores 2 y 4.
 Calculando en forma an\'aloga los momentos angulares de los restantes motores se obtiene:
 \begin{equation}
 \vec{L}_{O^\prime_{motores}}=4\Pi_{O^\prime_m}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}\vec{\omega_q}+\Pi_{G_{M_{m}}}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}(\vec{\omega_1}-\vec{\omega_2}+\vec{\omega_3}-\vec{\omega_4})
 \end{equation}
 
-Derivando esta expresi\'on y adicionandola al resultado obtenido en \ref{eq:dmomento} podemos escribir la derivada del momento angular del sistema como:
+Derivando esta expresi\'on y sum\'andola al resultado obtenido en \ref{eq:dmomento} podemos escribir la derivada del momento angular del sistema como:
 
 {\footnotesize \begin{equation}
 \frac{d\vec{L_O^\prime}}{dt}=\Pi_{O^\prime}^{\left\lbrace\vec{i_q}, \vec{j_q}, \vec{k_q}\right\rbrace}\frac{d^\prime\vec{{\omega}_q}}{dt}+\Pi_{G_{M_{m}}}^{\{\vec{i_q}, \vec{j_q}, \vec{k_q}\}}(\dot{\vec{\omega_1}}-\dot{\vec{\omega_2}}+\dot{\vec{\omega_3}}-\dot{\vec{\omega_4}})
@@ -325,7 +325,7 @@ Como ya se aclar\'o anteriormente, debido a la peque\~na variaci\'on de la altur
 \vec{P}=-Mg\vec{k}
 \end{equation}
 
-Insistimos en el hecho que nos interesa conocer las fuerzas en el sistema solidario al cuadric\'optero. Para expresar esta fuerza en dicho sistema se multiplica el peso por la matriz $H_I^q$. Lo que se obtiene es:
+Insistimos en que nos interesa conocer las fuerzas en el sistema solidario al cuadric\'optero. Para expresar el peso en dicho sistema se lo multiplica por la matriz $H_I^q$. Lo que se obtiene es:
 \begin{equation}
 \vec{P}=\left(\begin{array}{c}
 \sin\varphi\\
@@ -343,9 +343,10 @@ Debido a que el centro de masa se encuentra por debajo del origen de coordenadas
 \end{array}\right)dMg
 \end{equation}
 
+Donde $d$ es la distancia entre el centro de masa del sistema y el origen del sistema $S_q$.
 \subsection{Fuerzas y momentos de las h\'elices}
 
-La teor\'ia de fluidos que explica el comportamiento de las h\'elices es compleja y ampliamente difundida por lo que no es de inter\'es desarrollarla en profundidad en este trabajo. Diversa bibliograf\'ia puede ser consultada en donde se explican adecuadamente los fen\'omenos involucrados en las fuerzas aerodin\'amicas presentes en una h\'elice. Sin embargo si parece pertinente realizar un breve resumen de dichas fuerzas. Para el presente an\'alisis consideraremos una h\'elice rotando en sentido antihorario, el razonamiento para una h\'elice rotando en sentido opuesto es an\'alogo. En la figura \ref{fig:helice} \footnote{Imagen tomada de \cite{bib:fuerzas-helices}} se observan dos vistas de la misma h\'elice. En la figura \ref{fig:helice_arriba} puede observarse una hoja de la h\'elice. En la figura \ref{fig:fuerza-helice} se representa una vista transversal de la h\'elice con las fuerzas aerodin\'amicas involucradas.\\ 
+La teor\'ia de fluidos que explica el comportamiento de las h\'elices es compleja y ampliamente difundida por lo que no es de inter\'es desarrollarla en profundidad en este trabajo. Diversa bibliograf\'ia puede ser consultada en donde se explican adecuadamente los fen\'omenos involucrados en las fuerzas aerodin\'amicas presentes en una h\'elice. Sin embargo, s\'i parece pertinente realizar un breve resumen de dichas fuerzas. Para el presente an\'alisis consideraremos una h\'elice rotando en sentido antihorario, el razonamiento para una h\'elice rotando en sentido opuesto es an\'alogo. En la figura \ref{fig:helice} \footnote{Imagen tomada de \cite{bib:fuerzas-helices}} se observan dos vistas de la misma h\'elice. En la figura \ref{fig:helice_arriba} puede observarse una hoja de la h\'elice. En la figura \ref{fig:fuerza-helice} se representa una vista transversal de la h\'elice con las fuerzas aerodin\'amicas involucradas.\\ 
 
 \begin{figure} [h!]
   \centering
@@ -419,7 +420,7 @@ L(T3-T1)\\
 \end{equation}
 En base al estudio realizado se podr\'ian conocer dichas relaciones calculando los par\'ametros que dependen de la geometr\'ia de la h\'elice, sin embargo este estudio resulta tedioso y la mayor parte de los m\'etodos existentes para determinar dichos par\'ametros con buena precisi\'on son destructivos. Por lo tanto se opt\'o por obtener dichas respuestas en forma experimental. El proceso detallado puede consultarse en el cap\'itulo \ref{chap:test_motores}. En dichos experimentos se obtuvo que:
 \begin{equation}
-T=4.6016\times 10^{-5}\omega^2-1.038\times 10^{-3}\omega
+T=4.6016\times 10^{-5}\omega^2-1.0380\times 10^{-3}\omega
 \end{equation}\\
 \begin{equation}
 Q= 3.4734\times 10^{-6}\omega^2-1.3205\times 10^{-4}\omega 
@@ -430,7 +431,7 @@ Estos resultados parecen adecuados respecto de lo desarrollado te\'oricamente ya
 
 Luego de realizados los estudios sobre la cinem\'atica y din\'amica del sistema y luego de comprender cabalmente las fuerzas y momentos involucrados se procede a construir el modelo en variables de estado.\\ 
 
-Se debe aclarar que la elecci\'on realizada del vector de estados se debe exclusivamente a la conveniencia pr\'actica que se encuentra al trabajar con las variables expresadas en el sistema del cuadric\'optero. Esta conveniencia se ve reflejada en dos aspectos, en primer lugar las simplificaciones que introduce trabajar con estas variables en el marco de un desarrollo te\'orico de las ecuaciones que gobiernan al sistema, por otra parte, al disponer de sensores montados sobre el cuadric\'optero, los mismos medir\'an las velocidades angulares y las aceleraciones lineales en el sistema $S_q$. Bajo esta elecci\'on parece razonable escoger el vector de estados de la siguiente manera:
+Se debe aclarar que la elecci\'on realizada del vector de estados se debe exclusivamente a la conveniencia pr\'actica que se encuentra al trabajar con las variables expresadas en el sistema del cuadric\'optero. Esta conveniencia se ve reflejada en dos aspectos, por un lado en las simplificaciones que introduce trabajar con estas variables en el marco de un desarrollo te\'orico de las ecuaciones que gobiernan al sistema, y por otra parte, al disponer de sensores montados sobre el cuadric\'optero, los mismos medir\'an las velocidades angulares y las aceleraciones lineales en el sistema $S_q$. Bajo esta elecci\'on parece razonable escoger el vector de estados de la siguiente manera:
 \begin{equation}
 \boxed{X=\left\lbrace  x,y,z, \theta,\varphi,\psi, v_{q_z},v_{q_y},v_{q_z},\omega_{q_x},\omega_{q_y},\omega_{q_z} \right\rbrace}
 \end{equation}
@@ -443,7 +444,7 @@ Luego de realizada esta simplificaci\'on tenemos que la entrada est\'a compuesta
 \boxed{u=\left\lbrace\omega_1, \omega_2, \omega_3, \omega_4\right\rbrace}
 \end{equation}
 
-Cabe aclarar que esta \'ultima simplifaci\'on se toma simplemente para el desarrollo del control, pero la misma no se realiza en el simulador (ver cap\'itulo \ref{chap:simulador}), de modo de poder verificar que efectivamente es despreciable.\\
+Cabe aclarar que esta \'ultima simplificaci\'on se toma simplemente para el desarrollo del control, pero la misma no se realiza en el simulador (ver cap\'itulo \ref{chap:simulador}), de modo de poder verificar que efectivamente es despreciable.\\
 
 El modelo en variables de estado resulta:
 \begin{equation}
