@@ -79,6 +79,13 @@
   #define CTRL_MAT_K_INT_NAME "K_int.txt"
 #endif // FULL_CONTROL
 
+/**
+ * LQR gain values are loaded from text files.
+ * These will be used to generate new K matrices.
+ */
+#define CTRL_MAT_Q_NAME       "lqr-Q.txt"
+#define CTRL_MAT_R_NAME       "lqr-R.txt"
+
 #if CTRL_INTEGRAL
 /**
  * Threshold to limit integral control
@@ -101,6 +108,7 @@
 
 typedef struct ctrl{
     uquad_mat_t *K;
+    uquad_mat_t *K_lqr;
 #if CTRL_INTEGRAL
     uquad_mat_t *K_int; // Integral gain
     uquad_mat_t *x_int; // Integral term

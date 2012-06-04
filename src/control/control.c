@@ -51,14 +51,18 @@ ctrl_t *control_init(void)
     mem_alloc_check(ctrl);
 
     /// Mem for lqr()
-    ctrl->K = uquad_mat_alloc(LENGTH_INPUT,STATES_CONTROLLED);
-    ctrl->A = uquad_mat_alloc(STATES_CONTROLLED,STATES_CONTROLLED);
-    ctrl->B = uquad_mat_alloc(STATES_CONTROLLED,LENGTH_INPUT);
-    ctrl->Q = uquad_mat_alloc(STATES_CONTROLLED,STATES_CONTROLLED);
-    ctrl->R = uquad_mat_alloc(LENGTH_INPUT, LENGTH_INPUT);
+    ctrl->K      = uquad_mat_alloc(LENGTH_INPUT,STATES_CONTROLLED);
+    ctrl->K_lqr  = uquad_mat_alloc(LENGTH_INPUT,
+				   STATES_CONTROLLED + STATES_INT_CONTROLLED);
+    ctrl->A      = uquad_mat_alloc(STATES_CONTROLLED,STATES_CONTROLLED);
+    ctrl->B      = uquad_mat_alloc(STATES_CONTROLLED,LENGTH_INPUT);
+    ctrl->Q      = uquad_mat_alloc(STATES_CONTROLLED + STATES_INT_CONTROLLED,
+			      STATES_CONTROLLED + STATES_INT_CONTROLLED);
+    ctrl->R      = uquad_mat_alloc(LENGTH_INPUT, LENGTH_INPUT);
     tmp_sub_sp_x = uquad_mat_alloc(STATE_COUNT,1);
-    w_tmp = uquad_mat_alloc(LENGTH_INPUT,1);
-    if(ctrl->K == NULL || tmp_sub_sp_x == NULL || w_tmp == NULL)
+    w_tmp        = uquad_mat_alloc(LENGTH_INPUT,1);
+    if(ctrl->K == NULL || tmp_sub_sp_x == NULL || w_tmp == NULL ||
+       ctrl->K_lqr == NULL)
     {
 	cleanup_log_if(ERROR_MALLOC,"Failed to allocate aux mem!");
     }
@@ -76,17 +80,17 @@ ctrl_t *control_init(void)
 	err_log_str("Failed to open:",CTRL_MAT_K_NAME);
 	cleanup_if(ERROR_FAIL);
     }
-    else
-    {
-	err_log_str("Loaded proportional gain matrix from:",
-		    CTRL_MAT_K_NAME);
-    }
 
     retval = uquad_mat_load(ctrl->K, file_mat);
     if(retval != ERROR_OK)
     {
 	err_log_str("Failed to load gain matrix. Check size...",CTRL_MAT_K_NAME);
 	cleanup_if(retval);
+    }
+    else
+    {
+	err_log_str("Loaded proportional gain matrix from:",
+		    CTRL_MAT_K_NAME);
     }
     fclose(file_mat);
     file_mat = NULL;
@@ -126,11 +130,6 @@ ctrl_t *control_init(void)
 	err_log_str("Failed to open:",CTRL_MAT_K_INT_NAME);
 	cleanup_if(ERROR_FAIL);
     }
-    else
-    {
-	err_log_str("Loaded integral gain matrix from:",
-		    CTRL_MAT_K_INT_NAME);
-    }
 
     retval = uquad_mat_load(ctrl->K_int, file_mat);
     if(retval != ERROR_OK)
@@ -138,9 +137,52 @@ ctrl_t *control_init(void)
 	err_log_str("Failed to load gain matrix. Check size...",CTRL_MAT_K_INT_NAME);
 	cleanup_if(retval);
     }
+    else
+    {
+	err_log_str("Loaded integral gain matrix from:",
+		    CTRL_MAT_K_INT_NAME);
+    }
 #endif // CTRL_INTEGRAL
     if(file_mat != NULL)
 	fclose(file_mat);
+
+    file_mat = fopen(CTRL_MAT_Q_NAME,"r");
+    if(file_mat == NULL)
+    {
+	err_log_str("Failed to open:",CTRL_MAT_Q_NAME);
+	cleanup_if(ERROR_FAIL);
+    }
+    retval = uquad_mat_load(ctrl->Q, file_mat);
+    if(retval != ERROR_OK)
+    {
+	err_log_str("Failed to load LQR Q matrix. Check size...",CTRL_MAT_Q_NAME);
+	cleanup_if(retval);
+    }
+    else
+    {
+	err_log_str("Loaded LQR Q matrix from:",
+		    CTRL_MAT_Q_NAME);
+    }
+    fclose(file_mat);
+
+    file_mat = fopen(CTRL_MAT_R_NAME,"r");
+    if(file_mat == NULL)
+    {
+	err_log_str("Failed to open:",CTRL_MAT_R_NAME);
+	cleanup_if(ERROR_FAIL);
+    }
+    retval = uquad_mat_load(ctrl->R, file_mat);
+    if(retval != ERROR_OK)
+    {
+	err_log_str("Failed to load LQR R matrix. Check size...",CTRL_MAT_R_NAME);
+	cleanup_if(retval);
+    }
+    else
+    {
+	err_log_str("Loaded LQR R matrix from:",
+		    CTRL_MAT_R_NAME);
+    }
+    fclose(file_mat);
 
     return ctrl;
 
@@ -300,6 +342,8 @@ int control_dump(ctrl_t *ctrl, FILE *output)
     {
 	err_check(ERROR_NULL_POINTER, "NULL pointer is invalid arg!");
     }
+    if(output == NULL)
+	output = stdout;
     log_msg(output,"Control - K");
     uquad_mat_dump(ctrl->K, output);
 #if CTRL_INTEGRAL
@@ -311,7 +355,8 @@ int control_dump(ctrl_t *ctrl, FILE *output)
 
 int control_update_K(ctrl_t *ctrl, path_planner_t *pp, double weight)
 {
-    int retval;
+    int
+	retval;
     uquad_mat_t *A = NULL;
     uquad_mat_t *B = NULL;
     uquad_mat_t *Aext = NULL;
@@ -326,27 +371,59 @@ int control_update_K(ctrl_t *ctrl, path_planner_t *pp, double weight)
     cleanup_if(retval);
 
     //Extends the system to include the integrated states
-    Aext = uquad_mat_alloc(2*STATES_CONTROLLED, 2*STATES_CONTROLLED);
-    Bext = uquad_mat_alloc(2*STATES_CONTROLLED, LENGTH_INPUT);
+    Aext = uquad_mat_alloc(STATES_CONTROLLED + STATES_INT_CONTROLLED,
+			   STATES_CONTROLLED + STATES_INT_CONTROLLED);
+    Bext = uquad_mat_alloc(STATES_CONTROLLED + STATES_INT_CONTROLLED,
+			   LENGTH_INPUT);
+    if(Aext == NULL || Bext == NULL)
+    {
+	cleanup_if(ERROR_MALLOC);
+    }
+
     retval = uquad_mat_zeros(Aext);
     cleanup_if(retval);
     retval = uquad_mat_zeros(Bext);
     cleanup_if(retval);
     retval = uquad_mat_set_subm(Aext,0,0,A);
     cleanup_if(retval);
-    retval = uquad_mat_eye(A);
-    cleanup_if(retval);
-    retval = uquad_mat_set_subm(Aext,STATES_CONTROLLED,0,A);
-    cleanup_if(retval);
+
+#if CTRL_INTEGRAL_ANG
+    Aext->m
+	[STATES_CONTROLLED]
+	[SV_PSI]
+	= 1.0;
+    Aext->m
+	[STATES_CONTROLLED + 1]
+	[SV_PHI]
+	= 1.0;
+#else // CTRL_INTEGRAL_ANG
+    Aext->m
+	[STATES_CONTROLLED]
+	[SV_X]
+	= 1.0;
+    Aext->m
+	[STATES_CONTROLLED + 1]
+	[SV_Y]
+	= 1.0;
+#endif // CTRL_INTEGRAL_ANG
+    Aext->m
+	[STATES_CONTROLLED + 2]
+	[SV_Z]
+	= 1.0;
+    Aext->m
+	[STATES_CONTROLLED + 3]
+	[SV_THETA]
+	= 1.0;
+
     retval = uquad_mat_set_subm(Bext,0,0,B);
     cleanup_if(retval);
-    //Discretization of the system;
-    phi = uquad_mat_alloc(A->r,A->c);
-    gamma = uquad_mat_alloc(B->r,B->c);
-    retval = control_disc(phi, gamma, Aext, Bext, TS_DEFAULT_US_DBL);
+    //Discretization of the system
+    phi = uquad_mat_alloc(Aext->r,Aext->c);
+    gamma = uquad_mat_alloc(Bext->r,Bext->c);
+    retval = control_disc(phi, gamma, Aext, Bext, TS_DEFAULT_US_DBL/1e6);
     cleanup_if(retval);
-    //Obtains feedback matrix  
-    retval = control_lqr(ctrl->K, phi, gamma, ctrl->Q, ctrl->R);
+    //Obtains feedback matrix
+    retval = control_lqr(ctrl->K_lqr, phi, gamma, ctrl->Q, ctrl->R);
     cleanup_if(retval);
 
     cleanup:
@@ -391,7 +468,9 @@ int control_disc(uquad_mat_t *phi,uquad_mat_t *gamma,uquad_mat_t *A,uquad_mat_t 
 
 int control_lqr(uquad_mat_t *K, uquad_mat_t *A, uquad_mat_t *B, uquad_mat_t *Q, uquad_mat_t *R)
 {
-    int retval;
+    int
+	err_time,
+	retval;
     double norm;
     uquad_mat_t *aux0 = NULL;
     uquad_mat_t *aux1 = NULL;
@@ -426,15 +505,18 @@ int control_lqr(uquad_mat_t *K, uquad_mat_t *A, uquad_mat_t *B, uquad_mat_t *Q, 
 	cleanup_if(retval);
     }
 
-    P = uquad_mat_alloc(Q->r,Q->r);
-    k = uquad_mat_alloc(K->r,K->c);
+    P = uquad_mat_alloc(Q->r,Q->c);
+    k = uquad_mat_alloc(B->c,B->r);
+
+    retval = uquad_mat_fill(K,1.0);
+    cleanup_if(retval);
 
     retval = uquad_mat_copy(P,Q);
     cleanup_if(retval);
     retval = uquad_mat_copy(k,K);
     cleanup_if(retval);
     Bt = uquad_mat_alloc(B->c,B->r);
-   
+
     retval = uquad_mat_transpose(Bt,B);
     cleanup_if(retval);
     norm=1;
@@ -512,21 +594,21 @@ int control_lqr(uquad_mat_t *K, uquad_mat_t *A, uquad_mat_t *B, uquad_mat_t *Q, 
 	norm = uquad_mat_norm(aux13);
 
 	/// Check timeout
-	retval = gettimeofday(&tv_tmp, NULL);
-	if(retval < 0)
+	err_time = gettimeofday(&tv_tmp, NULL);
+	if(err_time < 0)
 	{
 	    retval = ERROR_TIMING;
 	    err_log_stderr("gettimeofday()");
 	    cleanup_if(retval);
 	}
-	retval = uquad_timeval_substract(&tv_diff, tv_tmp, tv_in);
-	if(retval < 0)
+	err_time = uquad_timeval_substract(&tv_diff, tv_tmp, tv_in);
+	if(err_time < 0)
 	{
 	    retval = ERROR_TIMING;
 	    cleanup_log_if(retval,"Absurd timing!");
 	}
-	retval = uquad_timeval_substract(&tv_diff, tv_diff, tv_out);
-	if(retval >= 0)
+	err_time = uquad_timeval_substract(&tv_diff, tv_diff, tv_out);
+	if(err_time >= 0)
 	{
 	    retval = ERROR_FAIL;
 	    cleanup_log_if(retval,"ERR: Timed out!");
@@ -573,115 +655,118 @@ int control_lin_model(uquad_mat_t *A, uquad_mat_t *B, path_type_t pt, set_point_
 
  if(pt==CIRCULAR)
  {
-     A->m[0][1] = -xs[11];
-     A->m[0][2] = xs[10];
+     A->m[0][1] = -xs[SV_WQZ];
+     A->m[0][2] = xs[SV_WQY];
      A->m[0][6] = 1;
-     A->m[0][10] = xs[2];
-     A->m[0][11] = -xs[1];
+     A->m[0][10] = xs[SV_Z];
+     A->m[0][11] = -xs[SV_Y];
 
-     A->m[1][0] = xs[11];
-     A->m[1][2] = -xs[9];
+     A->m[1][0] = xs[SV_WQZ];
+     A->m[1][2] = -xs[SV_WQX];
      A->m[1][7] = 1;
-     A->m[1][9] = -xs[2];
-     A->m[1][11] = xs[1];
+     A->m[1][9] = -xs[SV_Z];
+     A->m[1][11] = xs[SV_Y];
 
-     A->m[2][0] = -xs[10];
-     A->m[2][1] = xs[9];
+     A->m[2][0] = -xs[SV_WQY];
+     A->m[2][1] = xs[SV_WQX];
      A->m[2][8] = 1;
-     A->m[2][9] = xs[1];
-     A->m[2][10] = -xs[0];
+     A->m[2][9] = xs[SV_Y];
+     A->m[2][10] = -xs[SV_X];
 
  }
  else{
-     A->m[0][3] = xs[8]*(cos(xs[3])*sin(xs[5])
-			      -cos(xs[5])*sin(xs[4])*sin(xs[3]))
-	 +xs[7]*cos(xs[3])*cos(xs[5])*sin(xs[4]);
-     A->m[0][4] = xs[7]*(sin(xs[4])*sin(xs[5])+cos(xs[5])*cos(xs[4])*sin(xs[3]))
-	 -xs[6]*cos(xs[5])*sin(xs[4])+xs[8]*cos(xs[3])*cos(xs[4])*cos(xs[5]);
-     A->m[0][5] = xs[8]*(sin(xs[3])*cos(xs[5])-cos(xs[3])*sin(xs[4])*sin(xs[5]))
-	 -xs[7]*(cos(xs[4])*cos(xs[5])+sin(xs[3])*sin(xs[4])*sin(xs[5]))
-	 -xs[6]*cos(xs[4])*sin(xs[5]);
-     A->m[0][6] = cos(xs[4])*cos(xs[5]);
-     A->m[0][7] = cos(xs[5])*sin(xs[3])*sin(xs[4])-cos(xs[4])*sin(xs[5]);
-     A->m[0][8] = sin(xs[3])*sin(xs[5])+cos(xs[3])*cos(xs[5])*sin(xs[4]);
+     A->m[0][3] = xs[SV_VQZ]*(cos(xs[SV_PSI])*sin(xs[SV_THETA])
+			      -cos(xs[SV_THETA])*sin(xs[SV_PHI])*sin(xs[SV_PSI]))
+	 +xs[SV_VQY]*cos(xs[SV_PSI])*cos(xs[SV_THETA])*sin(xs[SV_PHI]);
+     A->m[0][4] = xs[SV_VQY]*(sin(xs[SV_PHI])*sin(xs[SV_THETA])+cos(xs[SV_THETA])*cos(xs[SV_PHI])*sin(xs[SV_PSI]))
+	 -xs[SV_VQX]*cos(xs[SV_THETA])*sin(xs[SV_PHI])+xs[SV_VQZ]*cos(xs[SV_PSI])*cos(xs[SV_PHI])*cos(xs[SV_THETA]);
+     A->m[0][5] = xs[SV_VQZ]*(sin(xs[SV_PSI])*cos(xs[SV_THETA])-cos(xs[SV_PSI])*sin(xs[SV_PHI])*sin(xs[SV_THETA]))
+	 -xs[SV_VQY]*(cos(xs[SV_PHI])*cos(xs[SV_THETA])+sin(xs[SV_PSI])*sin(xs[SV_PHI])*sin(xs[SV_THETA]))
+	 -xs[SV_VQX]*cos(xs[SV_PHI])*sin(xs[SV_THETA]);
+     A->m[0][6] = cos(xs[SV_PHI])*cos(xs[SV_THETA]);
+     A->m[0][7] = cos(xs[SV_THETA])*sin(xs[SV_PSI])*sin(xs[SV_PHI])-cos(xs[SV_PHI])*sin(xs[SV_THETA]);
+     A->m[0][8] = sin(xs[SV_PSI])*sin(xs[SV_THETA])+cos(xs[SV_PSI])*cos(xs[SV_THETA])*sin(xs[SV_PHI]);
 
-     A->m[1][3] = -xs[7]*(cos(xs[5])*sin(xs[3])-cos(xs[3])*sin(xs[4])*sin(xs[5]))
-	 - xs[8]*(cos(xs[3])*cos(xs[5])+sin(xs[3])*sin(xs[4])*sin(xs[5]));
-     A->m[1][4] = xs[7]*sin(xs[5])*cos(xs[4])*sin(xs[3])
-	 -xs[6]*sin(xs[5])*sin(xs[4])+xs[8]*cos(xs[3])*cos(xs[4])*sin(xs[5]);
-     A->m[1][5] = xs[8]*(sin(xs[3])*sin(xs[5])+cos(xs[3])*sin(xs[4])*cos(xs[5]))
-	 -xs[7]*(cos(xs[3])*sin(xs[5])-sin(xs[3])*sin(xs[4])*cos(xs[5]))
-	 +xs[6]*cos(xs[4])*cos(xs[5]);
-     A->m[1][6] = cos(xs[4])*sin(xs[5]);
-     A->m[1][7] = cos(xs[3])*cos(xs[5])+ sin(xs[3])*sin(xs[4])*sin(xs[5]);
-     A->m[1][8] = -sin(xs[3])*cos(xs[5])+cos(xs[3])*sin(xs[5])*sin(xs[4]);
+     A->m[1][3] = -xs[SV_VQY]*(cos(xs[SV_THETA])*sin(xs[SV_PSI])-cos(xs[SV_PSI])*sin(xs[SV_PHI])*sin(xs[SV_THETA]))
+	 - xs[SV_VQZ]*(cos(xs[SV_PSI])*cos(xs[SV_THETA])+sin(xs[SV_PSI])*sin(xs[SV_PHI])*sin(xs[SV_THETA]));
+     A->m[1][4] = xs[SV_VQY]*sin(xs[SV_THETA])*cos(xs[SV_PHI])*sin(xs[SV_PSI])
+	 -xs[SV_VQX]*sin(xs[SV_THETA])*sin(xs[SV_PHI])+xs[SV_VQZ]*cos(xs[SV_PSI])*cos(xs[SV_PHI])*sin(xs[SV_THETA]);
+     A->m[1][5] = xs[SV_VQZ]*(sin(xs[SV_PSI])*sin(xs[SV_THETA])+cos(xs[SV_PSI])*sin(xs[SV_PHI])*cos(xs[SV_THETA]))
+	 -xs[SV_VQY]*(cos(xs[SV_PSI])*sin(xs[SV_THETA])-sin(xs[SV_PSI])*sin(xs[SV_PHI])*cos(xs[SV_THETA]))
+	 +xs[SV_VQX]*cos(xs[SV_PHI])*cos(xs[SV_THETA]);
+     A->m[1][6] = cos(xs[SV_PHI])*sin(xs[SV_THETA]);
+     A->m[1][7] = cos(xs[SV_PSI])*cos(xs[SV_THETA])+ sin(xs[SV_PSI])*sin(xs[SV_PHI])*sin(xs[SV_THETA]);
+     A->m[1][8] = -sin(xs[SV_PSI])*cos(xs[SV_THETA])+cos(xs[SV_PSI])*sin(xs[SV_THETA])*sin(xs[SV_PHI]);
 
-     A->m[2][3] = -xs[7]*(cos(xs[5])*sin(xs[3])-cos(xs[3])*sin(xs[4])*sin(xs[5]))
-	 -xs[8]*(cos(xs[3])*cos(xs[5])+sin(xs[3])*sin(xs[4])*sin(xs[5]));
-     A->m[2][4] = xs[8]*cos(xs[3])*cos(xs[4])*sin(xs[5])-xs[6]*sin(xs[4])*sin(xs[5])
-	 +xs[7]*sin(xs[3])*cos(xs[4])*sin(xs[5]);
-     A->m[2][6] = -sin(xs[4]);
-     A->m[2][7] = cos(xs[4])*sin(xs[3]);
-     A->m[2][8] = cos(xs[4])*cos(xs[3]);
+     A->m[2][3] = -xs[SV_VQY]*(cos(xs[SV_THETA])*sin(xs[SV_PSI])-cos(xs[SV_PSI])*sin(xs[SV_PHI])*sin(xs[SV_THETA]))
+	 -xs[SV_VQZ]*(cos(xs[SV_PSI])*cos(xs[SV_THETA])+sin(xs[SV_PSI])*sin(xs[SV_PHI])*sin(xs[SV_THETA]));
+     A->m[2][4] = xs[SV_VQZ]*cos(xs[SV_PSI])*cos(xs[SV_PHI])*sin(xs[SV_THETA])-xs[SV_VQX]*sin(xs[SV_PHI])*sin(xs[SV_THETA])
+	 +xs[SV_VQY]*sin(xs[SV_PSI])*cos(xs[SV_PHI])*sin(xs[SV_THETA]);
+     A->m[2][6] = -sin(xs[SV_PHI]);
+     A->m[2][7] = cos(xs[SV_PHI])*sin(xs[SV_PSI]);
+     A->m[2][8] = cos(xs[SV_PHI])*cos(xs[SV_PSI]);
  }
 
 
- A->m[3][3] = xs[10]*cos(xs[3])*tan(xs[4])-xs[11]*sin(xs[3])*tan(xs[4]);
- A->m[3][4] = (xs[11]*cos(xs[3])+xs[10]*sin(xs[3]))*(uquad_square(tan(xs[4]))+1);
+ A->m[3][3] = xs[SV_WQY]*cos(xs[SV_PSI])*tan(xs[SV_PHI])-xs[SV_WQZ]*sin(xs[SV_PSI])*tan(xs[SV_PHI]);
+ A->m[3][4] = (xs[SV_WQZ]*cos(xs[SV_PSI])+xs[SV_WQY]*sin(xs[SV_PSI]))*(uquad_square(tan(xs[SV_PHI]))+1);
  A->m[3][9] = 1;
- A->m[3][10] = sin(xs[3])*tan(xs[4]);
- A->m[3][11] = cos(xs[3])*tan(xs[4]);
+ A->m[3][10] = sin(xs[SV_PSI])*tan(xs[SV_PHI]);
+ A->m[3][11] = cos(xs[SV_PSI])*tan(xs[SV_PHI]);
 
- A->m[4][3] = -xs[10]*sin(xs[3])-xs[11]*cos(xs[3]);
- A->m[4][10] = cos(xs[3]);
- A->m[4][11] = -sin(xs[3]);
+ A->m[4][3] = -xs[SV_WQY]*sin(xs[SV_PSI])-xs[SV_WQZ]*cos(xs[SV_PSI]);
+ A->m[4][10] = cos(xs[SV_PSI]);
+ A->m[4][11] = -sin(xs[SV_PSI]);
 
- A->m[5][3] = (xs[10]*cos(xs[3])-xs[11]*sin(xs[3]))/cos(xs[4]);
- A->m[5][4] = (xs[10]*sin(xs[3])*sin(xs[4])+xs[11]*cos(xs[3])*sin(xs[4]))/uquad_square(cos(xs[4]));
- A->m[5][10] = sin(xs[3])/cos(xs[4]);
- A->m[5][11] = cos(xs[3])/cos(xs[4]);
+ A->m[5][3] = (xs[SV_WQY]*cos(xs[SV_PSI])-xs[SV_WQZ]*sin(xs[SV_PSI]))/cos(xs[SV_PHI]);
+ A->m[5][4] = (xs[SV_WQY]*sin(xs[SV_PSI])*sin(xs[SV_PHI])+xs[SV_WQZ]*cos(xs[SV_PSI])*sin(xs[SV_PHI]))/uquad_square(cos(xs[SV_PHI]));
+ A->m[5][10] = sin(xs[SV_PSI])/cos(xs[SV_PHI]);
+ A->m[5][11] = cos(xs[SV_PSI])/cos(xs[SV_PHI]);
 
- A->m[6][4] = 9.81*cos(xs[4]);
- A->m[6][7] = xs[11];
- A->m[6][8] = -xs[10];
- A->m[6][10] = -xs[8];
- A->m[6][11] = xs[7];
+ A->m[6][4] = GRAVITY*cos(xs[SV_PHI]);
+ A->m[6][7] = xs[SV_WQZ];
+ A->m[6][8] = -xs[SV_WQY];
+ A->m[6][10] = -xs[SV_VQZ];
+ A->m[6][11] = xs[SV_VQY];
 
- A->m[7][3] = -9.81*cos(xs[3])*cos(xs[4]);
- A->m[7][4] = 9.81*sin(xs[3])*sin(xs[4]);
- A->m[7][6] = -xs[11];
- A->m[7][8] = xs[9];
- A->m[7][9] = xs[8];
- A->m[7][11] = -xs[6];
+ A->m[7][3] = -GRAVITY*cos(xs[SV_PSI])*cos(xs[SV_PHI]);
+ A->m[7][4] = GRAVITY*sin(xs[SV_PSI])*sin(xs[SV_PHI]);
+ A->m[7][6] = -xs[SV_WQZ];
+ A->m[7][8] = xs[SV_WQX];
+ A->m[7][9] = xs[SV_VQZ];
+ A->m[7][11] = -xs[SV_VQX];
 
- A->m[8][3] = 9.81*sin(xs[3])*cos(xs[4]);
- A->m[8][4] = 9.81*cos(xs[3])*sin(xs[4]);
- A->m[8][6] = xs[10];
- A->m[8][7] = -xs[9];
- A->m[8][9] = -xs[7];
- A->m[8][10] = xs[6];
+ A->m[8][3] = GRAVITY*sin(xs[SV_PSI])*cos(xs[SV_PHI]);
+ A->m[8][4] = GRAVITY*cos(xs[SV_PSI])*sin(xs[SV_PHI]);
+ A->m[8][6] = xs[SV_WQY];
+ A->m[8][7] = -xs[SV_WQX];
+ A->m[8][9] = -xs[SV_VQY];
+ A->m[8][10] = xs[SV_VQX];
 
- A->m[9][10] = IZZM/IXX*(ws[0]-ws[1]+ws[2]-ws[3])+(IYY-IZZ)/IXX*xs[11];
- A->m[9][11] = (IYY-IZZ)/IXX*xs[10];
+ A->m[9][3]  = -D_CENTER_MASS_M*weight*GRAVITY*cos(xs[SV_PHI])*cos(xs[SV_PSI])/IXX;
+ A->m[9][4]  = D_CENTER_MASS_M*weight*GRAVITY*sin(xs[SV_PHI])*sin(xs[SV_PSI])/IXX;
+ A->m[9][10] = IZZM/IXX*(ws[0]-ws[1]+ws[2]-ws[3])+(IYY-IZZ)/IXX*xs[SV_WQZ];
+ A->m[9][11] = (IYY-IZZ)/IXX*xs[SV_WQY];
 
- A->m[10][9] = IZZM/IYY*(ws[0]-ws[1]+ws[2]-ws[3])-(IXX-IXX)/IXX*xs[11];
+ A->m[10][4] = -D_CENTER_MASS_M*weight*GRAVITY*cos(xs[SV_PHI])/IYY;
+ A->m[10][9] = IZZM/IYY*(ws[0]-ws[1]+ws[2]-ws[3])-(IXX-IXX)/IXX*xs[SV_WQZ];
  A->m[10][10] = 0;
- A->m[10][11] = -(IXX-IZZ)/IYY*xs[11];
+ A->m[10][11] = -(IXX-IZZ)/IYY*xs[SV_WQZ];
 
  B->m[8][0]=(2*F_B1*ws[0]+F_B2)/weight;
  B->m[8][1]=(2*F_B1*ws[1]+F_B2)/weight;
  B->m[8][2]=(2*F_B1*ws[2]+F_B2)/weight;
  B->m[8][3]=(2*F_B1*ws[3]+F_B2)/weight;
 
- B->m[9][0] = xs[10]*IZZM/IYY;
- B->m[9][1] = -xs[10]*IZZM/IYY+LENGTH*(2*F_B1*ws[1]+F_B2)/IXX;
- B->m[9][2] = xs[10]*IZZM/IYY;
- B->m[9][3] = -xs[10]*IZZM/IYY-LENGTH*(2*F_B1*ws[3]+F_B2)/IXX;
+ B->m[9][0] = xs[SV_WQY]*IZZM/IYY;
+ B->m[9][1] = -xs[SV_WQY]*IZZM/IYY+LENGTH*(2*F_B1*ws[1]+F_B2)/IXX;
+ B->m[9][2] = xs[SV_WQY]*IZZM/IYY;
+ B->m[9][3] = -xs[SV_WQY]*IZZM/IYY-LENGTH*(2*F_B1*ws[3]+F_B2)/IXX;
 
- B->m[10][0] = xs[9]*IZZM/IYY-LENGTH*(2*F_B1*ws[0]+F_B2)/IYY;
- B->m[10][1] = -xs[9]*IZZM/IYY;
- B->m[10][2] = xs[9]*IZZM/IYY+LENGTH*(2*F_B1*ws[2]+F_B2)/IYY;
- B->m[10][3] = -xs[9]*IZZM/IYY;
+ B->m[10][0] = xs[SV_WQX]*IZZM/IYY-LENGTH*(2*F_B1*ws[0]+F_B2)/IYY;
+ B->m[10][1] = -xs[SV_WQX]*IZZM/IYY;
+ B->m[10][2] = xs[SV_WQX]*IZZM/IYY+LENGTH*(2*F_B1*ws[2]+F_B2)/IYY;
+ B->m[10][3] = -xs[SV_WQX]*IZZM/IYY;
 
  B->m[11][0]=-(2*M_D1*ws[0]+M_D2)/IZZ;
  B->m[11][1]=(2*M_D1*ws[1]+M_D2)/IZZ;
