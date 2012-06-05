@@ -468,8 +468,8 @@ int gps_comm_read(gps_t *gps, uquad_bool_t *ok, struct timeval *tv_curr)
 
     retval = gps_comm_deg2utm(&gps->utm, gps->lat, gps->lon);
     err_propagate(retval);
-    gps->pos->m_full[0] = gps->utm.easting;
-    gps->pos->m_full[1] = gps->utm.northing;
+    gps->pos->m_full[0] = gps->utm.northing;
+    gps->pos->m_full[1] = -gps->utm.easting;
     gps->pos->m_full[2] = gps_fix.altitude;
 
     if(isnan(gps_fix.epx) ||
