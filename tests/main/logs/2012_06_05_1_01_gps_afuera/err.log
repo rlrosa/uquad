@@ -1,0 +1,2339 @@
+13:19:06:/home/root/work/uquad/src/main/main.c:762: Waiting for GPS fix...
+13:19:06:/home/root/work/uquad/src/main/main.c:769: GPS fix ok.
+13:18:58:/home/root/work/uquad/src/control/control.c:51: Loaded proportional gain matrix from:(K_prop_full_pptz.txt)
+13:18:58:/home/root/work/uquad/src/control/control.c:101: Loaded integral gain matrix from:(K_int_full_pptz.txt)
+13:18:54:/home/root/work/uquad/src/kalman/uquad_kalman.c:1045: Kalman - R
+100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	100000.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	10000.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	10000.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	10000.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.001000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.001000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.001000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	100000.000000	
+13:18:54:/home/root/work/uquad/src/kalman/uquad_kalman.c:1047: Kalman - Q
+100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.010000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.010000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000010	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.100000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.100000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.100000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	1.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	1.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	1.000000	
+13:18:54:/home/root/work/uquad/src/kalman/uquad_kalman.c:1049: Kalman - R_imu_gps
+100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	100000.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	10000.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	10000.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	10000.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.001000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.001000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.001000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	100.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	100.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	100000.000000	
+13:18:58:/home/root/work/uquad/src/control/control.c:265: Control - K
+0.000000	0.000000	8.800000	0.000000	-44.430000	-48.930000	0.000000	0.000000	16.800000	0.000000	-10.780000	-7.510000	
+0.000000	0.000000	8.800000	44.430000	0.000000	48.930000	0.000000	0.000000	16.800000	10.780000	0.000000	7.510000	
+0.000000	0.000000	8.800000	0.000000	44.430000	-48.930000	0.000000	0.000000	16.800000	0.000000	10.780000	-7.510000	
+0.000000	0.000000	8.800000	-44.430000	0.000000	48.930000	0.000000	0.000000	16.800000	-10.780000	0.000000	7.510000	
+13:18:58:/home/root/work/uquad/src/control/control.c:268: Control - K_int
+0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	
+
+13:19:06:/home/root/work/uquad/src/main/main.c:397: -- -- -- -- -- -- -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:398: main.c configuration:
+13:19:06:/home/root/work/uquad/src/main/main.c:399: -- -- -- -- -- -- -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:400: DEBUG(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:401: KALMAN_BIAS(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:402: CTRL_INTEGRAL(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:403: FULL_CONTROL(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:404: USE_GPS(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:405: GPS_ZERO(0)
+13:19:06:/home/root/work/uquad/src/main/main.c:406: IMU_COMM_FAKE(0)
+13:19:06:/home/root/work/uquad/src/main/main.c:407: OL_TS_STABIL(0)
+13:19:06:/home/root/work/uquad/src/main/main.c:408: CTRL_TS(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:409: MASA_DEFAULT(0.700000)
+13:19:06:/home/root/work/uquad/src/main/main.c:410: -- -- -- -- -- -- -- --
+
+13:19:06:/home/root/work/uquad/src/main/main.c:890: Entering while:(6.975556)
+13:19:06:/home/root/work/uquad/src/main/main.c:893: Clearing IMU input buffer...
+13:19:06:/home/root/work/uquad/src/main/main.c:1205: Waiting for stable IMU sampling time...
+13:19:06:/home/root/work/uquad/src/main/main.c:1223: IMU: Frames read out during stabilization:(52)
+13:19:06:/home/root/work/uquad/src/main/main.c:1233: IMU startup completed, starting calibration...(7.960083)
+13:19:06:/home/root/work/uquad/src/main/main.c:1471: IMU calibration completed, running kalman+control+ramp(13.065064)
+0.000000	0.00000000	-0.15978426	-0.27468088	9.82497591	0.00000000	0.00000000	0.00000000	-0.02795013	0.01625528	-2.66517027	19.10000000	29.80000000
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.014679) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.026367) (10)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.010956) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1664: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1665: -- -- -- -- -- -- -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1666: Ramp completed, running free control...(14.183899)
+13:19:06:/home/root/work/uquad/src/main/main.c:1667: -- -- -- -- -- -- -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1668: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007447) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.013275) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.011230) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.014161) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.008423) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007538) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.013764) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.009155) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012787) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.013886) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.010437) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.013519) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007629) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012695) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.009735) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012054) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007355) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012115) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.013733) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.009705) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012085) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.014069) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012787) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007386) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007538) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012604) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.014832) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.013672) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.010010) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012542) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.008301) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007355) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012298) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007569) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007477) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.013092) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.011475) (3)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.014892) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.021241) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.019165) (10)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007538) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012451) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.011047) (4)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.013214) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.009155) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007507) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012237) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.009430) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007385) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.015533) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.020295) (10)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.010590) (4)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012146) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007355) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007569) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012879) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007325) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012543) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012298) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.013428) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.009552) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.016205) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.009430) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012237) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.010224) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.016449) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007507) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012604) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007966) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012695) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.011993) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012696) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.010620) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012573) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.009185) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007721) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012085) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.008575) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007996) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012299) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.008667) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007446) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012634) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007416) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.013123) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.020233) (10)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.010620) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007507) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.013031) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007415) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012574) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.015778) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.009430) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012390) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007538) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012268) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.009705) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.016937) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.009796) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012329) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.010162) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007385) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.013031) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.010712) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.018463) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007660) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007477) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012634) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.009552) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007690) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012238) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007386) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012543) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.008026) (3)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012268) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007415) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012940) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.010193) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.013733) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007355) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007538) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012207) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007660) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012146) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.015381) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.013122) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007873) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012146) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.010498) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012146) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007507) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007416) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012695) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007782) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012574) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.014801) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.009369) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012817) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007843) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007294) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007355) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012848) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.008362) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007874) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007538) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.013031) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.014221) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007477) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.013183) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(3)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.011810) (10)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007782) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012878) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.011169) (3)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007966) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012664) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.008576) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007782) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.029358) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.018494) (10)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.008209) (5)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012237) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.009460) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.016449) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012481) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007416) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012817) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.010193) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012726) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.008271) (5)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007904) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012635) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.009033) (4)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012177) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007751) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012543) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.010132) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007935) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007599) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012970) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.009095) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007569) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012024) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.010193) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007630) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012726) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.011780) (3)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012115) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007416) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012085) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.008484) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007630) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007812) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007508) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012848) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.015381) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.009217) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007446) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:983: Saving timestamp...(98.184571)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.014710) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.009766) (9)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007904) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012359) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007508) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007446) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012177) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.009125) (5)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007385) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:983: Saving timestamp...(102.143769)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012482) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.015106) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.008972) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007659) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007415) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012116) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007690) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012970) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.015564) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.009430) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007477) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.013611) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.008850) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012146) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007874) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:983: Saving timestamp...(111.606781)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007690) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007660) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012848) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007843) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.014740) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.018951) (10)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.008454) (3)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012054) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.011749) (4)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007660) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012482) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007629) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.014648) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.018432) (10)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.019532) (10)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.009857) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007508) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:983: Saving timestamp...(118.581910)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007568) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012176) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007843) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012848) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.009858) (4)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007874) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012390) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007812) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012665) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007874) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012848) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.009765) (7)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012024) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007965) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012878) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.010437) (3)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007965) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.013580) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.008697) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012665) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007477) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.013977) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.015167) (10)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.009888) (3)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012115) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012299) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.014953) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012085) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.011261) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012817) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012176) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.010559) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.013733) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007599) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:983: Saving timestamp...(130.154297)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.013092) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.019623) (10)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.010040) (3)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007477) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007538) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:983: Saving timestamp...(132.622895)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007507) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.015319) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.021453) (10)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.019134) (10)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.018250) (10)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.010529) (9)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012787) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007782) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007812) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.013306) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.018738) (10)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.010864) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012238) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007691) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012085) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007568) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007904) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.013062) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007873) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012451) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007995) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007874) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007630) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.014771) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007416) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012634) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007446) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.009186) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.013001) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.010406) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:983: Saving timestamp...(142.692597)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012207) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007568) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007752) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012756) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012512) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.011718) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012024) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.010224) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012879) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007385) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012512) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007812) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.013580) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:983: Saving timestamp...(147.999176)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012512) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007508) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.008575) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007446) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012420) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.013702) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012512) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.010712) (3)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007569) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007843) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007416) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012329) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007752) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012879) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.013611) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.011139) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.018280) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007721) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007568) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012512) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.008026) (4)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012055) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.013275) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.010406) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.016632) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.008514) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:983: Saving timestamp...(158.047028)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012664) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007812) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012238) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(3)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.032074) (10)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.009155) (9)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012207) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007629) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007721) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012512) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012665) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.008667) (3)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007995) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007599) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012482) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.008118) (3)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.013000) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.010620) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.013337) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.008331) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012848) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.008057) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012054) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.009522) (5)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012024) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.010223) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.017639) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.010650) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.014557) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012268) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.010041) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012604) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007446) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012482) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.010559) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012787) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007965) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.015289) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.018311) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.008667) (3)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007537) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012542) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.007355) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012085) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1442: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1443: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1444: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1445: WARN: Skipped IMU!(1)
+13:19:06:/home/root/work/uquad/src/main/main.c:1446: -- --
+13:19:06:/home/root/work/uquad/src/main/main.c:1447: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1448: 
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.016175) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.009765) (2)
+13:19:06:/home/root/work/uquad/src/main/main.c:1580: TS supplied to Kalman out of range! Ignored:(0.012543) (0)
+13:19:06:/home/root/work/uquad/src/main/main.c:1607: TS supplied to Kalman out of range! Ignored:(0.009552) (5)
+13:19:06:/home/root/work/uquad/src/main/main.c:416: Caught signal:(2)
+13:19:06:/home/root/work/uquad/src/main/main.c:281: Motors killed!(176.281159)
+13:19:06:/home/root/work/uquad/src/main/main.c:416: Caught signal:(2)
+13:19:06:/home/root/work/uquad/src/main/main.c:298: main deinit started...(176.790467)
