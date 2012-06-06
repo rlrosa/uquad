@@ -112,6 +112,8 @@
 #define CTRL_INT_TH_X            1.0    // [m]
 #endif // CTRL_INTEGRAL
 
+#define CTRL_LQR_TH              1e-5   // Iteration threshold
+
 typedef struct ctrl{
     uquad_mat_t *K;
     uquad_mat_t *K_lqr;

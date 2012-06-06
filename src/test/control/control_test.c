@@ -128,7 +128,7 @@ int main(int argc, char *argv[])
 	{
 	    quit_log_if(retval, "End of log?");
 	}
-	#warning "w_hover esta mal!"
+	#warning "w_hover should use mot_control.h!!"
 
 	retval = pp_update_setpoint(pp, x, w_hover, &ctrl_outdated);
 	quit_if(retval);
