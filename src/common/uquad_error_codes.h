@@ -98,24 +98,43 @@ enum UQUAD_ERROR_CODES{
 
 /**
  * Print error message to stderr
- * 
+ *
  */
 #define err_log(msg)					\
     {							\
-	fprintf(stderr,"%s:%s:%d: %s\n\r",		\
-		__TIME__,__FILE__,__LINE__,msg);	\
+	log_msg(stderr,msg);				\
 	if(REROUTE_STDERR && rerouted())		\
-	    fprintf(stdout,"%s:%s:%d: %s\n\r",		\
-		    __TIME__,__FILE__,__LINE__,msg);	\
+	    log_msg(stdout,msg);			\
     }
 
 /**
  * Print error message to log
- * 
+ *
  */
 #define log_msg(log,msg)					\
     {								\
 	fprintf(log,"%s:%s:%d: %s\n\r",				\
+		__TIME__,__FILE__,__LINE__,msg);		\
+    }
+
+/**
+ * Print error message to stderr
+ *
+ */
+#define err_log_only(msg)					\
+    {								\
+	log_msg_only(stderr,msg);				\
+	if(REROUTE_STDERR && rerouted())			\
+	    log_msg_only(stdout,msg);				\
+    }
+
+/**
+ * Print error message to log
+ *
+ */
+#define log_msg_only(log,msg)					\
+    {								\
+	fprintf(log,"%s:%s:%d: %s\t",				\
 		__TIME__,__FILE__,__LINE__,msg);		\
     }
 
@@ -169,7 +188,7 @@ enum UQUAD_ERROR_CODES{
 
 /**
  * Print error message with number to stderr
- * 
+ *
  */
 #define err_log_str(msg,str)					\
     {								\
@@ -492,6 +511,17 @@ enum UQUAD_ERROR_CODES{
 	    err_propagate(ERROR_READ);			\
 	}						\
     }
+
+/**
+ * Print names of elements of state vector to log.
+ */
+#define print_sv_name(log)						\
+    fprintf(log,							\
+	    "x\ty\tz\t"							\
+	    "psi\tphi\tthe\t"						\
+	    "vqx\tvqy\tvqz\t"						\
+	    "wqx\twqy\twqz\t"						\
+	    "ax\tay\taz\n");
 
 /// No functions
 
