@@ -160,11 +160,18 @@ ctrl_t *control_init(void)
  * @param T_s Sampling period for data.
  * @param delta_max Limit on step size.
  * @param accum_max Limit on integration.
+ * @param threshold If further that this from threshold, let P control take care
  */
-static inline void ctrl_int(double *x_int, double data, double T_s, double delta_max, double accum_max)
+static inline void ctrl_int(double *x_int, double data, double T_s,
+			    double delta_max, double accum_max, double threshold)
 {
     double
 	ddelta;
+    if(uquad_abs(data) > threshold)
+    {
+	/// Too far from setopint
+	return;
+    }
     ddelta = uquad_min(data * T_s, delta_max);
     if(ddelta < 0)
 	ddelta = uquad_max(ddelta, -delta_max);
@@ -215,14 +222,16 @@ int control(ctrl_t *ctrl, uquad_mat_t *w, uquad_mat_t *x, set_point_t *sp, doubl
     	     tmp_sub_sp_x->m[SV_THETA][0],
     	     T_s,
     	     CTRL_INT_DELTA_MAX_THETA,
-    	     CTRL_INT_ACCUM_MAX_THETA);
+	     CTRL_INT_ACCUM_MAX_THETA,
+	     CTRL_INT_TH_THETA);
 
     /// SV_Z
     ctrl_int(ctrl->x_int->m_full + (ctrl->x_int->r - 2),
 	     tmp_sub_sp_x->m[SV_Z][0],
 	     T_s,
 	     CTRL_INT_DELTA_MAX_Z,
-	     CTRL_INT_ACCUM_MAX_Z);
+	     CTRL_INT_ACCUM_MAX_Z,
+	     CTRL_INT_TH_Z);
 
 #if FULL_CONTROL
 #if CTRL_INTEGRAL_ANG
@@ -231,28 +240,34 @@ int control(ctrl_t *ctrl, uquad_mat_t *w, uquad_mat_t *x, set_point_t *sp, doubl
 	     tmp_sub_sp_x->m[SV_PHI][0],
 	     T_s,
 	     CTRL_INT_DELTA_MAX_PHI,
-	     CTRL_INT_ACCUM_MAX_PHI);
+	     CTRL_INT_ACCUM_MAX_PHI,
+	     CTRL_INT_TH_PHI);
 
     /// SV_PSI
     ctrl_int(ctrl->x_int->m_full + (ctrl->x_int->r - 4),
 	     tmp_sub_sp_x->m[SV_PSI][0],
 	     T_s,
 	     CTRL_INT_DELTA_MAX_PSI,
-	     CTRL_INT_ACCUM_MAX_PSI);
+	     CTRL_INT_ACCUM_MAX_PSI,
+	     CTRL_INT_TH_PSI);
+
 #else // CTRL_INTEGRAL_ANG
     /// SV_Y
     ctrl_int(ctrl->x_int->m_full + (ctrl->x_int->r - 3),
 	     tmp_sub_sp_x->m[SV_Y][0],
 	     T_s,
 	     CTRL_INT_DELTA_MAX_Y,
-	     CTRL_INT_ACCUM_MAX_Y);
+	     CTRL_INT_ACCUM_MAX_Y,
+	     CTRL_INT_TH_Y);
 
     /// SV_X
     ctrl_int(ctrl->x_int->m_full + (ctrl->x_int->r - 4),
 	     tmp_sub_sp_x->m[SV_X][0],
 	     T_s,
 	     CTRL_INT_DELTA_MAX_X,
-	     CTRL_INT_ACCUM_MAX_X);
+	     CTRL_INT_ACCUM_MAX_X,
+	     CTRL_INT_TH_X);
+
 #endif // CTRL_INTEGRAL_ANG
 #endif // FULL_CONTROL
     retval = uquad_mat_prod(w_tmp, ctrl->K_int, ctrl->x_int);
