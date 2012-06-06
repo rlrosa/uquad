@@ -57,17 +57,18 @@ typedef enum STATE_VECTOR{
     SV_BAZ    /* [m/s^2] */
 }STATE_VECTOR_T;
 
-#define GRAVITY           9.81 	      // Aceleracion gravitatoria
-#define IXX               0.0232      // Tensor de inercia del quad - según x
-#define IYY               0.0232      // Tensor de inercia del quad - según y
-#define IZZ               0.0437      // Tensor de inercia del quad - según z
-#define IZZM              0.0000154   // Tensor de inercia de los motores - segun z
-#define LENGTH            0.29	      // Largo en metros del los brazos del quad
+#define GRAVITY           9.81 	      // Gravity
+#define IXX               0.0232      // Quad intertia tensor - x
+#define IYY               0.0232      // Quad intertia tensor - y
+#define IZZ               0.0437      // Quad intertia tensor - z
+#define IZZM              0.0000154   // Motor Inertia - z
+#define LENGTH            0.29	      // Length of quadcopter arm [m]
+#define D_CENTER_MASS_M   0.07        // Distance from center to center of mass [m]
 #define PI                3.1415926
 #define F_B1              4.60160135072435e-05     // Coeficiente cuadrático de la fuerza
 #define F_B2              -0.00103822726273726     // Coeficiente lineal de la fuerza
-#define M_D1              3.4734e-6   // Coeficiente cuadrático del torque
-#define M_D2              -1.3205e-4  // Coeficiente lineal del torque
+#define M_D1              3.4734e-6   // Torque = w^2*M_D1 + w*M_D2
+#define M_D2              -1.3205e-4  // Torque = w^2*M_D1 + w*M_D2
 #define DRAG_A1           0.0000034734// drag = w^2*A2 + w*A1
 #define DRAG_A2           -0.00013205 // drag = w^2*A2 + w*A1
 #define DRIVE_A1          4.60160135072435e-05 // drive = w^2*A2 + w*A1

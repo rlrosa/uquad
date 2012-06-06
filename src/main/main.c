@@ -514,7 +514,6 @@ int main(int argc, char *argv[]){
     int
 	retval = ERROR_OK,
 	i,
-	input       = -1,
 	imu_ts_ok   = 0,
 	runs_imu    = 0,
 	runs_kalman = 0,
@@ -1030,37 +1029,39 @@ int main(int argc, char *argv[]){
 	    }
 #if LOG_TV
 	    // save to log file
-	    gettimeofday(&tv_tmp,NULL);
-	    time_ret = uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
-	    if(time_ret <= 0)
+	    if(tmp_buff[0] == '\n')
 	    {
-		err_log("Absurd timing!");
+		gettimeofday(&tv_tmp,NULL);
+		time_ret = uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
+		if(time_ret <= 0)
+		{
+		    err_log("Absurd timing!");
+		}
+		log_tv(log_tv, "RET:", tv_diff);
+		fflush(log_tv);
+		err_log_tv("Saving timestamp...",tv_diff);
 	    }
-	    log_tv(log_tv, "RET:", tv_diff);
-	    fflush(log_tv);
-	    err_log_tv("Saving timestamp...",tv_diff);
 #endif
-	    //	    input = getch();
-	    if(input > 0 && running)
+	    if(running && (tmp_buff[0] != '\n'))
 	    {
 		if(time_ret <= 0)
 		{
 		    err_log("Absurd timing!");
 		}
 		dtmp = 0.0;
-		if(input == QUIT)
+		if(tmp_buff[0] == QUIT)
 		{
 		    err_log("Terminating program based on user input...");
 		    quit();
 		    // never gets here
 		}
-		if(!manual_mode && (char)input != MANUAL_MODE)
+		if(!manual_mode && tmp_buff[0] != MANUAL_MODE)
 		{
 		    err_log("Manuel mode DISABLED, enable with 'm'. Ignoring input...");
 		}
 		else
 		{
-		    switch(input)
+		    switch(tmp_buff[0])
 		    {
 		    case MANUAL_MODE:
 			// switch manual mode on/off
@@ -1157,7 +1158,7 @@ int main(int argc, char *argv[]){
 			break;
 		    default:
 			err_log("Invalid input!");
-			input = ERROR_INVALID_ARG;
+			tmp_buff[0] = ERROR_INVALID_ARG;
 			break;
 		    }
 		    if(dtmp != 0.0)
@@ -1171,8 +1172,10 @@ int main(int argc, char *argv[]){
 		    }
 		    else
 		    {
-			if(manual_mode && input != ERROR_INVALID_ARG)
+			if(manual_mode && tmp_buff[0] != ERROR_INVALID_ARG)
 			{
+			    err_log("New setpoint:");
+			    print_sv_name(stdout);
 			    uquad_mat_dump_vec(pp->sp->x,stderr, true);
 			}
 		    }
@@ -1571,6 +1574,8 @@ int main(int argc, char *argv[]){
 		/* retval = control_dump(ctrl, log_err); */
 		/* quit_log_if(retval, "Failed to dump new control matrix! Aborting..."); */
 	    }
+	    err_log("Initial setpoint:");
+	    uquad_mat_dump_vec(pp->sp->x,stderr,false);
 
 	    /**
 	     * Startup Kalman estimator
@@ -1900,12 +1905,7 @@ int main(int argc, char *argv[]){
 #if X_HAT_STDOUT
 	    if(x_hat_cnt++ > X_HAT_STDOUT)
 	    {
-		fprintf(stdout,
-			"x\ty\tz\t"					\
-			"psi\tphi\tthe\t"				\
-			"vqx\tvqy\tvqz\t"				\
-			"wqx\twqy\twqz\t"				\
-			"ax\tay\taz\n");
+		print_sv_name(stdout);
 		uquad_mat_dump_vec(kalman->x_hat,stdout,true);
 		fprintf(stdout,"\n");
 		x_hat_cnt = 0;

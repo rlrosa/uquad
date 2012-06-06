@@ -306,6 +306,16 @@ int uquad_mat_eye(uquad_mat_t *m);
 int uquad_mat_zeros(uquad_mat_t *m);
 
 /**
+ * Fills a matrix with val
+ *
+ * @param m
+ * @param val
+ *
+ * @return error code.
+ */
+int uquad_mat_fill(uquad_mat_t *m, double val);
+
+/**
  * Creates a diagonal matrix, setting diagonal of m to diag, and the
  * rest to zeros.
  * Assumes length of diag matches length of diagonal.

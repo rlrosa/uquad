@@ -318,6 +318,21 @@ int uquad_mat_zeros(uquad_mat_t *m)
     return ERROR_OK;
 }
 
+int uquad_mat_fill(uquad_mat_t *m, double val)
+{
+    int
+	len,
+	i;
+    if(m == NULL)
+    {
+	err_check(ERROR_NULL_POINTER,"NULL pointer is invalid arg.");
+    }
+    len = m->r*m->c;
+    for(i=0; i < len; ++i)
+	m->m_full[i] = val;
+    return ERROR_OK;
+}
+
 int uquad_mat_get_subm(uquad_mat_t *S, int r, int c, uquad_mat_t *A)
 {
     if(S == NULL || A == NULL)

@@ -19,7 +19,7 @@ then
 fi
 
 # use correct control gain
-for file in control/K*.txt
+for file in control/*.txt
 do
     file=${file##*/}
     if [ ! -e `pwd`/build/main/${file} ];

@@ -35,7 +35,7 @@
 #define MANUAL_WEIGHT        '0'     // reset motor speed to MOT_W_HOVER
 #define MANUAL_WEIGHT_INC    'i'
 #define MANUAL_WEIGHT_DEC    'k'
-#define MANUAL_WEIGHT_STEP   (0.05)   // [kg]
+#define MANUAL_WEIGHT_STEP   (0.05)  // [kg]
 #define MANUAL_Z_INC         'e'
 #define MANUAL_Z_DEC         'd'
 #define MANUAL_Z_STEP        (0.2)   // [m]
