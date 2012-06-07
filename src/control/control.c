@@ -537,22 +537,27 @@ int control_lqr(uquad_mat_t *K, uquad_mat_t *A, uquad_mat_t *B, uquad_mat_t *Q, 
     norm=1;
 
 
-    aux0 = uquad_mat_alloc(B->r,B->c);
+    //For K=-(R+B'*P*B)^(-1)*B'*P*A
+    aux0 = uquad_mat_alloc(P->r,B->c);
     aux1 = uquad_mat_alloc(R->r,R->c);
     aux2 = uquad_mat_alloc(R->r,R->c);
     aux3 = uquad_mat_alloc(R->r,R->c);
     aux4 = uquad_mat_alloc(R->r,2*R->c);
-    aux5 = uquad_mat_alloc(R->r,Q->c);
-    aux6 = uquad_mat_alloc(R->r,Q->c);
+    aux5 = uquad_mat_alloc(R->r,B->r);
+    aux6 = uquad_mat_alloc(R->r,P->c);
+
+    //Performs P=Q+K'*R*K+(A+B*K)'*P*(A+B*K)
+    //K'*R*K
     aux7 = uquad_mat_alloc(K->c,K->r);
-    aux8 = uquad_mat_alloc(K->c,K->r);
-    aux9 = uquad_mat_alloc(Q->r,Q->c);
-    aux10 = uquad_mat_alloc(Q->r,Q->c);	
-    aux11 = uquad_mat_alloc(Q->c,Q->r);
-    aux12 = uquad_mat_alloc(Q->c,Q->r);
+    aux8 = uquad_mat_alloc(K->c,R->c);
+    aux9 = uquad_mat_alloc(K->c,K->c);
+    //A+B*K
+    aux10 = uquad_mat_alloc(B->r,K->c);
+    aux11 = uquad_mat_alloc(K->c,B->r);
+    aux12 = uquad_mat_alloc(K->c,P->c);
     aux13 = uquad_mat_alloc(K->r,K->c);
 
-    while (norm>1e-5)
+    while (norm>CTRL_LQR_TH)
     {
 	retval = uquad_mat_copy(k,K);
 	cleanup_if(retval);

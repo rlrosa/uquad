@@ -185,7 +185,7 @@ int main(int argc, char *argv[])
 	err_log("Will attempt to get GPS fix...");
 	t_out.tv_usec = 0;
 	t_out.tv_sec  = 1;
-	ret = gps_comm_wait_fix(gps,&got_fix,&t_out);
+	ret = gps_comm_wait_fix(gps,&got_fix,NULL);
 	quit_log_if(ret,"Error waiting for gps!");
 	if(!got_fix)
 	{

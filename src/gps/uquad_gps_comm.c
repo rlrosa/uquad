@@ -124,7 +124,7 @@ int gps_comm_wait_fix(gps_t *gps, uquad_bool_t *got_fix, struct timeval *t_out)
 	err_propagate(retval);
 	if(read_ok)
 	{
-	    retval = gps_comm_read(gps, NULL, NULL);
+	    retval = gps_comm_read(gps, got_fix, NULL);
 	    err_propagate(retval);
 	    if(gps_comm_3dfix(gps))
 	    {
