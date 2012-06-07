@@ -1,3 +1,27 @@
+/**
+ * uquad_gps_comm: lib for communicating with gpsd
+ * Copyright (C) 2012  Rodrigo Rosa <rodrigorosa.lg gmail.com>, Matias Tailanian <matias tailanian.com>, Santiago Paternain <spaternain gmail.com>
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @file   uquad_gps_comm.c
+ * @author Rodrigo Rosa <rodrigorosa.lg gmail.com>, Matias Tailanian <matias tailanian.com>, Santiago Paternain <spaternain gmail.com>
+ * @date   Sun May 27 11:08:44 2012
+ *
+ * @brief  lib for communicating with gpsd
+ *
+ */
 #include <uquad_gps_comm.h>
 #include <stdlib.h>
 #include <gpsd.h>
@@ -444,8 +468,8 @@ int gps_comm_read(gps_t *gps, uquad_bool_t *ok, struct timeval *tv_curr)
 
     retval = gps_comm_deg2utm(&gps->utm, gps->lat, gps->lon);
     err_propagate(retval);
-    gps->pos->m_full[0] = gps->utm.easting;
-    gps->pos->m_full[1] = gps->utm.northing;
+    gps->pos->m_full[0] = gps->utm.northing;
+    gps->pos->m_full[1] = -gps->utm.easting;
     gps->pos->m_full[2] = gps_fix.altitude;
 
     if(isnan(gps_fix.epx) ||

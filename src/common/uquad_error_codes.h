@@ -1,3 +1,26 @@
+/**
+ * uquad_error_codes: macros for error handling
+ * Copyright (C) 2012  Rodrigo Rosa <rodrigorosa.lg gmail.com>, Matias Tailanian <matias tailanian.com>, Santiago Paternain <spaternain gmail.com>
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @file   uquad_error_codes.h
+ * @author Rodrigo Rosa <rodrigorosa.lg gmail.com>, Matias Tailanian <matias tailanian.com>, Santiago Paternain <spaternain gmail.com>
+ * @date   Sun May 27 11:20:03 2012
+ *
+ * @brief macros for error handling
+ */
 #ifndef UQUAD_ERROR_CODES_H
 #define UQUAD_ERROR_CODES_H
 
@@ -75,24 +98,43 @@ enum UQUAD_ERROR_CODES{
 
 /**
  * Print error message to stderr
- * 
+ *
  */
 #define err_log(msg)					\
     {							\
-	fprintf(stderr,"%s:%s:%d: %s\n\r",		\
-		__TIME__,__FILE__,__LINE__,msg);	\
+	log_msg(stderr,msg);				\
 	if(REROUTE_STDERR && rerouted())		\
-	    fprintf(stdout,"%s:%s:%d: %s\n\r",		\
-		    __TIME__,__FILE__,__LINE__,msg);	\
+	    log_msg(stdout,msg);			\
     }
 
 /**
  * Print error message to log
- * 
+ *
  */
 #define log_msg(log,msg)					\
     {								\
 	fprintf(log,"%s:%s:%d: %s\n\r",				\
+		__TIME__,__FILE__,__LINE__,msg);		\
+    }
+
+/**
+ * Print error message to stderr
+ *
+ */
+#define err_log_only(msg)					\
+    {								\
+	log_msg_only(stderr,msg);				\
+	if(REROUTE_STDERR && rerouted())			\
+	    log_msg_only(stdout,msg);				\
+    }
+
+/**
+ * Print error message to log
+ *
+ */
+#define log_msg_only(log,msg)					\
+    {								\
+	fprintf(log,"%s:%s:%d: %s\t",				\
 		__TIME__,__FILE__,__LINE__,msg);		\
     }
 
@@ -146,7 +188,7 @@ enum UQUAD_ERROR_CODES{
 
 /**
  * Print error message with number to stderr
- * 
+ *
  */
 #define err_log_str(msg,str)					\
     {								\
@@ -469,6 +511,17 @@ enum UQUAD_ERROR_CODES{
 	    err_propagate(ERROR_READ);			\
 	}						\
     }
+
+/**
+ * Print names of elements of state vector to log.
+ */
+#define print_sv_name(log)						\
+    fprintf(log,							\
+	    "x\ty\tz\t"							\
+	    "psi\tphi\tthe\t"						\
+	    "vqx\tvqy\tvqz\t"						\
+	    "wqx\twqy\twqz\t"						\
+	    "ax\tay\taz\n");
 
 /// No functions
 

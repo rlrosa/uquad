@@ -1,3 +1,26 @@
+/**
+ * imu_comm: Interface to IMU streaming data over serial line ("/dev/tty*")
+ * Copyright (C) 2012  Rodrigo Rosa <rodrigorosa.lg gmail.com>, Matias Tailanian <matias tailanian.com>, Santiago Paternain <spaternain gmail.com>
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @file   imu_comm.c
+ * @author Rodrigo Rosa <rodrigorosa.lg gmail.com>, Matias Tailanian <matias tailanian.com>, Santiago Paternain <spaternain gmail.com>
+ * @date   Sun May 27 10:02:32 2012
+ *
+ * @brief  Interface to IMU streaming data over serial line ("/dev/tty*")
+ */
 #include "imu_comm.h"
 #include <uquad_aux_io.h>
 #include <uquad_aux_time.h>
@@ -436,6 +459,22 @@ int imu_comm_load_calib(imu_t *imu, const char *path)
 			   imu->calib.m_lin[1].b,
 			   m3x1_0);
     err_propagate(retval);
+    // load gyro calibration temp
+    retval = fscanf(calib_file,"%lf",&dtmp);
+    if(retval <= 0)
+    {
+	if(retval < 0)
+	{
+	    err_log_stderr("fscanf() - gyro_to");
+	    return ERROR_IO;
+	}
+	else
+	{
+	    err_check(ERROR_READ, "Failed to read gyro_to");
+	}
+    }
+    imu->calib.gyro_to = dtmp;
+    retval = ERROR_OK; // clear error
 
     fclose(calib_file);
     imu->calib.calib_file_ready = true;
@@ -718,23 +757,36 @@ int imu_comm_calibration_finish(imu_t *imu){
     {
 	imu->calib.null_est.acc[i]  =
 	    (uint16_t)(calib_accum.acc[i]/IMU_CALIB_SIZE);
+	imu->tmp_filt.acc->m_full[i] =
+	    ((double)calib_accum.acc[i])/IMU_CALIB_SIZE;
+
 	imu->calib.null_est.gyro[i] =
 	    (uint16_t)(calib_accum.gyro[i]/IMU_CALIB_SIZE);
+	imu->tmp_filt.gyro->m_full[i] =
+	    ((double)calib_accum.gyro[i])/IMU_CALIB_SIZE;
+
 	imu->calib.null_est.magn[i] =
 	    (uint16_t)(calib_accum.magn[i]/IMU_CALIB_SIZE);
+	imu->tmp_filt.magn->m_full[i] =
+	    ((double)calib_accum.magn[i])/IMU_CALIB_SIZE;
     }
     imu->calib.null_est.temp =
 	(uint16_t)(calib_accum.temp/IMU_CALIB_SIZE);
+    imu->tmp_filt.temp =
+	((double)calib_accum.temp)/IMU_CALIB_SIZE;
+
     imu->calib.null_est.pres =
 	(uint32_t)floor((((double)calib_accum.pres)/IMU_CALIB_SIZE));
+    imu->tmp_filt.alt =
+	floor((((double)calib_accum.pres)/IMU_CALIB_SIZE));
 
     imu->calib.calibration_counter = -1;
     imu->calib.timestamp_estim = tv_end;
 
     // update offset estimation
     retval = imu_comm_raw2data(imu,
-			       &imu->calib.null_est,
 			       NULL,
+			       &imu->tmp_filt,
 			       &imu_data_tmp);
     if(retval != ERROR_OK)
 	imu_data_free(&imu_data_tmp);
@@ -743,6 +795,13 @@ int imu_comm_calibration_finish(imu_t *imu){
     retval = imu_comm_copy_data(&imu->calib.null_est_data, &imu_data_tmp);
     err_propagate(retval);
     imu_data_free(&imu_data_tmp);
+
+    /**
+     * The converted altitud will be different from 0, since the calibration
+     * is not yet ready. Starting position (z) is assumed as 0, so force it
+     * here.
+     */
+    imu->calib.null_est_data.alt = 0.0;
 
     // If external altitud available, use it to determine p0
     if(imu->calib.z0 >= 0)
@@ -1774,6 +1833,22 @@ int imu_comm_print_calib(imu_calib_t *calib, FILE *stream){
 
 #if 0
 /// unused code
+
+/**
+ * If IMU setting were to be modified from imu_comm, the
+ * current setting should be stored here.
+ * //TODO use or remove
+ *
+ */
+typedef struct imu_settings{
+    // sampling frequency
+    //    int fs;
+    // sampling period
+    //    double T;
+    // sens index
+    //    int acc_sens;
+    //    int frame_width_bytes;
+}imu_settings_t;
 
 static void imu_comm_cast_data2raw(imu_raw_t *out, imu_raw_db_t *in)
 {

@@ -72,28 +72,36 @@ figure;
     ylabel('\fontsize{12}Velocidades lineales [m/s]');
     axis tight
     hold off
+    
+%%
 
 figure;
 subplot(311)
     hold on; grid;
-    plot(t,z(:,7),'*-','color',blue1,'markersize',msize)
-    plot(t,x_hat(1:end,10),'color',blue2,'linewidth',width)
+    plot(t,z(:,7),'*-','color',green1,'markersize',msize)
+    plot(t,x_hat(1:end,10),'color',green2,'linewidth',1.7)
     xlabel('\fontsize{12}Tiempo [s]');
     title('\fontsize{15}\omega_{qx} [rad/s]');
+    handle = legend('\fontsize{15}\omega_{qx} medido','\fontsize{15}\omega_{qx} estiamdo');
+    set(handle, 'Box', 'off','location','northeast','orientation','horizontal');
 subplot(312)
     hold on; grid;
-    plot(t,z(:,8),'*-','color',red1,'markersize',msize)
-    plot(t,x_hat(1:end,11),'color',red2,'linewidth',width)
+    plot(t,z(:,8),'*-','color',orange1,'markersize',msize)
+    plot(t,x_hat(1:end,11),'color',red2,'linewidth',1.7)
     xlabel('\fontsize{12}Tiempo [s]');
     title('\fontsize{15}\omega_{qy} [rad/s]');
+    handle = legend('\fontsize{15}\omega_{qy} medido','\fontsize{15}\omega_{qy} estiamdo');
+    set(handle, 'Box', 'off','location','northeast','orientation','horizontal');
 subplot(313)
     hold on; grid;
-    plot(t,z(:,9),'*-','color',green1,'markersize',msize)
-    plot(t,x_hat(1:end,12),'color',green2,'linewidth',width)
+    plot(t,z(:,9),'*-','color',blue3,'markersize',msize)
+    plot(t,x_hat(1:end,12),'color',blue1,'linewidth',1.7)
     title('\fontsize{15}\omega_{qz} [rad/s]');  
     xlabel('\fontsize{12}Tiempo [s]');
     hold off
-    
+    handle = legend('\fontsize{15}\omega_{qz} medido','\fontsize{15}\omega_{qz} estiamdo');
+    set(handle, 'Box', 'off','location','northeast','orientation','horizontal');
+        
 %% tests/main/logs/2012_04_06_1_6_divino/imu_raw.log
 
 figure;
@@ -108,7 +116,7 @@ subplot(311)
     axis tight; hold off
 subplot(312)
     hold on; grid
-    plot(T,180/pi*z(:,2),'*-','color',red1,'markersize',msize)
+    plot(T,180/pi*z(:,2),'*-','color',orange1,'markersize',msize)
     plot(T,180/pi*x_hat(1:end,5),'color',red2,'linewidth',width)
     handle = legend('\fontsize{15}\phi_{imu}','\fontsize{15}\phi_{est}');
     set(handle, 'Box', 'on','location','northeast','orientation','horizontal');
@@ -117,10 +125,22 @@ subplot(312)
     axis tight; hold off
 subplot(313)
     hold on; grid
-    plot(T,180/pi*z(:,1),'*-','color',blue1,'markersize',msize)
-    plot(T,180/pi*x_hat(1:end,4),'color',blue2,'linewidth',width)
+    plot(T,180/pi*z(:,1),'*-','color',blue3,'markersize',msize)
+    plot(T,180/pi*x_hat(1:end,4),'color',blue1,'linewidth',width)
     handle = legend('\fontsize{15}\psi_{imu}','\fontsize{15}\psi_{est}');
     set(handle, 'Box', 'on','location','northeast','orientation','horizontal');
     title('\fontsize{15}Angulo \psi [^o]')
     xlabel('\fontsize{12}Tiempo [s]');
     axis tight; hold off
+    
+%%
+
+figure;
+    plot(t,z(:,end),'*','color',orange1,'markersize',msize)
+    hold on; grid
+    plot(t,x_hat(:,3),'color',blue1,'linewidth',width)
+    handle = legend('\fontsize{15}Altura medida','\fontsize{15}Altura estimada');
+    set(handle, 'Box', 'on','location','southeast');
+    xlabel('\fontsize{14}Tiempo [s]');
+    ylabel('\fontsize{13}Altura [m]');
+    hold off    

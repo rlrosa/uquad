@@ -1,4 +1,5 @@
 \documentclass[spanish,12pt,a4paper,titlepage]{report}
+%\documentclass[spanish]{book}
 %\usepackage[latin1]{inputenc}
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
@@ -56,7 +57,7 @@
 \subfile{control}
 \subfile{sim_control}
 \subfile{test_control}
-
+\subfile{conclusion}
 \cleardoublepage
 \addappheadtotoc
 \renewcommand{\appendixpagename}{Anexos}
@@ -65,12 +66,16 @@
 \renewcommand{\appendixtocname}{Anexo}
 
 
-\appendix %Tuve que ponerlos con include porque con el subfile quedaban todos numerados con A
-\include{camara}
-\include{anexo_mongoose}
-\include{anexo_tensores} 
-\include{anexo_linealizacion}
-\include{anexo_gps_dop}
-\bibliographystyle{plain} 
+\appendix 
+\subfile{camara.tex}
+\subfile{anexo_mongoose}
+\subfile{anexo_tensores}
+\subfile{anexo_linealizacion}
+\subfile{anexo_gps_dop}
+\subfile{montaje}
+\subfile{anexo_codigo}
+\subfile{anexo_cuidados}
+
+\bibliographystyle{ieeetr} 
 \bibliography{biblio}
 \end{document}

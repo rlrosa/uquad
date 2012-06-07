@@ -12,7 +12,7 @@ syms dX x y z vq1 vq2 vq3 psis phi theta wq1 wq2 wq3 T1 T2 T3 T4 w1 w2 w3 w4 dw1
 
 %Valores de las constantes del sistema
 L=0.29;
-M=1.741;
+M=1.550;
 Ixx=2.32e-02;
 Iyy=2.32e-02;
 Izz=4.37e-02;
@@ -41,8 +41,8 @@ dX = [vq1*cos(phi)*cos(theta)+vq2*(cos(theta)*sin(phi)*sin(psis)-cos(phi)*sin(th
       vq2*wq3-vq3*wq2+g*sin(phi);
       vq3*wq1-vq1*wq3-g*cos(phi)*sin(psis);
       vq1*wq2-vq2*wq1-g*cos(phi)*cos(psis)+(T1+T2+T3+T4)/M;
-      (wq2*wq3*(Iyy-Izz)+L*(T2-T4)+wq2*Izzm*(w1-w2+w3-w4)-cos(phi)*sin(psis)*M*g*d-d*vq2)/Ixx;
-      (wq1*wq3*(Izz-Ixx)+L*(T3-T1)+wq1*Izz*(w1-w2+w3-w4)-M*g*d*sin(phi)+d*vq1)/Iyy;
+      (wq2*wq3*(Iyy-Izz)+L*(T2-T4)+wq2*Izzm*(w1-w2+w3-w4)-cos(phi)*sin(psis)*M*g*d)/Ixx;
+      (wq1*wq3*(Izz-Ixx)+L*(T3-T1)+wq1*Izz*(w1-w2+w3-w4)-M*g*d*sin(phi))/Iyy;
 	  -(Q1-Q2+Q3-Q4)/Izz];
    
 dX=eval(dX);
