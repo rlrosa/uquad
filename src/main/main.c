@@ -1561,7 +1561,7 @@ int main(int argc, char *argv[]){
 		pp->sp->x->m_full[SV_THETA] = imu_data.magn->m_full[2]; // [rad]
 		pp->sp->x->m_full[SV_PSI]   = 0.0; // [rad]
 		pp->sp->x->m_full[SV_PHI]   = 0.0; // [rad]
-		pp->sp->x->m_full[SV_Z]     = 1.5; // [m]
+		pp->sp->x->m_full[SV_Z]     = 1.0; // [m]
 		// Motor speed
 		for(i=0; i<MOT_C; ++i)
 		{
