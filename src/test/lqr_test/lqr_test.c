@@ -23,6 +23,8 @@
  *
  */
 #include <uquad_aux_math.h>
+#include <uquad_types.h>
+#include <uquad_config.h>
 #include <path_planner.h>
 #include <control.h>
 #include <stdlib.h>
@@ -44,7 +46,8 @@ int main(){
 	err_log_stderr("fopen(A)");
 	cleanup_if(ERROR_IO);
     }
-    A = uquad_mat_alloc(12,12);
+    A = uquad_mat_alloc(STATES_CONTROLLED + STATES_INT_CONTROLLED,
+			STATES_CONTROLLED + STATES_INT_CONTROLLED);
     retval = uquad_mat_load(A, matrix);
     cleanup_if(retval);
 
@@ -54,7 +57,7 @@ int main(){
 	err_log_stderr("fopen(B)");
 	cleanup_if(ERROR_IO);
     }
-    B = uquad_mat_alloc(12,4);
+    B = uquad_mat_alloc(STATES_CONTROLLED + STATES_INT_CONTROLLED,LENGTH_INPUT);
     retval = uquad_mat_load(B,matrix);
     cleanup_if(retval);	
     
@@ -64,7 +67,8 @@ int main(){
 	err_log_stderr("fopen(Q)");
 	cleanup_if(ERROR_IO);
     }
-    Q = uquad_mat_alloc(12,12);
+    Q = uquad_mat_alloc(STATES_CONTROLLED + STATES_INT_CONTROLLED,
+			STATES_CONTROLLED + STATES_INT_CONTROLLED);
     retval = uquad_mat_load(Q,matrix);
     cleanup_if(retval);
        
@@ -74,13 +78,14 @@ int main(){
 	err_log_stderr("fopen(R)");
 	cleanup_if(ERROR_IO);
     }
-    R = uquad_mat_alloc(4,4);
+    R = uquad_mat_alloc(LENGTH_INPUT,LENGTH_INPUT);
     retval = uquad_mat_load(R,matrix);
     cleanup_if(retval);
 
     phi = uquad_mat_alloc(A->r, A->c);
     gamma = uquad_mat_alloc(B->r, B->c);
-    K = uquad_mat_alloc(4,12);
+    K = uquad_mat_alloc(LENGTH_INPUT,
+			STATES_CONTROLLED + STATES_INT_CONTROLLED);
 
     retval = control_disc(phi,gamma,A,B,10e-3);
     cleanup_if(retval);
