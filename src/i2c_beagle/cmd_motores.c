@@ -701,11 +701,15 @@ int main(int argc, char *argv[])
 #if !PC_TEST
     err_log_str("Opening: ",filename);
 #endif // !PC_TEST
-    if(setpriority (PRIO_PROCESS, 0, -2) == -1)
-    {
-	err_log("setpriority() failed!");
-	return -1;
-    }
+
+    /**
+     * Inherit priority from main.c for correct IPC.
+     */
+    /* if(setpriority (PRIO_PROCESS, 0, -2) == -1) */
+    /* { */
+    /* 	err_log("setpriority() failed!"); */
+    /* 	return -1; */
+    /* } */
 
     // Open ctrl interface
 
