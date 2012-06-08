@@ -118,10 +118,10 @@ ctrl_t *control_init(void)
 
 #if CTRL_INTEGRAL_ANG
     /// Avoid unstable startup caused by motor differences
-    ctrl->x_int->m_full[ctrl->x_int->r - 4] = -(CTRL_INT_ACCUM_MAX_PSI/5.0); // PSI
-    ctrl->x_int->m_full[ctrl->x_int->r - 3] = -(CTRL_INT_ACCUM_MAX_PHI/6.6); // PHI
-    ctrl->x_int->m_full[ctrl->x_int->r - 2] = 0.0;                           // Z
-    ctrl->x_int->m_full[ctrl->x_int->r - 1] = 0.0;                           // THETA
+    ctrl->x_int->m_full[ctrl->x_int->r - 4] = 0.0; // PSI
+    ctrl->x_int->m_full[ctrl->x_int->r - 3] = 0.0; // PHI
+    ctrl->x_int->m_full[ctrl->x_int->r - 2] = 0.0; // Z
+    ctrl->x_int->m_full[ctrl->x_int->r - 1] = 0.0; // THETA
 #endif // CTRL_INTEGRAL_ANG
 
     file_mat = fopen(CTRL_MAT_K_INT_NAME,"r");
