@@ -752,7 +752,7 @@ int main(int argc, char *argv[]){
      * Set nice value, we are more important than the rest
      * of the world.
      */
-    retval = setpriority(PRIO_PROCESS, 0, -5);
+    retval = setpriority(PRIO_PROCESS, 0, -20);
     if(retval == -1)
     {
 	quit_log_if(ERROR_FAIL, "Failed to set nice value!");
