@@ -113,8 +113,8 @@ enum UQUAD_ERROR_CODES{
  */
 #define log_msg(log,msg)					\
     {								\
-	fprintf(log,"%s:%s:%d: %s\n\r",				\
-		__TIME__,__FILE__,__LINE__,msg);		\
+	fprintf(log,"%s:%d: %s\n\r",				\
+		__FILE__,__LINE__,msg);				\
     }
 
 /**
@@ -134,17 +134,17 @@ enum UQUAD_ERROR_CODES{
  */
 #define log_msg_only(log,msg)					\
     {								\
-	fprintf(log,"%s:%s:%d: %s\t",				\
-		__TIME__,__FILE__,__LINE__,msg);		\
+	fprintf(log,"%s:%d: %s\t",				\
+		__FILE__,__LINE__,msg);				\
     }
 
 #define err_log_stderr(msg)						\
     {									\
-	fprintf(stderr,"%s:%s:%d: %s: %s\n\r",				\
-		__TIME__,__FILE__,__LINE__,msg, strerror(errno));	\
+	fprintf(stderr,"%s:%d: %s: %s\n\r",				\
+		__FILE__,__LINE__,msg, strerror(errno));		\
 	if(REROUTE_STDERR && rerouted())				\
-	    fprintf(stdout,"%s:%s:%d: %s: %s\n\r",			\
-		    __TIME__,__FILE__,__LINE__,msg, strerror(errno));	\
+	    fprintf(stdout,"%s:%d: %s: %s\n\r",			\
+		    __FILE__,__LINE__,msg, strerror(errno));	\
     }
 
 /**
@@ -153,11 +153,11 @@ enum UQUAD_ERROR_CODES{
  */
 #define err_log_num(msg,num)					\
     {								\
-	fprintf(stderr,"%s:%s:%d: %s(%d)\n\r",			\
-		__TIME__,__FILE__,__LINE__,msg,num);		\
+	fprintf(stderr,"%s:%d: %s(%d)\n\r",			\
+		__FILE__,__LINE__,msg,num);			\
 	if(REROUTE_STDERR && rerouted())			\
-	    fprintf(stdout,"%s:%s:%d: %s(%d)\n\r",		\
-		    __TIME__,__FILE__,__LINE__,msg,num);	\
+	    fprintf(stdout,"%s:%d: %s(%d)\n\r",			\
+		    __FILE__,__LINE__,msg,num);			\
     }
 
 /**
@@ -166,11 +166,11 @@ enum UQUAD_ERROR_CODES{
  */
 #define err_log_num_num(msg,num1,num2)				\
     {								\
-	fprintf(stderr,"%s:%s:%d: %s(%d/%d)\n\r",		\
-		__TIME__,__FILE__,__LINE__,msg,num1,num2);	\
+	fprintf(stderr,"%s:%d: %s(%d/%d)\n\r",			\
+		__FILE__,__LINE__,msg,num1,num2);		\
 	if(REROUTE_STDERR && rerouted())			\
-	    fprintf(stdout,"%s:%s:%d: %s(%d/%d)\n\r",		\
-		    __TIME__,__FILE__,__LINE__,msg,num1,num2);	\
+	    fprintf(stdout,"%s:%d: %s(%d/%d)\n\r",		\
+		    __FILE__,__LINE__,msg,num1,num2);		\
     }
 
 /**
@@ -179,11 +179,11 @@ enum UQUAD_ERROR_CODES{
  */
 #define err_log_char(msg,ch)				\
     {							\
-	fprintf(stderr,"%s:%s:%d: %s(%c)\n\r",		\
-		__TIME__,__FILE__,__LINE__,msg,ch);	\
+	fprintf(stderr,"%s:%d: %s(%c)\n\r",		\
+		__FILE__,__LINE__,msg,ch);		\
 	if(REROUTE_STDERR && rerouted())		\
-	    fprintf(stdout,"%s:%s:%d: %s(%c)\n\r",	\
-		    __TIME__,__FILE__,__LINE__,msg,ch);	\
+	    fprintf(stdout,"%s:%d: %s(%c)\n\r",		\
+		    __FILE__,__LINE__,msg,ch);		\
     }
 
 /**
@@ -192,11 +192,11 @@ enum UQUAD_ERROR_CODES{
  */
 #define err_log_str(msg,str)					\
     {								\
-	fprintf(stderr,"%s:%s:%d: %s(%s)\n\r",			\
-		__TIME__,__FILE__,__LINE__,msg,str);		\
+	fprintf(stderr,"%s:%d: %s(%s)\n\r",			\
+		__FILE__,__LINE__,msg,str);			\
 	if(REROUTE_STDERR && rerouted())			\
-	    fprintf(stdout,"%s:%s:%d: %s(%s)\n\r",		\
-		    __TIME__,__FILE__,__LINE__,msg,str);	\
+	    fprintf(stdout,"%s:%d: %s(%s)\n\r",			\
+		    __FILE__,__LINE__,msg,str);			\
     }
 
 /**
@@ -205,11 +205,11 @@ enum UQUAD_ERROR_CODES{
  */
 #define err_log_double(msg,dbl)					\
     {								\
-	fprintf(stderr,"%s:%s:%d: %s(%lf)\n\r",			\
-		__TIME__,__FILE__,__LINE__,msg,dbl);		\
+	fprintf(stderr,"%s:%d: %s(%lf)\n\r",			\
+		__FILE__,__LINE__,msg,dbl);			\
 	if(REROUTE_STDERR && rerouted())			\
-	    fprintf(stdout,"%s:%s:%d: %s(%lf)\n\r",		\
-		    __TIME__,__FILE__,__LINE__,msg,dbl);	\
+	    fprintf(stdout,"%s:%d: %s(%lf)\n\r",		\
+		    __FILE__,__LINE__,msg,dbl);			\
     }
 
 /**
@@ -263,8 +263,8 @@ enum UQUAD_ERROR_CODES{
  */
 #define log_double(log,msg,dbl)				\
     {							\
-	fprintf(log,"%s:%s:%d: %s: %lf\n\r",		\
-		__TIME__,__FILE__,__LINE__,msg,dbl);	\
+	fprintf(log,"%s:%d: %s: %lf\n\r",		\
+		__FILE__,__LINE__,msg,dbl);		\
     }
 
 #define log_eol(log) fprintf(log,"\n\r")
@@ -276,8 +276,8 @@ enum UQUAD_ERROR_CODES{
  */
 #define log_tv(log,msg,tv)						\
     {									\
-	fprintf(log,"%s:%s:%d: %s(%ld.%06ld)\n\r",			\
-		__TIME__,__FILE__,__LINE__,msg,tv.tv_sec, tv.tv_usec);	\
+	fprintf(log,"%s:%d: %s(%ld.%06ld)\n\r",				\
+		__FILE__,__LINE__,msg,tv.tv_sec, tv.tv_usec);		\
     }
 
 /**
@@ -286,8 +286,8 @@ enum UQUAD_ERROR_CODES{
  */
 #define log_tv_num(log,msg,tv,num)					\
     {									\
-	fprintf(log,"%s:%s:%d: %s(%ld.%06ld) (%d)\n\r",			\
-		__TIME__,__FILE__,__LINE__,				\
+	fprintf(log,"%s:%d: %s(%ld.%06ld) (%d)\n\r",			\
+		__FILE__,__LINE__,					\
 		msg,tv.tv_sec, tv.tv_usec, num);			\
     }
 
@@ -367,11 +367,11 @@ enum UQUAD_ERROR_CODES{
 #define err_log_std(retval)						\
     if(retval!=ERROR_OK)						\
     {									\
-	fprintf(stderr,"%s:%s:%d: %s\n\r",				\
-		__TIME__,__FILE__,__LINE__,strerror(errno));		\
+	fprintf(stderr,"%s:%d: %s\n\r",					\
+		__FILE__,__LINE__,strerror(errno));			\
 	if(REROUTE_STDERR && rerouted())				\
-	    fprintf(stdout,"%s:%s:%d: %s\n\r",				\
-		    __TIME__,__FILE__,__LINE__,strerror(errno));	\
+	    fprintf(stdout,"%s:%d: %s\n\r",				\
+		    __FILE__,__LINE__,strerror(errno));			\
     }
 
 /**
