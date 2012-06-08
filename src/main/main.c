@@ -134,6 +134,7 @@
 
 #include <sys/signal.h>   // for SIGINT and SIGQUIT
 #include <sys/wait.h>     // for waitpid()
+#include <sys/resource.h> // for setpriority()
 #include <unistd.h>       // for STDIN_FILENO
 
 #define QUIT           27
@@ -217,7 +218,7 @@
  * Display current state estimation on console every X_HAT_STDOUT samples.
  * If set to 0, then nothing will be displayed.
  */
-#define X_HAT_STDOUT       300
+#define X_HAT_STDOUT       0
 
 /**
  * Frequency at which motor controller is updated
@@ -568,25 +569,6 @@ int main(int argc, char *argv[]){
     signal(SIGINT, uquad_sig_handler);
     signal(SIGQUIT, uquad_sig_handler);
 
-    /**
-     * Start a child process that will ping use UDP packages
-     * to verify connectivity with server (laptop)/
-     * If connection is lost, then motors should be shutoff.
-     */
-    check_net_chld = uquad_check_net_client(CHECK_NET_SERVER_IP,
-					    CHECK_NET_PORT,
-					    true);
-#if !CHECK_NET_BYPASS
-    if(check_net_chld < 0)
-    {
-	quit_log_if(ERROR_FAIL,"Failed to connect to check_net server!");
-    }
-    else
-    {
-	signal(SIGCHLD, uquad_conn_lost_handler);
-    }
-#endif // CHECK_NET_BYPASS
-
     retval = gettimeofday(&tv_start,NULL);
     err_log_std(retval);
     tv_last_ramp  = tv_start;
@@ -765,6 +747,35 @@ int main(int argc, char *argv[]){
     }
 #endif // LOG_INT
 #endif //DEBUG
+
+    /**
+     * Set nice value, we are more important than the rest
+     * of the world.
+     */
+    retval = setpriority(PRIO_PROCESS, 0, -5);
+    if(retval == -1)
+    {
+	quit_log_if(ERROR_FAIL, "Failed to set nice value!");
+    }
+
+    /**
+     * Start a child process that will ping use UDP packages
+     * to verify connectivity with server (laptop)/
+     * If connection is lost, then motors should be shutoff.
+     */
+    check_net_chld = uquad_check_net_client(CHECK_NET_SERVER_IP,
+					    CHECK_NET_PORT,
+					    true);
+#if !CHECK_NET_BYPASS
+    if(check_net_chld < 0)
+    {
+	quit_log_if(ERROR_FAIL,"Failed to connect to check_net server!");
+    }
+    else
+    {
+	signal(SIGCHLD, uquad_conn_lost_handler);
+    }
+#endif // CHECK_NET_BYPASS
 
     /// IO manager
     io = io_init();
