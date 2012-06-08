@@ -765,7 +765,7 @@ int main(int argc, char *argv[]){
      */
     check_net_chld = uquad_check_net_client(CHECK_NET_SERVER_IP,
 					    CHECK_NET_PORT,
-					    true);
+					    false);
 #if !CHECK_NET_BYPASS
     if(check_net_chld < 0)
     {
