@@ -3,7 +3,7 @@
 
 \begin{document}
 
-\chapter{Caracterizaci\'on de los motores}\
+\chapter{Caracterizaci\'on de los motores y las h\'elices}\
 \label{chap:test_motores}
 \section{Objetivo}
 El objetivo es el de caracterizar los motores del cuadric\'optero Turbo Ace X720. Se busca:
@@ -65,7 +65,7 @@ Este experimento servir\'a para relevar:
 
 \subsubsection*{Modelos de ajuste}
 
-Si no se env\'ia ning\'un comando $I^2C$ los motores no giran. Es evidente que si los motores no giran las h\'elices no realizan ning\'un empuje. Por lo tanto los modelos deben estar ajustados al cero. 
+Si no se env\'ia ning\'un comando $I^2C$ los motores no giran. Es evidente que si los motores no giran las h\'elices no realizan ning\'un empuje. Por lo tanto los modelos deben ``pasar'' por el origen. 
 \begin{itemize}
 
 
@@ -226,11 +226,11 @@ En la tabla \ref{tab:motores} se presentan los resultados obtenidos experimental
 	170 & -2030 &104.7 &104.2 &106.2 &105.5 \\ \hline
 	200 & -2535 &115.5 &113.4 &119.9 &117.3 \\ \hline
 \end{tabular}
-\caption{Comando $I^2C$ enviado y fuerza obtenida}
+\caption{Comando $I^2C$ enviado, peso medido y frecuencia medida para los cuatro motores}
 \label{tab:motores}
 \end{table}
 
-En la figura \ref{fig:motores} se presentan las velocidades angulares de los cuatro motores contra el comando $I^2C$, mientras que en la figura \ref{fig:difmotores} se muestra la diferencia entre la velocidad angular de cada motor y el promedio de las mismas para cada comando $I^2C$ enviado. En la figura \ref{fig:motores} se observa que el comportamiento de los motores es en todos los casos similar. Para velocidades angulares bajas los motores se comportan en forma id\'entica, y comienzan a distanciarse al aumentar la velocidad.\\
+En la figura \ref{fig:motores} se presentan las velocidades angulares de los cuatro motores contra el comando $I^2C$, mientras que en la figura \ref{fig:difmotores} se muestra la diferencia entre la velocidad angular de cada motor y el promedio de las mismas para cada comando $I^2C$ enviado. En la figura \ref{fig:motores} se observa que el comportamiento de los motores es en todos los casos similar. Para velocidades angulares bajas los motores se comportan en forma id\'entica y lineal, y comienzan a distanciarse al aumentar la velocidad.\\
  
 
 \begin{figure}[h!]
@@ -263,23 +263,23 @@ Se trabaja con la medida de peso presentada en la tabla \ref{tab:motores} y con 
 
 Para el modelo cuadr\'atico se obtiene:
 \begin{itemize}
-\item Par\'ametros: \newline$a=4.3031\times10^{-5}Ns^2$,\newline$b=-6.1147\times 10^{-4}Ns$
-\item Error promedio: $e=-3.9951\times 10 ^{-4}N$
-\item Desviaci\'on est\'andar :$\sigma=2.3871\times10^{-2}N$
+\item Par\'ametros: \newline$a=4.6016\times10^{-5}Ns^2$,\newline$b=-1.0380\times 10^{-3}Ns$
+\item Error promedio: \newline$e=-3.9951\times 10 ^{-4}N$,\newline $e=-0.4072\times 10 ^{-1}g$
+\item Desviaci\'on est\'andar :\newline$\sigma=2.3871\times10^{-2}N$,\newline $\sigma=2.4333g$
 \end{itemize}
 
 Para el modelo c\'ubico se obtiene:
 \begin{itemize}
 \item Par\'ametros:\newline$a\prime = 3.0619\times 10^{-9}Ns^3$,\newline$b\prime =4.1319\times10^{-5}Ns^2$,\newline$c\prime -3.9160\times10^{-4}Ns$
-\item Error: $-1.4331\times10^{-4}N$
-\item Desviaci\'on est\'andar: $\sigma=2.3377\times 10^{-2}N$
+\item Error:\newline $e =-1.4331\times10^{-4}N$, \newline $e=-0.1461g$
+\item Desviaci\'on est\'andar: \newline $\sigma=2.3377\times 10^{-2}N$, \newline $\sigma =2.3830g$
 \end{itemize}
 
-El c\'alculo del error promedio y la desviaci\'on est\'andar no presenta diferencias significativas para uno y otro modelo, por lo tanto se opta por trabajar con el modelo m\'as sencillo, es decir el cuadr\'atico. Se tiene entonces que:
+El c\'alculo del error promedio y la desviaci\'on est\'andar no presenta diferencias significativas para uno y otro modelo, por lo tanto se opta por trabajar con el modelo m\'as sencillo, es decir el cuadr\'atico. Asimismo el error obtenido es despreciable respecto de la resoluci\'on de la balanza y la desviaci\'on est\'andar es del \'orden de la presici\'on de la misma, por lo que se consluye que la caracterizaci\'on es satisfcatoria. Se tiene entonces que:
 \begin{equation}
 T=4.6016\times10^{-5}\omega^2-1.0380\times10^{-3}\omega
 \end{equation}
-
+Con $\omega$ en $rad/s$ y $T$ en $N$.
 \begin{figure}[H]
   \vspace{-20pt}
 \hspace{-50pt}
@@ -316,7 +316,7 @@ El error promedio obtenido con el modelo c\'ubico y la desviaci\'on est\'andar s
 \begin{equation}
 x=2.2118\times 10^{-6}\omega^3 -7.1258\times 10^{-4}\omega^2+0.5106\omega
 \end{equation}
-
+Con $\omega$ en $rad/s$.
 %\subsection{Obtenci\'on de la curva $I^2C$ contra fuerza}
 %Se presentan los datos obtenidos para la determinaci\'on de la curva de inter\'es en la tabla \ref{tab:if}.
 %\begin{table}[H]
@@ -388,17 +388,22 @@ x=2.2118\times 10^{-6}\omega^3 -7.1258\times 10^{-4}\omega^2+0.5106\omega
 \vspace{-85pt}
 \end{wrapfigure}
 
-De acuerdo al procedimiento detallado en \ref{sub:torque} se obtuvieron las siguientes medidas de velocidad angular y peso.
+En la tabla \ref{tab:torque} se presentan las medidas obtenidas de velocidad angular y masa medida por la balanza de acuerdo al procedimiento detallado en \ref{sub:torque}.
 
 Recordamos que para la caracterizaci\'on de la respuesta velocidad angular - torque se propuso un modelo cuadr\'atico. Los resultados obtenidos fueron:
 
 \begin{itemize}
  \item Par\'ametros: \newline$a=3.4734\times10^{-6}Nms^2$,\newline$b=-1.3205\times 10 ^{-4} Nms$
 \item Error promedio:\newline$\mu = 1.7824\times 10^{-6}Nm$
-\item Desviaci\'on est\'andar: \newline$\sigma = 9.2686\times 10^{-4}$ 
+\item Desviaci\'on est\'andar: \newline$\sigma = 9.2686\times 10^{-4}Nm$ 
 \end{itemize}
 
-En la figura \ref{fig:torque} pueden observarse las medidas experimentales obtenidas y la curva que corresponde al modelo elegido para realizar el ajuste, el resultado es satisfactorio.
+Si se asume que el error al realizar la medida en el largo del brazo del cuadric\'optero es despreciable, se pueden convertir los errores obtenidos en $Nm$ a gramos.
+\begin{itemize}
+\item $\mu=0.6265\times10^{-3}g$
+\item $\sigma =3.2580\times10^{-1}g$
+\end{itemize} 
+Tanto el error como la desviaci\'on est\'andar son inferiores en al menos un \'orden que la resoluci\'on de la balanza. En la figura \ref{fig:torque} pueden observarse las medidas experimentales obtenidas y la curva que corresponde al modelo elegido para realizar el ajuste, el resultado es satisfactorio.
 
 \subsection{Respuesta al escal\'on}
 
