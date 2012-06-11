@@ -47,7 +47,7 @@ En este capítulo se analiza la performance del GPS Canmore GT-730F. Se intenta 
 \label{fig:pol-pedorro}
 \end{wrapfigure}
 
-En esta prueba se busca caracterizar el error del GPS fundamentalmente en latitud y longitud. Adicionalmente se realiza un an\'alisis del error del GPS en altura.
+En esta secci\'on se caracteriza el error del GPS fundamentalmente en latitud y longitud. Adicionalmente se realiza un an\'alisis del error del GPS en altura.
 
 El experimento que se dise\~nó consiste en marcar un rectángulo sobre el suelo, utilizando 6 puntos, con la disposición de la figura \ref{fig:pol-pedorro}. Todas líneas punteadas son de 6m de largo. Resulta en un rectángulo de 6m por 12m.
 
@@ -364,9 +364,9 @@ En las figuras siguientes se observan los datos tomados durante 3 caminatas sigu
 \vspace{-10pt}
 \end{wrapfigure}
 
-Las gráficas de las caminatas a primera vista son muy desalentadoras. Se observa un error que parece ser muy significativo, la trayectoria no se parece en nada a un rectángulo. Un análisis más detallado de los resultados revela que la performance del GPS es acorde a los esperado según las pruebas de las secciones anteriores.
+Las gráficas de las caminatas son muy desalentadoras. Se observa un error mayor al esperado a partir de los experimentos de punto fijo. Recorrer el pol\'igono no es comparable a tomar muestras, quieto, en cada v\'ertice.
 
-La posición parece tender a estabilizarse una vez que se llega al destino final, el punto 1. Ahí se continuó logueando datos por unos 20 segundos. En la figura \ref{fig:caminata2.png} la posición final parece tener un drift que se aleja de la posición inicial, en lugar de acercarse. No se encontró una justificación para este comportamiento, pero es similar al observado para puntos fijos, por lo que no se le prestó especial atención.
+En algunos de los experimentos la posición parece tender a estabilizarse una vez que se llega al destino final, el punto 1. Ahí se continuó logueando datos por unos 20 segundos. En la figura \ref{fig:caminata2.png} la posición final parece tener un drift que se aleja de la posición inicial, en lugar de acercarse. No se encontró una justificación para este comportamiento.
 
 \section{Error en altura}
 \label{sec:error-en-altura}
@@ -384,7 +384,7 @@ Para determinar el error la información sobre la altura que provee el GPS, se d
 \vspace{-15pt}
 \end{wrapfigure}
 
-En la primera etapa del experimento, se mantuvo el GPS quieto en cada uno de los niveles, y se tomaron muestras durante aproximadamente 60 segundos. El objetivo de esta etapa era verificar si era viable el experimento.
+Se mantuvo el GPS quieto en cada uno de los niveles, y se tomaron muestras durante aproximadamente 60 segundos. El objetivo de esta etapa era verificar si era viable el experimento.
 
 Se colocó una escalera en el medio del estacionamiento de atrás de la Facultad de Ingeniería, se ató un piolín con marcas cada 1 metro, y una plomada en la punta para mantenerlo tenso y vertical.
 
@@ -432,7 +432,7 @@ Sobre un mapa de Montevideo se graficaron trayectorias conocidas, con el objetiv
 
 No se observo un corrimiento de los datos evidente y constante, por lo que se asume el GPS \textbf{no} introduce un offset.
 
-En la figura \ref{fig:ponce.png} se observa una trayectoria realizada en bicicleta, con el GPS colocado sobre el trípode, asomando de una mochila. El recorrido fue hacia el sur-oeste, sobre el cord\'on nor-oeste. No se observa un offset en \ref{fig:ponce.png}, ni tampoco en otras figuras, que se analizaron.
+En la figura \ref{fig:ponce.png} se observa una trayectoria realizada en bicicleta, con el GPS colocado sobre el trípode, asomando de una mochila. El recorrido fue hacia el sur-oeste, sobre el cord\'on nor-oeste. Se observa que la posici\'on dada por el GPS marca un camino similar al realizado, pero a veces llega a cruzar al cord\'on opuesto (esto no sucedi\'o durante el experimento).
 
 \section{Conclusiones}
 \label{sec:conclusion}
@@ -440,9 +440,9 @@ En la figura \ref{fig:ponce.png} se observa una trayectoria realizada en bicicle
 Los siguientes items servirán de guía para la utilización del GPS como instrumento de navegación:
 
 \begin{itemize}
-\item \textbf{Error en las medidas}: Bajo las condiciones anteriores, se concluye que es razonable asumir que las medidas del GPS tienen un \textbf{error t\'ipico menor a 2.5m}. Los errores son \textbf{siempre inferiores a los 5m\footnote{Con una geometr\'ia adecuada}}. Es de esperarse que la performance se reduzca al utilizar el GPS en un entorno más ruidoso, como el que resultará al colocar el GPS sobre el cuadricóptero, ya que estará sujeto a interferencia electromagnética de los motores, vibraciones, etc.
+\item \textbf{Error en las medidas}: Las medidas del GPS tienen un error t\'ipico menor a 2.5m para un punto fijo, situaci\'on irreal, ya que el cuadric\'optero necesita al GPS para poder quedarse quieto. Para las caminatas el error es de alrededor de \textbf{5m}, siempre que se disponga de una buena geometr\'ia y de alrededor de 9-10 sat\'elites a la vista. Es de esperarse que la performance se reduzca al utilizar el GPS montado sobre el cuadr\'icoptero, donde estar\'a sujeto a interferencia electromagnética de los motores, vibraciones, etc.
 \item \textbf{Visibilidad}: Es importante asegurar buena visibilidad, la performance del GPS se reduce drásticamente si pierde satélites.
-\item \textbf{Resolución}: El GPS \textbf{no} es adecuado para tareas de navegación con restricciones del orden del metro, pero sí para distancias del orden de decenas de metros.
+\item \textbf{Resolución}: El GPS \textbf{no} es adecuado para tareas de navegación con restricciones menores a 10 metros, pero sí para distancias de varias decenas de metros.
 \item \textbf{Tasa de muestreo}: El GPS normalmente muestrea a \textbf{1Hz}. Cabe destacar que debe ignorarse información repetida (muestras sucesivas que sea idénticas).
 \item \textbf{Error en altura}: El GPS \textbf{no} es adecuado para determinar la elevación durante el aterrizaje/despegue, ya que a menos de 2m del piso, la estimación de la elevación es muy mala. Será necesario otro sensor (sensor de presión, IR, etc) para asistir durante el despegue/aterrizaje.
 \item \textbf{Tiempo de \textit{fix}}: En frío demora alrededor de 40 segundos, en caliente entre 3 y 5 segundos.
