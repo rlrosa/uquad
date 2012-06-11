@@ -76,6 +76,7 @@ typedef enum STATE_VECTOR{
 #define MASA_DEFAULT      (1.550)     // Weight of the quadcopter [kg]
 #define STATE_COUNT       12          // State vector length
 #define LENGTH_INPUT      4           // Input vector length
+#define GPS_RAND_PP       1.0         // Random values of +-GPS_RAND_PP/2.0
 
 /**
  * Definition of default sampling period, in microseconds.
