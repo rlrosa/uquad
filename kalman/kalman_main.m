@@ -41,7 +41,7 @@ use_n_states = 3; % Regulates number of variables to control. Can be:
                     % 2: uses all 12 states -> [x y z psi phi tehta vqx vqy vqz wqx wqy wqz]
                     % 3: uses all 12 states and their integrals
 use_gps      = 1; % Use kalman_gps
-use_fake_gps = 1; % Feed kalman_gps with fake data (only if use_gps)
+use_fake_gps = 0; % Feed kalman_gps with fake data (only if use_gps)
 
 use_fake_T   = 0; % Ignore real timestamps from log, use average
 
@@ -70,7 +70,7 @@ if(stabilize_ts)
 end
 
 %% Source
-log_path = 'src/build/main/';
+log_path = 'tests/main/logs/2012_06_08_1_01_gps_paterbook/';
 if(~exist('log_path','var'))
 	error('Must define a variable log_path to read from!');
 end
@@ -80,7 +80,7 @@ gps_file  = [log_path '/gps.log'];
 %% Load IMU data
 
 % Imu
-imu_file = 'tests/main/logs/2012_05_26_1_04_theta_quieto_con_integrador/imu_raw.log';
+%imu_file = 'tests/main/logs/2012_06_05_1_01_gps_afuera/imu_raw.log';
 % imu_file = './tests/mongoose/acc/logs_zparriba/z00y45.txt';
 % imu_file = [p{12} 'imu_raw.log'];
 [acrud,wcrud,mcrud,tcrud,bcrud,~,~,T]=mong_read(imu_file,0,1);
@@ -113,14 +113,20 @@ if(use_gps)
 		% save('kalman/gps','easting','northing','elevation','utmzone','sat','lat','lon','dop');
 		GPS       = load(gps_file);
 		T_gps     = GPS(:,1);
-		easting   = GPS(:,4); westing = -easting;
-		northing  = GPS(:,5);
+        northing  = GPS(:,4);
+        westing = GPS(:,5);
 		elevation = GPS(:,6);
 		vx_gps    = GPS(:,7);
 		vy_gps    = GPS(:,8);
 		vz_gps    = GPS(:,9);
-	end
+    end
+    x0 = northing(1);
+    y0 = westing(1);
+else
+    x0 = 0;
+    y0 = 0;
 end
+
 
 % %% Re-calibrate sensors
 % % startup_runs samples are discarded
@@ -222,9 +228,9 @@ DELTA_MAX = [1.0e-3 1.0e-3 0.5e-2 7.0e-3];
 INT_MAX   = [1.0 1.0 2.0 2.0];
 
 %                  x   y   z  psi  phi  thet vqx vqy vqz wqx wqy wqz ax  ay  az
-Q_imu_gps = diag([1e2 1e2 1e2 1e-2 1e-2 1e-5 1e2 1e2 1e2 1e-1 1e-1 1e-1 1e0 1e0 1e0 ]);
+Q_imu_gps = diag([1e2 1e2 1e-2 1e-2 1e-2 1e-5 1e2 1e2 1e2 1e-1 1e-1 1e-1 1e0 1e0 1e0 ]);
 %                 psi phi the ax  ay  az  wqx wqy wqz  x   y   z
-R_imu_gps = diag([1e2 1e2 1e5 1e4 1e4 1e4 1e-3 1e-3 1e-3 1e2 1e2 1e5]);
+R_imu_gps = diag([1e2 1e2 1e5 1e4 1e4 1e4 1e-3 1e-3 1e-3 1e-2 1e-2 1e5]);
 % R_imu_gps = diag([1e3 1e3 1e6 1e4 1e4 1e4 1e1  1e1  1e1  1e2 1e2 1e5]);
 % %                  x   y   z  vqx vqy vqz
 % Q_gps     = diag([1e2 1e2 1e2 1e2 1e2 1e2]);
@@ -249,7 +255,7 @@ elseif(use_n_states == 1)
     x_hat_integrals = zeros(1,2);
 elseif(use_n_states == 2)
     Kp   = load('src/control/K_full.txt');
-    sp_x = [0;0;0;0;0;theta0;0;0;0;0;0;0];
+    sp_x = [x0;y0;0;0;0;theta0;0;0;0;0;0;0];
     Nctl = 12;
 		x_hat_integrals = zeros(N,4);
 elseif(use_n_states == 3)
@@ -258,7 +264,7 @@ elseif(use_n_states == 3)
     Ki = load('src/control/K_int_full_ppzt.txt');
 %     K = [Kp Ki];
 
-    sp_x = [0;0;1.5;0;0;theta0;0;0;0;0;0;0];
+    sp_x = [x0;y0;1.5;0;0;theta0;0;0;0;0;0;0];
 		x_hat_integrals = INT_MAX.*[1/-5.0 1/-6.6 0 0];
     Nctl = 16;
 end
@@ -283,6 +289,7 @@ x_hat_ctl      = zeros(N,Nctl);
 P_gps          = 1*eye(Ngps);
 gps_index      = 1;
 
+x_hat(1,1:2) = [x0, y0];
 x_hat(1,4:6) = [psi0, phi0, theta0];
 x_hat(1,13:15) = acc0 - [0 0 9.81];
 
@@ -336,7 +343,11 @@ for i=2:N
 				%                         westing(gps_index); elevation(gps_index); vx_gps(gps_index);...
 				%                         vy_gps(gps_index); vz_gps(gps_index)], w_hover);
 				if(~use_fake_gps)
-					gps_index = gps_index + 1;
+					if gps_index+1 > length(T_gps)
+                        T_gps(gps_index) = inf;
+                    else
+                        gps_index = gps_index + 1;
+                    end
 				else
 					% Fake gps is of size 1, so force gps_index==1 to always be true
 					if(length(T) >= i + 100)
