@@ -3,7 +3,7 @@
 \begin{document}
 \chapter{Visi\'on general del proyecto}
 \label{chap:general}
-Se considera importante explicar brevemente las distintas partes que componen el proyecto de forma de que el lector se haga una idea general del mismo.\\
+En este cap\'itulo se describen brevemente las distintas partes que componen el proyecto de forma de que el lector se haga una idea general del mismo.\\
 
 El esquema general de un cuadric\'optero se puede apreciar en la figura \ref{fig:cuad}. Se compone de dos ejes perpendiculares, en cuyos extremos se ubican los propulsores (motores y h\'elices). En la figura \ref{fig:cuad} tambi\'en se observan las velocidades angulares de los motores ($\omega$), as\'i como las fuerzas ($T$) y torques ($M$) producidos por ellos. Tanto los torques como las fuerzas de los propulsores dependen de la velocidad angular de las h\'elices. Por dicho motivo, lo que se busca es actuar sobre los motores, variando su velocidad angular para realizar las distintas acciones de control.
 
@@ -25,7 +25,7 @@ Existe una velocidad angular de los motores para la cual la fuerza total produci
 \caption{}
 \end{figure}
 
-Para realizar una rotaci\'on se debe crear un desbalance entre los torques producidos por los motores. Si se desea aumentar el \'angulo de Roll ($\psi$), debe disminuirse la velocidad  angular del motor 4 y aumentar la del motor 2, manteniendo la fuerza neta igual a la fuerza necesaria para lograr el hovering. Esta situaci\'on se encuentra representada en la figura \ref{fig:cuad_roll}. Análogamente, para aumentar el \'angulo de Pitch debe aumentarse la velocidad angular del motor 3 y disminuir la velocidad angular del motor 1 (ver figura \ref{fig:cuad_pitch} ). Finalmente, si se desea aumentar el \'angulo de Yaw se debe disminuir la velocidad de la velocidad de los motores 1 y 3 y aumentar la de los motores 2 y 4, manteniendo la fuerza neta igual a la fuerza de hovering. Esta \'ultima situaci\'on es la presentada en la figura \ref{fig:quad_theta}.
+Para realizar una rotaci\'on se debe crear un desbalance entre los torques producidos por los motores. Si se desea aumentar el \'angulo de Roll ($\psi$), debe disminuirse la velocidad  angular del motor 4 y aumentar la del motor 2, manteniendo la fuerza neta igual a la fuerza necesaria para lograr el hovering. Esta situaci\'on se encuentra representada en la figura \ref{fig:cuad_roll}. Análogamente, para aumentar el \'angulo de Pitch debe aumentarse la velocidad angular del motor 3 y disminuir la velocidad angular del motor 1 (ver figura \ref{fig:cuad_pitch} ). Finalmente, si se desea aumentar el \'angulo de Yaw se debe disminuir la velocidad angular de los motores 1 y 3 y aumentar la de los motores 2 y 4, manteniendo la fuerza neta igual a la fuerza de hovering. Esta \'ultima situaci\'on es la presentada en la figura \ref{fig:quad_theta}.
 
 
 
@@ -41,11 +41,13 @@ Las acciones de control descriptas anteriormente pueden ser combinadas de forma 
 
 A continuaci\'on se dar\'a una visi\'on general del sistema que se desea implementar. En la figura \ref{fig:esquema_gral} se presenta un diagrama de bloques del mismo. En la proxima secci\'on se ver\'a en detalle el hardware utilizado.\\
 
-La plataforma elegida es un cuadric\'optero comercial radio controlado. El mismo cuenta con los elementos indispensables para poder volarlo manualmente: transmisor, receptor, CPU1, motores y ESCs\footnote{Electronic Speed Controller}.\\   
-
-Una de las señales del receptor ser\'a utilizada para definir si el control de los motores estar\'a comandado por la CPU1 o por la CPU2 (piloto autom\'atico). La CPU2 ser\'a el centro del sistema de control a implementar. Para determinar las acciones a realizar sobre los motores es imprescindible contar con cierta instrumentaci\'on (IMU\footnote{Inertial Measurement Unit} y GPS) que permita estimar las variables de inter\'es.\\
-
-Se desea adem\'as que la CPU2 tenga una comunicaci\'on con el mundo exterior de forma de facilitar la programaci\'on de los algor\'itmos y de modificar o agregar waypoints durante el vuelo.\\ 
+La plataforma f\'isica elegida es un cuadric\'optero comercial radio controlado. El mismo cuenta con los elementos indispensables para poder volarlo manualmente: transmisor, receptor, CPU1, motores y ESCs\footnote{Electronic Speed Controller}. La soluci\'on adoptada agrega:
+\begin{itemize}
+\item IMU\footnote{Inertial Measurement Unit} y GPS: Sensores que permiten obtener una medida directa o indirecta de las variables de estado del sistema. 
+\item CPU2: Es el centro del sistema de control a implementar, se encarga de procesar los datos de los sensores y de decidir la acci\'on de control a realizar. 
+\item WiFi: Permite la comunicaci\'on con el mundo exterior de forma de facilitar la programaci\'on de los algor\'itmos y de modificar o agregar waypoints durante el vuelo. 
+\item Switcheo: Una de las señales del receptor ser\'a utilizada para definir si el control de los motores estar\'a comandado por la CPU1 o por la CPU2. 
+\end{itemize}
 
 \begin{figure}[h!]
   \centering
