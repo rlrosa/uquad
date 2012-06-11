@@ -406,7 +406,9 @@ Esto implicaría que al prender el cuadricóptero, habría que esperar unos 40 s
 \section{Tasa de muestreo}
 \label{sec:tasa-de-muestreo}
 
-El GPS bajo funcionamiento normal trabaja a 1Hz. Se observó que estando quieto, a veces repite información, y la etiqueta como ``válida''. Se observó este comportamiento durante los experimentos de punto fijo, llegando a pasar 30 segundos registrando exactamente la misma información.
+El GPS bajo funcionamiento normal trabaja a aproximadamente 1Hz. Se observ\'o un patr\'on de 3 muestras a 1Hz, luego una 4ta muestra pegada a la \'ultima de las 3, luego nuevamente a 1Hz.
+
+Se observó que estando quieto, a veces repite información, y la etiqueta como ``válida''. Se observó este comportamiento durante los experimentos de punto fijo, llegando a pasar 30 segundos registrando exactamente la misma información.
 
 Se compararon los datos crudos provenientes del GPS con los que devuelve el GPSD, y se concluyó que el GPSD \textbf{no} es responsable de la repetición de datos, es decir, no es un problema de software, sino que el GPS es quien env\'ia datos repetidos.
 
