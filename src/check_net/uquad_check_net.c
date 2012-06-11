@@ -19,6 +19,7 @@
 #include <uquad_check_net.h>
 #include <uquad_aux_io.h>
 #include <sys/prctl.h>
+#include <fcntl.h>  // for fcntl(), F_SETFL
 #include <signal.h> // for SIGHUP
 
 int uquad_check_net_server(int portno, uquad_bool_t udp)
@@ -181,6 +182,8 @@ int uquad_check_net_client(const char *hostIP, int portno, uquad_bool_t udp)
     uquad_bool_t
 	read_ok = false,
 	server_ok = false;
+    fd_set
+	set;
     struct sockaddr_in
 	servaddr;
     struct hostent
@@ -218,11 +221,22 @@ int uquad_check_net_client(const char *hostIP, int portno, uquad_bool_t udp)
     servaddr.sin_port=htons(portno);
     if(!udp)
     {
+	FD_ZERO(&set);
+	FD_SET(sockfd, &set);
+
+	fcntl(sockfd, F_SETFL, O_NONBLOCK);
+
 	if(connect(sockfd,(struct sockaddr *) &servaddr,sizeof(servaddr)) < 0)
 	{
-	    err_log_stderr("connect()");
-	    cleanup_if(ERROR_FAIL);
+	    if(errno != EINPROGRESS)
+	    {
+		err_log_stderr("connect()");
+		cleanup_if(ERROR_FAIL);
+	    }
 	}
+
+	retval = IsSocketConnected(sockfd,&set,&set);
+	cleanup_if(retval);
     }
 
     bzero(buff_i,CHECK_NET_MSG_LEN);
@@ -333,4 +347,50 @@ int uquad_check_net_client(const char *hostIP, int portno, uquad_bool_t udp)
 	close(sockfd);
     /// Client should never die, any reason is an error
     return err_output;
+}
+
+int IsSocketConnected(int fd, fd_set *rd, fd_set *wr)
+{
+    /*
+     * Code taken from Effective TCP/IP Programming, by Jon Snader, p185
+     */
+    int
+	err,
+	retval;
+    uquad_bool_t
+	write_ok,
+	read_ok;
+    fd_set
+	set;
+    socklen_t  len = sizeof(int);
+    struct timeval
+	timeout;
+    timeout.tv_sec = 2;
+    timeout.tv_usec = 0;
+
+    FD_ZERO(&set);
+    FD_SET(fd, &set);
+    retval = select(fd+1, NULL, &set, NULL, &timeout);
+
+    retval = check_io_locks(fd, NULL, &read_ok, &write_ok);
+    err_propagate(retval);
+    if(!write_ok || !read_ok)
+    {
+	err_check(ERROR_IO, "connect() failed! Read/write from socket would block!");
+    }
+
+    errno = 0;
+
+    if (!FD_ISSET(fd, rd) && !FD_ISSET(fd, wr))
+    {
+	err_check(ERROR_FAIL, "Cannot read from socket!");
+    }
+
+    if (getsockopt(fd, SOL_SOCKET, SO_ERROR, &err, &len) < 0)
+    {
+	err_log_stderr("getsockopt()");
+	return ERROR_FAIL;
+    }
+
+    return ERROR_OK;
 }

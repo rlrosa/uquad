@@ -93,4 +93,15 @@ int uquad_check_net_server(int portno, uquad_bool_t udp);
  */
 int uquad_check_net_client(const char *hostIP, int portno, uquad_bool_t udp);
 
+/**
+ * Verifies connect() was successful by checking if socket is read/writable.
+ *
+ * @param fd
+ * @param rd
+ * @param wr
+ *
+ * @return error code (no error == connect() succeeded)
+ */
+int IsSocketConnected(int fd, fd_set *rd, fd_set *wr);
+
 #endif // UQUAD_CHECK_NET_H

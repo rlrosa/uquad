@@ -242,7 +242,7 @@ static io_t *io            = NULL;
 static ctrl_t *ctrl        = NULL;
 static path_planner_t *pp  = NULL;
 
-#if USE_GPS && !GPS_ZERO
+#if USE_GPS && !GPS_FAKE
 static gps_t *gps          = NULL;
 #endif
 /// Global var
@@ -387,9 +387,9 @@ void quit()
     uquad_mat_free(imu_data.magn);
 #if USE_GPS
     gps_comm_data_free(gps_dat);
-#if !GPS_ZERO
+#if !GPS_FAKE
     gps_comm_deinit(gps);
-#endif // !GPS_ZERO
+#endif // !GPS_FAKE
 #endif
 
     // Logs
@@ -460,7 +460,7 @@ void log_configuration(void)
     err_log_num("CTRL_INTEGRAL_ANG",CTRL_INTEGRAL_ANG);
     err_log_num("FULL_CONTROL",FULL_CONTROL);
     err_log_num("USE_GPS",USE_GPS);
-    err_log_num("GPS_ZERO",GPS_ZERO);
+    err_log_num("GPS_FAKE",GPS_FAKE);
     err_log_num("IMU_COMM_FAKE",IMU_COMM_FAKE);
     err_log_num("OL_TS_STABIL",OL_TS_STABIL);
     err_log_num("CTRL_TS",CTRL_TS);
@@ -576,9 +576,14 @@ int main(int argc, char *argv[]){
     uquad_bool_t gps_update = false;
 #if USE_GPS
     tv_gps_last   = tv_start;
-#if !GPS_ZERO
+#if !GPS_FAKE
     uquad_bool_t reg_gps = true;
-#endif // !GPS_ZERO
+#else // !GPS_FAKE
+#if GPS_RAND
+    unsigned int iseed = (unsigned int)tv_start.tv_usec*tv_start.tv_sec;
+    srand (iseed);
+#endif // GPS_RAND
+#endif // !GPS_FAKE
 #endif // USE_GPS
 #if TIMING
     struct timeval
@@ -759,10 +764,11 @@ int main(int argc, char *argv[]){
     }
 
     /**
-     * Start a child process that will ping use UDP packages
+     * Start a child process that will ping use TCP packages
      * to verify connectivity with server (laptop)/
      * If connection is lost, then motors should be shutoff.
      */
+    err_log("Will connect to check_net server...");
     check_net_chld = uquad_check_net_client(CHECK_NET_SERVER_IP,
 					    CHECK_NET_PORT,
 					    false);
@@ -805,7 +811,7 @@ int main(int argc, char *argv[]){
 	err_log("Failed to allocate GPS!...");
 	quit();
     }
-#if !GPS_ZERO
+#if !GPS_FAKE
     /// GPS
     gps = gps_comm_init(device_gps);
     if(gps == NULL)
@@ -862,7 +868,7 @@ int main(int argc, char *argv[]){
 	retval = imu_comm_set_z0(imu,gps_dat->pos->m_full[2]);
 	quit_if(retval);
     }
-#endif // !GPS_ZERO
+#endif // !GPS_FAKE
 #endif // USE_GPS
 
     /// Kalman
@@ -928,7 +934,7 @@ int main(int argc, char *argv[]){
     quit_log_if(retval,"Failed to get imu fds!!");
     retval = io_add_dev(io,imu_fds);
     quit_log_if(retval,"Failed to add imu to dev list");
-#if USE_GPS && !GPS_ZERO
+#if USE_GPS && !GPS_FAKE
     // gps
     int gps_fds;
     if(gps != NULL)
@@ -1399,7 +1405,7 @@ int main(int argc, char *argv[]){
 	}//if(read)
 
 #if USE_GPS
-#if !GPS_ZERO
+#if !GPS_FAKE
 	/// -- -- -- -- -- -- -- --
 	/// Check GPS updates
 	/// -- -- -- -- -- -- -- --
@@ -1438,13 +1444,19 @@ int main(int argc, char *argv[]){
 	    end_gps:;
 	    // will jump here if something went wrong during GPS reading
 	}
-#else // GPS_ZERO
+#else // GPS_FAKE
 	if(!gps_update)
 	{
 	    gettimeofday(&tv_tmp,NULL);
 	    time_ret = uquad_timeval_substract(&tv_diff, tv_tmp, tv_gps_last);
 	    if( (runs_kalman > 0) && (tv_diff.tv_sec > 0) )
 	    {
+#if GPS_RAND
+		gps_dat->pos->m_full[0] = GPS_RAND_PP *(rand() / ( RAND_MAX + 1.0 ) - 0.5);
+		gps_dat->pos->m_full[1] = GPS_RAND_PP *(rand() / ( RAND_MAX + 1.0 ) - 0.5);
+		gps_dat->pos->m_full[2] = 2.0*GPS_RAND_PP *(rand() / ( RAND_MAX + 1.0 ) - 0.5);
+		uquad_mat_dump_vec(gps_dat->pos, stdout, true);
+#endif // GPS_RAND
 		// gps_dat is set to 0 when allocated, so just use it.
 		gps_update = true;
 		tv_gps_last = tv_tmp;
@@ -1463,7 +1475,7 @@ int main(int argc, char *argv[]){
 		gps_update = false;
 	    }
 	}
-#endif // GPS_ZERO
+#endif // GPS_FAKE
 #endif // USE_GPS
 
 	/// -- -- -- -- -- -- -- --
@@ -1544,7 +1556,7 @@ int main(int argc, char *argv[]){
 	    retval = imu_comm_raw2data(imu, &imu->calib.null_est, NULL, &imu_data);
 	    quit_log_if(retval,"Failed to correct setpoint!");
 
-#if USE_GPS && !GPS_ZERO
+#if USE_GPS && !GPS_FAKE
 	    if(device_gps != NULL)
 	    {
 		/**
@@ -1555,7 +1567,7 @@ int main(int argc, char *argv[]){
 		retval = gps_comm_set_tv_start(gps,tv_tmp);
 		quit_log_if(retval, "Failed to set gps startup time!");
 	    }
-#endif // USE_GPS && !GPS_ZERO
+#endif // USE_GPS && !GPS_FAKE
 
 	    /**
 	     * Startup setpoint:

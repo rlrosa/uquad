@@ -5,9 +5,9 @@
 \label{chap:general}
 En este cap\'itulo se describen brevemente las distintas partes que componen el proyecto de forma de que el lector se haga una idea general del mismo.\\
 
-El esquema general de un cuadric\'optero se puede apreciar en la figura \ref{fig:cuad}. Se compone de dos ejes perpendiculares, en cuyos extremos se ubican los propulsores (motores y h\'elices). En la figura \ref{fig:cuad} tambi\'en se observan las velocidades angulares de los motores ($\omega$), as\'i como las fuerzas ($T$) y torques ($M$) producidos por ellos. Tanto los torques como las fuerzas de los propulsores dependen de la velocidad angular de las h\'elices. Por dicho motivo, lo que se busca es actuar sobre los motores, variando su velocidad angular para realizar las distintas acciones de control.
+El esquema general de un cuadric\'optero se puede apreciar en la figura \ref{fig:cuad}\footnote{Las imágenes \ref{fig:cuad}, \ref{fig:cuad_roll}, \ref{fig:cuad_pitch} y \ref{fig:quad_theta} se basan en la original tomada de1 \url{http://www.isys.uni-stuttgart.de/}}. Se compone de dos ejes perpendiculares, en cuyos extremos se ubican los propulsores (motores y h\'elices). En dicha figura tambi\'en se observan las velocidades angulares de los motores ($\omega$), as\'i como las fuerzas ($T$) y torques ($M$) producidos por ellos. Tanto los torques como las fuerzas de los propulsores dependen de la velocidad angular de las h\'elices. Por dicho motivo, lo que se busca es actuar sobre los motores, variando su velocidad angular para realizar las distintas acciones de control.
 
-\begin{figure}
+\begin{figure}[h!]
 \centering
 \includegraphics[scale=0.4]{./pics_general/quad_hov.jpg}
 \caption{Esquema general de un cuadric\'optero}
@@ -39,7 +39,14 @@ Las acciones de control descriptas anteriormente pueden ser combinadas de forma 
 
 \section{Componentes del sistema y su interacci\'on}
 
-A continuaci\'on se dar\'a una visi\'on general del sistema que se desea implementar. En la figura \ref{fig:esquema_gral} se presenta un diagrama de bloques del mismo. En la proxima secci\'on se ver\'a en detalle el hardware utilizado.\\
+A continuaci\'on se dar\'a una visi\'on general del sistema que se desea implementar. En la figura \ref{fig:esquema_gral_recortado} se presenta un diagrama de bloques de la plataforma física comercial adquirida, y en la figura \ref{fig:esquema_gral} el esquema general completo. En la proxima secci\'on se ver\'a en detalle el hardware utilizado.\\
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=.6\textwidth]{./pics_general/diagrama_gral_recortado.png}
+  \caption{Esquema general de la plataforma física comercial}
+  \label{fig:esquema_gral_recortado}
+\end{figure}
 
 La plataforma f\'isica elegida es un cuadric\'optero comercial radio controlado. El mismo cuenta con los elementos indispensables para poder volarlo manualmente: transmisor, receptor, CPU1, motores y ESCs\footnote{Electronic Speed Controller}. La soluci\'on adoptada agrega:
 \begin{itemize}
