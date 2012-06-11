@@ -5,7 +5,7 @@
 
 \chapter{Modelo F\'isico}
 \label{chap:modelo}
-Resulta imprescindible para controlar el cuadric\'optero comprender cabalmente su comportamiento. Con esta \'optica, lo que se busca es obtener el modelo m\'as sencillo que sea capaz de representar adecuadamente al sistema. El objetivo de este cap\'itulo es el de realizar el desarrollo de dicho modelo. La forma de modelar el sistema elegida es un Modelo en Variables de Estado, de ahora en m\'as MVE. Lo que se busca es obtener una representaci\'on del sistema de la forma $\dot{\vec{x}}=f\left(\vec{x},\vec{u},t\right)$, donde $\vec{x}$ es el vector de estados del sistema, $\vec{u}$ es el vector que representa las entradas del sistema y $t$ es el tiempo. \\
+Para controlar el cuadric\'optero resulta imprescindible comprender cabalmente su comportamiento. Con esta \'optica, lo que se busca es obtener el modelo m\'as sencillo que sea capaz de representar adecuadamente al sistema. El objetivo de este cap\'itulo es el de realizar el desarrollo de dicho modelo. La forma de modelar el sistema elegida es un Modelo en Variables de Estado, de ahora en m\'as MVE. Lo que se busca es obtener una representaci\'on del sistema de la forma $\dot{\vec{x}}=f\left(\vec{x},\vec{u},t\right)$, donde $\vec{x}$ es el vector de estados del sistema, $\vec{u}$ es el vector que representa las entradas del sistema y $t$ es el tiempo. \\
 
 Al tratarse de una plataforma comercial no se dispone de todos los par\'ametros fundamentales para el desarrollo de dicho modelo, a modo de ejemplo, no se conoce como es la respuesta de los motores  ni el tensor de inercia del sistema. La obtenci\'on de dichos par\'ametros se detalla en el cap\'itulo \ref{chap:test_motores} y en el anexo \ref{chap:anexo_tensores} respectivamente. En el presente an\'alisis nos limitaremos a obtener las ecuaciones que gobiernan el comportamiento del cuadric\'optero.\\
     
@@ -465,12 +465,7 @@ El modelo en variables de estado resulta:
 \label{eq:modelo}
 \end{equation}
 
-
-
-
-
-
-
+Las ecuaciones desarrolladas son similares a las consideradas por otros autores. En el trabajo propuesto por \ref{bib:quadrotor-bible} se describe inicialmente un modelo similar al aqu\'i considerado con la excepci\'on que el centro de masa del sistema se considera en el centro del origen de coordenadas del sistema m\'ovil. Esta consideraci\'on es fundamental y ya que la ubicaci\'on del centro de masa por debajo del plano en el cual se realizan las fuerzas aporta una estabilidad intr\'inseca al sistema. Adicionalmente se puede agregar que la matriz de control determinada a trav\'es de la t\'ecnica LQR (ver cap\'itulo \ref{chap:LQR}) que surge de considerar o no el centro de masa difieren sensiblemente y tambi\'en los resultados obtenidos. Al no considerar el centro de masa se obtiene una realimentaci\'on proporcional mayor en los \'angulos de pitch y de roll desestabilizando el sistema, mientras que los resultados obtenidos al considerar el centro de masa son aceptables. 
 
 
 \end{document}
