@@ -84,6 +84,7 @@
 #include <sys/ioctl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/resource.h> // for setpriority()
 #include <stdint.h>
 #include <fcntl.h>
 #include <sys/time.h>
@@ -231,10 +232,10 @@ static unsigned short mot_selected[MOT_COUNT] = {MOT_NOT_SELECTED,
 						 MOT_NOT_SELECTED,
 						 MOT_NOT_SELECTED,
 						 MOT_NOT_SELECTED};
-static int mot_offset[MOT_COUNT] = {15,
-				    15,
-				    -17,
-				    -13};
+static int mot_offset[MOT_COUNT] = {16,
+				    14,
+				    -18,
+				    -9};
 static __u8 vels[MOT_COUNT] = {0,0,0,0};
 
 #ifdef LOG_VELS
@@ -700,6 +701,15 @@ int main(int argc, char *argv[])
 #if !PC_TEST
     err_log_str("Opening: ",filename);
 #endif // !PC_TEST
+
+    /**
+     * Inherit priority from main.c for correct IPC.
+     */
+    /* if(setpriority (PRIO_PROCESS, 0, -2) == -1) */
+    /* { */
+    /* 	err_log("setpriority() failed!"); */
+    /* 	return -1; */
+    /* } */
 
     // Open ctrl interface
 

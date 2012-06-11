@@ -63,7 +63,7 @@
 #define CHECK_NET_MSG_LEN      2    // [bytes]
 #define CHECK_NET_MSG_T_MS     950  // [ms] - time between pings
 #define CHECK_NET_RETRY_MS     50   // [ms] - time between requests for ack
-#define CHECK_NET_TO_S         1    // [s]  - timeout
+#define CHECK_NET_TO_S         2    // [s]  - timeout
 #define CHECK_NET_SERVER_IP    "10.42.43.1"
 #define CHECK_NET_PORT         12341234
 
