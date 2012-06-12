@@ -35,11 +35,13 @@
 #define DEBUG             1
 
 /**
- * Use fake GPS information to help state estimation. The
- * quad will think it is at [x,y,z] = [0,0,0].
- *
+ * Use fake GPS information to help state estimation.
+ * If GPS_RAND is set to 0, the quadcopter will think
+ * it is at [x,y,z] = [0,0,0], otherwise it will use
+ * a random value centered around it.
  */
-#define GPS_ZERO          1 // Simulate GPS data (use zeros)
+#define GPS_FAKE          1 // Simulate GPS data
+#define GPS_RAND          0 // Use random values centered at [0,0,0]
 
 /**
  * Use kalman estimation of acc bias.

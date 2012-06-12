@@ -21,7 +21,7 @@ A la hora de la planificaci\'on del Proyecto se plantea la opci\'on de partir de
 La plataforma escogida es el cuadric\'optero Turbo Ace X720 (o LotusRc 850). Esta plataforma es controlada por un usuario a trav\'es de un control remoto comercial est\'andar (Walkera 2801). El sistema receptor se encarga de setear la velocidad angular de cada motor en funci\'on de la se\~nal recibida.
 
 \subsubsection*{Motores}
-Los motores de la plataforma son de tipo \emph{Brushless}: son el\'ectricos con el rotor de im\'an permanente y tres pares de bobinas en el estator alimentados con corriente continua switcheada. Tienen un sistema de conmutaci\'on el\'ectrico (ESC) , y presentan relaciones lineales entre corriente y torque, y entre frecuencia y velocidad. Son com\'unmente utilizados en veh\'iculos radio-controlados por su eficiencia, potencia, durabilidad y su bajo peso (en comparaci\'on con los de tipo \emph{Brushed}). Los motores \emph{Brushless} son complicados de controlar, ya que la fase var\'ia con la rotaci\'on del motor. Se requiere un \emph{Controlador el\'ectrico de velocidad} (\textbf{ESC}\footnote{Electronic Speed Controller.}).\\
+Los motores de la plataforma son de tipo \emph{Brushless}: son el\'ectricos con el rotor de im\'an permanente y tres pares de bobinas en el estator alimentados con corriente continua switcheada. Tienen un sistema de conmutaci\'on el\'ectrico (\textbf{ESC}\footnote{Electronic Speed Controller.}) , y presentan relaciones lineales entre corriente y torque, y entre frecuencia y velocidad. Son com\'unmente utilizados en veh\'iculos radio-controlados por su eficiencia, potencia, durabilidad y su bajo peso (en comparaci\'on con los de tipo \emph{Brushed}).\\ 
 
 Los ESCs inclu\'idos en la plataforma reciben comandos mediante el protocolo $I^2C$, a $333kHz$.  
 
@@ -35,12 +35,9 @@ El tiempo de vuelo utilizando una bater\'ia de LiPo de 5300mAh (450g) y una carg
 
 \subsubsection*{Instrumentaci\'on e inteligencia}
 
-	La instrumentaci\'on con la que cuenta el dispositivo est\'a destinada a simplificar el manejo a control remoto, estabilizando el sistema. La misma incluye un bar\'ometro y aceler\'ometro y gir\'oscopo de 3 ejes. Cuenta adem\'as con una CPU que se encarga de la lectura de los datos proporcionados por los sensores y de definir las acciones de control sobre los motores.\\
-
-No se dispone del c\'odigo del programa presente en la CPU, y por lo tanto no es posible reutilizarlo, ni tampoco obtener la lectura de los sensores presentes. Se realizaron esfuerzos para conseguir dicha informaci\'on del fabricante, quien se neg\'o a proporcionarla. Por dicho motivo se opta por dotar al sistema de instrumentaci\'on adicional. 
+	La instrumentaci\'on con la que cuenta el dispositivo est\'a destinada a simplificar el manejo a control remoto, estabilizando el sistema. La misma incluye un bar\'ometro y aceler\'ometro y gir\'oscopo de 3 ejes. Cuenta adem\'as con una CPU que se encarga de la lectura de los datos proporcionados por los sensores y de definir las acciones de control sobre los motores. No se dispone del c\'odigo del programa presente en la CPU, y por lo tanto no es posible reutilizarlo, ni tampoco obtener la lectura de los sensores presentes. Se realizaron esfuerzos para conseguir dicha informaci\'on del fabricante, quien se neg\'o a proporcionarla. Por dicho motivo se opta por dotar al sistema de instrumentaci\'on adicional. 
 
 \section{Inteligencia}
-
 \begin{wrapfigure}{l}{0.35\textwidth}
 \vspace{-30pt}
 	\centering
@@ -49,6 +46,7 @@ No se dispone del c\'odigo del programa presente en la CPU, y por lo tanto no es
 	\caption{Beagleboard}
 	\label{fig:beagleboard}
 \end{wrapfigure}
+
 
 Adem\'as de la plataforma f\'isica, deben seleccionarse componentes electr\'onicos capaces de procesar la informaci\'on proveniente de los sensores, computar y ejecutar los algoritmos de control, y generar las se\~nales necesarias para transmitir las instrucciones a los motores.\\
 
