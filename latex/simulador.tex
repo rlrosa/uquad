@@ -24,7 +24,7 @@ Las ecuaciones que gobiernan al sistema(Ecuaciones \ref{eq:modelo}\footnote{Se a
 Donde $X$ es el vector de estados del sistema definido en el cap\'itulo \ref{chap:modelo_fisico}, u el vector de entradas del sistema y t el tiempo. Para la simulaci\'on se utiliza el m\'etodo de resoluci\'on ODE45 (Dormand-Prince). Este m\'etodo de resoluci\'on de ecuaciones diferenciales, se utliza un paso de resoluci\'on variable: el paso m\'aximo y m\'inimo es de 10ms y 1ms respectivamente. La estructura que se eligi\'o para desarrollar esta secci\'on se corresponde con el camino que se recorri\'o para determinar el modelo f\'isico. El lazo abierto consta de tres bloques principales. En primer lugar tenemos un bloque encargado de generar las fuerzas y momentos a partir de las velocidades angulares de las h\'elices. Luego tenemos un bloque que se encarga de resolver la din\'amica del sistema y un tercer bloque encargado de la cinem\'atica. En la figura \ref{fig:lazo_abierto} se observa la estructura global del lazo abierto. En la figura \ref{fig:vista} se observa una captura de pantalla que representa la vista general de la parte encargada de simular el lazo abierto.
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=1\textwidth]{./pics_simulador/lazo_abierto.pdf}
+	\includegraphics[width=1\textwidth]{./pics_simulador/lazo_abierto.png}
 	\caption{Bloque de lazo abierto}
 	\label{fig:lazo_abierto}
 \end{figure}
@@ -41,7 +41,7 @@ En la figura \ref{fig:cinematica} se puede observar un diagrama de bloques de la
 \begin{figure} [h!]
   \centering
   \subfloat[Bloque cinem\'atica]{\label{fig:cinematica}
-  		\includegraphics[width=0.6\textwidth]
+  		\includegraphics[width=0.5\textwidth]
   			{./pics_simulador/cinematica.png}}
   \subfloat[Bloque din\'amica]{\label{fig:dinamica}
   		\includegraphics[width=0.5\textwidth]
