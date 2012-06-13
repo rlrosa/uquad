@@ -221,10 +221,7 @@ int uquad_check_net_client(const char *hostIP, int portno, uquad_bool_t udp)
     servaddr.sin_port=htons(portno);
     if(!udp)
     {
-	FD_ZERO(&set);
-	FD_SET(sockfd, &set);
-
-	fcntl(sockfd, F_SETFL, O_NONBLOCK);
+	//	fcntl(sockfd, F_SETFL, O_NONBLOCK); //TODO this fails on beagleboard
 
 	if(connect(sockfd,(struct sockaddr *) &servaddr,sizeof(servaddr)) < 0)
 	{
