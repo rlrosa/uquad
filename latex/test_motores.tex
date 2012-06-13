@@ -41,7 +41,7 @@ Los algoritmos de control se encargan de definir la velocidad angular de los mot
 \label{sec:test_motores--disp-forma-u}
 
 El detector IR TSOP38256 es sensible a radiaciones infrarrojas moduladas a una frecuencia de $56$ KHz. Si se lo expone a una onda cuadrada de dicha frecuencia la salida del mismo es un ``0'' l\'ogico. Si no recibe dicha radiaci\'on la salida es un ``1'' l\'ogico.\\
-\begin{wrapfigure}{l}{0.55\textwidth}
+\begin{wrapfigure}{r}{0.55\textwidth}
   \begin{center}
     \includegraphics[width=0.25\textwidth]{./pics_motores/u.jpg}
   \end{center}
@@ -51,7 +51,18 @@ El detector IR TSOP38256 es sensible a radiaciones infrarrojas moduladas a una f
 El dispositivo de medida de velocidad angular se trata de un cuerpo en forma de ``U", de un lado se tiene el LED infrarrojo y del otro el detector, tal como se puede ver en la figura \ref{fig:u}.
 La idea del dispositivo de medida es sencilla. Se trata de hacer ``pasar'' la radiaci\'on infrarroja emitida por el LED a trav\'es de la h\'elice en funcionamiento de uno de los motores. Esta radiaci\'on es recogida del otro lado por el receptor IR. De este modo tendremos a la salida del detector, pulsos de frecuencia correspondientes a la velocidad con la que la h\'elice obstruye el camino entre el sensor y el LED. \textbf{La velocidad angular ser\'a entonces la mitad de dicha frecuencia}.\\
 
-Como explicamos anteriormente el LED debe ser conmutado con una frecuencia de 56kHz por lo tanto se lo alimentar\'a con un generador de se\~nales funcionando como generador de onda cuadrada a dicha frecuencia. Para lograr un correcto funcionamiento del LED se requiere una corriente superior a los $100mA$. La amplitud de la onda cuadrada se regular\'a a $5V$ y se trabajar\'a con una resistencia de $20\Omega$ en serie. La salida del receptor IR se conecta directamente al osciloscopio digital, el cual es capaz de medir frecuencias.\\
+\begin{wrapfigure}{l}{0.4\textwidth}
+  \begin{center}
+  \vspace{-20pt}
+    \includegraphics[width=0.35\textwidth]{./pics_motores/dispositivoU.png}
+  \end{center}
+  \vspace{-10pt}
+  \caption{Diagrama \\de interconexión}
+    \vspace{-10pt}
+  \label{fig:diagrama_u}
+\end{wrapfigure}
+
+Como explicamos anteriormente el LED debe ser conmutado con una frecuencia de 56kHz por lo tanto se lo alimentar\'a con un generador de se\~nales funcionando como generador de onda cuadrada a dicha frecuencia. Para lograr un correcto funcionamiento del LED se requiere una corriente superior a los $100mA$. La amplitud de la onda cuadrada se regular\'a a $5V$ y se trabajar\'a con una resistencia de $20\Omega$ en serie. La salida del receptor IR se conecta directamente al osciloscopio digital, el cual es capaz de medir frecuencias. El diagrama de interconexión puede apreciarse en la figura \ref{fig:diagrama_u}.\\
 
 \subsection{Relaci\'on entre comando $I^2C$, velocidad angular y empuje}
 
