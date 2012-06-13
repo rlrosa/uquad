@@ -101,7 +101,7 @@
 #define CTRL_INT_ACCUM_MAX_PSI   1.0    // [rad*s]
 #define CTRL_INT_ACCUM_MAX_PHI   1.0    // [rad*s]
 #define CTRL_INT_ACCUM_MAX_THETA 2.0    // [rad*s]
-#define CTRL_INT_ACCUM_MAX_Z     1.0    // [m*s]
+#define CTRL_INT_ACCUM_MAX_Z     2.0    // [m*s]
 #define CTRL_INT_ACCUM_MAX_Y     5.0    // [m*s]
 #define CTRL_INT_ACCUM_MAX_X     5.0    // [m*s]
 #define CTRL_INT_TH_PSI          0.26   // [rad]

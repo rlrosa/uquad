@@ -182,8 +182,8 @@ int uquad_check_net_client(const char *hostIP, int portno, uquad_bool_t udp)
     uquad_bool_t
 	read_ok = false,
 	server_ok = false;
-    fd_set
-	set;
+//    fd_set
+//	set;
     struct sockaddr_in
 	servaddr;
     struct hostent
@@ -221,10 +221,7 @@ int uquad_check_net_client(const char *hostIP, int portno, uquad_bool_t udp)
     servaddr.sin_port=htons(portno);
     if(!udp)
     {
-	FD_ZERO(&set);
-	FD_SET(sockfd, &set);
-
-	fcntl(sockfd, F_SETFL, O_NONBLOCK);
+	//	fcntl(sockfd, F_SETFL, O_NONBLOCK); //TODO this fails on beagleboard
 
 	if(connect(sockfd,(struct sockaddr *) &servaddr,sizeof(servaddr)) < 0)
 	{
@@ -235,8 +232,8 @@ int uquad_check_net_client(const char *hostIP, int portno, uquad_bool_t udp)
 	    }
 	}
 
-	retval = IsSocketConnected(sockfd,&set,&set);
-	cleanup_if(retval);
+	//	retval = IsSocketConnected(sockfd,&set,&set); //TODO this fails on beagleboard
+	//	cleanup_if(retval); //TODO this fails on beagleboard
     }
 
     bzero(buff_i,CHECK_NET_MSG_LEN);
