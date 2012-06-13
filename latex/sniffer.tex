@@ -8,7 +8,7 @@ El cuadric\'optero adquirido resuelve la comunicaci\'on entre los controladores 
 
 Para el presente proyecto resulta de vital importancia conocer dicho protocolo, ya que se utilizar\'a otro microprocesador que deber\'a comandar a esos mismos ESCs, supliendo el trabajo del anterior. Es entonces imprescindible conocer al detalle el funcionamiento de este protocolo, para luego poder reproducirlo.\\
 
-Dado que no se cuenta con la colaboraci\'on de los fabricantes y la informaci\'on parece ser privativa es necesario realizar un proceso de ingenier\'ia inversa para poder analizar, decodificar, entender y reproducir el protocolo existente. Dicho proceso de ingenier\'ia inversa se realiza utilizando el hardware existente del cuadric\'optero comercial adquirido y un analizador l\'ogico\footnote{ChronoVu} que es capaz de leer e interpretar las l\'ineas del bus $i^2c$ sin intervenir en las mismas.\\ \\
+Dado que no se cuenta con la mínima colaboraci\'on de los fabricantes y la informaci\'on es completamente privativa, es necesario realizar un proceso de ingenier\'ia inversa para poder analizar, decodificar, entender y reproducir el protocolo existente. Dicho proceso de ingenier\'ia inversa se realiza utilizando el hardware existente del cuadric\'optero comercial adquirido y un analizador l\'ogico\footnote{ChronoVu} que es capaz de leer e interpretar las l\'ineas del bus $i^2c$ sin intervenir en las mismas.\\ \\
 
 \begin{wrapfigure}{r}{0.5\textwidth}
 	\vspace{-40pt}
@@ -50,18 +50,36 @@ donde:
 
 Las l\'ineas \textbf{SDA} y \textbf{SCL} son de drenador abierto, lo que significa que tanto el maestro como los esclavos solamente pueden conducir a nivel bajo estas l\'ineas, o dejarlas abiertas. Si ning\'un dispositivo $i^2c$ est\'a conduciendo hacia abajo la l\'inea, la resistencia de \emph{pull-up} $R_p$ se encarga de llevar la l\'inea a $V_{cc}$.\\
 
-Cada dispositivo tiene asignada una direcci\'on que lo identifica. Para establecer una comunicaci\'on la secuencia t\'ipica empieza por el maestro enviando una secuencia de comienzo de conexi\'on, seguida de la direcci\'on del esclavo con el cual desea comunicarse. Seguidamente el maestro env\'ia un bit que determina si la acci\'on que desea realizar es escritura o lectura, a lo que el esclavo correspondiente responde con un bit de \emph{acknowledge} (\textbf{Ack}). Luego el maestro env\'ia la direcci\'on de memoria interna del esclavo donde debe ser almacenada la informaci\'on enviada, y por \'ultimo env\'ia los datos. Para finalizar la conexi\'on, el maestro env\'ia una secuencia de fin de conexi\'on.
+El reloj siempre es generado por el maestro. El bus de datos debe mantenerse estable mientras el reloj está en nivel alto (``1'' lógico) y se le permite cambiar de nivel mientras el reloj está en nivel bajo (``0'' lógico). Se toma como dato válido el valor del bus de datos cuando el reloj está en ``0''.\\
 
-\newpage
+Cada dispositivo tiene asignada una direcci\'on que lo identifica. Típicamente para establecer una comunicaci\'on el maestro env\'ia una secuencia de comienzo de conexi\'on, seguida de la direcci\'on del esclavo con el cual desea comunicarse. Seguidamente el maestro env\'ia un bit que determina si la acci\'on que desea realizar es escritura o lectura, a lo que el esclavo correspondiente responde con un bit de \emph{acknowledge} (\textbf{Ack}). Luego el maestro env\'ia la direcci\'on de memoria interna del esclavo donde debe ser almacenada la informaci\'on enviada, y por \'ultimo env\'ia los datos. Para finalizar la conexi\'on, el maestro env\'ia una secuencia de fin de conexi\'on.
+
 \section{Pruebas en r\'egimen}
 
-Como se dijo anteriormente, para realizar el proceso de ingenier\'ia inversa se utiliz\'o el cuadric\'optero y un analizador l\'ogico. La forma de operar es enviar comandos conocidos con el control remoto y analizar el flujo de datos en las l\'ineas del bus. En la figura \ref{fig:sniffing} se muestra una foto del proceso descripto.
+\begin{itemize}
+	\item Materiales
+	\begin{itemize}
+		\item \emph{Cuadricóptero:} transmisor, receptor, CPU y ESCs
+		\item \emph{Analizador lógico (``sniffer''):} Chrono Vu
+		\item \emph{PC}
+	\end{itemize}
+	\item Procedimiento
+	\begin{itemize}
+		\item La forma de operar es enviar comandos conocidos con el control remoto y analizar el flujo de datos en las l\'ineas del bus.
+		\item En particular se analizará el funcionamiento en régimen, durante el arranque y durante el frenado.
+	\end{itemize}
+\end{itemize}
 
-\begin{figure}[h!]
-	\centering
-	\includegraphics[width=0.6\textwidth]{./pics_sniffer/sniffing.jpg}
-	\caption{Proceso de lectura del bus.}
-	\label{fig:sniffing}
+La comunicación entre la CPU y los ESCs es mediante el protocolo $i^2c$, y es precisamente allí donde interviene el analizador lógico, ``olfateando'' todo lo que pasa por el bus. En la figura \ref{fig:sniffing_diagram} se muestra un diagrama de bloques del proceso descripto, y en la figura \ref{fig:sniffing_transparente} su implementación.
+
+\begin{figure} [h!]
+\centering
+  \subfloat[Diagrama de interconexión]{\label{fig:sniffing_diagram}
+  		\includegraphics[width=.5\textwidth]{./pics_sniffer/sniffing_diagram.png}}
+  \subfloat[Proceso de ``sniffeado'']{\label{fig:sniffing_transparente} 
+  		\includegraphics[width=.42\textwidth]{./pics_sniffer/sniffing_transparente.jpg}}
+  \caption{Proceso de lectura del bus.}
+  \label{fig:sniffing}
 \end{figure}
 
 Al realizar este proceso se puede observar que se repiten, cada $2ms$, bloques similares al mostrado en la figura \ref{fig:bloque_snif}.
@@ -73,7 +91,7 @@ Al realizar este proceso se puede observar que se repiten, cada $2ms$, bloques s
 	\label{fig:bloque_snif}
 \end{figure}
 
-De acuerdo a la observaci\'on de dichos bloques se deduce que hay 4 esclavos correspondientes a los 4 ESC's de los 4 motores, cuyas direcciones en hexadecimal son \textbf{D0}, \textbf{D2}, \textbf{D4} y \textbf{D6}. La direcci\'on de la memoria interna de los esclavos donde se almacenan los datos que env\'ia el maestro es, en todos los casos \textbf{A2}. Adem\'as el maestro env\'ia un tercer conjunto de datos que refiere, de alguna manera, a la velocidad con la que debe girar cada motor.
+De acuerdo a la observaci\'on de dichos bloques, teniendo en cuenta la secuencia de comunicación típica entre maestro y esclavos mencionada anteriormente, se deduce que hay 4 esclavos correspondientes a los 4 ESC's de los 4 motores, cuyas direcciones en hexadecimal son \textbf{D0}, \textbf{D2}, \textbf{D4} y \textbf{D6}. La direcci\'on de la memoria interna de los esclavos donde se almacenan los datos que env\'ia el maestro es, en todos los casos \textbf{A2}. Adem\'as el maestro env\'ia un tercer conjunto de datos que refiere, de alguna manera, a la velocidad con la que debe girar cada motor.
 Este conjunto de \'ordenes, agrupadas por bloques como el que se muestra en la figura \ref{fig:bloque_snif}, se repite peri\'odicamente, indicando la velocidad con la que debe girar cada motor.\\
 
 Para comprender las pruebas realizadas es importante dejar en claro algunos aspectos previos. En la figura \ref{fig:tx} se muestra el transmisor utilizado para enviar comandos al cuadric\'optero, un \textbf{Walkera WK-2801} y se indican los nombres de los mandos m\'as importantes del mismo.
@@ -147,7 +165,21 @@ Haciendo un an\'alisis similar con el resto de las pruebas detalladas en la tabl
 \end{center}
 \end{table}
 
-De dicha tabla se pueden sacar algunas conclusiones que se analizar\'an en la secci\'on \ref{sec:conclu};
+En la tabla \ref{tab:resumen_snif_add} se muestran los registros a los que se mandaron datos para cada dirección.
+
+\begin{table}[H]
+\begin{center}
+\begin{tabular}{c|c|c|c|c|} 
+\cline{2-5}
+& \cellcolor[gray]{0.8} D0 & \cellcolor[gray]{0.8} D2 & \cellcolor[gray]{0.8} D4 & \cellcolor[gray]{0.8} D6 \\ \hline
+\multicolumn{1}{|c|}{\cellcolor[gray]{0.8}Registro} & A2 & A2 & A2 & A2\\ \hline
+\end{tabular} 
+\caption{Resumen de las direcciones obtenidas}
+\label{tab:resumen_snif_add}
+\end{center}
+\end{table}
+
+De las anteriores 2 tablas se pueden sacar algunas conclusiones que se analizar\'an en la secci\'on \ref{sec:conclu}.
 
 \section{Prueba de arranque}
 \label{sec:arranque}
@@ -163,7 +195,7 @@ Mientras la palanca de elevaci\'on se mantiene al m\'inimo, se le env\'ia el val
 	\label{fig:snif_arranque_lejos}
 \end{figure}
 
-Observando m\'as detenidamente los comandos enviados se pueden obtener algunas conclusiones importantes. En la gran mayor\'ia de los casos se env\'ian los comandos en el orden $D2\rightarrow D4\rightarrow D6\rightarrow D0$ y se guardan en el registro 0xA2 del esclavo. Pero se puede observar una importante diferencia en la el \'ultimo comando que se manda a cada motor antes de arrancar, es decir, el \'ultimo comando en la tanda de ceros mostrada en la figura \ref{fig:snif_arranque_lejos}. En la figura \ref{fig:snif_arranque_ceros} se muestra una tanda regular de ceros y en la figura \ref{fig:snif_arranque_ultimos_ceros} se muestra la \'ultima tanda de ceros mencionada.\\
+Observando m\'as detenidamente los comandos enviados se pueden obtener algunas conclusiones importantes. En la gran mayor\'ia de los casos se env\'ian los comandos en el orden $D2\rightarrow D4\rightarrow D6\rightarrow D0$ y se guardan en el registro 0xA2 del esclavo. Pero se pueden observar dos importantes diferencias en la el \'ultimo comando que se manda a cada motor antes de arrancar, es decir, el \'ultimo comando en la tanda de ceros mostrada en la figura \ref{fig:snif_arranque_lejos}:
 
 \begin{figure} [h!]
 \centering
@@ -175,11 +207,12 @@ Observando m\'as detenidamente los comandos enviados se pueden obtener algunas c
   \label{fig:snif_arranque_cerca}
 \end{figure}
 
-Se observan 2 claras diferencias:
 \begin{itemize}
 \item \textbf{El orden en el que se env\'ian datos a los motores no es mismo} que el anterior. En este caso el orden es: $D0\rightarrow D2\rightarrow D4\rightarrow D6$.
 \item \textbf{El registro en el que se escriben los datos es 0xA0}
 \end{itemize}
+
+En la figura \ref{fig:snif_arranque_ceros} se muestra una tanda regular de ceros y en la figura \ref{fig:snif_arranque_ultimos_ceros} se muestra la \'ultima tanda de ceros mencionada.\\
 
 Dichas diferencias se pueden observar claramente al graficar todos los datos obtenidos, como se muestra en la figura \ref{fig:arranque}. Se grafica para cada motor el valor que le llega (figura \ref{fig:arranque_val}) y el registro donde el valor es escrito (figura \ref{fig:arranque_reg}). Al analizar los resultados gr\'aficamente resulta evidente el cambio en el registro al terminar de mandar los ceros. En la figura \ref{fig:arranque_val} se puede observar que el \'ultimo cero que se manda a los motores, se manda alrededor de la muestra 150. Analizando la figura \ref{fig:arranque_reg} es clar\'isimo que alrededor de la muestra 150, el registro al que se env\'ian los comandos cambia al valor 160 (0xA0), tal como se hab\'ia observado anteriormente.
 
@@ -198,7 +231,7 @@ Dichas diferencias se pueden observar claramente al graficar todos los datos obt
 \label{sec:frenado}
 Se procede del mismo modo que en la prueba anterior (secci\'on \ref{sec:arranque}), analizando los comandos enviados a los motores a la hora de apagarlos. Se realiza una prueba an\'aloga a la anterior partiendo de los motores funcionando y bajando al m\'inimo la palanca de elevaci\'on, causando que estos se detengan.\\
 
-Una vez que se lleva la palanca de elevaci\'on al m\'inimo, los motores se apagan y se permanece enviando ceros a los motores en el orden $D2\rightarrow D4\rightarrow D6\rightarrow D0$. Se pueden obtener algunas conclusiones importantes de la \'ultima tanda de valores distintos de cero enviados, mostrada en la figura \ref{fig:snif_frenado}:
+Una vez que se lleva la palanca de elevaci\'on al m\'inimo, los motores se apagan y se permanece enviando ceros a los motores en el orden $D2\rightarrow D4\rightarrow D6\rightarrow D0$. Se pueden obtener algunas conclusiones importantes de la \'ultima tanda de valores distintos de cero enviados (comandos que provocan el frenado de los motores), mostrada en la figura \ref{fig:snif_frenado}:
 \begin{itemize}
 \item \textbf{El orden en el que se env\'ian datos es $D0\rightarrow D2\rightarrow D4\rightarrow D6$}
 \item \textbf{El registro en el que se escriben los datos es 0xA1}
@@ -223,9 +256,7 @@ Se presenta tambi\'en un an\'alisis gr\'afico en la figura \ref{fig:frenado}. En
   \label{fig:frenado}
 \end{figure}
 
-Avalados por la prueba realizada en la secci\'on \ref{sec:MSP} que se ver\'a luego, se puede afirmar que la aparici\'on de otros registros (por ejemplo los n\'umeros 81, 145, etc) son causados por el proceso de \emph{sniffeo} y no son el comando transmitido a los motores.\\
-
-Analicemos por ejemplo el valor 81. Es claro que el resultado de dividir el valor 162 (correspondiente al conocido registro 0xA2) es exactamente 81, por lo cual parece probable que haya sido generado por un error del \emph{sniffer}, ya que un corrimiento hacia la derecha de un bit en una palabra binaria es equivalente a realizar una divisi\'on entre 2. Es probable entonces que el sniffer haya incluido un bit en 0 antes de la verdadera palabra y haya descartado el \'ultimo bit, causando una aparente divisi\'on entre 2. M\'as graficamente:\\
+Avalados por la prueba realizada en la secci\'on \ref{sec:MSP} que se ver\'a luego, se puede afirmar que la aparici\'on de otros registros (por ejemplo los n\'umeros 81, 145, etc) son causados por el propio proceso de intervención en los buses de comunicación y no son el comando transmitido a los motores. Analicemos por ejemplo el valor 81. Es claro que el resultado de dividir el valor 162 (correspondiente al conocido registro 0xA2) entre 2 es 81, por lo cual parece probable que haya sido generado por un error del analizador lógico, ya que un corrimiento hacia la derecha de un bit en una palabra binaria es equivalente a realizar una divisi\'on entre 2. Es probable entonces que el sniffer haya incluido un bit en 0 antes de la verdadera palabra y haya descartado el \'ultimo bit, causando una aparente divisi\'on entre 2. M\'as graficamente:\\
 
 \begin{center} 162 = 10100010 $\rightarrow$ \color{green}0\color{black}1010001\color{red}\xcancel{0}\color{black} = 81\\
 \end{center}
@@ -244,8 +275,8 @@ En verde se muestra el bit agregado y en rojo el eliminado.
 \item La velocidad m\'axima de funcionamiento se logra enviando el valor 250
 \item Cuando el mando de Elevaci\'on del control se encuentra al m\'inimo, se les env\'ia el valor 0 a los cuatro motores peri\'odicamente con el formato mencionado.
 \item La direcci\'on de memoria interna de todos los esclavos donde se guardan los datos recibidos por el maestro es siempre 0x$A2$ (\'o $162$), a excepci\'on del arranque y el frenado.
-\item El \'ultimo comando enviado antes de arrancar se guarda en el registro 0xA0.
-\item El \'ultimo comando enviado antes de frenar se guarda en el registro 0xA1.
+\item El \'ultimo comando enviado antes de arrancar se guarda en el registro 0xA0, comando que se interpreta como una orden de arranque.
+\item El \'ultimo comando enviado antes de frenar se guarda en el registro 0xA1, comando que se interpreta como una orden de frenado.
 \item El orden normal en el que se env\'ian los comandos es $D2\rightarrow D4\rightarrow D6\rightarrow D0$, menos en los casos descriptos en los 2 puntos anteriores donde el orden es $D0\rightarrow D2\rightarrow D4\rightarrow D6$. Se comprobó, experimentalmente, que no es necesario alterar el orden en el que se env\'ian los comandos para lograr arrancar y frenar los motores.
 \item La correspondencia entre las direcciones y los motores se muestra en la figura \ref{fig:correspondencias}. El motor con direcci\'on 0xD0 es el de adelante, el motor con direcci\'on 0xD4 es el de atr\'as y mir\'andolo de frente el de la izquierda se corresponde con 0xD0, y el de la derecha con 0xD6
 \item Las direcciones 0xD0, 0xD2, 0xD4 y 0xD6 (de 8 bits) en realidad no refieren \'unicamente a direccionamiento, sino que incluyen adem\'as el bit de lectura/escritura, por lo cual cada esclavo tendr\'a una \'unica direcci\'on de 7 bits. Notar que las direcciones 0xD0 a 0xD6 al pasarlas a binario todas terminan en 0, lo cual implica que se tratan de comandos de escritura. Al omitir el \'ultimo bit se obtienen las direcciones (sin incluir el bit de lectura/escritura) como se puede ver a continuaci\'on:
@@ -267,7 +298,11 @@ Las direcciones de los motores son entonces: \textbf{0x68}, \textbf{0x69}, \text
 \end{figure}
 
 \section{Verificaciones}
-Se presentan diversas verificaciones realizadas para corroborar la veracidad de las conclusiones extraidas, adem\'as de la corroboraci\'on experimental utilizando el puerto $i^2c$ de la Beagleboard.\\
+Se presentan diversas verificaciones realizadas para corroborar la veracidad de las conclusiones extraídas. Adem\'as de la corroboraci\'on experimental utilizando el puerto $i^2c$ de la Beagleboard y logrando hacer funcionar los motores, previamente se realizaron 2 verificaciones adicionales:
+\begin{itemize}
+	\item \textbf{i2cdetect}: comando enviado desde la \emph{BeagleBoard} por el puerto \emph{i2c-2}.
+	\item \textbf{MSP430F5438}: microcontrolador que se programa como esclavo con una de las direcciones de un ESC.
+\end{itemize}
 
 \subsection*{i2cdetect}
 Utilizando la librer\'ia \emph{i2c Tools}\footnote{http://www.lm-sensors.org/wiki/i2cToolsDocumentation} con la Beagleboard es posible enviar el comando \textbf{i2cdetect}, el cual ``pregunta'' a todos los esclavos presentes en el bus por su direcci\'on. El resultado en terminal es el siguiente
@@ -330,9 +365,5 @@ Luego, analizando la variable donde se guardan los comandos, es posible obtener 
 Estas \'ultimas dos figuras son las corroboraciones m\'as concluyentes que se obtuvieron. Ratifica y deja bien en claro lo antes dicho sobre los registros: \textbf{para el arranque se escribe en la direcci\'on 0xA0 del esclavo y para el frenado se escribe en la direcci\'on 0xA1.}\\
 
 A su vez sirve de confirmaci\'on para los errores del sniffeado detectados en la secci\'on \ref{sec:frenado}.
-
-
-
-
 
 \end{document}
