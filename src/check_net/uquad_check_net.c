@@ -232,8 +232,8 @@ int uquad_check_net_client(const char *hostIP, int portno, uquad_bool_t udp)
 	    }
 	}
 
-	retval = IsSocketConnected(sockfd,&set,&set);
-	cleanup_if(retval);
+	//	retval = IsSocketConnected(sockfd,&set,&set); //TODO this fails on beagleboard
+	//	cleanup_if(retval); //TODO this fails on beagleboard
     }
 
     bzero(buff_i,CHECK_NET_MSG_LEN);
