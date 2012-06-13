@@ -182,8 +182,8 @@ int uquad_check_net_client(const char *hostIP, int portno, uquad_bool_t udp)
     uquad_bool_t
 	read_ok = false,
 	server_ok = false;
-    fd_set
-	set;
+//    fd_set
+//	set;
     struct sockaddr_in
 	servaddr;
     struct hostent
