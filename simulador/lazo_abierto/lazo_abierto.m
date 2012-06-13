@@ -499,6 +499,7 @@ function pushbutton1_Callback(hObject, eventdata, handles)
     end
     
     %Simulo el sistema en lazo abierto
+    determinar_vel;
     [t,X]=sim_lazo_abierto(ti,tf,w1,w2,w3,w4);
     
     
