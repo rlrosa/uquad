@@ -2,92 +2,17 @@
 
 \begin{document}
 
-\chapter{Código}
-\label{chap:codigo}
+\chapter{Configuraci\'on y compilaci\'on del c\'odigo}
+\label{chap:anexo-codigo}
 
-El objetivo de esta sección es realizar una breve introducción sobre cómo utilizar el código utilizado para lograr el vuelo autónomo del cuadricóptero. Para el entender en detalle qué hace cada función, referirse a los comentarios en el código fuente.\\
+En este anexo se explican los conceptos b\'asicos necesarios para trabajar con la \textit{BeagleBoard}.
 
-El código se encuentra en el repositorio git, en la carpeta \verb+src/+. Todas las referencias a archivos en este anexo son respecto a la raíz del repositorio. Todos los programas están pensados para compilarse y ejecutarse en un entorno \emph{linux}.
-
-\section{Esquema general}
-\label{sec:codigo:esquema-general}
-
-\begin{wrapfigure}{r}{0.6\textwidth}
-\vspace{-20pt}
-\centering
-  \includegraphics[width=0.5\textwidth]{./pics_codigo/code.png}
-\caption{Estructura general del código.}
-\vspace{-20pt}
-\label{fig:codigo:code.png}
-\end{wrapfigure}
-
-El código tiene una estructura modular, está escrito en C, y cada bloque está implementado como una biblioteca. La estructura general del código se resume en la figura \ref{fig:codigo:code.png}. Por claridad, no se muestran los bloques intermedios utilizados para intercomunicar las distintas partes.\\
-
-Un loop normal, ejecutado por el programa principal (de ahora en más: \textit{main}) consiste en las siguiente etapas:
-\begin{enumerate}
-\item \textbf{imu:} Obtener una muestra nueva de la IMU, un dato nuevo de cada sensor.
-\item \textbf{gps:} Si el GPS tiene un dato nuevo, leerlo.
-\item \textbf{kalman:} Alimentar el filtro de Kalman con la información actualizada proveniente de los sensores.
-\item \textbf{path planner:} Comparar el estado actual con el objetivo, y determinar si se completó el objetivo actual. En caso afirmativo, actualizar el estado objetivo.
-\item \textbf{control:} Usando el estado actual y el estado deseado, determinar la acción de control a realizar.
-\item \textbf{motor:} Actuar sobre los motores.
-\end{enumerate}
-
-Por información relativa a bloques, configuración, compilación, ejecución, etc, referirse a:
-\begin{quote}
-\begin{quote}
-\begin{verbatim}
-src/README
-\end{verbatim}
-\end{quote}
-\end{quote}
-
-% \subsection{\textit{imu\_comm}}
-% \label{sec:codigo:imu_comm}
-
-% La función de esta biblioteca es hacer de interfaz con la IMU. Se encarga se presentar la información que la IMU envía mediante un puerto serie, armando una estructura con campos para cada sensor, timestamps, etc.
-
-% Algunas funciones:
-% \begin{itemize}
-% \item \textbf{Calibración:} un conjunto de muestras que después se utilizan para estimar el offset de los giróscopos, y la altura inicial.
-% \item \textbf{Conversión:} Cargando parámetros de calibración, convierte datos crudos provenientes de los sensores (bits) en datos útiles (aceleraciones, velocidades angulares, etc).
-% \item \textbf{Ángulos de Euler:} Utilizando la información proveniente de acelerómetros y magnetómetro, calcula los tres ángulos de Euler.
-% \item \textbf{Modo \textit{FAKE}:} Seteando \verb+IMU_COMM_FAKE+ a 1, la biblioteca leerá de un log, en lugar de utilizar el puerto serie. Las características fundamentales del modo \textit{FAKE} son:
-%   \begin{itemize}
-%   \item Los tiempos no son un problema crítico, ya que no correrá en tiempo real.
-%   \item La información en los logs está guardaba en \verb+ascii+ (la IMU trabaja en binario).
-%   \end{itemize}
-% \end{itemize}
-
-% Archivos:
-% \begin{quote}
-% \begin{quote}
-% \begin{verbatim}
-% imu/imu_comm.[hc]
-% test/imu_comm_test/imu_% comm_test.c
-% % \end{verbatim}
-% % \end{quote}
-% % \end{quote}
-
-
-
-% %TODO
-% %descrip de c/u
-% %macros para errores
-
-% \section{Compilación}
-% \label{sec:codigo:compilacion}
-
-%TODO
-% cross
-% nativo
-
-\subsection{Git}
+\subsection{Obtenci\'on del c\'odigo - Git}
 \label{sec:codigo:git}
 
 El código está almacenado en un repositorio git disponible en el DVD adjunto a esta documentación y en \textit{github}: \url{git://github.com/rlrosa/uquad.git}. El repositorio ocupa aproximadamente 4GB, por lo que no es conveniente poner otras cosas en la tarjeta SD de la Beagleboard, ya que sino se excederá su capacidad.
 
-\subsection{Comunicación}
+\subsection{Comunicación con la \textit{BeagleBoard}}
 \label{sec:codigo:comunicacion}
 
 La forma básica de comunicarse con la Beagleboard es mediante el puerto serie, usando un conversor \textit{RS2232} a USB. Durante el vuelo, la comunicación se establece mediante \textit{WiFi}, usando un dongle USB. El procedimiento para hacerlo funcionar es el siguiente:
@@ -111,19 +36,6 @@ wireless-key s:uquaduquad123
 \end{quote}
 
 Luego, levantar una red en una laptop, en modo \textit{Ad-Hoc}, con nombre \textit{uquad} y contraseña \textit{uquaduquad123} en \textit{WEP 40/128-bit Key(Hex or ASCII)}. La laptop tendrá la IP \textit{10.42.43.1}, y la Beagleboard \textit{10.42.43.2}. El usuario en la Beagleboard es \textit{root} y la clave cualquiera. Para conectarse ver la subsección sobre \textbf{ssh}.
-
-\subsubsection{Proxy}
-\label{sec:codigo:proxy}
-
-Para trabajar con la Beagleboard en el laboratorio de medidas, es necesario configurar el proxy. Para ello, ejecutar los siguiente comandos en la Beagleboard:
-\begin{quote}
-\begin{verbatim}
-echo "option http_proxy http://httpproxy.fing.edu.uy:3128/" \
->> /etc/network/options.conf
-echo "option http_proxy http://httpproxy.fing.edu.uy:3128/" \
->> /etc/opkg/arch.conf
-\end{verbatim}
-\end{quote}
 
 \subsubsection{Ssh}
 \label{sec:codigo:ssh}
@@ -153,21 +65,36 @@ ssh root@beagle.local
 \end{verbatim}
 \end{quote}
 
+\subsubsection{Configuraci\'on del proxy}
+\label{sec:codigo:proxy}
+
+Para trabajar con la Beagleboard en el laboratorio de medidas, es necesario configurar el proxy. Para ello, ejecutar los siguiente comandos en la Beagleboard:
+\begin{quote}
+\begin{verbatim}
+echo "option http_proxy http://httpproxy.fing.edu.uy:3128/" \
+>> /etc/network/options.conf
+echo "option http_proxy http://httpproxy.fing.edu.uy:3128/" \
+>> /etc/opkg/arch.conf
+\end{verbatim}
+\end{quote}
+
 \subsection{Tiempos}
 \label{sec:codigo:tiempos}
 
-El \textit{main} corre sobre linux, lo cual simplifica algunas cosas, pero complica otras. Correr arriba de un sistema operativo que no es RT\footnote{RealTime.} puede introducir demoras inacceptables. No conviene ejecutar programas ni establecer conexiones (nuevas sesiones \textit{ssh}) mientras se ejecuta el programa principal.\\
+El \textit{main} corre sobre linux, lo cual simplifica algunas cosas, pero complica otras. Correr arriba de un sistema operativo que no es RT\footnote{RealTime.} inevitablemente introduce demoras. Se configura el \textit{main} y el driver de los motores para tener m\'axima prioridad.
 
-El acceso a memoria no volátil es lento, especialmente el acceso a la tarjeta \textit{micro-SD}. El \textit{main} guarda logs a una memora flash USB, en \verb+/media/sda1/+, ya que es significativamente más rápido que trabajar con la \textit{mirco-SD}. De cualquier forma, si se accede a memoria durante la ejecución del \textit{main}, \textbf{NO} será posible tener un loop estable, y por lo tanto \textbf{NO} se podrá volar el cuadricóptero. El \textit{main} crea, mediante \verb+fork()+, un \textit{logger} por cada log que se le pida, y dicho programa se encarga de pedir un bloque de RAM donde va almacenando información, y al finalizar el \textit{main} la guarda a memoria.\\
-
-Nuevamente, la performance del \textit{main} es \textbf{INACCEPTABLE} si se accede a memoria o si se abren sesiones ssh durante su ejecución.
+La performance del \textit{main} es \textbf{INACCEPTABLE} si se accede a memoria no vol\'atil o si se abren sesiones ssh durante su ejecución.
 
 \subsection{Consideraciones de seguridad}
 \label{sec:codigo:consideraciones-de-seguridad}
 
 Al comenzar el \textit{main}, intentará establecer una conexión TCP con un servidor en la laptop, y abortará en caso de no tener éxito. Si en algún momento se pierde la conexión, por ejemplo por algún error en el driver del dongle \textit{WiFi}, el \textit{main} abortará, apagando los motores del cuadricóptero. Para iniciar el servidor en la laptop ubicarse en el directorio \verb+src/build/check_net+ y ejecutar \verb+./server+.\\
 
-En caso de perderse ls conexión ssh, y que el cuadricóptero siga funcionando (porque la conexión TCP sigue abierta), se puede detener el servidor que corre en la laptop, lo cual hará que el \textit{main} aborte y apague los motores.
+En caso de perderse ls conexión ssh, y que el cuadricóptero siga funcionando (porque la conexión TCP sigue abierta), se puede detener el servidor que corre en la laptop, lo cual hará que el \textit{main} aborte y apague los motores.\\
+
+El \textit{main} verifica que la inclinaci\'on del cuadric\'optero no supere cierto l\'imites durante un tiempo dado. Si esto sucede, apagar\'a los motores. Esto puede ser \'util si por alg\'un motivo se pierde el control mediante software, pero se puede acceder al cuadric\'optero, ya que inclin\'andolo lo suficiente se apagar\'ian los motores.\\
+
+El driver de los motores (\textit{cmd}) tiene que estar funcionando para que los motores permanezcan prendidos. La p\'erdida de energ\'ia en la \textit{BeagleBoard} detendr\'ia al driver, y por lo tanto tambi\'en a los motores (El frenado tardar\'ia unos segundos, ya que se omitir\'ia la secuencia de frenado).
 
 \section{Salida - Logs}
 \label{salidas-logs}
@@ -182,7 +109,8 @@ El \textit{main} genera varios logs durante su ejecución, que sirven como reali
 
 La primer columna de \textit{imu\_raw.log}, \textit{kalman\_in.log} y \textit{w.log} es el tiempo en segundos desde el comienzo del \textit{main}. La diferencia de tiempo entre \textit{kalman\_in.log} y \textit{x\_hat.log} es despreciable, por lo que \textit{x\_hat.log} no tiene columna de tiempos. Referirse al código fuente por información sobre como habilitar logs, nombres, contenido, etc.\\
 
-Cabe destacar que el espacio en RAM utilizado por el \textit{logger} es limitado, y dejará de guardar información una vez que se acabe.
+Por cada log se crea un programa independiente (de ahora en m\'as \textit{logger}), que se comunica con el \textit{main} mediante \textit{pipes}. Cada logger tiene un espacio limitado en RAM (definido al iniciar el \textit{logger}), donde ir\'a almacenando lo que reciba del \textit{main}. Cuando el espacio se acabe dejará de guardar información, mostrando una alerta en la consola. Solamente se escribir\'a a disco al finalizar la ejecuci\'on del \textit{main}. Los logs se guardar\'an, por defecto, a \verb+/media/sda1/+, una memoria flash comercial. Si no se dispone de una memoria flash se puede modificar los argumentos de arranque del \textit{main} para que guarde en otro lado. Esto se implement\'o para evitar la escritura a la tarjeta \textit{microSD}, que es muy lenta y hace inaceptable la performance del \textit{main}\footnote{Dado que la versi\'on actual del \textit{logger} no accede a disco hasta que termina de ejecutarse el \textit{main}, no deber\'ia ser un problema guardar a la \textit{microSD}. Esto no ha sido probado.
+}.\\
 
 \section{Debugging}
 \label{sec:codigo:debugging}
@@ -411,8 +339,10 @@ sudo ln -s ${HOME}/uquad/src/mongoose_fw/HMC58X3/\
 \label{sec:codigo:trabajo-a-futuro}
 
 \begin{itemize}
-\item \textbf{Control:} La matriz de control se carga de un archivo de texto. Para automatizar el cálculo de dicha matriz, permitiendo cambiar de trayectoria en tiempo real, habría que implementar el cálculo en \verb+C+. Está lista una implementación del algoritmo LQR en \verb+src/control/control.c+, pero falta implementar correctamente la linealización del sistema según la trayectoria elegida.
 \item \textbf{Path planner:} Solamente está implementada la modalidad de \textit{hovering}. Queda pendiente implementar rectas y círculos, y un sistema de \textit{waypoints} que permita ir recorriendo trayectorias.
+\item \textbf{Control:} La matriz de control se carga de un archivo de texto. Para automatizar el cálculo de dicha matriz, permitiendo cambiar de trayectoria en tiempo real, habría que calcularla en \verb+C+.\newline
+En \verb+src/control/control.c+ está lista una implementación del algoritmo LQR, y de la linealización del sistema según la trayectoria elegida. Se verific\'o el correcto funcionamiento de la implementaci\'on comparando contra la versi\'on en \textit{MatLab}, pero no se lo incorpor\'o al \textit{main}.\newline
+Un tema a considerar es el tiempo de computo, varios segundos seg\'un pruebas en una PC. Esto ser\'ia inaceptable durante el vuelo. Una soluci\'on simple ser\'ia hacer las cuentas de a poco, evitando pasar varios segundos sin ejecutar acciones de control.
 \item \textbf{Visión:} Queda pendiente implementar en \verb+C+ el algoritmo descrito en \ref{chap:camara}.
 \item \textbf{Logger:} Una mejora sería que el \textit{logger} guarde información en binario en lugar de usar \verb+ASCII+, lo que permitiría ahorrar RAM. De cualquier forma, el RAM no es un problema por el momento.
 \end{itemize}
