@@ -16,12 +16,12 @@ La elecci\'on del hardware representa una parte muy importante del Proyecto. Una
 \vspace{20pt}
 \end{wrapfigure}
 
-A la hora de la planificaci\'on del Proyecto se plantea la opci\'on de partir de cero, dise\~nando completamente el cuadric\'optero. Si bien esta opci\'on tiene la ventaja de que se puede conocer completamente su funcionamiento, implica problemas de ingenier\'ia mec\'anica que no se pretenden resolver, conocimientos de resistencia, flexibilidad y peso de materiales, as\'i como tambi\'en diversas complicaciones adicionales a la hora de fabricar y armar los distintos componentes. Dados los plazos del proyecto, y que su objetivo se centra en el control del veh\'iculo, la necesidad de partir de hardware ya construido resulta imperiosa.\\
+A la hora de la planificaci\'on del Proyecto se plantea la opci\'on de partir de cero, dise\~nando completamente el cuadric\'optero. Si bien esta opci\'on tiene la ventaja de que se puede conocer completamente su funcionamiento, implica problemas de ingenier\'ia mec\'anica que no se pretenden resolver, conocimientos de resistencia, flexibilidad y peso de materiales, as\'i como tambi\'en diversas complicaciones adicionales a la hora de fabricar y armar los distintos componentes. Dados los plazos del proyecto, y que su objetivo se centra en el control del veh\'iculo, la necesidad de partir de un dispositivo electromec\'anico ya construido resulta imperiosa.\\
 
-La plataforma escogida es el cuadric\'optero Turbo Ace X720 (o LotusRc 850). Esta plataforma es controlada por un usuario a trav\'es de un control remoto (Walkera 2801). El sistema receptor se encarga de setear la velocidad angular de cada motor en funci\'on de la se\~nal recibida.
+La plataforma escogida es el cuadric\'optero Turbo Ace X720 (o LotusRc 850). Esta plataforma es controlada por un usuario a trav\'es de un control remoto comercial est\'andar (Walkera 2801). El sistema receptor se encarga de setear la velocidad angular de cada motor en funci\'on de la se\~nal recibida.
 
 \subsubsection*{Motores}
-Los motores de la plataforma son de tipo \emph{Brushless}: son el\'ectricos, alimentados con corriente continua, tienen un sistema de conmutaci\'on el\'ectrico, y presentan relaciones lineales entre corriente y torque, y entre frecuencia y velocidad. Son com\'unmente utilizados en veh\'iculos radio-controlados por su eficiencia, potencia, durabilidad y su bajo peso (en comparaci\'on con los de tipo \emph{Brushed}). Los motores \emph{Brushless} son complicados de controlar, ya que la fase var\'ia con la rotaci\'on del motor. Se requiere un \emph{Controlador el\'ectrico de velocidad} (\textbf{ESC}\footnote{Electronic Speed Controller.}).\\
+Los motores de la plataforma son de tipo \emph{Brushless}: son el\'ectricos con el rotor de im\'an permanente y tres pares de bobinas en el estator alimentados con corriente continua switcheada. Tienen un sistema de conmutaci\'on el\'ectrico (\textbf{ESC}\footnote{Electronic Speed Controller.}) , y presentan relaciones lineales entre corriente y torque, y entre frecuencia y velocidad. Son com\'unmente utilizados en veh\'iculos radio-controlados por su eficiencia, potencia, durabilidad y su bajo peso (en comparaci\'on con los de tipo \emph{Brushed}).\\ 
 
 Los ESCs inclu\'idos en la plataforma reciben comandos mediante el protocolo $I^2C$, a $333kHz$.  
 
@@ -33,14 +33,11 @@ Adem\'as de toda la instrumentaci\'on que incluye el cuadric\'optero, se incorpo
 
 El tiempo de vuelo utilizando una bater\'ia de LiPo de 5300mAh (450g) y una carga de 500g es cercano a los 10-15 minutos.
 
-\subsubsection*{Instrumentaci\'on}
+\subsubsection*{Instrumentaci\'on e inteligencia}
 
-	La instrumentaci\'on con la que cuenta el dispositivo est\'a destinada a simplificar el manejo a control remoto, estabilizando el sistema. La misma incluye un bar\'ometro y aceler\'ometro y gir\'oscopo de 3 ejes.\\
-
-No se dispone del c\'odigo del programa presente en la CPU, y por lo tanto no es posible reutilizarlo, ni tampoco obtener la lectura de los sensores presentes. Por dicho motivo se opta por dotar al sistema de instrumentaci\'on adicional. 
+	La instrumentaci\'on con la que cuenta el dispositivo est\'a destinada a simplificar el manejo a control remoto, estabilizando el sistema. La misma incluye un bar\'ometro y aceler\'ometro y gir\'oscopo de 3 ejes. Cuenta adem\'as con una CPU que se encarga de la lectura de los datos proporcionados por los sensores y de definir las acciones de control sobre los motores. No se dispone del c\'odigo del programa presente en la CPU, y por lo tanto no es posible reutilizarlo, ni tampoco obtener la lectura de los sensores presentes. Se realizaron esfuerzos para conseguir dicha informaci\'on del fabricante, quien se neg\'o a proporcionarla. Por dicho motivo se opta por dotar al sistema de instrumentaci\'on adicional. 
 
 \section{Inteligencia}
-
 \begin{wrapfigure}{l}{0.35\textwidth}
 \vspace{-30pt}
 	\centering
@@ -49,6 +46,7 @@ No se dispone del c\'odigo del programa presente en la CPU, y por lo tanto no es
 	\caption{Beagleboard}
 	\label{fig:beagleboard}
 \end{wrapfigure}
+
 
 Adem\'as de la plataforma f\'isica, deben seleccionarse componentes electr\'onicos capaces de procesar la informaci\'on proveniente de los sensores, computar y ejecutar los algoritmos de control, y generar las se\~nales necesarias para transmitir las instrucciones a los motores.\\
 
@@ -65,7 +63,7 @@ La BeagleBoard ofrece la posilibidad de cargar un kernel de \emph{Linux} desde u
 \item Comunicaci\'on a trav\'es de una interfaz ethernet.
 \item Conexi\'on de cuatro dispositivos USB de manera simult\'anea.
 \item Debugging a trav\'es de un puerto serie.
-\item Uso de bibliotecas para \emph{computer vision}.
+\item Uso de bibliotecas para visi\'on por computadora. 
 \item Compatibilidad con m\'odulos de c\'amaras VGA.
 \end{itemize}
 
@@ -84,7 +82,7 @@ Para poder controlar el sistema es importante poder conocer los valores que toma
 \item La velocidad angular.
 \end{itemize}
 
-Por dicho motivo resulta imprescindible dotar al sistema de sensores capaces de medir dichas magnitudes, directa o indirectamente.
+Por dicho motivo resulta imprescindible dotar al sistema de sensores capaces de medir dichas magnitudes, directa o indirectamente. Se compararon distintas alternativas comerciales, finalmente se opt\'o por un dispositivo que integra varios sensores y un GPS.
 \subsection{IMU}
 
 \subsubsection{Aceler\'ometro}
@@ -110,9 +108,9 @@ El aceler\'ometro cumple dos roles fundamentales:
 \subsubsection{Gir\'oscopo}
 \label{giro}
 
-Un gir\'oscopo es un instrumento capaz de medir la velocidad angular de un sistema solidario a si mismo. Las mismas restricciones sobre tama\~no, peso y costo que se aplicaban para el aceler\'ometro se aplican aqu\'i. Se vuelve a optar por tecnolog\'ia MEMS.\\ 
+Un gir\'oscopo es un instrumento capaz de medir la velocidad angular de un sistema solidario a si mismo respecto a un sistema inercial. Las mismas restricciones sobre tama\~no, peso y costo que se aplicaban para el aceler\'ometro se aplican aqu\'i. Se vuelve a optar por tecnolog\'ia MEMS.\\ 
 
-Desde el punto de vista te\'orico, procesando la informaci\'on obtenida a partir del aceler\'ometro y del gir\'oscopo y partiendo de condiciones iniciales conocidas, se puede conocer, en todo momento, la posici\'on del sistema y su orientaci\'on. En la pr\'actica, sin embargo, esto no es as\'i, ya que todas las medidas tienen un cierto error. Para obtener la orientaci\'on y la posici\'on en cada instante se debe integrar y, por lo tanto, se integra tambi\'en el error cometido. Esto produce una acumulaci\'on de errores que afecta, de forma considerable, el resultado final luego de cierta cantidad de muestras. Este problema se puede resolver integrando un GPS. Este \'ultimo permitir\'ia, cada cierto intervalo de tiempo, contar con una medida absoluta para comprar contra los resultados obtenidos de la integral de las medidas del aceler\'ometro y del gir\'oscopo, permitiendo corregir errores debido al \emph{integration drift}.
+Desde el punto de vista te\'orico, procesando la informaci\'on obtenida a partir del aceler\'ometro y del gir\'oscopo y partiendo de condiciones iniciales conocidas, se puede conocer, en todo momento, la posici\'on del sistema y su orientaci\'on. En la pr\'actica, sin embargo, esto no es as\'i, ya que todas las medidas tienen un cierto error. Para obtener la orientaci\'on y la posici\'on en cada instante se debe integrar y, por lo tanto, se integra tambi\'en el error cometido. Esto produce una acumulaci\'on de errores que afecta, de forma considerable, el resultado final luego de cierta cantidad de muestras. Este problema se puede resolver integrando un GPS. Este \'ultimo permitir\'ia, cada cierto intervalo de tiempo, contar con una medida absoluta para comparar contra los resultados obtenidos de la integral de las medidas del aceler\'ometro y del gir\'oscopo, permitiendo corregir errores debido a la deriva por integraci\'on del error.
 
 \subsubsection{Sensor de presi\'on}
 
@@ -147,7 +145,7 @@ La Mongoose 9DoF IMU (\ref{fig:mongoose}) posee todos los sensores que se han no
 
 La elecci\'on del GPS se bas\'o fundamentalmente en lograr la simplicidad del sistema. Exist\'ian muchas opciones, placas de diversos tama\~nos, con distintos tipos de antenas, pero todas con especificaciones similares.\\
 
-Las placas candidatas a estar a cargo de la inteligencia contaban con interfaces USB, por lo que se opt\'o por comprar un dongle GPS, cuyas especificaciones son similares a las del resto de las opciones y con el que es posible comunicarse mediante USB usando los drivers ya existenes. Se opt\'o por utilizar un GPS \textit{Canmore GT-730F}, como el mostrado en la figura \ref{fig:gps}.
+Se opt\'o por utilizar un GPS \textit{Canmore GT-730F}, como el mostrado en la figura \ref{fig:gps}. Dentro de un margen de precios razonable las caracter\'isticas de los distintos GPS comerciales no difieren considerablemente en lo que refiere a tasa de muestreo, resoluci\'on y exactitud. La raz\'on fundamental para elegir dicho instrumento sobre otros fue la facilidad de conexi\'on ya que permite utilizar los puertos USB de la plataforma a cargo de la inteligencia y los drivers existentes para linux. \\ 
 
 
 \end{document}

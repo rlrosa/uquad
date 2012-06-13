@@ -6,19 +6,25 @@
 \chapter{Simulaciones del modelo f\'isico}
 \label{chap:simulador}
 
-Luego de desarrollado un modelo f\'isico resulta fundamental disponer de un entorno para realizar simulaciones. Las razones para construir un simulador son evidentes. En primer lugar resulta fundamental para comprobar que el modelo realizado se comporta acorde a lo que uno espera a priori del sistema. Para este tipo de pruebas se trabajar\'a con las situaciones m\'as sencillas en las cuales se puede calcular la trayectoria trivialmente. El segundo objetivo del simulador es poder conocer el comportamiento de nuestro sistema frente a algunas acciones de control determinadas. Por ejemplo conocer la trayectoria que desarrolla el cuadric\'optero si accionamos solamente uno de los motores o cualquier combinaci\'on que sea pertinente de estudio. Por \'ultimo, el simulador ser\'a clave para testear y mejorar los algoritmos de control desarrollados. Previo a testear con el sistema real y a fin de evitar da\~nos sobre el mismo, se deben verificar dichos algoritmos en el simulador. Por los motivos expresados es necesario que el simulador represente fielmente el modelo f\'isico y se comporte acorde a la realidad. \\
+Luego de desarrollado un modelo f\'isico se construye un entorno para realizar simulaciones. En primer lugar resulta fundamental para comprobar que el modelo realizado se comporta acorde a lo que uno espera a priori del sistema. Para este tipo de pruebas se trabajar\'a con las situaciones m\'as sencillas en las cuales se puede calcular la trayectoria trivialmente. El segundo objetivo del simulador es poder conocer el comportamiento de nuestro sistema frente a algunas acciones de control determinadas. Por \'ultimo, el simulador ser\'a clave para ''pre evaluar'' y mejorar los algoritmos de control desarrollados. Previo a testear con el sistema real y a fin de evitar da\~nos sobre el mismo, se deben verificar dichos algoritmos en el simulador. Por los motivos expresados es necesario que el simulador represente fielmente el modelo f\'isico y se comporte acorde a la realidad. \\
 
+En el anexo \ref{chap:anexo_simulador} se encuentra disponible un manual de usuario del simulador.
 \section{Estructura del Simulador}
 
-
-El simulador se compone de dos partes fundamentales. La primera es el lazo abierto, es decir las ecuaciones que gobiernan al cuadric\'optero, donde se consideran como entradas las velocidades angulares del sistema sobre las cuales realizaremos las acciones de control y como salidas tenemos el vector de estados del sistema en todos los instantes desde el tiempo inicial establecido en la simulaci\'on hasta el tiempo final. La otra parte se encarga de simular las acciones de control.
+El simulador fue desarrollado gracias a la herramienta \emph{Simulink} de \emph{Matlab}, el mismo se compone de dos partes fundamentales. La primera es el lazo abierto, es decir las ecuaciones que gobiernan al cuadric\'optero , donde se consideran como entradas las velocidades angulares del sistema sobre las cuales realizaremos las acciones de control y como salidas tenemos el vector de estados del sistema en todos los instantes desde el tiempo inicial establecido en la simulaci\'on hasta el tiempo final. La otra parte se encarga de simular las acciones de control. 
 
 \subsection{Lazo Abierto}
 
-La estructura que se eligi\'o para desarrollar esta secci\'on se corresponde en buena forma con el camino que se recorri\'o para determinar el modelo f\'isico. El lazo abierto consta de tres bloques principales. En primer lugar tenemos un bloque encargado de generar las fuerzas y momentos a partir de las velocidades angulares de las h\'elices. Luego tenemos un bloque que se encarga de resolver la din\'amica del sistema y un tercer bloque encargado de la cinem\'atica. En la figura \ref{fig:lazo_abierto} se observa la estructura global del lazo abierto. En la figura \ref{fig:vista} se observa una captura de pantalla que representa la vista general de la parte encargada de simular el lazo abierto.
+Las ecuaciones que gobiernan al sistema(Ecuaciones \ref{eq:modelo}\footnote{Se agrega tambi\'en la dependencia de la \'ultima ecuaci\'on del modelo con las derivadas de las velocidades angulares del sistema}) son continuas y pueden representarse como:
+
+\begin{equation}
+\label{eq:lazo_abierto}
+\dot{X} = f(X,u,t)
+\end{equation}
+Donde $X$ es el vector de estados del sistema definido en el cap\'itulo \ref{chap:modelo_fisico}, u el vector de entradas del sistema y t el tiempo. Para la simulaci\'on se utiliza el m\'etodo de resoluci\'on ODE45 (Dormand-Prince). Este m\'etodo de resoluci\'on de ecuaciones diferenciales, se utliza un paso de resoluci\'on variable: el paso m\'aximo y m\'inimo es de 10ms y 1ms respectivamente. La estructura que se eligi\'o para desarrollar esta secci\'on se corresponde con el camino que se recorri\'o para determinar el modelo f\'isico. El lazo abierto consta de tres bloques principales. En primer lugar tenemos un bloque encargado de generar las fuerzas y momentos a partir de las velocidades angulares de las h\'elices. Luego tenemos un bloque que se encarga de resolver la din\'amica del sistema y un tercer bloque encargado de la cinem\'atica. En la figura \ref{fig:lazo_abierto} se observa la estructura global del lazo abierto. En la figura \ref{fig:vista} se observa una captura de pantalla que representa la vista general de la parte encargada de simular el lazo abierto.
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=1\textwidth]{./pics_simulador/lazo_abierto.pdf}
+	\includegraphics[width=1\textwidth]{./pics_simulador/lazo_abierto.png}
 	\caption{Bloque de lazo abierto}
 	\label{fig:lazo_abierto}
 \end{figure}
@@ -35,7 +41,7 @@ En la figura \ref{fig:cinematica} se puede observar un diagrama de bloques de la
 \begin{figure} [h!]
   \centering
   \subfloat[Bloque cinem\'atica]{\label{fig:cinematica}
-  		\includegraphics[width=0.6\textwidth]
+  		\includegraphics[width=0.5\textwidth]
   			{./pics_simulador/cinematica.png}}
   \subfloat[Bloque din\'amica]{\label{fig:dinamica}
   		\includegraphics[width=0.5\textwidth]
@@ -51,14 +57,19 @@ En la figura \ref{fig:cinematica} se puede observar un diagrama de bloques de la
 Al igual que el bloque anterior, se divide este en dos sub-bloques m\'as (ver figura \ref{fig:dinamica}): el que devuelve las velocidades angulares, y el que devuelve las velocidades lineales. 
 
 \subsection{Lazo cerrado}
+El lazo cerrado simula las acciones de control del sistema. Adem\'as de las ecuaciones del lazo abierto (ecuaci\'on \ref{eq:lazo_abierto}) se agrega la realimentaci\'on de las variables de estado ($x,y,z,\psi,\varphi,\theta,v_{qx},v_{qy},v_{qz},\omega_{qx},\omega_{qy},\omega_{qz}$) y de las integrales de $x,y,z,\theta$. Llamamos $X_I$ al vector compuesto por dichas integrales. La ecuaci\'on de realimentaci\'on es:
 
-Como se explica en el cap\'itulo \ref{chap:linealizacion}, para tratar las trayectorias circulares en el plano horizontal es necesario introducir un cambio de variables en el sistema. Este cambio de variables consiste en expresar la posici\'on del cuadric\'optero en el sistema $S_q$ solidiario a \'el y considerando como origen el centro de la trayectoria circular, en lugar de expresar la posici\'on en el sistema cartesiano inercial. Esta modificaci\'on implica realizar un cambio en el modelo para trabajar con dichas trayectorias, simplemente se agrega una matriz de rotaci\'on para trabajar con la posci\'on expresada en el sistema solidario al cuadric\'optero.\\ 
+\begin{equation}
+u(t) = u_{setpoint}(t) -K\left(\begin{array}{c}
+X(t)-X_{setpoint}\\
+X_I(t)
+\end{array}\right)
+\end{equation}
+Donde K es la matriz de realimentaci\'on determinada para cada trayectoria. Como se explica en \ref{chap:anexo_simulador}, desde la interfaz gr\'afica se puede seleccionar el tipo de trayectoria\footnote{Por tipo de trayectoria nos referimos a c\'irculos, rectas o hovering, mientras que por trayectoria nos referimos a un tipo de trayectoria y los valores objetivo de las variables de estado} que se desea realizar y los valores de las variables de estado con las que se desea realizar dicha trayectoria\footnote{Evidentemente existen restricciones a la hora de elegir las variables de estado, a modo de ejemplo no seremos capaces de controlar una trayectoria en linea recta si las velocidades angulares no son nulas}. Las velocidades angulares objetivo para cada motor ser\'an determinadas a partir de la informaci\'on anterior. Al igual que en el simulador de lazo abierto, se tiene la posibilidad de establecer tanto el tiempo inicial de la simulaci\'on como las condiciones iniciales. La matriz de realimentaci\'on quedar\'a determinada por la trayectoria.\\
 
-Desde la interfaz gr\'afica se puede seleccionar el tipo de trayectoria que se desea realizar y los valores de las variables de estado con las que se desea realizar dicha trayectoria\footnote{Evidentemente existen restricciones a la hora de elegir las variables de estado, a modo de ejemplo no seremos capaces de controlar una trayectoria en linea recta si las velocidades angulares no son nulas}. Las velocidades angulares objetivo para cada motor ser\'an determinadas a partir de la informaci\'on anterior. Al igual que en el simulador de lazo abierto, se tiene la posibilidad de establecer tanto el tiempo inicial de la simulaci\'on como las condiciones iniciales. La matriz de realimentaci\'on quedar\'a determinada por la trayectoria.\\
-
-Fue necesario adem\'as acotar la velocidad angular de los motores ya que esta no puede tener cualquier valor, para esto se agregaron los bloques de saturaci\'on a la entrada del subsistema que representa la din\'amica del cuadric\'optero.\\
-
-Como se explic\'o en la secci\'on \ref{chap:general} el control ser\'a realizado con un microprocesador, esto implica que las acciones de control no podr\'an ser modificadas en forma continua, cada cierto per\'iodo se indicar\'a un nuevo valor de velocidad angular para cada motor. Del mismo modo, no se tiene conocimiento del estado en todo instante sino que se tienen datos cada un cierto intervalo de tiempo (no necesariamente igual al per\'iodo con el cual se act\'ua sobre los motores). Estas consideraciones hacen necesaria una modificaci\'on en el sistema que hasta ahora hab\'ia sido considerado como continuo, es necesario convertir el sistema de tiempo continuo desarrollado a un sistema de tiempo discreto. Dicha modificaci\'on se logra sustituyendo los bloques integradores y derivadores que formaban parte del sistema por integradores y derivadores discretos con un per\'iodo de muestreo que tambi\'en puede ser impuesto desde la interfaz gr\'afica. En la figura \ref{fig:t_muestreo} se puede observar la misma trayectoria para tres tiempos de muestreo diferentes. En dicha trayectoria se muestra la subida del cuadric\'optero desde la altura inicial $z=0m$ hasta $z=3m$. 
+\subsubsection{Tiempo discreto}
+Como se explic\'o en la secci\'on \ref{chap:general} el control ser\'a realizado con un microprocesador, esto implica que las acciones de control no podr\'an ser modificadas en forma continua, cada cierto per\'iodo se indicar\'a un nuevo valor de velocidad angular para cada motor. Del mismo modo, no se tiene conocimiento del estado en todo instante sino que se tienen datos cada un cierto intervalo de tiempo (no necesariamente igual al per\'iodo con el cual se act\'ua sobre los motores). Estas consideraciones hacen necesaria una modificaci\'on en el sistema que hasta ahora hab\'ia sido considerado como continuo, es necesario convertir el sistema de tiempo continuo desarrollado a un sistema de tiempo discreto. Dicha modificaci\'on se logra sustituyendo los bloques integradores y derivadores que formaban parte del sistema por integradores y derivadores discretos con un per\'iodo de muestreo que tambi\'en puede ser impuesto desde la interfaz gr\'afica. La simulaci\'on se realiza mediante el m\'etodo \emph{descrete} que ofrece \emph{matlab}. El paso de la simulaci\'on es variable y el valor m\'aximo que toma dicho paso es 10ms.
+En la figura \ref{fig:t_muestreo} se puede observar la misma trayectoria para tres tiempos de muestreo diferentes. En dicha trayectoria se muestra la subida del cuadric\'optero desde la altura inicial $z=0m$ hasta $z=3m$. 
  
 \begin{figure} [h!]
   \centering
@@ -77,13 +88,29 @@ Como se explic\'o en la secci\'on \ref{chap:general} el control ser\'a realizado
  
 Se observa claramente un deterioro de la performance en la subida al aumentar el per\'iodo de muestreo y de acci\'on sobre los motores. Por dicho motivo es importante incluir esta variable a la hora de realizar diversas simulaciones ya que el sistema real debe realizar una gran cantidad de operaciones y si bien su capacidad es considerable no es infinita. Esto puede producir que se tenga acotado inferiormente el per\'iodo de muestreo.\\
 
-Por \'ultimo, se desea incluir la posibilidad de agregar ruido a los estados medidos y perturbaciones en las velocidades angulares de los motores. Las medidas que se obtienen de los sensores no son exactas, por dicho motivo la posibilidad de agregar ruido es muy interesante de modo de testear la robustez del controlador implementado. Asimismo, la velocidad angular de los motores no es exactamente la que se espera de acuerdo a la caracterizaci\'on de los motores realizada (ver cap\'itulo \ref{chap:test_motores}), por el contrario, se producen variaciones en la velocidad angular de los mismos dada una velocidad angular objetivo.
-  \begin{figure}[h!]
+\subsubsection*{Restricciones f\'isicas}
+Se agreg\'o una restricci\'on sobre la velocidad angular de los motores ya que esta no puede tener cualquier valor, para esto se agregaron los bloques de saturaci\'on a la entrada del subsistema que representa la din\'amica del cuadric\'optero.\\
+
+No se consideraron restricciones adicionales sobre las velocidades ni sobre las aceleraciones del sistema ya que las mismas no fueron caracterizadas. Asimismo tampoco se imponen restricciones en los valores de setpoint del sistema. Estas caracter\'isticas son una debilidad del simulador, sin embargo para realizar simulaciones a bajas velocidades el mismo es adecuado.\\
+
+\subsubsection*{Ruido y no idealidades}
+Se desea incluir la posibilidad de agregar ruido a los estados medidos y perturbaciones en las velocidades angulares de los motores. Las medidas que se obtienen de los sensores no son exactas, por dicho motivo la posibilidad de agregar ruido es muy interesante de modo de testear la robustez del controlador implementado. A cada variable de estado se le puede agregar un ruido de la forma:
+\begin{equation}
+\eta(t) =\eta_A \cos(\omega_\eta t) + \varepsilon(\mu,\sigma)
+\end{equation}
+La amplitud y la frecuencia de la componente sinusoidal del ruido y el valor medio y la desviaci\'on est\'andar del ruido gaussiano pueden establecerse independientemente para cada variable.\\
+
+ Asimismo, la velocidad angular de los motores no es exactamente la que se espera de acuerdo a la caracterizaci\'on de los motores realizada (ver cap\'itulo \ref{chap:test_motores}), por el contrario, se producen variaciones en la velocidad angular de los mismos dada una velocidad angular objetivo. Se agrega la posiblidad de agregar a la velocidad angular de los motores un ruido gaussiano.
+ 
+  \begin{figure}
 	\centering
 	\includegraphics[width=1\textwidth]{./pics_simulador/vistac.pdf}
 	\caption{Interfaz del simulador de lazo cerrado}
 	\label{fig:vistac}
 \end{figure}
+
+\subsubsection*{Modificaci\'on para trayectorias circulares}
+Como se explica en el cap\'itulo \ref{chap:linealizacion}, para tratar las trayectorias circulares en el plano horizontal es necesario introducir un cambio de variables en el sistema. Este cambio de variables consiste en expresar la posici\'on del cuadric\'optero en el sistema $S_q$ solidiario a \'el y considerando como origen el centro de la trayectoria circular, en lugar de expresar la posici\'on en el sistema cartesiano inercial. Esta modificaci\'on implica realizar un cambio en el modelo para trabajar con dichas trayectorias, simplemente se agrega una matriz de rotaci\'on para trabajar con la posci\'on expresada en el sistema solidario al cuadric\'optero.\\ 
 
 \section{Simulaciones}
 En esta secci\'on procedermos a realizar algunas simulaciones a fin de verificar que los resultados arrojados se corresponden con lo esperado a priori. 
@@ -181,6 +208,6 @@ En la figura \ref{fig:hovz} se presenta la altura en funci\'on del tiempo. La mi
   \label{fig:hov}
 \end{figure}
 
-Hasta aqu\'i hemos testeado el simulador en situaciones conocidas. Nos concentramos en analizar la caida libre y las cuatro acciones de control b\'asicas que se pueden realizar descriptas en \ref{chap:general}. De acuerdo a las pruebas realizadas puede afirmarse que su funcionamiento es el adecuado ya que en ninguna prueba se obtuvieron errores considerables. Sin embargo, es fundamental aclarar que hasta aqu\'i no es posible afirmar que el modelado del sistema sea adecuado, lo \'unico que puede concluirse es que el simulador representa fielmente las ecuaciones que han sido deducidas hasta el momento. Un error en las ecuaciones no se reflejar\'a hasta el momento de testear el cuadric\'optero. El trabajo realizado a la hora del modelado y la comparaci\'on con diversas bibliograf\'ias nos permite a esta altura estar convencidos de que dichas ecuaciones son adecuadas para modelar el sistema.
+Hasta aqu\'i hemos testeado el simulador en situaciones conocidas. Nos concentramos en analizar la caida libre y las cuatro acciones de control b\'asicas que se pueden realizar descriptas en \ref{chap:general}. De acuerdo a las pruebas realizadas puede afirmarse que su funcionamiento es el adecuado ya que en ninguna prueba se obtuvieron errores considerables. Sin embargo, es fundamental aclarar que hasta aqu\'i no es posible afirmar que el modelado del sistema sea adecuado, lo \'unico que puede concluirse es que el simulador representa fielmente las ecuaciones que han sido deducidas hasta el momento. Un error en las ecuaciones no se reflejar\'a hasta el momento de testear el cuadric\'optero. El trabajo realizado a la hora del modelado y la comparaci\'on con diversas bibliograf\'ias (\ref{bib:quadrotor-bible} y \ref{bib:curso_quad}) nos permite a esta altura estar convencidos de que dichas ecuaciones son adecuadas para modelar el sistema.
 
 \end{document}

@@ -3,7 +3,7 @@
 % function [kin, imu_data, x_hat_c, wlog, z] = plot_c(path)
 % -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 
-path ='tests/main/logs/2012_05_25_1_05_mejoro_altura/';
+path ='tests/main/logs/2012_06_12_3_03_no_levantaa/';
 
 if(~exist('path','var'))
   path = 'src/build/main/';
