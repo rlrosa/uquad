@@ -70,7 +70,7 @@ if(stabilize_ts)
 end
 
 %% Source
-log_path = 'tests/main/logs/2012_06_08_1_01_gps_paterbook/';
+log_path = 'tests/main/logs/2012_06_05_1_01_gps_afuera/';
 if(~exist('log_path','var'))
 	error('Must define a variable log_path to read from!');
 end
@@ -80,13 +80,9 @@ gps_file  = [log_path '/gps.log'];
 %% Load IMU data
 
 % Imu
-%imu_file = 'tests/main/logs/2012_06_05_1_01_gps_afuera/imu_raw.log';
-% imu_file = './tests/mongoose/acc/logs_zparriba/z00y45.txt';
-% imu_file = [p{12} 'imu_raw.log'];
 [acrud,wcrud,mcrud,tcrud,bcrud,~,~,T]=mong_read(imu_file,0,1);
 
 avg = 1;
-startup_runs = 800;
 imu_calib = 512;
 startup_samples = 100;
 
@@ -126,39 +122,6 @@ else
     x0 = 0;
     y0 = 0;
 end
-
-
-% %% Re-calibrate sensors
-% % startup_runs samples are discarded
-% warning('Discarded samples are not logged 2012-05-12 and later.');
-% if (stabilize_ts)
-%   ts_ok_count = 0;
-%   i = 1;
-%   dT = diff(T);
-%   while(ts_ok_count < 10)
-%     if((dT(i) > 8000e-6) && (dT(i) < 12000e-6))
-%       ts_ok_count = ts_ok_count + 1;
-%       T_ok = i;
-%     else
-%       ts_ok_count = 0;
-%     end
-%     i = i + 1;
-%   end
-%   fprintf('Discarded %d samples during stabilization\n',T_ok);
-%   acrud = acrud(T_ok:end,:);
-%   wcrud = wcrud(T_ok:end,:);
-%   mcrud = mcrud(T_ok:end,:);
-%   bcrud = bcrud(T_ok:end,:);
-%   tcrud = tcrud(T_ok:end,:);
-%   T = T(T_ok(end):end);
-% else
-%   acrud = acrud(startup_runs:end,:);
-%   wcrud = wcrud(startup_runs:end,:);
-%   mcrud = mcrud(startup_runs:end,:);
-%   bcrud = bcrud(startup_runs:end,:);
-%   tcrud = tcrud(startup_runs:end,:);
-%   T = T(startup_runs:end);
-% end
 
 % p0 and theta0 is estimated form first imu_calib samples
 acrud_calib = mean(acrud(1:imu_calib,:));
@@ -423,8 +386,6 @@ grid
 xlabel('\fontsize{16}Tiempo (s)')
 ylabel('\fontsize{16}\theta (grados)')
 legend('\fontsize{18}\theta','\fontsize{18}\theta_0')
-
-break 
 
 % figure; 
 %     plot(w_control(:,1)+w_control(:,3)-w_control(:,2)-w_control(:,4),'r','linewidth',3); 
