@@ -73,7 +73,7 @@ typedef enum STATE_VECTOR{
 #define DRAG_A2           -0.00013205 // drag = w^2*A2 + w*A1
 #define DRIVE_A1          4.60160135072435e-05 // drive = w^2*A2 + w*A1
 #define DRIVE_A2          -0.00103822726273726 // drive = w^2*A2 + w*A1
-#define MASA_DEFAULT      (1.550)     // Weight of the quadcopter [kg]
+#define MASA_DEFAULT      (1.450)     // Weight of the quadcopter [kg]
 #define STATE_COUNT       12          // State vector length
 #define LENGTH_INPUT      4           // Input vector length
 #define GPS_RAND_PP       1.0         // Random values of +-GPS_RAND_PP/2.0

@@ -250,7 +250,7 @@ int uquad_check_net_client(const char *hostIP, int portno, uquad_bool_t udp)
 	bzero(buff_i,CHECK_NET_MSG_LEN);
 	gettimeofday(&tv_sent, NULL);
 	/// give server some time to answer
-	sleep_ms(CHECK_NET_RETRY_MS);
+	sleep_ms(CHECK_NET_MSG_T_MS);
 
 	/// wait for ack
 	while(1)
@@ -306,7 +306,6 @@ int uquad_check_net_client(const char *hostIP, int portno, uquad_bool_t udp)
 			    signal(SIGQUIT, client_sig_handler);
 			}
 		    }
-		    sleep_ms(CHECK_NET_MSG_T_MS);
 		    break;
 		}
 		sleep_ms(CHECK_NET_RETRY_MS);

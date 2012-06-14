@@ -113,11 +113,11 @@
  */
 #define MAX_ERR_CMD               20
 
-#define DEBUG                     0
+#define DEBUG                     1
 #if DEBUG
 //#define LOG_VELS
-//#define LOG_TIMING
-#define LOG_TIMING_KERNEL_CALLS
+#define DEBUG_TIMING
+//#define LOG_TIMING_KERNEL_CALLS
 #endif
 
 #define TV_TH_US                  500UL
@@ -144,6 +144,9 @@
 #define UQUAD_USE_SIN             (1 && UQUAD_USE_DIFF)
 
 #define LOOP_T_US                 2000UL
+#define LOOP_T_US_INT             ((int) LOOP_T_US)
+#define LOOP_TOLERANCE_US         300UL
+#define MAX_LOOP_US               (LOOP_T_US + LOOP_TOLERANCE_US)
 
 #define LOG_ERR                   stdout
 
@@ -705,11 +708,11 @@ int main(int argc, char *argv[])
     /**
      * Inherit priority from main.c for correct IPC.
      */
-    /* if(setpriority (PRIO_PROCESS, 0, -2) == -1) */
-    /* { */
-    /* 	err_log("setpriority() failed!"); */
-    /* 	return -1; */
-    /* } */
+    if(setpriority (PRIO_PROCESS, 0, -18) == -1)
+    {
+	err_log("setpriority() failed!");
+	return -1;
+    }
 
     // Open ctrl interface
 
@@ -753,6 +756,7 @@ int main(int argc, char *argv[])
 	backtrace();
 	return ERROR_FAIL;
     }
+
     for(;;)
     {
 	gettimeofday(&tv_in,NULL);
@@ -874,28 +878,35 @@ int main(int argc, char *argv[])
 	    // continue
 	}
 	gettimeofday(&tv_end,NULL);
-	/// Check if we have to wait a while
+
 	ret = uquad_timeval_substract(&tv_diff, tv_end, tv_in);
+	/// Check if we have to wait a while
 	if(ret > 0)
 	{
 	    if(tv_diff.tv_usec < LOOP_T_US)
 	    {
-		usleep(LOOP_T_US - tv_diff.tv_usec);
+		usleep(LOOP_T_US - (unsigned long)tv_diff.tv_usec);
 	    }
-#ifdef LOG_TIMING
+#ifdef DEBUG_TIMING
 	    else
 	    {
+		/// Check if timing is ok
+		if(tv_diff.tv_usec > MAX_LOOP_US)
+		{
+		    /// Report timing Out Of Range!
+		    err_log_num("OFR! us:", (int) tv_diff.tv_usec - LOOP_T_US_INT);
+		    fflush(stderr);
+		    err_count++;
+		}
+
 		if(tv_diff.tv_sec > 0)
 		{
 		    tv2double(dtmp,tv_diff);
-		    err_log_double("ERR: Loop took too long! Aborting...!", dtmp);
-		}
-		else
-		{
-		    err_log_tv("WARN: Loop took:", tv_diff);
+		    err_log_double("ERR: Loop took too long!!", dtmp);
+		    err_count++;
 		}
 	    }
-#endif
+#endif // DEBUG_TIMING
 	}
 	else
 	{
