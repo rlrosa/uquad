@@ -19,6 +19,7 @@
 #include <uquad_check_net.h>
 #include <uquad_aux_io.h>
 #include <sys/prctl.h>
+#include <sys/resource.h> // for setpriority()
 #include <fcntl.h>  // for fcntl(), F_SETFL
 #include <signal.h> // for SIGHUP
 
@@ -250,7 +251,7 @@ int uquad_check_net_client(const char *hostIP, int portno, uquad_bool_t udp)
 	bzero(buff_i,CHECK_NET_MSG_LEN);
 	gettimeofday(&tv_sent, NULL);
 	/// give server some time to answer
-	sleep_ms(CHECK_NET_RETRY_MS);
+	sleep_ms(CHECK_NET_MSG_T_MS);
 
 	/// wait for ack
 	while(1)
@@ -300,13 +301,17 @@ int uquad_check_net_client(const char *hostIP, int portno, uquad_bool_t udp)
 			     * Child process.
 			     * Ask kernel to tell us when daddy dies.
 			     */
+			    if(setpriority (PRIO_PROCESS, 0, 1) == -1)
+			    {
+				err_log("WARN! setpriority() failed!");
+			    }
+
 			    prctl(PR_SET_PDEATHSIG, SIGHUP);
 			    signal(SIGHUP, client_sig_handler);
 			    signal(SIGINT, client_sig_handler);
 			    signal(SIGQUIT, client_sig_handler);
 			}
 		    }
-		    sleep_ms(CHECK_NET_MSG_T_MS);
 		    break;
 		}
 		sleep_ms(CHECK_NET_RETRY_MS);

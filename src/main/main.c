@@ -134,7 +134,6 @@
 
 #include <sys/signal.h>   // for SIGINT and SIGQUIT
 #include <sys/wait.h>     // for waitpid()
-#include <sys/resource.h> // for setpriority()
 #include <unistd.h>       // for STDIN_FILENO
 
 #define QUIT           27
@@ -752,16 +751,6 @@ int main(int argc, char *argv[]){
     }
 #endif // LOG_INT
 #endif //DEBUG
-
-    /**
-     * Set nice value, we are more important than the rest
-     * of the world.
-     */
-    retval = setpriority(PRIO_PROCESS, 0, -20);
-    if(retval == -1)
-    {
-	quit_log_if(ERROR_FAIL, "Failed to set nice value!");
-    }
 
     /**
      * Start a child process that will ping use TCP packages
@@ -1523,13 +1512,8 @@ int main(int argc, char *argv[]){
             imu_update = false; // mark data as used
 	    if(skipped > 0)
 	    {
-		err_log("");
-		err_log("");
-		err_log("-- --");
 		err_log_num("WARN: Skipped IMU!", skipped);
-		err_log("-- --");
-		err_log("");
-		err_log("");
+		fflush(stderr);
 		skipped = 0;
 	    }
 	}
@@ -1669,7 +1653,9 @@ int main(int argc, char *argv[]){
 		    // Avoid saturating log
 		    if(ts_error < MAX_ERRORS)
 		    {
-			err_log_tv_num("TS supplied to Kalman out of range! Ignored:", tv_diff, (int)ts_error_wait);
+			/// Time supplied to kalman out of range!
+			err_log_tv_num("TS K!", tv_diff, (int)ts_error_wait);
+			fflush(stderr);
 		    }
 		    else
 		    {
@@ -1696,7 +1682,8 @@ int main(int argc, char *argv[]){
 		// Print next T_s error immediately
 		if(ts_error_wait > 1)
 		{
-		    err_log_tv_num("TS supplied to Kalman out of range! Ignored:", tv_diff, (int)ts_error_wait);
+		    err_log_tv_num("TS K!", tv_diff, (int)ts_error_wait);
+		    fflush(stderr);
 		}   
 		ts_error_wait = 0;
 		ts_error = uquad_max(0,ts_error - 1);
@@ -1758,6 +1745,7 @@ int main(int argc, char *argv[]){
 		err_log_tv("Ramp completed, running free control...", tv_diff);
 		err_log("-- -- -- -- -- -- -- --");
 		err_log("-- --");
+		fflush(stderr);
 
 		uquad_state = ST_RUNNING;
 	    }
