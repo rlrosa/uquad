@@ -147,6 +147,39 @@ La elecci\'on del GPS se bas\'o fundamentalmente en lograr la simplicidad del si
 
 Se opt\'o por utilizar un GPS \textit{Canmore GT-730F}, como el mostrado en la figura \ref{fig:gps}. Dentro de un margen de precios razonable las caracter\'isticas de los distintos GPS comerciales no difieren considerablemente en lo que refiere a tasa de muestreo, resoluci\'on y exactitud. La raz\'on fundamental para elegir dicho instrumento sobre otros fue la facilidad de conexi\'on ya que permite utilizar los puertos USB de la plataforma a cargo de la inteligencia y los drivers existentes para linux. \\ 
 
+\subsection{Resumen de sensores}
+\label{sec:hardware:resumen-de-sensores}
+
+A continuaci\'on se presenta un resumen de las prestaciones de los sensores a utilizar, en la configuraci\'on en la que se utilizaron. Por m\'as detalles referirse a \ref{chap:anexo_mongoose}.
+
+\begin{table}[H]
+\begin{center}
+\rowcolors{1}{gray!20}{}
+\begin{tabular}{|p{3.5cm}|p{2.05cm}|p{2.05cm}|}
+\hline
+ & Dato nuevo & Resoluci\'on \\
+\hline
+Aceler\'ometro XY & 10ms (x2)& 4mg\\
+\hline
+Aceler\'ometro Z  & 10ms (x2)& 4mg\\
+\hline
+Gir\'oscopo XY  & 10ms (x2)& 0.07 $^\circ/s$\\
+\hline
+Gir\'oscopo Z  & 10ms (x2)& 0.07 $^\circ/s$\\
+\hline
+Bar\'ometro  & 10ms & 1Pa\\
+\hline
+Magnet\'ometro XY  & 10ms  (x2)& 5 mGa\\
+\hline
+Magnet\'ometro Z  & 10ms (x2)& 5 mGa\\
+\hline
+GPS  & 1s & - \\
+\hline
+\end{tabular}
+\label{tab:hardware:resumen-sensores}
+\end{center}
+\end{table}
+
 
 \end{document}
 
