@@ -1,6 +1,6 @@
-function [aconv,wconv,euler] = mong_conv(a,w,m,plotear,t_imu,T)
+function [aconv,wconv,euler,mconv] = mong_conv(a,w,m,plotear,t_imu,T)
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-% function [aconv,wconv,mconv] = mong_conv(a,w,m,plotear)
+% function [aconv,wconv,euler,mconv] = mong_conv(a,w,m,plotear,t_imu,T)
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 if(~exist('plotear','var'))
   plotear = 1;
