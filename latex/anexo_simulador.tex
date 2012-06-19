@@ -13,7 +13,7 @@ En este anexo se explica como utilizar el simulador implementado.
 \item Abrir el programa \emph{MatLab}.
 \item Ubicarse en la carpeta uquad.
 \item Desde la consola correr el script \emph{startup}. Este script agrega al \emph{path} las carpetas necesarias para que el simulador funcione adecuadamente.
-\item Desde la consola correr el simulador ejecutando \emph{menu}. Un men\'un como el que se muestra en la figura \ref{fig:menu} deber\'ia aparecer.
+\item Desde la consola correr el simulador ejecutando \emph{menu}. Un men\'u como el que se muestra en la figura \ref{fig:menu} deber\'ia aparecer.
 \end{enumerate}
 
 \begin{wrapfigure}{r}{0.6\textwidth}
@@ -30,8 +30,8 @@ Luego de hacer ``click'' en la opci\'on de lazo abierto en el men\'u principal s
 \subsubsection*{Estableciendo las condiciones iniciales de la simulaci\'on}
 Para establecer las condiciones iniciales de la simulaci\'on se escribe el valor deseado para cada variable en el casillero correspondiente en la parte superior izquierda del men\'u. Las variables que se pueden establecer son:
 \begin{itemize}
-\item La posici\'on incial del cuadric\'optero.
-\item La orientaci\'on incial (\'Angulos de Euler) del cuadric\'optero.
+\item La posici\'on inicial del cuadric\'optero.
+\item La orientaci\'on inicial (\'Angulos de Euler) del cuadric\'optero.
 \item La velocidad inicial del cuadric\'optero en el sistema inercial.
 \item La velocidad angular del cuadric\'optero.
 \end{itemize}
@@ -48,7 +48,7 @@ En la figura \ref{fig:anexo:lazo_abierto} se realiz\'o una simulaci\'on con toda
 La interfaz permite indicar los tiempos iniciales y finales de la simulaci\'on en el submen\'u que se encuentra al centro a la izquierda. En la figura se observa que para la simulaci\'on en cuesti\'on se estableci\'o un tiempo inicial de 0 segundos y un tiempo final de 30 segundos.
 
 \subsubsection*{Estableciendo el modo de vuelo}
-Con el submen\'u que se encuentra en la parte inferior se define el tipo de simulaci\'on que se desea realizar. El usuario puede elegir el modo de vuelo de una lista pre establecda, los modos de vuelo disponible son:
+Con el submen\'u que se encuentra en la parte inferior se define el tipo de simulaci\'on que se desea realizar. El usuario puede elegir el modo de vuelo de una lista pre establecida, los modos de vuelo disponible son:
 \begin{itemize}
 \item Ca\'ida libre
 \item Hovering
@@ -66,7 +66,7 @@ Sobre la derecha de la interfaz gr\'afica se despliega la trayectoria realizada 
 Para realizar un pos procesamiento de la informaci\'on obtenida gracias a la simulaci\'on es importante tener en cuenta que el simulador devuelve un vector con los tiempos de la simulaci\'on y una matriz con las 12 variables de estado. La variable de los tiempos de la simulaci\'on toma el nombre \textbf{t} y la variable con las 12 variabes de estado toma el nombre \textbf{Y}. Cada columna de la matriz \textbf{Y} representa los distintos valores que toma cada variable de estado a lo largo del tiempo. El \'orden en el cual se guardan las variables de estado es:
 \begin{itemize}
 \item Northing (x)
-\item Easting (y)
+\item Westing (y)
 \item Altura (z)
 \item Roll ($\psi$)
 \item Pitch ($\varphi$)
@@ -96,19 +96,19 @@ En el submen\'u que se encuentra en la esquina superior izquierda de la interfaz
 En el panel Trayectoria puede elegirse el tipo de trayectoria a realizar. En esta versi\'on del simulador se tiene implementada tres trayectorias que pueden elegirse desde el men\'u:
 \begin{itemize}
 \item Hovering.
-\item Vuelo en linea recta.
+\item Vuelo en l\'inea recta.
 \item Vuelo en c\'irculos.
 \end{itemize}
 
 Adem\'as del tipo de trayectoria deben establecerse los par\'ametros con los cuales se desea realizar la trayectoria. Para esto, haga ``click'' en el bot\'on \emph{setpoint} de la interfaz de lazo cerrado. Una nueva ventana se abrir\'a ofreciendo casilleros para completar con las variables deseadas. Seg\'un el tipo de trayectoria escogida se pueden setear distintas variables:
 \begin{itemize}
 \item Hovering: Posici\'on y \'angulo de Yaw.
-\item Vuelo en linea recta: Velocidades en el sistema $S_q$ y \'angulo de Yaw.
+\item Vuelo en l\'inea recta: Velocidades en el sistema $S_q$ y \'angulo de Yaw.
 \item Vuelo en c\'irculos: Velocidad angular seg\'un la vertical y velocidad tangencial.
 \end{itemize}
 
 \subsection*{Controlador}
-El simulador ofrece cuatro tipos de control posibles seleccionables desde el panel \emph{Control} de la interfaz de lazo cerrado. Estos son:
+El simulador ofrece cuatro tipos de control posibles, seleccionables desde el panel \emph{Control} de la interfaz de lazo cerrado. Estos son:
 \begin{itemize}
 \item P12: controlador proporcional de todas las variables de estado del sistema.
 \item PI12: controlador proporcional de todas las variables de estado del sistema y de las integrales del error en posici\'on y en el \'angulo de Yaw.
@@ -125,9 +125,15 @@ El control implementado es LQR. En el panel que se ubica en la esquina superior 
 \subsection*{Simulaci\'on}
 Una vez establecidas las condiciones iniciales, los tiempos de la simulaci\'on, el tipo de trayectoria, el setpoint, el tipo de control y los par\'ametros de las matrices Q y R se puede proceder a simular el sistema en lazo cerrado haciendo ``click'' sobre el bot\'on simular.\\
 
-En la gr\'afica de la derecha se grafica al igual que para el lazo abierto la trayectoria obtenida y los ejes del cuadric\'optero a lo largo del tiempo.\\
+En la gr\'afica de la derecha se grafica, al igual que para el lazo abierto, la trayectoria obtenida y los ejes del cuadric\'optero a lo largo del tiempo.\\
 
-Se genera un vector \textbf{t} con los tiempos de la simulaci\'on y una matriz \textbf{Y} con la siguiente informaci\'on. En las primeras doce columnas de la matriz \textbf{Y} se guardan las variables de estado del sistema en el mismo \'orden que para el lazo abierto. En las segundas doce columnas de la matriz \textbf{Y} se guardan los ruidos generados para las doce variables de estado en el mismo \'orden. (En las siguientes secciones se explica con mayor profundidad este aspecto). Las columnas 25 a 28 de la matriz \textbf{Y} corresponden a las velocidades angulares de los cuatro motores a lo largo del tiempo, mientras que las columnas 29 a 40 corresponden al setpoint para cada variable de estado.\\
+Se genera un vector \textbf{t} con los tiempos de la simulaci\'on y una matriz \textbf{Y} con la siguiente informaci\'on:
+\begin{itemize}
+\item En las primeras doce columnas de la matriz \textbf{Y} se guardan las variables de estado del sistema en el mismo \'orden que para el lazo abierto.
+\item En las segundas doce columnas de la matriz \textbf{Y} se guardan los ruidos generados para las doce variables de estado en el mismo \'orden. (En las siguientes secciones se explica con mayor profundidad este aspecto).
+\item Las columnas 25 a 28 de la matriz \textbf{Y} corresponden a las velocidades angulares de los cuatro motores a lo largo del tiempo.
+\item Las columnas 29 a 40 corresponden al setpoint para cada variable de estado.
+\end{itemize}
 
 La matriz de realimentaci\'on generada puede ser guardada haciendo ``click'' sobre el bot\'on guardar. La matriz se guardar\'a en la carpeta \emph{./src/control/} bajo los siguientes nombres:
 \begin{itemize}
