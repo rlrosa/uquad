@@ -57,7 +57,7 @@ handles.output = hObject;
 
 % Update handles structure
 guidata(hObject, handles);
-addpath('./lazo_abierto/');
+%addpath('./lazo_abierto/');
 % UIWAIT makes menu wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
 
@@ -81,7 +81,7 @@ function pushbutton1_Callback(hObject, eventdata, handles)
 %global Variables ti tf X0 x0 y0 z0 Vx0 Vy0 Vz0 vq10 vq20 vq30 wq10 wq20 wq30 theta0 psi0 phi0 Ixx Iyy Izz Izzm L M g Cond_iniciales;
 clc
 clear all
-addpath('./lazo_abierto')
+%addpath('./lazo_abierto')
 lazo_abierto;
 
 % --- Executes on button press in pushbutton2.
