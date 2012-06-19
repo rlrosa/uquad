@@ -710,8 +710,12 @@ int main(int argc, char *argv[])
      */
     if(setpriority (PRIO_PROCESS, 0, -18) == -1)
     {
+#if !PC_TEST
 	err_log("setpriority() failed!");
 	return -1;
+#else
+	err_log("setpriority() failed! Ignoring...");
+#endif
     }
 
     // Open ctrl interface

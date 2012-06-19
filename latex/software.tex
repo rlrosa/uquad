@@ -78,6 +78,8 @@ La inclinaci\'on durante la calibraci\'on afecta la estimaci\'on inicial del off
   \item Bar\'ometro $\rightarrow$ Altura y temperatura.
   \end{itemize}
 
+\item \textbf{Verificaci\'on:} Se llevan 2 banderas que indican si la norma del vector de aceleraci\'on y la del vector de campo magn\'etico caen dentro del rango esperado. Esto puede ser de utilidad en el filtro de Kalman.
+
 \item \textbf{Filtrado}: Se disponen de funciones que permiten obtener el elemento m\'as nuevo que a\'un no ha sido utilizado, o el resultado de aplicar un filtro FIR\footnote{Los coeficientes del filtro est\'an definidos en \textit{imu\_comm\_init()}.} a los 6 elementos m\'as recientes de la cola. Si por problemas de tiempo el \textit{main} se retrasa, pueden haber datos que nunca sean etiquetados como ``el dato m\'as nuevo'', ya que se leer\'a hasta ponerse al dia. De cualquier forma, ser\'an tomados en cuenta en el filtro.
 
 \item \textbf{Modo \textit{FAKE}:} Seteando \verb+IMU_COMM_FAKE+ a 1, la biblioteca leerá de un log \verb+ascii+ en lugar de utilizar el puerto serie. En el modo \textit{FAKE} los tiempos no son un problema cr\'itico, ya que no correr\'a en tiempo real.
@@ -86,7 +88,121 @@ La inclinaci\'on durante la calibraci\'on afecta la estimaci\'on inicial del off
 \section{M\'odulo \textit{kalman}}
 \label{sec:software:kalman}
 
-Aparte de implementar el filtro de Kalman descrito en la secci\'on \ref{chap:kalman}, la biblioteca \textit{kalman} se encarga de suavizar la estimaci\'on del \'angulo \textit{theta} dada por los aceler\'ometros y los magnet\'ometros. El ru\'ido presente en los aceler\'ometros, sumado a la mala performance del magnet\'ometro en lugares cerrados\footnote{Se prob\'o en lugares con muchos materiales met\'alicos, distorsionan las lecturas del magnet\'ometro.}, hace que sea necesario utilizar una l\'ogica de suavizado m\'as inteligente que un simple filtrado. Por detalles referirse a \verb+src/kalman/uquad_kalman.c+.
+Aparte de implementar el filtro de Kalman descrito en la secci\'on \ref{chap:kalman}, la biblioteca \textit{kalman} se encarga de:
+
+
+\begin{itemize}
+\item Suavizar la estimaci\'on del \'angulo \textit{theta} dada por los aceler\'ometros y los magnet\'ometros. El ru\'ido presente en los aceler\'ometros, sumado a la mala performance del magnet\'ometro en lugares cerrados\footnote{Se prob\'o en lugares con muchos materiales met\'alicos, distorsionan las lecturas del magnet\'ometro.}, hace que sea necesario utilizar una l\'ogica de suavizado m\'as inteligente que un simple filtrado.
+\item Llevar una estimaci\'on del \textit{bias} en los aceler\'ometros, cuyo objetivo es correjir errores sistem\'aticos. La implementaci\'on se bas\'o en \cite{}.
+%TODO pater paper?
+\item Existe la posibildad de modificar la matriz de ruidos de observaci\'on, para las estimaciones realizadas a partir de informaci\'on proveniente del aceler\'ometro y del magnet\'ometro, en funci\'on de la norma del vector medido por cada sensor\footnote{Esta idea se tom\'o de \url{http://www.vectornav.com}.}.
+\end{itemize}
+
+Por detalles referirse a \verb+src/kalman/uquad_kalman.c+.
+
+\section{M\'odulo de \textit{control}}
+\label{sec:software:control}
+
+La implementación del módulo de control se hizo en la biblioteca \textit{control}. Las funcionalidades implementadas son las siguientes:
+
+\begin{itemize}
+\item Control proporcional e integral.
+\item Linealización del sistema en torno a una trayectoria y un \textit{set point} dados, y c\'alculo de las matrices de control correspondientes mediante \textit{LQR}.
+\end{itemize}
+
+Como se mencion\'o en \ref{sec:software:kalman}, el vector de estados almacenado por el filtro de Kalman incluye, adem\'as de las variables de estado del sistema, tres variables para la estimaci\'on del \textit{bias} de los aceler\'ometros. Estos tres t\'erminos no se utilizan en la m\'odulo de control.
+
+\subsection{Control proporcional}
+\label{sec:software:control-prop}
+
+
+El control proporcional se rige por la siguiente ecuacion:
+\begin{equation}
+  \label{eq:software:prop}
+  \vec{\omega}_{prop} = K_{prop} (\vec{sp}_x - \vec{x}_{est})
+\end{equation}
+
+donde
+\begin{itemize}
+\item $\vec{sp}_x$ Es el estado deseado, dado por el m\'odulo \textit{path\_planner}.
+\item $\vec{x}_{est}$ Es la estimaci\'on del estado del sistema en el momento actual, dada por el filtro de Kalman.
+\end{itemize}
+
+\subsection{Control integral}
+\label{sec:software:control-int}
+
+El control integral es m\'as complejo, ya que incluye restricciones que son necesarias en la pr\'actica. A continuaci\'on se presenta un pseudoc\'odigo de la funci\'on que implementa la integral. Se aplica de manera independiente a cada una de las variables sobre la cual se desea llevar un control integral:
+\begin{verbatim}
+    integral = f_int(integral, err, Ts, th_dist, th_max, th_accum)
+
+    // 1
+    if (|err| > th_dist)
+    {
+      return integral;
+    }
+
+    // 2
+    err = min(err * Ts, th_max);
+    if (err < 0)
+        err = max(err, -th_max);
+
+    // 3
+    integral = min(err + integral, th_accum);
+    if(integral < 0)
+        integral = max(integral,-th_accum);
+
+    return integral;
+\end{verbatim}
+
+Los argumentos son:
+\begin{itemize}
+\item $err$: Diferencia entre el estado deseado y el actual: $err = sp_{x} - x$.
+\item $integral$: Valor actual de la integral.
+\item $Ts$: Per\'iodo de muestreo.
+\item Umbrales (definidos, para cada una de las variables a integrar, en \newline\verb+src/control/control.h+) para los 3 controles implementados:
+  \begin{enumerate}
+  \item No se integra si la diferencia entre el estado actual y el deseado es mayor a un umbral dado por \verb+th_dist+, ya que se asume que esa situaci\'on debe ser resuelta por el control proporcional.
+  \item Para evitar que la integral crezca muy r\'apido se utiliza un umbral \verb+th_max+, el m\'aximo error que se acepta integrar est\'a acotado por $th_{max}.Ts$.
+  \item Por \'ultimo, si por alg\'un motivo la integral acumula demasiado el sistema tardar\'a mucho en recuperarse, por lo que se satura el integrador en \verb+th_accum+.
+\end{enumerate}
+\end{itemize}
+
+Una vez calculada la integral, la ecuaci\'on que genera la acci\'on de control integral es:
+\begin{equation}
+  \label{eq:software:int}
+  \vec{\omega}_{int} = K_{int} x_{int}
+\end{equation}
+
+\subsection{Control total}
+\label{sec:software:control-total}
+
+La acci\'on de control viene dada por
+\begin{equation}
+  \label{eq:software:control}
+  \vec{\omega} = \vec{\omega}_{prop} + \vec{\omega}_{int}
+\end{equation}
+
+Las matrices de control para el modo \textit{hover} se encuentran en:
+\begin{itemize}
+\item Proporcional ($K_{prop}$): \verb+src/control/K_prop_pptz.txt+
+\item Integral ($K_{int}$): \verb+src/control/K_int_full_pptz.txt+.
+\end{itemize}
+
+Estas matrices son utilizadas en el modo \textit{hover}, donde no hace falta utilizar \textit{LQR}. Son archivos de texto plano, y si se modifican entonces los cambios ser\'an tomados en cuenta al ejecutar el script \verb+src/go.sh+.
+
+\section{Generador de rutas}
+\label{sec:software:generador-de-rutas}
+
+La versi\'on actual del c\'odigo implementa solamente el modo \textit{hover}. El \textit{set point} inicial cero para todas las variables, excepto para el \'angulo $\theta$, para el cual se tomar\'a el \'angulo inicial, y para la altura (1m por defecto).
+
+Se pueden modificar las condiciones de \textit{hovering} en \verb+src/main/main.c+.
+
+En \textit{MatLab} hay una implementaci\'on del generador de rutas, queda pendiente pasarlo a \verb+C+.
+
+\subsection{Modo Manual}
+\label{sec:software:modo-manual}
+
+En el modo \textit{hover} es posible modificar el \textit{set point} desde la li\'nea de manera remota. Para ellos, iniciar el \textit{main} y apretar la tecla \verb+m+, seguida de un \verb+ENTER+. Esto setear\'a el \textit{main} en modo manual, y estar\'a dispuesto a recibir comandos. Cada comando modificar\'a el \textit{set point}, y ser\'a considerado solamente luego de presionar \verb+ENTER+. La lista de comandos se encuentra en \verb+src/common/manual_mode.h+.
 
 \section{Driver de los motores y m\'odulo \textit{motor}}
 \label{sec:software:cmd-motor}
@@ -106,6 +222,13 @@ El \textit{cmd} reportar\'a un error en caso de recibir valores fuera de rango.
 \end{itemize}
 
 \textbf{ADVERTENCIA:} Cualquier mensaje de error reportado por el \textit{cmd} es motivo suficiente para detener el vuelo y analizar el problema.
+
+\section{Tiempos}
+\label{sec:software:tiempos}
+
+El per\'iodo de muestreo resulta fundamental para tanto el filtro de Kalman como el control integral. Para llevar el tiempo se dispone de funciones del sistema operativo que tienen precisi\'on de microsegundos. Se consulta el tiempo al momento de llamar a las bibliotecas \textit{kalman} y \textit{control} y se lo almacena, de manera de poder estimar un per\'iodo de muestreo a partir del tiempo transcurrido entre llamadas sucesivas.
+
+El m\'aximo retardo entre que se lee un dato nuevo de la IMU y que se efectua una acci\'on de control es de 10ms, en general es de 8ms. Retardos mayores llevar\'ian a perder muestras de la IMU, lo cual ser\'ia detectable en el log de errores. Por m\'as informaci\'on sobre los logs referirse al anexo \ref{chap:anexo-codigo}.
 
 \section{Comunicaci\'on}
 \label{sec:software-comm}

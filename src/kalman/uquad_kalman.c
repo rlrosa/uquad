@@ -873,16 +873,16 @@ kalman_io_t* kalman_init()
     kd->Q->m[14][14] = 1;
 #endif // KALMAN_BIAS
 
-    kd->R->m[0][0] = 1e2;
-    kd->R->m[1][1] = 1e2;
-    kd->R->m[2][2] = 1e5;
-    kd->R->m[3][3] = 1e4;
-    kd->R->m[4][4] = 1e4;
-    kd->R->m[5][5] = 1e4;
-    kd->R->m[6][6] = 1e-3;
-    kd->R->m[7][7] = 1e-3;
-    kd->R->m[8][8] = 1e-3;
-    kd->R->m[9][9] = 1e5;
+    kd->R->m[0][0] = COV_PSI_OK; /* psi */
+    kd->R->m[1][1] = COV_PHI_OK; /* phi */
+    kd->R->m[2][2] = COV_THE_OK; /* the */
+    kd->R->m[3][3] = COV_ACC_OK; /* ax  */
+    kd->R->m[4][4] = COV_ACC_OK; /* ay  */
+    kd->R->m[5][5] = COV_ACC_OK; /* az  */
+    kd->R->m[6][6] = 1e-3;/* wqx */
+    kd->R->m[7][7] = 1e-3;/* wqy */
+    kd->R->m[8][8] = 1e-3;/* wqz */
+    kd->R->m[9][9] = 1e5; /* z   */
 
     kd->R_imu_gps->m[0][0] = kd->R->m[0][0];
     kd->R_imu_gps->m[1][1] = kd->R->m[1][1];;
@@ -893,8 +893,8 @@ kalman_io_t* kalman_init()
     kd->R_imu_gps->m[6][6] = kd->R->m[6][6];;
     kd->R_imu_gps->m[7][7] = kd->R->m[7][7];;
     kd->R_imu_gps->m[8][8] = kd->R->m[8][8];;
-    kd->R_imu_gps->m[9][9] = 1e2;
-    kd->R_imu_gps->m[10][10] = 1e2;
+    kd->R_imu_gps->m[9][9] = 1e2;  /* x */
+    kd->R_imu_gps->m[10][10] = 1e2;/* y */
     kd->R_imu_gps->m[11][11] = kd->R->m[9][9];
 
     kd->P->m[0][0] = 1;
@@ -982,6 +982,39 @@ int uquad_kalman(kalman_io_t * kd, uquad_mat_t* w, imu_data_t* data, double T_us
 
     retval = store_data(kd, w, data, T_us, weight, gps_i_data);
     err_propagate(retval);
+
+#if DYNAMIC_COV
+    /// Dinamically adjust cov according to expected values
+    if(data->acc_ok)
+    {
+	kd->R->m[0][0] = COV_PSI_OK; /* psi */
+	kd->R->m[1][1] = COV_PHI_OK; /* phi */
+
+	kd->R->m[3][3] = COV_ACC_OK; /* ax  */
+	kd->R->m[4][4] = COV_ACC_OK; /* ay  */
+	kd->R->m[5][5] = COV_ACC_OK; /* az  */
+    }
+    else
+    {
+	err_log("acc");
+	kd->R->m[0][0] = COV_PSI_BAD; /* psi */
+	kd->R->m[1][1] = COV_PHI_BAD; /* phi */
+
+	kd->R->m[3][3] = COV_ACC_BAD; /* ax  */
+	kd->R->m[4][4] = COV_ACC_BAD; /* ay  */
+	kd->R->m[5][5] = COV_ACC_BAD; /* az  */
+    }
+#endif // DYNAMIC_COV
+
+    if(data->magn_ok)
+    {
+	kd->R->m[2][2] = COV_THE_OK; /* the */
+    }
+    else
+    {
+	err_log("magn");
+	kd->R->m[2][2] = COV_THE_BAD; /* the */
+    }
 
     // Prediction
     retval = f(kd -> x_, kd);
