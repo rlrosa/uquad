@@ -78,6 +78,8 @@ La inclinaci\'on durante la calibraci\'on afecta la estimaci\'on inicial del off
   \item Bar\'ometro $\rightarrow$ Altura y temperatura.
   \end{itemize}
 
+\item \textbf{Verificaci\'on:} Se llevan 2 banderas que indican si la norma del vector de aceleraci\'on y la del vector de campo magn\'etico caen dentro del rango esperado. Esto puede ser de utilidad en el filtro de Kalman.
+
 \item \textbf{Filtrado}: Se disponen de funciones que permiten obtener el elemento m\'as nuevo que a\'un no ha sido utilizado, o el resultado de aplicar un filtro FIR\footnote{Los coeficientes del filtro est\'an definidos en \textit{imu\_comm\_init()}.} a los 6 elementos m\'as recientes de la cola. Si por problemas de tiempo el \textit{main} se retrasa, pueden haber datos que nunca sean etiquetados como ``el dato m\'as nuevo'', ya que se leer\'a hasta ponerse al dia. De cualquier forma, ser\'an tomados en cuenta en el filtro.
 
 \item \textbf{Modo \textit{FAKE}:} Seteando \verb+IMU_COMM_FAKE+ a 1, la biblioteca leerá de un log \verb+ascii+ en lugar de utilizar el puerto serie. En el modo \textit{FAKE} los tiempos no son un problema cr\'itico, ya que no correr\'a en tiempo real.
@@ -93,6 +95,7 @@ Aparte de implementar el filtro de Kalman descrito en la secci\'on \ref{chap:kal
 \item Suavizar la estimaci\'on del \'angulo \textit{theta} dada por los aceler\'ometros y los magnet\'ometros. El ru\'ido presente en los aceler\'ometros, sumado a la mala performance del magnet\'ometro en lugares cerrados\footnote{Se prob\'o en lugares con muchos materiales met\'alicos, distorsionan las lecturas del magnet\'ometro.}, hace que sea necesario utilizar una l\'ogica de suavizado m\'as inteligente que un simple filtrado.
 \item Llevar una estimaci\'on del \textit{bias} en los aceler\'ometros, cuyo objetivo es correjir errores sistem\'aticos. La implementaci\'on se bas\'o en \cite{}.
 %TODO pater paper?
+\item Existe la posibildad de modificar la matriz de ruidos de observaci\'on, para las estimaciones realizadas a partir de informaci\'on proveniente del aceler\'ometro y del magnet\'ometro, en funci\'on de la norma del vector medido por cada sensor\footnote{Esta idea se tom\'o de \url{http://www.vectornav.com}.}.
 \end{itemize}
 
 Por detalles referirse a \verb+src/kalman/uquad_kalman.c+.
