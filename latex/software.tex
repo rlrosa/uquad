@@ -91,7 +91,7 @@ Aparte de implementar el filtro de Kalman descrito en la secci\'on \ref{chap:kal
 
 \begin{itemize}
 \item Suavizar la estimaci\'on del \'angulo \textit{theta} dada por los aceler\'ometros y los magnet\'ometros. El ru\'ido presente en los aceler\'ometros, sumado a la mala performance del magnet\'ometro en lugares cerrados\footnote{Se prob\'o en lugares con muchos materiales met\'alicos, distorsionan las lecturas del magnet\'ometro.}, hace que sea necesario utilizar una l\'ogica de suavizado m\'as inteligente que un simple filtrado.
-\item Llevar una estimaci\'on del \textit{bias} en los aceler\'ometros, destinada a correjir errores sistem\'aticos. La implementaci\'on se bas\'o en \cite{}.
+\item Llevar una estimaci\'on del \textit{bias} en los aceler\'ometros, cuyo objetivo es correjir errores sistem\'aticos. La implementaci\'on se bas\'o en \cite{}.
 %TODO pater paper?
 \end{itemize}
 
