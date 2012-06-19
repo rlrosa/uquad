@@ -101,7 +101,7 @@
 #define PRESS_EXP_INV              5.255
 #define PRESS_K                    44330.0
 
-#define IMU_COMM_PRINT_DATA_FORMAT "%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\n"
+#define IMU_COMM_PRINT_DATA_FORMAT "%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%0.8f\t%d\t%d\n"
 #define IMU_COMM_PRINT_RAW_FORMAT  "%u\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%u\t%u\n"
 
 /**
@@ -139,6 +139,23 @@
 #define IMU_TH_DEADLOCK_ACC               9.72 // m/s^2
 #define IMU_TH_DEADLOCK_ANG               0.17069 // rad
 #define IMU_TH_DEADLOCK_ACC_NORM          (IMU_TH_DEADLOCK_ACC/GRAVITY)
+
+/**
+ * Check if acc and magn norm is within expected range.
+ *   - acc: If out of range, external forces may be acting, such as
+ *   wind, impact against something, or an idiot with nothing better
+ *   to do.
+ *       acc_ok == GRAVITY - IMU_TH_ACC < norm(acc) < GRAVITY + IMU_TH_ACC
+ *
+ *   - magn: If out of range, magnetic materials may be nearby.
+ *       magn_ok == 1 - IMU_TH_MAGN < norm(acc) < 1 + IMU_TH_MAGN
+ *
+ * NOTE: magn check has to be performed before calculating euler angles, since
+ *       converted magn data will be lost after conversion (imu_data does not
+ *       expose magn data, only euler angles).
+ */
+#define IMU_TH_ACC  1.0 // m/s^2
+#define IMU_TH_MAGN 0.5 // no units
 
 #define IMU_BYTES_T_US                    4
 
@@ -206,12 +223,14 @@ typedef struct imu_frame_null{
  * and should be passed on the the control loop.
  */
 typedef struct imu_data{
-    double T_us;       // us
-    uquad_mat_t *acc;  // m/s^2
-    uquad_mat_t *gyro; // rad/s
-    uquad_mat_t *magn; // rad - Euler angles - {psi/roll,phi/pitch,theta/yaw}
-    double temp;       // °C
-    double alt;        // m
+    double T_us;         // us
+    uquad_mat_t *acc;    // m/s^2
+    uquad_mat_t *gyro;   // rad/s
+    uquad_mat_t *magn;   // rad - Euler angles - {psi/roll,phi/pitch,theta/yaw}
+    double temp;         // °C
+    double alt;          // m
+    uquad_bool_t acc_ok; // acc norm() in range
+    uquad_bool_t magn_ok;// magn norm() in range
 
     struct timeval timestamp;
 }imu_data_t;
