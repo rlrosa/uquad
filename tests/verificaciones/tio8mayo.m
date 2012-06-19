@@ -4,6 +4,8 @@
 % [acrud,wcrud,mcrud,tcrud,bcrud,~,~,T] = mong_read(imu_file,0,1);
 % [a,w,euler] = mong_conv(acrud,wcrud,mcrud,0,tcrud,T);
 
+[a,w,euler] = mong_conv(imu_raw(:,4:6),imu_raw(:,7:9),imu_raw(:,10:12),0,imu_raw(:,13),t);
+
 acc_orig = a;
 
 a=[0.4 0.3 0.15 0.15];
@@ -29,7 +31,14 @@ for i=2:length(acc_orig(:,2))
     promedioy(i)=alpha*conv_acc_orig_b(i,2)+(1-alpha)*conv_acc_orig_b(i-1,2);
 end    
 
-figure;plot(acc_orig(:,2),'r');hold on;plot(promedioy);legend('a_y','filtrado 2 veces')
+%%
+
+figure;
+    plot(acc_orig(:,2),'color',red3);
+    hold on;
+    plot(conv_acc_orig_b(:,2),'color',blue1);
+    plot(promedioy,'color',orange1);
+    legend('a_y','filtrado 1 vez','filtrado 2 veces')
 
 %%
 
