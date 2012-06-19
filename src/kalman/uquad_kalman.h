@@ -35,6 +35,36 @@
 #define KALMAN_ROWS_H     10
 
 /**
+ * Dinamically adjust acc/magn covariance based on the norm
+ * of the reading. If it differs by too much (threshold is
+ * given by imu_comm) from the expected value then acc/magn
+ * should not be trusted, and covariance increased.
+ *
+ * Pseudocode:
+ *   if(imu->acc_ok)
+ *   {
+ *     cov_psi = COV_PSI_OK
+ *     cov_phi = COV_PHI_OK
+ *   }
+ *   else
+ *   {
+ *     cov_psi = COV_PSI_BAD
+ *     cov_phi = COV_PHI_BAD
+ *   }
+ *
+ * The situation is analogous with theta and the magnetometer.
+ */
+#define DYNAMIC_COV       0
+#define COV_PSI_OK        1e2
+#define COV_PSI_BAD       1e6
+#define COV_PHI_OK        COV_PSI_OK
+#define COV_PHI_BAD       COV_PSI_BAD
+#define COV_THE_OK        1e5
+#define COV_THE_BAD       1e9
+#define COV_ACC_OK        1e4
+#define COV_ACC_BAD       1e9
+
+/**
  * Kalman struct description.
  * State vectors x_hat and x_ are described in uquad_types.h
  *

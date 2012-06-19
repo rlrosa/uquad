@@ -752,6 +752,10 @@ int main(int argc, char *argv[]){
 #endif // LOG_INT
 #endif //DEBUG
 
+#if CHECK_NET_BYPASS
+    check_net_chld = -1;
+    err_log("WARN! Not using check_net...");
+#else
     /**
      * Start a child process that will ping use TCP packages
      * to verify connectivity with server (laptop)/
@@ -761,7 +765,6 @@ int main(int argc, char *argv[]){
     check_net_chld = uquad_check_net_client(CHECK_NET_SERVER_IP,
 					    CHECK_NET_PORT,
 					    false);
-#if !CHECK_NET_BYPASS
     if(check_net_chld < 0)
     {
 	quit_log_if(ERROR_FAIL,"Failed to connect to check_net server!");
