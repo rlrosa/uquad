@@ -155,10 +155,16 @@ if plotear
       T=1/fs;
       t=0:T:T*(length(a(:,1))-1);
     else
-      if(length(T) ~= length(a(:,1)))
+      if(length(T) >= length(a(:,1)))
         fprintf('WARN: will trim T (%d) to match length(a) (%d)\n', length(T), length(a(:,1)));
+        t = T(1:length(a(:,1)));
+      elseif (length(T) <= length(a(:,1)))
+        fprintf('WARN: will trim data (%d) to match length(T) (%d)\n', length(T), length(a(:,1)));
+        aconv=aconv((1:length(T)),:);
+        wconv=wconv((1:length(T)),:);
+        euler=euler((1:length(T)),:);
+        t=T;
       end
-      t = T(1:length(a(:,1)));
     end
     figure()
         subplot(311)
