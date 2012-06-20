@@ -205,8 +205,10 @@ Una vez calculada la integral, la ecuaci\'on que genera la acci\'on de control i
 La acci\'on de control viene dada por
 \begin{equation}
   \label{eq:software:control}
-  \vec{\omega} = \vec{\omega}_{prop} + \vec{\omega}_{int}
+  \vec{\omega} = \vec{sp}_\omega + \vec{\omega}_{prop} + \vec{\omega}_{int}
 \end{equation}
+
+donde $\vec{sp}_\omega$ es velocidad angular que se desea setearle a los motores, definida por el m\'odulo \textit{path\_planner}.
 
 Las matrices de control para el modo \textit{hover} se encuentran en:
 \begin{itemize}
