@@ -34,10 +34,10 @@ Para correr el programa principal (de ahora en más: \textit{main}) deber\'ia ba
 \item \verb+K*.txt+: Matrices de control utilizados en el modo \textit{hover}.
 \item \verb+lqr-*.txt+: Par\'ametros del algoritmo \textit{LQR}.
 \item IMU: La IMU env\'ia datos a trav\'es de una \textit{UART} que es mapeada por el sistema operativo a un ``archivo'' \verb+/dev/tty*+. El \textit{main} recibe como par\'ametro la ruta a este archivo, o en su defecto un log \verb+imu_raw.txt+ generado por el \textit{main} en una ejecuci\'on previa.
-\item GPS: Los datos provenientes del GPS  (\textit{USB}) son mapeados por el sistema operativo a \verb+/dev/ttyUSB*+). No se interactua directamente con este archivo, se utiliza la biblioteca \textit{gps\_comm} para iniciar un cliente que se comunique con el \textit{gpsd}, que es el programa que se encarga de leer y analizar los datos crudos provenientes del GPS. El \textit{gpsd} es iniciado por el script \verb+go.sh+.\newline
-Si no se dispone de se\~nal del GPS se puede configurar un modo de prueba en el que se simulan los datos del GPS (a 1Hz) generando ceros, o números al azar dentro de un rango dado.
-\item \verb+cmd+: El driver de los motores, encargado exclusivamente de env\'iar continuamente comandos \textit{i2c} a los ESCs con la \'ultima velocidad configurada\footnote{Los motores se apagan si no reciben comandos continuamente.}. Durante pruebas, se puede configurar el driver para que simule la presencia de los motores, o para que lea de la entrada est\'andar. Ver \verb+src/i2c_beagle/README+ por informaci\'on sobre como compilar los distintos modos.\newline
-La comunicaci\'on entre el driver y el \textit{main} se realiza mediante la biblioteca \textit{motor}, que a su vez se comunica con el driver mediante colas de kernel (IPC\footnote{\textit{Interprocess Communication}: \url{http://www.cs.cf.ac.uk/Dave/C}.}), utilizando la biblioteca \textit{uquad\_kernel\_msgq}.
+\item GPS: Los datos provenientes del GPS  (\textit{USB}) son mapeados por el sistema operativo a \verb+/dev/ttyUSB*+. No se interactua directamente con este archivo, se utiliza la biblioteca \textit{gps\_comm} para iniciar un cliente que se comunique con el \textit{gpsd}, que es el programa que se encarga de leer y analizar los datos crudos provenientes del GPS. El \textit{gpsd} es iniciado por el script \verb+go.sh+.\newline
+Si no se dispone de se\~nal del GPS se puede configurar un modo de prueba en el que se simulan los datos del GPS (a 1Hz) generando ceros, o números al azar dentro de un rango dado. Tambi\'en es posible deshabilitar completamente el GPS y trabajar con un vector de estados reducido. M\'as adelante se explica como configurar los distintos modos.
+\item \verb+cmd+: El driver de los motores, encargado exclusivamente de env\'iar continuamente comandos \textit{i2c} a los ESCs con la \'ultima velocidad configurada\footnote{Los motores se apagan si no reciben comandos continuamente.}. La comunicaci\'on entre el driver y el \textit{main} se realiza mediante la biblioteca \textit{motor}, que a su vez se comunica con el driver mediante colas de kernel (IPC\footnote{\textit{Interprocess Communication}: \url{http://www.cs.cf.ac.uk/Dave/C}.}), utilizando la biblioteca \textit{uquad\_kernel\_msgq}.\newline
+Durante pruebas, se puede configurar el driver para que simule la presencia de los motores, o para que lea de la entrada est\'andar. Ver \verb+src/i2c_beagle/README+ por informaci\'on sobre como compilar los distintos modos.
 \end{itemize}
 
 \section{Loop}
@@ -70,13 +70,40 @@ A continuaci\'on se decriben algunas de las funcionalidades a destacar de la bib
 \begin{itemize}
 \item \textbf{Calibración:} Se acumulan un conjunto de muestras que después se utilizan para estimar el offset de los giróscopos, la altura inicial, y pueden ser utilizados para inicializar el filtro de \textit{Kalman}. Durante la calibraci\'on es cr\'itico que el cuadric\'optero no se mueva, ya que en caso de hacerlo el offset de los gir\'oscopos ser\'a mal estimado.\newline
 La inclinaci\'on durante la calibraci\'on afecta la estimaci\'on inicial del offset en los aceler\'ometros, pero en caso de no estar perfectamente horizontal se acomodar\'a luego de unos segundos, no es algo cr\'itico.
-\item \textbf{Conversión:} Cargando parámetros de calibración, es posible conviertir datos crudos provenientes de los sensores (cuentas de un ADC) a datos útiles:
+\item \textbf{Conversión:} Cargando parámetros de calibración, es posible convertir datos crudos provenientes de los sensores (cuentas de un ADC) a datos útiles:
   \begin{itemize}
   \item Aceler\'ometro $\rightarrow$ Aceleraciones.
   \item Gir\'oscopo $\rightarrow$ Velocidad angulares.
   \item Aceler\'ometro \verb~+~ Magnet\'ometro  $\rightarrow$ \'Angulos de Euler.
   \item Bar\'ometro $\rightarrow$ Altura y temperatura.
   \end{itemize}
+Para la conversi\'on se utilizaron las calibraciones obtenida de la parte \ref{part:sensores-y-estimacion-del-estado}.
+\begin{itemize}
+\item Magnet\'ometro:
+  \begin{equation}
+    \label{eq:software:calib-lineal}
+    conv = T.K_{inv}.(crudo - b)
+  \end{equation}
+  donde
+  \begin{itemize}
+  \item $T$ corrige el problema del \textit{cross axis sensitivity}.
+  \item $K_{inv}$ es la inversa de la matriz de ganancias.
+  \item $b$ Es un offset.
+  \end{itemize}
+\item Aceler\'ometro: Adem\'as de una calibraci\'on como la del magnet\'ometro, se implement\'o una compensaci\'on por temperatura:
+  \begin{equation}
+    \label{eq:software:acc}
+    conv = T*inv(K)*(crudo - b + b_t*(t - t_0))    
+  \end{equation}
+  donde
+  \begin{itemize}
+  \item $T$, $K$ y $b$ cumplen el mismo rol que en el magnet\'ometro.
+  \item $t$ es la temperatura actual, y $t_0$ la temperatura a la que se realiz\'o  la calibraci\'on de donde surgieron $T$, $K$ y $b$.
+  \item $b_t$ es el factor que permite la compensaci\'on por temperatura.
+  \end{itemize}
+\item Gir\'oscopo: Se implement\'o algo an\'alogo a lo que se hizo para el acceler\'ometro, solo que al final se le resta un offset que se determina durante la calibraci\'on al inicio del programa. Esto es sencillo de estimar, ya que basta con que el cuadric\'optero no se mueva durante la calibraci\'on.\newline
+Implementar algo an\'alogo pero para el caso del acceler\'ometro o del magnet\'ometro ser\'ia m\'as complicado, ya que requerir\'ia que el cuadric\'optero estuviese perfectamente horizontal o orientado hacia el norte, respectivamente.
+\end{itemize}
 
 \item \textbf{Verificaci\'on:} Se llevan 2 banderas que indican si la norma del vector de aceleraci\'on y la del vector de campo magn\'etico caen dentro del rango esperado. Esto puede ser de utilidad en el filtro de Kalman.
 
@@ -93,8 +120,7 @@ Aparte de implementar el filtro de Kalman descrito en la secci\'on \ref{chap:kal
 
 \begin{itemize}
 \item Suavizar la estimaci\'on del \'angulo \textit{theta} dada por los aceler\'ometros y los magnet\'ometros. El ru\'ido presente en los aceler\'ometros, sumado a la mala performance del magnet\'ometro en lugares cerrados\footnote{Se prob\'o en lugares con muchos materiales met\'alicos, distorsionan las lecturas del magnet\'ometro.}, hace que sea necesario utilizar una l\'ogica de suavizado m\'as inteligente que un simple filtrado.
-\item Llevar una estimaci\'on del \textit{bias} en los aceler\'ometros, cuyo objetivo es correjir errores sistem\'aticos. La implementaci\'on se bas\'o en \cite{}.
-%TODO pater paper?
+\item Llevar una estimaci\'on del \textit{bias} en los aceler\'ometros, cuyo objetivo es correjir errores sistem\'aticos.
 \item Existe la posibildad de modificar la matriz de ruidos de observaci\'on, para las estimaciones realizadas a partir de informaci\'on proveniente del aceler\'ometro y del magnet\'ometro, en funci\'on de la norma del vector medido por cada sensor\footnote{Esta idea se tom\'o de \url{http://www.vectornav.com}.}.
 \end{itemize}
 
@@ -234,5 +260,44 @@ El m\'aximo retardo entre que se lee un dato nuevo de la IMU y que se efectua un
 \label{sec:software-comm}
 
 La comunicaci\'on con la \textit{BeagleBoard} se hace mediante \textit{ssh}. En el anexo \ref{chap:anexo-codigo} se explica como configurar las partes involucradas.
+
+\section{Configuraci\'on}
+\label{sec:software-config}
+
+\subsection{Parametros del sistema}
+\label{sec:software:param-del-sistema}
+
+\begin{itemize}
+\item \verb+src/common/uquad_types.h+: La mayor parte de los par\'ametros del sistema est\'an definidos aqui, entre ellos la masa, el tensor de inercia, el orden del vector de estados, per\'iodo de muestreo, etc.
+
+\item \verb+src/CMakelists.tx+: La variable \verb+USE_GPS+ es un booleano que determina si ha de utilizarse el GPS o no.
+
+\item \verb+src/common/uquad_config.h+: En este archivo se configura el modo de funcionamiento. Se realizan controles sobre la opciones elegidas, evitando que el usuario seleccione un modo inv\'alido. Es posible elegir:
+  \begin{itemize}
+  \item Trabajar con 8 estados o con 12.
+  \item Guardar logs.
+  \item Habilitar control integral.
+  \item Si el GPS fue habilitado, es posible utilizar un GPS de mentira, \'util para pruebas.
+  \item Cada cuantas muestras de la IMU se desea efectuar una acci\'on de control.
+  \end{itemize}
+
+\item \verb+src/imu/imu_comm.h+: Permite:
+  \begin{itemize}
+  \item Permite configurar el largo del filtro LPF, cuyos coeficientes se definen en \verb+src/imu/imu_comm.c+.
+  \item Elegir entre leer de un log o de la IMU.
+  \item Elegir el largo de la cola circular donde se almacenan los datos crudos (debe ser mayor que la cantidad de coeficientes del filtro).
+  \item Seleccionar cuantas muestras han de usarse para la calibraci\'on (512 por defecto).
+  \end{itemize}
+\end{itemize}
+
+\subsection{Control}
+\label{sec:software:config-control}
+
+Para el modo \textit{hover}, basta con modificar las matrices en \verb+src/control/+, de donde se leen las ganancias a utilizar. Para el resto de los modos hay que modificar los archivos de donde se configura el \textit{LQR}. En la secci\'on \ref{sec:software:param-del-sistema} se explic\'o como modificar la estrateg\'ia de control.
+
+\subsection{Ruidos Kalman}
+\label{sec:software:config-kalman}
+
+En \verb+src/kalman/uquad_kalman.c+ se definen los ruidos de transici\'on de estados y de observaci\'on. Los valores que var\'ian al utilizar el modo de covarianza din\'amica (en funci\'on de la norma de los vectores de aceleraci\'on y campo magn\'etico) se definen en \verb+src/kalman/uquad_kalman.h+.
 
 \end{document}
