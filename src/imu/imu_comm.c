@@ -1515,8 +1515,13 @@ int imu_comm_raw2data(imu_t *imu, imu_raw_t *raw, imu_data_t *raw_db, imu_data_t
     }
 
     // Check if acc and magn reading have the norm() they should have
+#if DYNAMIC_COV
     data->acc_ok = (uquad_abs(uquad_mat_norm(data->acc) - GRAVITY) < IMU_TH_ACC);
     data->magn_ok = (uquad_abs(uquad_mat_norm(data->magn) - 1.0) < IMU_TH_MAGN);
+#else
+    data->acc_ok = true;
+    data->magn_ok = true;
+#endif
 
     retval = convert_2_euler(data);
     err_propagate(retval);  

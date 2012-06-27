@@ -107,7 +107,7 @@
 #define CTRL_INT_TH_PSI          0.26   // [rad]
 #define CTRL_INT_TH_PHI          0.26   // [rad]
 #define CTRL_INT_TH_THETA        0.78   // [rad]
-#define CTRL_INT_TH_Z            0.8    // [m]
+#define CTRL_INT_TH_Z            2.0    // [m]
 #define CTRL_INT_TH_Y            1.0    // [m]
 #define CTRL_INT_TH_X            1.0    // [m]
 #endif // CTRL_INTEGRAL
