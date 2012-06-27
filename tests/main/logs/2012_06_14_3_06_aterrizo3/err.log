@@ -1,373 +1,0 @@
-/home/root/work/uquad/src/main/main.c:760: Will connect to check_net server...
-/home/root/work/uquad/src/check_net/uquad_check_net.c:285: TCP client running on port:(12341234)
-/home/root/work/uquad/src/control/control.c:93: Loaded proportional gain matrix from:(K_prop_full_ppzt.txt)
-/home/root/work/uquad/src/control/control.c:143: Loaded integral gain matrix from:(K_int_full_ppzt.txt)
-/home/root/work/uquad/src/control/control.c:164: Loaded LQR Q matrix from:(lqr-Q.txt)
-/home/root/work/uquad/src/control/control.c:183: Loaded LQR R matrix from:(lqr-R.txt)
-/home/root/work/uquad/src/kalman/uquad_kalman.c:1069: Kalman - R
-100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	100000.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	10000.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	10000.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	10000.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.001000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.001000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.001000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	100000.000000	
-/home/root/work/uquad/src/kalman/uquad_kalman.c:1071: Kalman - Q
-100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.010000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.010000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000010	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.100000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.100000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.100000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	1.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	1.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	1.000000	
-/home/root/work/uquad/src/kalman/uquad_kalman.c:1073: Kalman - R_imu_gps
-100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	100000.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	10000.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	10000.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	10000.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.001000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.001000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.001000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	100.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	100.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	100000.000000	
-/home/root/work/uquad/src/control/control.c:362: Control - K
-0.000000	0.000000	16.000000	0.000000	-44.430000	-48.930000	0.000000	0.000000	0.000000	0.000000	-10.780000	-7.510000	
-0.000000	0.000000	16.000000	44.430000	0.000000	48.930000	0.000000	0.000000	0.000000	10.780000	0.000000	7.510000	
-0.000000	0.000000	16.000000	0.000000	44.430000	-48.930000	0.000000	0.000000	0.000000	0.000000	10.780000	-7.510000	
-0.000000	0.000000	16.000000	-44.430000	0.000000	48.930000	0.000000	0.000000	0.000000	-10.780000	0.000000	7.510000	
-/home/root/work/uquad/src/control/control.c:365: Control - K_int
-0.000000	-21.360000	1.570000	-14.730000	
-21.360000	0.000000	1.570000	14.730000	
-0.000000	21.360000	1.570000	-14.730000	
--21.360000	0.000000	1.570000	14.730000	
-
-/home/root/work/uquad/src/main/main.c:453: -- -- -- -- -- -- -- --
-/home/root/work/uquad/src/main/main.c:454: main.c configuration:
-/home/root/work/uquad/src/main/main.c:455: -- -- -- -- -- -- -- --
-/home/root/work/uquad/src/main/main.c:456: DEBUG(1)
-/home/root/work/uquad/src/main/main.c:457: KALMAN_BIAS(1)
-/home/root/work/uquad/src/main/main.c:458: CTRL_INTEGRAL(1)
-/home/root/work/uquad/src/main/main.c:459: CTRL_INTEGRAL_ANG(1)
-/home/root/work/uquad/src/main/main.c:460: FULL_CONTROL(1)
-/home/root/work/uquad/src/main/main.c:461: USE_GPS(1)
-/home/root/work/uquad/src/main/main.c:462: GPS_FAKE(1)
-/home/root/work/uquad/src/main/main.c:463: IMU_COMM_FAKE(0)
-/home/root/work/uquad/src/main/main.c:464: OL_TS_STABIL(0)
-/home/root/work/uquad/src/main/main.c:465: CTRL_TS(1)
-/home/root/work/uquad/src/main/main.c:466: MASA_DEFAULT(1.450000)
-/home/root/work/uquad/src/main/main.c:467: -- -- -- -- -- -- -- --
-
-/home/root/work/uquad/src/main/main.c:953: Entering while:(7.963593)
-/home/root/work/uquad/src/main/main.c:956: Clearing IMU input buffer...
-/home/root/work/uquad/src/main/main.c:1272: Waiting for stable IMU sampling time...
-/home/root/work/uquad/src/main/main.c:1290: IMU: Frames read out during stabilization:(52)
-/home/root/work/uquad/src/main/main.c:1300: IMU startup completed, starting calibration...(8.938599)
-/home/root/work/uquad/src/main/main.c:1539: IMU calibration completed, running kalman+control+ramp(14.045471)
-/home/root/work/uquad/src/main/main.c:1584: Initial setpoint:
-0.000000	0.000000	1.000000	0.000000	0.000000	1.383958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.00000000	-0.08536988	-0.08857414	9.72822927	0.00040775	0.00026602	0.00018980	-0.00910461	0.00877489	1.38395769	39.80000000	0.00000000
-/home/root/work/uquad/src/main/main.c:1743: -- --
-/home/root/work/uquad/src/main/main.c:1744: -- -- -- -- -- -- -- --
-/home/root/work/uquad/src/main/main.c:1745: Ramp completed, running free control...(15.035980)
-/home/root/work/uquad/src/main/main.c:1746: -- -- -- -- -- -- -- --
-/home/root/work/uquad/src/main/main.c:1747: -- --
-/home/root/work/uquad/src/main/main.c:1083: Manuel mode ENABLED!(17.027466)
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	1.000000	0.000000	0.000000	1.383958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(18.511750)
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	1.200000	0.000000	0.000000	1.383958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1657: TS K!(0.012360) (0)
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(19.128174)
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	1.400000	0.000000	0.000000	1.383958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(22.612427)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	1.400000	0.000000	0.000000	1.428958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(24.851593)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	1.400000	0.000000	0.000000	1.473958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(26.981934)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	1.400000	0.000000	0.000000	1.518958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(28.643647)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	1.400000	0.000000	0.000000	1.563958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(30.347077)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	1.400000	0.000000	0.000000	1.608958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(34.357636)
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	1.200000	0.000000	0.000000	1.608958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(35.820526)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	1.200000	0.000000	0.000000	1.653958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(38.378449)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	1.200000	0.000000	0.000000	1.698958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(40.139557)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	1.200000	0.000000	0.000000	1.743958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(41.503235)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	1.200000	0.000000	0.000000	1.788958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(42.896881)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	1.200000	0.000000	0.000000	1.833958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(43.951721)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	1.200000	0.000000	0.000000	1.878958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(44.817383)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	1.200000	0.000000	0.000000	1.923958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(45.772766)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	1.200000	0.000000	0.000000	1.968958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(46.240448)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	1.200000	0.000000	0.000000	2.013958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(46.528992)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	1.200000	0.000000	0.000000	2.058958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(46.817932)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	1.200000	0.000000	0.000000	2.103958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(47.147339)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	1.200000	0.000000	0.000000	2.148958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(47.406647)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	1.200000	0.000000	0.000000	2.193958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(47.686310)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	1.200000	0.000000	0.000000	2.238958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(47.952179)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	1.200000	0.000000	0.000000	2.283958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(48.220917)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	1.200000	0.000000	0.000000	2.328958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(48.509369)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	1.200000	0.000000	0.000000	2.373958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1657: TS K!(0.012207) (0)
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(48.837921)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	1.200000	0.000000	0.000000	2.418958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(49.146820)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	1.200000	0.000000	0.000000	2.463958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(49.466614)
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(49.466919)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	1.200000	0.000000	0.000000	2.508958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	1.200000	0.000000	0.000000	2.553958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(50.212097)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	1.200000	0.000000	0.000000	2.598958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(50.490265)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	1.200000	0.000000	0.000000	2.643958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(50.768860)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	1.200000	0.000000	0.000000	2.688958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1657: TS K!(0.012115) (0)
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(51.047394)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	1.200000	0.000000	0.000000	2.733958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(51.336396)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	1.200000	0.000000	0.000000	2.778958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(51.616211)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	1.200000	0.000000	0.000000	2.823958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(51.923249)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	1.200000	0.000000	0.000000	2.868958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(52.221955)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	1.200000	0.000000	0.000000	2.913958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(52.520539)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	1.200000	0.000000	0.000000	2.958958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(52.809052)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	1.200000	0.000000	0.000000	3.003958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(53.107636)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	1.200000	0.000000	0.000000	3.048958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(53.386475)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	1.200000	0.000000	0.000000	3.093958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1657: TS K!(0.012116) (0)
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(53.694947)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	1.200000	0.000000	0.000000	3.138958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(53.983460)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	1.200000	0.000000	0.000000	3.183958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(54.262512)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	1.200000	0.000000	0.000000	3.228958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(54.531342)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	1.200000	0.000000	0.000000	3.273958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(54.819580)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	1.200000	0.000000	0.000000	3.318958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(55.118042)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	1.200000	0.000000	0.000000	3.363958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(55.427246)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	1.200000	0.000000	0.000000	3.408958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(55.806702)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	1.200000	0.000000	0.000000	3.453958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1657: TS K!(0.012177) (0)
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(56.212860)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	1.200000	0.000000	0.000000	3.498958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(57.757294)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	1.200000	0.000000	0.000000	3.543958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1657: TS K!(0.012054) (0)
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(59.526947)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	1.200000	0.000000	0.000000	3.588958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(60.303376)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	1.200000	0.000000	0.000000	3.633958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(61.239197)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	1.200000	0.000000	0.000000	3.678958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(61.897766)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	1.200000	0.000000	0.000000	3.723958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(62.652375)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	1.200000	0.000000	0.000000	3.768958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(63.488068)
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	1.000000	0.000000	0.000000	3.768958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(64.146637)
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	0.800000	0.000000	0.000000	3.768958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(72.326477)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	0.800000	0.000000	0.000000	3.813958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(73.640168)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	0.800000	0.000000	0.000000	3.858958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(74.446595)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	0.800000	0.000000	0.000000	3.903958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(75.026001)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	0.800000	0.000000	0.000000	3.948958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1657: TS K!(0.013214) (0)
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(75.551087)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	0.800000	0.000000	0.000000	3.993958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(76.238831)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	0.800000	0.000000	0.000000	4.038958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(77.203003)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	0.800000	0.000000	0.000000	4.083958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(77.740631)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	0.800000	0.000000	0.000000	4.128958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(79.302887)
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	0.600000	0.000000	0.000000	4.128958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(80.906464)
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	0.400000	0.000000	0.000000	4.128958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(81.751282)
-/home/root/work/uquad/src/main/main.c:1031: WARN: Ramping down motors does not work correctly, ignoring...
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	0.400000	0.000000	0.000000	4.173958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:1048: Saving timestamp...(83.761597)
-/home/root/work/uquad/src/main/main.c:1183: New setpoint:
-0.000000	0.000000	0.200000	0.000000	0.000000	4.173958	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-/home/root/work/uquad/src/main/main.c:473: Caught signal:(2)
-/home/root/work/uquad/src/main/main.c:337: Motors killed!(92.660645)
-/home/root/work/uquad/src/main/main.c:1504: ERR: Too long without new IMU samples!
-/home/root/work/uquad/src/main/main.c:354: main deinit started...(93.641175)
