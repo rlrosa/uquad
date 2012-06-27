@@ -54,7 +54,6 @@
  *
  * The situation is analogous with theta and the magnetometer.
  */
-#define DYNAMIC_COV       0
 #define COV_PSI_OK        1e2
 #define COV_PSI_BAD       1e6
 #define COV_PHI_OK        COV_PSI_OK

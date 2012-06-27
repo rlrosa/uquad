@@ -85,6 +85,12 @@
  */
 #define CHECK_NET_BYPASS  0
 
+/**
+ * Adjust Kalman filter covariance matrix (R) using the expected value for
+ * the norm of the accelerometer and the magnetometer.
+ */
+#define DYNAMIC_COV       0
+
 // -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 // Do NOT edit the following lines!
 // -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
