@@ -307,16 +307,6 @@ bitbake -c clean u-boot
 
 La Mongoose viene cargada con un \textit{bootloader} \textit{Arduino}, que permite bajarle código mediante el puerto serie.\\
 
-El código original que trae la Mongoose fue modificado. El problema principal que tenía era que la frecuencia de muestreo no era estable.\\
-
-Algunos cambios:
-\begin{itemize}
-\item Se implementó transmisión de datos en segundo plano, mediante interrupciones, evitando trancar el loop principal al momento de transmitir.
-\item Se agregó la posibilidad transmitir en binario (se mantuvo el modo \verb+ASCII+, pero no es posible transmitir a 10ms en dicho modo).
-\item El barómetro demora varios milisegundos entre que se le pide un dato y que lo tiene disponible. El código original esperaba durante este tiempo. La versión modificada sigue trabajando y vuelve para recoger el dato luego que transcurrió el tiempo en cuestión.
-\item Se modificó el formato de los datos envíados al puerto serie.
-\end{itemize}
-
 \subsection{Compilación}
 \label{sec:codigo:compilacion-mongoose}
 

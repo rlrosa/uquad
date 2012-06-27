@@ -290,6 +290,7 @@ int main(int argc, char *argv[]){
 #if PRINT_DATA_ON_SCREEN
 		    retval = imu_comm_print_data(&data,stdout);
 		    quit_if(retval);
+		    fflush(stdout);
 #endif // PRINT_ON_SCREEN
 		}
 #endif // PRINT_DATA

@@ -200,34 +200,53 @@ X = \left(\begin{array}{c}
 x,y,z,\psi,\varphi,\theta,v_{q_x},v_{q_y},v_{q_z},\omega_{q_x},\omega_{q_y},\omega_{q_z},x_I,y_I,z_I,\theta_I
 \end{array}\right)^T
 \end{equation}
-
+  
+Observabilidad y controlabilidad pueden ser testeadas ejecutando en \emph{MatLab}:
+\begin{itemize}
+\item \begin{verbatim} rank(obsv(A,C));
+\end{verbatim} 
+\item \begin{verbatim} rank(ctrb(A,B));
+\end{verbatim}
+\end{itemize}
+Las funciones obsv y ctrb computan las matrices de observabilidad y controlabilidad respectivamente. Si el rango de las mismas es igual a n el sistema es observable y controlable. En la documentaci\'on de \emph{MatLab} se aclara que la funci\'on obsv no es siempre adecuada para realizar este test, se recomienda la funci\'on obsvf. Esta funci\'on devuelve una descomposici\'on en estados observables e inobservables, la transformaci\'on necesaria para obtener dicha descomposici\'on y un vector k que contiene la cantidad de estados observables identificados en cada iteraci\'on. La suma de dicho vector resulta en la cantidad de estados observables. Se debe ejecutar en \emph{MatLab}:
+\vspace{-10pt}
+\begin{itemize}
+\item \begin{verbatim}[ABAR,BBAR,CBAR,T,k] = obsvf(A,B,C);
+\end{verbatim}
+\item \begin{verbatim} sum(k);
+\end{verbatim}
+\end{itemize}
 \section{Matriz de realimentaci\'on}
 
 Como se explic\'o anteriormente, la matriz de realimentaci\'on es obtenida num\'ericamente gracias al algor\'itmo presentado en \cite{bib:lqr-discreto}. Dicha matriz depende del sistema lineal con el cual se representa cada trayectoria. Por lo tanto para cada trayectoria se debe calcular una nueva matriz de realimentaci\'on. Lo fundamental es entonces determinar adecuadamente las matrices Q y R presentadas en \ref{eq:dlqr} de forma de obtener trayectorias adecuadas. Estas matrices fueron determinadas en forma iterativa, modificando los par\'ametros hasta obtener un comportamiento satisfactorio en cuanto a tiempos de respuesta y robustez.\\
 
-Se entiende que los par\'ametros fundamentales a controlar son los \'angulos de Euler, si el control sobre estos no se hace en forma r\'apida la performance del sistema puede verse afectada.  Las condiciones de vuelo determinadas dependen de que los \'angulos de Pitch y de Roll se encuentren perfectamente ajustados. A modo de ejemplo si estos \'angulos no son nulos se tiene un sistema que acelera indefinidamente en alguna direcci\'on. Por lo tanto parece importante darle un peso superior al control de estas variables de estado respecto a las restantes. Las matrices de realimentaci\'on se construyen a partir de:
-
+Se entiende que los par\'ametros fundamentales a controlar son los \'angulos de Euler, si el control sobre estos no se hace en forma r\'apida la performance del sistema puede verse afectada.  Las condiciones de vuelo determinadas dependen de que los \'angulos de Pitch y de Roll se encuentren perfectamente ajustados. A modo de ejemplo si estos \'angulos no son nulos se tiene un sistema que acelera indefinidamente en alguna direcci\'on. Por lo tanto parece importante darle un peso superior al control de estas variables de estado respecto a las restantes. Las matrices de realimentaci\'on se construyen a partir de una matriz $(Q)$ diagonal, cuyos elementos son:
 \begin{equation}
 \label{eq:Q}
-Q = \left(\begin{array}{cccccccccccccccc}
-1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
-0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
-0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
-0 & 0 & 0 & 1e3 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
-0 & 0 & 0 & 0 & 1e3 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
-0 & 0 & 0 & 0 & 0 & 1e3 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
-0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
-0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
-0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
-0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0\\
-0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0\\
-0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0\\
-0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0\\
-0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0\\
-0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0\\
-0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1\\
-\end{array}\right)
+diag(Q) = \{1, 1, 1, 10^{3},10^{3},10^{3},1,1,1,1,1,1,1,1,1,1 \}
 \end{equation}
+
+%\begin{equation}
+%\label{eq:Q}
+%Q = \left(\begin{array}{cccccccccccccccc}
+%1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
+%0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
+%0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
+%0 & 0 & 0 & 1e3 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
+%0 & 0 & 0 & 0 & 1e3 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
+%0 & 0 & 0 & 0 & 0 & 1e3 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
+%0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
+%0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
+%0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
+%0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0\\
+%0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0\\
+%0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0\\
+%0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0\\
+%0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0\\
+%0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0\\
+%0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1\\
+%\end{array}\right)
+%\end{equation}
 
 \begin{equation}
 \label{eq:R}

@@ -58,6 +58,8 @@ int imu_data_alloc(imu_data_t *imu_data)
     err_propagate(retval);
     retval = uquad_mat_zeros(imu_data->magn);
     err_propagate(retval);
+    imu_data->acc_ok = false;
+    imu_data->magn_ok = false;
 
     return ERROR_OK;
 }
@@ -85,6 +87,8 @@ int imu_data_zero(imu_data_t *imu_data)
     imu_data->T_us = 0.0;
     imu_data->temp = 0.0;
     imu_data->alt  = 0.0;
+    imu_data->acc_ok = false;
+    imu_data->magn_ok = false;
     return retval;
 }
 
@@ -103,6 +107,8 @@ int imu_comm_copy_data(imu_data_t *dest, imu_data_t *src)
     dest->temp      = src->temp;
     dest->alt       = src->alt;
     dest->timestamp = src->timestamp;
+    dest->acc_ok    = src->acc_ok;
+    dest->magn_ok    = src->magn_ok;
     return retval;
 }
 
@@ -1447,7 +1453,7 @@ int imu_comm_set_z0(imu_t *imu, double z0)
 }
 
 int imu_comm_raw2data(imu_t *imu, imu_raw_t *raw, imu_data_t *raw_db, imu_data_t *data){
-    int retval;
+    int	retval;
     if(imu == NULL || data == NULL){
 	err_check(ERROR_NULL_POINTER,"Non null pointers required as args...");
     }
@@ -1507,6 +1513,10 @@ int imu_comm_raw2data(imu_t *imu, imu_raw_t *raw, imu_data_t *raw_db, imu_data_t
 	retval = imu_comm_pres_convert(imu, NULL, &(raw_db->alt), &(data->alt));
 	err_propagate(retval);
     }
+
+    // Check if acc and magn reading have the norm() they should have
+    data->acc_ok = (uquad_abs(uquad_mat_norm(data->acc) - GRAVITY) < IMU_TH_ACC);
+    data->magn_ok = (uquad_abs(uquad_mat_norm(data->magn) - 1.0) < IMU_TH_MAGN);
 
     retval = convert_2_euler(data);
     err_propagate(retval);  
@@ -1785,7 +1795,9 @@ int imu_comm_print_data(imu_data_t *data, FILE *stream){
 	    data->magn->m_full[1],
 	    data->magn->m_full[2],
 	    data->temp,
-	    data->alt);
+	    data->alt,
+	    (int)data->acc_ok,
+	    (int)data->magn_ok);
     return ERROR_OK;
 }
 
