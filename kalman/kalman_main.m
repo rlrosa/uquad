@@ -41,7 +41,7 @@ use_n_states = 3; % Regulates number of variables to control. Can be:
                     % 2: uses all 12 states -> [x y z psi phi tehta vqx vqy vqz wqx wqy wqz]
                     % 3: uses all 12 states and their integrals
 use_gps      = 1; % Use kalman_gps
-use_fake_gps = 0; % Feed kalman_gps with fake data (only if use_gps)
+use_fake_gps = 1; % Feed kalman_gps with fake data (only if use_gps)
 
 use_fake_T   = 0; % Ignore real timestamps from log, use average
 
@@ -51,6 +51,7 @@ use_gps_vel  = 0; % Uses velocity from GPS. Solo funca si allin1==0 (por ahora)
 ctrl_ramp    = 1; % Run kalman+control when ramping motors.
 stabilize_ts = 0; % Read out IMU data until stable Ts (matches main.c after 2012-04027).
                   % Should be set to 0 for logs dated 2012-05-13 and later.
+dynamic_cov  = 0; % Adjust acc/magn covariance comparing to expected norm()
 
 %% Sanity check
 if(use_fake_gps && ~use_gps)
@@ -70,7 +71,7 @@ if(stabilize_ts)
 end
 
 %% Source
-log_path = 'tests/main/logs/2012_06_05_1_01_gps_afuera/';
+log_path = 'tests/main/logs/2012_06_27_vuelve_tito_phi/';
 if(~exist('log_path','var'))
 	error('Must define a variable log_path to read from!');
 end
@@ -169,7 +170,10 @@ bcrud = bcrud(imu_calib+3:end,:);
 tcrud = tcrud(imu_calib+3:end,:);
 T     = T(imu_calib+3:end,:);
 
-[a,w,euler] = mong_conv(acrud,wcrud,mcrud,0,tcrud,T);
+acc_ok  = zeros(length(T),1);
+magn_ok = zeros(length(T),1);
+
+[a,w,euler,mconv] = mong_conv(acrud,wcrud,mcrud,0,tcrud,T);
 b=altitud(bcrud,b0);
 
 % gyro offset comp
@@ -189,11 +193,21 @@ w_max     = 368;
 w_min     = w_hover - (w_max - w_hover); % Only for simetry
 DELTA_MAX = [1.0e-3 1.0e-3 0.5e-2 7.0e-3];
 INT_MAX   = [1.0 1.0 2.0 2.0];
+COV_PSI_OK  = 1e1;
+COV_PSI_BAD = 1e9;
+COV_PHI_OK  = COV_PSI_OK;
+COV_PHI_BAD = COV_PSI_BAD;
+COV_THE_OK  = 1e2;
+COV_THE_BAD = 1e9;
+COV_ACC_OK  = 1e2;
+COV_ACC_BAD = 1e9;
+TH_ACC      = 1.0;
+TH_MAGN     = 0.5;
 
 %                  x   y   z  psi  phi  thet vqx vqy vqz wqx wqy wqz ax  ay  az
-Q_imu_gps = diag([1e2 1e2 1e-2 1e-2 1e-2 1e-5 1e2 1e2 1e2 1e-1 1e-1 1e-1 1e0 1e0 1e0 ]);
+Q_imu_gps = diag([1e2 1e2 1e2 1e-2 1e-2 1e-5 1e2 1e2 1e2 1e-1 1e-1 1e-1 1e0 1e0 1e0 ]);
 %                 psi phi the ax  ay  az  wqx wqy wqz  x   y   z
-R_imu_gps = diag([1e2 1e2 1e5 1e4 1e4 1e4 1e-3 1e-3 1e-3 1e-2 1e-2 1e5]);
+R_imu_gps = diag([1e2 1e2 1e5 1e4 1e4 1e4 1e-3 1e-3 1e-3 1e2 1e2 1e5]);
 % R_imu_gps = diag([1e3 1e3 1e6 1e4 1e4 1e4 1e1  1e1  1e1  1e2 1e2 1e5]);
 % %                  x   y   z  vqx vqy vqz
 % Q_gps     = diag([1e2 1e2 1e2 1e2 1e2 1e2]);
@@ -261,6 +275,38 @@ x_hat(1,13:15) = acc0 - [0 0 9.81];
 for i=2:N
 	Dt = T(i) - T(i-1);
 	Dt = min(Dt,12000e-6);Dt = max(Dt,000e-6); % Matches C
+
+	if(dynamic_cov)
+		% diag(R) = psi phi the ax  ay  az  wqx wqy wqz  x   y   z
+		if(abs(norm(a(i,:)) - 9.81) < TH_ACC)
+			acc_ok(i) = 1;
+			R_imu_gps(1,1) = COV_PSI_OK;
+			R_imu_gps(2,2) = COV_PHI_OK;
+
+			R_imu_gps(4,4) = COV_ACC_OK;
+			R_imu_gps(5,5) = COV_ACC_OK;
+			R_imu_gps(6,6) = COV_ACC_OK;
+
+		else
+			acc_ok(i) = 0;
+			R_imu_gps(1,1) = COV_PSI_BAD;
+			R_imu_gps(2,2) = COV_PHI_BAD;
+
+			R_imu_gps(4,4) = COV_ACC_BAD;
+			R_imu_gps(5,5) = COV_ACC_BAD;
+			R_imu_gps(6,6) = COV_ACC_BAD;
+		end
+
+		if(abs(norm(mconv(i,:))) < TH_MAGN)
+			magn_ok(i) = 1;
+			R_imu_gps(3,3) = COV_THE_OK;
+		else
+			magn_ok(i) = 0;
+			R_imu_gps(3,3) = COV_THE_BAD;
+		end
+		Rdiag     = diag(R_imu_gps);
+		R_imu     = diag([Rdiag(1:end-3); Rdiag(end)]);
+	end
 
 	if ~allin1
 		% Kalman inercial - Use control output as current w
