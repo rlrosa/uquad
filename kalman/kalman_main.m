@@ -256,6 +256,17 @@ x_hat(1,1:2) = [x0, y0];
 x_hat(1,4:6) = [psi0, phi0, theta0];
 x_hat(1,13:15) = acc0 - [0 0 9.81];
 
+
+% % Filtrado de datos de gps
+% N_gps_subsys     = length(westing);
+% Ns_gps_subsys    = 9; % states
+% P_gps_subsys     = eye(Ns_gps_subsys);
+% Q_gps_subsys     = diag(1e2*[1 1 1  1 1 1  1 1 1]);
+% R_gps_subsys     = diag(1e5*[1 1 1]);
+% x_hat_gps_subsys = zeros(N,Ns_gps_subsys);
+% x_hat_gps_subsys(1,1:2) = [x0, y0];
+
+
 %% Kalman
 
 for i=2:N
@@ -324,6 +335,13 @@ for i=2:N
 			else
 				[x_hat(i,:),P,z(i,3)] = kalman_imu(x_hat(i-1,:),P,Q_imu,R_imu,Dt,...
 					w_control(i - 1,:)',z(i,:)', w_hover);
+% %                 z_gps_subsys = [northing(i);westing(i);elevation(i)];
+%                 z_gps_subsys = [0;0;0];
+%                 [x_hat_gps_subsys(i,:),P_gps_subsys] = kalman_gps_subsystem(...
+%                     x_hat_gps_subsys(i-1,:)',P_gps_subsys,Q_gps_subsys,...
+%                     R_gps_subsys,Dt,z_gps_subsys,0);
+%                 x_hat(i,1) = x_hat_gps_subsys(i,1);
+%                 x_hat(i,2) = x_hat_gps_subsys(i,4);
 			end
 		end
 	end
