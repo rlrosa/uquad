@@ -114,9 +114,9 @@ for i=1:length(m(:,1))
         phi=pi/2;
         psi=0;
     end
-    mrot = [ cos(phi)/(cos(phi)^2 + sin(phi)^2), (sin(phi)*sin(psi))/((cos(phi)^2 + sin(phi)^2)*(cos(psi)^2 + sin(psi)^2)), (cos(psi)*sin(phi))/((cos(phi)^2 + sin(phi)^2)*(cos(psi)^2 + sin(psi)^2));
-                                                 0,                                           cos(psi)/(cos(psi)^2 + sin(psi)^2),                                         -sin(psi)/(cos(psi)^2 + sin(psi)^2);
-            -sin(phi)/(cos(phi)^2 + sin(phi)^2), (cos(phi)*sin(psi))/((cos(phi)^2 + sin(phi)^2)*(cos(psi)^2 + sin(psi)^2)), (cos(phi)*cos(psi))/((cos(phi)^2 + sin(phi)^2)*(cos(psi)^2 + sin(psi)^2))]...
+    mrot = [ cos(phi), sin(phi)*sin(psi), cos(psi)*sin(phi);
+                                                 0,                                           cos(psi),                                         -sin(psi);
+            -sin(phi), cos(phi)*sin(psi), cos(phi)*cos(psi)]...
             *auxm;
     theta=-atan2(mrot(2),mrot(1))+0.17069; %9.78@deg;
     
