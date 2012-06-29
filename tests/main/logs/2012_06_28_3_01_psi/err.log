@@ -1,1789 +1,0 @@
-/home/root/work/uquad/src/main/main.c:764: Will connect to check_net server...
-/home/root/work/uquad/src/check_net/uquad_check_net.c:285: TCP client running on port:(12341234)
-/home/root/work/uquad/src/control/control.c:93: Loaded proportional gain matrix from:(K_prop_full_ppzt.txt)
-/home/root/work/uquad/src/control/control.c:143: Loaded integral gain matrix from:(K_int_full_ppzt.txt)
-/home/root/work/uquad/src/control/control.c:164: Loaded LQR Q matrix from:(lqr-Q.txt)
-/home/root/work/uquad/src/control/control.c:183: Loaded LQR R matrix from:(lqr-R.txt)
-/home/root/work/uquad/src/kalman/uquad_kalman.c:1102: Kalman - R
-100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	100000.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	10000.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	10000.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	10000.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.001000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.001000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.001000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	100000.000000	
-/home/root/work/uquad/src/kalman/uquad_kalman.c:1104: Kalman - Q
-100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.010000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.010000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000010	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.100000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.100000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.100000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	1.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	1.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	1.000000	
-/home/root/work/uquad/src/kalman/uquad_kalman.c:1106: Kalman - R_imu_gps
-100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	100000.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	10000.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	10000.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	10000.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.001000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.001000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.001000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	100.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	100.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	100000.000000	
-/home/root/work/uquad/src/control/control.c:362: Control - K
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	44.430000	0.000000	0.000000	0.000000	0.000000	0.000000	10.780000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	-44.430000	0.000000	0.000000	0.000000	0.000000	0.000000	-10.780000	0.000000	0.000000	
-/home/root/work/uquad/src/control/control.c:365: Control - K_int
-0.000000	0.000000	0.000000	0.000000	
-21.360000	0.000000	0.000000	0.000000	
-0.000000	0.000000	0.000000	0.000000	
--21.360000	0.000000	0.000000	0.000000	
-
-/home/root/work/uquad/src/main/main.c:453: -- -- -- -- -- -- -- --
-/home/root/work/uquad/src/main/main.c:454: main.c configuration:
-/home/root/work/uquad/src/main/main.c:455: -- -- -- -- -- -- -- --
-/home/root/work/uquad/src/main/main.c:456: DEBUG(1)
-/home/root/work/uquad/src/main/main.c:457: KALMAN_BIAS(1)
-/home/root/work/uquad/src/main/main.c:458: CTRL_INTEGRAL(1)
-/home/root/work/uquad/src/main/main.c:459: CTRL_INTEGRAL_ANG(1)
-/home/root/work/uquad/src/main/main.c:460: FULL_CONTROL(1)
-/home/root/work/uquad/src/main/main.c:461: USE_GPS(1)
-/home/root/work/uquad/src/main/main.c:462: GPS_FAKE(1)
-/home/root/work/uquad/src/main/main.c:463: IMU_COMM_FAKE(0)
-/home/root/work/uquad/src/main/main.c:464: OL_TS_STABIL(0)
-/home/root/work/uquad/src/main/main.c:465: CTRL_TS(1)
-/home/root/work/uquad/src/main/main.c:466: MASA_DEFAULT(1.450000)
-/home/root/work/uquad/src/main/main.c:467: -- -- -- -- -- -- -- --
-
-/home/root/work/uquad/src/main/main.c:956: Entering while:(7.976410)
-/home/root/work/uquad/src/main/main.c:959: Clearing IMU input buffer...
-/home/root/work/uquad/src/main/main.c:1275: Waiting for stable IMU sampling time...
-/home/root/work/uquad/src/main/main.c:1293: IMU: Frames read out during stabilization:(52)
-/home/root/work/uquad/src/main/main.c:1303: IMU startup completed, starting calibration...(8.890930)
-/home/root/work/uquad/src/main/main.c:1542: IMU calibration completed, running kalman+control+ramp(13.998077)
-/home/root/work/uquad/src/main/main.c:1587: Initial setpoint:
-0.000000	0.000000	1.000000	0.000000	0.000000	0.075882	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
-0.000000	0.00000000	-0.08502926	0.02193202	9.88555554	0.00064229	0.00083534	-0.00024704	0.00221859	0.00860113	0.07588205	21.80000000	0.00000000	1	1
-/home/root/work/uquad/src/main/main.c:1660: TS K!(0.013001) (0)
-/home/root/work/uquad/src/main/main.c:1660: TS K!(0.007324) (0)
-/home/root/work/uquad/src/main/main.c:1746: -- --
-/home/root/work/uquad/src/main/main.c:1747: -- -- -- -- -- -- -- --
-/home/root/work/uquad/src/main/main.c:1748: Ramp completed, running free control...(14.986298)
-/home/root/work/uquad/src/main/main.c:1749: -- -- -- -- -- -- -- --
-/home/root/work/uquad/src/main/main.c:1750: -- --
-/home/root/work/uquad/src/main/main.c:1660: TS K!(0.012848) (0)
-/home/root/work/uquad/src/main/main.c:1660: TS K!(0.007843) (0)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(1)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(2)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(3)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(4)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(5)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(6)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(7)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(8)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(9)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(10)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(11)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(12)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(13)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(14)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(15)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(16)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(17)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(18)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(19)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(20)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(21)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:217: Missed too many acks!
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(22)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(23)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(24)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(25)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(26)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(27)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(28)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(29)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(30)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(31)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(32)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(33)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(34)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(35)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(36)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(37)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(38)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(39)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(40)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(41)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(42)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:217: Missed too many acks!
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(43)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(44)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(45)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(46)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(47)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(48)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(49)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(50)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(51)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(52)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(53)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(54)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(55)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(56)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(57)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(58)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(59)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(60)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(61)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(62)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(63)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:217: Missed too many acks!
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(64)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(65)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(66)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(67)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(68)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(69)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(70)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(71)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(72)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(73)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(74)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(75)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(76)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(77)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(78)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(79)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(80)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(81)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(82)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(83)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(84)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:217: Missed too many acks!
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(85)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(86)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(87)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(88)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(89)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(90)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(91)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(92)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(93)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(94)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(95)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(96)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(97)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(98)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(99)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(100)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(101)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(102)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(103)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(104)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(105)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:217: Missed too many acks!
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(106)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(107)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(108)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(109)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(110)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(111)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(112)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(113)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(114)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(115)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(116)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(117)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(118)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(119)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(120)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(121)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(122)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(123)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(124)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(125)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(126)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:217: Missed too many acks!
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(127)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(128)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(129)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(130)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(131)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(132)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(133)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(134)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(135)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(136)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(137)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(138)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(139)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(140)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(141)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(142)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(143)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(144)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(145)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(146)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(147)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:217: Missed too many acks!
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(148)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(149)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(150)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(151)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(152)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(153)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(154)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(155)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(156)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(157)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(158)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(159)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(160)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(161)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(162)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(163)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(164)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(165)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(166)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(167)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(168)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:217: Missed too many acks!
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(169)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(170)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(171)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(172)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(173)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(174)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(175)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(176)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(177)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(178)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(179)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(180)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(181)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(182)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(183)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(184)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(185)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(186)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(187)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(188)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(189)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:217: Missed too many acks!
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(190)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(191)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(192)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(193)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(194)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(195)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(196)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(197)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(198)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(199)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(200)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(201)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(202)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(203)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(204)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(205)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(206)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(207)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(208)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(209)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(210)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:217: Missed too many acks!
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(211)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(212)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(213)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(214)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(215)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(216)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(217)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(218)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(219)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(220)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(221)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(222)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(223)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(224)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(225)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(226)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(227)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(228)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(229)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(230)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(231)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:217: Missed too many acks!
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(232)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(233)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(234)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(235)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(236)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(237)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(238)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(239)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(240)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(241)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(242)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(243)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(244)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(245)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(246)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(247)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(248)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(249)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(250)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(251)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(252)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:217: Missed too many acks!
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(253)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(254)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(255)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(256)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(257)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(258)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(259)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(260)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(261)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(262)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(263)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(264)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(265)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(266)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(267)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(268)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(269)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(270)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(271)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(272)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(273)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:217: Missed too many acks!
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(274)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(275)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(276)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(277)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(278)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(279)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(280)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(281)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(282)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(283)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(284)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(285)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(286)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(287)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(288)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(289)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(290)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(291)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(292)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(293)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(294)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:217: Missed too many acks!
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(295)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(296)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(297)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(298)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(299)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(300)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(301)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(302)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(303)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(304)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(305)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(306)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(307)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(308)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(309)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(310)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(311)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(312)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(313)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(314)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(315)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:217: Missed too many acks!
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(316)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(317)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(318)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(319)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(320)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(321)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(322)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(323)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(324)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(325)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(326)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(327)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(328)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(329)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(330)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(331)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(332)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(333)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(334)
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
-backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
-/home/root/work/uquad/src/main/main.c:1879: Failed to set motor speed!
-/home/root/work/uquad/src/main/main.c:991: Recovered! Errors:(1)
-/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:161: kmesg recovered!(3.476135)
-/home/root/work/uquad/src/main/main.c:507: WARN! Sanity check alert	-	psi!	(1.003401)
-/home/root/work/uquad/src/main/main.c:507: WARN! Sanity check alert	-	psi!	(1.012649)
-/home/root/work/uquad/src/main/main.c:507: WARN! Sanity check alert	-	psi!	(1.018765)
-/home/root/work/uquad/src/main/main.c:507: WARN! Sanity check alert	-	psi!	(1.022276)
-/home/root/work/uquad/src/main/main.c:507: WARN! Sanity check alert	-	psi!	(1.022710)
-/home/root/work/uquad/src/main/main.c:507: WARN! Sanity check alert	-	psi!	(1.020056)
-/home/root/work/uquad/src/main/main.c:507: WARN! Sanity check alert	-	psi!	(1.014276)
-/home/root/work/uquad/src/main/main.c:507: WARN! Sanity check alert	-	psi!	(1.005477)
-/home/root/work/uquad/src/main/main.c:473: Caught signal:(2)
-/home/root/work/uquad/src/main/main.c:337: Motors killed!(75.243897)
-/home/root/work/uquad/src/main/main.c:1507: ERR: Too long without new IMU samples!
-/home/root/work/uquad/src/main/main.c:354: main deinit started...(76.224426)
