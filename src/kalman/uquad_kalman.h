@@ -54,8 +54,8 @@
  *
  * The situation is analogous with theta and the magnetometer.
  */
-#define COV_PSI_OK        1e2
-#define COV_PSI_BAD       1e6
+#define COV_PSI_OK        1e1
+#define COV_PSI_BAD       1e9
 #define COV_PHI_OK        COV_PSI_OK
 #define COV_PHI_BAD       COV_PSI_BAD
 #define COV_THE_OK        1e5

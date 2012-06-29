@@ -25,6 +25,7 @@
 #include <uquad_aux_io.h>
 #include <uquad_aux_time.h>
 #include <macros_misc.h>
+#include <uquad_config.h>
 #include <math.h> // for pow()
 #include <fcntl.h> // for open()
 /// Aux mem
