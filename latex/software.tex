@@ -15,7 +15,7 @@ En el anexo \ref{chap:anexo-codigo} se explica como compilar y configurar las pa
 \begin{wrapfigure}{r}{0.6\textwidth}
 \vspace{-20pt}
 \centering
-  \includegraphics[width=0.5\textwidth]{./pics_codigo/code.png}
+  \includegraphics[width=0.5\textwidth]{./pics_software/code.png}
 \caption{Estructura general del código.}
 \vspace{-20pt}
 \label{fig:codigo:code.png}
@@ -29,12 +29,12 @@ El software se distribuye entre varios microprocesadores en placas independiente
 \begin{itemize}
 \item \textbf{\textit{BeagleBoard}}:
   \begin{itemize}
-  \item Se trabaja sobre un sistema operativo \textit{Linux}, y programa en \verb+C+ (se pueden utilizar otros lenguajes).
+  \item Se trabaja sobre un sistema operativo \textit{Linux}, y se programa en \verb+C+ (se pueden utilizar otros lenguajes).
   \item Centraliza toda la informaci\'on, estima el vector de estados y ejecuta las acciones de control.
-  \item Lectura de 2 puertos serie, para obtener informaci\'on de la IMU y del GPS.
-  \item Lectura/escritura a una interfaz de comunicaci\'on \textit{WiFi}.
-  \item Lectura/escritura a un puerto $I^2C$, para comunicaci\'on con los \textit{ESCs}.
-  \item Escritura a memoria para almacenar datos relevantes. Se utiliza proceso independiente por cada tipo de datos que se desea guardar, el cual recibe los datos provenientes del programa principal y se encarga de escribirlos a memoria no volatil cuando corresponda.
+  \item Lee de 2 puertos serie, para obtener informaci\'on de la IMU y del GPS.
+  \item Se encarga de Lectura/escritura a una interfaz de comunicaci\'on \textit{WiFi}.
+  \item Lee/escribe a un puerto $I^2C$, para comunicaci\'on con los \textit{ESCs}.
+  \item Se encarga de la escritura a memoria para almacenar datos relevantes generados durante la ejecuci\'on del programa principal. Se utiliza proceso independiente por cada tipo de datos que se desea guardar. Dicho proceso recibe los datos provenientes del programa principal y se encarga de escribirlos a memoria no volatil.
   \item Para evitar lidiar con m\'ultiples hilos de ejecuci\'on, el programa encargado de mandar comandos a los motores corre por separado del programa principal. El programa principal se encarga de revisar los puertos de entrada/salida, y leer solamente cuando la lectura no requiere de un tiempo de espera. Esto se realiza mediante la funci\'on \verb+select()+, un mecanismo que permite simular varios hilos de ejecuci\'on sin las complejidades de trabajar con multiples hilos.
   \end{itemize}
 \item \textbf{\textit{ESCs}}:
@@ -73,7 +73,7 @@ Para correr el programa principal (de ahora en más: \textit{main}) deber\'ia ba
 \item \verb+imu_calib.txt+: Par\'ametros de calibraci\'on, la biblioteca \textit{imu\_comm} los necesita para convertir los datos crudos provenientes de la IMU.
 \item GPS: Los datos provenientes del GPS  (\textit{USB}) son mapeados por el sistema operativo a \verb+/dev/ttyUSB*+. No se interactua directamente con este archivo, se utiliza la biblioteca \textit{gps\_comm} para iniciar un cliente que se comunique con el \textit{gpsd}, que es el programa que se encarga de leer y analizar los datos crudos provenientes del GPS. El \textit{gpsd} es iniciado por el script \verb+go.sh+.\newline
 Si no se dispone de se\~nal del GPS se puede configurar un modo de prueba en el que se simulan los datos del GPS (a 1Hz) generando ceros, o números al azar dentro de un rango dado. Tambi\'en es posible deshabilitar completamente el GPS y trabajar con un vector de estados reducido. M\'as adelante se explica como configurar los distintos modos.
-\item \verb+cmd+: El driver de los motores, encargado exclusivamente de env\'iar continuamente comandos \textit{i2c} a los ESCs con la \'ultima velocidad configurada\footnote{Los motores se apagan si no reciben comandos continuamente.}. La comunicaci\'on entre el driver y el \textit{main} se realiza mediante la biblioteca \textit{motor}, que a su vez se comunica con el driver mediante colas de kernel (IPC\footnote{\textit{Interprocess Communication}: \url{http://www.cs.cf.ac.uk/Dave/C}.}), utilizando la biblioteca \textit{uquad\_kernel\_msgq}.\newline
+\item \verb+cmd+: El driver de los motores, encargado exclusivamente de env\'iar continuamente comandos $I^2C$ a los ESCs con la \'ultima velocidad configurada\footnote{Los motores se apagan si no reciben comandos continuamente.}. La comunicaci\'on entre el driver y el \textit{main} se realiza mediante la biblioteca \textit{motor}, que a su vez se comunica con el driver mediante colas de kernel (IPC\footnote{\textit{Interprocess Communication}: \url{http://www.cs.cf.ac.uk/Dave/C}.}), utilizando la biblioteca \textit{uquad\_kernel\_msgq}.\newline
 Durante pruebas, se puede configurar el driver para que simule la presencia de los motores, o para que lea de la entrada est\'andar. Ver \verb+src/i2c_beagle/README+ por informaci\'on sobre como compilar los distintos modos.
 \end{itemize}
 
@@ -83,7 +83,7 @@ Durante pruebas, se puede configurar el driver para que simule la presencia de l
 A continuaci\'on se describe un loop normal ejecutado por el \textit{main}, explicando brevemente las funcionalidades de cada una de las bibliotecas involucradas:
 \begin{enumerate}
 
-\item \textbf{imu:} La IMU genera datos nuevos cada 10ms. Al comienzo del loop, el \textit{main} revisa si hay datos nuevos, y en caso afirmativo llama a la biblioteca para que los lea. Cuando se completa una trama, los datos crudos se almacenan en una cola circular. Al terminar de recibir una trama, se vuelve al principio del loop para verificar que no hay m\'as nada para leer. En caso de haber m\'as datos entonces hay que leerlos para evitar atrasarse respecto a la IMU, en caso contrario se convierten los datos y se avanza.
+\item \textbf{imu:} La IMU genera datos nuevos cada 10ms. Al comienzo del loop, el \textit{main} revisa si hay datos nuevos, y en caso afirmativo llama a la biblioteca para que los lea. Cuando se completa una trama, los datos crudos se almacenan en una cola circular mantenida por la biblioteca \textit{imu\_comm}. Al terminar de recibir una trama, se vuelve al principio del loop para verificar que no hay m\'as nada para leer. En caso de haber m\'as datos entonces hay que leerlos para evitar atrasarse respecto a la IMU, en caso contrario se convierten los datos y se avanza.
 
 \item \textbf{gps:} El GPS genera datos nuevos a una tasa mucho menor que la IMU. Cada vez que se dispone de una muestra nueva en la IMU, el \textit{main} revisa si tambi\'en hay un dato nuevo del GPS. Avanza aunque no se disponga de datos nuevos del GPS.
 
@@ -91,9 +91,9 @@ A continuaci\'on se describe un loop normal ejecutado por el \textit{main}, expl
 
 \item \textbf{path planner:} El m\'odulo generador de rutas est\'a implementado en la biblioteca \textit{path\_planner}. Compara el estado actual con el objetivo, y determina si se completó el objetivo actual\footnote{Solamente se implement\'o el modo \textit{hover}.}. En caso afirmativo, devuelve una bandera que le indicar\'a al m\'odulo de control que debe actualizar la matriz de control para ajustarla a la nueva trayectoria.
 
-\item \textbf{control:} El m\'odulo de control est\'a implementado en la biblioteca \textit{control}. Mantiene una estructura con las matrices del control proporcional e integral (si corresponde). Recibe como argumento el estado estimado y la velocidad actual de los motores, y una estructura generada por \textit{path\_planner}, que indica el estado objetivo y la trayectoria a seguir. Devuelve la acci\'on de control a aplicar sobre los motores.
+\item \textbf{control:} El m\'odulo de control est\'a implementado en la biblioteca \textit{control}. Mantiene una estructura con las matrices del control proporcional e integral (si corresponde). Recibe como argumento el estado estimado (de la biblioteca \textit{kalman}), la velocidad actual de los motores (Mantenida por la biblioteca \textit{motor}), y una estructura generada por \textit{path\_planner} que indica el estado objetivo y la trayectoria a seguir. Devuelve la acci\'on de control (velocidades angulares) a aplicar sobre los motores.
 
-\item \textbf{motor:} Se env\'ia al driver una nueva velocidad deseada.
+\item \textbf{motor:} Recibe las velocidades angulares determinadas por el m\'odulo \textit{control}, las convierte a $I^2C$ y env\'ia el resultado al driver, quien se encarga de establecer la nueva velocidad deseada.
 
 \end{enumerate}
 
@@ -111,7 +111,7 @@ La inclinaci\'on durante la calibraci\'on afecta la estimaci\'on inicial del off
   \begin{itemize}
   \item Aceler\'ometro $\rightarrow$ Aceleraciones.
   \item Gir\'oscopo $\rightarrow$ Velocidad angulares.
-  \item Aceler\'ometro \verb~+~ Magnet\'ometro  $\rightarrow$ \'Angulos de Euler.
+  \item Aceler\'ometro \verb~+~ Magnet\'ometro  $\rightarrow$ \'Angulos de Euler\footnote{La estructura de datos convertidos \textbf{no} incluye informaci\'on sobre el campo magn\'etico, incluye solamente los \'angulos de Euler obtenidos a partir del aceler\'ometros y del magnet\'ometro. De ser necesaria la informaci\'on de campo magn\'etico, es sencilla de agregar.}.
   \item Bar\'ometro $\rightarrow$ Altura y temperatura.
   \end{itemize}
 Para la conversi\'on se utilizaron las calibraciones obtenida de la parte \ref{part:sensores-y-estimacion-del-estado}.
@@ -138,15 +138,66 @@ Para la conversi\'on se utilizaron las calibraciones obtenida de la parte \ref{p
   \item $t$ es la temperatura actual, y $t_0$ la temperatura a la que se realiz\'o  la calibraci\'on de donde surgieron $T$, $K$ y $b$.
   \item $b_t$ es el factor que permite la compensaci\'on por temperatura.
   \end{itemize}
-\item Gir\'oscopo: Se implement\'o algo an\'alogo a lo que se hizo para el acceler\'ometro, solo que al final se le resta un offset que se determina durante la calibraci\'on al inicio del programa. Esto es sencillo de estimar, ya que basta con que el cuadric\'optero no se mueva durante la calibraci\'on.\newline
-Implementar algo an\'alogo pero para el caso del acceler\'ometro o del magnet\'ometro ser\'ia m\'as complicado, ya que requerir\'ia que el cuadric\'optero estuviese perfectamente horizontal o orientado hacia el norte, respectivamente.
+\item Gir\'oscopo: Se implement\'o algo an\'alogo a lo que se hizo para el acceler\'ometro, solo que al final se le resta un offset que se determina durante la calibraci\'on al inicio del programa. Este offset es sencillo de estimar, basta con que el cuadric\'optero no se mueva durante la calibraci\'on.\newline
+Implementar algo an\'alogo pero para el caso del acceler\'ometro requerir\'ia que el cuadric\'optero estuviese perfectamente horizontal durante la calibraci\'on, y para le magnet\'ometro que estuviese mirando hacia el norte. Estos requisitos son m\'as complicados de cumplir (requerir\'ian de una plataforma de despegue) por lo que no se implement\'o.
 \end{itemize}
 
 \item \textbf{Verificaci\'on:} Se llevan 2 banderas que indican si la norma del vector de aceleraci\'on y la del vector de campo magn\'etico caen dentro del rango esperado. Esto puede ser de utilidad en el filtro de Kalman.
 
-\item \textbf{Filtrado}: Se disponen de funciones que permiten obtener el elemento m\'as nuevo que a\'un no ha sido utilizado, o el resultado de aplicar un filtro FIR\footnote{Los coeficientes del filtro est\'an definidos en \textit{imu\_comm\_init()}.} a los 6 elementos m\'as recientes de la cola. Si por problemas de tiempo el \textit{main} se retrasa, pueden haber datos que nunca sean etiquetados como ``el dato m\'as nuevo'', ya que se leer\'a hasta ponerse al dia. De cualquier forma, ser\'an tomados en cuenta en el filtro.
+\item \textbf{Filtrado}: Se disponen de funciones que permiten obtener el elemento m\'as nuevo que a\'un no ha sido utilizado, o el resultado de aplicar un filtro FIR\footnote{Los coeficientes del filtro est\'an definidos en \textit{imu\_comm\_init()}.} a los 6 elementos m\'as recientes de la cola. Si por problemas de tiempo el \textit{main} se retrasa, pueden haber datos que nunca sean etiquetados como ``el dato m\'as nuevo'', ya que se leer\'a hasta ponerse al dia. De cualquier forma, ser\'an tomados en cuenta en el filtro.\newline
+El filtro implementado trabaja sobre los datos crudos convertidos a punto flotante:
+\begin{equation}
+  \label{eq:software-fir}
+\begin{split}
+  y[n] =& 0.2x[n] + 0.2x[n-1] + 0.2x[n-2] + 0.2x[n-3] \\
+  & + 0.1x[n-4] + 0.1x[n-5]
+\end{split}
+\end{equation}
+El objetivo del filtro es reducir el ruido en los datos crudos. En la figura \ref{fig:software:gyro-x-filtro.png} se observa los datos crudos provenientes del gir\'oscopo, junto con los datos filtrados.
+\begin{figure}[h!]
+\centering
+  \includegraphics[width=0.9\textwidth]{./pics_software/gyro_x_filtro.pdf}
+\caption{Comparaci\'on del ruido presente en los datos crudos provenientes del gir\'oscopo eje \textit{x} con el cuadric\'optero quieto y el resultante luego de aplicar el filtro de la ecuaci\'on \ref{eq:software-fir}.}
+\vspace{-20pt}
+\label{fig:software:gyro-x-filtro.png}
+\end{figure}
 
+Configurando adecuadamente los coeficientes del filtro y el largo del mismo se puede hacer que trabaje como un promedio, que no haga nada, etc.
 \item \textbf{Modo \textit{FAKE}:} Seteando \verb+IMU_COMM_FAKE+ a 1, la biblioteca leerá de un log \verb+ascii+ en lugar de utilizar el puerto serie. En el modo \textit{FAKE} los tiempos no son un problema cr\'itico, ya que no correr\'a en tiempo real.
+
+\item \textbf{\'Angulos de Euler:} Para calcular los \'angulos de Euler (en radianes) a partir del vector de aceleraci\'on y del campo magn\'etico se tom\'o como referencia \cite{bib:euler_magneto_acc}. Se utilizan las siguientes ecuaciones:
+  \[
+  \phi_k = \left\{
+    \begin{array}{l l}
+      -asin\left(\frac{Acc_x}{\vert\vert\vec{Acc}\vert\vert}\right) & \quad \vert Acc_x \vert < 0.99 \vert\vert \vec{Acc} \vert\vert \\
+      -\frac{\pi}{2} sign(Acc_x) & \quad   \vert Acc_x \vert \geq 0.99 \vert\vert \vec{Acc} \vert\vert \\
+    \end{array} \right.
+  \]
+
+  \[
+  \psi_k = \left\{
+    \begin{array}{l l}
+      -atan2\left(\frac{Acc_y}{Acc_z}\right) & \quad \vert Acc_x \vert < 0.99 \vert\vert \vec{Acc} \vert\vert \\
+      0 & \quad   \vert Acc_x \vert \geq 0.99 \vert\vert \vec{Acc} \vert\vert \\
+    \end{array} \right.
+  \]
+      
+  \[
+  \hspace{-20pt}
+  M = 
+  \left(\begin{array}{ccc} \frac{\cos\!\left(\mathrm{\phi}\right)}{{\cos\!\left(\mathrm{\phi}\right)}^2 + {\sin\!\left(\mathrm{\phi}\right)}^2} & \frac{\sin\!\left(\mathrm{\phi}\right)\, \sin\!\left(\mathrm{\psi}\right)}{\left({\cos\!\left(\mathrm{\phi}\right)}^2 + {\sin\!\left(\mathrm{\phi}\right)}^2\right)\, \left({\cos\!\left(\mathrm{\psi}\right)}^2 + {\sin\!\left(\mathrm{\psi}\right)}^2\right)} & \frac{\cos\!\left(\mathrm{\psi}\right)\, \sin\!\left(\mathrm{\phi}\right)}{\left({\cos\!\left(\mathrm{\phi}\right)}^2 + {\sin\!\left(\mathrm{\phi}\right)}^2\right)\, \left({\cos\!\left(\mathrm{\psi}\right)}^2 + {\sin\!\left(\mathrm{\psi}\right)}^2\right)}\\ 0 & \frac{\cos\!\left(\mathrm{\psi}\right)}{{\cos\!\left(\mathrm{\psi}\right)}^2 + {\sin\!\left(\mathrm{\psi}\right)}^2} & -\frac{\sin\!\left(\mathrm{\psi}\right)}{{\cos\!\left(\mathrm{\psi}\right)}^2 + {\sin\!\left(\mathrm{\psi}\right)}^2}\\ -\frac{\sin\!\left(\mathrm{\phi}\right)}{{\cos\!\left(\mathrm{\phi}\right)}^2 + {\sin\!\left(\mathrm{\phi}\right)}^2} & \frac{\cos\!\left(\mathrm{\phi}\right)\, \sin\!\left(\mathrm{\psi}\right)}{\left({\cos\!\left(\mathrm{\phi}\right)}^2 + {\sin\!\left(\mathrm{\phi}\right)}^2\right)\, \left({\cos\!\left(\mathrm{\psi}\right)}^2 + {\sin\!\left(\mathrm{\psi}\right)}^2\right)} & \frac{\cos\!\left(\mathrm{\phi}\right)\, \cos\!\left(\mathrm{\psi}\right)}{\left({\cos\!\left(\mathrm{\phi}\right)}^2 + {\sin\!\left(\mathrm{\phi}\right)}^2\right)\, \left({\cos\!\left(\mathrm{\psi}\right)}^2 + {\sin\!\left(\mathrm{\psi}\right)}^2\right)} \end{array}\right)
+  \]
+
+  \[
+  v = M . \vec{Magn}
+  \]
+
+  \[
+  \theta_k = -atan2\left( \frac{v[1]}{v[0]}\right) + 0.17
+  \]
+
+El offset en $\theta_k$ es debido a que el campo magn\'etico en Uruguay no apunta directamente hacia el norte.
+
 \end{itemize}
 
 \subsection{M\'odulo \textit{kalman}}
@@ -156,7 +207,19 @@ Aparte de implementar el filtro de Kalman descrito en la secci\'on \ref{chap:kal
 
 
 \begin{itemize}
-\item Suavizar la estimaci\'on del \'angulo \textit{theta} dada por los aceler\'ometros y los magnet\'ometros. El ru\'ido presente en los aceler\'ometros, sumado a la mala performance del magnet\'ometro en lugares cerrados\footnote{Se prob\'o en lugares con muchos materiales met\'alicos, distorsionan las lecturas del magnet\'ometro.}, hace que sea necesario utilizar una l\'ogica de suavizado m\'as inteligente que un simple filtrado.
+\item Suavizar la estimaci\'on del \'angulo \textit{theta} dada por los aceler\'ometros y los magnet\'ometros antes de introducirlo en el filtro de Kalman. El ru\'ido presente en los aceler\'ometros, sumado a la mala performance del magnet\'ometro en lugares cerrados\footnote{Se prob\'o en lugares con muchos materiales met\'alicos, distorsionan las lecturas del magnet\'ometro.}, hace que sea necesario utilizar una l\'ogica de suavizado m\'as inteligente que un simple filtrado para combatir los saltos en la discontinuidad en la funci\'on \textit{atan()}, utilizada para calcular $\theta$. La correcci\'on se aplica al dato convertido previo a su utilizaci\'on en el filtro de Kalman. La implementaci\'on es la siguiente ecuaci\'on:
+  \[
+  \theta_k = \left\{
+  \begin{array}{l l}
+    \theta_k & \quad \vert \theta_k - \hat{\theta}_{k-1} \vert < \pi \\
+    \theta_k - 2\pi fix\left(\frac{\theta_k - \hat{\theta}_{k-1} + \pi sign(\theta_k - \hat{\theta}_{k-1})}{2\pi}\right) & \quad  \vert \theta_k - \hat{\theta}_{k-1} \vert \geq \pi \\
+  \end{array} \right.
+\]
+
+donde $\theta_k$ es el dato nuevo proveniente de la IMU, $\hat{\theta}_{k-1}$ es la estimaci\'on actual, generada por el filtro de Kalman en el paso previo.
+
+Para $\psi$ y $\phi$ no es implement\'o una correci\'on de este tipo, ya que el cuadric\'optero no debe inclinarse $90^o$, y el ruido en los datos no es suficiente para que durante el funcionamiento normal la medida llegue a valores cercanos a la discontinuidad.
+
 \item Llevar una estimaci\'on del \textit{bias} en los aceler\'ometros, cuyo objetivo es correjir errores sistem\'aticos.
 \item Existe la posibildad de modificar la matriz de ruidos de observaci\'on, para las estimaciones realizadas a partir de informaci\'on proveniente del aceler\'ometro y del magnet\'ometro, en funci\'on de la norma del vector medido por cada sensor\footnote{Esta idea se tom\'o de \url{http://www.vectornav.com}.}.
 \end{itemize}
@@ -195,38 +258,30 @@ donde
 \label{sec:software:control-int}
 
 El control integral es m\'as complejo, ya que incluye restricciones que son necesarias en la pr\'actica. A continuaci\'on se presenta un pseudoc\'odigo de la funci\'on que implementa la integral. Se aplica de manera independiente a cada una de las variables sobre la cual se desea llevar un control integral:
-\begin{verbatim}
-    integral = f_int(integral, err, Ts, th_dist, th_max, th_accum)
 
-    // 1
-    if (|err| > th_dist)
-    {
-      return integral;
-    }
+$$
+err = max(min(sp_{x_i} - \hat{x}_i.T_s,th_{max}), -th_{max}))
+$$
+\[
+int_k = \left\{
+  \begin{array}{l l}
+    int_{k-1} & \quad \vert err \vert > th_{dist} \\
+    max(min(err + int_{k-1}, th_{accum}),-th_{accum}) & \quad \vert err \vert \leq th_{dist} \\
+  \end{array} \right.
+\]
 
-    // 2
-    err = min(err * Ts, th_max);
-    if (err < 0)
-        err = max(err, -th_max);
-
-    // 3
-    integral = min(err + integral, th_accum);
-    if(integral < 0)
-        integral = max(integral,-th_accum);
-
-    return integral;
-\end{verbatim}
-
-Los argumentos son:
+donde:
 \begin{itemize}
+\item $sp_i$ y $\hat{x}_i$: Setpoint y estado estimado para el i-\'esimo elemento del vector de estados (el cual se desea control usando un control integral).
 \item $err$: Diferencia entre el estado deseado y el actual: $err = sp_{x} - x$.
-\item $integral$: Valor actual de la integral.
-\item $Ts$: Per\'iodo de muestreo.
+\item $int_{k-1}$: Valor acumulado hasta el instante previo.
+\item $int_{k}$: Nuevo valor para la integral.
+\item $T_s$: Per\'iodo de muestreo.
 \item Umbrales (definidos, para cada una de las variables a integrar, en \newline\verb+src/control/control.h+) para los 3 controles implementados:
   \begin{enumerate}
-  \item No se integra si la diferencia entre el estado actual y el deseado es mayor a un umbral dado por \verb+th_dist+, ya que se asume que esa situaci\'on debe ser resuelta por el control proporcional.
-  \item Para evitar que la integral crezca muy r\'apido se utiliza un umbral \verb+th_max+, el m\'aximo error que se acepta integrar est\'a acotado por $th_{max}.Ts$.
-  \item Por \'ultimo, si por alg\'un motivo la integral acumula demasiado el sistema tardar\'a mucho en recuperarse, por lo que se satura el integrador en \verb+th_accum+.
+  \item No se integra si la diferencia entre el estado actual y el deseado es mayor a un umbral dado por $th_{dist}$, ya que se asume que esa situaci\'on debe ser resuelta por el control proporcional.
+  \item Para evitar que la integral crezca muy r\'apido se utiliza un umbral $th_{max}$, el m\'aximo error que se acepta integrar est\'a acotado por $th_{max}.Ts$.
+  \item Por \'ultimo, si por alg\'un motivo la integral acumula demasiado el sistema tardar\'a mucho en recuperarse, por lo que se satura el integrador en $th_{accum}$.
 \end{enumerate}
 \end{itemize}
 

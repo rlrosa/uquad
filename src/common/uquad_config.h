@@ -88,6 +88,7 @@
 /**
  * Adjust Kalman filter covariance matrix (R) using the expected value for
  * the norm of the accelerometer and the magnetometer.
+ * Thresholds are configured in imu_comm.h
  */
 #define DYNAMIC_COV       0
 

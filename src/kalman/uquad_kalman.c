@@ -944,6 +944,7 @@ kalman_io_t* kalman_init()
 int uquad_kalman(kalman_io_t * kd, uquad_mat_t* w, imu_data_t* data, double T_us, double weight, gps_comm_data_t *gps_i_data)
 {
     int retval;
+    double dtheta;
     uquad_bool_t is_gps = (gps_i_data != NULL);
     uquad_mat_t
 	*Fk_1    = (is_gps)?Fk_1_gps:Fk_1_inertial,
@@ -972,13 +973,9 @@ int uquad_kalman(kalman_io_t * kd, uquad_mat_t* w, imu_data_t* data, double T_us
 	*Sk_1    = (is_gps)?Sk_1_gps:Sk_1_inertial,
 	*I       = (is_gps)?I_gps:I_inertial;
 
-    if (uquad_abs(data->magn->m_full[2] - kd->x_hat->m_full[5]) >= PI)
-    {
-	if ((data->magn->m_full[2] - kd->x_hat->m_full[5]) > 0.0)
-	    data->magn->m_full[2] = data->magn->m_full[2]-fix((data->magn->m_full[2]-kd->x_hat->m_full[SV_THETA]+PI)/(2.0*PI))*2.0*PI;
-	else
-	    data->magn->m_full[2] = data->magn->m_full[2]-fix((data->magn->m_full[2]-kd->x_hat->m_full[SV_THETA]-PI)/(2.0*PI))*2.0*PI;
-    }
+    dtheta = data->magn->m_full[2] - kd->x_hat->m_full[SV_THETA];
+    if (uquad_abs(dtheta) >= PI)
+	data->magn->m_full[2] -= 2.0*PI*fix((dtheta+PI*sign(dtheta))/(2.0*PI));
 
     retval = store_data(kd, w, data, T_us, weight, gps_i_data);
     err_propagate(retval);
@@ -996,7 +993,6 @@ int uquad_kalman(kalman_io_t * kd, uquad_mat_t* w, imu_data_t* data, double T_us
     }
     else
     {
-	err_log("acc");
 	kd->R->m[0][0] = COV_PSI_BAD; /* psi */
 	kd->R->m[1][1] = COV_PHI_BAD; /* phi */
 
@@ -1004,7 +1000,6 @@ int uquad_kalman(kalman_io_t * kd, uquad_mat_t* w, imu_data_t* data, double T_us
 	kd->R->m[4][4] = COV_ACC_BAD; /* ay  */
 	kd->R->m[5][5] = COV_ACC_BAD; /* az  */
     }
-#endif // DYNAMIC_COV
 
     if(data->magn_ok)
     {
@@ -1012,9 +1007,9 @@ int uquad_kalman(kalman_io_t * kd, uquad_mat_t* w, imu_data_t* data, double T_us
     }
     else
     {
-	err_log("magn");
 	kd->R->m[2][2] = COV_THE_BAD; /* the */
     }
+#endif // DYNAMIC_COV
 
     // Prediction
     retval = f(kd -> x_, kd);

@@ -463,6 +463,7 @@ void log_configuration(void)
     err_log_num("IMU_COMM_FAKE",IMU_COMM_FAKE);
     err_log_num("OL_TS_STABIL",OL_TS_STABIL);
     err_log_num("CTRL_TS",CTRL_TS);
+    err_log_num("DYNAMIC_COV",DYNAMIC_COV);
     err_log_double("MASA_DEFAULT",MASA_DEFAULT);
     err_log("-- -- -- -- -- -- -- --");
     err_log_eol();
