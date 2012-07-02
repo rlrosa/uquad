@@ -14,7 +14,9 @@ from math import atan2,cos,sin,asin,pi,copysign,sqrt # for vago
 import random # for noise
 import sys # For script arguments
 import os # To check if path exists
+import numpy
 from numpy import matrix,linalg
+import pdb
 
 from time import sleep, time
 
@@ -91,15 +93,16 @@ print 'Loading graphics...'
 # Main scene
 try:
     scene=display(title="win-main",background=(1,1,1))
-    scene.range=(1.2,1.2,1.2)
-    scene.forward = (.25,0.25,-0.25) # 'Into' screen
+    scenerange = 60
+    scene.range=(scenerange,scenerange,scenerange)
+    scene.forward = (.25,0.25,-0.05) # 'Out of' screen
     scene.up=(0,0,1)
+    # scene.width=500
+    # scene.y=200
     
     # Second scene (Roll, Pitch, Yaw)
     scene2 = display(title='win-rpy',x=0, y=0, width=500, height=200,center=(0,0,0), background=(0,0,0))
     scene2.range=(1,1,1)
-    scene.width=500
-    scene.y=200
 
     scene2.select()
     #Roll, Pitch, Yaw
@@ -130,22 +133,46 @@ try:
     
     # Main scene objects
     scene.select()
+    quad_scale = 25
     # Reference axis (x,y,z)
-    arrow(color=color.green,axis=(1,0,0), shaftwidth=0.04, fixedwidth=1)
-    arrow(color=color.green,axis=(0,1,0), shaftwidth=0.02 , fixedwidth=1)
-    arrow(color=color.green,axis=(0,0,1), shaftwidth=0.02, fixedwidth=1)
+    quad = frame()
+    # arrow(frame=quad,color=color.green,axis=(1,0,0), shaftwidth=0.04, fixedwidth=1)
+    # arrow(frame=quad,color=color.green,axis=(0,1,0), shaftwidth=0.02 , fixedwidth=1)
+    # arrow(frame=quad,color=color.green,axis=(0,0,1), shaftwidth=0.02, fixedwidth=1)
     # labels
-    label(pos=(0,0.4,0.8),text="imu test",box=0,opacity=0,color=color.black)
-    label(pos=(.5,0,0),text="X",box=0,opacity=0,color=color.black)
-    label(pos=(0,.5,0),text="Y",box=0,opacity=0,color=color.black)
-    label(pos=(0,0,.5),text="Z",box=0,opacity=0,color=color.black)
-    L_calib = label(pos=(0,0,0),text='',box=0,opacity=0,height=30,color=color.black)
+    #    label(frame=quad,pos=(0,0.4,0.8),text="imu test",box=0,opacity=0,color=color.black)
+
+    # xyz_lab_pos = quad_scale*1.5;
+    # label(pos=(xyz_lab_pos,0,0),text="X",box=0,opacity=0,color=color.black)
+    # label(pos=(0,xyz_lab_pos,0),text="Y",box=0,opacity=0,color=color.black)
+    # label(pos=(0,0,xyz_lab_pos),text="Z",box=0,opacity=0,color=color.black)
+    L_calib = label(frame=quad,pos=(0,0,0),text='',box=0,opacity=0,height=30,color=color.black)
     # IMU object
-    platform = box(length=1, height=0.05, width=1, color=color.red)
-    p_line = box(length=1,height=0.08,width=0.1,color=color.yellow)
-    plat_arrow = arrow(color=color.green,axis=(1,0,0), shaftwidth=0.06, fixedwidth=1)
-except:
-    print 'Failed to load graphics...'
+#    platform = box(frame=quad,length=1.0, height=0.05, width=0.65, color=color.red)
+#    p_line = box(frame=quad,length=1,height=0.08,width=0.1,color=color.yellow)
+#    plat_arrow = arrow(frame=quad,color=color.green,axis=(1,0,0), shaftwidth=0.06, fixedwidth=1, length=0.8)
+
+    # quad
+    c=ellipsoid(frame=quad, pos=(0,0,0), length=quad_scale, height=12, width=quad_scale, color=color.blue, material=materials.wood)
+    # Brazos
+    b1=cylinder(frame=quad, pos=(0,0,10), axis=(0,0,30), radius=1, color=color.black, material=materials.wood)
+    b2=cylinder(frame=quad, pos=(10,0,0), axis=(30,0,0), radius=1, color=color.black, material=materials.wood)
+    b3=cylinder(frame=quad, pos=(0,0,-10), axis=(0,0,-30), radius=1, color=color.black, material=materials.wood)
+    b4=cylinder(frame=quad, pos=(-10,0,0), axis=(-30,0,0), radius=1, color=color.black, material=materials.wood)
+    # Motores
+    m1=cylinder(frame=quad, pos=(0,-2.5,40), axis=(0,5,0), radius=3, color=color.orange) #, material=materials.wood)
+    m2=cylinder(frame=quad, pos=(40,-2.5,0), axis=(0,5,0), radius=3, color=color.orange) #, material=materials.wood)
+    m3=cylinder(frame=quad, pos=(0,-2.5,-40), axis=(0,5,0), radius=3, color=color.orange) #, material=materials.wood)
+    m4=cylinder(frame=quad, pos=(-40,-2.5,0), axis=(0,5,0), radius=3, color=color.orange) #, material=materials.wood)
+    t_curve = arange(-pi/2, pi/2, 0.1)
+    curve(frame=quad, x = 30*numpy.sin(t_curve), z = 30*numpy.cos(t_curve), color=color.black)
+    pingpong1=sphere(frame=quad, pos=(30*cos(pi/4),0,30*cos(pi/4)), radius=1.5, color=color.yellow)
+    pingpong2=sphere(frame=quad, pos=(-30*cos(pi/4),0,30*cos(pi/4)), radius=1.5, color=color.yellow)
+except (RuntimeError, TypeError, NameError):
+    print 'Failed to load graphics... Close window to exit...'
+    while true:
+        sleep(1)
+
 print 'Graphics loaded !'
     
 log_file_name = "Serial"+str(time())+".log"
@@ -237,17 +264,16 @@ while 1:
     dummy = 0.0
     request_printed = False
     loops = 0
-    T = 10.0/10000 # in s
+    T = 10.0/1000 # in s
 
     while 1:
         contador += 1
         try:
-            if loops == 0 or contador == 31500:
-                loops = input('Time (s) between frames:(-1 for 10e-3)')
-                if(loops > 0):
-                    T = loops
-                    loops = -1
-                    continue
+            if loops == 0:
+                loops = raw_input('Time (s) between frames:(-1 for 10e-3)')
+                if(loops != ''):
+                    T = float(loops)
+                loops = -1
             if loops <= 0:
                 sleep(T)
 
@@ -335,15 +361,18 @@ while 1:
             if (DEBUG):
                 print 'axis: %f\t%f\t%f' % (axis[0],axis[1],axis[2])
                 print 'up: %f\t%f\t%f' % (up[0],up[1],up[2])
-            platform.axis=axis
-            platform.up=up
-            platform.length=1.0
-            platform.width=0.65
-            plat_arrow.axis=axis
-            plat_arrow.up=up
-            plat_arrow.length=0.8
-            p_line.axis=axis
-            p_line.up=up
+
+            # quad object
+            quad.axis = axis
+            quad.up = up
+#            platform.axis=axis
+#            platform.up=up
+#            plat_arrow.axis=axis
+#            plat_arrow.up=up
+#            p_line.axis=axis
+#            p_line.up=up
+
+
             cil_roll.axis=(0.2*cos(roll),0.2*sin(roll),0)
             cil_roll2.axis=(-0.2*cos(roll),-0.2*sin(roll),0)
             cil_pitch.axis=(0.2*cos(pitch),0.2*sin(pitch),0)
