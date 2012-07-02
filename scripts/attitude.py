@@ -141,9 +141,9 @@ try:
     label(pos=(0,0,.5),text="Z",box=0,opacity=0,color=color.black)
     L_calib = label(pos=(0,0,0),text='',box=0,opacity=0,height=30,color=color.black)
     # IMU object
-    platform = box(length=1, height=0.05, width=1, color=color.red)
+    platform = box(length=1.0, height=0.05, width=0.65, color=color.red)
     p_line = box(length=1,height=0.08,width=0.1,color=color.yellow)
-    plat_arrow = arrow(color=color.green,axis=(1,0,0), shaftwidth=0.06, fixedwidth=1)
+    plat_arrow = arrow(color=color.green,axis=(1,0,0), shaftwidth=0.06, fixedwidth=1, length=0.8)
 except:
     print 'Failed to load graphics...'
 print 'Graphics loaded !'
@@ -237,17 +237,17 @@ while 1:
     dummy = 0.0
     request_printed = False
     loops = 0
-    T = 10.0/10000 # in s
+    T = 10.0/1000 # in s
 
     while 1:
         contador += 1
         try:
-            if loops == 0 or contador == 31500:
-                loops = input('Time (s) between frames:(-1 for 10e-3)')
-                if(loops > 0):
-                    T = loops
-                    loops = -1
+            if loops == 0:
+                loops = raw_input('Time (s) between frames:(-1 for 10e-3)')
+                if(loops != ''):
+                    T = float(loops)
                     continue
+                loops = -1
             if loops <= 0:
                 sleep(T)
 
@@ -337,11 +337,8 @@ while 1:
                 print 'up: %f\t%f\t%f' % (up[0],up[1],up[2])
             platform.axis=axis
             platform.up=up
-            platform.length=1.0
-            platform.width=0.65
             plat_arrow.axis=axis
             plat_arrow.up=up
-            plat_arrow.length=0.8
             p_line.axis=axis
             p_line.up=up
             cil_roll.axis=(0.2*cos(roll),0.2*sin(roll),0)
