@@ -123,17 +123,17 @@ Se presentan a continuación algunos resultados de la implementación del filtro
 
 \begin{figure} [h!]
 \centering
-  \subfloat[Velocidad angular referenciada al cuadricóptero]{\label{fig:wq}
+  \subfloat[Velocidad angular referenciada al cuadricóptero]{\label{fig:kalman_wq}
     \includegraphics[width=0.47\textwidth]{./pics_kalman/wq.pdf}} \hspace{10pt}
-  \subfloat[Orientación del cuadricóptero según ángulos de euler]{\label{fig:euler} 
+  \subfloat[Orientación del cuadricóptero según ángulos de euler]{\label{fig:kalman_euler} 
     \includegraphics[width=0.47\textwidth]{./pics_kalman/euler.pdf}}
   \caption{}
   \label{fig:posyvel}
 \end{figure}
 
-En la figura \ref{fig:wq} se muestra la estimación de las velocidades angulares, junto con las medidas del giróscopo. Se puede ver claramente que la estimación del estado sigue a las medidas del giróscopo, suavizándolas y logrando robustez frente a ruidos inherentes al sensor.
+En la figura \ref{fig:kalman_wq} se muestra la estimación de las velocidades angulares, junto con las medidas del giróscopo. Se puede ver claramente que la estimación del estado sigue a las medidas del giróscopo, suavizándolas y logrando robustez frente a ruidos inherentes al sensor.
 
-Por otro lado en la figura \ref{fig:euler} se muestra tanto la orientación estimada por el filtro de Kalman, como la deducida directamente a partir de las medidas de los acelerómetros y magnetómetros de la IMU. Nuevamente se puede apreciar el buen comportamiento del filtro, suavizando notoriamente las medidas otorgadas por los sensores. Además resulta interesante analizar el transitorio de la estimación del estado, es decir, el tiempo que el filtro tarda en estimar al estado. En este caso el estimador tarda aproximadamente 7 segundos en pasar de $\theta = 0$ hasta $\theta = 170$, lo cual sin duda es un tiempo totalmente inaceptable en vuelo. Este es uno de los casos más extremos ya que el ángulo $\theta$ es cercano a 180 grados. De todas maneras es un problema fácil de solucionar, se puede tomar algunas muestras de la IMU y usarlas como semilla para el filtro, y/o agregar una etapa de \emph{calentamiento} del filtro antes de que el cuadricóptero levante vuelo. A su vez, ajustando las matrices de covarianza \textbf{Q} y \textbf{R}, presentadas anteriormente, se puede lograr muy fácilmente que la estimación se acerque mucho más rápido a la medida del sensor.\\
+Por otro lado en la figura \ref{fig:kalman_euler} se muestra tanto la orientación estimada por el filtro de Kalman, como la deducida directamente a partir de las medidas de los acelerómetros y magnetómetros de la IMU. Nuevamente se puede apreciar el buen comportamiento del filtro, suavizando notoriamente las medidas otorgadas por los sensores. Además resulta interesante analizar el transitorio de la estimación del estado, es decir, el tiempo que el filtro tarda en estimar al estado. En este caso el estimador tarda aproximadamente 7 segundos en pasar de $\theta = 0$ hasta $\theta = 170$, lo cual sin duda es un tiempo totalmente inaceptable en vuelo. Este es uno de los casos más extremos ya que el ángulo $\theta$ es cercano a 180 grados. De todas maneras es un problema fácil de solucionar, se puede tomar algunas muestras de la IMU y usarlas como semilla para el filtro, y/o agregar una etapa de \emph{calentamiento} del filtro antes de que el cuadricóptero levante vuelo. A su vez, ajustando las matrices de covarianza \textbf{Q} y \textbf{R}, presentadas anteriormente, se puede lograr muy fácilmente que la estimación se acerque mucho más rápido a la medida del sensor.\\
 
 Del resto de las variables de estado, $x$, $y$, $z$, $v_{qx}$, $v_{qy}$ y $v_{qz}$, la única que tiene realimentación, considerando una estimación de estado puramente inercial, es $z$. El resto quedan determinadas únicamente por el modelo físico, en el cual se basa la etapa de predicción del filtro de Kalman. Dicho de otro modo, la etapa de actualización/corrección del filtro no surte efecto sobre dichas variables de estado.\\
 
