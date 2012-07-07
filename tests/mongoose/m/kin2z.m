@@ -7,5 +7,5 @@ a     = kin(:,5:7);
 w     = kin(:,8:10);
 euler = kin(:,11:13);
 % t     = kin(:,14);
-b     = kin(:,end);
+b     = kin(:,15);
 z = [euler a w b];
