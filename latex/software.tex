@@ -12,15 +12,6 @@ En el anexo \ref{chap:anexo-codigo} se explica como compilar y configurar las pa
 \section{Esquema general}
 \label{sec:software:esquema-general}
 
-\begin{wrapfigure}{r}{0.6\textwidth}
-\vspace{-20pt}
-\centering
-  \includegraphics[width=0.5\textwidth]{./pics_software/code.png}
-\caption{Estructura general del código.}
-\vspace{-20pt}
-\label{fig:codigo:code.png}
-\end{wrapfigure}
-
 El código tiene una estructura modular, está escrito en C, y cada bloque está implementado como una biblioteca. Los programas están pensados para compilarse y ejecutarse en un entorno \emph{Linux}. La estructura general del código se resume en la figura \ref{fig:codigo:code.png}.\\
 
 El software debe correr en tiempo real, por lo que resulta cr\'itico evitar demoras durante la ejecuci\'on. Las operaciones de entrada/salida suelen ser un problema (en cualquier plataforma), por lo que en general se utilizan varios hilos, o varios programas intercomunicados, para evitar que la entrada/salida demore a partes del c\'odigo que no dependen directamente de ella.\\
@@ -77,10 +68,23 @@ Si no se dispone de se\~nal del GPS se puede configurar un modo de prueba en el 
 Durante pruebas, se puede configurar el driver para que simule la presencia de los motores, o para que lea de la entrada est\'andar. Ver \verb+src/i2c_beagle/README+ por informaci\'on sobre como compilar los distintos modos.
 \end{itemize}
 
+\newpage
 \subsection{Loop}
 \label{sec:software-loop}
 
-A continuaci\'on se describe un loop normal ejecutado por el \textit{main}, explicando brevemente las funcionalidades de cada una de las bibliotecas involucradas:
+En la figura \ref{fig:software:flow-main.pdf} se muestra un diagrama del \textit{main}, y en la \ref{fig:software:loop.pdf} se muestra el loop que se ejecuta durante el funcionamiento normal (una vez terminada la inicializaci\'on).
+
+% \begin{figure}[h!]
+% \centering
+% \subfloat[Diagrama de flujo del programa principal.]{\label{fig:software:flow-main.pdf}
+%   \includegraphics[width=0.6\textwidth]{./pics_software/flow-main.pdf}}
+
+% \subfloat[Loop principal]{\label{fig:software:loop-main.pdf}
+%   \includegraphics[width=0.6\textwidth]{./pics_software/loop-main.pdf}}
+% \caption{}
+% \end{figure}
+
+A continuaci\'on se describen las etapas del loop, explicando brevemente las funcionalidades de cada una de las bibliotecas involucradas:
 \begin{enumerate}
 
 \item \textbf{imu:} La IMU genera datos nuevos cada 10ms. Al comienzo del loop, el \textit{main} revisa si hay datos nuevos, y en caso afirmativo llama a la biblioteca para que los lea. Cuando se completa una trama, los datos crudos se almacenan en una cola circular mantenida por la biblioteca \textit{imu\_comm}. Al terminar de recibir una trama, se vuelve al principio del loop para verificar que no hay m\'as nada para leer. En caso de haber m\'as datos entonces hay que leerlos para evitar atrasarse respecto a la IMU, en caso contrario se convierten los datos y se avanza.
@@ -99,6 +103,22 @@ A continuaci\'on se describe un loop normal ejecutado por el \textit{main}, expl
 
 Por información relativa a bloques, configuración, compilación, ejecución, etc, referirse a \verb+src/README+.
 
+\vspace{-20pt}
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.7\textwidth]{./pics_software/flow-main.pdf}
+  \caption{Diagrama de flujo del programa principal.}
+  \label{fig:software:flow-main.pdf}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.7\textwidth]{./pics_software/loop-main-tight.pdf}
+  \caption{Loop principal.}
+  \label{fig:software:loop-main.pdf}
+\end{figure}
+
+\newpage
 \subsection{M\'odulo \textit{imu\_comm}}
 \label{sec:software:imu-comm}
 
@@ -144,7 +164,7 @@ Implementar algo an\'alogo pero para el caso del acceler\'ometro requerir\'ia qu
 
 \item \textbf{Verificaci\'on:} Se llevan 2 banderas que indican si la norma del vector de aceleraci\'on y la del vector de campo magn\'etico caen dentro del rango esperado. Esto puede ser de utilidad en el filtro de Kalman.
 
-\item \textbf{Filtrado}: Se disponen de funciones que permiten obtener el elemento m\'as nuevo que a\'un no ha sido utilizado, o el resultado de aplicar un filtro FIR\footnote{Los coeficientes del filtro est\'an definidos en \textit{imu\_comm\_init()}.} a los 6 elementos m\'as recientes de la cola. Si por problemas de tiempo el \textit{main} se retrasa, pueden haber datos que nunca sean etiquetados como ``el dato m\'as nuevo'', ya que se leer\'a hasta ponerse al dia. De cualquier forma, ser\'an tomados en cuenta en el filtro.\newline
+\item \textbf{Filtrado}: Se disponen de funciones que permiten obtener el elemento m\'as nuevo que a\'un no ha sido utilizado, o el resultado de aplicar un filtro FIR\footnote{Los coeficientes del filtro est\'an definidos en \textit{imu\_comm\_init()}.} a los \verb+n+ elementos m\'as recientes de la cola. Si por problemas de tiempo el \textit{main} se retrasa, pueden haber datos que nunca sean etiquetados como ``el dato m\'as nuevo'', ya que se leer\'a hasta ponerse al dia. De cualquier forma, ser\'an tomados en cuenta en el filtro.\newline
 El filtro implementado trabaja sobre los datos crudos convertidos a punto flotante:
 \begin{equation}
   \label{eq:software-fir}
@@ -162,7 +182,8 @@ El objetivo del filtro es reducir el ruido en los datos crudos. En la figura \re
 \label{fig:software:gyro-x-filtro.png}
 \end{figure}
 
-Configurando adecuadamente los coeficientes del filtro y el largo del mismo se puede hacer que trabaje como un promedio, que no haga nada, etc.
+Configurando adecuadamente los coeficientes del filtro y el largo del mismo se puede hacer que trabaje como un promedio, que no haga nada, etc.\newpage
+\textbf{NOTA:} El filtro fue desactivado, ya que introduce un retardo que deteriora la performance del sistema, y en realidad el filtro FIR es redundante con el filtro de Kalman.
 \item \textbf{Modo \textit{FAKE}:} Seteando \verb+IMU_COMM_FAKE+ a 1, la biblioteca leerá de un log \verb+ascii+ en lugar de utilizar el puerto serie. En el modo \textit{FAKE} los tiempos no son un problema cr\'itico, ya que no correr\'a en tiempo real.
 
 \item \textbf{\'Angulos de Euler:} Para calcular los \'angulos de Euler (en radianes) a partir del vector de aceleraci\'on y del campo magn\'etico se tom\'o como referencia \cite{bib:euler_magneto_acc}. Se utilizan las siguientes ecuaciones:
@@ -399,23 +420,68 @@ En \verb+src/kalman/uquad_kalman.c+ se definen los ruidos de transici\'on de est
 
 La IMU cuenta con un microprocesador \textit{ATmega328p}. Queda disponible poder computacional como para agregar m\'as funcionalidades. Las tareas que se le asignaron al programa que ejecuta la IMU son:
 \begin{itemize}
-\item Leer datos de los sensores: Aceler\'ometro, Gir\'oscopo, Magnet\'ometro y Bar\'ometro.
+\item Leer de los sensores: Aceler\'ometro, Gir\'oscopo, Magnet\'ometro y Bar\'ometro.
 \item Armar una trama de datos, que puede ser en \verb+ASCII+ o binario, y enviarlos mediante una \textit{UART}.
+\item Enviar una trama cada 10ms en la cual se incluyen:
+  \begin{itemize}
+  \item Un caracter \verb+ASCII+ de inicio de trama: \verb+A+.
+  \item El tiempo (en microsegundos) que tard\'o el loop de lectura.
+  \item El promedio de dos muestras del:
+    \begin{itemize}
+    \item Aceler\'ometro (\verb+x,y,z+), en cuentas del \verb+ADC+.
+    \item Gir\'oscopo (\verb+x,y,z+), en cuentas del \verb+ADC+.
+    \item Magnet\'ometro (\verb+x,y,z+), en cuentas del \verb+ADC+.
+    \end{itemize}
+  \item Un dato nuevo del bar\'ometro:
+    \begin{itemize}
+    \item Temperatura (en $C^o$ multiplicados por un factor de 10).
+    \item Presi\'on (en Pascales).
+    \end{itemize}
+  \item Un caracter \verb+ASCII+ de fin de trama: \verb+Z+.
+  \end{itemize}
+Si la IMU trabaja en modo \verb+ASCII+, una trama tiene el siguiente aspecto:\newline
+\begin{equation*}
+\verb+A 11968 -8 -4 211 11 42 6 -14 -3 154 160 102025 Z+
+\end{equation*}
+Los elementos se separan mediante un caracter \verb+\t+, y la l\'inea se termina con un \verb+\n+. En modo binario el formato es el mismo, solo que sin caracteres de separaci\'on ni de fin de l\'inea.
 \end{itemize}
 
 \subsection{Cambios al software original}
 \label{sec:software:cambios-al-software-original}
 
-El código original que trae la IMU fue modificado. El problema principal que ten\'ia era que la frecuencia de muestreo no era estable.\\
-
-Los cambios m\'as relevantes fueron:
+El código original que trae la IMU fue modificado. El problema principal que ten\'ia era que la frecuencia de muestreo no era estable. Los cambios m\'as relevantes fueron:
 \begin{itemize}
-\item Se implementó transmisión de datos en segundo plano, mediante interrupciones, evitando demorar el loop principal al momento de transmitir.
-\item Se agregó la posibilidad transmitir en binario (se mantuvo el modo \verb+ASCII+, pero no es posible transmitir a 10ms en dicho modo).
-\item El barómetro demora varios milisegundos entre que se le pide un dato y que lo tiene disponible. El código original esperaba durante este tiempo. La versión modificada sigue trabajando y vuelve para recoger el dato luego que transcurrió el tiempo en cuestión.
+\item Transmisión de datos en segundo plano, mediante interrupciones, evitando demorar el loop principal al momento de transmitir.
+\item Posibilidad transmitir en binario (se mantuvo el modo \verb+ASCII+, pero no es posible transmitir a 10ms en dicho modo).
 \item Se modificó el formato de los datos envíados al puerto serie.
+\item El barómetro demora varios milisegundos entre que se le pide un dato y que lo tiene disponible. El código original esperaba durante este tiempo. La versión modificada sigue trabajando y vuelve para recoger el dato luego que transcurrió el tiempo en cuestión. Se implement\'o una m\'aquina de estados para el manejo del bar\'ometro. No se implementó mediante interrupciones, ya que las transacciones a trav\'es del puerto $I^2C$ en general son secuencias del tipo:
+  \begin{enumerate}
+  \item Indicar de que direcci\'on se quiere leer.
+  \item Seleccionar el registro del cual se desea leer.
+  \item Recibir los datos.
+  \end{enumerate}
+No se debe usar el puerto $I^2C$ durante una secuencia de este tipo.
 \end{itemize}
 
-%TODO agregar cosas, ver q onda
+\subsection{Diagrama de flujo}
+\label{sec:software:mongoose-diagrama-de-flujo}
+% flujo... puaj
+
+\begin{wrapfigure}{r}{0.7\textwidth}
+\centering
+\vspace{-30pt}
+  \includegraphics[width=0.6\textwidth]{./pics_software/imu-tight.pdf}
+\caption{Diagrama de flujo del programa que ejecuta la IMU.}
+\vspace{-30pt}
+\label{fig:software:imu.pdf}
+\vspace{-15pt}
+\end{wrapfigure}
+En la figura \ref{fig:software:imu.pdf} se muestra un diagrama del programa que ejecuta la IMU.
+
+\begin{itemize}
+\item La operaciones en c\'irculos rojos requieren de acceso al puerto $I^2C$.
+\item Las flechas verdes indican que el resultado de evaluar la condici\'on fue positivo, las rojas indican que la condici\'on no se cumpli\'o.
+\item La condici\'on \textit{barom update?} se verifica cuando se cumpli\'o alguno de los retardos de 4.5ms requeridos por el bar\'ometro, en este caso se debe avanzar la m\'aquina de estados.
+\end{itemize}
 
 \end{document}
