@@ -3,22 +3,19 @@
 
 \chapter{Switcheo Manual/Automático}
 \label{chap:anexo_switcheo}
-\section{Introducción}
 
 Se pretende lograr que el sistema implementado pueda ser comandado de forma tanto manual como automática, buscándose además que la transición entre las dos formas de comando pueda realizarse en forma remota.\\
 \\
-Para ello, entonces, es necesario encontrar una forma de indicar al sistema que tipo de comando se desea utilizar. Se cuenta con un control remoto considerablemente complejo que, además, está diseñado para comandar una gran variedad de vehiculos radiocontrolados. Por este motivo, el control envía y recibe señales que no son utilizadas por el cuadricóptero. Es así, entonces, que se opta por reutilizar alguna de dichas señales para lograr el switcheo manual/automático.
+Para ello es necesario encontrar una forma de indicar al sistema que tipo de comando se desea utilizar. Se cuenta con un control remoto diseñado para comandar una gran variedad de vehiculos radiocontrolados. Por este motivo, el control envía y recibe señales que no son utilizadas por el cuadricóptero. Se opta por reutilizar alguna de dichas señales para lograr el switcheo manual/automático.
 
 \section{Señales del control remoto}
 
 El sistema de transmisor/receptor que utiliza el control remoto (Walkera WK-2801 PRO) transmite la información a través de 8 canales mediante modulación PPM (pulse position modulation).\\
-\\
-En dicho esquema de modulación se parte de un frame temporal de duración fija que es dividido en $N$ partes iguales. Dichas partes son luego llevadas a 0 o Vcc para codificar así la información. Se trata, entonces, de un sistema de codificación temporal.\\
+
+En dicho esquema de modulación se parte de un frame temporal de duración fija que es dividido en $N$ partes iguales. Dichas partes son luego llevadas a 0 o Vcc para codificar así la información.\\
 
 \section{Señal elegida}
-Luego de un estudio detallado del transmisor y el receptor, pudo determinarse que la señal que se envía a través del canal etiquetado como GEAR no es utilizada en el comando del cuadricóptero. De igual manera, dicha señal es afectada únicamente por una llave existente en el control remoto. Dicha llave sólamente afecta a la señal presente en el canal GEAR, dejando invariantes el resto de las señales enviadas.\\
-\\
-La señal GEAR entonces verifica:
+Luego de un estudio detallado del transmisor y el receptor, pudo determinarse que la señal que se envía a través del canal etiquetado como GEAR no es utilizada en el comando del cuadricóptero. De igual manera, dicha señal es afectada únicamente por una llave existente en el control remoto. Dicha llave sólamente afecta a la señal presente en el canal GEAR, dejando invariantes el resto de las señales enviadas. La señal GEAR entonces verifica:
 
 \begin{itemize}
 \item Es comandada por un único elemento del control remoto
@@ -64,9 +61,9 @@ En cuanto al control remoto, la señal del canal GEAR puede ser modificada media
 \section{Análisis de la señal}
 
 Se procedió a estudiar la señal seleccionada mediante la adquisición de la misma con un osciloscópio. Pudo verse que cuando la llave GEAR SW está ``abajo'' la señal observada es una onda cuadrada (Tierra-Vcc) de frecuencia $f=52.41Hz$ y ciclo de trabajo 5.25\%, mientras que al estar la llave ``arriba'' el ciclo de trabajo varía, siendo este ahora 9.50\%.\\
-\\
+
 Es claro que lo que verdaderamente está sucediendo es que la posición de la llave baja se codifica seteando un cierto número de  frames temporales consecutivos a Vcc y dejando el resto de los frames a tierra, mientras que la posición alta se codifica seteando un mayor número de frames consecutivos a Vcc y dejando el resto a tierra.\\
-\\
+
 Lo expuesto anteriormente puede observarse en las figuras \ref{fig:GEAR_bajo} y \ref{fig:GEAR_alto}.
 
 \begin{figure}
@@ -100,7 +97,7 @@ Lo expuesto anteriormente puede observarse en las figuras \ref{fig:GEAR_bajo} y 
 %\end{figure}
 
 \section{Detección de la posición de la llave}
-Para poder implementar el switcheo manual/automático será necesario poder detectar la posición de la llave. Esto es, debemos convertir la señal modulada proveniente del control en una señal binaria ON/OFF. Existen soluciones ya implementadas que se comercializan a muy bajo precio. En la figura \ref{fig:circuito} puede apreciarse el circuito elegido.\\
+Para poder implementar el switcheo manual/automático será necesario poder detectar la posición de la llave. Esto es, debemos convertir la señal modulada proveniente del control en una señal binaria ON/OFF. Existen soluciones ya implementadas que se comercializan a muy bajo precio. Se opta por adquirir el circuito con n\'umero de parte 0-PL752\footnote{\url{http://www.robotcombat.com/products/0-PL752.html}}. En la figura \ref{fig:circuito} puede apreciarse el circuito elegido.\\
 
 \begin{wrapfigure}{l}{0.4\textwidth}
 \includegraphics[width=0.3\textwidth]{./pics_switcheo/placa.png}
@@ -110,15 +107,17 @@ Para poder implementar el switcheo manual/automático será necesario poder dete
 
 A dicho circuito se le pueden conectar directamente las señales provenientes del receptor, ya que el mismo cuenta con la electrónica necesaria para interpretar dichas señales. De esta forma, la salida del circuito será ``1'' si el tiempo en alto de la señal proveniente del receptor es mayor a $1.6ms$ y ``0'' si dicho tiempo es menor a $1.5ms$. Es interesante, además, destacar que la placa adquirida es considerablemente pequeña, ya que la misma mide $1cm$ de lado y pesa apenas $0.3g$\\
 
+Finalmente, introduciendo dicha señal a un multiplexor TS3A5017 de Texas Instruments, donde cada canal tiene un contacto normal abierto y otro normal cerrado, es posible realizar el switcheo en forma sencilla.\\
 
+En la figura \ref{fig:switcheo} puede observarse el esquema de conexión de los componentes del sistema de switcheo.\\
 
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.5\textwidth]{./pics_switcheo/path3552-7.png}
+\caption{Esquema el\'ectrico del switcheo}
+\label{fig:switcheo}
+\end{center}
+\end{figure}
 
-Finalmente, introduciendo dicha señal a un multiplexor DSPT de dos canales, donde cada canal tiene un contacto normal abierto y otro normal cerrado, es posible realizar el switcheo en forma sencilla.\\
-
-En la figura \ref{fig:multiplexor} puede observarse el esquema de conexión de los componentes del sistema de switcheo.\\
-
-TODO: Hacer esquema de conexión.\\
-
-El multiplexor elegido es el $DG303AMIL$ de Vishay Electronics. Esto es verdad?
-
+La sen\~nal OUT ser\'a siempre ``0'' mientras no la sen\~al de GEAR sea ``0'' o no se encuentre presente. En ese caso el multiplexor conecta 1S2 con 1D y 2S2 con 2D. Si se detecta que GEAR pasa a ``1'' la sen\~nal OUT es tambi\'en ``1'', esto produce que el multiplexor conecte 1S4 con 1D y 2s4 con 2D. Tenemos implementado un circuito que permite seg\'un la se\~nal de GEAR del control remoto que los ESCs queden conectados al cerebro de f\'abrica o a la BeagleBoard a trav\'es de la placa de conversi\'on de niveles l\'ogicos. Esto permite el switcheo entre el modo autom\'atico y manual.
 \end{document}
