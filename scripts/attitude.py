@@ -1,3 +1,4 @@
+
 # Reads and displays gyro data from state estimation log
 # Arguments:
 #   - Device name (optional).
@@ -136,9 +137,10 @@ try:
     quad_scale = 25
     # Reference axis (x,y,z)
     quad = frame()
-    # arrow(frame=quad,color=color.green,axis=(1,0,0), shaftwidth=0.04, fixedwidth=1)
-    # arrow(frame=quad,color=color.green,axis=(0,1,0), shaftwidth=0.02 , fixedwidth=1)
-    # arrow(frame=quad,color=color.green,axis=(0,0,1), shaftwidth=0.02, fixedwidth=1)
+    arrow(color=color.green,axis=(1,0,0), pos=(0,0,0), length=50, shaftwidth=2.04, fixedwidth=1)
+    arrow(color=color.green,axis=(0,1,0), pos=(0,0,0), length=50, shaftwidth=2 , fixedwidth=1)
+    arrow(color=color.green,axis=(0,0,1), pos=(0,0,0), length=50, shaftwidth=2, fixedwidth=1)
+    arrow(frame=quad,color=color.green,axis=(1,0,0), pos=(0,0,0), length=0.005, shaftwidth=0.0004, fixedwidth=1)
     # labels
     #    label(frame=quad,pos=(0,0.4,0.8),text="imu test",box=0,opacity=0,color=color.black)
 
@@ -164,10 +166,10 @@ try:
     m2=cylinder(frame=quad, pos=(40,-2.5,0), axis=(0,5,0), radius=3, color=color.orange) #, material=materials.wood)
     m3=cylinder(frame=quad, pos=(0,-2.5,-40), axis=(0,5,0), radius=3, color=color.orange) #, material=materials.wood)
     m4=cylinder(frame=quad, pos=(-40,-2.5,0), axis=(0,5,0), radius=3, color=color.orange) #, material=materials.wood)
-    t_curve = arange(-pi/2, pi/2, 0.1)
+    t_curve = arange(-2*pi, -pi, 0.1)
     curve(frame=quad, x = 30*numpy.sin(t_curve), z = 30*numpy.cos(t_curve), color=color.black)
-    pingpong1=sphere(frame=quad, pos=(30*cos(pi/4),0,30*cos(pi/4)), radius=1.5, color=color.yellow)
-    pingpong2=sphere(frame=quad, pos=(-30*cos(pi/4),0,30*cos(pi/4)), radius=1.5, color=color.yellow)
+    pingpong1=sphere(frame=quad, pos=(30*cos(pi/4),0,30*cos(3*pi/4)), radius=1.5, color=color.yellow)
+    pingpong2=sphere(frame=quad, pos=(-30*cos(3*pi/4),0,30*cos(pi/4)), radius=1.5, color=color.yellow)
 except (RuntimeError, TypeError, NameError):
     print 'Failed to load graphics... Close window to exit...'
     while true:
