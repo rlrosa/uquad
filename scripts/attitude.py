@@ -326,22 +326,28 @@ while 1:
                     wqy    = float(words[10])
                     wqz    = float(words[11])
                 elif log_type == LOG_IMU_AVG or log_type == LOG_IMU_DATA:
-                    ax     = float(words[3])
-                    ay     = float(words[4])
-                    az     = float(words[5])
-                    gx     = float(words[6])
-                    gy     = float(words[7])
-                    gz     = float(words[8])
-                    phi    = float(words[9])
-                    psi    = float(words[10])
-                    theta  = float(words[11])
-                    temp   = float(words[12])
-                    z      = float(words[13])                    
+                    if(words_len == 16):
+                        # log is from main, 3 timestamps
+                        offset = 0
+                    else:
+                        # log is from imu_comm_test, 2 timestamps
+                        offset = -1
+                    ax     = float(words[3+offset])
+                    ay     = float(words[4+offset])
+                    az     = float(words[5+offset])
+                    gx     = float(words[6+offset])
+                    gy     = float(words[7+offset])
+                    gz     = float(words[8+offset])
+                    psi    = float(words[9+offset])
+                    phi    = float(words[10+offset])
+                    theta  = float(words[11+offset])
+                    temp   = float(words[12+offset])
+                    z      = float(words[13+offset])                    
                 
                 roll  = psi
                 pitch = phi
                 yaw   = theta
-                yaw = 0 # ignore
+#                yaw = 0 # ignore
                 
             except:
                 print 'Invalid line: %s' % line
