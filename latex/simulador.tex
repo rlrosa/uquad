@@ -15,7 +15,7 @@ El simulador fue desarrollado gracias a la herramienta \emph{Simulink} de \emph{
 
 \subsection{Lazo Abierto}
 
-Las ecuaciones que gobiernan al sistema(Ecuaciones \ref{eq:modelo}\footnote{Se agrega tambi\'en la dependencia de la \'ultima ecuaci\'on del modelo con las derivadas de las velocidades angulares del sistema}) son continuas y pueden representarse como:
+Las ecuaciones que gobiernan al sistema (Ecuaciones \ref{eq:modelo}\footnote{Se agrega tambi\'en la dependencia de la \'ultima ecuaci\'on del modelo con las derivadas de las velocidades angulares del sistema}) son continuas y pueden representarse como:
 
 \begin{equation}
 \label{eq:lazo_abierto}
@@ -57,7 +57,7 @@ En la figura \ref{fig:cinematica} se puede observar un diagrama de bloques de la
 Al igual que el bloque anterior, se divide este en dos sub-bloques m\'as (ver figura \ref{fig:dinamica}): el que devuelve las velocidades angulares, y el que devuelve las velocidades lineales. 
 
 \subsection{Lazo cerrado}
-El lazo cerrado simula las acciones de control del sistema. Adem\'as de las ecuaciones del lazo abierto (ecuaci\'on \ref{eq:lazo_abierto}) se agrega la realimentaci\'on de las variables de estado ($x,y,z,\psi,\varphi,\theta,v_{qx},v_{qy},v_{qz},\omega_{qx},\omega_{qy},\omega_{qz}$) y de las integrales de $x,y,z,\theta$. Llamamos $X_I$ al vector compuesto por dichas integrales. La ecuaci\'on de realimentaci\'on es:
+El lazo cerrado simula las acciones de control del sistema. Adem\'as de las ecuaciones del lazo abierto (ecuaci\'on \ref{eq:lazo_abierto}) se agrega la realimentaci\'on de las variables de estado ($x,y,z,\psi,\varphi,\theta,v_{qx},v_{qy},v_{qz},\omega_{qx},\omega_{qy},\omega_{qz}$) y de las integrales del error entre $x,y,z,\theta$ y los respectivos setpoint. Llamamos $X_I$ al vector compuesto por dichas integrales. La ecuaci\'on de realimentaci\'on es:
 
 \begin{equation}
 u(t) = u_{setpoint}(t) -K\left(\begin{array}{c}
