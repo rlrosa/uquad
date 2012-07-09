@@ -75,7 +75,7 @@ C & Cortado & Conduciendo & Nivel bajo \\
 \end{center}
 \end{table}
 
-Si se impone un voltaje mayor a $0.7 V$ en la base del \emph{driver} (punto \textbf{1} de la figura \ref{fig:bldc_control}), dicho transistor conducirá, lo cual fijará un voltaje de $0V$ en el punto \textbf{2} del diagrama, correspondiente al \emph{gate} del transistor \textbf{T1}. Este voltaje en el \emph{gate} provoca que el transistor quede cortado, no dejando pasar corriente entre el \emph{source} y el \emph{drain}. En esta situación hay 2 escenarios posibles: que el transistor \textbf{T2} se encuentre conduciendo o que se encuentre cortado. Para que se de el primer escenario (configuración \textbf{C}) es necesario que el microcontrolador imponga un voltaje positivo en el gate del transistor \textbf{T2}, logrando un camino de baja impedancia entre tierra y la fase en cuestión del motor. En este caso se estaría conduciendo dicha fase a nivel bajo. El otro escenario implica que dicha fase quede en estado ``flotando'' (configuración \textbf{A}) ya que ambos transistores permanecen cortados. Por último la otra situación posible es que el transistor \textbf{T1} conduzca (configuración \textbf{B}), situación en la cual el transistor \textbf{T2} deberá permanecer cortado, lo cual se logra llevando a $0V$ el punto \textbf{1} del diagrama.\\
+Si se impone un voltaje mayor a $0.7 V$ en la base del \emph{driver} (punto \textbf{1} de la figura \ref{fig:bldc_control}), dicho transistor conducirá, lo cual fijará un voltaje de $0.2V$ en el punto \textbf{2} del diagrama, correspondiente al \emph{gate} del transistor \textbf{T1}. Este voltaje en el \emph{gate} provoca que el transistor quede cortado, no dejando pasar corriente entre el \emph{source} y el \emph{drain}. En esta situación hay 2 escenarios posibles: que el transistor \textbf{T2} se encuentre conduciendo o que se encuentre cortado. Para que se de el primer escenario (configuración \textbf{C}) es necesario que el microcontrolador imponga un voltaje positivo en el gate del transistor \textbf{T2}, logrando un camino de baja impedancia entre tierra y la fase en cuestión del motor. En este caso se estaría conduciendo dicha fase a nivel bajo. El otro escenario implica que dicha fase quede en estado ``flotando'' (configuración \textbf{A}) ya que ambos transistores permanecen cortados. Por último la otra situación posible es que el transistor \textbf{T1} conduzca (configuración \textbf{B}), situación en la cual el transistor \textbf{T2} deberá permanecer cortado, lo cual se logra llevando a $0V$ el punto \textbf{1} del diagrama.\\
 
 \begin{figure}[h!]
 	\centering
@@ -85,22 +85,20 @@ Si se impone un voltaje mayor a $0.7 V$ en la base del \emph{driver} (punto \tex
 	\label{fig:diagrama_esc}
 \end{figure}
 
-En la figura \ref{fig:diagrama_esc} se muestra el diagrama de un ESC obtenido al relevar el controlador que originalmente incluía el cuadricóptero comercial adquirido. Se pueden identificar los diversos bloques mencionados a los largo de esta sección. El bloque se sensado es utilizado para obtener la posición del rotor en cada instante de tiempo, el bloque de conmutación es el encargado de energizar las fases correspondientes en cada paso y microcontrolador es el encargado de interpretar la información del sensado de la posición del rotor y actuar sobre los transistores para generar el campo magnético rotatorio. Las fases \textbf{1}, \textbf{2} y \textbf{3} se conectan a los terminales \textbf{A}, \textbf{B} y \textbf{C} mostrados en la figura \ref{fig:brushless}. El denominado ``puente H'' se forma entre cada pareja de bloques de conmutación y las bobinas del motor que quedan energizadas.
+En la figura \ref{fig:diagrama_esc} se muestra el diagrama de un ESC obtenido al relevar el controlador que originalmente incluía el cuadricóptero comercial adquirido\footnote{Este controlador se dej\'o de fabricar, existen dos versiones nuevas de ESC, una de ellas mantiene el mismo protocolo de comunicaci\'on que el aqu\'i presentado, esto fue verificado, ya que en la \'ultima versi\'on de la plataforma implementada se utiliz\'o este controlador.  Los fabricantes indican que hay la otra versi\'on utiliza un protocolo de comunicaci\'on distinto, no se trabaj\'o con estos ESC. }. Se pueden identificar los diversos bloques mencionados a los largo de esta sección. El bloque se sensado es utilizado para obtener la posición del rotor en cada instante de tiempo, el bloque de conmutación es el encargado de energizar las fases correspondientes en cada paso y microcontrolador es el encargado de interpretar la información del sensado de la posición del rotor y actuar sobre los transistores para generar el campo magnético rotatorio. Las fases \textbf{1}, \textbf{2} y \textbf{3} se conectan a los terminales \textbf{A}, \textbf{B} y \textbf{C} mostrados en la figura \ref{fig:brushless}. El denominado ``puente H'' se forma entre cada pareja de bloques de conmutación y las bobinas del motor que quedan energizadas.
 
+\subsubsection*{Instrumentaci\'on e inteligencia}
 
-
-
-\subsubsection*{Peso}
-
-Adem\'as de toda la instrumentaci\'on que incluye el cuadric\'optero, se incorporar\'a una placa de desarrollo, una de sensores (IMU), un GPS, una interfaz para comunicaci\'on Wi-Fi, y una bater\'ia dedicada exclusivamente a alimentar la electr\'onica agregada. Es de inter\'es conservar la posibilidad de integrar una c\'amara fotogr\'afica. La carga que puede levantar el cuadric\'optero es de 1300g, de la que se debe descontar el peso de las bater\'ias de la electr\'onica y de la alimentaci\'on a los motores.
+	La instrumentaci\'on con la que cuenta el dispositivo est\'a destinada a simplificar el manejo a control remoto, estabilizando el sistema. La misma incluye un bar\'ometro y aceler\'ometro y gir\'oscopo de 3 ejes. Cuenta adem\'as con una CPU que se encarga de la lectura de los datos proporcionados por los sensores y de definir las acciones de control sobre los motores. No se dispone del c\'odigo del programa presente en la CPU, y por lo tanto no es posible reutilizarlo, ni tampoco obtener la lectura de los sensores presentes. Se realizaron esfuerzos para conseguir dicha informaci\'on del fabricante, quien se neg\'o a proporcionarla. Por dicho motivo se opta por dotar al sistema de instrumentaci\'on adicional. 
 
 \subsubsection*{Tiempo de vuelo}
 
 El tiempo de vuelo utilizando una bater\'ia de LiPo de 5300mAh (450g) y una carga de 500g es cercano a los 10-15 minutos.
 
-\subsubsection*{Instrumentaci\'on e inteligencia}
+\subsubsection*{Carga \'util}
 
-	La instrumentaci\'on con la que cuenta el dispositivo est\'a destinada a simplificar el manejo a control remoto, estabilizando el sistema. La misma incluye un bar\'ometro y aceler\'ometro y gir\'oscopo de 3 ejes. Cuenta adem\'as con una CPU que se encarga de la lectura de los datos proporcionados por los sensores y de definir las acciones de control sobre los motores. No se dispone del c\'odigo del programa presente en la CPU, y por lo tanto no es posible reutilizarlo, ni tampoco obtener la lectura de los sensores presentes. Se realizaron esfuerzos para conseguir dicha informaci\'on del fabricante, quien se neg\'o a proporcionarla. Por dicho motivo se opta por dotar al sistema de instrumentaci\'on adicional. 
+Adem\'as de toda la instrumentaci\'on que incluye el cuadric\'optero, se incorporar\'a una placa de desarrollo, una de sensores (IMU), un GPS, una interfaz para comunicaci\'on Wi-Fi, y una bater\'ia dedicada exclusivamente a alimentar la electr\'onica agregada. Es de inter\'es conservar la posibilidad de integrar una c\'amara fotogr\'afica. La carga que puede levantar el cuadric\'optero es de 1300g, de la que se debe descontar el peso de las bater\'ias de la electr\'onica y de la alimentaci\'on a los motores.
+
 
 \section{Inteligencia}
 \begin{wrapfigure}{l}{0.35\textwidth}
@@ -161,15 +159,21 @@ Existen diversos tipos de aceler\'ometros. Se eligi\'o trabajar con un aceler\'o
 
 Se opt\'o por utilizar tecnolog\'ia MEMS fundamentalmente por tama\~no, peso y costo. Los mismos son m\'as peque\~nos, livianos y baratos que otras tecnolog\'ias.\\
 
-%TODO Referencia a MEMS
+
 
 El aceler\'ometro cumple dos roles fundamentales:
 \begin{enumerate}
-\item Bajo la hip\'otesis de que las aceleraciones a las cuales se ver\'a sometido el sistema \textbf{no} son comparables con $g$, sirve para determinar los \'angulos de Pitch y de Roll.
+\item Bajo la hip\'otesis de que las aceleraciones a las cuales se ver\'a sometido el sistema \textbf{no} son comparables con $g$, sirve para determinar los \'angulos de Pitch y de Roll. En la figurea \ref{fig:acc_pitch} se ilustra la forma de lograr esto para el \'angulo de Pitch. Las ecuaciones utilizadas pueden encontrarse en \ref{chap:Software}.
 \item Permite obtener una estimaci\'on de la velocidad, integrando su medida.  
 \end{enumerate}
 
- 
+ \begin{figure}
+	\centering
+	\includegraphics[width=0.5\textwidth]{./pics_eleccion_hardware/euler.png}
+	\vspace{-10pt}
+	\caption{Determinaci\'on del \'angulo de Pitch}
+	\label{fig:acc_pitch}
+\end{figure}
 \subsubsection{Gir\'oscopo}
 \label{giro}
 
