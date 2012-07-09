@@ -12,6 +12,15 @@ En el anexo \ref{chap:anexo-codigo} se explica como compilar y configurar las pa
 \section{Esquema general}
 \label{sec:software:esquema-general}
 
+\begin{wrapfigure}{r}{0.6\textwidth}
+\vspace{-20pt}
+\centering
+  \includegraphics[width=0.5\textwidth]{./pics_software/code.png}
+\caption{Estructura general del código.}
+\vspace{-20pt}
+\label{fig:codigo:code.png}
+\end{wrapfigure}
+
 El código tiene una estructura modular, está escrito en C, y cada bloque está implementado como una biblioteca. Los programas están pensados para compilarse y ejecutarse en un entorno \emph{Linux}. La estructura general del código se resume en la figura \ref{fig:codigo:code.png}.\\
 
 El software debe correr en tiempo real, por lo que resulta cr\'itico evitar demoras durante la ejecuci\'on. Las operaciones de entrada/salida suelen ser un problema (en cualquier plataforma), por lo que en general se utilizan varios hilos, o varios programas intercomunicados, para evitar que la entrada/salida demore a partes del c\'odigo que no dependen directamente de ella.\\
@@ -30,7 +39,7 @@ El software se distribuye entre varios microprocesadores en placas independiente
   \end{itemize}
 \item \textbf{\textit{ESCs}}:
   \begin{itemize}
-  \item Son 4 microprocesadores conectados como esclavos a un bus $I^2C$ que comparten con la \textit{BeagleBoard}, que hace de maestro.
+  \item Son 4 microprocesadores conectados como esclavos a un bus $I^2C$ que comparten con el maestro. Seg\'un la configuraci\'on del switcheo, el maestro puede ser la \textit{BeagleBoard} o la \textit{CPU1}.
   \item Cada microprocesador se encarga de hacer girar uno de los motores a un velocidad fijada mediante $I^2C$.
   \item El c\'odigo que ejecutan no est\'a disponible, solamente se conoce el protocolo para manejarlos mediante $I^2C$.
   \end{itemize}
@@ -228,7 +237,7 @@ Aparte de implementar el filtro de Kalman descrito en la secci\'on \ref{chap:kal
 
 
 \begin{itemize}
-\item Suavizar la estimaci\'on del \'angulo \textit{theta} dada por los aceler\'ometros y los magnet\'ometros antes de introducirlo en el filtro de Kalman. El ru\'ido presente en los aceler\'ometros, sumado a la mala performance del magnet\'ometro en lugares cerrados\footnote{Se prob\'o en lugares con muchos materiales met\'alicos, distorsionan las lecturas del magnet\'ometro.}, hace que sea necesario utilizar una l\'ogica de suavizado m\'as inteligente que un simple filtrado para combatir los saltos en la discontinuidad en la funci\'on \textit{atan()}, utilizada para calcular $\theta$. La correcci\'on se aplica al dato convertido previo a su utilizaci\'on en el filtro de Kalman. La implementaci\'on es la siguiente ecuaci\'on:
+\item Suavizar la estimaci\'on del \'angulo \textit{theta} dada por los aceler\'ometros y los magnet\'ometros antes de introducirlo en el filtro de Kalman. El ru\'ido presente en los aceler\'ometros, sumado a la mala performance del magnet\'ometro en lugares cerrados\footnote{Se prob\'o en lugares con muchos materiales met\'alicos, distorsionan las lecturas del magnet\'ometro.}, hace que sea necesario utilizar una l\'ogica de suavizado m\'as inteligente que un simple filtrado para combatir los saltos en la discontinuidad en la funci\'on \textit{atan2()}, utilizada para calcular $\theta$. La correcci\'on se aplica al dato convertido previo a su utilizaci\'on en el filtro de Kalman. La implementaci\'on es la siguiente ecuaci\'on:
   \[
   \theta_k = \left\{
   \begin{array}{l l}
@@ -239,7 +248,7 @@ Aparte de implementar el filtro de Kalman descrito en la secci\'on \ref{chap:kal
 
 donde $\theta_k$ es el dato nuevo proveniente de la IMU, $\hat{\theta}_{k-1}$ es la estimaci\'on actual, generada por el filtro de Kalman en el paso previo.
 
-Para $\psi$ y $\phi$ no es implement\'o una correci\'on de este tipo, ya que el cuadric\'optero no debe inclinarse $90^o$, y el ruido en los datos no es suficiente para que durante el funcionamiento normal la medida llegue a valores cercanos a la discontinuidad.
+Para $\psi$ y $\phi$ no es implement\'o una correci\'on de este tipo, ya que el cuadric\'optero no debe inclinarse $90^o$, y el ruido en los datos no es suficiente para que durante el funcionamiento normal la medida llegue a valores cercanos a la discontinuidad de las funciones utilizadas (\textit{asin()} y \textit{atan2()}).
 
 \item Llevar una estimaci\'on del \textit{bias} en los aceler\'ometros, cuyo objetivo es correjir errores sistem\'aticos.
 \item Existe la posibildad de modificar la matriz de ruidos de observaci\'on, para las estimaciones realizadas a partir de informaci\'on proveniente del aceler\'ometro y del magnet\'ometro, en funci\'on de la norma del vector medido por cada sensor\footnote{Esta idea se tom\'o de \url{http://www.vectornav.com}.}.
