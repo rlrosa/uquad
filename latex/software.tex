@@ -81,7 +81,7 @@ Durante pruebas, se puede configurar el driver para que simule la presencia de l
 \subsection{Loop}
 \label{sec:software-loop}
 
-En la figura \ref{fig:software:flow-main.pdf} se muestra un diagrama del \textit{main}, y en la \ref{fig:software:loop.pdf} se muestra el loop que se ejecuta durante el funcionamiento normal (una vez terminada la inicializaci\'on).
+En la figura \ref{fig:software:flow-main.pdf} se muestra un diagrama del \textit{main}, y en la \ref{fig:software:loop-main.pdf} se muestra el loop que se ejecuta durante el funcionamiento normal (una vez terminada la inicializaci\'on).
 
 % \begin{figure}[h!]
 % \centering
@@ -159,7 +159,7 @@ Para la conversi\'on se utilizaron las calibraciones obtenida de la parte \ref{p
 \item Aceler\'ometro: Adem\'as de una calibraci\'on como la del magnet\'ometro, se implement\'o una compensaci\'on por temperatura:
   \begin{equation}
     \label{eq:software:acc}
-    conv = T*inv(K)*(crudo - b + b_t*(t - t_0))    
+    conv = T.inv(K).(crudo - b + b_t.(t - t_0))    
   \end{equation}
   donde
   \begin{itemize}
