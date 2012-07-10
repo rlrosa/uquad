@@ -75,12 +75,30 @@ El montaje del GPS se realiza de forma que tenga la mayor visibilidad de satéli
 \begin{wrapfigure}{r}{0.5\textwidth}
 	\begin{center}
 	\vspace{-40pt}
-		\includegraphics[width=0.35\textwidth]{./pics_montaje/cl.jpg}
+		\includegraphics[width=0.35\textwidth]{./pics_montaje/cl2.jpg}
 	\end{center}
 	\caption{Placa de conversores lógicos}
+	\vspace{-30pt}
 	\label{fig:cl}
 \end{wrapfigure}
 
 Como ya fue mencionado fue necesario la impresión de un circuito que convirtiera los voltajes entre las diferentes placas que componen el sistema. El mismo fue ubicado sobre 4 tuercas solidarias a la carrocería que se encontraban sin utilizar. La placa (mostrada en la figura \ref{fig:cl}), fue diseñada con el tamaño justo para atornillarse allí.
+
+\section{Protección}
+
+Debido a la poca confianza que se tiene sobre los ESCs, se diseño una protección de aluminio para disminuir los daños causados por una eventual caída o golpe. \\
+
+\begin{figure} [h!]
+\centering
+\vspace{-40pt}
+  \subfloat[Vista general]{\label{fig:protec_gral}
+  		\includegraphics[width=.55\textwidth]{./pics_montaje/proteccion_completo.png}}
+  \subfloat[Detalle de motor]{\label{fig:protec_mot} 
+  		\includegraphics[width=.25\textwidth]{./pics_montaje/proteccionmotor.png}}
+  \caption{Protección}
+  \label{fig:proteccion}
+\end{figure}
+
+El material fue elegido teniendo como principales restricciones el peso, que disminuirá la carga útil del cuadricóptero, y su resistencia. El total de las protecciones aumenta en aproximadamente 250 gramos el peso del cuadricóptero. Las láminas de aluminio tienen forma de ``L'' para lograr mayor robustez. Las protecciones se pueden ver en la figura \ref{fig:proteccion}.
 
 \end{document}
