@@ -26,7 +26,13 @@ Por \'ultimo queremos agradecer al panadero por prestarnos en varias ocasiones l
 
 \chapter*{Res\'umen}
 \begin{flushright}
-\textit{El proyecto tiene por objetivo fundamental el diseño y la integración de un sistema de control que permita el vuelo autónonomo de un cuadricóptero comercial radiocontrolado. Se presentan en esta documentaci\'on la caracterizaci\'on y el modelado del cuadric\'optero comercial TurboAce X720 (o LotusRC T850), la integraci\'on del mismo con una inteligencia adquirida y sensores. Se presentan adem\'as los detalles del filtro de Kalman implementado para la estimaci\'on del estado y los detalles del controlador LQR con acci\'on integral dise\~nado. Dichos algoritmos fueron testeados exhaustivamente con diversas simulaciones y pruebas sobre el sistema real, las cuales tambi\'en se presentan. Se desarroll\'o tambi\'en un simulador en \emph{MatLab} para probar los algoritmos de control.
+\textit{El proyecto tiene por objetivo fundamental el diseño y la integración de un sistema de control que permita el vuelo autónonomo de un cuadricóptero comercial radiocontrolado. En esta documentaci\'on se presentan la caracterizaci\'on y el modelado del cuadric\'optero utilizado y la integraci\'on del mismo con la inteligencia implementada. Se agregaron sensores externos, se incluye una descripci\'on detallada del procedimiento de calibraci\'on que se aplic\'o sobre ellos. La estimaci\'on del estado se obtiene de la combinaci\'on de los sensores disponibles dentro de una implementaci\'on de un filtro de Kalman. Las acciones de control se obtienen mediante un controlador proporcional-integral basado en el algoritmo LQR. Los algoritmos fueron testeados exhaustivamente dentro de un simulador en MatLab, y luego sobre el sistema real.
+}
+\end{flushright}
+\
+\chapter*{Abstract}
+\begin{flushright}
+\textit{The main goal of the project is the design and integration of a control system that will allow the autonomous flight of a radio controlled commercial quadcopter. This documentation presents the characterization and modelling of the quadcopter, and the integration of an external intelligence. External sensors were added to the platform, the calibration procedure is described in detail. The state estimation is derived from the combination of these sensors within an implementation of a Kalman Filter. The control actions are obtained from a proportional-integral control system based on the LQR algorithm. The algorithms were extensively tested in a simulator, within MatLab, and then on the real system.
 }
 \end{flushright}
 \end{document}
