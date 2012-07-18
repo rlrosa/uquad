@@ -130,7 +130,7 @@
 
 #define IMU_FRAME_BUFF_SIZE               32
 
-#define IMU_FILTER_LEN                    6 // Reduce noise by filtering
+#define IMU_FILTER_LEN                    1 // Reduce noise by filtering
 #define IMU_CALIB_SIZE                    512
 
 #define IMU_GYRO_DEFAULT_GAIN             14.375 // Not used
@@ -154,7 +154,7 @@
  *       converted magn data will be lost after conversion (imu_data does not
  *       expose magn data, only euler angles).
  */
-#define IMU_TH_ACC  1.0 // m/s^2
+#define IMU_TH_ACC  3.0 // m/s^2
 #define IMU_TH_MAGN 0.5 // no units
 
 #define IMU_BYTES_T_US                    4

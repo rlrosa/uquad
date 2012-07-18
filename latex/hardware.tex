@@ -18,24 +18,87 @@ La elecci\'on del hardware representa una parte muy importante del Proyecto. Una
 
 A la hora de la planificaci\'on del Proyecto se plantea la opci\'on de partir de cero, dise\~nando completamente el cuadric\'optero. Si bien esta opci\'on tiene la ventaja de que se puede conocer completamente su funcionamiento, implica problemas de ingenier\'ia mec\'anica que no se pretenden resolver, conocimientos de resistencia, flexibilidad y peso de materiales, as\'i como tambi\'en diversas complicaciones adicionales a la hora de fabricar y armar los distintos componentes. Dados los plazos del proyecto, y que su objetivo se centra en el control del veh\'iculo, la necesidad de partir de un dispositivo electromec\'anico ya construido resulta imperiosa.\\
 
-La plataforma escogida es el cuadric\'optero Turbo Ace X720 (o LotusRc 850). Esta plataforma es controlada por un usuario a trav\'es de un control remoto comercial est\'andar (Walkera 2801). El sistema receptor se encarga de setear la velocidad angular de cada motor en funci\'on de la se\~nal recibida.
+La plataforma escogida es el cuadric\'optero \textbf{Turbo Ace X720}. Esta plataforma es controlada por un usuario a trav\'es de un control remoto comercial est\'andar (Walkera 2801). El sistema receptor se encarga de \emph{setear} la velocidad angular de cada motor en funci\'on de la se\~nal recibida.\\
 
-\subsubsection*{Motores}
-Los motores de la plataforma son de tipo \emph{Brushless}: son el\'ectricos con el rotor de im\'an permanente y tres pares de bobinas en el estator alimentados con corriente continua switcheada. Tienen un sistema de conmutaci\'on el\'ectrico (\textbf{ESC}\footnote{Electronic Speed Controller.}) , y presentan relaciones lineales entre corriente y torque, y entre frecuencia y velocidad. Son com\'unmente utilizados en veh\'iculos radio-controlados por su eficiencia, potencia, durabilidad y su bajo peso (en comparaci\'on con los de tipo \emph{Brushed}).\\ 
+La plataforma escogida consta de un receptor, una CPU, una batería, 4 motores y 4 ESCs\footnote{Electronic Speed Controller} montados sobre un cuerpo de fibra de carbono. Además incluye un transmisor (control remoto), imprescindible para volarlo. La electrónica original (ESCs y CPU) también se puede encontrar bajo el nombre de \textbf{Lotus RC T580}, otra plataforma comercial.
 
-Los ESCs inclu\'idos en la plataforma reciben comandos mediante el protocolo $I^2C$, a $333kHz$.  
+\subsection*{Motores}
+Los motores de la plataforma son de tipo \emph{Brushless} (sin escobillas): son el\'ectricos con el rotor de im\'an permanente y tres pares de bobinas en el estator alimentados con corriente continua conmutada. Necesitan de un sistema de conmutaci\'on el\'ectrico (\textbf{ESC}) que los controlen, y presentan relaciones lineales entre corriente y torque, y entre frecuencia y velocidad. Son com\'unmente utilizados en veh\'iculos radio-controlados por su eficiencia, potencia, durabilidad y su bajo peso (en comparaci\'on con los de tipo \emph{Brushed}).\\
 
-\subsubsection*{Peso}
+Como se explica en \cite{bib:brushless}, la energía eléctrica es convertida a mecánica mediante las fuerzas de atracción magnéticas entre el imán permanente del rotor y el campo magnético giratorio inducido por los devanados del rotor. En la figura \ref{fig:brushless}, también tomada de \cite{bib:brushless}, se muestra un diagrama simplificado de un motor \emph{Brushless}.
 
-Adem\'as de toda la instrumentaci\'on que incluye el cuadric\'optero, se incorporar\'a una placa de desarrollo, una de sensores (IMU), un GPS, una interfaz para comunicaci\'on Wi-Fi, y una bater\'ia dedicada exclusivamente a alimentar la electr\'onica agregada. Es de inter\'es conservar la posibilidad de integrar una c\'amara fotogr\'afica. La carga que puede levantar el cuadric\'optero es de 1300g, de la que se debe descontar el peso de las bater\'ias de la electr\'onica y de la alimentaci\'on a los motores.
+\begin{figure}[h!]
+%\vspace{-10pt}
+	\centering
+	\includegraphics[width=0.7\textwidth]{./pics_eleccion_hardware/brushless.png}
+\vspace{-10pt}
+	\caption{Esquema simplificado de motor \emph{Brushless}}
+	\label{fig:brushless}
+\end{figure}
+
+En este ejemplo se muestran 3 circuitos electromecánicos conectados a un punto común y separados en el centro para permitir el movimiento del rotor. La mayoría de los motores \emph{Brushless} tienen un devanado en 3 fases con topología de estrella, como se muestra en la figura anterior. Un motor con esta topología se maneja energizando 2 de las fases al mismo tiempo. Para energizar en el momento adecuado cada pareja de fases se utiliza un controlador electrónico de velocidad, como se explicó anteriormente.
+
+\subsubsection*{Controlador electrónico de velocidad (ESC)}
+
+Los ESCs inclu\'idos en la plataforma reciben comandos mediante el protocolo $I^2C$, a $333kHz$. Se encargan de conmutar la corriente continua que reciben los motores de modo de energizar la pareja de fases correspondiente en el momento justo para que el campo electromagnético inducido genere el máximo torque posible sobre el imán del rotor. En la práctica el máximo torque es alcanzado cuando el imán permanente del rotor está desfasado $90^o$ respecto del campo magnético resultante en el rotor.
+
+La clave del funcionamiento de un motor \emph{Brushless} es poder sensar la posición del rotor y en función de ello energizar las fases que ejercerán mayor torque. Para dicho sensado comúnmente se utiliza un sensor de posición de 3 elementos basado en el \emph{efecto Hall}.\\
+
+El rotor se mueve 60 grados por cada paso de la conmutación. La ruta apropiada para la corriente del estator es activada cuando el rotor se encuentra a $120^o$ de la dirección del campo magnético del estator y es desactivada cuando el rotor pasa $60^o$ dicha dirección, momento en el cual se activa el siguiente circuito y se repite el proceso. En cada instante una de las fases del motor es conducida a nivel alto, otra a nivel bajo y la restante se deja ``flotando''.\\
+
+\begin{wrapfigure}{l}{0.44\textwidth}
+\vspace{-20pt}
+	\centering
+		\includegraphics[width=0.38\textwidth]{./pics_eleccion_hardware/bldc_control.png}
+\vspace{-10pt}
+	\caption{Conmutación BLDC}
+	\label{fig:bldc_control}
+\end{wrapfigure}
+
+Para realizar la conmutación se utiliza una configuración conocida como ``puente H'', donde por cada fase se utilizan 2 transistores encargados de conducir a los niveles alto y bajo y un tercer transistor (\emph{driver}) que maneja al primero. En la figura \ref{fig:bldc_control} se muestra un diagrama típico de un circuito utilizado para conmutar corriente continua en una fase de un motor \emph{Brushless}. Una precaución muy importante que se debe considerar para este tipo de motores es no activar nunca al mismo tiempo los caminos al nivel bajo y al nivel alto, es decir que nunca conduzcan al mismo tiempo los transistores \emph{T1} y \emph{T2}. Los estados viables para los transistores son las mostradas en la tabla \ref{tab:estado_transistores}.\\
+
+\begin{table}[H]
+\begin{center}
+\rowcolors{1}{gray!20}{}
+\vspace{-10pt}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\textbf{Configuración} & \textbf{T1} & \textbf{T2} & \textbf{Fase} \\ \hline
+A & Cortado & Cortado & Flotando \\
+B & Conduciendo & Cortado & Nivel alto \\
+C & Cortado & Conduciendo & Nivel bajo \\
+\hline
+\end{tabular}
+\caption{Configuraciones posibles para los transistores}
+\vspace{-20pt}
+\label{tab:estado_transistores}
+\end{center}
+\end{table}
+
+Si se impone un voltaje mayor a $0.7 V$ en la base del \emph{driver} (punto \textbf{1} de la figura \ref{fig:bldc_control}), dicho transistor conducirá, lo cual fijará un voltaje de $0.2V$ en el punto \textbf{2} del diagrama, correspondiente al \emph{gate} del transistor \textbf{T1}. Este voltaje en el \emph{gate} provoca que el transistor quede cortado, no dejando pasar corriente entre el \emph{source} y el \emph{drain}. En esta situación hay 2 escenarios posibles: que el transistor \textbf{T2} se encuentre conduciendo o que se encuentre cortado. Para que se de el primer escenario (configuración \textbf{C}) es necesario que el microcontrolador imponga un voltaje positivo en el gate del transistor \textbf{T2}, logrando un camino de baja impedancia entre tierra y la fase en cuestión del motor. En este caso se estaría conduciendo dicha fase a nivel bajo. El otro escenario implica que dicha fase quede en estado ``flotando'' (configuración \textbf{A}) ya que ambos transistores permanecen cortados. Por último la otra situación posible es que el transistor \textbf{T1} conduzca (configuración \textbf{B}), situación en la cual el transistor \textbf{T2} deberá permanecer cortado, lo cual se logra llevando a $0V$ el punto \textbf{1} del diagrama.\\
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=1\textwidth]{./pics_eleccion_hardware/diagrama_ESC.pdf}
+	\vspace{-10pt}
+	\caption{Esquemático de un ESC}
+	\label{fig:diagrama_esc}
+\end{figure}
+
+En la figura \ref{fig:diagrama_esc} se muestra el diagrama de un ESC obtenido al relevar el controlador que originalmente incluía el cuadricóptero comercial adquirido\footnote{Este controlador se dej\'o de fabricar, existen dos versiones nuevas de ESC, una de ellas mantiene el mismo protocolo de comunicaci\'on que el aqu\'i presentado, esto fue verificado, ya que en la \'ultima versi\'on de la plataforma implementada se utiliz\'o este controlador.  Los fabricantes indican que hay la otra versi\'on utiliza un protocolo de comunicaci\'on distinto, no se trabaj\'o con estos ESC. }. Se pueden identificar los diversos bloques mencionados a los largo de esta sección. El bloque se sensado es utilizado para obtener la posición del rotor en cada instante de tiempo, el bloque de conmutación es el encargado de energizar las fases correspondientes en cada paso y microcontrolador es el encargado de interpretar la información del sensado de la posición del rotor y actuar sobre los transistores para generar el campo magnético rotatorio. Las fases \textbf{1}, \textbf{2} y \textbf{3} se conectan a los terminales \textbf{A}, \textbf{B} y \textbf{C} mostrados en la figura \ref{fig:brushless}. El denominado ``puente H'' se forma entre cada pareja de bloques de conmutación y las bobinas del motor que quedan energizadas.
+
+\subsubsection*{Instrumentaci\'on e inteligencia}
+
+	La instrumentaci\'on con la que cuenta el dispositivo est\'a destinada a simplificar el manejo a control remoto, estabilizando el sistema. La misma incluye un bar\'ometro y aceler\'ometro y gir\'oscopo de 3 ejes. Cuenta adem\'as con una CPU que se encarga de la lectura de los datos proporcionados por los sensores y de definir las acciones de control sobre los motores. No se dispone del c\'odigo del programa presente en la CPU, y por lo tanto no es posible reutilizarlo, ni tampoco obtener la lectura de los sensores presentes. Se realizaron esfuerzos para conseguir dicha informaci\'on del fabricante, quien se neg\'o a proporcionarla. Por dicho motivo se opta por dotar al sistema de instrumentaci\'on adicional. 
 
 \subsubsection*{Tiempo de vuelo}
 
 El tiempo de vuelo utilizando una bater\'ia de LiPo de 5300mAh (450g) y una carga de 500g es cercano a los 10-15 minutos.
 
-\subsubsection*{Instrumentaci\'on e inteligencia}
+\subsubsection*{Carga \'util}
 
-	La instrumentaci\'on con la que cuenta el dispositivo est\'a destinada a simplificar el manejo a control remoto, estabilizando el sistema. La misma incluye un bar\'ometro y aceler\'ometro y gir\'oscopo de 3 ejes. Cuenta adem\'as con una CPU que se encarga de la lectura de los datos proporcionados por los sensores y de definir las acciones de control sobre los motores. No se dispone del c\'odigo del programa presente en la CPU, y por lo tanto no es posible reutilizarlo, ni tampoco obtener la lectura de los sensores presentes. Se realizaron esfuerzos para conseguir dicha informaci\'on del fabricante, quien se neg\'o a proporcionarla. Por dicho motivo se opta por dotar al sistema de instrumentaci\'on adicional. 
+Adem\'as de toda la instrumentaci\'on que incluye el cuadric\'optero, se incorporar\'a una placa de desarrollo, una de sensores (IMU), un GPS, una interfaz para comunicaci\'on Wi-Fi, y una bater\'ia dedicada exclusivamente a alimentar la electr\'onica agregada. Es de inter\'es conservar la posibilidad de integrar una c\'amara fotogr\'afica. La carga que puede levantar el cuadric\'optero es de 1300g, de la que se debe descontar el peso de las bater\'ias de la electr\'onica y de la alimentaci\'on a los motores.
+
 
 \section{Inteligencia}
 \begin{wrapfigure}{l}{0.35\textwidth}
@@ -96,15 +159,21 @@ Existen diversos tipos de aceler\'ometros. Se eligi\'o trabajar con un aceler\'o
 
 Se opt\'o por utilizar tecnolog\'ia MEMS fundamentalmente por tama\~no, peso y costo. Los mismos son m\'as peque\~nos, livianos y baratos que otras tecnolog\'ias.\\
 
-%TODO Referencia a MEMS
+
 
 El aceler\'ometro cumple dos roles fundamentales:
 \begin{enumerate}
-\item Bajo la hip\'otesis de que las aceleraciones a las cuales se ver\'a sometido el sistema \textbf{no} son comparables con $g$, sirve para determinar los \'angulos de Pitch y de Roll.
+\item Bajo la hip\'otesis de que las aceleraciones a las cuales se ver\'a sometido el sistema \textbf{no} son comparables con $g$, sirve para determinar los \'angulos de Pitch y de Roll. En la figurea \ref{fig:acc_pitch} se ilustra la forma de lograr esto para el \'angulo de Pitch. Las ecuaciones utilizadas pueden encontrarse en \ref{chap:Software}.
 \item Permite obtener una estimaci\'on de la velocidad, integrando su medida.  
 \end{enumerate}
 
- 
+ \begin{figure}
+	\centering
+	\includegraphics[width=0.5\textwidth]{./pics_eleccion_hardware/euler.png}
+	\vspace{-10pt}
+	\caption{Determinaci\'on del \'angulo de Pitch}
+	\label{fig:acc_pitch}
+\end{figure}
 \subsubsection{Gir\'oscopo}
 \label{giro}
 

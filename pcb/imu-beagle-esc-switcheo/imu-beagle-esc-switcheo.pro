@@ -1,4 +1,4 @@
-update=mar 22 may 2012 17:13:29 UYT
+update=dom 08 jul 2012 13:54:29 ART
 version=1
 last_client=pcbnew
 [cvpcb]
@@ -83,6 +83,7 @@ PadDrlX=320
 PadDimH=600
 PadDimV=600
 BoardThickness=630
+SgPcb45=1
 TxtPcbV=800
 TxtPcbH=600
 TxtModV=600

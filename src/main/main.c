@@ -216,8 +216,13 @@
 /**
  * Display current state estimation on console every X_HAT_STDOUT samples.
  * If set to 0, then nothing will be displayed.
+ *
+ * If X_HAT_STDOUT is 1, then if SVNAME the name of each element of the state
+ * vector will be printed in a line before the values, this takes up space
+ * but makes it easier to visualize things.
  */
 #define X_HAT_STDOUT       0
+#define SV_NAME            0
 
 /**
  * Frequency at which motor controller is updated
@@ -842,7 +847,7 @@ int main(int argc, char *argv[]){
 	 * estimator if no other GPS updates are received during IMU
 	 * warmup.
 	 */
-	retval = gps_comm_get_data_unread(gps, gps_dat, NULL);
+	retval = gps_comm_get_data(gps, gps_dat, NULL);
 	quit_log_if(retval,"Failed to get initial position from GPS!");
 	retval = gps_comm_set_0(gps,gps_dat);
 	quit_if(retval);
@@ -1920,10 +1925,12 @@ int main(int argc, char *argv[]){
 #if X_HAT_STDOUT
 	    if(x_hat_cnt++ > X_HAT_STDOUT)
 	    {
+#if SV_NAME
 		print_sv_name(stdout);
+#endif // SV_NAME
 		uquad_mat_dump_vec(kalman->x_hat,stdout,true);
-		fprintf(stdout,"\n");
 		x_hat_cnt = 0;
+		fflush(stdout);
 	    }
 #endif // X_HAT_STDOUT
 

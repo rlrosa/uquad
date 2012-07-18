@@ -15,13 +15,13 @@ El simulador fue desarrollado gracias a la herramienta \emph{Simulink} de \emph{
 
 \subsection{Lazo Abierto}
 
-Las ecuaciones que gobiernan al sistema(Ecuaciones \ref{eq:modelo}\footnote{Se agrega tambi\'en la dependencia de la \'ultima ecuaci\'on del modelo con las derivadas de las velocidades angulares del sistema}) son continuas y pueden representarse como:
+Las ecuaciones que gobiernan al sistema (Ecuaciones \ref{eq:modelo}\footnote{Se agrega tambi\'en la dependencia de la \'ultima ecuaci\'on del modelo con las derivadas de las velocidades angulares del sistema}) son continuas y pueden representarse como:
 
 \begin{equation}
 \label{eq:lazo_abierto}
 \dot{X} = f(X,u,t)
 \end{equation}
-Donde $X$ es el vector de estados del sistema definido en el cap\'itulo \ref{chap:modelo_fisico}, u el vector de entradas del sistema y t el tiempo. Para la simulaci\'on se utiliza el m\'etodo de resoluci\'on ODE45 (Dormand-Prince). Este m\'etodo de resoluci\'on de ecuaciones diferenciales, se utliza un paso de resoluci\'on variable: el paso m\'aximo y m\'inimo es de 10ms y 1ms respectivamente. La estructura que se eligi\'o para desarrollar esta secci\'on se corresponde con el camino que se recorri\'o para determinar el modelo f\'isico. El lazo abierto consta de tres bloques principales. En primer lugar tenemos un bloque encargado de generar las fuerzas y momentos a partir de las velocidades angulares de las h\'elices. Luego tenemos un bloque que se encarga de resolver la din\'amica del sistema y un tercer bloque encargado de la cinem\'atica. En la figura \ref{fig:lazo_abierto} se observa la estructura global del lazo abierto. En la figura \ref{fig:vista} se observa una captura de pantalla que representa la vista general de la parte encargada de simular el lazo abierto.
+Donde $X$ es el vector de estados del sistema definido en el cap\'itulo \ref{chap:modelo}, u el vector de entradas del sistema y t el tiempo. Para la simulaci\'on se utiliza el m\'etodo de resoluci\'on ODE45 (Dormand-Prince). Este m\'etodo de resoluci\'on de ecuaciones diferenciales, se utliza un paso de resoluci\'on variable: el paso m\'aximo y m\'inimo es de 10ms y 1ms respectivamente. La estructura que se eligi\'o para desarrollar esta secci\'on se corresponde con el camino que se recorri\'o para determinar el modelo f\'isico. El lazo abierto consta de tres bloques principales. En primer lugar tenemos un bloque encargado de generar las fuerzas y momentos a partir de las velocidades angulares de las h\'elices. Luego tenemos un bloque que se encarga de resolver la din\'amica del sistema y un tercer bloque encargado de la cinem\'atica. En la figura \ref{fig:lazo_abierto} se observa la estructura global del lazo abierto. En la figura \ref{fig:vista} se observa una captura de pantalla que representa la vista general de la parte encargada de simular el lazo abierto.
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=1\textwidth]{./pics_simulador/lazo_abierto.png}
@@ -57,7 +57,7 @@ En la figura \ref{fig:cinematica} se puede observar un diagrama de bloques de la
 Al igual que el bloque anterior, se divide este en dos sub-bloques m\'as (ver figura \ref{fig:dinamica}): el que devuelve las velocidades angulares, y el que devuelve las velocidades lineales. 
 
 \subsection{Lazo cerrado}
-El lazo cerrado simula las acciones de control del sistema. Adem\'as de las ecuaciones del lazo abierto (ecuaci\'on \ref{eq:lazo_abierto}) se agrega la realimentaci\'on de las variables de estado ($x,y,z,\psi,\varphi,\theta,v_{qx},v_{qy},v_{qz},\omega_{qx},\omega_{qy},\omega_{qz}$) y de las integrales de $x,y,z,\theta$. Llamamos $X_I$ al vector compuesto por dichas integrales. La ecuaci\'on de realimentaci\'on es:
+El lazo cerrado simula las acciones de control del sistema. Adem\'as de las ecuaciones del lazo abierto (ecuaci\'on \ref{eq:lazo_abierto}) se agrega la realimentaci\'on de las variables de estado ($x,y,z,\psi,\varphi,\theta,v_{qx},v_{qy},v_{qz},\omega_{qx},\omega_{qy},\omega_{qz}$) y de las integrales del error entre $x,y,z,\theta$ y los respectivos setpoint. Llamamos $X_I$ al vector compuesto por dichas integrales. La ecuaci\'on de realimentaci\'on es:
 
 \begin{equation}
 u(t) = u_{setpoint}(t) -K\left(\begin{array}{c}
@@ -208,6 +208,6 @@ En la figura \ref{fig:hovz} se presenta la altura en funci\'on del tiempo. La mi
   \label{fig:hov}
 \end{figure}
 
-Hasta aqu\'i hemos testeado el simulador en situaciones conocidas. Nos concentramos en analizar la caida libre y las cuatro acciones de control b\'asicas que se pueden realizar descriptas en \ref{chap:general}. De acuerdo a las pruebas realizadas puede afirmarse que su funcionamiento es el adecuado ya que en ninguna prueba se obtuvieron errores considerables. Sin embargo, es fundamental aclarar que hasta aqu\'i no es posible afirmar que el modelado del sistema sea adecuado, lo \'unico que puede concluirse es que el simulador representa fielmente las ecuaciones que han sido deducidas hasta el momento. Un error en las ecuaciones no se reflejar\'a hasta el momento de testear el cuadric\'optero. El trabajo realizado a la hora del modelado y la comparaci\'on con diversas bibliograf\'ias (\ref{bib:quadrotor-bible} y \ref{bib:curso_quad}) nos permite a esta altura estar convencidos de que dichas ecuaciones son adecuadas para modelar el sistema.
+Hasta aqu\'i hemos testeado el simulador en situaciones conocidas. Nos concentramos en analizar la caida libre y las cuatro acciones de control b\'asicas que se pueden realizar descriptas en \ref{chap:general}. De acuerdo a las pruebas realizadas puede afirmarse que su funcionamiento es el adecuado ya que en ninguna prueba se obtuvieron errores considerables. Sin embargo, es fundamental aclarar que hasta aqu\'i no es posible afirmar que el modelado del sistema sea adecuado, lo \'unico que puede concluirse es que el simulador representa fielmente las ecuaciones que han sido deducidas hasta el momento. Un error en las ecuaciones no se reflejar\'a hasta el momento de testear el cuadric\'optero. El trabajo realizado a la hora del modelado y la comparaci\'on con diversas bibliograf\'ias (\cite{bib:quadrotor-bible} y \cite{bib:curso_quad} entre otras) nos permite a esta altura estar convencidos de que dichas ecuaciones son adecuadas para modelar el sistema.
 
 \end{document}

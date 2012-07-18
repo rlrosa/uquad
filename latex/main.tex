@@ -38,13 +38,12 @@
 \rmfamily
 \renewcommand{\appendixtocname}{Anexos}
 \subfile{portada}
+\subfile{dedicatoria}
 \tableofcontents
 \subfile{introduccion}
 \part{Descripción del sistema}
 \subfile{general}
 \subfile{hardware}
-\subfile{montaje}
-\subfile{software}
 \part{Modelado del sistema}
 \subfile{modelo_fisico}
 \subfile{simulador}
@@ -64,6 +63,11 @@
 \subfile{control}
 \subfile{sim_control}
 \subfile{test_control}
+\part{Implementaci\'on}
+\subfile{montaje}
+\subfile{software}
+\subfile{electronica}
+\subfile{switcheo}
 \subfile{conclusion}
 \cleardoublepage
 \addappheadtotoc
@@ -73,15 +77,20 @@
 
 
 \appendix 
-\subfile{camara.tex}
+\subfile{camara}
 \subfile{anexo_mongoose}
 \subfile{anexo_tensores}
 \subfile{anexo_linealizacion}
 \subfile{anexo_gps_dop}
 \subfile{anexo_codigo}
 \subfile{anexo_cuidados}
+\subfile{anexo_manual}
 \subfile{anexo_simulador}
+\subfile{anexo_costos}
 
 \bibliographystyle{ieeetr} 
+\cleardoublepage
+\phantomsection
+\addcontentsline{toc}{chapter}{Bibliograf\'ia}
 \bibliography{biblio}
 \end{document}
