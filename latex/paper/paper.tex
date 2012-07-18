@@ -579,6 +579,8 @@ resultados buenos para lugares sin viento, posibles explicaciones
 
 limitaciones por culpa de los ESCs
 
+agregar ejemplos de circulos, ver q la altura
+
 \subsection{Subsection Heading Here}
 Subsection text here.
 
@@ -678,7 +680,7 @@ The conclusion goes here.
 \subsection{Future Work}
 \begin{itemize}
 \item The LotusRC ESCs proved to be extremely unreliable\footnote{Several versions were tested, all of then showed the same issues.}. Random glitches cause the motors to turn off, which inevitably leads to an accident. Replacing the ESCs is a critical task.
-\item The choice of implementing the flight controller on an operating system that does not run in real-time made timing a complicated issue. These issues were dealt with, but assinging additional tasks to the system will surely distrupt timing. Implementing the stabilization system, which required a very fast and steady loop, on a dedicated microprocessor would be a better approach. This would allow the code running on top of the operating system to perform higher level tasks, such as Visual Simultaneous localization and mapping (VSLAM), navigation, tracking, etc.
+\item The choice of implementing the flight controller on an operating system that does not run in real-time made timing a complicated issue. These issues were dealt with, but assinging additional tasks to the system will surely distrupt timing. Implementing the stabilization system, which requires a very fast and steady loop, on a dedicated microprocessor would have been a better approach. This would allow the code running on top of the operating system to perform higher level tasks, such as Visual Simultaneous Localization and Mapping (VSLAM), navigation, tracking, etc.
 \item The fact that the control system does not work in a windy environment severly limits the range of possible applications. Modifying the control system to allow flight under windy conditions would be a significant improvement.
 \end{itemize}
 
