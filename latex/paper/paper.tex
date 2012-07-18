@@ -458,7 +458,7 @@ The platform is based on a commercial radio controlled quadrotor, the frame and 
 \begin{figure}
 	\centering
 	\includegraphics[width=.7\columnwidth]{./pics_paper/quad_coord.jpg}
-	\caption{\textbf{Model of the quadrotor -} In blue arrows represent the intertial reference frame $S_I - \lbrace \hat{i},\hat{j},\hat{k}\rbrace$ ($\lbrace \vec{x},\vec{y},\vec{z}\rbrace$), mapped to  North, West and Up respectively. The red arrows represent the non-inertial reference frame $S_q - \lbrace \hat{i}_q,\hat{j}_q,\hat{k}_q\rbrace$ ($\lbrace \vec{x}_q,\vec{y}_q,\vec{z}_q\rbrace$) relative to the quadrotor. Cyan looped arrows indicate the direction of rotation of each motor (right hand rule). The semicircle and the two yellow spheres indicate the front of the unit.}
+	\caption{\textbf{Model of the quadrotor -} The blue arrows represent the intertial reference frame $S_I - \lbrace \hat{i},\hat{j},\hat{k}\rbrace$ ($\lbrace \vec{x},\vec{y},\vec{z}\rbrace$), mapped to  North, West and Up respectively. The red arrows represent the non-inertial reference frame $S_q - \lbrace \hat{i}_q,\hat{j}_q,\hat{k}_q\rbrace$ ($\lbrace \vec{x}_q,\vec{y}_q,\vec{z}_q\rbrace$) relative to the quadrotor. The cyan ``looped'' arrows indicate the direction of rotation of each motor (right hand rule applied to the green vectors labeled $T_{[1,2,3,4]}$). The semicircle and the two yellow spheres indicate the front of the unit.}
 %        \vspace{-30pt}
 	\label{fig:quad}
 \end{figure}
@@ -474,7 +474,7 @@ The platform is based on a commercial radio controlled quadrotor, the frame and 
 
 \section{Model of a quadrotor}
 
-A diagram of the quadrotor is shown in figure \refp{fig:quad}. Two of the motors rotate clockwise (2 and 4) and the other two (1 and 3) rotate clockwise. This configuration allows the quadrotor to rotate, tilt and gain/lose altitud. Two frames of reference are constantly used throught this work: An intertial frame $S_I$ (relative to the Earth) $\lbrace \hat{i},\hat{j},\hat{k}\rbrace - \lbrace \text{North},\text{West},\text{Up}\rbrace$) and a non-intertial frame $S_q$ relative to the quadrotor. Mapping one frame to the other can be achieved by applying the three rotations show in figure \refp{fig:rotaciones}, $\lbrace \theta, \varphi, \psi\rbrace$ are know as Euler angles.
+A diagram of the quadrotor is shown in figure \refp{fig:quad}. Two of the motors rotate clockwise (2 and 4) and the other two (1 and 3) rotate clockwise. This configuration allows the quadrotor to rotate, tilt and gain/lose altitud by setting different speeds on each motor. Two frames of reference are constantly used through out this paper: An intertial frame $S_I$ (relative to the Earth) $\lbrace \hat{i},\hat{j},\hat{k}\rbrace - \lbrace \text{North},\text{West},\text{Up}\rbrace$) and a non-intertial frame $S_q$ relative to the quadrotor. The mapping of one frame to the other can be achieved by applying the three rotations show in figure \refp{fig:rotaciones}. The angles $\lbrace \theta, \varphi, \psi\rbrace$ are know as Euler angles.
 
 \begin{figure} [h!]
   \centering
@@ -492,20 +492,22 @@ A diagram of the quadrotor is shown in figure \refp{fig:quad}. Two of the motors
 \end{figure}
 
 
-From a detailed analysis of the dynamics and kinemtics of the quadrotor, the state vector $\hat{X}$ given by (\refp{eq:sv}) is built to describe the system at any given time. Practical considerations lead to choosing the state variables referenced to the quadrotor frame $S_q$. This choice introduces simplifications introduced in the theoretical development, and simplifies interpretation of the data provided by the IMU, which is mounted on the quadrotor and hence provides provides accelerations and angular velocities relative to $S_q$:
-
+From a detailed analysis of the dynamics and kinematics of the quadrotor, the state vector $\vec{X}$ given by (\refp{eq:sv}) is built to describe the system at any given time. Practical considerations lead to choosing the state variables referenced to the quadrotor frame $S_q$. This choice introduces simplifications in the theoretical development, and simplifies the interpretation of the data provided by the IMU, which is mounted on the quadrotor and hence provides provides accelerations and angular velocities that are relative to $S_q$:
 \begin{equation}
-\hat{X}=\left\lbrace  x,y,z, \theta,\varphi,\psi, v_{q_z},v_{q_y},v_{q_z},\omega_{q_x},\omega_{q_y},\omega_{q_z} \right\rbrace
+\vec{X}=\left\lbrace  x,y,z, \theta,\varphi,\psi, v_{q_z},v_{q_y},v_{q_z},\omega_{q_x},\omega_{q_y},\omega_{q_z} \right\rbrace
 \label{eq:sv}
 \end{equation}
+where:
+\begin{itemize}
+\item $\lbrace x,y,z \rbrace$ are the cartesian coordinates in $S_I$.
+\item $\lbrace\theta,\varphi,\psi\rbrace$ are the Euler angles show in (\refp{fig:rotaciones}).
+\item $\lbrace v_{q_x},v_{q_y},v_{q_z}\rbrace$ are the linear velocities relative to $S_I$.
+\item $\lbrace w_{q_x},w_{q_y},w_{q_z}\rbrace$ are the angular velocities relative to $S_q$ (right hand rule applied on $\lbrace \hat{i}_q,\hat{j}_q,\hat{k}_q\rbrace$).
+\end{itemize}
+%where $\lbrace x,y,z \rbrace$ are the cartesian coordinates relative to the inertial frame $S_I$ (mapped on $\lbrace \hat{i},\hat{j},\hat{k}\rbrace$), $\lbrace\theta,\varphi,\psi\rbrace$ are the Euler angles show in (\refp{fig:rotaciones}), $\lbrace v_{q_x},v_{q_y},v_{q_z}\rbrace$ are the linear velocities relative to $S_I$ and $\lbrace w_{q_x},w_{q_y},w_{q_z}\rbrace$ are the angular velocities relative to $S_q$ (right hand rule applied on $\lbrace \hat{i}_q,\hat{j}_q,\hat{k}_q\rbrace$).
 
-where $\lbrace x,y,z \rbrace$ are the cartesian coordinates relative to the inertial frame $S_I$ (mapped on $\lbrace \hat{i},\hat{j},\hat{k}\rbrace$), $\lbrace\theta,\varphi,\psi\rbrace$ are the Euler angles show in (\refp{fig:rotaciones}), $\lbrace v_{q_x},v_{q_y},v_{q_z}\rbrace$ are the linear velocities relative to $S_I$ and $\lbrace w_{q_x},w_{q_y},w_{q_z}\rbrace$ are the angular velocities relative to $S_q$ (right hand rule applied on $\lbrace \hat{i}_q,\hat{j}_q,\hat{k}_q\rbrace$).
 
-
-The equations that govern the dynamics of a quadrotor are presented in equation \refp{eq:modelo}. The reference frames used are shown in figure \refp{fig:quad}.
-
-The model for the quadrotor described by equations \refp{eq:modelo} is highly non-linear
-
+The equations that govern the dynamics of the quadrotor, which are highly non-linear, are presented in equation \refp{eq:modelo}.
 \begin{equation}
 \small
 \boxed{\begin{aligned}&\dot{x}\!=\!v_{q_x} \cos \varphi \cos \theta \!+\! v_{q_y} ( \cos \theta \sin \varphi \sin \psi\!-\!\cos \varphi \sin \theta )\\
@@ -530,17 +532,17 @@ The model for the quadrotor described by equations \refp{eq:modelo} is highly no
 \end{aligned}}
 \label{eq:modelo}
 \end{equation}
+To simplifly the control system, equations \refp{eq:modelo} are linearized near certain points of operation which result in a Linear Time Invariant (LTI) system. These points allow the following trajectories: Hovering\footnote{Constant state vector.}, uniform linear trajectories, and uniform circular trajectories. The system will be restricted to these three trajectories, since it greatly simplifies the control system and does it not introduce significant limitations.
 
-para hacerlo rotar para un lado hay q hacer esto, para el otro lo otro
+%integradores -> permiten tomar en consideracion cosas q le cuelges, desequilibrios
 
-integradores -> permiten tomar en consideracion cosas q le cuelges, desequilibrios
+\section{Sensors}
 
 \section{Kalman Filter}
 
-In order to perform adequate control actions, a reliable estimation of the state variables must be performed in real time. A Kalman Filter achieves this using the mathematical model for the system to predict what should happen given the current state, and corrects the prediction with the information read from the sensors, taking into consideration how much confidence is placed on the prediction and how much on the measurements. This weighted prediction-correction technique allows a smooth state estimation, without the typical delay introduced by filtering. Even small delays can affect the performance of the system.
+In order to perform adequate control actions, a reliable estimation of the state variables must be performed, in real time. The Kalman Filter uses the mathematical model for the system to predict what should happen next given the current state, and corrects the prediction with the information read from the sensors, taking into consideration how much confidence is placed on the prediction and how much on the measurements. This weighted prediction-correction technique allows a smooth state estimation without the typical delay introduced by filtering, even small delays can severly affect the performance of the system.
 
 Every sensor has its issues: The gyro drifts over time; the accelerometer is very sensible to the vibrations generated by the motors; the magnetometer is distorted by ferromagnetic materials; the GPS has very little precision and a slow update rate. Each sensor by itself is very limited, but they can be combined to compensate for their limitations. The filter takes care of this.
-
 %TODO pasar figura a ingl\'e
 \begin{figure}
 	\centering
@@ -549,11 +551,9 @@ Every sensor has its issues: The gyro drifts over time; the accelerometer is ver
 	\label{fig:diagrama_kalman}
 \end{figure}
 
-The theory behind a standard Kalman Filter does not hold for a system that is not linear. The model for the quadrotor is highly non-linear, so an EKF is implemented based on \cite{bib:kalman} and \cite{bib:kalman2}. An EKF is not optimal, and the performance is highly dependant on the linearizacion \cite{bib:kay}.
-
 Two different types of data will be available, depending on the availability of GPS information. When no GPS data is available there will be no direct feedback from the sensors to correct the position on the horizontal plane, only through integration, so only the prediction step can be performed for these variables. As shown in figure \refp{fig:xyz.pdf}, the estimation will drift until GPS data is available.
 
-The EKF proved to play a critical part. For example, the data provided by the accelerometer is unusable without adequate filtering, and a simple low pass filter (LPF) was implemented to reduce noise. The 60ms delay introduced by the LPF severly deteriorated the performance of the system. When the EKF was assigned the task of reducing noise, the perfomance was significatively improved.
+The theory behind a standard Kalman Filter does not hold for a system that is not linear. The model for the quadrotor given by \refp{eq:modelo} is highly non-linear, so an EKF is implemented based on \cite{bib:kalman} and \cite{bib:kalman2}. An EKF is compatible with non-linear systems, but it is not optimal, the performance is highly dependant on the linearizacion \cite{bib:kay}. The implementation of the EKF gave very good results, and proved to play a critical part in the system. As an example, the data provided by the accelerometer is ``unusable'' without filtering, and experiments with a simple low pass filter (LPF) showed that a 60ms delay introduced by the LPF severly deteriorated the performance of the system. When the EKF was assigned the task of reducing noise, the perfomance was significatively improved.
 
 \begin{figure}
 	\centering
@@ -564,14 +564,20 @@ The EKF proved to play a critical part. For example, the data provided by the ac
 
 \section{Control design}
 
+respuesta al escalon de las cosas?
+
 \section{Software}
 
-The software runs on several independant boards: An ARM-Cortex-A8 on the flight controller, an ATMega328p on the IMU, and four microprocessors\footnote{C8051F330/1 - Silicon Labs.} on the ESCs, one for each motor. The code running on the ESCs is not available, but the communication protocol was decoded using a logic analyzer. The firmware on the IMU takes care of reading from all the sensors (using $I^2C$) and sending a new frame of data every 10ms over a UART. The code running on the flight controller processes the data from the IMU, calculates the necessary control actions, and sets the desired speed for each motor by sending the appropriate commands, via $I^2C$, to the ESCs.
-
-The code was developed in modules, replacing any part of it should be a straightforward task. The most critical aspect of the flight controller is timing, any delays will severely degrade the performance of the system.
+The software runs on several independant boards: An ARM-Cortex-A8 on the flight controller, an ATMega328p on the IMU, and four microprocessors\footnote{C8051F330/1 - Silicon Labs.} on the electronic speed controller (ESC), one for each motor. The code running on the ESCs is not available, but the communication protocol was decoded using a logic analyzer. The firmware on the IMU takes care of reading from all the sensors (using $I^2C$) and sending a new frame of data every 10ms over a UART. The code running on the flight controller processes the data from the IMU, calculates the necessary control actions, and sets the desired speed for each motor by sending the appropriate commands, via $I^2C$, to the ESCs. It requires Linux specific \textit{C} functions to handle I/O. It was developed in modules, replacing any part of it should be a straightforward task. The most critical aspect of the flight controller is timing, any delays will severely degrade the performance of the system.
 %A non-RT\footnote{Real Time.} kernel is used, timing issues were solved, but the resulting software is very delicate.  very delicate an issue. The The kernel does not function  real time 
-
+%The ESC takes care of switching the currents supplied to the brushless motors with no pinta poner cosas de los ESC ac\'a
 \section{Flight tests}
+
+Many flight tests were performed, most of them with strings attached above and below the quadrotor as security measures.
+
+resultados buenos para lugares sin viento, posibles explicaciones
+
+limitaciones por culpa de los ESCs
 
 \subsection{Subsection Heading Here}
 Subsection text here.
@@ -668,6 +674,13 @@ Subsubsection text here.
 \section{Conclusion}
 The conclusion goes here.
 
+
+\subsection{Future Work}
+\begin{itemize}
+\item The LotusRC ESCs proved to be extremely unreliable\footnote{Several versions were tested, all of then showed the same issues.}. Random glitches cause the motors to turn off, which inevitably leads to an accident. Replacing the ESCs is a critical task.
+\item The choice of implementing the flight controller on an operating system that does not run in real-time made timing a complicated issue. These issues were dealt with, but assinging additional tasks to the system will surely distrupt timing. Implementing the stabilization system, which required a very fast and steady loop, on a dedicated microprocessor would be a better approach. This would allow the code running on top of the operating system to perform higher level tasks, such as Visual Simultaneous localization and mapping (VSLAM), navigation, tracking, etc.
+\item The fact that the control system does not work in a windy environment severly limits the range of possible applications. Modifying the control system to allow flight under windy conditions would be a significant improvement.
+\end{itemize}
 
 
 
