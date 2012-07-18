@@ -965,6 +965,11 @@ int main(int argc, char *argv[]){
     err_log("Clearing IMU input buffer...");
     while(read(imu->device,tmp_buff,1) > 0);
 #endif // !IMU_COMM_FAKE
+#if !GPS_FAKE
+    // clear gps input buffer
+    err_log("Clearing GPS input buffer...");
+    while(read(gps->fd,tmp_buff,1) > 0);
+#endif // !GPS_FAKE
     running = true;
     while(1)
     {

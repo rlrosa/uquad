@@ -35,7 +35,6 @@
 #ifndef UQUAD_GPS_COMM_H
 #define UQUAD_GPS_COMM_H
 
-#include <gpsd.h>
 #include <uquad_aux_math.h>
 #include <stdio.h>
 #include <imu_comm.h>
@@ -45,6 +44,16 @@
 
 #define GPS_INIT_TOUT_S                60// GPS init timeout in sec
 #define GPS_INIT_TOUT_US               0 // GPS init timeout in sec
+
+#define GPS_NMEA_MAX_LEN               82
+#define GPS_NMEA_START                 '$'
+#define GPS_NMEA_DELIM                 ','
+#define GPS_NMEA_TYPE_LEN              5
+#define GPS_NMEA_GPGGA                 "GPGGA"
+#define GPS_NMEA_EOS                   '*'
+#define GPS_NMEA_EOL1                  '\n'
+#define GPS_NMEA_EOL2                  '\r'
+
 
 typedef struct gps_data_t gpsd_t;
 
@@ -63,9 +72,32 @@ typedef struct gps_comm_data{
     uquad_mat_t *vel; // Speed    (inertial system) {vx,vy,vz}  [m/s]
 }gps_comm_data_t;
 
+typedef struct gps_fix_ {
+    int    mode;	/* Mode of fix */
+#define MODE_NOT_SEEN	0	/* mode update not seen yet */
+#define MODE_NO_FIX	1	/* none */
+#define MODE_2D  	2	/* good for latitude/longitude */
+#define MODE_3D  	3	/* good for altitude/climb too */
+    double ept;		/* Expected time uncertainty */
+    double latitude;	/* Latitude in degrees (valid if mode >= 2) */
+    double epy;  	/* Latitude position uncertainty, meters */
+    double longitude;	/* Longitude in degrees (valid if mode >= 2) */
+    double epx;  	/* Longitude position uncertainty, meters */
+    double altitude;	/* Altitude in meters (valid if mode == 3) */
+    double epv;  	/* Vertical position uncertainty, meters */
+    double track;	/* Course made good (relative to true north) */
+    double epd;		/* Track uncertainty, degrees */
+    double speed;	/* Speed over ground, meters/sec */
+    double eps;		/* Speed uncertainty, meters/sec */
+    double climb;       /* Vertical speed, meters/sec */
+    double epc;		/* Vertical speed uncertainty */
+}gps_fix_t;
+
 typedef struct gps{
-    gpsd_t *gpsd;                // GPSD interface
+    int fd;                      // File descriptor for reading from gps
     int fix;                     // Fix type.
+
+    gps_fix_t *gps_fix;          // Information in gpsd format
 
     uquad_mat_t *pos;            // Position (inertial system)     {x,y,z}     [m]
     uquad_mat_t *pos_ep;         // Position uncertainty           {x,y,z}     [m]

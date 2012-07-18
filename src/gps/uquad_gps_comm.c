@@ -1,5 +1,5 @@
 /**
- * uquad_gps_comm: lib for communicating with gpsd
+ * uquad_gps_comm: lib for communicating with gps over USB
  * Copyright (C) 2012  Rodrigo Rosa <rodrigorosa.lg gmail.com>, Matias Tailanian <matias tailanian.com>, Santiago Paternain <spaternain gmail.com>
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -19,16 +19,16 @@
  * @author Rodrigo Rosa <rodrigorosa.lg gmail.com>, Matias Tailanian <matias tailanian.com>, Santiago Paternain <spaternain gmail.com>
  * @date   Sun May 27 11:08:44 2012
  *
- * @brief  lib for communicating with gpsd
+ * @brief  lib for communicating with gps over USB
  *
  */
 #include <uquad_gps_comm.h>
 #include <stdlib.h>
-#include <gpsd.h>
 #include <math.h>
 #include <uquad_error_codes.h>
 #include <uquad_aux_time.h>
 #include <uquad_aux_io.h>
+#include <fcntl.h> // for open()
 
 #define GPS_COMM_STREAM_FLAGS_ENA WATCH_ENABLE | WATCH_JSON
 #define GPS_COMM_STREAM_FLAGS_DIS WATCH_DISABLE
@@ -36,9 +36,55 @@
 static uquad_mat_t *m3x1 = NULL;
 static uquad_mat_t *m3x3 = NULL;
 
-gps_t *  gps_comm_init(const char *device){
-    gps_t * gps;
+int gps_comm_connect(gps_t *gps, const char *device)
+{
     int retval;
+    char str[256];
+    gps->fd = open(device,O_RDWR | O_NOCTTY | O_NONBLOCK);
+    if(gps->fd < 0)
+    {
+	err_log_stderr("open()");
+	retval = ERROR_OPEN;
+	cleanup_if(retval);
+    }
+
+    if( (strlen(device) > 5) && (strncmp(device,"/dev/",5) == 0))
+    {
+	// Set default baudrate
+	retval = sprintf(str,"stty -F %s 38400",device);
+	if(retval < 0)
+	{
+	    err_log_stderr("sprintf()");
+	    cleanup_if(ERROR_FAIL);
+	}
+	retval = system(str);
+	if(retval != 0)
+	{
+	    err_log_stderr("system()");
+	    cleanup_if(ERROR_IO);
+	}
+    }
+    return ERROR_OK;
+
+    cleanup:
+    if(gps->fd > 0)
+	if(close(gps->fd) < 0)
+	{
+	    err_log_stderr("close()");
+	}
+    return retval;
+}
+
+gps_t *  gps_comm_init(const char *device){
+    gps_t * gps = NULL;
+    int retval;
+
+    if(device == NULL)
+    {
+	err_log("NULL pointer is invalid arg!");
+	return NULL;
+    }
+
     gps = (gps_t *)malloc(sizeof(gps_t));
     cleanup_if_null(gps);
 
@@ -50,6 +96,8 @@ gps_t *  gps_comm_init(const char *device){
     cleanup_if_null(gps->pos_ep);
     uquad_mat_zeros(gps->pos_ep);
     cleanup_if(retval);
+    gps->gps_fix = (gps_fix_t *)malloc(sizeof(gps_fix_t));
+    cleanup_if_null(gps->gps_fix);
 
     m3x1 = uquad_mat_alloc(3,1);
     cleanup_if_null(m3x1);
@@ -60,40 +108,12 @@ gps_t *  gps_comm_init(const char *device){
     gps->tv_start = NULL;
     gps->tv_log_start = NULL;
 
-    if(device == NULL)
-    {
-	gps->dev = NULL;
-	// Initialize data structure and open connection
-	// Use default host/port (NULL/0)
-	gps->gpsd = (gpsd_t *)malloc(sizeof(gpsd_t));
-	cleanup_if_null(gps->gpsd);
-	retval = gps_open(NULL, 0, gps->gpsd);
-	if(retval < 0)
-	{
-	    err_log("GPS init failed, could not open connection to GPS, is daemon running?");
-	    cleanup_if(ERROR_GPS);
-	}
-
-	// Start TX from GPS
-	retval = gps_stream(gps->gpsd, GPS_COMM_STREAM_FLAGS_ENA, NULL);
-	if(retval < 0)
-	{
-	    cleanup_log_if(ERROR_GPS,"GPS init failed, could not stream from GPS.");
-	}
-    }
-    else
-    {
-	gps->gpsd = NULL;
-	gps->dev = fopen(device,"r");
-	if(gps->dev == NULL)
-	{
-	    err_log_stderr("Failed to open GPS log file!");
-	    cleanup_if(ERROR_READ);
-	}
-    }
+    retval = gps_comm_connect(gps,device);
+    cleanup_if(retval);
     return gps;
 
     cleanup:
+    err_log("GPS init failed!");
     gps_comm_deinit(gps);
     return NULL;
 }
@@ -133,7 +153,7 @@ int gps_comm_wait_fix(gps_t *gps, uquad_bool_t *got_fix, struct timeval *t_out)
 	    }
 	    else
 	    {
-		sleep_ms(GPS_COMM_WAIT_FIX_SLEEP_MS);
+		//		sleep_ms(GPS_COMM_WAIT_FIX_SLEEP_MS);
 	    }
 	}
 
@@ -194,7 +214,6 @@ int gps_comm_get_0(gps_t *gps, gps_comm_data_t *gps_dat)
 }
 
 void gps_comm_deinit(gps_t * gps){
-    int retval;
     if(gps == NULL)
     {
 	err_log("WARN: Nothing to free");
@@ -202,6 +221,7 @@ void gps_comm_deinit(gps_t * gps){
     }
     uquad_mat_free(gps->pos);
     uquad_mat_free(gps->pos_ep);
+    free(gps->gps_fix);
     uquad_mat_free(m3x1);
     uquad_mat_free(m3x3);
 
@@ -209,13 +229,11 @@ void gps_comm_deinit(gps_t * gps){
 
     if(gps->dev == NULL)
     {
-	retval = gps_stream(gps->gpsd, GPS_COMM_STREAM_FLAGS_DIS, NULL);
-	if(retval < 0)
-	    err_log("WARN: ignoring error while terminating GPS stream...");
-	retval = gps_close (gps->gpsd);
-	if(retval < 0)
-	    err_log("WARN: ignoring error while closing GPS...");
-	free(gps->gpsd);
+	if(gps->fd > 0)
+	    if(close(gps->fd))
+	    {
+		err_log_stderr("close()");
+	    }
     }
     else
     {
@@ -301,9 +319,7 @@ int gps_comm_deg2utm(utm_t *utm, double la, double lo)
 
 int gps_comm_get_fix_mode(gps_t *gps)
 {
-    return (gps->dev == NULL)?
-	gps->gpsd->fix.mode:
-	gps->fix;
+    return gps->fix;
 }
 
 uquad_bool_t gps_comm_3dfix(gps_t *gps)
@@ -315,9 +331,7 @@ uquad_bool_t gps_comm_3dfix(gps_t *gps)
 
 int gps_comm_get_fd(gps_t *gps)
 {
-    return (gps->dev == NULL)?
-	gps->gpsd->gps_fd:
-	fileno(gps->dev);
+    return gps->fd;
 }
 
 int gps_comm_set_tv_start(gps_t *gps, struct timeval tv_start)
@@ -342,15 +356,50 @@ int gps_comm_set_tv_start(gps_t *gps, struct timeval tv_start)
     return ERROR_OK;
 }
 
+// This will be shared by every gp*** parsing function
+static char buff[GPS_NMEA_MAX_LEN];
+
+int gps_comm_parse_gpgga(gps_t *gps, char *buff, int buff_index)
+{
+    if(gps == NULL)
+    {
+	err_check(ERROR_FAIL,"Invalid arguments!");
+	
+    }
+    if(buff_index != (int)strlen(buff))
+    {
+	err_log("wrong sizes!");
+	err_log_num("buff_index:",buff_index);
+	err_log_num("strlen:",(int)strlen(buff));
+	return ERROR_FAIL;
+    }
+    err_log_str("NOT implemented! Raw:",buff);fflush(stderr);
+    return ERROR_FAIL;
+}
+
+typedef enum gps_read_status{
+    GPS_SEARCHING = 0,
+    GPS_READING_TYPE,
+    GPS_READING_DATA,
+    GPS_READING_CHECKSUM_1,
+    GPS_READING_CHECKSUM_2,
+    GPS_DONE,
+    GPS_READ_STATE_COUNT
+} gps_read_status_t;
 int gps_comm_read(gps_t *gps, uquad_bool_t *ok, struct timeval *tv_curr)
 {
     int
 	i,
+	bytes_read,
 	retval;
-    struct gps_fix_t gps_fix;
+    gps_fix_t gps_fix;
     struct timeval
 	tv_tmp,
 	tv_diff;
+    static int buff_index = 0;
+    static gps_read_status_t status = GPS_SEARCHING;
+    static uint8_t checksum = 0;
+    uint8_t checksum_hex[2];
     if(gps == NULL || ok == NULL)
     {
 	err_check(ERROR_INVALID_ARG,"Invalid arguments!");
@@ -359,14 +408,127 @@ int gps_comm_read(gps_t *gps, uquad_bool_t *ok, struct timeval *tv_curr)
     if(gps->dev == NULL)
     {
 	// reading from real GPS device
-	retval = gps_read(gps->gpsd);
-	if(retval == -1)
+	bytes_read = read(gps->fd,buff + buff_index,1);
+	if(bytes_read < 0)
 	{
-	    err_check(ERROR_IO,"New data from expected, but none found...\nWas select(gps_fd) called before gps_comm_read()?");
+	    err_log_stderr("Read error: no data! Restarting...");
+	    buff_index = 0;
+	    err_propagate(ERROR_IO);
 	}
-	gettimeofday(&gps->timestamp,NULL);
-	gps_fix = gps->gpsd->fix;
-	gps->fix = gps_comm_get_fix_mode(gps);
+	switch(status)
+	{
+	case GPS_SEARCHING:
+	    if(buff[buff_index] == GPS_NMEA_START)
+	    {
+		// New frame starting
+		status = GPS_READING_TYPE;
+		checksum = 0;
+	    }
+	    buff_index = 0;
+	    break;
+	case GPS_READING_TYPE:
+	    checksum^=buff[buff_index];
+	    if(buff[buff_index] == GPS_NMEA_DELIM)
+	    {
+		// Done reading type, check if it is the one we want
+		if((buff_index == GPS_NMEA_TYPE_LEN) &&
+		   (strncmp(buff,GPS_NMEA_GPGGA,GPS_NMEA_TYPE_LEN) == 0))
+		{
+		    status = GPS_READING_DATA;
+		}
+		else
+		{
+		    if(buff_index != GPS_NMEA_TYPE_LEN)
+		    {
+			err_log("WARN: Wrong NMEA type length! Data is being lost!");
+		    }
+		    // Back to square 1
+		    status = GPS_SEARCHING;
+		}
+		buff_index = 0;
+	    }
+	    else
+	    {
+		buff_index += bytes_read;
+	    }
+	    break;
+	case GPS_READING_DATA:
+	    if(buff[buff_index] == GPS_NMEA_EOS)
+	    {
+		status = GPS_READING_CHECKSUM_1;
+	    }
+	    else
+	    {
+		// update checksum
+		checksum^=buff[buff_index];
+	    }
+	    buff_index += bytes_read;
+	    break;
+	case GPS_READING_CHECKSUM_1:
+	    buff_index += bytes_read;
+	    status = GPS_READING_CHECKSUM_2;
+	    break;
+	case GPS_READING_CHECKSUM_2:
+	    // Now checksum should have been read
+	    buff_index -= 1; // go back to start of checksum
+	    /// Verify checksum
+	    checksum_hex[0] = '0'+(checksum >> 4);
+	    checksum_hex[1] = '0'+(checksum & 0xF);
+	    if(memcmp((void *)buff + buff_index,(void *) checksum_hex,2) == 0)
+	    {
+		/// checksum ok, advance and discard checksum
+		status = GPS_DONE;
+		buff_index -= 1;
+		buff[buff_index] = '\0'; // end string, without checksum
+		/**
+		 * If the sentence was:
+		 *   $GPGGA,223725.133,3455.1055,S,05610.0335,W,1,03,3.1,0.0,M,11.3,M,,0000*52
+		 * the buffer will have the following string:
+		 *   223725.133,3455.1055,S,05610.0335,W,1,03,3.1,0.0,M,11.3,M,,0000
+		 */
+	    }
+	    else
+	    {
+		status = GPS_SEARCHING;
+		err_log("WARN: Checksum failed! Discarding data...");
+	    }
+	    // no break here
+	default:
+	    if(status == GPS_DONE)
+	    {
+		// parse frame into gps->fix
+		//TODO
+		retval = gps_comm_parse_gpgga(gps,buff,buff_index);
+		if(retval == ERROR_OK)
+		    *ok = true;
+	    }
+	    break;
+	}
+
+
+
+
+
+	/* retval = gps_read(gps->gpsd); */
+	/* if(retval == -1) */
+	/* { */
+	/*     err_check(ERROR_IO,"New data from expected, but none found...\nWas select(gps_fd) called before gps_comm_read()?"); */
+	/* } */
+	/* gettimeofday(&gps->timestamp,NULL); */
+	/* gps_fix = gps->gpsd->fix; */
+	/* gps->fix = gps_comm_get_fix_mode(gps); */
+
+
+
+
+
+
+
+
+
+
+
+
     }
     else
     {
@@ -463,6 +625,8 @@ int gps_comm_read(gps_t *gps, uquad_bool_t *ok, struct timeval *tv_curr)
 	    gps_fix.epd = 0.0;
 	}
     }
+    if(!(*ok))
+	return ERROR_OK;
     gps->lat = gps_fix.latitude;
     gps->lon = gps_fix.longitude;
 

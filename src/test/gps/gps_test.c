@@ -159,9 +159,12 @@ int main(int argc, char *argv[])
 	err_log("Should never get here!");
 	quit();
     }
-    if(argc > 1)
+    if(argc < 1)
     {
-	using_log = true;
+	quit_log_if(ERROR_FAIL,"Specify source!");
+    }
+    else
+    {
 	dev = argv[1];	
     }
     if(argc > 2)
