@@ -1929,7 +1929,6 @@ int main(int argc, char *argv[]){
 		print_sv_name(stdout);
 #endif // SV_NAME
 		uquad_mat_dump_vec(kalman->x_hat,stdout,true);
-		fprintf(stdout,"\n");
 		x_hat_cnt = 0;
 	    }
 #endif // X_HAT_STDOUT
