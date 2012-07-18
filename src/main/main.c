@@ -847,7 +847,7 @@ int main(int argc, char *argv[]){
 	 * estimator if no other GPS updates are received during IMU
 	 * warmup.
 	 */
-	retval = gps_comm_get_data_unread(gps, gps_dat, NULL);
+	retval = gps_comm_get_data(gps, gps_dat, NULL);
 	quit_log_if(retval,"Failed to get initial position from GPS!");
 	retval = gps_comm_set_0(gps,gps_dat);
 	quit_if(retval);
@@ -1930,6 +1930,7 @@ int main(int argc, char *argv[]){
 #endif // SV_NAME
 		uquad_mat_dump_vec(kalman->x_hat,stdout,true);
 		x_hat_cnt = 0;
+		fflush(stdout);
 	    }
 #endif // X_HAT_STDOUT
 
