@@ -142,6 +142,8 @@ int store_data(kalman_io_t* kd, uquad_mat_t *w, imu_data_t* data, double T, doub
     {
 	retval = uquad_mat_set_subm(z, 9, 0, gps_i_dat->pos);
 	err_propagate(retval);
+	/* GPS ALTITUDE INFORMATION IS IGNORED */
+	z->m_full[11] = data->alt;
     }
     else
     {
