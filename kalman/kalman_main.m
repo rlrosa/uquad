@@ -42,6 +42,7 @@ use_n_states = 3; % Regulates number of variables to control. Can be:
                     % 3: uses all 12 states and their integrals
 use_gps      = 1; % Use kalman_gps
 use_fake_gps = 1; % Feed kalman_gps with fake data (only if use_gps)
+use_rand_gps = 0; % Use random noise instead of zeros for fake gps
 
 use_fake_T   = 0; % Ignore real timestamps from log, use average
 
@@ -65,6 +66,9 @@ if(use_n_states < 2 && use_gps)
 end
 if(use_n_states < 2 && allin1)
   error('Cannot use intertial+GPS kalman without allin1!');
+end
+if(use_rand_gps && ~use_fake_gps)
+	error('Must enable use_fake_gps to use random noise as gps input!')
 end
 if(stabilize_ts)
 	warning('Should be set to 0 for logs dated 2012-05-13 and later!')
@@ -203,6 +207,7 @@ COV_ACC_OK  = 1e2;
 COV_ACC_BAD = 1e9;
 TH_ACC      = 1.0;
 TH_MAGN     = 0.5;
+GPS_RAND_PP = 1.0; % Random values of +-GPS_RAND_PP/2.0
 
 %                  x   y   z  psi  phi  thet vqx vqy vqz wqx wqy wqz ax  ay  az
 Q_imu_gps = diag([1e2 1e2 1e2 1e-2 1e-2 1e-5 1e2 1e2 1e2 1e-1 1e-1 1e-1 1e0 1e0 1e0 ]);
@@ -344,6 +349,11 @@ for i=2:N
 						% No more GPS
 						T_gps = inf;
 					end
+					if(use_rand_gps)
+						elevation(gps_index) = 2.0*GPS_RAND_PP*(rand() - .5);
+						westing  (gps_index) = GPS_RAND_PP*(rand() - .5);
+						northing (gps_index) = GPS_RAND_PP*(rand() - .5);
+					end
 				end
 			end
 		end
@@ -364,10 +374,10 @@ for i=2:N
 				%                         vy_gps(gps_index); vz_gps(gps_index)], w_hover);
 				if(~use_fake_gps)
 					if gps_index+1 > length(T_gps)
-                        T_gps(gps_index) = inf;
-                    else
-                        gps_index = gps_index + 1;
-                    end
+						T_gps(gps_index) = inf;
+					else
+						gps_index = gps_index + 1;
+					end
 				else
 					% Fake gps is of size 1, so force gps_index==1 to always be true
 					if(length(T) >= i + 100)
@@ -376,6 +386,11 @@ for i=2:N
 					else
 						% No more GPS
 						T_gps = inf;
+					end
+					if(use_rand_gps)
+						elevation(gps_index) = 2.0*GPS_RAND_PP*(rand() - .5);
+						westing  (gps_index) = GPS_RAND_PP*(rand() - .5);
+						northing (gps_index) = GPS_RAND_PP*(rand() - .5);
 					end
 				end
 			else

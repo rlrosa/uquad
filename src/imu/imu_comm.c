@@ -532,13 +532,14 @@ imu_t *imu_comm_init(const char *device){
     if(m3x3 == NULL || m3x1_0 == NULL || m3x1_1 == NULL)
 	goto cleanup;
 
+    imu->h[0] = 1  ;
     // Set up filter, must have IMU_FILTER_LEN coefs
-    imu->h[0] = 0.2;
-    imu->h[1] = 0.2;
-    imu->h[2] = 0.2;
-    imu->h[3] = 0.2;
-    imu->h[4] = 0.1;
-    imu->h[5] = 0.1;
+    /* imu->h[0] = 0.2; */
+    /* imu->h[1] = 0.2; */
+    /* imu->h[2] = 0.2; */
+    /* imu->h[3] = 0.2; */
+    /* imu->h[4] = 0.1; */
+    /* imu->h[5] = 0.1; */
 
     // now connect to the imu
     retval = imu_comm_connect(imu,device);
