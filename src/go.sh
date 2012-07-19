@@ -3,7 +3,7 @@
 # -e: Exit immediately if a command exits with a non-zero status.
 #     ERR trap is inherited by shell functions.
 # Args:
-#   ./go.sh <serial_port> <do_pc_test> <log_path>
+#   ./go.sh <serial_port> <do_pc_test> <log_path> <gps_path>
 
 trap ctrl_c INT
 function ctrl_c() {
@@ -51,6 +51,13 @@ else
     log_path=/media/sda1/
 fi
 echo Will save logs to ${log_path}
+if [ $3 ];
+then
+    gps_path=$3
+else
+    gps_path=/dev/ttyUSB0
+fi
+echo Will connect to GPS at ${gps_path}
 
 err_pipe=err.p
 
@@ -64,14 +71,14 @@ cd ../../
 mv i2c_beagle/cmd${pc_test} build/main/cmd
 
 # launch gpsd
-(cd ../scripts; ./start_gpsd.sh)
-sleep 1
+#(cd ../scripts; ./start_gpsd.sh)
+#sleep 1
 
 # run main
 echo ""
 echo Running main...
 echo ""
-(cd build/main; ./main ${serial_port} ${log_path};echo "";echo "-- -- -- --";echo "Main finished!";echo "-- -- -- --";)
+(cd build/main; ./main ${serial_port} ${log_path} ${gps_path};echo "";echo "-- -- -- --";echo "Main finished!";echo "-- -- -- --";)
 
 # kill everything. Muaha, ha.
 ctrl_c
