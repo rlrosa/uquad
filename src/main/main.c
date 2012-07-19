@@ -61,15 +61,15 @@
 #define LOG_ERR          1
 #define LOG_W            1
 #define LOG_W_CTRL       0
-#define LOG_IMU_RAW      1
+#define LOG_IMU_RAW      0
 #define LOG_IMU_DATA     0
 #define LOG_IMU_AVG      0
 #define LOG_X_HAT        1
 #define LOG_GPS          1
 #define LOG_KALMAN_INPUT 1
-#define LOG_TV           1
-#define LOG_T_ERR        1
-#define LOG_INT          (1 && CTRL_INTEGRAL)
+#define LOG_TV           0
+#define LOG_T_ERR        0
+#define LOG_INT          (0 && CTRL_INTEGRAL)
 #define LOG_BUKAKE       0
 /**
  * Access to SD card on beagleboard has proven to be VERY slow,
@@ -1424,13 +1424,10 @@ int main(int argc, char *argv[]){
 		    // ignore startup data
 		    goto end_gps;
 
-		gps_update = false;// force to ignore GPS
-		goto end_gps;
-
 		// Use latest IMU update to estimate speed from GPS data
 		err_gps = gps_comm_get_data_unread(gps, gps_dat,NULL);
 		log_n_jump(err_gps,end_gps,"Failed to get GPS data!");
-		
+
 		err_gps = uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
 		if(err_gps < 0)
 		{
@@ -1554,16 +1551,16 @@ int main(int argc, char *argv[]){
 	    quit_log_if(retval,"Failed to correct setpoint!");
 
 #if USE_GPS && !GPS_FAKE
-	    if(device_gps != NULL)
-	    {
-		/**
-		 * If reading from gps log file, then change timestamp to avoid
-		 * all draining the log because of the time spent in startup+calibration
-		 *
-		 */
-		retval = gps_comm_set_tv_start(gps,tv_tmp);
-		quit_log_if(retval, "Failed to set gps startup time!");
-	    }
+	    /* if(device_gps != NULL) */
+	    /* { */
+	    /* 	/\** */
+	    /* 	 * If reading from gps log file, then change timestamp to avoid */
+	    /* 	 * all draining the log because of the time spent in startup+calibration */
+	    /* 	 * */
+	    /* 	 *\/ */
+	    /* 	retval = gps_comm_set_tv_start(gps,tv_tmp); */
+	    /* 	quit_log_if(retval, "Failed to set gps startup time!"); */
+	    /* } */
 #endif // USE_GPS && !GPS_FAKE
 
 	    /**
