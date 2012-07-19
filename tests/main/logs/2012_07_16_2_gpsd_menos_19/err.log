@@ -1,0 +1,540 @@
+/home/root/work/uquad/src/main/main.c:765: Will connect to check_net server...
+/home/root/work/uquad/src/check_net/uquad_check_net.c:285: TCP client running on port:(12341234)
+/home/root/work/uquad/src/main/main.c:829: Waiting for GPS fix...
+/home/root/work/uquad/src/main/main.c:836: GPS fix ok.
+/home/root/work/uquad/src/control/control.c:93: Loaded proportional gain matrix from:(K_prop_full_ppzt.txt)
+/home/root/work/uquad/src/control/control.c:143: Loaded integral gain matrix from:(K_int_full_ppzt.txt)
+/home/root/work/uquad/src/control/control.c:164: Loaded LQR Q matrix from:(lqr-Q.txt)
+/home/root/work/uquad/src/control/control.c:183: Loaded LQR R matrix from:(lqr-R.txt)
+/home/root/work/uquad/src/kalman/uquad_kalman.c:1097: Kalman - R
+100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	100000.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	10000.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	10000.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	10000.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.001000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.001000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.001000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	100000.000000	
+/home/root/work/uquad/src/kalman/uquad_kalman.c:1099: Kalman - Q
+100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.010000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.010000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000010	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.100000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.100000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.100000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	1.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	1.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	1.000000	
+/home/root/work/uquad/src/kalman/uquad_kalman.c:1101: Kalman - R_imu_gps
+100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	100000.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	10000.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	10000.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	10000.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.001000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.001000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.001000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	100.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	100.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	100000.000000	
+/home/root/work/uquad/src/control/control.c:362: Control - K
+0.000000	0.000000	16.000000	0.000000	-35.000000	-48.930000	0.000000	0.000000	16.000000	0.000000	-11.000000	-7.510000	
+0.000000	0.000000	16.000000	35.000000	0.000000	48.930000	0.000000	0.000000	16.000000	11.000000	0.000000	7.510000	
+0.000000	0.000000	16.000000	0.000000	35.000000	-48.930000	0.000000	0.000000	16.000000	0.000000	11.000000	-7.510000	
+0.000000	0.000000	16.000000	-35.000000	0.000000	48.930000	0.000000	0.000000	16.000000	-11.000000	0.000000	7.510000	
+/home/root/work/uquad/src/control/control.c:365: Control - K_int
+0.000000	-21.360000	1.570000	-14.730000	
+21.360000	0.000000	1.570000	14.730000	
+0.000000	21.360000	1.570000	-14.730000	
+-21.360000	0.000000	1.570000	14.730000	
+
+/home/root/work/uquad/src/main/main.c:453: -- -- -- -- -- -- -- --
+/home/root/work/uquad/src/main/main.c:454: main.c configuration:
+/home/root/work/uquad/src/main/main.c:455: -- -- -- -- -- -- -- --
+/home/root/work/uquad/src/main/main.c:456: DEBUG(1)
+/home/root/work/uquad/src/main/main.c:457: KALMAN_BIAS(1)
+/home/root/work/uquad/src/main/main.c:458: CTRL_INTEGRAL(1)
+/home/root/work/uquad/src/main/main.c:459: CTRL_INTEGRAL_ANG(1)
+/home/root/work/uquad/src/main/main.c:460: FULL_CONTROL(1)
+/home/root/work/uquad/src/main/main.c:461: USE_GPS(1)
+/home/root/work/uquad/src/main/main.c:462: GPS_FAKE(0)
+/home/root/work/uquad/src/main/main.c:463: IMU_COMM_FAKE(0)
+/home/root/work/uquad/src/main/main.c:464: OL_TS_STABIL(0)
+/home/root/work/uquad/src/main/main.c:465: CTRL_TS(1)
+/home/root/work/uquad/src/main/main.c:466: DYNAMIC_COV(0)
+/home/root/work/uquad/src/main/main.c:467: MASA_DEFAULT(1.700000)
+/home/root/work/uquad/src/main/main.c:468: -- -- -- -- -- -- -- --
+
+/home/root/work/uquad/src/main/main.c:957: Entering while:(9.177857)
+/home/root/work/uquad/src/main/main.c:960: Clearing IMU input buffer...
+/home/root/work/uquad/src/main/main.c:1276: Waiting for stable IMU sampling time...
+/home/root/work/uquad/src/main/main.c:1294: IMU: Frames read out during stabilization:(52)
+/home/root/work/uquad/src/main/main.c:1304: IMU startup completed, starting calibration...(10.269410)
+/home/root/work/uquad/src/main/main.c:1543: IMU calibration completed, running kalman+control+ramp(15.374909)
+/home/root/work/uquad/src/main/main.c:1588: Initial setpoint:
+6135824.445049	-576163.157050	1.000000	0.000000	0.000000	1.024245	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.00000000	-0.04783319	-0.01428808	9.80777214	0.00107042	0.00081521	-0.00101613	-0.00145681	0.00487703	1.02424457	20.10000000	15.68955353	1	1
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.018219) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.008606) (8)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012512) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010224) (3)
+/home/root/work/uquad/src/main/main.c:1747: -- --
+/home/root/work/uquad/src/main/main.c:1748: -- -- -- -- -- -- -- --
+/home/root/work/uquad/src/main/main.c:1749: Ramp completed, running free control...(16.429078)
+/home/root/work/uquad/src/main/main.c:1750: -- -- -- -- -- -- -- --
+/home/root/work/uquad/src/main/main.c:1751: -- --
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012573) (0)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.007507) (0)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.007660) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.014648) (0)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012970) (0)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.009186) (5)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012543) (0)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.007599) (0)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.007721) (0)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012085) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.015563) (0)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.011749) (2)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.015564) (0)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012146) (0)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.009247) (2)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.007416) (0)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.007476) (0)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012207) (0)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012451) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010467) (2)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012482) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.014191) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.011047) (5)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.013245) (0)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012146) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.009827) (2)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.007446) (0)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012268) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.016052) (0)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.008820) (2)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012573) (0)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.007721) (0)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012359) (0)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.007569) (0)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.007599) (0)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.013123) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.011169) (4)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012665) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.013794) (0)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.007995) (0)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(1)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(2)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(3)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(4)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(5)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(6)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(7)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(8)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(9)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(10)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(11)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(12)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(13)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(14)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(15)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(16)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(17)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(18)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(19)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(20)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(21)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:217: Missed too many acks!
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(22)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(23)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(24)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(25)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(26)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(27)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(28)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(29)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(30)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(31)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(32)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(33)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.013153) (0)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(34)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(35)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.011566) (2)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(36)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(37)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012909) (0)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(38)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(39)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(40)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012879) (0)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(41)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(42)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:217: Missed too many acks!
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(43)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(44)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010315) (5)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(45)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.014435) (0)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(46)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(47)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.009521) (2)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(48)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(49)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(50)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(51)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(52)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(53)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(54)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(55)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(56)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(57)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(58)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(59)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(60)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(61)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:184: WARN: client did not ack!(62)
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_send:129
+backtrace:/home/root/work/uquad/src/motor/mot_control.c:mot_set_vel_rads:189
+/home/root/work/uquad/src/main/main.c:1880: Failed to set motor speed!
+/home/root/work/uquad/src/main/main.c:992: Recovered! Errors:(1)
+/home/root/work/uquad/src/kernel_msgq/uquad_kernel_msgq.c:161: kmesg recovered!(0.689331)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.013367) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.009491) (2)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.007386) (0)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012787) (0)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012146) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.011841) (2)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.007446) (0)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.007751) (0)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.013092) (0)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010041) (5)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.013397) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.011780) (3)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.016144) (0)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.007630) (0)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.007934) (0)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012268) (0)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010590) (2)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.007386) (0)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.013305) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.009247) (2)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.007599) (0)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.007965) (0)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.013244) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010803) (2)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.014222) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.008789) (2)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.007782) (0)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012085) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.015625) (0)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.009887) (2)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.015473) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.009826) (4)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.007569) (0)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012085) (0)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.007446) (0)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.014099) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.009705) (4)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012146) (0)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.009216) (2)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.007354) (0)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.007538) (0)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012543) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.011017) (3)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012329) (0)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.007569) (0)
+/home/root/work/uquad/src/main/main.c:474: Caught signal:(2)
+/home/root/work/uquad/src/main/main.c:337: Motors killed!(55.813447)
+/home/root/work/uquad/src/main/main.c:1508: ERR: Too long without new IMU samples!
+/home/root/work/uquad/src/main/main.c:354: main deinit started...(56.793396)

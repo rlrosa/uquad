@@ -1,0 +1,1219 @@
+/home/root/work/uquad/src/main/main.c:765: Will connect to check_net server...
+/home/root/work/uquad/src/check_net/uquad_check_net.c:285: TCP client running on port:(12341234)
+/home/root/work/uquad/src/main/main.c:829: Waiting for GPS fix...
+/home/root/work/uquad/src/main/main.c:836: GPS fix ok.
+/home/root/work/uquad/src/control/control.c:93: Loaded proportional gain matrix from:(K_prop_full_ppzt.txt)
+/home/root/work/uquad/src/control/control.c:143: Loaded integral gain matrix from:(K_int_full_ppzt.txt)
+/home/root/work/uquad/src/control/control.c:164: Loaded LQR Q matrix from:(lqr-Q.txt)
+/home/root/work/uquad/src/control/control.c:183: Loaded LQR R matrix from:(lqr-R.txt)
+/home/root/work/uquad/src/kalman/uquad_kalman.c:1097: Kalman - R
+100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	100000.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	10000.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	10000.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	10000.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.001000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.001000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.001000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	100000.000000	
+/home/root/work/uquad/src/kalman/uquad_kalman.c:1099: Kalman - Q
+100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.010000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.010000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000010	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.100000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.100000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.100000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	1.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	1.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	1.000000	
+/home/root/work/uquad/src/kalman/uquad_kalman.c:1101: Kalman - R_imu_gps
+100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	100.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	100000.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	10000.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	10000.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	10000.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.001000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.001000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.001000	0.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	100.000000	0.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	100.000000	0.000000	
+0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	100000.000000	
+/home/root/work/uquad/src/control/control.c:362: Control - K
+0.000000	0.000000	16.000000	0.000000	-35.000000	-48.930000	0.000000	0.000000	16.000000	0.000000	-11.000000	-7.510000	
+0.000000	0.000000	16.000000	35.000000	0.000000	48.930000	0.000000	0.000000	16.000000	11.000000	0.000000	7.510000	
+0.000000	0.000000	16.000000	0.000000	35.000000	-48.930000	0.000000	0.000000	16.000000	0.000000	11.000000	-7.510000	
+0.000000	0.000000	16.000000	-35.000000	0.000000	48.930000	0.000000	0.000000	16.000000	-11.000000	0.000000	7.510000	
+/home/root/work/uquad/src/control/control.c:365: Control - K_int
+0.000000	-21.360000	1.570000	-14.730000	
+21.360000	0.000000	1.570000	14.730000	
+0.000000	21.360000	1.570000	-14.730000	
+-21.360000	0.000000	1.570000	14.730000	
+
+/home/root/work/uquad/src/main/main.c:453: -- -- -- -- -- -- -- --
+/home/root/work/uquad/src/main/main.c:454: main.c configuration:
+/home/root/work/uquad/src/main/main.c:455: -- -- -- -- -- -- -- --
+/home/root/work/uquad/src/main/main.c:456: DEBUG(1)
+/home/root/work/uquad/src/main/main.c:457: KALMAN_BIAS(1)
+/home/root/work/uquad/src/main/main.c:458: CTRL_INTEGRAL(1)
+/home/root/work/uquad/src/main/main.c:459: CTRL_INTEGRAL_ANG(1)
+/home/root/work/uquad/src/main/main.c:460: FULL_CONTROL(1)
+/home/root/work/uquad/src/main/main.c:461: USE_GPS(1)
+/home/root/work/uquad/src/main/main.c:462: GPS_FAKE(0)
+/home/root/work/uquad/src/main/main.c:463: IMU_COMM_FAKE(0)
+/home/root/work/uquad/src/main/main.c:464: OL_TS_STABIL(0)
+/home/root/work/uquad/src/main/main.c:465: CTRL_TS(1)
+/home/root/work/uquad/src/main/main.c:466: DYNAMIC_COV(0)
+/home/root/work/uquad/src/main/main.c:467: MASA_DEFAULT(1.700000)
+/home/root/work/uquad/src/main/main.c:468: -- -- -- -- -- -- -- --
+
+/home/root/work/uquad/src/main/main.c:957: Entering while:(12.031280)
+/home/root/work/uquad/src/main/main.c:960: Clearing IMU input buffer...
+/home/root/work/uquad/src/main/main.c:1276: Waiting for stable IMU sampling time...
+/home/root/work/uquad/src/main/main.c:1294: IMU: Frames read out during stabilization:(52)
+/home/root/work/uquad/src/main/main.c:1304: IMU startup completed, starting calibration...(13.567352)
+/home/root/work/uquad/src/main/main.c:1543: IMU calibration completed, running kalman+control+ramp(18.673340)
+/home/root/work/uquad/src/main/main.c:1588: Initial setpoint:
+6135825.980731	-576156.318351	1.000000	0.000000	0.000000	1.025161	0.000000	0.000000	0.000000	0.000000	0.000000	0.000000	
+0.000000	0.00000000	-0.15989177	-0.01601650	9.83202002	0.00112820	0.00020430	-0.00066847	-0.00162901	0.01626090	1.02516107	26.10000000	26.55153354	1	1
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012939) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010773) (3)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.013214) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.011780) (2)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012360) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.009765) (2)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012146) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.011841) (3)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.018829) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(2)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.011658) (4)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012024) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010376) (4)
+/home/root/work/uquad/src/main/main.c:1747: -- --
+/home/root/work/uquad/src/main/main.c:1748: -- -- -- -- -- -- -- --
+/home/root/work/uquad/src/main/main.c:1749: Ramp completed, running free control...(19.753357)
+/home/root/work/uquad/src/main/main.c:1750: -- -- -- -- -- -- -- --
+/home/root/work/uquad/src/main/main.c:1751: -- --
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012909) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.009552) (7)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012726) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.014801) (10)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010345) (5)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012543) (0)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012573) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.011200) (8)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.013427) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010254) (8)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012238) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.013520) (10)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010346) (4)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012604) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010223) (8)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012695) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.011047) (5)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(2)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.023071) (0)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010620) (2)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012482) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.014343) (10)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010529) (5)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012451) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010315) (7)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012390) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.017669) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.011628) (6)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.013153) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.011932) (6)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.018921) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010162) (8)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.013031) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.009735) (7)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.013427) (0)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012909) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010071) (7)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012268) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.018249) (10)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.011444) (3)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012817) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010895) (8)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012757) (0)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012085) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010498) (9)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.013214) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012818) (10)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.009095) (5)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012298) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010498) (8)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012176) (0)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012176) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010193) (8)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012696) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.011932) (6)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.015259) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.011230) (8)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.013367) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.009339) (9)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.013672) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010376) (8)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012298) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.020264) (10)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.009125) (4)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.013000) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010162) (8)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012512) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.011261) (8)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012055) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.014160) (10)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.011627) (5)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012330) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.011505) (7)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012878) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010224) (9)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012085) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.017761) (10)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.008880) (4)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.017029) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.011749) (4)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.020722) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010406) (2)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012542) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.011840) (7)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012481) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.013459) (10)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(2)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010254) (5)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012360) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.009887) (7)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.013947) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010254) (8)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012421) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.016082) (10)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(2)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010376) (4)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012513) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.011536) (7)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012054) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.011535) (8)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012238) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(2)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.020630) (10)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010315) (2)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.015655) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010742) (6)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012146) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.009247) (7)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.013184) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.016388) (10)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.011475) (4)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.014465) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010437) (5)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012024) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010498) (8)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012848) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.013062) (10)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.008728) (5)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012023) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010742) (7)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012299) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010406) (8)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012085) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.015473) (10)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.011109) (5)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.013458) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.009674) (6)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012146) (0)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012238) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.011231) (7)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.014099) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.013397) (10)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(2)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.011078) (4)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012451) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.009887) (7)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.013337) (0)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012634) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.018006) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.009460) (7)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.013001) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.011779) (3)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.016205) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.011506) (10)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012268) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.011444) (6)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.013062) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010407) (8)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012634) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.011383) (7)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.015473) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010467) (7)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012847) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010315) (8)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012329) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010437) (9)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012512) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.019165) (10)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.008728) (4)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012451) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.011048) (8)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012970) (0)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012482) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.011078) (7)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012909) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.011017) (7)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.015564) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(2)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010040) (6)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012909) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.011139) (7)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012177) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010498) (7)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012573) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.017395) (10)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010162) (4)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.013031) (0)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012207) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010468) (8)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012482) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.009979) (8)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.013611) (0)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.009156) (2)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012970) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.021210) (10)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010529) (4)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012635) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010559) (9)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012573) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.009033) (8)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012207) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.017761) (10)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010590) (4)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012390) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010254) (7)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012360) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.017608) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010009) (6)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.007904) (0)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.013123) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.015992) (10)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(2)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010315) (4)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012635) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.009857) (8)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012085) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010132) (9)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.013245) (0)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.013031) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.011628) (5)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.016784) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010437) (9)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012299) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010346) (7)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012787) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010315) (7)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.013001) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.011444) (10)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.014588) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.011078) (4)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012543) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010284) (8)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012635) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.009979) (7)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.013397) (0)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012665) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.011200) (7)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.016693) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.009826) (6)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012726) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010102) (8)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012329) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010437) (8)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.016266) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.020721) (10)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.008942) (2)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012512) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010071) (7)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012390) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.011658) (8)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.013275) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.017608) (10)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.009919) (4)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012603) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.014435) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010865) (6)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012207) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010162) (9)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012237) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.018127) (10)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010407) (4)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012268) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.009887) (8)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012330) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.011566) (7)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012848) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.015106) (10)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010346) (5)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012237) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(2)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.008911) (8)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.013153) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010468) (9)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.015473) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.022064) (10)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.011658) (2)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.013702) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.011230) (4)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.013214) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.011353) (2)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.014587) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.009491) (2)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.013427) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010345) (8)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.013519) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.016907) (10)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010437) (5)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.013122) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.009796) (8)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012481) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.009430) (8)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012573) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.019257) (10)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.011597) (3)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012054) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.016876) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010864) (5)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.015015) (0)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012085) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010254) (8)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012512) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.016114) (10)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010528) (5)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012757) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010407) (8)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012146) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010040) (7)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012421) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.018127) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.020050) (10)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.011658) (2)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012055) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.011352) (8)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.013001) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010376) (8)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.013611) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.020173) (10)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010498) (3)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.013275) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.011505) (7)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.013550) (0)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.013000) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010346) (8)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.013215) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.018798) (10)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.009063) (3)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.013001) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.011291) (7)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.016266) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010834) (6)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.013214) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.014984) (10)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(2)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.011200) (3)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.013153) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010284) (8)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012817) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.011475) (7)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012696) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.017975) (10)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010315) (4)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.013397) (0)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012665) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.011291) (7)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012390) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010345) (8)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012909) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.011597) (8)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.019165) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010468) (5)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.013214) (0)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.013550) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010223) (8)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012024) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010010) (8)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012146) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.020080) (10)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.009827) (4)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012757) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010559) (7)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.013245) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.014740) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.011963) (4)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.016785) (0)
+/home/root/work/uquad/src/main/main.c:1689: TS K!(0.010315) (2)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.012543) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1661: TS K!(0.015076) (0)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(2)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(2)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(2)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(4)
+/home/root/work/uquad/src/main/main.c:1519: WARN: Skipped IMU!(1)
+/home/root/work/uquad/src/main/main.c:765: Will connect to check_net server...
+/home/root/work/uquad/src/check_net/uquad_check_net.c:285: TCP client running on port:(12341234)
+/home/root/work/uquad/src/check_net/uquad_check_net.c:335: check_net: Connection lost! Killing motors...
+/home/root/work/uquad/src/main/main.c:771: Failed to connect to check_net server!
+/home/root/work/uquad/src/main/main.c:354: main deinit started...(150.618927)
+/home/root/work/uquad/src/imu/imu_comm.c:583: WARN: Nothing to free.
+/home/root/work/uquad/src/control/control.c:330: No memory had been allocated for ctrl
+/home/root/work/uquad/src/gps/uquad_gps_comm.c:200: WARN: Nothing to free
+/home/root/work/uquad/src/main/main.c:486: WARN: check_net client died, will kill motors! sig num:(17)
+/home/root/work/uquad/src/main/main.c:337: Motors killed!(150.637115)
+/home/root/work/uquad/src/main/main.c:354: main deinit started...(150.637268)
