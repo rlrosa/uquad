@@ -265,7 +265,7 @@ int main(int argc, char *argv[])
 		{
 		    if(gps_comm_fix(gps))
 		    {
-			ret = gps_comm_get_data(gps, gps_data);
+			ret = gps_comm_get_data_unread(gps, gps_data,NULL);
 			log_n_continue(ret, "Failed to get data!");
 			if(output_file != NULL)
 			{

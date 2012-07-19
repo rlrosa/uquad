@@ -579,6 +579,7 @@ int gps_comm_read(gps_t *gps, uquad_bool_t *ok)
 		if(retval == ERROR_OK)
 		    *ok = true;
 	    }
+	    status = GPS_SEARCHING; // back to square 1
 	    break;
 	}
     }
@@ -691,6 +692,8 @@ int gps_comm_read(gps_t *gps, uquad_bool_t *ok)
     gps->pos->m_full[1] = -gps->utm.easting;
     gps->pos->m_full[2] = gps->altitude;//gps_fix.altitude;
 
+    gps->unread_data = true;
+
     /* if(isnan(gps_fix.epx) || */
     /*    isnan(gps_fix.epy) || */
     /*    isnan(gps_fix.epv)) */
@@ -732,7 +735,7 @@ int gps_comm_read(gps_t *gps, uquad_bool_t *ok)
     /* 	    gps->track_ep = deg2rad(gps_fix.epd); */
     /* 	} */
     /* } */
-    *ok = true;
+
     return ERROR_OK;
 }
 
