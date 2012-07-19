@@ -92,12 +92,12 @@ gps_t *  gps_comm_init(const char *device){
     cleanup_if_null(gps->pos);
     retval = uquad_mat_zeros(gps->pos);
     cleanup_if(retval);
-    gps->pos_ep = uquad_mat_alloc(3,1);
-    cleanup_if_null(gps->pos_ep);
-    uquad_mat_zeros(gps->pos_ep);
-    cleanup_if(retval);
-    gps->gps_fix = (gps_fix_t *)malloc(sizeof(gps_fix_t));
-    cleanup_if_null(gps->gps_fix);
+    /* gps->pos_ep = uquad_mat_alloc(3,1); */
+    /* cleanup_if_null(gps->pos_ep); */
+    /* uquad_mat_zeros(gps->pos_ep); */
+    /* cleanup_if(retval); */
+    /* gps->gps_fix = (gps_fix_t *)malloc(sizeof(gps_fix_t)); */
+    /* cleanup_if_null(gps->gps_fix); */
 
     m3x1 = uquad_mat_alloc(3,1);
     cleanup_if_null(m3x1);
@@ -144,9 +144,9 @@ int gps_comm_wait_fix(gps_t *gps, uquad_bool_t *got_fix, struct timeval *t_out)
 	err_propagate(retval);
 	if(read_ok)
 	{
-	    retval = gps_comm_read(gps, got_fix, NULL);
+	    retval = gps_comm_read(gps, got_fix);
 	    err_propagate(retval);
-	    if(gps_comm_3dfix(gps))
+	    if(gps_comm_fix(gps))
 	    {
 		*got_fix = true;
 		return ERROR_OK;
@@ -220,8 +220,8 @@ void gps_comm_deinit(gps_t * gps){
 	return;
     }
     uquad_mat_free(gps->pos);
-    uquad_mat_free(gps->pos_ep);
-    free(gps->gps_fix);
+    /* uquad_mat_free(gps->pos_ep); */
+    /* free(gps->gps_fix); */
     uquad_mat_free(m3x1);
     uquad_mat_free(m3x3);
 
@@ -322,9 +322,9 @@ int gps_comm_get_fix_mode(gps_t *gps)
     return gps->fix;
 }
 
-uquad_bool_t gps_comm_3dfix(gps_t *gps)
+uquad_bool_t gps_comm_fix(gps_t *gps)
 {
-    return (gps_comm_get_fix_mode(gps) >= MODE_3D)?
+    return (gps_comm_get_fix_mode(gps) > GPS_FIX_INVALID)?
 	true:
 	false;
 }
@@ -359,22 +359,105 @@ int gps_comm_set_tv_start(gps_t *gps, struct timeval tv_start)
 // This will be shared by every gp*** parsing function
 static char buff[GPS_NMEA_MAX_LEN];
 
-int gps_comm_parse_gpgga(gps_t *gps, char *buff, int buff_index)
+/**
+ * Process a pair of latitude/longitude.
+ * Field must be, for example:
+ *   field[0] = "4124.8963"
+ *   field[0] = "N"
+ *   field[0] = "08151.6838"
+ *   field[0] = "W"
+ *
+ * @param field
+ * @param lat
+ * @param lon
+ */
+static void do_lat_lon(char *field[], double *lat_ans, double* lon_ans)
+/*  fields starting at field index BEGIN */
 {
+    /// Taken from driver_nmea0183.c - gpsd
+    double d, m;
+    char str[20], *p;
+
+    if (*(p = field[0]) != '\0') {
+	double lat;
+	(void)strcpy(str, p);
+	lat = atof(str);
+	m = 100.0 * modf(lat / 100.0, &d);
+	lat = d + m / 60.0;
+	p = field[1];
+	if (*p == 'S')
+	    lat = -lat;
+	*lat_ans = lat;
+    }
+    if (*(p = field[2]) != '\0') {
+	double lon;
+	(void)strcpy(str, p);
+	lon = atof(str);
+	m = 100.0 * modf(lon / 100.0, &d);
+	lon = d + m / 60.0;
+
+	p = field[3];
+	if (*p == 'W')
+	    lon = -lon;
+	*lon_ans = lon;
+    }
+}
+
+static char buff_tmp[GPS_NMEA_MAX_LEN];
+int gps_comm_parse_gpgga(gps_t *gps, char *buff)
+{
+    char *fields[4];
+    char *token;
+    (void) strcpy(buff_tmp, buff);
     if(gps == NULL)
     {
 	err_check(ERROR_FAIL,"Invalid arguments!");
-	
     }
-    if(buff_index != (int)strlen(buff))
-    {
-	err_log("wrong sizes!");
-	err_log_num("buff_index:",buff_index);
-	err_log_num("strlen:",(int)strlen(buff));
-	return ERROR_FAIL;
-    }
-    err_log_str("NOT implemented! Raw:",buff);fflush(stderr);
-    return ERROR_FAIL;
+
+    // Discard time info
+    token = strtok(buff_tmp,GPS_NMEA_DELIMS);
+    if(token == NULL) goto token_error;
+
+    // latitude
+    token = strtok(NULL,GPS_NMEA_DELIMS);
+    if(token == NULL) goto token_error;
+    fields[0] = token;
+    token = strtok(NULL,GPS_NMEA_DELIMS);
+    if(token == NULL) goto token_error;
+    fields[1] = token;
+    // longitude
+    token = strtok(NULL,GPS_NMEA_DELIMS);
+    if(token == NULL) goto token_error;
+    fields[2] = token;
+    token = strtok(NULL,GPS_NMEA_DELIMS);
+    if(token == NULL) goto token_error;
+    fields[3] = token;
+    // Convert to degrees
+    do_lat_lon(fields, &gps->lat, &gps->lon);
+
+    // fix
+    token = strtok(NULL,GPS_NMEA_DELIMS);
+    if(token == NULL) goto token_error;
+    gps->fix = atoi(token);
+
+    // sat count
+    token = strtok(NULL,GPS_NMEA_DELIMS);
+    if(token == NULL) goto token_error;
+    gps->sats = atoi(token);
+
+    // DOP - Discarded
+    token = strtok(NULL,GPS_NMEA_DELIMS);
+    if(token == NULL) goto token_error;
+
+    // Altitude
+    token = strtok(NULL,GPS_NMEA_DELIMS);
+    if(token == NULL) goto token_error;
+    gps->altitude = atof(token);
+
+    return ERROR_OK;
+
+    token_error:
+    err_check(ERROR_FAIL,"Not enough tokens!");
 }
 
 typedef enum gps_read_status{
@@ -386,16 +469,12 @@ typedef enum gps_read_status{
     GPS_DONE,
     GPS_READ_STATE_COUNT
 } gps_read_status_t;
-int gps_comm_read(gps_t *gps, uquad_bool_t *ok, struct timeval *tv_curr)
+int gps_comm_read(gps_t *gps, uquad_bool_t *ok)
 {
     int
-	i,
 	bytes_read,
 	retval;
-    gps_fix_t gps_fix;
-    struct timeval
-	tv_tmp,
-	tv_diff;
+    //    gps_fix_t gps_fix;
     static int buff_index = 0;
     static gps_read_status_t status = GPS_SEARCHING;
     static uint8_t checksum = 0;
@@ -496,42 +575,17 @@ int gps_comm_read(gps_t *gps, uquad_bool_t *ok, struct timeval *tv_curr)
 	default:
 	    if(status == GPS_DONE)
 	    {
-		// parse frame into gps->fix
-		//TODO
-		retval = gps_comm_parse_gpgga(gps,buff,buff_index);
+		retval = gps_comm_parse_gpgga(gps,buff);
 		if(retval == ERROR_OK)
 		    *ok = true;
 	    }
 	    break;
 	}
-
-
-
-
-
-	/* retval = gps_read(gps->gpsd); */
-	/* if(retval == -1) */
-	/* { */
-	/*     err_check(ERROR_IO,"New data from expected, but none found...\nWas select(gps_fd) called before gps_comm_read()?"); */
-	/* } */
-	/* gettimeofday(&gps->timestamp,NULL); */
-	/* gps_fix = gps->gpsd->fix; */
-	/* gps->fix = gps_comm_get_fix_mode(gps); */
-
-
-
-
-
-
-
-
-
-
-
-
     }
     else
     {
+	err_check(ERROR_FAIL,"NOT Implemented!");
+	// struct timeval *tv_curr must be an argument
 	/**
 	 * Reading from log file
 	 *
@@ -541,191 +595,193 @@ int gps_comm_read(gps_t *gps, uquad_bool_t *ok, struct timeval *tv_curr)
 	 * to the beginning of the program that is reading from the
 	 * log file.
 	 */
-	static uquad_bool_t read_tv = false;
-	static struct timeval tv_diff_log;
-	double dtmp;
-	if(tv_curr == NULL)
-	{
-	    err_check(ERROR_INVALID_ARG,"Timestamp required!");
-	}
-	if(gps->tv_start == NULL)
-	{
-	    gps->tv_start = (struct timeval *)malloc(sizeof(struct timeval));
-	    if(gps->tv_start == NULL)
-	    {
-		err_check(ERROR_MALLOC, "Failed to allocate mem for tv_log_start!");
-	    }
-	    *(gps->tv_start) = *tv_curr;
-	}	
-	if(!read_tv)
-	{
-	    // read time from log
-	    retval = fscanf(gps->dev, "%lf", &dtmp);
-	    if(retval <= 0)
-	    {
-		err_check(ERROR_READ,"Failed to read timeval from log!");
-	    }
-	    tv_tmp.tv_sec  = (unsigned long) floor(dtmp);
-	    tv_tmp.tv_usec = (unsigned long) ((dtmp - floor(dtmp))*1e6);
-	    read_tv = true;
-	    if(gps->tv_log_start == NULL)
-	    {
-		gps->tv_log_start = (struct timeval *)malloc(sizeof(struct timeval));
-		if(gps->tv_log_start == NULL)
-		{
-		    err_check(ERROR_MALLOC, "Failed to allocate mem for tv_log_start!");
-		}
-		*(gps->tv_log_start) = tv_tmp;
-	    }
-	    retval = uquad_timeval_substract(&tv_diff, tv_tmp, *(gps->tv_log_start));
-	    if(retval < 0)
-	    {
-		err_check(ERROR_TIMING, "Absurd timing!");
-	    }
-	    tv_diff_log = tv_diff;
-	}
-	retval = uquad_timeval_substract(&tv_diff, *tv_curr, *(gps->tv_start));
-	if(retval < 0)
-	{
-	    err_check(ERROR_TIMING, "Absurd timing!");
-	}
-	retval = uquad_timeval_substract(&tv_diff, tv_diff, tv_diff_log);
-	if(retval < 0)
-	{
-	    // not the right time yet
-	    return ERROR_OK;
-	}
-	else
-	{
-	    read_tv = false;
-	    read_double(gps->dev,dtmp); // timestamp
-	    read_double(gps->dev,dtmp); // fix
-	    gps->fix = (int)dtmp;
-	    for(i = 0; i < 6; ++i)
-	    {
-		 // easting, northing, alt, vx, vy, vz
-		read_double(gps->dev,dtmp);
-	    }
-	    read_double(gps->dev,dtmp); // lat
-	    gps_fix.latitude  = dtmp;
-	    read_double(gps->dev,dtmp); // lon
-	    gps_fix.longitude = dtmp;
-	    read_double(gps->dev,dtmp); // speed
-	    gps_fix.speed     = dtmp;
-	    read_double(gps->dev,dtmp); // climb
-	    gps_fix.climb     = dtmp;
-	    read_double(gps->dev,dtmp); // track
-	    gps_fix.track     = dtmp;
-	    read_double(gps->dev,dtmp); // vel_ok
-	    gps_fix.epx = 0.0;
-	    gps_fix.epy = 0.0;
-	    gps_fix.epv = 0.0;
-	    gps_fix.eps = 0.0;
-	    gps_fix.epc = 0.0;
-	    gps_fix.epd = 0.0;
-	}
+	/* struct timeval */
+	/*     tv_tmp, */
+	/*     tv_diff; */
+	/* static uquad_bool_t read_tv = false; */
+	/* static struct timeval tv_diff_log; */
+	/* double dtmp; */
+	/* if(tv_curr == NULL) */
+	/* { */
+	/*     err_check(ERROR_INVALID_ARG,"Timestamp required!"); */
+	/* } */
+	/* if(gps->tv_start == NULL) */
+	/* { */
+	/*     gps->tv_start = (struct timeval *)malloc(sizeof(struct timeval)); */
+	/*     if(gps->tv_start == NULL) */
+	/*     { */
+	/* 	err_check(ERROR_MALLOC, "Failed to allocate mem for tv_log_start!"); */
+	/*     } */
+	/*     *(gps->tv_start) = *tv_curr; */
+	/* }	 */
+	/* if(!read_tv) */
+	/* { */
+	/*     // read time from log */
+	/*     retval = fscanf(gps->dev, "%lf", &dtmp); */
+	/*     if(retval <= 0) */
+	/*     { */
+	/* 	err_check(ERROR_READ,"Failed to read timeval from log!"); */
+	/*     } */
+	/*     tv_tmp.tv_sec  = (unsigned long) floor(dtmp); */
+	/*     tv_tmp.tv_usec = (unsigned long) ((dtmp - floor(dtmp))*1e6); */
+	/*     read_tv = true; */
+	/*     if(gps->tv_log_start == NULL) */
+	/*     { */
+	/* 	gps->tv_log_start = (struct timeval *)malloc(sizeof(struct timeval)); */
+	/* 	if(gps->tv_log_start == NULL) */
+	/* 	{ */
+	/* 	    err_check(ERROR_MALLOC, "Failed to allocate mem for tv_log_start!"); */
+	/* 	} */
+	/* 	*(gps->tv_log_start) = tv_tmp; */
+	/*     } */
+	/*     retval = uquad_timeval_substract(&tv_diff, tv_tmp, *(gps->tv_log_start)); */
+	/*     if(retval < 0) */
+	/*     { */
+	/* 	err_check(ERROR_TIMING, "Absurd timing!"); */
+	/*     } */
+	/*     tv_diff_log = tv_diff; */
+	/* } */
+	/* retval = uquad_timeval_substract(&tv_diff, *tv_curr, *(gps->tv_start)); */
+	/* if(retval < 0) */
+	/* { */
+	/*     err_check(ERROR_TIMING, "Absurd timing!"); */
+	/* } */
+	/* retval = uquad_timeval_substract(&tv_diff, tv_diff, tv_diff_log); */
+	/* if(retval < 0) */
+	/* { */
+	/*     // not the right time yet */
+	/*     return ERROR_OK; */
+	/* } */
+	/* else */
+	/* { */
+	/*     read_tv = false; */
+	/*     read_double(gps->dev,dtmp); // timestamp */
+	/*     read_double(gps->dev,dtmp); // fix */
+	/*     gps->fix = (int)dtmp; */
+	/*     for(i = 0; i < 6; ++i) */
+	/*     { */
+	/* 	 // easting, northing, alt, vx, vy, vz */
+	/* 	read_double(gps->dev,dtmp); */
+	/*     } */
+	/*     read_double(gps->dev,dtmp); // lat */
+	/*     gps_fix.latitude  = dtmp; */
+	/*     read_double(gps->dev,dtmp); // lon */
+	/*     gps_fix.longitude = dtmp; */
+	/*     read_double(gps->dev,dtmp); // speed */
+	/*     gps_fix.speed     = dtmp; */
+	/*     read_double(gps->dev,dtmp); // climb */
+	/*     gps_fix.climb     = dtmp; */
+	/*     read_double(gps->dev,dtmp); // track */
+	/*     gps_fix.track     = dtmp; */
+	/*     read_double(gps->dev,dtmp); // vel_ok */
+	/*     gps_fix.epx = 0.0; */
+	/*     gps_fix.epy = 0.0; */
+	/*     gps_fix.epv = 0.0; */
+	/*     gps_fix.eps = 0.0; */
+	/*     gps_fix.epc = 0.0; */
+	/*     gps_fix.epd = 0.0; */
+	/* } */
     }
     if(!(*ok))
 	return ERROR_OK;
-    gps->lat = gps_fix.latitude;
-    gps->lon = gps_fix.longitude;
 
     retval = gps_comm_deg2utm(&gps->utm, gps->lat, gps->lon);
     err_propagate(retval);
     gps->pos->m_full[0] = gps->utm.northing;
     gps->pos->m_full[1] = -gps->utm.easting;
-    gps->pos->m_full[2] = gps_fix.altitude;
+    gps->pos->m_full[2] = gps->altitude;//gps_fix.altitude;
 
-    if(isnan(gps_fix.epx) ||
-       isnan(gps_fix.epy) ||
-       isnan(gps_fix.epv))
-    {
-	gps->pos_ep_ok = false;
-    }
-    else
-    {
-	gps->unread_data = true;
-	gps->pos_ep_ok = true;
-	gps->pos_ep->m_full[0] = gps_fix.epx;
-	gps->pos_ep->m_full[1] = gps_fix.epy;
-	gps->pos_ep->m_full[2] = gps_fix.epv;
-    }
+    /* if(isnan(gps_fix.epx) || */
+    /*    isnan(gps_fix.epy) || */
+    /*    isnan(gps_fix.epv)) */
+    /* { */
+    /* 	gps->pos_ep_ok = false; */
+    /* } */
+    /* else */
+    /* { */
+    /* 	gps->unread_data = true; */
+    /* 	gps->pos_ep_ok = true; */
+    /* 	gps->pos_ep->m_full[0] = gps_fix.epx; */
+    /* 	gps->pos_ep->m_full[1] = gps_fix.epy; */
+    /* 	gps->pos_ep->m_full[2] = gps_fix.epv; */
+    /* } */
 
-    if(isnan(gps_fix.speed) ||
-       isnan(gps_fix.climb) ||
-       isnan(gps_fix.track))
-    {
-	gps->vel_ok = false;
-    }
-    else
-    {
-	gps->vel_ok = true;
-	gps->speed = gps_fix.speed;
-	gps->climb = gps_fix.climb;
-	gps->track = deg2rad(gps_fix.track);
-	if(isnan(gps_fix.eps) ||
-	   isnan(gps_fix.epc) ||
-	   isnan(gps_fix.epd))
-	{
-	    gps->vel_ep_ok = false;
-	}
-	else
-	{
-	    gps->vel_ep_ok = true;
-	    gps->speed_ep = gps_fix.eps;
-	    gps->climb_ep = gps_fix.epc;
-	    gps->track_ep = deg2rad(gps_fix.epd);
-	}
-    }
+    /* if(isnan(gps_fix.speed) || */
+    /*    isnan(gps_fix.climb) || */
+    /*    isnan(gps_fix.track)) */
+    /* { */
+    /* 	gps->vel_ok = false; */
+    /* } */
+    /* else */
+    /* { */
+    /* 	gps->vel_ok = true; */
+    /* 	gps->speed = gps_fix.speed; */
+    /* 	gps->climb = gps_fix.climb; */
+    /* 	gps->track = deg2rad(gps_fix.track); */
+    /* 	if(isnan(gps_fix.eps) || */
+    /* 	   isnan(gps_fix.epc) || */
+    /* 	   isnan(gps_fix.epd)) */
+    /* 	{ */
+    /* 	    gps->vel_ep_ok = false; */
+    /* 	} */
+    /* 	else */
+    /* 	{ */
+    /* 	    gps->vel_ep_ok = true; */
+    /* 	    gps->speed_ep = gps_fix.eps; */
+    /* 	    gps->climb_ep = gps_fix.epc; */
+    /* 	    gps->track_ep = deg2rad(gps_fix.epd); */
+    /* 	} */
+    /* } */
     *ok = true;
     return ERROR_OK;
 }
 
-int gps_comm_get_data(gps_t *gps, gps_comm_data_t *gps_data, imu_data_t *imu_data)
+int gps_comm_get_data(gps_t *gps, gps_comm_data_t *gps_data)
 {
     int retval = ERROR_OK;
     if(gps_data == NULL)
     {
 	err_check(ERROR_NULL_POINTER,"Invalid argument!");
     }
-    if(!gps_comm_3dfix(gps))
+    if(!gps_comm_fix(gps))
     {
-	err_check(ERROR_GPS_NO_3D,"Will not accept data, 3D fix not available!");
+	err_check(ERROR_GPS_NO_FIX,"Will not accept data, fix not available!");
     }
 
     uquad_mat_copy(gps_data->pos, gps->pos);
     err_propagate(retval);
-    if(gps->vel_ok)
-    {
-#if GPS_COMM_DATA_NON_INERTIAL_VEL
-	if(imu_data != NULL)
-	{
-	    m3x1->m_full[0] = gps->speed*sin(gps->track);
-	    m3x1->m_full[1] = -gps->speed*cos(gps->track);//TODO verify!
-	    m3x1->m_full[2] = gps->climb;
-	    retval = uquad_mat_rotate(true,
-				      gps_data->vel,
-				      m3x1,
-				      imu_data->magn->m_full[0],
-				      imu_data->magn->m_full[1],
-				      imu_data->magn->m_full[2],
-				      m3x3);
-	    err_propagate(retval);
-	}
-	else
-	{
-	    err_check(ERROR_GPS_SYS_REF,"Cannot convert to non-inertial frame without IMU!");
-	}
-#else // GPS_COMM_DATA_NON_INERTIAL_VEL
-	if(imu_data != NULL)
-	{
-	    err_log("WARN: Vels are inertial, will ignore IMU!");
-	}
-	gps_data->vel->m_full[0] = gps->speed*sin(gps->track);
-	gps_data->vel->m_full[1] = -gps->speed*cos(gps->track);//TODO verify!
-	gps_data->vel->m_full[2] = gps->climb;
-#endif // GPS_COMM_DATA_NON_INERTIAL_VEL
-    }
+/*     if(gps->vel_ok) */
+/*     { */
+/* #if GPS_COMM_DATA_NON_INERTIAL_VEL */
+/* imu_data_t *imu_data must be an argument */
+/* 	if(imu_data != NULL) */
+/* 	{ */
+/* 	    m3x1->m_full[0] = gps->speed*sin(gps->track); */
+/* 	    m3x1->m_full[1] = -gps->speed*cos(gps->track);//TODO verify! */
+/* 	    m3x1->m_full[2] = gps->climb; */
+/* 	    retval = uquad_mat_rotate(true, */
+/* 				      gps_data->vel, */
+/* 				      m3x1, */
+/* 				      imu_data->magn->m_full[0], */
+/* 				      imu_data->magn->m_full[1], */
+/* 				      imu_data->magn->m_full[2], */
+/* 				      m3x3); */
+/* 	    err_propagate(retval); */
+/* 	} */
+/* 	else */
+/* 	{ */
+/* 	    err_check(ERROR_GPS_SYS_REF,"Cannot convert to non-inertial frame without IMU!"); */
+/* 	} */
+/* #else // GPS_COMM_DATA_NON_INERTIAL_VEL */
+/* 	if(imu_data != NULL) */
+/* 	{ */
+/* 	    err_log("WARN: Vels are inertial, will ignore IMU!"); */
+/* 	} */
+/* 	gps_data->vel->m_full[0] = gps->speed*sin(gps->track); */
+/* 	gps_data->vel->m_full[1] = -gps->speed*cos(gps->track);//TODO verify! */
+/* 	gps_data->vel->m_full[2] = gps->climb; */
+/* #endif // GPS_COMM_DATA_NON_INERTIAL_VEL */
+/*     } */
     return ERROR_OK;
 }
 
@@ -736,7 +792,11 @@ int gps_comm_get_data_unread(gps_t *gps, gps_comm_data_t *gps_data, imu_data_t *
     {
 	err_check(ERROR_GPS_NO_UPDATES,"NO new data!");
     }
-    retval = gps_comm_get_data(gps, gps_data, imu_data);
+    if(imu_data != NULL)
+    {
+	err_check(ERROR_GPS_NO_UPDATES,"NOT implemented!");
+    }
+    retval = gps_comm_get_data(gps, gps_data);
     err_propagate(retval);
     gps->unread_data = false;
     return ERROR_OK;
@@ -750,23 +810,23 @@ void gps_comm_dump(gps_t *gps, gps_comm_data_t *gps_data, FILE *stream)
 
     // timestamp
     log_tv_only(stream,gps->timestamp);
-    // fix type
-    log_int_only(stream, gps->fix);
+    /* // fix type */
+    /* log_int_only(stream, gps->fix); */
     // position
     for(i = 0; i < 3; ++i)
 	log_double_only(stream,gps_data->pos->m_full[i]);
-    // vel
-    for(i = 0; i < 3; ++i)
-	log_double_only(stream,(gps->vel_ok)?
-			gps_data->vel->m_full[i]:
-			0);
+    /* // vel */
+    /* for(i = 0; i < 3; ++i) */
+    /* 	log_double_only(stream,(gps->vel_ok)? */
+    /* 			gps_data->vel->m_full[i]: */
+    /* 			0); */
     // raw data
     log_double_only(stream, gps->lat);
     log_double_only(stream, gps->lon);
-    log_double_only(stream, (gps->vel_ok)?gps->speed:0);
-    log_double_only(stream, (gps->vel_ok)?gps->climb:0);
-    log_double_only(stream, (gps->vel_ok)?gps->track:0);
-    log_int_only(stream, gps->vel_ok);
+    /* log_double_only(stream, (gps->vel_ok)?gps->speed:0); */
+    /* log_double_only(stream, (gps->vel_ok)?gps->climb:0); */
+    /* log_double_only(stream, (gps->vel_ok)?gps->track:0); */
+    /* log_int_only(stream, gps->vel_ok); */
     log_eol(stream);
 }
 

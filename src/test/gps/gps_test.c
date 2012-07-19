@@ -197,7 +197,7 @@ int main(int argc, char *argv[])
     }
     else
     {
-	ret = gps_comm_read(gps, &got_fix, &tv_start);
+	ret = gps_comm_read(gps, &got_fix);
 	quit_if(ret);
 	if(!got_fix)
 	    quit_log_if(ERROR_READ, "Failed to read from log file!");
@@ -250,12 +250,12 @@ int main(int argc, char *argv[])
 		gettimeofday(&tv_tmp,NULL);
 		if(using_log)
 		{
-		    ret = gps_comm_read(gps, &ok, &tv_tmp);
+		    ret = gps_comm_read(gps, &ok);
 		    log_n_continue(ret, "Failed to read from log file!");
 		}
 		else
 		{
-		    ret = gps_comm_read(gps, &ok, NULL);
+		    ret = gps_comm_read(gps, &ok);
 		    log_n_continue(ret, "Fail to get expected data from GPS!");
 		}
 
@@ -263,9 +263,9 @@ int main(int argc, char *argv[])
 
 		if(ok)
 		{
-		    if(gps_comm_3dfix(gps))
+		    if(gps_comm_fix(gps))
 		    {
-			ret = gps_comm_get_data(gps, gps_data, NULL);
+			ret = gps_comm_get_data(gps, gps_data);
 			log_n_continue(ret, "Failed to get data!");
 			if(output_file != NULL)
 			{
@@ -280,7 +280,7 @@ int main(int argc, char *argv[])
 		    }
 		    else
 		    {
-			err_log("Ignoring GPS data, no 3D fix!");
+			err_log("Ignoring GPS data, no fix!");
 			sleep_ms(250);
 		    }
 		}

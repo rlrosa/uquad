@@ -48,12 +48,16 @@
 #define GPS_NMEA_MAX_LEN               82
 #define GPS_NMEA_START                 '$'
 #define GPS_NMEA_DELIM                 ','
+#define GPS_NMEA_DELIMS                ","
 #define GPS_NMEA_TYPE_LEN              5
 #define GPS_NMEA_GPGGA                 "GPGGA"
 #define GPS_NMEA_EOS                   '*'
 #define GPS_NMEA_EOL1                  '\n'
 #define GPS_NMEA_EOL2                  '\r'
 
+#define GPS_FIX_INVALID                0
+#define GPS_FIX_GPS                    1
+#define GPS_FIX_DGPS                   2
 
 typedef struct gps_data_t gpsd_t;
 
@@ -72,61 +76,64 @@ typedef struct gps_comm_data{
     uquad_mat_t *vel; // Speed    (inertial system) {vx,vy,vz}  [m/s]
 }gps_comm_data_t;
 
-typedef struct gps_fix_ {
-    int    mode;	/* Mode of fix */
-#define MODE_NOT_SEEN	0	/* mode update not seen yet */
-#define MODE_NO_FIX	1	/* none */
-#define MODE_2D  	2	/* good for latitude/longitude */
-#define MODE_3D  	3	/* good for altitude/climb too */
-    double ept;		/* Expected time uncertainty */
-    double latitude;	/* Latitude in degrees (valid if mode >= 2) */
-    double epy;  	/* Latitude position uncertainty, meters */
-    double longitude;	/* Longitude in degrees (valid if mode >= 2) */
-    double epx;  	/* Longitude position uncertainty, meters */
-    double altitude;	/* Altitude in meters (valid if mode == 3) */
-    double epv;  	/* Vertical position uncertainty, meters */
-    double track;	/* Course made good (relative to true north) */
-    double epd;		/* Track uncertainty, degrees */
-    double speed;	/* Speed over ground, meters/sec */
-    double eps;		/* Speed uncertainty, meters/sec */
-    double climb;       /* Vertical speed, meters/sec */
-    double epc;		/* Vertical speed uncertainty */
-}gps_fix_t;
+/* typedef struct gps_fix_ { */
+/*     int    mode;	/\* Mode of fix *\/ */
+/* #define MODE_NOT_SEEN	0	/\* mode update not seen yet *\/ */
+/* #define MODE_NO_FIX	1	/\* none *\/ */
+/* #define MODE_2D  	2	/\* good for latitude/longitude *\/ */
+/* #define MODE_3D  	3	/\* good for altitude/climb too *\/ */
+/*     double ept;		/\* Expected time uncertainty *\/ */
+/*     double latitude;	/\* Latitude in degrees (valid if mode >= 2) *\/ */
+/*     double epy;  	/\* Latitude position uncertainty, meters *\/ */
+/*     double longitude;	/\* Longitude in degrees (valid if mode >= 2) *\/ */
+/*     double epx;  	/\* Longitude position uncertainty, meters *\/ */
+/*     double altitude;	/\* Altitude in meters (valid if mode == 3) *\/ */
+/*     double epv;  	/\* Vertical position uncertainty, meters *\/ */
+/*     double track;	/\* Course made good (relative to true north) *\/ */
+/*     double epd;		/\* Track uncertainty, degrees *\/ */
+/*     double speed;	/\* Speed over ground, meters/sec *\/ */
+/*     double eps;		/\* Speed uncertainty, meters/sec *\/ */
+/*     double climb;       /\* Vertical speed, meters/sec *\/ */
+/*     double epc;		/\* Vertical speed uncertainty *\/ */
+/* }gps_fix_t; */
 
 typedef struct gps{
     int fd;                      // File descriptor for reading from gps
     int fix;                     // Fix type.
 
-    gps_fix_t *gps_fix;          // Information in gpsd format
+    int sats;                    // Number of satelites
+
+    //    gps_fix_t *gps_fix;          // Information in gpsd format
 
     uquad_mat_t *pos;            // Position (inertial system)     {x,y,z}     [m]
-    uquad_mat_t *pos_ep;         // Position uncertainty           {x,y,z}     [m]
+    /* uquad_mat_t *pos_ep;         // Position uncertainty           {x,y,z}     [m] */
 
     gps_comm_data_t *gps_data;   // GPS data
     gps_comm_data_t *gps_data_ep;// GPS data uncertainty
 
     struct timeval timestamp;    // Time of update
     uquad_bool_t unread_data;    // Unread data is available, at least pos
-    uquad_bool_t pos_ep_ok;      // pos_ep has valid data
-    uquad_bool_t vel_ok;         // speed/climb has valid data
-    uquad_bool_t vel_ep_ok;      // speed/climb uncertainty is valid
+    /* uquad_bool_t pos_ep_ok;      // pos_ep has valid data */
+    /* uquad_bool_t vel_ok;         // speed/climb has valid data */
+    /* uquad_bool_t vel_ep_ok;      // speed/climb uncertainty is valid */
 
     // Starting point
     uquad_mat_t *pos_0;          // Initial pos (inertial system)  {x,y,z}     [m]
 
     // Aux structures
     utm_t utm;                   // UTM coordinates - used to calculate pos[0:1]
+    double altitude;
 
     double lat;
     double lon;
 
-    double speed;                // Speed over ground             [m/s]
-    double speed_ep;             // Speed uncertainty             [m/s]
-    double climb;                // Vertical speed                [m/s]
-    double climb_ep;             // Vertical speed uncertainty    [m/s]
+    /* double speed;                // Speed over ground             [m/s] */
+    /* double speed_ep;             // Speed uncertainty             [m/s] */
+    /* double climb;                // Vertical speed                [m/s] */
+    /* double climb_ep;             // Vertical speed uncertainty    [m/s] */
 
-    double track;                // Course Made Good (rel. to N)  [rad]
-    double track_ep;             // CMG uncertainty               [rad]
+    /* double track;                // Course Made Good (rel. to N)  [rad] */
+    /* double track_ep;             // CMG uncertainty               [rad] */
 
     // Log file reading
     FILE   *dev;                 // For reading GPS data from log file
@@ -212,13 +219,13 @@ int gps_comm_get_0(gps_t *gps, gps_comm_data_t *gps_dat);
 int gps_comm_get_fix_mode(gps_t *gps);
 
 /**
- * Returns true iif GPS has 3D fix
+ * Returns true iif GPS has fix
  * 
  * @param gps 
  * 
  * @return 
  */
-uquad_bool_t gps_comm_3dfix(gps_t *gps);
+uquad_bool_t gps_comm_fix(gps_t *gps);
 
 /**
  * Return file descriptor to allow reading only if new data is available.
@@ -243,11 +250,11 @@ int gps_comm_get_fd(gps_t *gps);
  *
  * @param gps 
  * @param ok true iif update was successful
- * @param tv_curr Current time in client program or NULL (must be NULL if using real GPS) 
+// * @param tv_curr Current time in client program or NULL (must be NULL if using real GPS) 
  * 
  * @return error code.
  */
-int gps_comm_read(gps_t *gps, uquad_bool_t *ok, struct timeval *tv_curr);
+int gps_comm_read(gps_t *gps, uquad_bool_t *ok);
 
 /**
  * Returns info from the GPS.
@@ -256,12 +263,12 @@ int gps_comm_read(gps_t *gps, uquad_bool_t *ok, struct timeval *tv_curr);
  *
  * @param gps 
  * @param gps_data Answer. Vel only valid if gps->vel_ok
- * @param imu_data IMU info to convert climb/speed/true_north to vx,vy,vz
+// * @param imu_data IMU info to convert climb/speed/true_north to vx,vy,vz
  *
  * @return error code
  */
-int gps_comm_get_data(gps_t *gps, gps_comm_data_t *gps_data, imu_data_t *imu_data);
-
+int gps_comm_get_data(gps_t *gps, gps_comm_data_t *gps_data);
+//int gps_comm_get_data(gps_t *gps, gps_comm_data_t *gps_data, imu_data_t *imu_data);
 /**
  * Same as gps_comm_get_data, except that only unread data will be considered
  *

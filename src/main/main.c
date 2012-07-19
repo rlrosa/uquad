@@ -620,7 +620,7 @@ int main(int argc, char *argv[]){
     /* timeout(0); // non-blocking reading of user input */
     /* refresh();  // show output on screen */
 
-    if(argc<2)
+    if(argc<4)
     {
 	err_log(UQUAD_HOW_TO);
 	exit(1);
@@ -628,15 +628,8 @@ int main(int argc, char *argv[]){
     else
     {
 	device_imu = argv[1];
-	if(argc < 3)
-	    log_path = LOG_DIR_DEFAULT;
-	else
-	    log_path   = argv[2];
-
-	if(argc < 4)
-	    device_gps = NULL;
-	else
-	    device_gps = argv[3];
+	log_path   = argv[2];
+	device_gps = argv[3];
     }
 
     /// -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
@@ -822,14 +815,15 @@ int main(int argc, char *argv[]){
 	struct timeval tv_gps_init_t_out;
 	tv_gps_init_t_out.tv_sec = GPS_INIT_TOUT_S;
 	tv_gps_init_t_out.tv_usec = GPS_INIT_TOUT_US;
-	if(device_gps != NULL)
-	{
-	    retval = gps_comm_read(gps, &got_fix, &tv_start);
-	    quit_if(retval);
-	    if(!got_fix)
-		quit_log_if(ERROR_READ, "Failed to read from log file!");
-	}
-	else
+	/* if(device_gps != NULL) */
+	/* { */
+	/*     //	    retval = gps_comm_read(gps, &got_fix, &tv_start); */
+	/*     retval = gps_comm_read(gps, &got_fix); */
+	/*     quit_if(retval); */
+	/*     if(!got_fix) */
+	/* 	quit_log_if(ERROR_READ, "Failed to read from log file!"); */
+	/* } */
+	/* else */
 	{
 	    err_log("Waiting for GPS fix...");
 	    retval = gps_comm_wait_fix(gps,&got_fix,&tv_gps_init_t_out);
@@ -847,7 +841,7 @@ int main(int argc, char *argv[]){
 	 * estimator if no other GPS updates are received during IMU
 	 * warmup.
 	 */
-	retval = gps_comm_get_data(gps, gps_dat, NULL);
+	retval = gps_comm_get_data(gps, gps_dat);
 	quit_log_if(retval,"Failed to get initial position from GPS!");
 	retval = gps_comm_set_0(gps,gps_dat);
 	quit_if(retval);
@@ -1419,17 +1413,22 @@ int main(int argc, char *argv[]){
 	    {
 		gettimeofday(&tv_tmp,NULL); // Will be used in log_gps
 		if(device_gps != NULL)
-		    err_gps = gps_comm_read(gps,&gps_update,&tv_tmp);
+		    //		    err_gps = gps_comm_read(gps,&gps_update,&tv_tmp);
+		    err_gps = gps_comm_read(gps,&gps_update);
 		else
-		    err_gps = gps_comm_read(gps,&gps_update,NULL);
+		    //		    err_gps = gps_comm_read(gps,&gps_update,NULL);
+		    err_gps = gps_comm_read(gps,&gps_update);
 		log_n_jump(err_gps,end_gps,"GPS had no data!");
 		if((!gps_update && (device_gps != NULL)) ||
-		   (runs_kalman < 1) || !gps_comm_3dfix(gps))
+		   (runs_kalman < 1) || !gps_comm_fix(gps))
 		    // ignore startup data
 		    goto end_gps;
 
+		gps_update = false;// force to ignore GPS
+		goto end_gps;
+
 		// Use latest IMU update to estimate speed from GPS data
-		err_gps = gps_comm_get_data_unread(gps, gps_dat, NULL);
+		err_gps = gps_comm_get_data_unread(gps, gps_dat,NULL);
 		log_n_jump(err_gps,end_gps,"Failed to get GPS data!");
 		
 		err_gps = uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
