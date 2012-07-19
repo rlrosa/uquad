@@ -61,15 +61,15 @@
 #define LOG_ERR          1
 #define LOG_W            1
 #define LOG_W_CTRL       0
-#define LOG_IMU_RAW      1
+#define LOG_IMU_RAW      0
 #define LOG_IMU_DATA     0
 #define LOG_IMU_AVG      0
 #define LOG_X_HAT        1
 #define LOG_GPS          1
 #define LOG_KALMAN_INPUT 1
-#define LOG_TV           1
-#define LOG_T_ERR        1
-#define LOG_INT          (1 && CTRL_INTEGRAL)
+#define LOG_TV           0
+#define LOG_T_ERR        0
+#define LOG_INT          (0 && CTRL_INTEGRAL)
 #define LOG_BUKAKE       0
 /**
  * Access to SD card on beagleboard has proven to be VERY slow,
@@ -620,7 +620,7 @@ int main(int argc, char *argv[]){
     /* timeout(0); // non-blocking reading of user input */
     /* refresh();  // show output on screen */
 
-    if(argc<2)
+    if(argc<4)
     {
 	err_log(UQUAD_HOW_TO);
 	exit(1);
@@ -628,15 +628,8 @@ int main(int argc, char *argv[]){
     else
     {
 	device_imu = argv[1];
-	if(argc < 3)
-	    log_path = LOG_DIR_DEFAULT;
-	else
-	    log_path   = argv[2];
-
-	if(argc < 4)
-	    device_gps = NULL;
-	else
-	    device_gps = argv[3];
+	log_path   = argv[2];
+	device_gps = argv[3];
     }
 
     /// -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
@@ -822,14 +815,15 @@ int main(int argc, char *argv[]){
 	struct timeval tv_gps_init_t_out;
 	tv_gps_init_t_out.tv_sec = GPS_INIT_TOUT_S;
 	tv_gps_init_t_out.tv_usec = GPS_INIT_TOUT_US;
-	if(device_gps != NULL)
-	{
-	    retval = gps_comm_read(gps, &got_fix, &tv_start);
-	    quit_if(retval);
-	    if(!got_fix)
-		quit_log_if(ERROR_READ, "Failed to read from log file!");
-	}
-	else
+	/* if(device_gps != NULL) */
+	/* { */
+	/*     //	    retval = gps_comm_read(gps, &got_fix, &tv_start); */
+	/*     retval = gps_comm_read(gps, &got_fix); */
+	/*     quit_if(retval); */
+	/*     if(!got_fix) */
+	/* 	quit_log_if(ERROR_READ, "Failed to read from log file!"); */
+	/* } */
+	/* else */
 	{
 	    err_log("Waiting for GPS fix...");
 	    retval = gps_comm_wait_fix(gps,&got_fix,&tv_gps_init_t_out);
@@ -847,7 +841,7 @@ int main(int argc, char *argv[]){
 	 * estimator if no other GPS updates are received during IMU
 	 * warmup.
 	 */
-	retval = gps_comm_get_data(gps, gps_dat, NULL);
+	retval = gps_comm_get_data(gps, gps_dat);
 	quit_log_if(retval,"Failed to get initial position from GPS!");
 	retval = gps_comm_set_0(gps,gps_dat);
 	quit_if(retval);
@@ -859,12 +853,13 @@ int main(int argc, char *argv[]){
 	 * data to match GPS altitud estimation
 	 *
 	 */
-	if(imu == NULL)
-	{
-	    quit_log_if(ERROR_FAIL,"IMU must be initialized before gps!");
-	}
-	retval = imu_comm_set_z0(imu,gps_dat->pos->m_full[2]);
-	quit_if(retval);
+	/* GPS ALTITUDE INFORMATION IS IGNORED */
+	/* if(imu == NULL) */
+	/* { */
+	/*     quit_log_if(ERROR_FAIL,"IMU must be initialized before gps!"); */
+	/* } */
+	/* retval = imu_comm_set_z0(imu,gps_dat->pos->m_full[2]); */
+	/* quit_if(retval); */
     }
 #endif // !GPS_FAKE
 #endif // USE_GPS
@@ -965,6 +960,11 @@ int main(int argc, char *argv[]){
     err_log("Clearing IMU input buffer...");
     while(read(imu->device,tmp_buff,1) > 0);
 #endif // !IMU_COMM_FAKE
+#if !GPS_FAKE
+    // clear gps input buffer
+    err_log("Clearing GPS input buffer...");
+    while(read(gps->fd,tmp_buff,1) > 0);
+#endif // !GPS_FAKE
     running = true;
     while(1)
     {
@@ -1414,19 +1414,21 @@ int main(int argc, char *argv[]){
 	    {
 		gettimeofday(&tv_tmp,NULL); // Will be used in log_gps
 		if(device_gps != NULL)
-		    err_gps = gps_comm_read(gps,&gps_update,&tv_tmp);
+		    //		    err_gps = gps_comm_read(gps,&gps_update,&tv_tmp);
+		    err_gps = gps_comm_read(gps,&gps_update);
 		else
-		    err_gps = gps_comm_read(gps,&gps_update,NULL);
+		    //		    err_gps = gps_comm_read(gps,&gps_update,NULL);
+		    err_gps = gps_comm_read(gps,&gps_update);
 		log_n_jump(err_gps,end_gps,"GPS had no data!");
 		if((!gps_update && (device_gps != NULL)) ||
-		   (runs_kalman < 1) || !gps_comm_3dfix(gps))
+		   (runs_kalman < 1) || !gps_comm_fix(gps))
 		    // ignore startup data
 		    goto end_gps;
 
 		// Use latest IMU update to estimate speed from GPS data
-		err_gps = gps_comm_get_data_unread(gps, gps_dat, NULL);
+		err_gps = gps_comm_get_data_unread(gps, gps_dat,NULL);
 		log_n_jump(err_gps,end_gps,"Failed to get GPS data!");
-		
+
 		err_gps = uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
 		if(err_gps < 0)
 		{
@@ -1550,16 +1552,16 @@ int main(int argc, char *argv[]){
 	    quit_log_if(retval,"Failed to correct setpoint!");
 
 #if USE_GPS && !GPS_FAKE
-	    if(device_gps != NULL)
-	    {
-		/**
-		 * If reading from gps log file, then change timestamp to avoid
-		 * all draining the log because of the time spent in startup+calibration
-		 *
-		 */
-		retval = gps_comm_set_tv_start(gps,tv_tmp);
-		quit_log_if(retval, "Failed to set gps startup time!");
-	    }
+	    /* if(device_gps != NULL) */
+	    /* { */
+	    /* 	/\** */
+	    /* 	 * If reading from gps log file, then change timestamp to avoid */
+	    /* 	 * all draining the log because of the time spent in startup+calibration */
+	    /* 	 * */
+	    /* 	 *\/ */
+	    /* 	retval = gps_comm_set_tv_start(gps,tv_tmp); */
+	    /* 	quit_log_if(retval, "Failed to set gps startup time!"); */
+	    /* } */
 #endif // USE_GPS && !GPS_FAKE
 
 	    /**
@@ -1602,6 +1604,8 @@ int main(int argc, char *argv[]){
 	    // Position
 	    retval = uquad_mat_set_subm(kalman->x_hat,SV_X,0,gps_dat->pos);
 	    quit_log_if(retval, "Failed to initiate kalman pos estimator from GPS data!");
+	    /* GPS ALTITUDE INFORMATION IS IGNORED */
+	    kalman->x_hat->m_full[2] = 0.0;
 	    // Velocity
 	    //	    retval = uquad_mat_set_subm(kalman->x_hat,SV_VQX,0,gps_dat->pos);
 	    //	    quit_log_if(retval, "Failed to initiate kalman vel estimator from GPS data!");

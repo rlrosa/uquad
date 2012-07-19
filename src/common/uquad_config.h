@@ -40,7 +40,7 @@
  * it is at [x,y,z] = [0,0,0], otherwise it will use
  * a random value centered around it.
  */
-#define GPS_FAKE          1 // Simulate GPS data
+#define GPS_FAKE          0 // Simulate GPS data
 #define GPS_RAND          0 // Use random values centered at [0,0,0]
 
 /**
