@@ -853,12 +853,13 @@ int main(int argc, char *argv[]){
 	 * data to match GPS altitud estimation
 	 *
 	 */
-	if(imu == NULL)
-	{
-	    quit_log_if(ERROR_FAIL,"IMU must be initialized before gps!");
-	}
-	retval = imu_comm_set_z0(imu,gps_dat->pos->m_full[2]);
-	quit_if(retval);
+	/* GPS ALTITUDE INFORMATION IS IGNORED */
+	/* if(imu == NULL) */
+	/* { */
+	/*     quit_log_if(ERROR_FAIL,"IMU must be initialized before gps!"); */
+	/* } */
+	/* retval = imu_comm_set_z0(imu,gps_dat->pos->m_full[2]); */
+	/* quit_if(retval); */
     }
 #endif // !GPS_FAKE
 #endif // USE_GPS
@@ -1603,6 +1604,8 @@ int main(int argc, char *argv[]){
 	    // Position
 	    retval = uquad_mat_set_subm(kalman->x_hat,SV_X,0,gps_dat->pos);
 	    quit_log_if(retval, "Failed to initiate kalman pos estimator from GPS data!");
+	    /* GPS ALTITUDE INFORMATION IS IGNORED */
+	    kalman->x_hat->m_full[2] = 0.0;
 	    // Velocity
 	    //	    retval = uquad_mat_set_subm(kalman->x_hat,SV_VQX,0,gps_dat->pos);
 	    //	    quit_log_if(retval, "Failed to initiate kalman vel estimator from GPS data!");
