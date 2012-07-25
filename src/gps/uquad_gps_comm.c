@@ -448,6 +448,7 @@ int gps_comm_parse_gpgga(gps_t *gps, char *buff)
     // DOP - Discarded
     token = strtok(NULL,GPS_NMEA_DELIMS);
     if(token == NULL) goto token_error;
+    gps->dop = atof(token);
 
     // Altitude
     token = strtok(NULL,GPS_NMEA_DELIMS);
@@ -751,8 +752,9 @@ int gps_comm_get_data(gps_t *gps, gps_comm_data_t *gps_data)
 	err_check(ERROR_GPS_NO_FIX,"Will not accept data, fix not available!");
     }
 
-    uquad_mat_copy(gps_data->pos, gps->pos);
+    retval = uquad_mat_copy(gps_data->pos, gps->pos);
     err_propagate(retval);
+    gps_data->dop = gps->dop;
 /*     if(gps->vel_ok) */
 /*     { */
 /* #if GPS_COMM_DATA_NON_INERTIAL_VEL */
@@ -826,6 +828,7 @@ void gps_comm_dump(gps_t *gps, gps_comm_data_t *gps_data, FILE *stream)
     // raw data
     log_double_only(stream, gps->lat);
     log_double_only(stream, gps->lon);
+    log_double_only(stream, gps->dop);
     /* log_double_only(stream, (gps->vel_ok)?gps->speed:0); */
     /* log_double_only(stream, (gps->vel_ok)?gps->climb:0); */
     /* log_double_only(stream, (gps->vel_ok)?gps->track:0); */

@@ -271,6 +271,7 @@ int main(int argc, char *argv[])
 			{
 			    log_tv_only(output_file,tv_diff);
 			    gps_comm_dump(gps, gps_data, output_file);
+			    fflush(output_file);
 			}
 			if(DUMP_STDOUT)
 			{
