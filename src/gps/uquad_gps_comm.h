@@ -74,6 +74,7 @@ typedef struct utm{
 typedef struct gps_comm_data{
     uquad_mat_t *pos; // Position (inertial system) {x,y,z}     [m]
     uquad_mat_t *vel; // Speed    (inertial system) {vx,vy,vz}  [m/s]
+    double dop;       // DOP - error measure
 }gps_comm_data_t;
 
 /* typedef struct gps_fix_ { */
@@ -126,6 +127,7 @@ typedef struct gps{
 
     double lat;
     double lon;
+    double dop;
 
     /* double speed;                // Speed over ground             [m/s] */
     /* double speed_ep;             // Speed uncertainty             [m/s] */
