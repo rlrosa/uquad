@@ -458,7 +458,7 @@ The platform is based on a commercial radio controlled quadrotor, the frame and 
 \begin{figure}
 	\centering
 	\includegraphics[width=.7\columnwidth]{./pics_paper/quad_coord.jpg}
-	\caption{\textbf{Model of the quadrotor -} The blue arrows represent the intertial reference frame $S_I - \lbrace \hat{i},\hat{j},\hat{k}\rbrace$ ($\lbrace \vec{x},\vec{y},\vec{z}\rbrace$), mapped to  North, West and Up respectively. The red arrows represent the non-inertial reference frame $S_q - \lbrace \hat{i}_q,\hat{j}_q,\hat{k}_q\rbrace$ ($\lbrace \vec{x}_q,\vec{y}_q,\vec{z}_q\rbrace$) relative to the quadrotor. The cyan ``looped'' arrows indicate the direction of rotation of each motor (right hand rule applied to the green vectors labeled $T_{[1,2,3,4]}$). The semicircle and the two yellow spheres indicate the front of the unit.}
+	\caption{\textbf{Model of the quadrotor -} The blue arrows represent the intertial reference frame $S_I - \lbrace \hat{i},\hat{j},\hat{k}\rbrace$ ($\lbrace \vec{x},\vec{y},\vec{z}\rbrace$), mapped to  North, West and Up respectively. The red arrows represent the non-inertial reference frame $S_q - \lbrace \hat{i}_q,\hat{j}_q,\hat{k}_q\rbrace$ ($\lbrace \vec{x}_q,\vec{y}_q,\vec{z}_q\rbrace$) relative to the quadrotor. The cyan ``looped'' arrows indicate the direction of rotation of each motor. The arrows labeled $T_{[1,2,3,4]}$ represent the thrust of the motors. The semicircle and the two yellow spheres indicate the front of the unit.}
 %        \vspace{-30pt}
 	\label{fig:quad}
 \end{figure}
@@ -573,7 +573,7 @@ The software runs on several independant boards: An ARM-Cortex-A8 on the flight 
 %The ESC takes care of switching the currents supplied to the brushless motors with no pinta poner cosas de los ESC ac\'a
 \section{Flight tests}
 
-Many flight tests were performed, most of them with strings attached above and below the quadrotor as security measures.
+Many flight tests were performed, most of them with strings attached above and below the quadrotor as security measures. The poor reliabitily of the ESCs provided by LotusRC\footnote{\url{http://www.lotusrc.com/}} made testing a dangerous.
 
 resultados buenos para lugares sin viento, posibles explicaciones
 

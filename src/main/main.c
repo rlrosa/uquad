@@ -1574,9 +1574,12 @@ int main(int argc, char *argv[]){
 		// Position
 		retval = uquad_mat_set_subm(pp->sp->x,SV_X,0,gps_dat->pos);
 		quit_log_if(retval, "Failed to initiate kalman pos estimator from GPS data!");
-#endif // USE_GPS
 		// Euler angles
 		pp->sp->x->m_full[SV_THETA] = imu_data.magn->m_full[2]; // [rad]
+#else // USE_GPS
+		// Hover matrix is designed to work aiming north
+		pp->sp->x->m_full[SV_THETA] = 0.0; // [rad]
+#endif // USE_GPS
 		pp->sp->x->m_full[SV_PSI]   = 0.0; // [rad]
 		pp->sp->x->m_full[SV_PHI]   = 0.0; // [rad]
 		pp->sp->x->m_full[SV_Z]     = 1.0; // [m]
