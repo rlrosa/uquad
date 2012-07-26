@@ -139,7 +139,7 @@
 #define QUIT           27
 #define RAMP_DOWN      'q' // This is unstable, currently disabled.
 
-#define UQUAD_HOW_TO     "./main <imu_device> /path/to/log/"
+#define UQUAD_HOW_TO     "./main <imu_device> /path/to/log/ <gps_device>"
 #define MAX_ERRORS       10 // Abort if more than MAX_ERRORS errors.
 #define MAX_NO_UPDATES_S 1  // Abort if more than MAX_NO_UPDATES_S sec without data.
 #define FIXED            10 // Consider system OK after FIXED loops without errors.
