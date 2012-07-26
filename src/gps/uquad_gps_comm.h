@@ -59,6 +59,8 @@
 #define GPS_FIX_GPS                    1
 #define GPS_FIX_DGPS                   2
 
+#define GPS_COMM_DEFAULT_BAUDRATE      38400
+
 typedef struct gps_data_t gpsd_t;
 
 typedef struct utm{
@@ -99,6 +101,7 @@ typedef struct gps_comm_data{
 /* }gps_fix_t; */
 
 typedef struct gps{
+    char dev_name[256];          // Device name
     int fd;                      // File descriptor for reading from gps
     int fix;                     // Fix type.
 
