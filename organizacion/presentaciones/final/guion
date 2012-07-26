@@ -1,0 +1,119 @@
+Carátula
+	breve intro onda el proy consiste en comprar un quad, desarmalo, entender como funca, comprar otras cosas y rearmarlo
+
+Objetivios
+	las etapas/objetivos intermedios que hubo q seguir/cumplir son los de la transparencia. 
+	Modelado para conocer la dinamica y el entender el comportamiento del sistema en funcion de las entadas y caracterización para por ejemplo saber la respuesta de los motores (comercial, 0 info). idem protocolo i2c
+	a control remoto tenemos la vista como realimentacion pero como se tiene q manejar solo, el mismo tiene q conocer su estado. para esto se incluye instrumentacion adicional, un procesador y todo se debe integrar para lograr una buena comunicacion (hardware, firmware, software, mantajware)
+	Los datos de los sensores son intratables, entonces se les encaha un filtro
+	se diseña un controlador para lograr llevar al quad al estado deseado. Se utilizo la técnica LQR que implementa un control lineal sobre todas las variables de estado. Para testear los algoritmos se diseña un simulador. Como vamos a explicar dsp se trabajará con 3 tipos de trayectorias. Para parasar por los puntos objetivo se debe definir una secuencia de trayectorias a realizar, lo que le llamamos generador de rutas
+	una vez logrado todo lo anterior el objetivo final es lograr el control autonomo del quad, donde se entiende por control autonomo que dados una serie de puntos (waypoints) se logre pasar por ellos con un error razonable. Bueno, en ralida este objetivo no lo pudimos cumplir en su totalidad por motivos que explicaremos mas adelante.
+
+Objetivos secundarios
+	Como objetivos secundarios planteamos la integración de una cámara que sería utilizada para obtener la posición y orientación a puertas cerradas donde no hay señal de gps y la implementación de un switcheo manual automático para utilizarse en casos de emergencia, escúchese si el algoritmo de control diverge no lo quiero ir a buscar a pando
+
+Cuadricóptero
+	un cuadricoptero es un vehículo aéreo compuesto por 4 motores y 4 helices dispuestas como se ve en la figura. 2 de las helices giran en sentido horario y los otros 2 en sentido antihorario. Cada conjunto motor-helice produce un empuje en la dirección z y un torque en el sentido contrario al giro (M).
+	Para una cierta velocidad en los motores se logra que la suma de las fuerzas de los 4 motores iguale al peso y que el torque neto sea 0, lo cual permite el equilibrio que es conocido como hovering. Si se aumenta la velocidad de los 4 motores en la misma medida se logra un desplazamiento vertical. Para girar segun x se debe aumentar la velocidad del motor 2 y disminuir en la misma medida la del 4. Para girar segun y es análogo con los motores 1 y 3 y para girar según z se provoca un desequilibrio en los torques: para girar un ángulo positivo se aumenta la velocidad de los motores 2 y 4 y se disminuye la de los motores 1 y 3.
+	Esta es la idea del funcionamiento basico del quad pero para lograr el control es necesario conocer en profundidad la dinamica del sistema
+	
+Diagrama general
+	 partimos de un cuadricóptero comercial radio controlado que incluia los modulos mostrados en la transparencia. Un transmisor (el control), un receptor, una cPu, los ESCs que son controladores electronicos de velocidad utilizados para controlar los motores y los motores.
+	 Nosotros le agregamos, como ya dijimos la instrumentación necesaria para el control autónomo: una CPU externa, un modulo de switcheo q controla qué cpu lleva el control. La imu es la placa con los sensores y el wifi se utiliza para conectar la cpu con la computadora para por ejemplo darle start.
+	 
+Vista general
+	 bueeeeno ahora pasaremos a describir las diferentes partes del trabajo. Por un lado tenemos los sensores que son los encargados de medir ciertas magnitudes que nos permitirán conocer la posición y orientación del cuadricóptero. Las medidas de los sensores se combinan en un filtro de kalman extendido que tiene en cuenta el modelo físico para la estimación del estado. Una vez conocido el estado se utiliza para decidir la acción de control a tomar, lo cual se traduce en una velocidad de giro para cada motor. Una vez explicadas todas las partes se explicará cómo se ralizó la implementación práctica.
+
+Modelo físico
+       Para el desarrollo del modelo fisico se consideraron 2 sistemas de referncia, uno inercial solidario a la tierra y el otro solidario al quad. El pasaje de uno a otro se hace mediante 3 rotaciones: la primera según el eje k, que da origen a la base con subindice 1 con angulo de giro theta y las otras rotaciones son segun los ejes j1 e i2 con ángulos phi y psi. La utilidad del sistema solidario al quad es simplificar el desarrollo del modelo ya que las fuerzas y torques expresados en esta base quedan siempre en la misma dirección y las medidas tomadas de la imu (aceleracion y velocidad angular) quedan expresadas en esta base.
+
+Ecuaciones
+	del analisis de la cinemática salen 2 conjuntos de ecuaciones, las que relacionan la velocidad en el sistema inercial con las velocidades del sistema movil y los ángulos de euler y las que relacionan las derivadas de dichos angulos con las velocidades angulares expresadas en el sistema movil. A partir de la primera cardinal se puede despejar la derivada de las velocidades expresadas ene l sistema del quad. Como se puede ver el termino de las fuerzas aparece solamente en la direccion k lo cual es consistente con la descripcion que se hizo al comienzo. de la segunda cardinal se obtiene la derivada de las velocidades angulares. Se puede ver que el giro segun x depende de T2 y T4, el de y de T3 y T1 y el giro en z depende de los torques de los 4 motores.  Los movimientos no dependen exclusivamente de las fuerzas  y torques q se describieron originalmente, llegando a relaciones mas complejas. Las T y las Q dependen de forma cuadratica de la velocidad angular, como veremos mas adelante, lo cual permite definir como vector de entradas al sistema las 4 velocidades angulares de los motores.
+
+Variables de estado
+	  se elige trabajar con el vector de estados X ya que se conoce la dinámica de todas las variables.
+
+Motores
+	los motores son de tipo brushless (sin escobillas) comandados por controladores electronicos que se les llama ESCs. vamos a hablar brevemente del funciopnamiento, de los escs y del sniffeo, que es el proveso de decodificado del protocolo de comando de los motores.
+
+Funcionamiento
+	los motores de tipo brushles constan de un rotor de iman permanente y un un estator con 3 pares de bobinas. Se comandan energizando dos de las 3 fases disponibles en cada instante de modo que el campo magnético ejerza el máximo torque posible sobre el imán. para ello se utiliza algún método de sensado de posición del rotor. En las imagenes se muestra el movimiento que tendria el rotor energizando distintas parejas de fases.
+
+ESCs
+	son los encargados de conmutar la corriente en las diferentes fases en el momento adecuado. Cada ESc tiene un microcontrolador que se comunica con la CPU mediante un bus i2c, que se explicará en seguida
+
+Circuito
+	Cada fase se maneja con 2 transistores FETs y se logra switchear la corriente abriendo y/o cerrandolos  que conducen el nivel de cada fase hacia el nivel alto, bajo o en vcc/2. El microcontrolador maneja 2 pines que definen el estado de los transistores. 
+al bajar los 2 pines solamente conduce el transistor de arriba, llevando la fase a Vcc. Subiendo el pin de arriba quedan los 2 cortados dejando la fase flotando (que el resto del cirvuito lo determina en 5.5 V) y si se activan los 2 pines del controlador coduce el transistor de abajo, llevando la fase a tierra
+
+Sniffeo
+	Como se trata de un cuadricóptero comercial, la información sobre el funcionamiento del mismo fue negada por los vendedores. Por ello fue necesario realizar un proceso de ingeniería inversa para poder decodificar el protocolo de comunicación entre los ESCs y la CPU. La idea básica del sniffeo es escuchar las líneas del protocolo sin intervenir en ellas. El protocolo i2c es un proytocolo digital de tipo maestro esclavo. Cada ESC es un esclavo diferente y tiene asignada una dirección que lo distingue. Consta de 3 líneas digitales, una tierra de referencia, una señal de datos y otra de reloj. la comunicacion se logra mediante combinaciones de los niveles de las líneas de datos y reloj. Hay 3 tipos de comandos, uno de arranque uno de parada y uno de seteo de velocidad
+
+Caracterización
+	Como no se tienen datos de los motores fue necesario caracterizar los motores+hélices. Se eligió caracterizar el conjunto en funcion de la velocidad angular de forma de adquirir robustez frente a cambios en el hardware (cambiar los escs por ej). Se caracterizaron experimentalmente las curvas de comando i2c, fuerza y torque contra velocidad angular. Para la primera el modelo mas simple que aproxima de buena forma los puntos experimentales relevados es de orden 3, mientras que para las otras 2 es de orden 2. Esto último se ajusta a lo estudiado en la bibliografía consultada. El rango de valores de comando i2c va desde 50 hasta 220. El valor de w para la trayectoria de hovering es 310 rad/s
+
+Sensores
+	Para conocer el vector de estado es necesario relizar medidas sobre algunas magnitudes como la posición, la velocidad angular,etc. Para ello se dota al cuadricóptero de diversos sensores. Por un lado un GPS para obtener realimentación en posición y una IMU que se compone de diversos sensores. 
+
+GPS
+	El GPS debe ser utilizado a cielo abierto para obtener una la posición absoluta, esto permite tener una realimentación. El GPS utilizado se conecta mediante USB a la CPU. El error del GPS es importante alcanzando los 2.5 metros. Para caracterizar este error se toman medidas durante 10 minutos en 6 posiciones distintas. En la figura se observan las diferencias entre la posicion medida y el promedio para cada punto. La gran mayoría de las medidas caen dentro de un círculo de radio 2.5 metros.
+
+IMU
+
+La unidad de medida inercial se compone de 4 sensores principales. Un acelerómetro de tres ejes, un magnetómetro de tres ejes, un giróscopo de tres ejes y un barómetro. Además dispone de un sensor de temperatura, el cual fue utilizado para ajustar la calibración de cada sensor en función de la temperatura. Para la calibración de los sensores se diseñaron distintos experimentos en los cuales se media una magnitud conocida. El giroscopo permite obtener una medida de velocidad angular expresada en el sitema del cuadricoptero, mientras que el barometro midiendo la presion permite obtener la altura del sistema. Debido a las variaciones en la presion con el clima, se utiliza para obtener una medida diferencial de presion. 
+
+Acelerómetro
+	El acelerómetro mide la aceleracion en un referencial en caida libre. Esto implica que el acelerometro mide aceleracion cero en caida libre y en equilibrio mide aceleracion g. La medida de aceleracion como tal tiene un error sistematico por lo que si se intenta obtener la posicion integrandola se obtiene una deriva inaceptable, del orden de decenas de metros en pocos segundos. La principal funcion del mismo es la de determinar los angulos de Pitch y Roll.
+
+Pitch y Roll
+      Como se observa en la figura y en función de como se definieron los angulos phi y psi se puede obtener el àngulo de pitch a partir de la medida de aceleración. En caso de que el pitch sea zero ax deberia ser cero, sin embargo si se tiene cierta inclinación la medida de g tiene una componente en el eje x. A partir de dicha constatación se puede deducir que FORMULA. Analogamente se puede calcular el angulo de roll con la FORMULA.
+
+Yaw
+	La orientación del cuadricoptero o angulo de YAW puede determinarse utilizando un magnetòmetro. Supongamos el caso más sencillo en el cual los angulos de pitch y de roll son cero. En el sistema solidario a la tierra elegido el versor i se corresponde con el norte. La orientación puede determinarse a partir de las medidas de campo magnético segel un los versores iq y jq. FORMULA. Cabe aclarar que el norte magnetico no se corresponde exactamente con el norte geografico. Existe una declinación de aproximadamente 10 grados lo cual implica que una vez detectada la ubicacion del norte magnetico debe agregarse dicha correcion. En caso de tener un angulo de pitch o de roll, lo que se hace es llevar la medida de campo magnético en la base solidaria al cuadricoptero a la base 1 como se muestra en la figura. 
+
+Cuadro errores
+       En este cuadro se observan la tasa de refresco de cada sensor así como su error típico y su resolución. Todos los sensores ofrecen un dato nuevo cada 10ms a excepción del GPS que da un dato por segundo. La resolución y la desviación estándar dan una idea de que se puede esperar de cada sensor. En este sentido, se confirma que el acelerómetro no sirve para obtener la posición a partir de su
+
+Kalman
+	Al observar las señales extraídas de los sensores vimos que cuando se prendían los motores, el ruido mecánico provocaba oscilaciones en la medida muy importantes. Por ejemplo al realizar la cuenta que vimos para hallar los ángulos, dejándolo quieto se obtenía un ruido de hasta mas menos 50 grados. Introducir valores de este estilo directamente al controlador resultaría en una oscilación contínua y haría al sistema casi imposible de controlar, por lo que se hace necsaria la implementación de algún algoritmo de estimación de estados. Kalman es uno de los más conocidos. recibe como entrada una serie de medidas ruidosas observadas a lo largo del tiempo y operando recursivamente sobre el flujo de entrada, produce una estimación de alguna variable de estado que es estadísticamente óptima. Sirve para dos cosas, una es obtener una estimación menos ruidosa, y la otra es para estimar variables de estado de las que no se tiene realimentación directa de los sensores. 
+
+Modelo matemático
+       x es el vector de estados y u es el de entrada. La ecuación describe la transición de estados y la de abajo relaciona el estado con la observación z. Ambas ecuaciones tienen asociados unos ruidos que se suponen gaussiano de media 0 y matrices de covarianza Q y R. Jugando con estas 2 matrices se logra darle mayor o menor importancia a la medida o a la estimación.
+Dada la no linealidad del sistema, como vimos en el modelo físico, no es posible utilizar el filtro de kalman clásico, por lo que se opta por utilizar el filtro de kalman extendido (EKF) donde básicamente lo que se hace es una linealización en torno al estado en cada instante utilizando las matrices jacobiana de las funciones f y h. El EKF pierde las propiedades de optimalidad pero de todas formas es el más utilizado según la literatura consultada para problemas de navegación. Su performance depende en gran medida de presición de la linealización y como esta es dinámica no es posible conocerla de antemano.
+
+Kalman loop
+       consta básicamente de 2 etapas: predicción y actualización. La etapa de predicción se basa en el modelo físico y y básicamente lo que hace es predecir cuál será el nuevo estado en el siguiente instante de tiempo basándose en la dinámica del cuadricóptero y en el estado en el instante actual. En la etapa de actualización se compara la predicción con la medida en ese instante y se actualiza el estado y la covarianza.
+
+Diagrama de implementación
+	 Del acelerómetro y magnetómetro se obtinen los angulos de euler, como ya vimos los cuales son utilizados para restar g en la direccion correcta a la medida del acc para luego integrar y obtener las velocidades lineales. Las angulares salen directamente del gyro y la altura z del barometro. Todo entra a un filtro EKF que da como salida la estimación de las 12 variables de estado descriptas en el modelo fisico. En realidad son 2 filtros dependiendo si hay gps o no
+
+Resultados
+	se ve un ejemplo de la medida contra la estimacion
+
+Control
+	Hasta ahora estuvimos viendo como funciona el cuadricóptero, estudiamos la dinámica, aprendimos como se manejan los motores, vimos como sensar y estimar las variables de estado. Lo que hacemos con el control es en base a todo lo anterior decidir la acción de control a tomar para lograr un cierto objetivo
+
+Linealización
+	Por simplicidad y por la experiencia que teníamos se decidió realizar un control lineal. Para ello es necesraio linealizar la dinámica del sistema en torno a ciertos puntos de operación, es decir, un valor para cada una de las variables de estado y de las velocidades angulares de los motores (SETPOINT). Para ello se consideran las variables ñoqui que son son las diferencias un setpoint dado y se trabaja con el sistema linealizado donde A es una matriz cuadrada cuyas entradas son las derivadas de f respecto de las variables de estado. B es lo mismo pero respecto de las entradas.
+
+Trayectorias
+	Para poder linealizar el sistema y lograr un sistema invariente en el tiempo se tuvieron que añadir una serie de restricciones que determinan que las únicas trayectorias a utilizar serán hovering, rectas y círculos.
+
+Esquema general
+	si estamo en el punto deseado x ñoqui es 0 entonces la entrada del sistema es wsp. entonces es consistente. pero si se produce un apartamiento en alguna de las variables, esa diferencia será realimentada. La forma más sencilla de realimentar es con una matriz proporcional de ganacias. Por ejemplo si el bicho esta por arriba de donde quiere estar, -xñoqui es negativo lo que produce un delta omega negativo. Armar la matriz Kp es a priori complicado porque tiene 48 entradas a determinar. para un sistema de estas dimensiones se torna muy complicado y tedioso trabajar con diagramas de ceros y polos y lugar de las raíces, por lo que se buscó una técnica alternativa: LQR.
+El esquema de control mostrado no es suficiente debido a no idealidades no consideradas o errores en el modelado. Por ejemplo si la masa del sistema es superior a la estimada, partiendo del setpoint el empuje q realizan los motores no es suficiente para manter la altura. El cuadricóptero baja y se realimenta una diferencia en posición que hace que los motores realicen más fuerza alcanzando un nuevo equilibrio por debajo del setpoint. Para corregir esto se agrega un control integral sobre el error de algunas de las variables de estado. Para que LQR asegure que el sistema realimentado sea estable se necesita que el sistema sea observable y controlable. Para lograr esto la única forma que se encontró fue realimentar las integrales de la posición y el ángulo yaw. Con este agregado tenemos un nuevo vector de estados extendido.
+
+Lqr - ecuaciones
+    La idea principal del algoritmo lqr es minimizar esa funcion de costos. Se le asignan distintos pesos a las matrices q y r, por ejemplo si las entradas de r son chicas, la entrada u varia en un rango más grande porque de todas formas el segundo termino seguirá siendo chico. Lo que se hace es jugar con los valores de las matrices q y r hasta lograr un resultado aceptable en alguna medida. La matriz q minimiza esa funcion es P que se determina resolviendo la ecuación de ricatti. La realimentación queda determinada de esta forma. Dada la importancia que tienen los angulos de euler en la estabilizacion del sistema, se eligio darle más peso a dichas variables que al resto en la matriz Q
+
+Grafica
+	Se muestra la respuesta al escalón para uno de los ángulos. El resultado obtenido tiene un 30 por ciento de sobretiro pero se considera aceptable porque se recupera rápidamente
+
+Simulador
+	Para testear diferentes algoritmos de control se desarrolló un simulador donde llegar a implementar y testear todas las trayectorias mencionadas de forma satisfactoria. En la imagen se muestra un círculo simulado con velocidad constante. Se agregó además la posibilidad de agregar diferentes ruidos de medida y un desajuste en el empuje de los motores. Los datos simulados arrojan resultados muy satisfactorios, mucho más que los obtenidos experimentalmente.
+
+Vista general
+      bueno hasta ahora tenemos toda la teoria de como hacer todo, y vamos a ver cómo se hicieron las cosas
+
+Implementación
+	
