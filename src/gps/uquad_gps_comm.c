@@ -36,11 +36,47 @@
 static uquad_mat_t *m3x1 = NULL;
 static uquad_mat_t *m3x3 = NULL;
 
-int gps_comm_connect(gps_t *gps, const char *device)
+int gps_comm_disconnect(gps_t *gps)
+{
+    if(gps->fd > 0)
+    {
+	if(close(gps->fd))
+	{
+	    err_log_stderr("close()");
+	    return ERROR_FAIL;
+	}
+    }
+    else
+    {
+	err_check(ERROR_FAIL,"Failed to close, was not open!");
+    }
+    return ERROR_OK;
+}
+
+int gps_comm_set_baudrate(const char *dev_name, int baudrate)
 {
     int retval;
     char str[256];
-    gps->fd = open(device,O_RDWR | O_NOCTTY | O_NONBLOCK);
+    retval = sprintf(str,"stty -F %s %d",dev_name,baudrate);
+    if(retval < 0)
+    {
+	err_log_stderr("sprintf()");
+	return ERROR_FAIL;
+    }
+    retval = system(str);
+    if(retval != 0)
+    {
+	err_log_stderr("system()");
+	return ERROR_IO;
+    }
+    return ERROR_OK;
+}
+
+int gps_comm_connect(gps_t *gps, const char *device)
+{
+    int retval;
+    strcpy(gps->dev_name,device);
+    gps->fd = open(gps->dev_name,O_RDWR | O_NOCTTY | O_NONBLOCK);
     if(gps->fd < 0)
     {
 	err_log_stderr("open()");
@@ -48,30 +84,16 @@ int gps_comm_connect(gps_t *gps, const char *device)
 	cleanup_if(retval);
     }
 
-    if( (strlen(device) > 5) && (strncmp(device,"/dev/",5) == 0))
+    if( (strlen(gps->dev_name) > 5) && (strncmp(gps->dev_name,"/dev/",5) == 0))
     {
 	// Set default baudrate
-	retval = sprintf(str,"stty -F %s 38400",device);
-	if(retval < 0)
-	{
-	    err_log_stderr("sprintf()");
-	    cleanup_if(ERROR_FAIL);
-	}
-	retval = system(str);
-	if(retval != 0)
-	{
-	    err_log_stderr("system()");
-	    cleanup_if(ERROR_IO);
-	}
+	retval = gps_comm_set_baudrate(gps->dev_name,GPS_COMM_DEFAULT_BAUDRATE);
+	cleanup_log_if(retval, "Failed to set default baudrate!");
     }
     return ERROR_OK;
 
     cleanup:
-    if(gps->fd > 0)
-	if(close(gps->fd) < 0)
-	{
-	    err_log_stderr("close()");
-	}
+    (void)gps_comm_disconnect(gps);
     return retval;
 }
 
@@ -118,16 +140,33 @@ gps_t *  gps_comm_init(const char *device){
     return NULL;
 }
 
+#define BAUDRATE_VALUES 6
 int gps_comm_wait_fix(gps_t *gps, uquad_bool_t *got_fix, struct timeval *t_out)
 {
     uquad_bool_t
+	baudrate_ok = false,
 	read_ok;
     int
+	baudrate = 0,
 	retval = ERROR_OK;
     struct timeval
 	tv_in,
 	tv_tmp,
+	tv_default,
 	tv_diff;
+    if(t_out == NULL)
+    {
+	tv_default.tv_sec = 2*GPS_INIT_TOUT_S;
+	tv_default.tv_usec = 2*GPS_INIT_TOUT_US;
+	t_out = &tv_default;
+    }
+
+    int baudrates[BAUDRATE_VALUES] = {GPS_COMM_DEFAULT_BAUDRATE,
+				      9600,
+				      4800,
+				      19200,
+				      57600,
+				      115200};
     if(gps == NULL || got_fix == NULL)
     {
 	err_check(ERROR_INVALID_ARG,"NULL pointer invalid arg!");
@@ -144,8 +183,15 @@ int gps_comm_wait_fix(gps_t *gps, uquad_bool_t *got_fix, struct timeval *t_out)
 	err_propagate(retval);
 	if(read_ok)
 	{
-	    retval = gps_comm_read(gps, got_fix);
-	    err_propagate(retval);
+	    retval = gps_comm_read(gps, &read_ok);
+	    log_n_continue(retval,"gps read error... Continuing...");
+	    if(!baudrate_ok && read_ok)
+	    {
+		// First successfully read frame
+		baudrate_ok = true;
+		err_log_num("Correct baudrate found!",
+			    baudrates[baudrate]);
+	    }
 	    if(gps_comm_fix(gps))
 	    {
 		*got_fix = true;
@@ -157,21 +203,34 @@ int gps_comm_wait_fix(gps_t *gps, uquad_bool_t *got_fix, struct timeval *t_out)
 	    }
 	}
 
-	if(t_out != NULL)
+	/// Check if timeout was exceeded
+	retval = gettimeofday(&tv_tmp,NULL);
+	if(retval != 0)
 	{
-	    /// Check if timeout was exceeded
-	    retval = gettimeofday(&tv_tmp,NULL);
-	    if(retval != 0)
+	    err_check_std(ERROR_TIMING);
+	}
+	retval = uquad_timeval_substract(&tv_diff,tv_tmp,tv_in);
+	if(retval <= 0)
+	{
+	    err_check(ERROR_TIMING,"Absurd timing!");
+	}
+	retval = uquad_timeval_substract(&tv_tmp,tv_diff,*t_out);
+	if(retval > 0)
+	{
+	    if((!baudrate_ok) && (baudrate < BAUDRATE_VALUES - 1))
 	    {
-		err_check_std(ERROR_TIMING);
+		baudrate++;
+		retval = gps_comm_set_baudrate(gps->dev_name,baudrates[baudrate]);
+		err_propagate(retval);
+		err_log_num("Timed out waiting for fix, attempting with diff baudrate...",
+			    baudrates[baudrate]);
+		retval = gettimeofday(&tv_in,NULL);
+		if(retval != 0)
+		{
+		    err_check_std(ERROR_TIMING);
+		}
 	    }
-	    retval = uquad_timeval_substract(&tv_diff,tv_tmp,tv_in);
-	    if(retval <= 0)
-	    {
-		err_check(ERROR_TIMING,"Absurd timing!");
-	    }
-	    retval = uquad_timeval_substract(&tv_tmp,tv_diff,*t_out);
-	    if(retval > 0)
+	    else
 	    {
 		err_log("Timed out waiting for GPS!");
 		return ERROR_OK;
@@ -229,11 +288,10 @@ void gps_comm_deinit(gps_t * gps){
 
     if(gps->dev == NULL)
     {
-	if(gps->fd > 0)
-	    if(close(gps->fd))
-	    {
-		err_log_stderr("close()");
-	    }
+	if(gps_comm_disconnect(gps) != ERROR_OK)
+	{
+	    err_log("Failed to disconnect gps! Ignoring...");
+	}
     }
     else
     {
@@ -448,6 +506,7 @@ int gps_comm_parse_gpgga(gps_t *gps, char *buff)
     // DOP - Discarded
     token = strtok(NULL,GPS_NMEA_DELIMS);
     if(token == NULL) goto token_error;
+    gps->dop = atof(token);
 
     // Altitude
     token = strtok(NULL,GPS_NMEA_DELIMS);
@@ -751,8 +810,9 @@ int gps_comm_get_data(gps_t *gps, gps_comm_data_t *gps_data)
 	err_check(ERROR_GPS_NO_FIX,"Will not accept data, fix not available!");
     }
 
-    uquad_mat_copy(gps_data->pos, gps->pos);
+    retval = uquad_mat_copy(gps_data->pos, gps->pos);
     err_propagate(retval);
+    gps_data->dop = gps->dop;
 /*     if(gps->vel_ok) */
 /*     { */
 /* #if GPS_COMM_DATA_NON_INERTIAL_VEL */
@@ -826,6 +886,7 @@ void gps_comm_dump(gps_t *gps, gps_comm_data_t *gps_data, FILE *stream)
     // raw data
     log_double_only(stream, gps->lat);
     log_double_only(stream, gps->lon);
+    log_double_only(stream, gps->dop);
     /* log_double_only(stream, (gps->vel_ok)?gps->speed:0); */
     /* log_double_only(stream, (gps->vel_ok)?gps->climb:0); */
     /* log_double_only(stream, (gps->vel_ok)?gps->track:0); */

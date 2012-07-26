@@ -59,6 +59,8 @@
 #define GPS_FIX_GPS                    1
 #define GPS_FIX_DGPS                   2
 
+#define GPS_COMM_DEFAULT_BAUDRATE      38400
+
 typedef struct gps_data_t gpsd_t;
 
 typedef struct utm{
@@ -74,6 +76,7 @@ typedef struct utm{
 typedef struct gps_comm_data{
     uquad_mat_t *pos; // Position (inertial system) {x,y,z}     [m]
     uquad_mat_t *vel; // Speed    (inertial system) {vx,vy,vz}  [m/s]
+    double dop;       // DOP - error measure
 }gps_comm_data_t;
 
 /* typedef struct gps_fix_ { */
@@ -98,6 +101,7 @@ typedef struct gps_comm_data{
 /* }gps_fix_t; */
 
 typedef struct gps{
+    char dev_name[256];          // Device name
     int fd;                      // File descriptor for reading from gps
     int fix;                     // Fix type.
 
@@ -126,6 +130,7 @@ typedef struct gps{
 
     double lat;
     double lon;
+    double dop;
 
     /* double speed;                // Speed over ground             [m/s] */
     /* double speed_ep;             // Speed uncertainty             [m/s] */
