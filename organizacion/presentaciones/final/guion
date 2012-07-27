@@ -1,28 +1,41 @@
-Carátula
-	breve intro onda el proy consiste en comprar un quad, desarmalo, entender como funca, comprar otras cosas y rearmarlo
+# -- # -- # -- # -- # -- # -- # -- # -- # -- #
+# mati
+# -- # -- # -- # -- # -- # -- # -- # -- # -- #
 
-Objetivios
-	las etapas/objetivos intermedios que hubo q seguir/cumplir son los de la transparencia. 
-	Modelado para conocer la dinamica y el entender el comportamiento del sistema en funcion de las entadas y caracterización para por ejemplo saber la respuesta de los motores (comercial, 0 info). idem protocolo i2c
+Carátula
+	bienvenida
+	presentacion del grupo
+
+Vista de lejos + objetivos en el costado q van apareciendo (ex-Resumen de Objetivios)
+	queremos hacer algo más omenos así, pantallazo gral.
+
+	q quiero hacer? recorrer una serie de puntos del espacio en una sequencia dada. Para parasar por los puntos objetivo se debe definir una secuencia de trayectorias a realizar, un generador de rutas
+
+	q necesito? preciso sensores! xq? son los encargados de medir ciertas magnitudes que nos permitirán conocer la posición y orientación del cuadricóptero.
+	como trabajo con *muchos* sensores? los integro de manera de que unos compensen los problemas de otros -> filtro de kalman extendido, tiene en cuenta el modelo físico para la estimación del estado.
+	conozco mi estado, y ahora? uso donde-estoy y donde-quiero-estar para decidir la acción de control a tomar -> resultado: velocidad angular de cada motor
+	como ejecuto mi acción de control? software/firmware/hardware que maneje los motores a la velocidad deseada.	
+
+De donde partimos (ex-Diagrama gral)
+	 partimos de un cuadricóptero comercial radio controlado que incluia los modulos mostrados en la transparencia. Un transmisor (el control), un receptor, una cPu, los ESCs que son controladores electronicos de velocidad utilizados para controlar los motores y los motores.
+	 Nosotros le agregamos, como ya dijimos la instrumentación necesaria para el control autónomo: una CPU externa, un modulo de switcheo q controla qué cpu lleva el control. La imu es la placa con los sensores y el wifi se utiliza para conectar la cpu con la computadora para por ejemplo darle start.
+	plataforma comercial evita lidiar con temas mecánicas, pero introduce otros - motores? i2c? pueden estar mal hechas...
+	Modelado para conocer la dinamica y el entender el comportamiento del sistema en funcion de las entadas y caracterización para por ejemplo saber la respuesta de los motores (comercial, 0 info).
+	no hay información sobre el protocolo i2c con el que se manejan los motores, averiguarlo.
 	a control remoto tenemos la vista como realimentacion pero como se tiene q manejar solo, el mismo tiene q conocer su estado. para esto se incluye instrumentacion adicional, un procesador y todo se debe integrar para lograr una buena comunicacion (hardware, firmware, software, mantajware)
 	Los datos de los sensores son intratables, entonces se les encaha un filtro
-	se diseña un controlador para lograr llevar al quad al estado deseado. Se utilizo la técnica LQR que implementa un control lineal sobre todas las variables de estado. Para testear los algoritmos se diseña un simulador. Como vamos a explicar dsp se trabajará con 3 tipos de trayectorias. Para parasar por los puntos objetivo se debe definir una secuencia de trayectorias a realizar, lo que le llamamos generador de rutas
-	una vez logrado todo lo anterior el objetivo final es lograr el control autonomo del quad, donde se entiende por control autonomo que dados una serie de puntos (waypoints) se logre pasar por ellos con un error razonable. Bueno, en ralida este objetivo no lo pudimos cumplir en su totalidad por motivos que explicaremos mas adelante.
 
 Objetivos secundarios
 	Como objetivos secundarios planteamos la integración de una cámara que sería utilizada para obtener la posición y orientación a puertas cerradas donde no hay señal de gps y la implementación de un switcheo manual automático para utilizarse en casos de emergencia, escúchese si el algoritmo de control diverge no lo quiero ir a buscar a pando
+
+# -- # -- # -- # -- # -- # -- # -- # -- # -- #
+# pater
+# -- # -- # -- # -- # -- # -- # -- # -- # -- #
 
 Cuadricóptero
 	un cuadricoptero es un vehículo aéreo compuesto por 4 motores y 4 helices dispuestas como se ve en la figura. 2 de las helices giran en sentido horario y los otros 2 en sentido antihorario. Cada conjunto motor-helice produce un empuje en la dirección z y un torque en el sentido contrario al giro (M).
 	Para una cierta velocidad en los motores se logra que la suma de las fuerzas de los 4 motores iguale al peso y que el torque neto sea 0, lo cual permite el equilibrio que es conocido como hovering. Si se aumenta la velocidad de los 4 motores en la misma medida se logra un desplazamiento vertical. Para girar segun x se debe aumentar la velocidad del motor 2 y disminuir en la misma medida la del 4. Para girar segun y es análogo con los motores 1 y 3 y para girar según z se provoca un desequilibrio en los torques: para girar un ángulo positivo se aumenta la velocidad de los motores 2 y 4 y se disminuye la de los motores 1 y 3.
 	Esta es la idea del funcionamiento basico del quad pero para lograr el control es necesario conocer en profundidad la dinamica del sistema
-	
-Diagrama general
-	 partimos de un cuadricóptero comercial radio controlado que incluia los modulos mostrados en la transparencia. Un transmisor (el control), un receptor, una cPu, los ESCs que son controladores electronicos de velocidad utilizados para controlar los motores y los motores.
-	 Nosotros le agregamos, como ya dijimos la instrumentación necesaria para el control autónomo: una CPU externa, un modulo de switcheo q controla qué cpu lleva el control. La imu es la placa con los sensores y el wifi se utiliza para conectar la cpu con la computadora para por ejemplo darle start.
-	 
-Vista general
-	 bueeeeno ahora pasaremos a describir las diferentes partes del trabajo. Por un lado tenemos los sensores que son los encargados de medir ciertas magnitudes que nos permitirán conocer la posición y orientación del cuadricóptero. Las medidas de los sensores se combinan en un filtro de kalman extendido que tiene en cuenta el modelo físico para la estimación del estado. Una vez conocido el estado se utiliza para decidir la acción de control a tomar, lo cual se traduce en una velocidad de giro para cada motor. Una vez explicadas todas las partes se explicará cómo se ralizó la implementación práctica.
 
 Modelo físico
        Para el desarrollo del modelo fisico se consideraron 2 sistemas de referncia, uno inercial solidario a la tierra y el otro solidario al quad. El pasaje de uno a otro se hace mediante 3 rotaciones: la primera según el eje k, que da origen a la base con subindice 1 con angulo de giro theta y las otras rotaciones son segun los ejes j1 e i2 con ángulos phi y psi. La utilidad del sistema solidario al quad es simplificar el desarrollo del modelo ya que las fuerzas y torques expresados en esta base quedan siempre en la misma dirección y las medidas tomadas de la imu (aceleracion y velocidad angular) quedan expresadas en esta base.
@@ -33,30 +46,39 @@ Ecuaciones
 Variables de estado
 	  se elige trabajar con el vector de estados X ya que se conoce la dinámica de todas las variables.
 
+# -- # -- # -- # -- # -- # -- # -- # -- # -- #
+# mati
+# -- # -- # -- # -- # -- # -- # -- # -- # -- #
+
 Motores
 	los motores son de tipo brushless (sin escobillas) comandados por controladores electronicos que se les llama ESCs. vamos a hablar brevemente del funciopnamiento, de los escs y del sniffeo, que es el proveso de decodificado del protocolo de comando de los motores.
 
 Funcionamiento
 	los motores de tipo brushles constan de un rotor de iman permanente y un un estator con 3 pares de bobinas. Se comandan energizando dos de las 3 fases disponibles en cada instante de modo que el campo magnético ejerza el máximo torque posible sobre el imán. para ello se utiliza algún método de sensado de posición del rotor. En las imagenes se muestra el movimiento que tendria el rotor energizando distintas parejas de fases.
 
-ESCs
-	son los encargados de conmutar la corriente en las diferentes fases en el momento adecuado. Cada ESc tiene un microcontrolador que se comunica con la CPU mediante un bus i2c, que se explicará en seguida
+ESCs	
+	lo q se explicó recién lo manejan los ESC: son los encargados de conmutar la corriente en las diferentes fases en el momento adecuado. Cada ESc tiene un microcontrolador que se comunica con la CPU mediante un bus i2c, que se explicará en seguida
 
 Circuito
 	Cada fase se maneja con 2 transistores FETs y se logra switchear la corriente abriendo y/o cerrandolos  que conducen el nivel de cada fase hacia el nivel alto, bajo o en vcc/2. El microcontrolador maneja 2 pines que definen el estado de los transistores. 
 al bajar los 2 pines solamente conduce el transistor de arriba, llevando la fase a Vcc. Subiendo el pin de arriba quedan los 2 cortados dejando la fase flotando (que el resto del cirvuito lo determina en 5.5 V) y si se activan los 2 pines del controlador coduce el transistor de abajo, llevando la fase a tierra
 
 Sniffeo
+	antes era la cpu, ahora tenemos que hacerlo nosotros -> sniffeo, proveso de decodificado del protocolo de comando de los motores.
 	Como se trata de un cuadricóptero comercial, la información sobre el funcionamiento del mismo fue negada por los vendedores. Por ello fue necesario realizar un proceso de ingeniería inversa para poder decodificar el protocolo de comunicación entre los ESCs y la CPU. La idea básica del sniffeo es escuchar las líneas del protocolo sin intervenir en ellas. El protocolo i2c es un proytocolo digital de tipo maestro esclavo. Cada ESC es un esclavo diferente y tiene asignada una dirección que lo distingue. Consta de 3 líneas digitales, una tierra de referencia, una señal de datos y otra de reloj. la comunicacion se logra mediante combinaciones de los niveles de las líneas de datos y reloj. Hay 3 tipos de comandos, uno de arranque uno de parada y uno de seteo de velocidad
 
 Caracterización
 	Como no se tienen datos de los motores fue necesario caracterizar los motores+hélices. Se eligió caracterizar el conjunto en funcion de la velocidad angular de forma de adquirir robustez frente a cambios en el hardware (cambiar los escs por ej). Se caracterizaron experimentalmente las curvas de comando i2c, fuerza y torque contra velocidad angular. Para la primera el modelo mas simple que aproxima de buena forma los puntos experimentales relevados es de orden 3, mientras que para las otras 2 es de orden 2. Esto último se ajusta a lo estudiado en la bibliografía consultada. El rango de valores de comando i2c va desde 50 hasta 220. El valor de w para la trayectoria de hovering es 310 rad/s
 
+# -- # -- # -- # -- # -- # -- # -- # -- # -- #
+# rela
+# -- # -- # -- # -- # -- # -- # -- # -- # -- #
+
 Sensores
 	Para conocer el vector de estado es necesario relizar medidas sobre algunas magnitudes como la posición, la velocidad angular,etc. Para ello se dota al cuadricóptero de diversos sensores. Por un lado un GPS para obtener realimentación en posición y una IMU que se compone de diversos sensores. 
 
 GPS
-	El GPS debe ser utilizado a cielo abierto para obtener una la posición absoluta, esto permite tener una realimentación. El GPS utilizado se conecta mediante USB a la CPU. El error del GPS es importante alcanzando los 2.5 metros. Para caracterizar este error se toman medidas durante 10 minutos en 6 posiciones distintas. En la figura se observan las diferencias entre la posicion medida y el promedio para cada punto. La gran mayoría de las medidas caen dentro de un círculo de radio 2.5 metros.
+	El GPS debe ser utilizado a cielo abierto para obtener una la posición absoluta, esto permite tener una realimentación en xy. El GPS utilizado se conecta mediante USB a la CPU. El error del GPS puede ser muy importante, dependiendo de las condiciones de visibilidad y de la velocidad de traslación. Para caracterizar este error se toman medidas durante 10 minutos en 6 posiciones distintas. En la figura se observan las diferencias entre la posicion medida y el promedio para cada punto. La gran mayoría de las medidas caen dentro de un círculo de radio 2.5 metros.
 
 IMU
 
@@ -74,6 +96,15 @@ Yaw
 Cuadro errores
        En este cuadro se observan la tasa de refresco de cada sensor así como su error típico y su resolución. Todos los sensores ofrecen un dato nuevo cada 10ms a excepción del GPS que da un dato por segundo. La resolución y la desviación estándar dan una idea de que se puede esperar de cada sensor. En este sentido, se confirma que el acelerómetro no sirve para obtener la posición a partir de su
 
+##--##
+#TITO#
+## imu-display ruidoso
+##--##
+
+# -- # -- # -- # -- # -- # -- # -- # -- # -- #
+# mati
+# -- # -- # -- # -- # -- # -- # -- # -- # -- #
+
 Kalman
 	Al observar las señales extraídas de los sensores vimos que cuando se prendían los motores, el ruido mecánico provocaba oscilaciones en la medida muy importantes. Por ejemplo al realizar la cuenta que vimos para hallar los ángulos, dejándolo quieto se obtenía un ruido de hasta mas menos 50 grados. Introducir valores de este estilo directamente al controlador resultaría en una oscilación contínua y haría al sistema casi imposible de controlar, por lo que se hace necsaria la implementación de algún algoritmo de estimación de estados. Kalman es uno de los más conocidos. recibe como entrada una serie de medidas ruidosas observadas a lo largo del tiempo y operando recursivamente sobre el flujo de entrada, produce una estimación de alguna variable de estado que es estadísticamente óptima. Sirve para dos cosas, una es obtener una estimación menos ruidosa, y la otra es para estimar variables de estado de las que no se tiene realimentación directa de los sensores. 
 
@@ -89,6 +120,15 @@ Diagrama de implementación
 
 Resultados
 	se ve un ejemplo de la medida contra la estimacion
+
+##--##
+#TITO#
+## imu-display kalman
+##--##
+
+# -- # -- # -- # -- # -- # -- # -- # -- # -- #
+# pater
+# -- # -- # -- # -- # -- # -- # -- # -- # -- #
 
 Control
 	Hasta ahora estuvimos viendo como funciona el cuadricóptero, estudiamos la dinámica, aprendimos como se manejan los motores, vimos como sensar y estimar las variables de estado. Lo que hacemos con el control es en base a todo lo anterior decidir la acción de control a tomar para lograr un cierto objetivo
@@ -112,8 +152,59 @@ Grafica
 Simulador
 	Para testear diferentes algoritmos de control se desarrolló un simulador donde llegar a implementar y testear todas las trayectorias mencionadas de forma satisfactoria. En la imagen se muestra un círculo simulado con velocidad constante. Se agregó además la posibilidad de agregar diferentes ruidos de medida y un desajuste en el empuje de los motores. Los datos simulados arrojan resultados muy satisfactorios, mucho más que los obtenidos experimentalmente.
 
+##--##
+#TITO#
+## phimetro-respuesta escalon
+##--##
+
 Vista general
       bueno hasta ahora tenemos toda la teoria de como hacer todo, y vamos a ver cómo se hicieron las cosas
 
+# -- # -- # -- # -- # -- # -- # -- # -- # -- #
+# rela
+# -- # -- # -- # -- # -- # -- # -- # -- # -- #
+
 Implementación
-	
+	distintos micros - cpu1 reemplazada, cpu2, mongoose
+	mongoose es arduino, codigo escrito sobre c, muestrea y manda mediante una uart a la cpu2
+	cpu2 ejecuta un linux, conectamos por ssh, programas en C
+	     - una cagada
+	loop principal
+	     - el control satura, integrales satura
+	     - el esc es relativamente fácil de reemplazar.
+
+Montajware
+	?
+	integración de distintas placas mediante conversores de niveles
+
+Conclusion
+	- los esc son poco confiables, varias accidentes injustificados.
+	- implementar el sistema de estabilización en un micro dedicado, dejando el control de mas alto nivel (navegacion, tracking, etc) a cargo del micro que actualmente se encarga de todo. reemplazando los ESC se evita un problema de solapamiento de direcciones I2C, y se abre la puerta a implementar el sistema de estabilizacion en la IMU.
+	- 
+
+# -- # -- # -- # -- # -- # -- # -- # -- # -- #
+# pater
+# -- # -- # -- # -- # -- # -- # -- # -- # -- #
+
+Trabajo a futuro
+
+# -- # -- # -- # -- # -- # -- # -- # -- # -- #
+# -- # -- # -- # -- # -- # -- # -- # -- # -- #
+# Tiempos
+
+# Ensayo 1 - 26
+intro	- 6:15
+modelo	- 2:45
+motores	- 3:30
+sensores- 3:17
+kalman  - 4:04
+control - 6:15
+impleme - 3:30
+montaj  - 2:00
+video   - 2:00
+conc    - 
+futuro  - 
+
+total: 
+
+# Ensayo 2
