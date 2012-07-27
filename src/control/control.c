@@ -382,7 +382,7 @@ int control_update_K(ctrl_t *ctrl, path_planner_t *pp, double weight)
     //Linearization of the system
     A = uquad_mat_alloc(STATES_CONTROLLED,STATES_CONTROLLED);
     B = uquad_mat_alloc(STATES_CONTROLLED,LENGTH_INPUT);
-    retval = control_lin_model(A,B,pp->pt,pp->sp, weight);
+    retval = control_lin_model(A,B,pp->sp->pt,pp->sp, weight);
     cleanup_if(retval);
 
     //Extends the system to include the integrated states

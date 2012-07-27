@@ -872,7 +872,7 @@ int main(int argc, char *argv[]){
     }
 
     /// Path planner module
-    pp = pp_init();
+    pp = pp_init(PP_SP_X_FILENAME, mot->weight);
     if(pp == NULL)
     {
 	quit_log_if(ERROR_FAIL,"path planner init failed!");
@@ -1538,7 +1538,7 @@ int main(int argc, char *argv[]){
 	     * yaw == 0, this will keep us looking forward
 	     * when hovering.
 	     */
-	    if(pp->pt != HOVER)
+	    if(pp->sp->pt != HOVER)
 	    {
 		quit_log_if(retval,"ERR: theta (Yaw) set to IMU calibration"\
 			    "is only valid when in HOVER mode");
@@ -1568,7 +1568,7 @@ int main(int argc, char *argv[]){
 	     * Startup setpoint:
 	     *  - Kalman estimator from calibration & GPS, if available.
 	     */
-	    if(pp->pt == HOVER)
+	    if(pp->sp->pt == HOVER)
 	    {
 #if USE_GPS
 		// Position
@@ -1801,7 +1801,7 @@ int main(int argc, char *argv[]){
 	/// -- -- -- -- -- -- -- --
 	/// Update setpoint
 	/// -- -- -- -- -- -- -- --
-	retval = pp_update_setpoint(pp, kalman->x_hat, mot->w_hover, &ctrl_outdated);
+	retval = pp_update_setpoint(pp, kalman->x_hat, &ctrl_outdated);
 	log_n_continue(retval,"Kalman update failed");
 
 	/// -- -- -- -- -- -- -- --

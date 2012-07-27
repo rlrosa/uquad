@@ -58,39 +58,150 @@ set_point_t *setpoint_init(void)
     return sp;
 }
 
-path_planner_t *pp_init(void)
+static int line_count (const char *filename, int *lines)
 {
-    path_planner_t *pp = (path_planner_t *)malloc(sizeof(path_planner_t));
-    mem_alloc_check(pp);
-    pp->pt = HOVER;
-    pp->sp = setpoint_init();
-    if(pp->sp == NULL)
+    char
+	c;
+    FILE
+	*file;
+    if(filename == NULL || lines == NULL)
     {
-	pp_deinit(pp);
-	return NULL;
+	err_check(ERROR_INVALID_ARG,"NULL pointer invalid arg!");
     }
-    return pp;
+    file = fopen(filename,"r");
+    if(file == NULL)
+    {
+	err_log_stderr("fopen()");
+	return -ERROR_IO;
+    }
+    while((c = fgetc(file)) != EOF)
+	    if(c == '\n')
+		(*lines)++;
+    fclose(file);
+
+    // Don't count empty last line
+    //    if(c != '\n')
+    //	*lines++;
+    return ERROR_OK;
 }
 
-int pp_update_setpoint(path_planner_t *pp, uquad_mat_t *x, double w_hover, uquad_bool_t *ctrl_outdated)
+path_planner_t *pp_init(const char *filename, double w_hover)
 {
+    int
+	i,
+	j,
+	p_type,
+	retval = ERROR_OK;
+    path_planner_t *pp = (path_planner_t *)malloc(sizeof(path_planner_t));
+    mem_alloc_check(pp);
+    retval = line_count(filename, &pp->sp_list_len);
+    cleanup_if(retval);
+
+    pp->sp_list = (set_point_t **)malloc(pp->sp_list_len*sizeof(set_point_t*));
+    mem_alloc_check(pp->sp_list);
+    for(i=0; i<pp->sp_list_len; ++i)
+	pp->sp_list[i] = NULL;
+
+    pp->sp_list_curr = 0;
+
+    FILE *file = fopen(filename,"r");
+    if(file == NULL)
+    {
+	err_log_stderr("fopen()");
+	goto cleanup;
+    }
+    for(i=0; i<pp->sp_list_len; ++i)
+    {
+	/// Allocate memory for setpoint
+	pp->sp_list[i] = setpoint_init();
+	if(pp->sp_list[i] == NULL)
+	{
+	    cleanup_log_if(ERROR_MALLOC,"Failed to allocate setpoint!");
+	}
+
+	/// Load setpoint from file
+	retval = uquad_mat_load(pp->sp_list[i]->x, file);
+	cleanup_if(retval);
+
+	/// Load path type
+	retval = fscanf(file,"%d",&p_type);
+	if(retval <= 0)
+	{
+	    err_log_stderr("fscanf()");
+	    cleanup_if(ERROR_READ);
+	}
+	if(p_type < 0 || p_type >= PATH_TYPE_COUNT)
+	{
+	    err_log_num("Invalid path type!", p_type);
+	    cleanup_if(ERROR_FAIL);
+	}
+	pp->sp_list[i]->pt = (path_type_t) p_type;
+
+	/// Set w setpoint to hovering
+	for(j=0; j<LENGTH_INPUT; ++j)
+	    pp->sp_list[i]->w->m_full[j] = w_hover;
+
+	fclose(file);
+	file = NULL;
+    }
+
+    return pp;
+    cleanup:
+    pp_deinit(pp);
+    if(file != NULL)
+	fclose(file);
+    return NULL;
+}
+
+uquad_bool_t pp_setpoint_reached(uquad_mat_t *x, set_point_t *sp_curr)
+{
+    static int in_range = 0;
+    if(
+       (uquad_abs(x->m_full[SV_X] - sp_curr->x->m_full[SV_X]) < PP_REACHED_X) &&
+       (uquad_abs(x->m_full[SV_Y] - sp_curr->x->m_full[SV_Y]) < PP_REACHED_Y) &&
+       (uquad_abs(x->m_full[SV_Z] - sp_curr->x->m_full[SV_X]) < PP_REACHED_Z)
+       )
+    {
+	/// In range, check if we've spent enough samples near the current setpoint
+	if(++in_range > PP_REACHED_COUNT)
+	{
+	    in_range = 0;
+	    return true;
+	}
+    }
+    else
+    {
+	/// Out of range, reset counter.
+	in_range = 0;
+    }
+    return false;
+}
+
+int pp_update_setpoint(path_planner_t *pp, uquad_mat_t *x, uquad_bool_t *ctrl_outdated)
+{
+    int retval = ERROR_OK;
     if(pp == NULL || x == NULL || ctrl_outdated == NULL)
     {
 	err_check(ERROR_NULL_POINTER,"Invalid argument.");
     }
-    if (pp->pt == HOVER)
+    if(pp_setpoint_reached(x, pp->sp))
     {
-	pp->sp->w->m_full[0] = w_hover;
-	pp->sp->w->m_full[1] = w_hover;
-	pp->sp->w->m_full[2] = w_hover;
-	pp->sp->w->m_full[3] = w_hover;
-	*ctrl_outdated = false;
+	if(pp->sp_list_curr < pp->sp_list_len - 1)
+	{
+	    pp->sp++;
+	    pp->sp_list_curr++;
+	    *ctrl_outdated = true;
+	}
+	else
+	{
+	    err_log("No setpoints remaining, will not update setpoint.");
+	}
     }
     else
     {
-	err_check(ERROR_FAIL, "Not implemented!");
+	*ctrl_outdated = false;
     }
-    return ERROR_OK;
+    return retval;
 }
 
 int pp_new_setpoint(path_planner_t *pp, uquad_mat_t *x, uquad_mat_t *w)
@@ -111,8 +222,14 @@ int pp_new_setpoint(path_planner_t *pp, uquad_mat_t *x, uquad_mat_t *w)
 
 void pp_deinit(path_planner_t *pp)
 {
+    int i;
     if (pp == NULL)
 	return;
-    setpoint_deinit(pp->sp);
+    if(pp->sp_list != NULL)
+    {
+	for(i=0; i<pp->sp_list_len; ++i)
+	    setpoint_deinit(pp->sp_list[i]);
+	free(pp->sp_list);
+    }
     free(pp);
 }
