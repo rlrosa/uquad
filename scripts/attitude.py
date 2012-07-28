@@ -96,7 +96,7 @@ try:
     scene=display(title="win-main",background=(1,1,1))
     scenerange = 60
     scene.range=(scenerange,scenerange,scenerange)
-    scene.forward = (.25,0.25,-0.05) # 'Out of' screen
+    scene.forward = (-.25,-0.1,-0.05)
     scene.up=(0,0,1)
     # scene.width=500
     # scene.y=200
@@ -137,17 +137,17 @@ try:
     quad_scale = 25
     # Reference axis (x,y,z)
     quad = frame()
-    arrow(color=color.green,axis=(1,0,0), pos=(0,0,0), length=50, shaftwidth=2.04, fixedwidth=1)
-    arrow(color=color.green,axis=(0,1,0), pos=(0,0,0), length=50, shaftwidth=2 , fixedwidth=1)
-    arrow(color=color.green,axis=(0,0,1), pos=(0,0,0), length=50, shaftwidth=2, fixedwidth=1)
+    arrow(color=color.green,axis=(1,0,0), pos=(0,0,0), length=35, shaftwidth=2, fixedwidth=1)
+    arrow(color=color.green,axis=(0,1,0), pos=(0,0,0), length=35, shaftwidth=2, fixedwidth=1)
+    arrow(color=color.green,axis=(0,0,1), pos=(0,0,0), length=25, shaftwidth=2, fixedwidth=1)
     arrow(frame=quad,color=color.green,axis=(1,0,0), pos=(0,0,0), length=0.005, shaftwidth=0.0004, fixedwidth=1)
     # labels
     #    label(frame=quad,pos=(0,0.4,0.8),text="imu test",box=0,opacity=0,color=color.black)
 
-    # xyz_lab_pos = quad_scale*1.5;
-    # label(pos=(xyz_lab_pos,0,0),text="X",box=0,opacity=0,color=color.black)
-    # label(pos=(0,xyz_lab_pos,0),text="Y",box=0,opacity=0,color=color.black)
-    # label(pos=(0,0,xyz_lab_pos),text="Z",box=0,opacity=0,color=color.black)
+    xyz_lab_pos = quad_scale*.9;
+    label(pos=(xyz_lab_pos,0,0),text="X",height=7,box=0,opacity=0,color=color.black)
+    label(pos=(0,xyz_lab_pos,0),text="Y",height=7,box=0,opacity=0,color=color.black)
+    label(pos=(0,0,xyz_lab_pos),text="Z",height=7,box=0,opacity=0,color=color.black)
     L_calib = label(frame=quad,pos=(0,0,0),text='',box=0,opacity=0,height=30,color=color.black)
     # IMU object
 #    platform = box(frame=quad,length=1.0, height=0.05, width=0.65, color=color.red)
@@ -272,9 +272,10 @@ while 1:
         contador += 1
         try:
             if loops == 0:
-                loops = raw_input('Time (s) between frames:(-1 for 10e-3)')
-                if(loops != ''):
-                    T = float(loops)
+                T = 0.000001
+#                loops = raw_input('Time (s) between frames:(-1 for 10e-3)')
+#                if(loops != ''):
+#                    T = float(loops)
                 loops = -1
             if loops <= 0:
                 sleep(T)
