@@ -28,17 +28,33 @@
 #include <macros_misc.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <signal.h>
 
 enum test_type{
-    UPDATE_K = 0,
+    TEST_SETPOINTS = 0,
+    TEST_FLOW,
     TEST_COUNT
 };
 
-uquad_mat_t *m1, *m2, *mr;
-int retval;
-int r1,c1,r2,c2,l,i,j;
-float tmp;
-double k;
+uquad_mat_t *x = NULL, *x3x1 = NULL;
+path_planner_t *pp = NULL;
+
+void quit()
+{
+    if(x != NULL)
+	uquad_mat_free(x);
+    if(x3x1 != NULL)
+	uquad_mat_free(x3x1);
+    if(pp != NULL)
+	pp_deinit(pp);
+    exit(ERROR_OK);
+}
+
+void sig_handler(int signal_num)
+{
+    err_log_num("Caught signal:",signal_num);
+    quit();
+}
 
 #define DO_CONTINUE 'y'
 uquad_bool_t ask_continue()
@@ -56,136 +72,116 @@ uquad_bool_t ask_continue()
 	false;
 }
 
-int setpoint_stdin(uquad_mat_t *m)
+int test_setpoints(const char *filename)
 {
-    printf("Enter setpoint:\n");    
-    retval = uquad_mat_load(m,stdin);
-    err_check(retval,"WARN:Could not load matrix from stdin");
-    return retval;
-}
-
-int wset_stdin(uquad_mat_t *m)
-{
-    printf("Enter desired angular speeds:\n");    
-    retval = uquad_mat_load(m,stdin);
-    err_check(retval,"WARN:Could not load matrix from stdin");
-    return retval;
-}
-
-int Q_stdin(uquad_mat_t *m)
-{
-    int i;
-    double dtmp;
-    double aux[m->c];
-    
-    printf("Enter diagonal of Q matrix:\n");    
-    
-    for(i=0; i < m->r; i++)
+    pp = pp_init(filename,300.0);
+    if(pp == NULL)
     {
-	if(fscanf(stdin,"%lf",&dtmp) <= 0)
-	{
-	    err_check(ERROR_READ, "Failed to load data!");
-	}
-	aux[i] = dtmp;
+	err_log("Failed!");
     }
-    err_check(retval,"WARN:Could not load matrix from stdin");
-
-    retval = uquad_mat_zeros(m);
-    err_propagate(retval);
-    retval = uquad_mat_diag(m,aux);
-    err_propagate(retval);
-
-    return retval;
-}
-
-int R_stdin(uquad_mat_t *m)
-{
-    int i;
-    double dtmp;
-    double aux[m->c];
-    
-    printf("Enter diagonal of R matrix:\n");    
-    
-    for(i=0; i < m->r; i++)
+    else
     {
-	if(fscanf(stdin,"%lf",&dtmp) <= 0)
-	{
-	    err_check(ERROR_READ, "Failed to load data!");
-	}
-	aux[i] = dtmp;
+	err_log("Success!");
+	pp_deinit(pp);
     }
-    err_check(retval,"WARN:Could not load matrix from stdin");
-
-    retval = uquad_mat_zeros(m);
-    err_propagate(retval);
-    retval = uquad_mat_diag(m,aux);
-    err_propagate(retval);
-
-    return retval;
+    return ERROR_OK;
 }
 
-int update_k_test(void)
+int test_flow(const char *filename)
 {
-    uquad_mat_t *sp = NULL;
-    uquad_mat_t *w  = NULL;
-    uquad_mat_t *Q  = NULL;
-    uquad_mat_t *R  = NULL;
-    path_planner_t *pp =NULL;
-    double Ts = 10e-3;
+    uquad_bool_t
+	ctrl_must_update = false;
+    int ret = ERROR_OK;
+    x    = uquad_mat_alloc(1,STATE_COUNT);   // State vector
+    x3x1 = uquad_mat_alloc(1,3);   // State vector
+    if(x == NULL || x3x1 == NULL)
+    {
+	err_check(ERROR_MALLOC, "Failed to allocate aux mem!");
+    }
+    ret = uquad_mat_zeros(x);
+    err_propagate(ret);
+    ret = uquad_mat_zeros(x3x1);
+    err_propagate(ret);
 
-    sp = uquad_mat_alloc(1,12);
-    w = uquad_mat_alloc(1,4);
-    Q = uquad_mat_alloc(24,24);
-    R = uquad_mat_alloc(4,4);
+    pp = pp_init(filename,300.0);
+    if(pp == NULL)
+    {
+	err_log("Failed!");
+	return ERROR_FAIL;
+    }
+    else
+    {
+	err_log("Waypoints loaded. Current setpoint:");
+	uquad_mat_dump_vec(pp->sp->x,0, true);
+	fflush(stderr);fflush(stdout);
+	while(true)
+	{
+	    err_log("Input current position [x,y,z]:");fflush(stderr);
+	    ret = uquad_mat_load(x3x1, NULL);
+	    err_propagate(ret);
+	    x->m_full[SV_X] = x3x1->m_full[0];
+	    x->m_full[SV_Y] = x3x1->m_full[1];
+	    x->m_full[SV_Z] = x3x1->m_full[2];
 
-    retval = setpoint_stdin(sp);    
-    cleanup_if(retval);
+	    pp_check_progress(pp, x, &ctrl_must_update);
+	    err_propagate(ret);
+	    if(ctrl_must_update)
+	    {
+		// control should be updated before the next call
+		pp_update_setpoint(pp);
+		err_log("-- -- -- -- --");
+		err_log("Waypoint reached. Next waypoint:");
+		err_log("");
+		uquad_mat_dump_vec(pp->sp->x,0, true);
+		err_log("-- -- -- -- --");
+		ctrl_must_update = false;
+	    }
+	    else
+	    {
+		err_log("Waypoint out of range. Current waypoint:");
+		uquad_mat_dump_vec(pp->sp->x,0, true);
+	    }
 
-    retval = wset_stdin(w);
-    cleanup_if(retval);
-    
-    retval = Q_stdin(Q);
-    cleanup_if(retval);
-
-    retval = R_stdin(R);
-    cleanup_if(retval);
-    
-    pp = pp_init();
-    pp->sp->x = sp;
-    pp->sp->w = w;
-    pp->Q = Q;
-    pp->R = R;
-    pp->Ts = Ts;
-    pp->K = uquad_mat_alloc(4,24);
-    retval =  control_update_K(pp,0);
-    cleanup_if(retval);
-
-    cleanup:
-    uquad_mat_free(sp);
-    uquad_mat_free(w);
-    uquad_mat_free(Q);
-    uquad_mat_free(R);
-    
-    return retval;
+	    fflush(stderr);fflush(stdout);
+	}
+	pp_deinit(pp);
+	return ERROR_OK;
+    }
+    // never gets here
 }
 
-int main(void){
+int main(int argc, char *argv[]){
     int retval = ERROR_OK;
     enum test_type sel_test;
     int cmd;
-    printf("Select test:\n\t%d:Update feedback matrix\n\t",
-	  UPDATE_K);
 
-    scanf("%d",&cmd);
-    if(cmd<0 || cmd > TEST_COUNT)
+    // Catch signals
+    signal(SIGINT, sig_handler);
+    signal(SIGQUIT, sig_handler);
+
+
+    if(TEST_COUNT > 1)
     {
-	err_check(ERROR_FAIL,"Invalid input.");
+	printf("Select test:\n\t%d:Update feedback matrix\n\t%d:Waypoint flow\n\t",
+	       TEST_SETPOINTS,
+	       TEST_FLOW);
+
+	scanf("%d",&cmd);
+	if(cmd<0 || cmd > TEST_COUNT)
+	{
+	    err_check(ERROR_FAIL,"Invalid input.");
+	}
+	sel_test = cmd;
     }
-    sel_test = cmd;
+    else
+	sel_test = 0;
     switch(sel_test)
     {
-    case UPDATE_K:
-	retval = update_k_test();
+    case TEST_SETPOINTS:
+	retval = test_setpoints((argc > 1)?argv[1]:NULL);
+	break;
+    case TEST_FLOW:
+	retval = test_flow((argc > 1)?argv[1]:NULL);
 	break;
 
     default:
@@ -193,6 +189,7 @@ int main(void){
 	break;
     }
 
-    
-    return retval;
+    quit();
+    // never gets here
+    return ERROR_FAIL;
 }

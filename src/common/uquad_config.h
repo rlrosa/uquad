@@ -92,6 +92,14 @@
  */
 #define DYNAMIC_COV       0
 
+/**
+ * GPS altitud information has proven to be very poor.
+ * Enabling this define will ignore it completely, ony
+ * the barometer will be used for altitud estimation.
+ *
+ */
+#define GPS_IGNORE_ALT    1
+
 // -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 // Do NOT edit the following lines!
 // -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --

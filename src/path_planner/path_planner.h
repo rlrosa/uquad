@@ -69,22 +69,23 @@ typedef struct path_planner{
 }path_planner_t;
 
 /**
- * Allocates memory for set points and path planner. Will
- * load setpoints from a file will a special format:
- *   x.x x.x ... x.x N
+ * Allocates memory for set points and path planner.
+ * If filename is NULL the path will be only hovering. If a valid filename is
+ * supplied then setpoints will be loaded. The file must have the following format:
+ *   x.x x.x ... x.x N w.w w.w w.w w.w
  * where:
  *   - each x.x is one of the state variables given in uquad_types.h, without
  * including the accelerometer bias estimation.
  *   X Y Z PSI PHI THETA VQX VQY VQZ WQX WQY WQZ
- *   - the last element is an integer representing the path type, which can take 3 values:
+ *   - the elemen N is an integer representing the path type, which can take 3 values:
  *       0:HOVER
  *       1:STRAIGHT
  *       2:CIRCULAR
+ *   - each w.w is the setpoint for a motor relative to hovering (setting 0.0 will set
+ *   the motor setpoint to hovering).
  *
- * NOTE: Will NOT select set point, this must be done by
- *       either pp_update_setpoint() or pp_new_setpoint().
  *
- * @param filename File to load path from.
+ * @param filename File to load path from, or NULL for only hovering.
  * @param x current state
  *
  * @return new structure, or NULL if error.
@@ -95,14 +96,33 @@ path_planner_t *pp_init(const char *filename, double w_hover);
  * Calculates distance between current state vector and set point, if it is
  * sufficiently small, then the set point should be set to the next waypoint,
  * and the control matrix should be updated to match the new trajectory.
+ * This function will return an indicator so the control matrix can be
+ * updated. After the control matrix is updated, pp_update_setpoint() should
+ * be called.
  *
  * @param pp
  * @param x current state
  * @param ctrl_outdated if true, then control matrix has to be updated to new sp.
  *
- * @return error code
  */
-int pp_update_setpoint(path_planner_t *pp, uquad_mat_t *x, uquad_bool_t *ctrl_outdated);
+void pp_check_progress(path_planner_t *pp, uquad_mat_t *x, uquad_bool_t *arrived);
+
+/**
+ * Will update setpoint to the next in the list.
+ * If no setpoints remain, then the next setpoint will be defined as hovering (initial condition).
+ *
+ * @param pp
+ */
+void pp_update_setpoint(path_planner_t *pp);
+
+/**
+ * Will return next setpoint in list.
+ *
+ * @param pp
+ *
+ * @return ans
+ */
+set_point_t *pp_get_next_sp(path_planner_t *pp);
 
 /**
  * Will set x (state vector) as current setpoint, and w as desired motor speed.

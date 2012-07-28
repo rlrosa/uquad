@@ -139,6 +139,9 @@
 #define QUIT           27
 #define RAMP_DOWN      'q' // This is unstable, currently disabled.
 
+#define UQUAD_MAX_PARAM  5
+#define UQUAD_MIN_PARAM  4
+
 #define UQUAD_HOW_TO     "./main <imu_device> /path/to/log/ <gps_device>"
 #define MAX_ERRORS       10 // Abort if more than MAX_ERRORS errors.
 #define MAX_NO_UPDATES_S 1  // Abort if more than MAX_NO_UPDATES_S sec without data.
@@ -537,6 +540,7 @@ int main(int argc, char *argv[]){
     char
 	*device_imu,
 	*device_gps,
+	*path_list,
 	*log_path;
     double
 	dtmp;
@@ -552,7 +556,8 @@ int main(int argc, char *argv[]){
 	imu_update    = false,
 	reg_stdin     = true,
         aux_bool      = false,
-	ctrl_outdated = false,
+	ctrl_updating = false,
+	ctrl_updated  = false,
 	manual_mode   = false;
     struct timeval
 	tv_tmp, tv_diff,
@@ -562,6 +567,7 @@ int main(int argc, char *argv[]){
 	tv_last_imu,
 	tv_last_frame,
 	tv_imu_stab_init,
+	tv_k_update_start,
 	tv_gps_last;
 #if IMU_COMM_FAKE
     struct timeval tv_imu_fake;
@@ -620,7 +626,7 @@ int main(int argc, char *argv[]){
     /* timeout(0); // non-blocking reading of user input */
     /* refresh();  // show output on screen */
 
-    if(argc<4)
+    if(argc<UQUAD_MIN_PARAM || argc > UQUAD_MAX_PARAM)
     {
 	err_log(UQUAD_HOW_TO);
 	exit(1);
@@ -631,6 +637,11 @@ int main(int argc, char *argv[]){
 	log_path   = argv[2];
 	device_gps = argv[3];
     }
+
+    if(argc > 4)
+	path_list  = argv[4];
+    else
+	path_list  = NULL;
 
     /// -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
     /// Init
@@ -848,18 +859,19 @@ int main(int argc, char *argv[]){
 	retval = gps_comm_get_0(gps, gps_dat);
 	quit_if(retval);
 
+#if !GPS_IGNORE_ALT
 	/**
 	 * Inform IMU about starting altitude, in order to allow barometer
 	 * data to match GPS altitud estimation
 	 *
 	 */
-	/* GPS ALTITUDE INFORMATION IS IGNORED */
-	/* if(imu == NULL) */
-	/* { */
-	/*     quit_log_if(ERROR_FAIL,"IMU must be initialized before gps!"); */
-	/* } */
-	/* retval = imu_comm_set_z0(imu,gps_dat->pos->m_full[2]); */
-	/* quit_if(retval); */
+	if(imu == NULL)
+	{
+	    quit_log_if(ERROR_FAIL,"IMU must be initialized before gps!");
+	}
+	retval = imu_comm_set_z0(imu,gps_dat->pos->m_full[2]);
+	quit_if(retval);
+#endif // !GPS_IGNORE_ALT
     }
 #endif // !GPS_FAKE
 #endif // USE_GPS
@@ -872,7 +884,7 @@ int main(int argc, char *argv[]){
     }
 
     /// Path planner module
-    pp = pp_init(PP_SP_X_FILENAME, mot->weight);
+    pp = pp_init(path_list, mot->weight);
     if(pp == NULL)
     {
 	quit_log_if(ERROR_FAIL,"path planner init failed!");
@@ -1533,16 +1545,6 @@ int main(int argc, char *argv[]){
 	/// -- -- -- -- -- -- -- --
 	if(runs_kalman == 0)
 	{
-	    /**
-	     * Use current IMU calibration to set
-	     * yaw == 0, this will keep us looking forward
-	     * when hovering.
-	     */
-	    if(pp->sp->pt != HOVER)
-	    {
-		quit_log_if(retval,"ERR: theta (Yaw) set to IMU calibration"\
-			    "is only valid when in HOVER mode");
-	    }
 	    gettimeofday(&tv_tmp,NULL); // Will be used later
 	    time_ret = uquad_timeval_substract(&tv_diff,tv_tmp,tv_start);
 	    err_log_tv((time_ret < 0)?"Absurd IMU calibration time!":
@@ -1568,47 +1570,44 @@ int main(int argc, char *argv[]){
 	     * Startup setpoint:
 	     *  - Kalman estimator from calibration & GPS, if available.
 	     */
-	    if(pp->sp->pt == HOVER)
-	    {
 #if USE_GPS
-		// Position
-		retval = uquad_mat_set_subm(pp->sp->x,SV_X,0,gps_dat->pos);
-		quit_log_if(retval, "Failed to initiate kalman pos estimator from GPS data!");
-		// Euler angles
-		pp->sp->x->m_full[SV_THETA] = imu_data.magn->m_full[2]; // [rad]
+	    // Position
+	    pp->sp->x->m_full[SV_X] = gps_dat->pos->m_full[0];
+	    pp->sp->x->m_full[SV_Y] = gps_dat->pos->m_full[1];
+#if !GPS_IGNORE_ALT
+	    // Use hovering point relative to intial GPS altitud estimation
+	    pp->sp->x->m_full[SV_Z] += gps_dat->pos->m_full[2];
+#endif // !GPS_IGNORE_ALT
+
+	    // Yaw
+	    // Default hover matrix is designed to work aiming north
+	    pp->sp->x->m_full[SV_THETA] = 0.0; // [rad]
 #else // USE_GPS
-		// Hover matrix is designed to work aiming north
-		pp->sp->x->m_full[SV_THETA] = 0.0; // [rad]
+	    // Hold current yaw if GPS will not be used (no [x,y] feedback)
+	    pp->sp->x->m_full[SV_THETA] = imu_data.magn->m_full[2]; // [rad]
 #endif // USE_GPS
-		pp->sp->x->m_full[SV_PSI]   = 0.0; // [rad]
-		pp->sp->x->m_full[SV_PHI]   = 0.0; // [rad]
-		pp->sp->x->m_full[SV_Z]     = 1.0; // [m]
-		// Motor speed
-		for(i=0; i<MOT_C; ++i)
-		{
-		    w_forced->m_full[i] = mot->w_min;
-		    w->m_full[i]      = mot->w_hover;
-		}
-		//TODO Update control matrix - not implemented yet
-		/* retval = control_update_K(ctrl, pp, mot->weight); */
-		/* quit_log_if(retval, "Failed to update control matrix! Aborting..."); */
-		/* retval = control_dump(ctrl, log_err); */
-		/* quit_log_if(retval, "Failed to dump new control matrix! Aborting..."); */
+	    // Motor speed
+	    for(i=0; i<MOT_C; ++i)
+	    {
+		w_forced->m_full[i] = mot->w_min;
+		w->m_full[i]      = mot->w_hover;
 	    }
+
 	    err_log("Initial setpoint:");
 	    uquad_mat_dump_vec(pp->sp->x,stderr,false);
 
 	    /**
 	     * Startup Kalman estimator
 	     *  - If hovering, set initial position as setpoint. This will avoid
-	     *    rough movements on startup (setpoint will match current state)	     *
+	     *    rough movements on startup (setpoint will match current state)
 	     */
 #if USE_GPS
 	    // Position
 	    retval = uquad_mat_set_subm(kalman->x_hat,SV_X,0,gps_dat->pos);
 	    quit_log_if(retval, "Failed to initiate kalman pos estimator from GPS data!");
-	    /* GPS ALTITUDE INFORMATION IS IGNORED */
+#if GPS_IGNORE_ALT
 	    kalman->x_hat->m_full[2] = 0.0;
+#endif // GPS_IGNORE_ALT
 	    // Velocity
 	    //	    retval = uquad_mat_set_subm(kalman->x_hat,SV_VQX,0,gps_dat->pos);
 	    //	    quit_log_if(retval, "Failed to initiate kalman vel estimator from GPS data!");
@@ -1798,21 +1797,57 @@ int main(int argc, char *argv[]){
 	    // Don't run ctrl loop, nor set motor speed
 	    continue;
 
-	/// -- -- -- -- -- -- -- --
-	/// Update setpoint
-	/// -- -- -- -- -- -- -- --
-	retval = pp_update_setpoint(pp, kalman->x_hat, &ctrl_outdated);
-	log_n_continue(retval,"Kalman update failed");
-
-	/// -- -- -- -- -- -- -- --
-	/// Update control matrices
-	/// -- -- -- -- -- -- -- --
-	if(ctrl_outdated)
+	if(ctrl_updating)
 	{
-	    retval = control_update_K(ctrl, pp, mot->weight);
+	    /**
+	     * At this point a waypoint has been reached, but the contrl matrix
+	     * requiered the follow the path to the next point has not been computed
+	     * yet.
+	     */
+	    retval = control_update_K(ctrl, pp_get_next_sp(pp), mot->weight,&ctrl_updated);
 	    quit_log_if(retval, "Failed to update control matrix! Aborting...");
-	    retval = control_dump(ctrl, log_err);
-	    quit_log_if(retval, "Failed to dump new control matrix! Aborting...");
+	    if(ctrl_updated)
+	    {
+		/**
+		 * A new control matrix is ready, designed to follow the trayectory to
+		 * the next waypoint, so the current setpoint must be updated.
+		 */
+		gettimeofday(&tv_tmp,NULL);
+		uquad_timeval_substract(&tv_diff,tv_tmp,tv_k_update_start);
+		err_log_tv("K update completed in:",tv_diff);
+		ctrl_updating = false;
+		retval = control_dump(ctrl, log_err);
+		quit_log_if(retval, "Failed to dump new control matrix! Aborting...");
+		/// -- -- -- -- -- -- -- --
+		/// Update setpoint
+		/// -- -- -- -- -- -- -- --
+		pp_update_setpoint(pp);
+	    }
+	}
+	else
+	{
+	    /// -- -- -- -- -- -- -- --
+	    /// Check route progress
+	    /// -- -- -- -- -- -- -- --
+	    pp_check_progress(pp, kalman->x_hat, &ctrl_updating);
+	    log_n_continue(retval,"Kalman update failed");
+
+	    /// -- -- -- -- -- -- -- --
+	    /// Start control matrix update
+	    /// -- -- -- -- -- -- -- --
+	    if(ctrl_updating)
+	    {
+		gettimeofday(&tv_k_update_start,NULL);
+		retval = control_update_K(ctrl, pp_get_next_sp(pp), mot->weight, NULL);
+		quit_log_if(retval, "Failed to update control matrix! Aborting...");
+		/**
+		 * At this point neigher the control matrix nor the setpoint have
+		 * been updated, but work has started.
+		 * The setpoint will not be checked until control matrix update is
+		 * complete, at that point the new matrix and the new setpoint will
+		 * be used, and route progress checks will resume.
+		 */
+	    }
 	}
 
 	/// -- -- -- -- -- -- -- --

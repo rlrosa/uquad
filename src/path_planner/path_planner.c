@@ -72,16 +72,15 @@ static int line_count (const char *filename, int *lines)
     if(file == NULL)
     {
 	err_log_stderr("fopen()");
-	return -ERROR_IO;
+	return ERROR_IO;
     }
-    while((c = fgetc(file)) != EOF)
-	    if(c == '\n')
-		(*lines)++;
+    while((c = fgetc(ile)) != EOF)
+	if(c == '\n')
+	    (*lines)++;
     fclose(file);
 
-    // Don't count empty last line
-    //    if(c != '\n')
-    //	*lines++;
+    if(c != '\n')
+	(*lines)++;
     return ERROR_OK;
 }
 
@@ -92,55 +91,87 @@ path_planner_t *pp_init(const char *filename, double w_hover)
 	j,
 	p_type,
 	retval = ERROR_OK;
+    FILE *file;
     path_planner_t *pp = (path_planner_t *)malloc(sizeof(path_planner_t));
     mem_alloc_check(pp);
-    retval = line_count(filename, &pp->sp_list_len);
-    cleanup_if(retval);
+    if(filename==NULL)
+    {
+	err_log("No path supplied, will hover in place.");
+    }
+    else
+    {
+	retval = line_count(filename, &pp->sp_list_len);
+	cleanup_if(retval);
+    }
+    pp->sp_list_len++; // For default setpoint (hovering)
 
     pp->sp_list = (set_point_t **)malloc(pp->sp_list_len*sizeof(set_point_t*));
     mem_alloc_check(pp->sp_list);
     for(i=0; i<pp->sp_list_len; ++i)
 	pp->sp_list[i] = NULL;
 
+    /**
+     * First setpoint is for takeoff:
+     *   - hover at HOVER_HEIGHT
+     *   - face north
+     * Default matrix is designed for this scenario
+     */
+    pp->sp_list[0] = setpoint_init();
+    if(pp->sp_list[0] == NULL)
+    {
+	cleanup_log_if(ERROR_MALLOC,"Failed to allocate setpoint!");
+    }
+    pp->sp_list[0]->x->m_full[SV_Z] = HOVER_HEIGHT;
+    /// Set w hover
+    for(j=0; j<LENGTH_INPUT; ++j)
+	pp->sp_list[0]->w->m_full[j] = w_hover;
+    pp->sp = pp->sp_list[0];
     pp->sp_list_curr = 0;
 
-    FILE *file = fopen(filename,"r");
-    if(file == NULL)
+    if(filename != NULL)
     {
-	err_log_stderr("fopen()");
-	goto cleanup;
-    }
-    for(i=0; i<pp->sp_list_len; ++i)
-    {
-	/// Allocate memory for setpoint
-	pp->sp_list[i] = setpoint_init();
-	if(pp->sp_list[i] == NULL)
+	file = fopen(filename,"r");
+	if(file == NULL)
 	{
-	    cleanup_log_if(ERROR_MALLOC,"Failed to allocate setpoint!");
+	    err_log_stderr("fopen()");
+	    goto cleanup;
 	}
 
-	/// Load setpoint from file
-	retval = uquad_mat_load(pp->sp_list[i]->x, file);
-	cleanup_if(retval);
-
-	/// Load path type
-	retval = fscanf(file,"%d",&p_type);
-	if(retval <= 0)
+	for(i=1; i < pp->sp_list_len; ++i)
 	{
-	    err_log_stderr("fscanf()");
-	    cleanup_if(ERROR_READ);
-	}
-	if(p_type < 0 || p_type >= PATH_TYPE_COUNT)
-	{
-	    err_log_num("Invalid path type!", p_type);
-	    cleanup_if(ERROR_FAIL);
-	}
-	pp->sp_list[i]->pt = (path_type_t) p_type;
+	    /// Allocate memory for setpoint
+	    pp->sp_list[i] = setpoint_init();
+	    if(pp->sp_list[i] == NULL)
+	    {
+		cleanup_log_if(ERROR_MALLOC,"Failed to allocate setpoint!");
+	    }
 
-	/// Set w setpoint to hovering
-	for(j=0; j<LENGTH_INPUT; ++j)
-	    pp->sp_list[i]->w->m_full[j] = w_hover;
+	    /// Load setpoint from file
+	    retval = uquad_mat_load(pp->sp_list[i]->x, file);
+	    cleanup_if(retval);
 
+	    /// Load path type
+	    retval = fscanf(file,"%d",&p_type);
+	    if(retval <= 0)
+	    {
+		err_log_stderr("fscanf()");
+		cleanup_if(ERROR_READ);
+	    }
+	    if(p_type < 0 || p_type >= PATH_TYPE_COUNT)
+	    {
+		err_log_num("Invalid path type!", p_type);
+		cleanup_if(ERROR_FAIL);
+	    }
+	    pp->sp_list[i]->pt = (path_type_t) p_type;
+
+	    /// Load w setpoint relative to w_hover
+	    retval = uquad_mat_load(pp->sp_list[i]->w, file);
+	    cleanup_if(retval);
+	    /// Add w hover
+	    for(j=0; j<LENGTH_INPUT; ++j)
+		pp->sp_list[i]->w->m_full[j] += w_hover;
+
+	}
 	fclose(file);
 	file = NULL;
     }
@@ -159,11 +190,11 @@ uquad_bool_t pp_setpoint_reached(uquad_mat_t *x, set_point_t *sp_curr)
     if(
        (uquad_abs(x->m_full[SV_X] - sp_curr->x->m_full[SV_X]) < PP_REACHED_X) &&
        (uquad_abs(x->m_full[SV_Y] - sp_curr->x->m_full[SV_Y]) < PP_REACHED_Y) &&
-       (uquad_abs(x->m_full[SV_Z] - sp_curr->x->m_full[SV_X]) < PP_REACHED_Z)
+       (uquad_abs(x->m_full[SV_Z] - sp_curr->x->m_full[SV_Z]) < PP_REACHED_Z)
        )
     {
 	/// In range, check if we've spent enough samples near the current setpoint
-	if(++in_range > PP_REACHED_COUNT)
+	if(++in_range >= PP_REACHED_COUNT)
 	{
 	    in_range = 0;
 	    return true;
@@ -177,31 +208,41 @@ uquad_bool_t pp_setpoint_reached(uquad_mat_t *x, set_point_t *sp_curr)
     return false;
 }
 
-int pp_update_setpoint(path_planner_t *pp, uquad_mat_t *x, uquad_bool_t *ctrl_outdated)
+set_point_t *pp_get_next_sp(path_planner_t *pp)
 {
-    int retval = ERROR_OK;
-    if(pp == NULL || x == NULL || ctrl_outdated == NULL)
+    return
+	(pp->sp_list_curr < pp->sp_list_len - 1)?
+	pp->sp_list[pp->sp_list_curr+1]:
+	pp->sp_list[0];
+}
+
+void pp_update_setpoint(path_planner_t *pp)
+{
+    set_point_t *sp_next = pp_get_next_sp(pp);
+    if(sp_next != pp->sp)
     {
-	err_check(ERROR_NULL_POINTER,"Invalid argument.");
+	pp->sp_list_curr++;
+	pp->sp = sp_next;
     }
-    if(pp_setpoint_reached(x, pp->sp))
+    return;
+}
+
+void pp_check_progress(path_planner_t *pp, uquad_mat_t *x, uquad_bool_t *arrived)
+{
+    if(pp == NULL || x == NULL || arrived == NULL)
     {
-	if(pp->sp_list_curr < pp->sp_list_len - 1)
-	{
-	    pp->sp++;
-	    pp->sp_list_curr++;
-	    *ctrl_outdated = true;
-	}
-	else
-	{
-	    err_log("No setpoints remaining, will not update setpoint.");
-	}
+	err_log("Invalid argument.");
+	return;
     }
-    else
+    *arrived = false;
+    if(pp_setpoint_reached(x, pp->sp) &&
+       (pp->sp_list_curr <= pp->sp_list_len - 1))
+	*arrived = true;
+    if(pp->sp_list_curr == pp->sp_list_len - 1)
     {
-	*ctrl_outdated = false;
+	err_log("Route completed, next setpoint will be hovering.");
     }
-    return retval;
+    return;
 }
 
 int pp_new_setpoint(path_planner_t *pp, uquad_mat_t *x, uquad_mat_t *w)

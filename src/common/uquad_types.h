@@ -77,6 +77,7 @@ typedef enum STATE_VECTOR{
 #define STATE_COUNT       12          // State vector length
 #define LENGTH_INPUT      4           // Input vector length
 #define GPS_RAND_PP       1.0         // Random values of +-GPS_RAND_PP/2.0
+#define HOVER_HEIGHT      1.0         // Hover height for takeoff [m]
 
 /**
  * Definition of default sampling period, in microseconds.

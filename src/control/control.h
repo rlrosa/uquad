@@ -114,6 +114,12 @@
 
 #define CTRL_LQR_TH              1e-5   // Iteration threshold
 
+#define CTRL_LIMIT_X             18.0   // [m]
+#define CTRL_LIMIT_Y             18.0   // [m]
+#define CTRL_LIMIT_Z             4.0    // [m]
+#define CTRL_LIMIT_THETA         1.05   // [rad] - (corresponds to 60deg)
+
+
 typedef struct ctrl{
     uquad_mat_t *K;
     uquad_mat_t *K_lqr;
@@ -169,13 +175,18 @@ int control(ctrl_t *ctrl, uquad_mat_t *w, uquad_mat_t *x, set_point_t *sp, doubl
  *     phi=exp(A*Ts)
  *     gama=int(exp(A*s),0,Ts)
  *
+ * The process is completed when update_complete is true. Several calls to this
+ * funcion may be required, if calculation is timed out before completion. This
+ * is required to avoid delaying the flight controller actions.
+ *
  * @param ctrl
- * @param pp current pp, will be updated.
+ * @param sp setpoint to update matrix to.
  * @param weight weight of the quadcopter.
+ * @param update_complete indicator, true when matrix calculations have been completed.
  *
  * @return error code
  */
-int control_update_K(ctrl_t *ctrl, path_planner_t *pp, double weight);
+int control_update_K(ctrl_t *ctrl, set_point_t *sp, double weight, uquad_bool_t *update_complete);
 
 /**
  * Solves Riccati equation, using an algorithm by Anders Friis Sorensen

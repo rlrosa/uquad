@@ -222,6 +222,22 @@ static inline void ctrl_int(double *x_int, double data, double T_s,
 	*x_int = uquad_max(*x_int,-accum_max);
 }
 
+/**
+ * Limit error acceptable to avoid violent behavior.
+ * Examples:
+ *   - Initial orientation (yaw) too far from desired.
+ *   - Bad GPS signal reading tens of meters from current position.
+ *
+ * @param x error vector (sp_x - x_est)
+ */
+static inline void control_limit(uquad_mat_t *x)
+{
+    x->m_full[SV_X]     = uquad_limit(x->m_full[SV_X], CTRL_LIMIT_X);
+    x->m_full[SV_Y]     = uquad_limit(x->m_full[SV_Y], CTRL_LIMIT_Y);
+    x->m_full[SV_Z]     = uquad_limit(x->m_full[SV_Z], CTRL_LIMIT_Z);
+    x->m_full[SV_THETA] = uquad_limit(x->m_full[SV_THETA], CTRL_LIMIT_THETA);
+}
+
 int control(ctrl_t *ctrl, uquad_mat_t *w, uquad_mat_t *x, set_point_t *sp, double T_us)
 {
     int retval = ERROR_OK;
@@ -234,6 +250,8 @@ int control(ctrl_t *ctrl, uquad_mat_t *w, uquad_mat_t *x, set_point_t *sp, doubl
     err_propagate(retval);
     retval = uquad_mat_sub(tmp_sub_sp_x, sp->x, tmp_sub_sp_x);
     err_propagate(retval);
+
+    control_limit(tmp_sub_sp_x);
 
 #if !FULL_CONTROL
     /// only using part of the state vector
@@ -368,7 +386,7 @@ int control_dump(ctrl_t *ctrl, FILE *output)
     return ERROR_OK;
 }
 
-int control_update_K(ctrl_t *ctrl, path_planner_t *pp, double weight)
+int control_update_K(ctrl_t *ctrl, set_point_t *sp, double weight, uquad_bool_t *update_complete)
 {
     int
 	retval;
@@ -378,11 +396,14 @@ int control_update_K(ctrl_t *ctrl, path_planner_t *pp, double weight)
     uquad_mat_t *Bext = NULL;
     uquad_mat_t *phi = NULL;
     uquad_mat_t *gamma = NULL;
+    //    static uquad_bool_t updating = false;
+    if(update_complete != NULL)
+	err_check(ERROR_FAIL,"WIP!");
     
     //Linearization of the system
     A = uquad_mat_alloc(STATES_CONTROLLED,STATES_CONTROLLED);
     B = uquad_mat_alloc(STATES_CONTROLLED,LENGTH_INPUT);
-    retval = control_lin_model(A,B,pp->sp->pt,pp->sp, weight);
+    retval = control_lin_model(A,B,sp->pt,sp, weight);
     cleanup_if(retval);
 
     //Extends the system to include the integrated states

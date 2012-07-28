@@ -43,6 +43,9 @@
 
 #define USE_EQUILIBRATE 0
 
+/// abs() casts to integer, we don't want that
+#define uquad_abs(a)              (((a) < 0) ? -(a) : (a))
+
 //TODO poner cuenta
 #define deg2rad(a)                (a*PI/180.0)
 #define rad2deg(a)                (a*180.0/PI)
@@ -53,8 +56,8 @@
 #define uquad_min(a,b)            ((a<b)?a:b)
 #define uquad_square(a)           (a*a)
 
-/// abs() casts to integer, we don't want that
-#define uquad_abs(a)              (((a) < 0) ? -(a) : (a))
+// Limit data within +-th
+#define uquad_limit(dat,th)       ((uquad_abs(dat)>th)?th*sign(dat):dat)
 
 /// Math in degrees (instead of rad)
 #define cosd(a)                   cos(deg2rad(a))
