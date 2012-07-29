@@ -75,7 +75,8 @@ Caracterización
 # -- # -- # -- # -- # -- # -- # -- # -- # -- #
 
 Sensores
-	Para conocer el vector de estado es necesario relizar medidas sobre algunas magnitudes como la posición, la velocidad angular,etc. Para ello se dota al cuadricóptero de diversos sensores. Por un lado un GPS para obtener realimentación en posición y una IMU que se compone de diversos sensores. 
+	para poder realizar una acción de control utilizando el modelo físico, es necesario conocer el estado actual del sistema.
+	Para conocer el vector de estado es necesario relizar medidas sobre algunas magnitudes como la posición, la velocidad angular,etc. Para ello se dota al cuadricóptero de diversos sensores. Por un lado un GPS para obtener realimentación en posición y una IMU que se compone de diversos sensores.
 
 GPS
 	El GPS debe ser utilizado a cielo abierto para obtener una la posición absoluta, esto permite tener una realimentación en xy. El GPS utilizado se conecta mediante USB a la CPU. El error del GPS puede ser muy importante, dependiendo de las condiciones de visibilidad y de la velocidad de traslación. Para caracterizar este error se toman medidas durante 10 minutos en 6 posiciones distintas. En la figura se observan las diferencias entre la posicion medida y el promedio para cada punto. La gran mayoría de las medidas caen dentro de un círculo de radio 2.5 metros.
@@ -85,16 +86,20 @@ IMU
 La unidad de medida inercial se compone de 4 sensores principales. Un acelerómetro de tres ejes, un magnetómetro de tres ejes, un giróscopo de tres ejes y un barómetro. Además dispone de un sensor de temperatura, el cual fue utilizado para ajustar la calibración de cada sensor en función de la temperatura. Para la calibración de los sensores se diseñaron distintos experimentos en los cuales se media una magnitud conocida. El giroscopo permite obtener una medida de velocidad angular expresada en el sitema del cuadricoptero, mientras que el barometro midiendo la presion permite obtener la altura del sistema. Debido a las variaciones en la presion con el clima, se utiliza para obtener una medida diferencial de presion. 
 
 Acelerómetro
-	El acelerómetro mide la aceleracion en un referencial en caida libre. Esto implica que el acelerometro mide aceleracion cero en caida libre y en equilibrio mide aceleracion g. La medida de aceleracion como tal tiene un error sistematico por lo que si se intenta obtener la posicion integrandola se obtiene una deriva inaceptable, del orden de decenas de metros en pocos segundos. La principal funcion del mismo es la de determinar los angulos de Pitch y Roll.
+	El acelerómetro mide la aceleracion en un referencial en caida libre. Esto implica que el acelerometro mide aceleracion cero en caida libre y en equilibrio mide 9.81 hacia arriba. La medida de aceleracion como tal tiene un error sistematico por lo que si se intenta obtener la posicion integrandola se obtiene una deriva inaceptable, del orden de decenas de metros en pocos segundos. La principal funcion del mismo es la de determinar los angulos de Pitch y Roll.
+	estos son dos de los ángulos de euler:
+	      pitch es el ángulo
 
 Pitch y Roll
       Como se observa en la figura y en función de como se definieron los angulos phi y psi se puede obtener el àngulo de pitch a partir de la medida de aceleración. En caso de que el pitch sea zero ax deberia ser cero, sin embargo si se tiene cierta inclinación la medida de g tiene una componente en el eje x. A partir de dicha constatación se puede deducir que FORMULA. Analogamente se puede calcular el angulo de roll con la FORMULA.
 
 Yaw
-	La orientación del cuadricoptero o angulo de YAW puede determinarse utilizando un magnetòmetro. Supongamos el caso más sencillo en el cual los angulos de pitch y de roll son cero. En el sistema solidario a la tierra elegido el versor i se corresponde con el norte. La orientación puede determinarse a partir de las medidas de campo magnético segel un los versores iq y jq. FORMULA. Cabe aclarar que el norte magnetico no se corresponde exactamente con el norte geografico. Existe una declinación de aproximadamente 10 grados lo cual implica que una vez detectada la ubicacion del norte magnetico debe agregarse dicha correcion. En caso de tener un angulo de pitch o de roll, lo que se hace es llevar la medida de campo magnético en la base solidaria al cuadricoptero a la base 1 como se muestra en la figura. 
+	La orientación del cuadricoptero o angulo de YAW puede determinarse utilizando un magnetòmetro.
+	- Supongamos el caso más sencillo en el cual los angulos de pitch y de roll son cero: En el sistema solidario a la tierra elegido el versor i se corresponde con el norte. La orientación puede determinarse a partir de las medidas de campo magnético según uno los versores iq y jq. FORMULA. Cabe aclarar que el norte magnetico no se corresponde exactamente con el norte geografico. Existe una declinación de aproximadamente 10 grados lo cual implica que una vez detectada la ubicacion del norte magnetico debe agregarse dicha correcion.
+	- En caso de tener un angulo de pitch o de roll distintos de cero, lo que se hace es llevar la medida de campo magnético en la base solidaria al cuadricoptero a la base 1 mediante 2 rotaciones, como se muestra en la figura, y luego se aplica el procedimiento anterior.
 
 Cuadro errores
-       En este cuadro se observan la tasa de refresco de cada sensor así como su error típico y su resolución. Todos los sensores ofrecen un dato nuevo cada 10ms a excepción del GPS que da un dato por segundo. La resolución y la desviación estándar dan una idea de que se puede esperar de cada sensor. En este sentido, se confirma que el acelerómetro no sirve para obtener la posición a partir de su
+       En este cuadro se observan las características principales de los sensores incorporados al sistema. no vamos a entrar en detalles, solamente mencionar que el gps trabaja a 1Hz, mientras que la IMU tiene un datos nuevo (con información de todos sus sensores) cada 100Hz.
 
 ##--##
 #TITO#
@@ -137,10 +142,10 @@ Linealización
 	Por simplicidad y por la experiencia que teníamos se decidió realizar un control lineal. Para ello es necesraio linealizar la dinámica del sistema en torno a ciertos puntos de operación, es decir, un valor para cada una de las variables de estado y de las velocidades angulares de los motores (SETPOINT). Para ello se consideran las variables ñoqui que son son las diferencias un setpoint dado y se trabaja con el sistema linealizado donde A es una matriz cuadrada cuyas entradas son las derivadas de f respecto de las variables de estado. B es lo mismo pero respecto de las entradas.
 
 Trayectorias
-	Para poder linealizar el sistema y lograr un sistema invariente en el tiempo se tuvieron que añadir una serie de restricciones que determinan que las únicas trayectorias a utilizar serán hovering, rectas y círculos.
+	Para poder linealizar el sistema y lograr un sistema invariente en el tiempo se tuvieron que añadir una serie de restricciones que determinan que las únicas trayectorias a utilizar serán hovering, rectas y círculos. El generador de rutas implementado se encarga de concatenar estos tres tipos de trayectorias para cumplir el objetivo de recorrer todos los waypoints. 
 
 Esquema general
-	si estamo en el punto deseado x ñoqui es 0 entonces la entrada del sistema es wsp. entonces es consistente. pero si se produce un apartamiento en alguna de las variables, esa diferencia será realimentada. La forma más sencilla de realimentar es con una matriz proporcional de ganacias. Por ejemplo si el bicho esta por arriba de donde quiere estar, -xñoqui es negativo lo que produce un delta omega negativo. Armar la matriz Kp es a priori complicado porque tiene 48 entradas a determinar. para un sistema de estas dimensiones se torna muy complicado y tedioso trabajar con diagramas de ceros y polos y lugar de las raíces, por lo que se buscó una técnica alternativa: LQR.
+	si estamo en el punto deseado x ñoqui es 0 entonces la entrada del sistema es wsp. entonces es consistente. pero si se produce un apartamiento en alguna de las variables, esa diferencia será realimentada. La forma más sencilla de realimentar es con una matriz proporcional de ganacias. Por ejemplo si el bicho esta por arriba de donde quiere estar, -xñoqui es negativo lo que produce un delta omega negativo. Armar la matriz Kp es a priori complicado porque tiene 48 entradas a determinar. para un sistema de estas dimensiones se torna muy complicado y tedioso trabajar con diagramas de ceros y polos y lugar de las raíces, por lo que se buscó una técnica alternativa: LQR. Además sirve si quiero armar la matriz de realimentación automáticamente.
 El esquema de control mostrado no es suficiente debido a no idealidades no consideradas o errores en el modelado. Por ejemplo si la masa del sistema es superior a la estimada, partiendo del setpoint el empuje q realizan los motores no es suficiente para manter la altura. El cuadricóptero baja y se realimenta una diferencia en posición que hace que los motores realicen más fuerza alcanzando un nuevo equilibrio por debajo del setpoint. Para corregir esto se agrega un control integral sobre el error de algunas de las variables de estado. Para que LQR asegure que el sistema realimentado sea estable se necesita que el sistema sea observable y controlable. Para lograr esto la única forma que se encontró fue realimentar las integrales de la posición y el ángulo yaw. Con este agregado tenemos un nuevo vector de estados extendido.
 
 Lqr - ecuaciones
@@ -165,17 +170,33 @@ Vista general
 # -- # -- # -- # -- # -- # -- # -- # -- # -- #
 
 Implementación
-	distintos micros - cpu1 reemplazada, cpu2, mongoose
-	mongoose es arduino, codigo escrito sobre c, muestrea y manda mediante una uart a la cpu2
-	cpu2 ejecuta un linux, conectamos por ssh, programas en C
-	     - una cagada
-	loop principal
-	     - el control satura, integrales satura
-	     - el esc es relativamente fácil de reemplazar.
+	para llevar a la práctica las distintas partes mencionadas previamente se implementaron una serie de programas distribuídos entre varios microprocesadores:
+	     - IMU:
+	       - tiene un atmegaATMega328
+	       - se programa en Arduino, es una capa sobre C.
+	       - el programa ejecuta un loop q lee datos de cada uno de los sensores, cada 10ms envía una trama nueva mediante una UART.
+	     - cpu2: ARM Cortex A8 1GHz en una placa de desarrollo con 512MB RAM, llamada beagleboard.
+	       - debe reemplazar a la CPU1.
+	       - corre linux
+	       - communicacion con la PC mediante a través de ssh sobre WiFi
+	       - programas escritos en C, de manera modular.
+	       - comm con IMU mediante UART, GPS mediante USB, ESCs mediante i2c (módulo que maneja los motores es relativamente fácil de reemplazar)
+	       - centraliza toda la inteligencia, implementa las partes anteriores con algunas modificaciones prácticas.
+
+	recorrer el loop principal, explicando part:
+		 - el control limita el error q toma en cuenta, para evitar dar órdenes que no se podrán cumplir
+		 - integrales saturan, ya q está pensado para corregir cosas chicas, por ejemplo un pequeño error en el cálculo de la potencia necesaria para mantener la altura constante. diferencias muy grandes deben ser acomodadas por el control proporcional, y dejar crecer demasiado la integral te complica xq tarda mucho en volver a valores normales
 
 Montajware
-	?
-	integración de distintas placas mediante conversores de niveles
+	protección tito - problemas con los ESC hacen q valga la pena protegerlo
+	protección de la inteligencia - cajita de acrílico, aferrada con tornillos para evitar tener partes móviles que desestabilicen
+	comm entre beagle-IMU-ESC requiere de conversión de niveles de tensión, 1.8v en la beagle tanto para el puerto i2c de 333kHz como el puerto serie, mientras que la IMU y los ESC trabajan a 3.3v
+
+Testeo
+	pruebas con phímetro
+	pruebas con cuerda
+	dsp-> pruebas libres
+	      sin reali
 
 Conclusion
 	- los esc son poco confiables, varias accidentes injustificados.
@@ -208,3 +229,11 @@ futuro  -
 total: 
 
 # Ensayo 2
+
+intro  - 3:41 - mat
+modelo - 3:00+3-4 - pater
+motores- 4:00 - mat
+sensor - 5:00 - rela
+kalman - 5:15 - mat
+control- 7:15 - pater
+impl   - 8:30 - rela
