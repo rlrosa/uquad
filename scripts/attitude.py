@@ -93,7 +93,7 @@ print 'Opened %s !' % (device)
 print 'Loading graphics...'
 # Main scene
 try:
-    scene=display(title="win-main",background=(1,1,1),fullscreen=True)
+    scene=display(title="win-main",background=(1,1,1))
     scenerange = 60
     scene.range=(scenerange,scenerange,scenerange)
     scene.forward = (-.25,-0.1,-0.05)
