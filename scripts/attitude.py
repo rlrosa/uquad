@@ -93,7 +93,7 @@ print 'Opened %s !' % (device)
 print 'Loading graphics...'
 # Main scene
 try:
-    scene=display(title="win-main",background=(1,1,1))
+    scene=display(title="win-main",background=(1,1,1),fullscreen=True)
     scenerange = 60
     scene.range=(scenerange,scenerange,scenerange)
     scene.forward = (-.25,-0.1,-0.05)
@@ -136,7 +136,7 @@ try:
     scene.select()
     quad_scale = 25
     # Reference axis (x,y,z)
-    quad = frame()
+    quad = frame(axis=(1,0,0),up=(0,0,1))
     arrow(color=color.green,axis=(1,0,0), pos=(0,0,0), length=35, shaftwidth=2, fixedwidth=1)
     arrow(color=color.green,axis=(0,1,0), pos=(0,0,0), length=35, shaftwidth=2, fixedwidth=1)
     arrow(color=color.green,axis=(0,0,1), pos=(0,0,0), length=25, shaftwidth=2, fixedwidth=1)
@@ -170,6 +170,7 @@ try:
     curve(frame=quad, x = 30*numpy.sin(t_curve), z = 30*numpy.cos(t_curve), color=color.black)
     pingpong1=sphere(frame=quad, pos=(30*cos(pi/4),0,30*cos(3*pi/4)), radius=1.5, color=color.yellow)
     pingpong2=sphere(frame=quad, pos=(-30*cos(3*pi/4),0,30*cos(pi/4)), radius=1.5, color=color.yellow)
+
 except (RuntimeError, TypeError, NameError):
     print 'Failed to load graphics... Close window to exit...'
     while true:
