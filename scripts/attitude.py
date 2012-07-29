@@ -145,9 +145,9 @@ try:
     #    label(frame=quad,pos=(0,0.4,0.8),text="imu test",box=0,opacity=0,color=color.black)
 
     xyz_lab_pos = quad_scale*.9;
-    label(pos=(xyz_lab_pos,0,0),text="X",height=7,box=0,opacity=0,color=color.black)
-    label(pos=(0,xyz_lab_pos,0),text="Y",height=7,box=0,opacity=0,color=color.black)
-    label(pos=(0,0,xyz_lab_pos),text="Z",height=7,box=0,opacity=0,color=color.black)
+    label(pos=(xyz_lab_pos,0,0),text="X",height=20,box=0,opacity=0,color=color.black)
+    label(pos=(0,xyz_lab_pos,0),text="Y",height=20,box=0,opacity=0,color=color.black)
+    label(pos=(0,0,xyz_lab_pos),text="Z",height=20,box=0,opacity=0,color=color.black)
     L_calib = label(frame=quad,pos=(0,0,0),text='',box=0,opacity=0,height=30,color=color.black)
     # IMU object
 #    platform = box(frame=quad,length=1.0, height=0.05, width=0.65, color=color.red)
