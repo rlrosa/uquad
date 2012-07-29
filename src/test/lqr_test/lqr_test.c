@@ -39,6 +39,9 @@ int main(){
     uquad_mat_t *gamma = NULL;
     uquad_mat_t *K =NULL;
     FILE *matrix = NULL;
+    uquad_bool_t
+	start = true,
+	done;
 
     matrix = fopen("A","r");
     if(matrix == NULL)
@@ -89,8 +92,22 @@ int main(){
 
     retval = control_disc(phi,gamma,A,B,10e-3);
     cleanup_if(retval);
-    retval = control_lqr(K,phi,gamma,Q,R);
-    cleanup_if(retval);
+
+    done = false;
+    while(!done)
+    {
+	if(start)
+	{
+	    start = false;
+	    retval = control_lqr(K,phi,gamma,Q,R,&done,&start);
+	    cleanup_if(retval);
+	}
+	else
+	{
+	    retval = control_lqr(K,phi,gamma,Q,R,&done,NULL);
+	    cleanup_if(retval);
+	}
+    }
 
     uquad_mat_dump(K,0);
     

@@ -142,7 +142,7 @@
 #define UQUAD_MAX_PARAM  5
 #define UQUAD_MIN_PARAM  4
 
-#define UQUAD_HOW_TO     "./main <imu_device> /path/to/log/ <gps_device>"
+#define UQUAD_HOW_TO     "./main <imu_device> /path/to/log/ [<gps_device>] [<path_planner_list>]"
 #define MAX_ERRORS       10 // Abort if more than MAX_ERRORS errors.
 #define MAX_NO_UPDATES_S 1  // Abort if more than MAX_NO_UPDATES_S sec without data.
 #define FIXED            10 // Consider system OK after FIXED loops without errors.
@@ -220,12 +220,16 @@
  * Display current state estimation on console every X_HAT_STDOUT samples.
  * If set to 0, then nothing will be displayed.
  *
- * If X_HAT_STDOUT is 1, then if SVNAME the name of each element of the state
- * vector will be printed in a line before the values, this takes up space
- * but makes it easier to visualize things.
+ * If X_HAT_STDOUT is 1, then:
+ *  - if SVNAME the name of each element of the state vector will be printed
+ *  in a line before the values, this takes up space but makes it easier to
+ *  visualize things.
+ *  - if SV_SHOW, then the current setpoint will be displayed after the state
+ *  estimation.
  */
 #define X_HAT_STDOUT       0
 #define SV_NAME            0
+#define SV_SHOW            0
 
 /**
  * Frequency at which motor controller is updated
@@ -558,6 +562,7 @@ int main(int argc, char *argv[]){
         aux_bool      = false,
 	ctrl_updating = false,
 	ctrl_updated  = false,
+	arrived       = false,
 	manual_mode   = false;
     struct timeval
 	tv_tmp, tv_diff,
@@ -1472,7 +1477,7 @@ int main(int argc, char *argv[]){
 		// gps_dat is set to 0 when allocated, so just use it.
 		gps_update = true;
 		tv_gps_last = tv_tmp;
-		if(pp->pt != HOVER)
+		if(pp->sp->pt != HOVER)
 		{
 		    quit_log_if(ERROR_GPS, "Fake GPS does not make sense if not hovering!");
 		}
@@ -1800,12 +1805,14 @@ int main(int argc, char *argv[]){
 	if(ctrl_updating)
 	{
 	    /**
-	     * At this point a waypoint has been reached, but the contrl matrix
-	     * requiered the follow the path to the next point has not been computed
-	     * yet.
+	     * At this point a waypoint has been reached, but the control matrix required to
+	     * the follow the path to the next setpoint may have been computed yet.
 	     */
-	    retval = control_update_K(ctrl, pp_get_next_sp(pp), mot->weight,&ctrl_updated);
-	    quit_log_if(retval, "Failed to update control matrix! Aborting...");
+	    if(!ctrl_updated)
+	    {
+		retval = control_update_K(ctrl, pp_get_next_sp(pp), mot->weight,&ctrl_updated, NULL);
+		quit_log_if(retval, "Failed to update control matrix! Aborting...");
+	    }
 	    if(ctrl_updated)
 	    {
 		/**
@@ -1829,16 +1836,17 @@ int main(int argc, char *argv[]){
 	    /// -- -- -- -- -- -- -- --
 	    /// Check route progress
 	    /// -- -- -- -- -- -- -- --
-	    pp_check_progress(pp, kalman->x_hat, &ctrl_updating);
+	    pp_check_progress(pp, kalman->x_hat, &arrived);
 	    log_n_continue(retval,"Kalman update failed");
 
 	    /// -- -- -- -- -- -- -- --
 	    /// Start control matrix update
 	    /// -- -- -- -- -- -- -- --
-	    if(ctrl_updating)
+	    if(arrived)
 	    {
+		err_log("Setpoint reached, will update K and advance in sp list.");
 		gettimeofday(&tv_k_update_start,NULL);
-		retval = control_update_K(ctrl, pp_get_next_sp(pp), mot->weight, NULL);
+		retval = control_update_K(ctrl, pp_get_next_sp(pp), mot->weight, &ctrl_updated, &arrived);
 		quit_log_if(retval, "Failed to update control matrix! Aborting...");
 		/**
 		 * At this point neigher the control matrix nor the setpoint have
@@ -1847,6 +1855,7 @@ int main(int argc, char *argv[]){
 		 * complete, at that point the new matrix and the new setpoint will
 		 * be used, and route progress checks will resume.
 		 */
+		ctrl_updating = true;
 	    }
 	}
 
@@ -1972,6 +1981,9 @@ int main(int argc, char *argv[]){
 #endif // SV_NAME
 		uquad_mat_dump_vec(kalman->x_hat,stdout,true);
 		x_hat_cnt = 0;
+#if SV_SHOW
+		uquad_mat_dump_vec(pp->sp->x,stdout,true);
+#endif // SV_SHOW
 		fflush(stdout);
 	    }
 #endif // X_HAT_STDOUT

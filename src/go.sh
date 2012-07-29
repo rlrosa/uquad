@@ -58,6 +58,14 @@ else
     gps_path=/dev/ttyUSB0
 fi
 echo Will connect to GPS at ${gps_path}
+if [ $4 ];
+then
+    pp_path=$4
+    echo Loaded pp_path from ${pp_path}
+else
+    pp_path=
+    echo No pp_path supplied.
+fi
 
 err_pipe=err.p
 
@@ -78,7 +86,7 @@ mv i2c_beagle/cmd${pc_test} build/main/cmd
 echo ""
 echo Running main...
 echo ""
-(cd build/main; ./main ${serial_port} ${log_path} ${gps_path};echo "";echo "-- -- -- --";echo "Main finished!";echo "-- -- -- --";)
+(cd build/main; ./main ${serial_port} ${log_path} ${gps_path} ${pp_path};echo "";echo "-- -- -- --";echo "Main finished!";echo "-- -- -- --";)
 
 # kill everything. Muaha, ha.
 ctrl_c

@@ -74,7 +74,7 @@ static int line_count (const char *filename, int *lines)
 	err_log_stderr("fopen()");
 	return ERROR_IO;
     }
-    while((c = fgetc(ile)) != EOF)
+    while((c = fgetc(file)) != EOF)
 	if(c == '\n')
 	    (*lines)++;
     fclose(file);
@@ -202,8 +202,8 @@ uquad_bool_t pp_setpoint_reached(uquad_mat_t *x, set_point_t *sp_curr)
     }
     else
     {
-	/// Out of range, reset counter.
-	in_range = 0;
+	/// Out of range, decrease counter.
+	in_range = uquad_max(in_range -1, 0);
     }
     return false;
 }
@@ -236,9 +236,9 @@ void pp_check_progress(path_planner_t *pp, uquad_mat_t *x, uquad_bool_t *arrived
     }
     *arrived = false;
     if(pp_setpoint_reached(x, pp->sp) &&
-       (pp->sp_list_curr <= pp->sp_list_len - 1))
+       (pp->sp != pp_get_next_sp(pp)))
 	*arrived = true;
-    if(pp->sp_list_curr == pp->sp_list_len - 1)
+    if((pp->sp_list_curr == pp->sp_list_len - 1) && *arrived)
     {
 	err_log("Route completed, next setpoint will be hovering.");
     }

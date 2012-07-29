@@ -43,7 +43,7 @@
 #define PP_REACHED_X     4.0  // [m]
 #define PP_REACHED_Y     4.0  // [m]
 #define PP_REACHED_Z     2.0  // [m]
-#define PP_REACHED_COUNT 20
+#define PP_REACHED_COUNT 350  // samples at 10ms (2 gps samples)
 
 /// Load setpoints from file
 #define PP_SP_X_FILENAME "pp_sp_x.txt"

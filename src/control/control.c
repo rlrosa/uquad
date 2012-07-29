@@ -33,6 +33,37 @@ uquad_mat_t *tmp_x_hat_partial;
 uquad_mat_t *w_tmp;
 uquad_mat_t *x_int_tmp;
 
+// Aux matrices used for updating K - control_update_k()
+uquad_mat_t *update_k_A = NULL;
+uquad_mat_t *update_k_B = NULL;
+uquad_mat_t *update_k_Aext = NULL;
+uquad_mat_t *update_k_Bext = NULL;
+uquad_mat_t *update_k_phi = NULL;
+uquad_mat_t *update_k_gamma = NULL;
+
+// Aux matrices used for discretization - control_disc()
+uquad_mat_t *disc_aux0 = NULL;
+uquad_mat_t *disc_aux1 = NULL;
+
+// Aux matrices used for LQR iterations - control_lqr()
+uquad_mat_t *lqr_aux0 = NULL;
+uquad_mat_t *lqr_aux1 = NULL;
+uquad_mat_t *lqr_aux2 = NULL;
+uquad_mat_t *lqr_aux3 = NULL;
+uquad_mat_t *lqr_aux4 = NULL;
+uquad_mat_t *lqr_aux5 = NULL;
+uquad_mat_t *lqr_aux6 = NULL;
+uquad_mat_t *lqr_aux7 = NULL;
+uquad_mat_t *lqr_aux8 = NULL;
+uquad_mat_t *lqr_aux9 = NULL;
+uquad_mat_t *lqr_aux_10 = NULL;
+uquad_mat_t *lqr_aux_11 = NULL;
+uquad_mat_t *lqr_aux_12 = NULL;
+uquad_mat_t *lqr_aux_13 = NULL;
+uquad_mat_t *lqr_P = NULL;
+uquad_mat_t *lqr_k = NULL;
+uquad_mat_t *lqr_Bt = NULL;
+
 #if CTRL_INTEGRAL
 int control_clear_int(ctrl_t * ctrl)
 {
@@ -61,11 +92,56 @@ ctrl_t *control_init(void)
     ctrl->R      = uquad_mat_alloc(LENGTH_INPUT, LENGTH_INPUT);
     tmp_sub_sp_x = uquad_mat_alloc(STATE_COUNT,1);
     w_tmp        = uquad_mat_alloc(LENGTH_INPUT,1);
-    if(ctrl->K == NULL || tmp_sub_sp_x == NULL || w_tmp == NULL ||
-       ctrl->K_lqr == NULL)
+
+    if(ctrl->K      == NULL ||
+       ctrl->K_lqr  == NULL ||
+       ctrl->A      == NULL ||
+       ctrl->B      == NULL ||
+       ctrl->Q      == NULL ||
+       ctrl->R      == NULL ||
+       tmp_sub_sp_x == NULL ||
+       w_tmp        == NULL ||
+       ctrl->K_lqr  == NULL)
     {
 	cleanup_log_if(ERROR_MALLOC,"Failed to allocate aux mem!");
     }
+
+    // Aux matrices for control_update_k()
+    update_k_A = uquad_mat_alloc(STATES_CONTROLLED,STATES_CONTROLLED);
+    update_k_B = uquad_mat_alloc(STATES_CONTROLLED,LENGTH_INPUT);
+    update_k_Aext = uquad_mat_alloc(STATES_CONTROLLED + STATES_INT_CONTROLLED,
+				    STATES_CONTROLLED + STATES_INT_CONTROLLED);
+    update_k_Bext = uquad_mat_alloc(STATES_CONTROLLED + STATES_INT_CONTROLLED,
+				    LENGTH_INPUT);
+    update_k_phi = uquad_mat_alloc(update_k_Aext->r,update_k_Aext->c);
+    update_k_gamma = uquad_mat_alloc(update_k_Bext->r,update_k_Bext->c);
+
+    // Aux matrices for discretization - control_disc()
+    disc_aux0 = uquad_mat_alloc(update_k_Aext->r+update_k_Bext->c,update_k_Aext->c+update_k_Bext->c);
+    disc_aux1 = uquad_mat_alloc(update_k_Aext->r+update_k_Bext->c,update_k_Aext->c+update_k_Bext->c);
+
+    // Aux matrices used for LQR iterations - control_lqr()
+    lqr_P = uquad_mat_alloc(ctrl->Q->r,ctrl->Q->c);
+    lqr_k = uquad_mat_alloc(update_k_gamma->c,update_k_gamma->r);
+    lqr_Bt = uquad_mat_alloc(update_k_gamma->c,update_k_gamma->r);
+    //For K=-(R+B'*P*B)^(-1)*B'*P*A
+    lqr_aux0 = uquad_mat_alloc(lqr_P->r,update_k_gamma->c);
+    lqr_aux1 = uquad_mat_alloc(ctrl->R->r,ctrl->R->c);
+    lqr_aux2 = uquad_mat_alloc(ctrl->R->r,ctrl->R->c);
+    lqr_aux3 = uquad_mat_alloc(ctrl->R->r,ctrl->R->c);
+    lqr_aux4 = uquad_mat_alloc(ctrl->R->r,2*ctrl->R->c);
+    lqr_aux5 = uquad_mat_alloc(ctrl->R->r,update_k_gamma->r);
+    lqr_aux6 = uquad_mat_alloc(ctrl->R->r,lqr_P->c);
+    //For P=Q+K'*R*K+(A+B*K)'*P*(A+B*K)
+    lqr_aux7 = uquad_mat_alloc(ctrl->K_lqr->c,ctrl->K_lqr->r);
+    lqr_aux8 = uquad_mat_alloc(ctrl->K_lqr->c,ctrl->R->c);
+    lqr_aux9 = uquad_mat_alloc(ctrl->K_lqr->c,ctrl->K_lqr->c);
+    //For A+B*K
+    lqr_aux_10 = uquad_mat_alloc(update_k_gamma->r,ctrl->K_lqr->c);
+    lqr_aux_11 = uquad_mat_alloc(ctrl->K_lqr->c,update_k_gamma->r);
+    lqr_aux_12 = uquad_mat_alloc(ctrl->K_lqr->c,lqr_P->c);
+    lqr_aux_13 = uquad_mat_alloc(ctrl->K_lqr->r,ctrl->K_lqr->c);
+
 #if !FULL_CONTROL
     tmp_x_hat_partial = uquad_mat_alloc(STATES_CONTROLLED,1);
     if(tmp_x_hat_partial == NULL)
@@ -357,6 +433,36 @@ void control_deinit(ctrl_t *ctrl)
     uquad_mat_free(ctrl->Q);
     uquad_mat_free(ctrl->R);
 
+    // Aux matrices used for updating K - control_update_k()
+    uquad_mat_free(update_k_A);
+    uquad_mat_free(update_k_B);
+    uquad_mat_free(update_k_Aext);
+    uquad_mat_free(update_k_Bext);
+    uquad_mat_free(update_k_phi);
+    uquad_mat_free(update_k_gamma);
+
+    // Aux matrices used for dicretization - control_disc()
+    uquad_mat_free(disc_aux0);
+    uquad_mat_free(disc_aux1);
+
+    // Aux matrices used for LQR iterations - control_lqr()
+    uquad_mat_free(lqr_aux0);
+    uquad_mat_free(lqr_aux1);
+    uquad_mat_free(lqr_aux2);
+    uquad_mat_free(lqr_aux3);
+    uquad_mat_free(lqr_aux4);
+    uquad_mat_free(lqr_aux5);
+    uquad_mat_free(lqr_aux6);
+    uquad_mat_free(lqr_aux7);
+    uquad_mat_free(lqr_aux8);
+    uquad_mat_free(lqr_aux9);
+    uquad_mat_free(lqr_aux_10);
+    uquad_mat_free(lqr_aux_11);
+    uquad_mat_free(lqr_aux_12);
+    uquad_mat_free(lqr_aux_13);
+    uquad_mat_free(lqr_k);
+    uquad_mat_free(lqr_P);
+    uquad_mat_free(lqr_Bt);
 
 #if !FULL_CONTROL
     uquad_mat_free(tmp_x_hat_partial);
@@ -386,89 +492,112 @@ int control_dump(ctrl_t *ctrl, FILE *output)
     return ERROR_OK;
 }
 
-int control_update_K(ctrl_t *ctrl, set_point_t *sp, double weight, uquad_bool_t *update_complete)
+int control_update_K(ctrl_t *ctrl, set_point_t *sp, double weight, uquad_bool_t *update_complete, uquad_bool_t *start)
 {
     int
+	i,
 	retval;
-    uquad_mat_t *A = NULL;
-    uquad_mat_t *B = NULL;
-    uquad_mat_t *Aext = NULL;
-    uquad_mat_t *Bext = NULL;
-    uquad_mat_t *phi = NULL;
-    uquad_mat_t *gamma = NULL;
-    //    static uquad_bool_t updating = false;
-    if(update_complete != NULL)
-	err_check(ERROR_FAIL,"WIP!");
-    
+    /* uquad_mat_t *update_k_A = NULL; */
+    /* uquad_mat_t *update_k_B = NULL; */
+    /* uquad_mat_t *update_k_Aext = NULL; */
+    /* uquad_mat_t *update_k_Bext = NULL; */
+    /* uquad_mat_t *update_k_phi = NULL; */
+    /* uquad_mat_t *update_k_gamma = NULL; */
+    if(start == NULL)
+    {
+	/// Calculation of K in progress, continue.
+	retval = control_lqr(ctrl->K_lqr, update_k_phi, update_k_gamma, ctrl->Q, ctrl->R,update_complete, NULL);
+	cleanup_if(retval);
+	if(*update_complete)
+	{
+	    // use new matrix!
+	    // proportional term
+	    retval = uquad_mat_get_subm(ctrl->K,0,0,ctrl->K_lqr);
+	    cleanup_if(retval);
+#if CTRL_INTEGRAL
+	    // intergral term
+	    retval = uquad_mat_get_subm(ctrl->K_int,0,STATE_COUNT,ctrl->K_lqr);
+	    cleanup_if(retval);
+#endif // CTRL_INTEGRAL
+
+	    // ignore VQX, VQY
+	    for(i=0; i < LENGTH_INPUT; ++i)
+	    {
+		ctrl->K->m[i][SV_VQX] = 0.0;
+		ctrl->K->m[i][SV_VQY] = 0.0;
+	    }
+	}
+	return retval;
+    }
+
     //Linearization of the system
-    A = uquad_mat_alloc(STATES_CONTROLLED,STATES_CONTROLLED);
-    B = uquad_mat_alloc(STATES_CONTROLLED,LENGTH_INPUT);
-    retval = control_lin_model(A,B,sp->pt,sp, weight);
+    retval = control_lin_model(update_k_A,update_k_B,sp->pt,sp, weight);
     cleanup_if(retval);
 
     //Extends the system to include the integrated states
-    Aext = uquad_mat_alloc(STATES_CONTROLLED + STATES_INT_CONTROLLED,
-			   STATES_CONTROLLED + STATES_INT_CONTROLLED);
-    Bext = uquad_mat_alloc(STATES_CONTROLLED + STATES_INT_CONTROLLED,
-			   LENGTH_INPUT);
-    if(Aext == NULL || Bext == NULL)
-    {
-	cleanup_if(ERROR_MALLOC);
-    }
 
-    retval = uquad_mat_zeros(Aext);
+    retval = uquad_mat_zeros(update_k_Aext);
     cleanup_if(retval);
-    retval = uquad_mat_zeros(Bext);
+    retval = uquad_mat_zeros(update_k_Bext);
     cleanup_if(retval);
-    retval = uquad_mat_set_subm(Aext,0,0,A);
+    retval = uquad_mat_set_subm(update_k_Aext,0,0,update_k_A);
     cleanup_if(retval);
 
 #if CTRL_INTEGRAL_ANG
-    Aext->m
+    update_k_Aext->m
 	[STATES_CONTROLLED]
 	[SV_PSI]
 	= 1.0;
-    Aext->m
+    update_k_Aext->m
 	[STATES_CONTROLLED + 1]
 	[SV_PHI]
 	= 1.0;
 #else // CTRL_INTEGRAL_ANG
-    Aext->m
+    update_k_Aext->m
 	[STATES_CONTROLLED]
 	[SV_X]
 	= 1.0;
-    Aext->m
+    update_k_Aext->m
 	[STATES_CONTROLLED + 1]
 	[SV_Y]
 	= 1.0;
 #endif // CTRL_INTEGRAL_ANG
-    Aext->m
+    update_k_Aext->m
 	[STATES_CONTROLLED + 2]
 	[SV_Z]
 	= 1.0;
-    Aext->m
+    update_k_Aext->m
 	[STATES_CONTROLLED + 3]
 	[SV_THETA]
 	= 1.0;
 
-    retval = uquad_mat_set_subm(Bext,0,0,B);
+    retval = uquad_mat_set_subm(update_k_Bext,0,0,update_k_B);
     cleanup_if(retval);
     //Discretization of the system
-    phi = uquad_mat_alloc(Aext->r,Aext->c);
-    gamma = uquad_mat_alloc(Bext->r,Bext->c);
-    retval = control_disc(phi, gamma, Aext, Bext, TS_DEFAULT_US_DBL/1e6);
+    /* phi = uquad_mat_alloc(update_k_Aext->r,update_k_Aext->c); */
+    /* gamma = uquad_mat_alloc(update_k_Bext->r,update_k_Bext->c); */
+    retval = control_disc(update_k_phi,
+			  update_k_gamma,
+			  update_k_Aext,
+			  update_k_Bext,
+			  TS_DEFAULT_US_DBL/1e6);
     cleanup_if(retval);
     //Obtains feedback matrix
-    retval = control_lqr(ctrl->K_lqr, phi, gamma, ctrl->Q, ctrl->R);
+    retval = control_lqr(ctrl->K_lqr,
+			 update_k_phi,
+			 update_k_gamma,
+			 ctrl->Q,
+			 ctrl->R,
+			 update_complete,start);
     cleanup_if(retval);
 
     cleanup:
-    uquad_mat_free(A);
-    uquad_mat_free(B);
-    uquad_mat_free(Aext);
-    uquad_mat_free(Bext);
-    uquad_mat_free(phi);
-    uquad_mat_free(gamma);
+    /* uquad_mat_free(update_k_A); */
+    /* uquad_mat_free(update_k_B); */
+    /* uquad_mat_free(update_k_Aext); */
+    /* uquad_mat_free(update_k_Bext); */
+    /* uquad_mat_free(update_k_phi); */
+    /* uquad_mat_free(update_k_gamma); */
 
     return retval;
 }
@@ -476,63 +605,67 @@ int control_update_K(ctrl_t *ctrl, set_point_t *sp, double weight, uquad_bool_t 
 int control_disc(uquad_mat_t *phi,uquad_mat_t *gamma,uquad_mat_t *A,uquad_mat_t *B, double Ts)
 {
     int retval;
-    uquad_mat_t *aux0 = NULL;
-    uquad_mat_t *aux1 = NULL;
+    /* uquad_mat_t *disc_aux0 = NULL; */
+    /* uquad_mat_t *disc_aux1 = NULL; */
     
-    aux0 = uquad_mat_alloc(A->r+B->c,A->c+B->c);
-    aux1 = uquad_mat_alloc(A->r+B->c,A->c+B->c);
+    /* disc_aux0 = uquad_mat_alloc(A->r+B->c,A->c+B->c); */
+    /* disc_aux1 = uquad_mat_alloc(A->r+B->c,A->c+B->c); */
 
-    retval = uquad_mat_set_subm(aux0, 0,0,A);
+    retval = uquad_mat_set_subm(disc_aux0, 0,0,A);
     cleanup_if(retval);
-    retval =  uquad_mat_set_subm(aux0, 0,A->c,B);
+    retval =  uquad_mat_set_subm(disc_aux0, 0,A->c,B);
     cleanup_if(retval);
-    retval = uquad_mat_scalar_mul(aux0,aux0,Ts); 
+    retval = uquad_mat_scalar_mul(disc_aux0,disc_aux0,Ts);
     cleanup_if(retval);
-    retval = uquad_mat_exp(aux1,aux0);
+    retval = uquad_mat_exp(disc_aux1,disc_aux0);
     cleanup_if(retval);
-    retval= uquad_mat_get_subm(phi,0,0,aux1);
+    retval= uquad_mat_get_subm(phi,0,0,disc_aux1);
     cleanup_if(retval);
-    retval = uquad_mat_get_subm(gamma,0,A->c,aux1);
+    retval = uquad_mat_get_subm(gamma,0,A->c,disc_aux1);
     cleanup_if(retval);
     //Cleaning
     cleanup:
-    uquad_mat_free(aux0);
-    uquad_mat_free(aux1);
+    /* uquad_mat_free(disc_aux0); */
+    /* uquad_mat_free(disc_aux1); */
 
     return retval;
 }
 
-int control_lqr(uquad_mat_t *K, uquad_mat_t *A, uquad_mat_t *B, uquad_mat_t *Q, uquad_mat_t *R)
+int control_lqr(uquad_mat_t *K, uquad_mat_t *A, uquad_mat_t *B, uquad_mat_t *Q, uquad_mat_t *R,
+		uquad_bool_t *finished, uquad_bool_t *start)
 {
     int
 	err_time,
 	retval;
     double norm;
-    uquad_mat_t *aux0 = NULL;
-    uquad_mat_t *aux1 = NULL;
-    uquad_mat_t *aux2 = NULL;
-    uquad_mat_t *aux3 = NULL;
-    uquad_mat_t *aux4 = NULL;
-    uquad_mat_t *aux5 = NULL;
-    uquad_mat_t *aux6 = NULL;
-    uquad_mat_t *aux7 = NULL;
-    uquad_mat_t *aux8 = NULL;
-    uquad_mat_t *aux9 = NULL;
-    uquad_mat_t *aux10 = NULL;
-    uquad_mat_t *aux11 = NULL;
-    uquad_mat_t *aux12 = NULL;
-    uquad_mat_t *aux13 = NULL;
-    uquad_mat_t *P = NULL;
-    uquad_mat_t *k = NULL;
-    uquad_mat_t *Bt = NULL;
+    /* uquad_mat_t *lqr_aux0 = NULL; */
+    /* uquad_mat_t *lqr_aux1 = NULL; */
+    /* uquad_mat_t *lqr_aux2 = NULL; */
+    /* uquad_mat_t *lqr_aux3 = NULL; */
+    /* uquad_mat_t *lqr_aux4 = NULL; */
+    /* uquad_mat_t *lqr_aux5 = NULL; */
+    /* uquad_mat_t *lqr_aux6 = NULL; */
+    /* uquad_mat_t *lqr_aux7 = NULL; */
+    /* uquad_mat_t *lqr_aux8 = NULL; */
+    /* uquad_mat_t *lqr_aux9 = NULL; */
+    /* uquad_mat_t *lqr_aux_10 = NULL; */
+    /* uquad_mat_t *lqr_aux_11 = NULL; */
+    /* uquad_mat_t *lqr_aux_12 = NULL; */
+    /* uquad_mat_t *lqr_aux_13 = NULL; */
+    /* uquad_mat_t *lqr_P = NULL; */
+    /* uquad_mat_t *lqr_k = NULL; */
+    /* uquad_mat_t *lqr_Bt = NULL; */
 
     struct timeval
 	tv_in,
 	tv_tmp,
 	tv_diff,
 	tv_out;
-    tv_out.tv_sec = 1;
-    tv_out.tv_usec = 0;
+    tv_out.tv_sec = 0;
+    tv_out.tv_usec = 1500;
+
+    norm=1;
+
     retval = gettimeofday(&tv_in,NULL);
     if(retval < 0)
     {
@@ -541,98 +674,107 @@ int control_lqr(uquad_mat_t *K, uquad_mat_t *A, uquad_mat_t *B, uquad_mat_t *Q, 
 	cleanup_if(retval);
     }
 
-    P = uquad_mat_alloc(Q->r,Q->c);
-    k = uquad_mat_alloc(B->c,B->r);
+    *finished = false;
+    if(start != NULL)
+    {
+	/**
+	 * This is a fresh start, inicialize everything and
+	 * set a lower timeout to compensate for the previous
+	 * calculations (linearization+discretization)
+	 */
+	tv_out.tv_usec = 500;
 
-    retval = uquad_mat_fill(K,1.0);
-    cleanup_if(retval);
+	/* lqr_P = uquad_mat_alloc(Q->r,Q->c); */
+	/* lqr_k = uquad_mat_alloc(B->c,B->r); */
 
-    retval = uquad_mat_copy(P,Q);
-    cleanup_if(retval);
-    retval = uquad_mat_copy(k,K);
-    cleanup_if(retval);
-    Bt = uquad_mat_alloc(B->c,B->r);
+	retval = uquad_mat_fill(K,1.0);
+	cleanup_if(retval);
 
-    retval = uquad_mat_transpose(Bt,B);
-    cleanup_if(retval);
-    norm=1;
+	retval = uquad_mat_copy(lqr_P,Q);
+	cleanup_if(retval);
+	retval = uquad_mat_copy(lqr_k,K);
+	cleanup_if(retval);
+	/* lqr_Bt = uquad_mat_alloc(B->c,B->r); */
 
+	retval = uquad_mat_transpose(lqr_Bt,B);
+	cleanup_if(retval);
 
-    //For K=-(R+B'*P*B)^(-1)*B'*P*A
-    aux0 = uquad_mat_alloc(P->r,B->c);
-    aux1 = uquad_mat_alloc(R->r,R->c);
-    aux2 = uquad_mat_alloc(R->r,R->c);
-    aux3 = uquad_mat_alloc(R->r,R->c);
-    aux4 = uquad_mat_alloc(R->r,2*R->c);
-    aux5 = uquad_mat_alloc(R->r,B->r);
-    aux6 = uquad_mat_alloc(R->r,P->c);
+	//For K=-(R+B'*P*B)^(-1)*B'*P*A
+	/* lqr_aux0 = uquad_mat_alloc(P->r,B->c); */
+	/* lqr_aux1 = uquad_mat_alloc(R->r,R->c); */
+	/* lqr_aux2 = uquad_mat_alloc(R->r,R->c); */
+	/* lqr_aux3 = uquad_mat_alloc(R->r,R->c); */
+	/* lqr_aux4 = uquad_mat_alloc(R->r,2*R->c); */
+	/* lqr_aux5 = uquad_mat_alloc(R->r,B->r); */
+	/* lqr_aux6 = uquad_mat_alloc(R->r,P->c); */
 
-    //Performs P=Q+K'*R*K+(A+B*K)'*P*(A+B*K)
-    //K'*R*K
-    aux7 = uquad_mat_alloc(K->c,K->r);
-    aux8 = uquad_mat_alloc(K->c,R->c);
-    aux9 = uquad_mat_alloc(K->c,K->c);
-    //A+B*K
-    aux10 = uquad_mat_alloc(B->r,K->c);
-    aux11 = uquad_mat_alloc(K->c,B->r);
-    aux12 = uquad_mat_alloc(K->c,P->c);
-    aux13 = uquad_mat_alloc(K->r,K->c);
+	//Performs P=Q+K'*R*K+(A+B*K)'*P*(A+B*K)
+	//K'*R*K
+	/* lqr_aux7 = uquad_mat_alloc(K->c,K->r); */
+	/* lqr_aux8 = uquad_mat_alloc(K->c,R->c); */
+	/* lqr_aux9 = uquad_mat_alloc(K->c,K->c); */
+	//A+B*K
+	/* lqr_aux_10 = uquad_mat_alloc(B->r,K->c); */
+	/* lqr_aux_11 = uquad_mat_alloc(K->c,B->r); */
+	/* lqr_aux_12 = uquad_mat_alloc(K->c,P->c); */
+	/* lqr_aux_13 = uquad_mat_alloc(K->r,K->c); */
+    }
 
     while (norm>CTRL_LQR_TH)
     {
-	retval = uquad_mat_copy(k,K);
+	retval = uquad_mat_copy(lqr_k,K);
 	cleanup_if(retval);
 	//Performs K=-(R+B'*P*B)^(-1)*B'*P*A; 
-	retval = uquad_mat_prod(aux0,P,B);
+	retval = uquad_mat_prod(lqr_aux0,lqr_P,B);
 	cleanup_if(retval);
-	retval = uquad_mat_prod(aux1,Bt,aux0);
+	retval = uquad_mat_prod(lqr_aux1,lqr_Bt,lqr_aux0);
 	cleanup_if(retval);
-	retval = uquad_mat_add(aux1,aux1,R);
+	retval = uquad_mat_add(lqr_aux1,lqr_aux1,R);
 	cleanup_if(retval);
-	retval = uquad_mat_inv(aux2,aux1,aux3,aux4);  
+	retval = uquad_mat_inv(lqr_aux2,lqr_aux1,lqr_aux3,lqr_aux4);
 	cleanup_if(retval);
 	
-	retval = uquad_mat_prod(aux5,aux2,Bt);
+	retval = uquad_mat_prod(lqr_aux5,lqr_aux2,lqr_Bt);
 	cleanup_if(retval);
-	retval = uquad_mat_prod(aux6,aux5,P);
+	retval = uquad_mat_prod(lqr_aux6,lqr_aux5,lqr_P);
 	cleanup_if(retval);
-	retval = uquad_mat_prod(aux5,aux6,A);
+	retval = uquad_mat_prod(lqr_aux5,lqr_aux6,A);
 	cleanup_if(retval);
-	retval = uquad_mat_scalar_mul(K,aux5,-1);
+	retval = uquad_mat_scalar_mul(K,lqr_aux5,-1);
 	cleanup_if(retval);
 
 	//Performs P=Q+K'*R*K+(A+B*K)'*P*(A+B*K);
 
 	//K'*R*K
-	retval = uquad_mat_transpose(aux7,K);
+	retval = uquad_mat_transpose(lqr_aux7,K);
 	cleanup_if(retval);
-	retval = uquad_mat_prod(aux8,aux7,R);
+	retval = uquad_mat_prod(lqr_aux8,lqr_aux7,R);
 	cleanup_if(retval);
-	retval = uquad_mat_prod(aux9,aux8,K);
+	retval = uquad_mat_prod(lqr_aux9,lqr_aux8,K);
 	cleanup_if(retval);
 
 	//A+B*K
-	retval = uquad_mat_prod(aux10,B,K);
+	retval = uquad_mat_prod(lqr_aux_10,B,K);
 	cleanup_if(retval);
-	retval = uquad_mat_add(aux10,aux10,A);
-	cleanup_if(retval);
-
-	retval = uquad_mat_transpose(aux11,aux10);
-	cleanup_if(retval);
-	retval = uquad_mat_prod(aux12,aux11,P);
-	cleanup_if(retval);
-	retval = uquad_mat_prod(aux11,aux12,aux10);
+	retval = uquad_mat_add(lqr_aux_10,lqr_aux_10,A);
 	cleanup_if(retval);
 
-	retval = uquad_mat_add(P,Q,aux9);
+	retval = uquad_mat_transpose(lqr_aux_11,lqr_aux_10);
 	cleanup_if(retval);
-	retval = uquad_mat_add(P,P,aux11);
+	retval = uquad_mat_prod(lqr_aux_12,lqr_aux_11,lqr_P);
+	cleanup_if(retval);
+	retval = uquad_mat_prod(lqr_aux_11,lqr_aux_12,lqr_aux_10);
 	cleanup_if(retval);
 
-	retval = uquad_mat_sub(aux13,K,k);
+	retval = uquad_mat_add(lqr_P,Q,lqr_aux9);
+	cleanup_if(retval);
+	retval = uquad_mat_add(lqr_P,lqr_P,lqr_aux_11);
 	cleanup_if(retval);
 
-	norm = uquad_mat_norm(aux13);
+	retval = uquad_mat_sub(lqr_aux_13,K,lqr_k);
+	cleanup_if(retval);
+
+	norm = uquad_mat_norm(lqr_aux_13);
 
 	/// Check timeout
 	err_time = gettimeofday(&tv_tmp, NULL);
@@ -651,30 +793,40 @@ int control_lqr(uquad_mat_t *K, uquad_mat_t *A, uquad_mat_t *B, uquad_mat_t *Q, 
 	err_time = uquad_timeval_substract(&tv_diff, tv_diff, tv_out);
 	if(err_time >= 0)
 	{
-	    retval = ERROR_FAIL;
-	    cleanup_log_if(retval,"ERR: Timed out!");
+	    /// Timed out, get out.
+	    break;
 	}
     }
 
-    retval = uquad_mat_scalar_mul(K,K,-1);
-    cleanup_if(retval);
+    /**
+     * Now check if we managed to finish before getting timed out.
+     * If we were timed out, then iterations will continue in the
+     * next call.
+     */
+    if(!(norm>CTRL_LQR_TH))
+    {
+	retval = uquad_mat_scalar_mul(K,K,-1);
+	cleanup_if(retval);
+	*finished = true;
+    }
 
     cleanup:
-    uquad_mat_free(aux0);
-    uquad_mat_free(aux1);
-    uquad_mat_free(aux2);
-    uquad_mat_free(aux3);
-    uquad_mat_free(aux4);
-    uquad_mat_free(aux5);
-    uquad_mat_free(aux6);
-    uquad_mat_free(aux7);
-    uquad_mat_free(aux8);
-    uquad_mat_free(aux9);
-    uquad_mat_free(aux10);
-    uquad_mat_free(aux11);
-    uquad_mat_free(aux12);
-    uquad_mat_free(k);
-    uquad_mat_free(P);
+    /* uquad_mat_free(lqr_aux0); */
+    /* uquad_mat_free(lqr_aux1); */
+    /* uquad_mat_free(lqr_aux2); */
+    /* uquad_mat_free(lqr_aux3); */
+    /* uquad_mat_free(lqr_aux4); */
+    /* uquad_mat_free(lqr_aux5); */
+    /* uquad_mat_free(lqr_aux6); */
+    /* uquad_mat_free(lqr_aux7); */
+    /* uquad_mat_free(lqr_aux8); */
+    /* uquad_mat_free(lqr_aux9); */
+    /* uquad_mat_free(lqr_aux_10); */
+    /* uquad_mat_free(lqr_aux_11); */
+    /* uquad_mat_free(lqr_aux_12); */
+    /* uquad_mat_free(lqr_k); */
+    /* uquad_mat_free(lqr_P); */
+    /* uquad_mat_free(lqr_Bt); */
 
     return retval;
 }

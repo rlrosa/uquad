@@ -183,10 +183,12 @@ int control(ctrl_t *ctrl, uquad_mat_t *w, uquad_mat_t *x, set_point_t *sp, doubl
  * @param sp setpoint to update matrix to.
  * @param weight weight of the quadcopter.
  * @param update_complete indicator, true when matrix calculations have been completed.
+ * @param start If !NULL, then a new matrix calculation is triggered. If NULL, then a calculation
+ *              started previously is continued.
  *
  * @return error code
  */
-int control_update_K(ctrl_t *ctrl, set_point_t *sp, double weight, uquad_bool_t *update_complete);
+int control_update_K(ctrl_t *ctrl, set_point_t *sp, double weight, uquad_bool_t *update_complete, uquad_bool_t *start);
 
 /**
  * Solves Riccati equation, using an algorithm by Anders Friis Sorensen
@@ -196,10 +198,14 @@ int control_update_K(ctrl_t *ctrl, set_point_t *sp, double weight, uquad_bool_t 
  * @param B 
  * @param Q
  * @param R
+ * @parma update_complete Indicates if new control matrix calculation was completed.
+ * @param start If !NULL, then a new matrix calculation is triggered. If NULL, then a calculation
+ *              started previously is continued.
  * 
  * @return error code
  */
-int control_lqr(uquad_mat_t *K, uquad_mat_t *phi, uquad_mat_t *gamma, uquad_mat_t *Q, uquad_mat_t *R);
+int control_lqr(uquad_mat_t *K, uquad_mat_t *A, uquad_mat_t *B, uquad_mat_t *Q, uquad_mat_t *R,
+		uquad_bool_t *update_complete, uquad_bool_t *start);
 
 /**
  * Returns the discrete form X(k+1)=phi*X(k)+gamma*U of a
