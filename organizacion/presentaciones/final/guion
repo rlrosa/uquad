@@ -80,7 +80,7 @@ Sensores
 
 IMU
 
-La unidad de medida inercial se compone de 4 sensores principales. Un acelerómetro de tres ejes, un magnetómetro de tres ejes, un giróscopo de tres ejes y un barómetro. Además dispone de un sensor de temperatura, el cual fue utilizado para ajustar la calibración de cada sensor en función de la temperatura.
+La unidad de medida inercial se compone de 4 sensores principales. Un acelerómetro de tres ejes, un magnetómetro de tres ejes, un giróscopo de tres ejes y un barómetro.
 
 Giróscopo de 3 ejes
 permite obtener una medida de velocidad angular expresada en el sitema del cuadricoptero.
@@ -102,8 +102,14 @@ Yaw
 	- Supongamos el caso más sencillo en el cual los angulos de pitch y de roll son cero: En el sistema solidario a la tierra elegido el versor i se corresponde con el norte. La orientación puede determinarse a partir de las medidas de campo magnético según uno los versores iq y jq. FORMULA. Cabe aclarar que el norte magnetico no se corresponde exactamente con el norte geografico. Existe una declinación de aproximadamente 10 grados lo cual implica que una vez detectada la ubicacion del norte magnetico debe agregarse dicha correccion.
 	- En caso de tener un angulo de pitch o de roll distintos de cero, lo que se hace es llevar la medida de campo magnético en la base solidaria al cuadricoptero a la base 1 mediante 2 rotaciones, como se muestra en la figura, y luego se aplica el procedimiento anterior.
 
+de lejos - calib+Temp
+	Todos los sensores fueron calibrados. el barómetro cuenta con un sensor de temperatura, lo usa internamente para sus cuentas, y nosotros lo aprovechamos para lograr una calibración robusta frente a variaciones de la temperatura.
+	nos sigue faltando una forma de medir x,y y las velocidad en el sistema del cuadricóptero. para las velocidades vamos a hacer alguna magía q explicaremos más adelante, y para la posición x-y usaremos un gps
+
 GPS
-	El GPS debe ser utilizado a cielo abierto para obtener una la posición absoluta, esto permite tener una realimentación en xy. El error del GPS puede ser muy importante, dependiendo de las condiciones de visibilidad y de la velocidad de a la que uno se mueve, funciona mejor en movimiento. En la figura se observan datos del GPS estando quietos, el error en movimento es un poco menor, pero siempre del orden de varios metros.
+	el gps nos permite conocer la posición absoluta.
+	debe ser utilizado a cielo abierto, su precisión varía mucho con la visibilidad, la presencia de obstáculos, y la velocidad de traslación.
+	en la figura se observan datos tomados con el GPS estando quieto. el error en gral es de 2-3m, se porta mejor en movimiento que estando quieto, pero siempre del orden de varios metros.
 
 Cuadro errores
        En este cuadro se observan las características principales de los sensores incorporados al sistema. no vamos a entrar en detalles, solamente mencionar que el gps trabaja a 1Hz, mientras que la IMU tiene un datos nuevo (con información de todos sus sensores) cada 100Hz.
