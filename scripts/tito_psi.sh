@@ -12,4 +12,5 @@ else
     sleep 2
     echo "Server running"
 fi
-ssh root@10.42.43.2 -t "./tito_psi.sh"
+ssh root@10.42.43.2
+
