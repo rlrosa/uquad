@@ -556,7 +556,7 @@ The IMU is equiped with the following sensors:
 \subsection{GPS}
 \label{sec:sensors-gps}
 
-In theory, given some initial position, the accelerometer could be used to determine variations $\{\Delta x,\Delta y\}$. This estimation drifts rapidly (tens of meters y a couple of seconds), so a GPS is used to determine the absolute position $\{x,y\}$ of the system, correcting the drift. The accuracy, with good sky visibility, is of 2-3 meters\footnote{Datasheet: 5m CEP.}. The GPS's performance improves when the system is moving.
+In theory, given some initial position $\{x_0 ,y_0\}$ the accelerometer could be used to determine variations $\{x_0+\Delta x,y_0+\Delta y\}$. In practice this estimation drifts rapidly (tens of meters y a couple of seconds), so a GPS is used to determine the absolute position $\{x,y\}$ of the system, correcting the drift. The accuracy, with good sky visibility, is of 2-3 meters\footnote{Datasheet: 5m CEP.}. The GPS's performance improves when the system is moving.
 
 \subsection{Sensor Specifications}
 \label{sec:sensors-specifications}
@@ -628,6 +628,7 @@ Two different types of data will be available, depending on the availability of 
 Figure \refp{fig:diagrama_kalman} shows a diagram of how data from the sensors is combined within the EKF, assisted by the model of the system. The output of the filter is an estimation the all the variables of the state vector.
 
 \section{Control design}
+\label{sec:control}
 
 To work directly with equations \refp{eq:modelo}, a non-linear control technique would be required. To simplifly the control system, equations \refp{eq:modelo} are linearized near certain points of operation which result in a Linear Time Invariant (LTI) system. This restricts the system to: Hovering\footnote{Constant state vector.}, uniform linear trajectories, and uniform circular trajectories. Working with an LTI greatly simplifies the control system and does it not introduce significant limitations.
 
@@ -669,6 +670,9 @@ For the controllability and observability hypothesis to hold, only some state va
 
 \section{Software}
 
+\subsection{Architecture}
+\label{sec:software-arch}
+
 The software runs on several independant boards:
 
 \begin{itemize}
@@ -679,27 +683,53 @@ The software runs on several independant boards:
 
 The flight controller is accesed via an \textit{ssh} session over \textit{WiFi}. Once logged in, the flight controller software can be compiled and executed.
 
-\section{Tests}
+\subsection{Implementation details}
+\label{sec:software-impl}
 
-pruebas psi/phi, theta, cuerdas, suelto.
-
-Many flight tests were performed, most of them with strings attached above and below the quadrotor as security measures. The poor reliabitily of the ESCs provided by LotusRC\footnote{\url{http://www.lotusrc.com/}} made testing a dangerous.
-
-respuesta al escalon de las cosas?
-
-resultados buenos para lugares sin viento, posibles explicaciones
-
-limitaciones por culpa de los ESCs
-
-agregar ejemplos de circulos, ver q la altura
-
-\subsection{Subsection Heading Here}
-Subsection text here.
+The code basically implements the control system mentioned in \ref{sec:control} except for practical considerations such as:
+\begin{itemize}
+\item \textbf{Saturation:} The integral term saturates it is designed to compensate for small errors in characterization/modelling and should never grow too much. Large diferences between the current state and the setpoint should be handled by the proportional term.
+\item \textbf{Limiting:} The control block sets $\vert \vec{X} - \vec{X}_{sp}\vert < \vert \vec{X}_{th} \vert$ to avoid attempts to perform actions that the system cannot handle.
+\end{itemize}
 
 
-\subsubsection{Subsubsection Heading Here}
-Subsubsection text here.
+\section{Results}
 
+\subsection{Tests}
+\label{sec:results-tests}
+
+The testing phase was separated into several parts:
+
+\begin{enumerate}
+\item \textbf{Basic Stability}: During this first stage, the quadcopter was only allowed to move (and correct) one of the Euler angles $\{\psi,\phi\}$. The control system was tuned until an acceptable behavior was obtained. This procedure was applied to each angle. Once this stage was completed the quadcopter was able to mantain horizontality by controlling $\{\psi,\phi,\omega_{q_x},\omega_{q_y}\}$.
+\item \textbf{Orientation}: To verify orientation was correctly maintained the speed of the motors was reduced, below the level required to lift off, and the quadcopter was hung from strings. During this test offsets can be set on each motors to compensate for differences between them. After this test, the control system was able to hold the last of the Euler angles: $\{\theta,\omega_{q_z}\}$.
+\item \textbf{Limited flying}: At this point the three Euler angles are controlled, so a basic level of stability is expected. During this stage strings were attached to the quadcopter from the top and bottom, and it was allowed to fly. After this test, the control system was able to take-off and to hold altitud and vertical speed: $\{z,v_{q_z}\}$.
+\item \textbf{Free flight}: The last step was to let the quadcopter fly. This stage required the GPS. After it was completed, the control system was able to hold it's horizontal position $\{x,y,v_{q_x},v_{q_y}\}$, completing control over the state variables.
+\end{enumerate}
+
+Free flight tests were limited due to the poor reliabitily of the ESCs provided by LotusRC\footnote{\url{http://www.lotusrc.com/}}, which showed issues such as overheating until burning out and random glitches that would cause motors to turn off.
+
+\subsection{System response}
+\label{sec:results-system-response}
+
+To ilustrate some results, figure \refp{fig:psi_esc.pdf} shows the step response for $\psi$ during an experiment where this was the only degree of freedom. Figure \refp{fig:altura.pdf} shows altitud during takeoff from altitud 0m until a target altitud of 1m.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=1\columnwidth]{./pics_paper/altura.pdf}
+	\caption{\textbf{Altitud:} Performance during takeoff (from 0m to 1m).}
+	\label{fig:altura.pdf}
+\end{figure}
+
+%TODO meter foto linda.
+\begin{figure}
+	\centering
+	\includegraphics[width=1\columnwidth]{./pics_paper/psi_esc.pdf}
+	\caption{\textbf{Step response:} Performance during an experiment limited to a single degree of freedom ($\psi$).}
+	\label{fig:psi_esc.pdf}
+\end{figure}
+
+Flight test were satisfactory in windless environments. In presence of wind the system is not stable. The aluminium protections added (to protect the motors from the faulty ESCs) have flat surfaces that may intensify the effect of the wind.
 
 % An example of a floating figure using the graphicx package.
 % Note that \label must occur AFTER (or within) \caption.
@@ -786,17 +816,16 @@ Subsubsection text here.
 
 
 \section{Conclusion}
-The conclusion goes here.
 
+The main goal of the project was achieved: A quadcopter able to fly on its own. The system was successfully tested. A basic control was implemented, capable of stabilizing the system. The doors are open for future projects to add additional levels of intelligence allowing the quadcopter to perform tasks such as power line inspection, surveillance, assitance during natural disasters, etc.
 
 \subsection{Future Work}
 \begin{itemize}
-\item The LotusRC ESCs proved to be extremely unreliable\footnote{Several versions were tested, all of then showed the same issues.}. Random glitches cause the motors to turn off, which inevitably leads to an accident. Replacing the ESCs is a critical task.
-\item The choice of implementing the flight controller on an operating system that does not run in real-time made timing a complicated issue. These issues were dealt with, but assinging additional tasks to the system will surely distrupt timing. Implementing the stabilization system, which requires a very fast and steady loop, on a dedicated microprocessor would have been a better approach. This would allow the code running on top of the operating system to perform higher level tasks, such as Visual Simultaneous Localization and Mapping (VSLAM), navigation, tracking, etc.
-\item The fact that the control system does not work in a windy environment severly limits the range of possible applications. Modifying the control system to allow flight under windy conditions would be a significant improvement.
+\item The LotusRC ESCs proved to be extremely unreliable\footnote{Several versions were tested, all of then showed the same issues.} and severly delayed the project. Replacing the ESCs is a critical task.
+\item The choice of implementing the flight controller on an operating system that does not run in real-time made timing a complicated issue. These issues were dealt with, but assinging additional tasks to the system will surely distrupt timing. Porting the stabilization system, which requires a very fast and steady loop, to a dedicated microprocessor would be a significant improvement. It would allow the code running on top of the operating system to perform higher level tasks, such as Visual Simultaneous Localization and Mapping (VSLAM), navigation, tracking, etc.
+\item The fact that the system does not work in a windy environment severly limits the range of possible applications, solving this issue by either reducing the aerodynamic resistance or implementing a different control system would be a significant improvement.
+%TODO paper q dijo el pater del viento.
 \end{itemize}
-
-
 
 % conference papers do not normally have an appendix
 
@@ -804,12 +833,7 @@ The conclusion goes here.
 % use section* for acknowledgement
 \section*{Acknowledgment}
 
-
-The authors would like to thank de panader.
-
-
-
-
+The authors would like to thank family and friends for their support during this year, and the staff of the University for their commitment to the project.
 
 % trigger a \newpage just before the given reference
 % number - used to balance the columns on the last page
