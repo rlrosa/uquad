@@ -453,7 +453,7 @@ This paper describes the design and integration of a control system that allows 
 
 A quadrotor platform can be imagined performing countless tasks. Many applications are being developed based on such platforms, but how do they fly? An aerial vehicle is inherently unstable, staying still is not a simple task. This paper focuses on the stabilization of a quadrotor, explaining the development of the mathematical model \cite{bib:quadrotor-bible}\cite{bib:curso_quad} to represent the system, the filtering techniques applied for sensor data fusion\cite{bib:kalman}\cite{bib:kalman2} and the control system\cite{bib:quadrotor-bible}\cite{bib:hakas} that allows the quadrotor to fly.
 
-The platform is based on a commercial radio controlled quadrotor, the frame and the motor control system were preserved, the IMU and intelligence were replaced by the flight controller that was developed. A BeagleBoard\footnote{BeagleBoard development board - \url{http://beagleboard.org/}} running Linux\footnote{Angstrom distribution: \url{http://www.angstrom-distribution.org/}} performs the computations requiered to convert raw data received from the IMU\footnote{\textit{Mongoose} IMU - \url{http://store.ckdevices.com/}} over a UART and combine it using an EKF. The EKF overcomes the problems inherent to each sensor and filters out noise, providing a reliable estimation of the state vector. Once the current state is known, the LQR algorithm\cite{bib:lqrnotes}\cite{bib:lqr-discreto} is used to derive the control actions required to bring the system to the desired setpoint.
+The platform is based on a commercial radio controlled quadrotor, the frame and the electronic speed controllers (ESCs) used for the motores were preserved, the IMU and intelligence were replaced by the flight controller that was developed. A BeagleBoard\footnote{BeagleBoard development board - \url{http://beagleboard.org/}} running Linux\footnote{Angstrom distribution: \url{http://www.angstrom-distribution.org/}} performs the computations requiered to convert raw data received from the IMU\footnote{\textit{Mongoose} IMU - \url{http://store.ckdevices.com/}} over a UART and combine it using an EKF. The EKF overcomes the problems inherent to each sensor and filters out noise, providing a reliable estimation of the state vector. Once the current state is known, the LQR algorithm\cite{bib:lqrnotes}\cite{bib:lqr-discreto} is used to derive the control actions required to bring the system to the desired setpoint.
 
 \begin{figure}
 	\centering
@@ -547,16 +547,16 @@ In order to determine what actions should be taken, the state of the system must
 The IMU is equiped with the following sensors:
 \begin{itemize}
 \item \textbf{Barometer:} Measures the absolute pressure of the environment. Variations of pressure are used to estimate variations in the altitud of the system.
-\item \textbf{Thermometer:} The barometer includes a thermometer, which is used internally by the barometer. The temperature data is used to apply a temperature compensation to the calibrations performed on the gyroscope and the accelerometer.
-\item \textbf{Gyroscope:} A 3-axis gyroscope is used to measure angular velocity. A calibration \cite{bib:calib_imu} was designed and applied to this device, as well as a temperature-compensation.
-\item \textbf{Accelerometer:} A 3-axis accelerometer is used to measure gravity. Under the hypothesis that no other accelerations are present, it is used to determine two of the three Euler angles: $\{\psi, \phi\}$. This hypothesis is acceptalbe, since the rest of the accelerations involved are not significant compared to gravity. A calibration \cite{bib:calib_imu} was designed and applied to this device, as well as a temperature-compensation.
-\item \textbf{Magnetometer:} In an area free of magnetic interference this 3-axis sensor will measure the Earth's magnetic field, allowing to determine what direction is North. If the system is horizontal (or the inclination is estimated using other sensors) this sensor can be used to determine the last of the three Euler angles: $\theta$. A calibration was performed on this sensor, based on \cite{bib:bola} and \cite{bib:alain}.
+\item \textbf{Thermometer:} The barometer includes a thermometer. The temperature data is used to apply a temperature compensation to the calibrations performed on the gyroscope and the accelerometer.
+\item \textbf{Gyroscope:} A 3-axis gyroscope is used to measure angular velocity of $S_q$. A calibration, based on \cite{bib:calib_imu}, was designed and applied to this device, as well as a temperature-compensation.
+\item \textbf{Accelerometer:} A 3-axis accelerometer is used to measure gravity. Under the hypothesis that no other accelerations are present, this allows the determination of two of the three Euler angles: $\{\psi, \phi\}$. This hypothesis is acceptable, since the accelerations involved are not significant compared to gravity. A calibration, based on \cite{bib:calib_imu}, was designed and applied to this device, as well as a temperature-compensation.
+\item \textbf{Magnetometer:} In an area free of magnetic interference this 3-axis sensor will measure the Earth's magnetic field, allowing to determine what direction is North. If the system is horizontal (or the inclination is estimated using other sensors) this sensor can be used to determine the last of the three Euler angles: $\theta$. A calibration based on \cite{bib:bola} and \cite{bib:alain} was performed on this sensor.
 \end{itemize}
 
 \subsection{GPS}
 \label{sec:sensors-gps}
 
-A GPS is used to determine the absolute position of the system, since the IMU cannot provide this information. The accuracy under good sky visibility is of 2-3 meters. The GPS's performance improves when the system is moving.
+In theory, given some initial position, the accelerometer could be used to determine variations $\{\Delta x,\Delta y\}$. This estimation drifts rapidly (tens of meters y a couple of seconds), so a GPS is used to determine the absolute position $\{x,y\}$ of the system, correcting the drift. The accuracy, with good sky visibility, is of 2-3 meters\footnote{Datasheet: 5m CEP.}. The GPS's performance improves when the system is moving.
 
 \subsection{Sensor Specifications}
 \label{sec:sensors-specifications}
@@ -594,9 +594,9 @@ GPS  & 1s & - \\
 
 \section{Kalman Filter}
 
-In order to perform adequate control actions, a reliable estimation of the state variables must be performed, in real time. The Kalman Filter uses the mathematical model for the system to predict what should happen next given the current state, and corrects the prediction with the information read from the sensors, taking into consideration how much confidence is placed on the prediction and how much on the measurements. This weighted prediction-correction technique allows a smooth state estimation without the typical delay introduced by filtering, even small delays can severly affect the performance of the system.
+In order to perform adequate control actions, a reliable estimation of the state variables must be available in real time. The Kalman Filter uses the mathematical model for the system to predict what should happen next given the current state, and corrects the prediction with the information read from the sensors, taking into consideration how much confidence is placed on the prediction and how much on the measurements. This weighted prediction-correction technique allows a smooth state estimation without the typical delay introduced by filtering, even small delays can severly affect the performance of the system.
 
-Every sensor has its issues: The gyro drifts over time; the accelerometer is very sensible to the vibrations generated by the motors; the magnetometer is distorted by ferromagnetic materials; the GPS has very little precision and a slow update rate. Each sensor by itself is very limited, but they can be combined to compensate for their limitations. The filter takes care of this.
+Every sensor has its issues: The gyro drifts over time; the accelerometer is very sensible to the vibrations generated by the motors; the magnetometer is distorted by ferromagnetic materials; the GPS has a very poor accuracy and a slow update rate. Each sensor by itself is very limited, but they can be combined to compensate for their limitations. The filter takes care of this.
 
 %TODO pasar figura a ingl\'e
 \begin{figure}
@@ -606,26 +606,35 @@ Every sensor has its issues: The gyro drifts over time; the accelerometer is ver
 	\label{fig:diagrama_kalman}
 \end{figure}
 
+\subsection{EKF}
+\label{sec:kalman-ekf}
+
 The theory behind a standard Kalman Filter does not hold for a system that is not linear. The model for the quadrotor given by \refp{eq:modelo} is highly non-linear, so an EKF is implemented based on \cite{bib:kalman} and \cite{bib:kalman2}. An EKF is compatible with non-linear systems, but it is not optimal, the performance is highly dependant on the linearizacion \cite{bib:kay}. The implementation of the EKF gave very good results, and proved to play a critical part in the system. As an example, the data provided by the accelerometer is ``unusable'' without filtering, and experiments with a simple low pass filter (LPF) showed that a 60ms delay introduced by the LPF severly deteriorated the performance of the system. When the EKF was assigned the task of reducing noise, the perfomance was significatively improved.
 
-\begin{figure}
-	\centering
-	\includegraphics[width=1\columnwidth]{./pics_paper/xyz.pdf}
-	\caption{}
-	\label{fig:xyz.pdf}
-\end{figure}
+\subsection{Integration with the system}
+\label{sec:kalman-integration}
 
-Two different types of data will be available, depending on the availability of GPS information. When no GPS data is available there will be no direct feedback from the sensors to correct the position on the horizontal plane, only through integration, so only the prediction step can be performed for these variables. As shown in figure \refp{fig:xyz.pdf}, the estimation will drift until GPS data is available.
+% \begin{figure}
+% 	\centering
+% 	\includegraphics[width=1\columnwidth]{./pics_paper/xyz.pdf}
+% 	\caption{}
+% 	\label{fig:xyz.pdf}
+% \end{figure}
+
+Two different types of data will be available, depending on the availability of GPS information. When no GPS data is available there will be no direct feedback from the sensors to correct the position on the horizontal plane, only through integration, so only the prediction step can be performed for these variables.
+
+%As shown in figure \refp{fig:xyz.pdf}, the estimation will drift until GPS data is available.
 
 Figure \refp{fig:diagrama_kalman} shows a diagram of how data from the sensors is combined within the EKF, assisted by the model of the system. The output of the filter is an estimation the all the variables of the state vector.
 
 \section{Control design}
 
-To work directly with equations \refp{eq:modelo}, a non-linear control technique would be required. To simplifly the control system, equations \refp{eq:modelo} are linearized near certain points of operation which result in a Linear Time Invariant (LTI) system. This restricts the system to: Hovering\footnote{Constant state vector.}, uniform linear trajectories, and uniform circular trajectories. This choice greatly simplifies the control system and does it not introduce significant limitations.
+To work directly with equations \refp{eq:modelo}, a non-linear control technique would be required. To simplifly the control system, equations \refp{eq:modelo} are linearized near certain points of operation which result in a Linear Time Invariant (LTI) system. This restricts the system to: Hovering\footnote{Constant state vector.}, uniform linear trajectories, and uniform circular trajectories. Working with an LTI greatly simplifies the control system and does it not introduce significant limitations.
 
 The control system is shown in figure \ref{fig:diagrama_bloques_eng.pdf}. The feedback matrices have many entries, $K_p$ has 48 and $K_i$ has 16. A \textit{root locus} or \textit{pole-zero} analysis on such a system is not a simple task, additional complications are introduced by the fact that $K_p$ and $K_i$ will change when the trayectory changes, they depend on the linearization of the system. A simple and automated solution is achieved by means of the LQR algorithm. The initial design did not include the $K_i$ term, it was introduced to take into consideration errors in the characterization and modelling of the system.
 
 \begin{figure}
+\vspace{-60pt}
 	\centering
 	\includegraphics[width=1\columnwidth]{../pics_control/diagrama_bloques_eng.pdf}
 \vspace{-220pt}
@@ -636,14 +645,14 @@ The control system is shown in figure \ref{fig:diagrama_bloques_eng.pdf}. The fe
 \subsection{The LQR algorithm}
 \label{sec:lqr}
 
-For a system which is controllable and observable\cite{bib:hakas}, the LQR algorithm finds an optimal controller\cite{bib:lqrnotes} by minimizing the following cost function:
+For a system which is controllable and observable\cite{bib:hakas}, the LQR algorithm provides an optimal controller\cite{bib:lqrnotes} by minimizing the following cost function:
 
 \begin{equation}
 \label{eq:lqr}
 \int_{0}^{\infty}  \vec{X}'(t)Q \vec{X}(t)+\vec{U}'(t)R\vec{U}(t)dt
 \end{equation}
 
-where $Q$ and $R$ are positive-definite matrices, representing the energy of the controlled states and the control signal, respectively. The choice of $Q$ and $R$ is a tradeoff between the error that is tolerated and the energy that the system can use to correct an error.
+where $Q$ and $R$ are positive-definite matrices, representing the energy of the controlled states and of the control signal, respectively. The choice of $Q$ and $R$ is a tradeoff between the error that is tolerated and the energy that the system can use to correct it.
 
  When the system is a feedback system with known state variables, like the one shown in figure \refp{fig:diagrama_bloques_eng.pdf}, the solution is given by \refp{eq:lqr-sol}, where $P$ is the solution to Ricatti's equation.
 
@@ -660,10 +669,19 @@ For the controllability and observability hypothesis to hold, only some state va
 
 \section{Software}
 
-The software runs on several independant boards: An ARM-Cortex-A8 on the flight controller, an ATMega328p on the IMU, and four microprocessors\footnote{C8051F330/1 - Silicon Labs.} on the electronic speed controller (ESC), one for each motor. The code running on the ESCs is not available, but the communication protocol was decoded using a logic analyzer. The firmware on the IMU takes care of reading from all the sensors (using $I^2C$) and sending a new frame of data every 10ms over a UART. The code running on the flight controller processes the data from the IMU, calculates the necessary control actions, and sets the desired speed for each motor by sending the appropriate commands, via $I^2C$, to the ESCs. It requires Linux specific \textit{C} functions to handle I/O. It was developed in modules, replacing any part of it should be a straightforward task. The most critical aspect of the flight controller is timing, any delays will severely degrade the performance of the system.
-%A non-RT\footnote{Real Time.} kernel is used, timing issues were solved, but the resulting software is very delicate.  very delicate an issue. The The kernel does not function  real time 
-%The ESC takes care of switching the currents supplied to the brushless motors with no pinta poner cosas de los ESC ac\'a
-\section{Flight tests}
+The software runs on several independant boards:
+
+\begin{itemize}
+\item \textbf{Flight controller:} Run by an ARM-Cortex-A8. Processes the data from the IMU, calculates the necessary control actions, and sets the desired speed for each motor by sending the appropriate commands, via $I^2C$, to the ESCs. It requires Linux specific \textit{C} functions to handle I/O. It was developed in modules, replacing any part of it should be a straightforward task. The most critical aspect of the flight controller is timing, any delays will severely degrade the performance of the system.
+\item \textbf{IMU:} Uses an ATMega328p on the IMU. The firmware on the IMU takes care of reading from all the sensors (using $I^2C$) and sending a new frame of data every 10ms over a UART.
+\item \textbf{ESCs:} Four microprocessors\footnote{C8051F330/1 - Silicon Labs.}, one for each motor The code running on the ESCs is not available, but the communication protocol was decoded using a logic analyzer.
+\end{itemize}
+
+The flight controller is accesed via an \textit{ssh} session over \textit{WiFi}. Once logged in, the flight controller software can be compiled and executed.
+
+\section{Tests}
+
+pruebas psi/phi, theta, cuerdas, suelto.
 
 Many flight tests were performed, most of them with strings attached above and below the quadrotor as security measures. The poor reliabitily of the ESCs provided by LotusRC\footnote{\url{http://www.lotusrc.com/}} made testing a dangerous.
 
