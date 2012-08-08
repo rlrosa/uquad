@@ -100,8 +100,7 @@ El GPS emite sentencias NMEA a través de un puerto USB serie, a 38400bps. Traba
 
 \begin{wraptable}{r}{0.5\textwidth}
 \centering
-\vspace{-25pt}
-\caption{Diagonales del polígono (cm).}\label{tab:diagonales-poligono}
+\vspace{-15pt}
 \begin{tabular}{|c|c|c|c|c|}
 \hline
 \rowcolor[gray]{0.9}
@@ -120,6 +119,7 @@ El GPS emite sentencias NMEA a través de un puerto USB serie, a 38400bps. Traba
 850 & 602 & 602 & 1202 & 603 \\
 \hline
 \end{tabular}
+\caption{Diagonales del\newline pol\'igono (cm).}\label{tab:diagonales-poligono}
 \vspace{-30pt}
 \end{wraptable}
 
@@ -129,12 +129,12 @@ Una vez construido el polígono, es de interés medir todas las diagonales (con 
 \item Hacer mínimos cuadrados con las medidas, de manera de obtener un polígono, que no tiene porqué ser (y en general no será) un rectángulo, sino algo similar a un rectángulo, más ajustado a la realidad.
 \end{itemize}
 
-\begin{wrapfigure}{r}{0.6\textwidth}
+\begin{wrapfigure}{r}{0.5\textwidth}
 \vspace{-20pt}
   \includegraphics[width=.5\textwidth]{./pics_gps/pol_mc.png}
 \caption{Polígono luego de MC.}
 \label{fig:pol_mc.png}
-\vspace{-20pt}
+\vspace{-30pt}
 \end{wrapfigure}
 Las medidas tomadas se resumen en la tabla \ref{tab:diagonales-poligono}, donde \verb+D12+ representa la medida de la recta que une el punto \verb+1+ con el punto \verb+2+, en cm.
 
@@ -174,34 +174,32 @@ En las figuras \ref{fig:or2_todos_sat_mal.png} y \ref{fig:punto_fijo_dos_minutos
 \end{enumerate}
 
 \begin{figure}[h!]
-\caption{Punto fijo - 2 minutos}
-  \hspace{-50pt}
-  \subfloat[Orientación: \textbf{4}.]{\label{fig:2m_or1_todos.png}
-    \includegraphics[width=.6\textwidth]{./pics_gps/2m_or1_todos.png}}
-  \subfloat[Orientación: \textbf{2}.]{\label{fig:2m_or2_todos.png}
-    \includegraphics[width=.6\textwidth]{./pics_gps/2m_or2_todos.png}}\\
-
-  \hspace{-50pt}
-  \subfloat[Orientación: \textbf{3}.]{\label{fig:or2_todos_cut.png}
-    \includegraphics[width=.6\textwidth]{./pics_gps/or2_todos_cut.png}}
-  \subfloat[Orientación: \textbf{4}]{\label{fig:or3_todos.png}
-    \includegraphics[width=.6\textwidth]{./pics_gps/or3_todos.png}}
 \vspace{-20pt}
+  \subfloat[Orientación: \textbf{1} (Misma que 4)]{\label{fig:2m_or1_todos.png}
+    \includegraphics[width=.5\textwidth]{./pics_gps/2m_or1_todos.png}}
+  \subfloat[Orientación: \textbf{2}.]{\label{fig:2m_or2_todos.png}
+    \includegraphics[width=.5\textwidth]{./pics_gps/2m_or2_todos.png}}\\
+
+  \subfloat[Orientación: \textbf{3}.]{\label{fig:or2_todos_cut.png}
+    \includegraphics[width=.5\textwidth]{./pics_gps/or2_todos_cut.png}}
+  \subfloat[Orientación: \textbf{4}]{\label{fig:or3_todos.png}
+    \includegraphics[width=.5\textwidth]{./pics_gps/or3_todos.png}}
+\caption{Punto fijo - 2 minutos}
 \label{fig:punto_fijo_dos_minutos}
+\vspace{-50pt}
 \end{figure}
 
-\vspace{-20pt}
+\newpage
 \subsubsection{Punto fijo: Análisis - \textbf{satélites disponibles}}
 \label{sec:gps2-punto-fijo-analisis-sat-count}
 
-\begin{wrapfigure}{r}{0.65\textwidth}
-\vspace{-25pt}
-
+\begin{wrapfigure}{r}{0.55\textwidth}
   \includegraphics[width=.55\textwidth]{./pics_gps/or2_todos_sat_mal.png}
-  \vspace{-15pt}
-  \caption{Datos con solamente 4 satélites. Orientación: \textbf{3}.}
+  \caption{Visibilidad: 4 satélites.}
   \label{fig:or2_todos_sat_mal.png}
+\vspace{20pt}
 \end{wrapfigure}
+
 La teoría dice que con 4 satélites debería alcanzar para obtener un \textit{fix 3D}, es decir, estimar la posición sobre la esfera terrestre, y la distancia (altura) a la misma. Se recomienda tener no menos de 6 sat\'elites. Durante el experimento de la figura \ref{fig:or2_todos_cut.png}, hubo un per\'iodo de tiempo en el cual el GPS perdió la se\~nal, y el número de satélites disponibles, que usualmente es 9 o 10, pasó a ser 4. Los datos correspondientes se muestran en la figura \ref{fig:or2_todos_sat_mal.png}. El trazo naranja, con un error de hasta 23 metros, corresponde a instantes donde la cantidad de satélites era entre 4 y 5. Luego de volver a 9 o 10 satélites, los datos tienen errores razonables.\\
 
 
