@@ -37,12 +37,89 @@ $^{(**)}$ Acr\'ilico, cobre, componentes electr\'onicos, aluminio, etc.
 \caption{Costos de las partes que componen el sistema}
 \end{table}
 
-Cabe destacar que hoy en dia el costo de una plataforma similar podr\'ia verse reducido considerablemente.
+\subsection{Costos Ocultos}
+\label{sec:anexo_costos-costos-ocultos}
+
+Durante el proyecto se utilizaron diversos dispositivos que no fue necesario adquirar, ya que se encontraban disponibles en el laboratorio:
+
 \begin{itemize}
-\item Es posible adquirir ``esqueletos'' de cuadric\'optero a precios inferiores a los $20USD$\footnote{Ver \url{www.himodel.com}.}.
-\item Si se elimina la posibilidad del vuelo a control remoto, se pueden adquirir ESCs, motores y h\'elices por $300 USD$.
-\item Existen opciones de inteligencia que por $25USD$ brindan la misma capacidad de procesamiento que la Beagleboard\footnote{Ver \url{http://www.raspberrypi.org}.}.
+\item \textbf{Osciloscopio:} - 500 USD\footnote{Precio promedio. Los precios oscilan entre 100 USD (USB, requiere de una PC) hasta 3500 USD. Las necesidades del proyecto se cubren con un modelo sencillo.} Es fundamental para trabajar con circuitos electrónicos.
+\item \textbf{Soldadores:} Se utilizaron soldadores de precisión para trabajar con componentes SMD.
+\item \textbf{Fuente DC 5V:} Utilizada para alimentar la electrónica.
+\item \textbf{Tocadiscos:} Utilizados durante la calibración del giróscopo.
+\item \textbf{Equipo de Aire Acondicionado:} Para las compensaciones por temperatura.
+\item \textbf{Software:} Computadoras con MatLab.
 \end{itemize}
 
+Algunas inversiones que, a priori, no serían necesarias si se quisiera repetir partes del proyectos:
+
+\begin{itemize}
+\item \textbf{Analizador lógico} - $90 USD$ - Si hay que decodificar otro protocolo $I^2C$, es fundamental contar con un analizador lógico. Durante el proyecto se invirtió mucho tiempo en intentar implementar uno, y al final se optó por comprar uno hecho.
+\item \textbf{Protecciones en aluminio} - \$1500 - Contando con ESCs confiables, es probable que estas protecciones no sean necesarias, y que sea conveniente sacarlas para aumentar la carga que queda disponible y para disminuir el rozamiento con el aire.
+\end{itemize}
+
+Gastos adicionales:
+
+\begin{itemize}
+\item \textbf{Envíos:}
+  \begin{itemize}
+  \item Hubo que enviar una Beagleboard y una Beaglejuice a USA para hacer valer la garantía, el costo de los envíos fueron de 100 USD y 50 USD respectivamente.
+  \item Envíos desde China tienen un costo de aproximadamente 30 USD.
+  \end{itemize}
+\item \textbf{Aduana:} Los gastos de aduana fueron de aproximadamente 200 USD. Algunos debido a que por problemas de tiempo no se hicieron los trámites necesarios para evitar gastos (por tratarse de materiales para la educación).
+\end{itemize}
+
+\subsection{Elección de compras - Análisis de alternativas}
+\label{sec:anexo_costos-analisis-de-alternativas}
+
+Antes de efectuar las compras, se analizaron las diversas opciones disponibles en el mercado. A continuación se resumen las conclusiones de dicho análisis.
+
+\subsubsection{Instrumentación}
+\label{sec:costos-instrumentacion}
+
+La idea original era adquirir una IMU equipada solamente con acelerómetros y giróscopos, y un GPS. Trabajando con esta configuración se descubrió que el GPS es muy poco preciso, y no es posible determinar la orientación (Yaw) ni la altura del sistema con un error razonable (del orden de 5$^o$ y 50cm respectivamente). Se optó por incorporar más sensores, lo que llevó a adquirir la Mongoose, que se utilizó en el diseño final. Incorpora un magnetómetro y un barómetro.
+
+En el mercado (al dia de hoy) no hay ninguna IMU que compita con la Mongoose. Todas traen sensores con especificaciones muy similares, la Mongoose cuesta menos que la competencia\footnote{Ejemplo: Razor 9DoF de Sparkfun - \url{https://www.sparkfun.com/products/10736?}} y trae más sensores, trabaja a la misma frecuencia de muestreo, se comunica mediante el mismo tipo de interfaz, etc.
+
+Cabe destacar que de tener que repetir esta etapa, se buscaría una IMU capaz de funcionar como sistema de estabilización, efectuando las acciones de control básicas. En el sistema existente esto no es posible, debido a que la direccion $I^2C$ del acelerómetro coincide con la de uno de los ESCs, lo que impide que la Mongoose maneje los motores. Esto se podría resolver reemplazando los ESCs por otros cuyo código fuente estuviese disponible y permitiera cambiarles las dirección $I^2C$.
+
+\subsubsection{Inteligencia}
+\label{sec:anexo_costos-inteligencia}
+
+Como inteligencia se buscó una placa de desarrollo, ya que no era de interés construir una a partir de un micro. Se buscó que la communicación fuese simple, al igual que la programación. Las dos opciones que se manejaron fueron la Beagleboard y la \textit{Gumstix Overo Fire}\footnote{\url{https://www.gumstix.com/store/product_info.php?products_id=227}}, ambas corren un sistema operativo Linux. Se optó por la Beagleboard por precio y disponibilidad de puertos de communicación. La Gumstix costaba casi el doble y requería de una placa adicional para habilitar la communicación mediante USB.
+
+Hoy en dia en el mercado existen opciones de inteligencia que por $25USD$ brindan la misma capacidad de procesamiento que la Beagleboard\footnote{Ver \url{http://www.raspberrypi.org}.}.
+
+\subsubsection{Plataforma}
+\label{sec:anexo_costos-plataforma}
+
+Los criterios que usaron para la elección de la plataforma fueron el costo, la capacidad de carga, y el tiempo de vuelo. Se encontraron tres candidatos.
+
+\begin{table}[H]
+\begin{tabular}{p{40pt}|p{70pt}|p{160pt}|p{120pt}|} 
+\cline{2-4}
+& \cellcolor[gray]{0.8} \textbf{GAUI 330X} 
+& \cellcolor[gray]{0.8} \textbf{XAircraft X650} 
+& \cellcolor[gray]{0.8} \textbf{Turbo Ace X720} \\ \cline{2-4}
+\hline
+\multicolumn{1}{|p{40pt}|}{\cellcolor[gray]{0.8}\textbf{Peso}} 
+& $700g$ & Versi\'on de fibra de vidrio: $1100g$. Versi\'on de fibra de carbono: $950g$. & $990g$ \\
+\hline
+\multicolumn{1}{|p{40pt}|}{\cellcolor[gray]{0.8}\textbf{Carga \'util}} 
+& $500g$ & Versi\'on de fibra de vidrio: $700g$. Versi\'on de fibra de carbono: $850g$. & $1300 g$ \\ 
+\hline 
+\multicolumn{1}{|p{40pt}|}{\cellcolor[gray]{0.8}\textbf{Tiempo de vuelo}} 
+& Con bater\'ia de $2200 mAh$ vuela entre 7 y 20 minutos & Vuela 12 minutos con bater\'ia de $2200mAh$ y carga menor a $1.5kg$ & Con bater\'ia de $2200mAh$ vuela 15 minutos a carga nominal y puede llegar a la media hora de vuelo con una bater\'ia de $10.000mAh$ \\
+\hline
+\end{tabular}
+\caption{Comparaci\'on peso-carga \'util y tiempo de vuelo sin carga.}
+\label{tab:peso}
+\end{table}
+
+Se optó por el Turbo Ace X720, fundamentalmente por la capacidad de carga.
+
+Hoy en dia es posible adquirir ``esqueletos'' de cuadric\'optero a precios inferiores a los $20USD$\footnote{Ver \url{www.himodel.com}.}. Si se elimina la posibilidad del vuelo a control remoto, se pueden adquirir ESCs, motores y h\'elices por $300 USD$.
+
+Si se desea hacer trabajo de más alto nivel, por ejemplo navegación, localización, etc, y no es de interés trabajar en el sistema de control se puede optar por el Parrot ARDrone\footnote{\url{https://projects.ardrone.org/}}, es una plataforma robusta que se programa utilizando una API abierta, y cuesta alrededor de $300 USD$.
 
 \end{document}
