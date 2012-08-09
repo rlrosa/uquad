@@ -7,7 +7,7 @@
 \label{chap:modelo}
 Para controlar el cuadric\'optero resulta imprescindible comprender cabalmente su comportamiento. Con esta \'optica, lo que se busca es obtener el modelo m\'as sencillo que sea capaz de representar adecuadamente al sistema. El objetivo de este cap\'itulo es el de realizar el desarrollo de dicho modelo. La forma de modelar el sistema elegida es un Modelo en Variables de Estado, de ahora en m\'as MVE. Lo que se busca es obtener una representaci\'on del sistema de la forma $\dot{\vec{x}}=f\left(\vec{x},\vec{u},t\right)$, donde $\vec{x}$ es el vector de estados del sistema, $\vec{u}$ es el vector que representa las entradas del sistema y $t$ es el tiempo. \\
 
-Al tratarse de una plataforma comercial no se dispone de todos los par\'ametros fundamentales para el desarrollo de dicho modelo, a modo de ejemplo, no se conoce como es la respuesta de los motores  ni el tensor de inercia del sistema. La obtenci\'on de dichos par\'ametros se detalla en el cap\'itulo \ref{chap:test_motores} y en el anexo \ref{chap:anexo_tensores} respectivamente. En el presente an\'alisis nos limitaremos a obtener las ecuaciones que gobiernan el comportamiento del cuadric\'optero.\\
+Al tratarse de una plataforma comercial no se dispone de todos los par\'ametros fundamentales para el desarrollo de dicho modelo, a modo de ejemplo, no se conoce c\'omo es la respuesta de los motores ni el tensor de inercia del sistema. La obtenci\'on de dichos par\'ametros se detalla en el cap\'itulo \ref{chap:test_motores} y en el anexo \ref{chap:anexo_tensores} respectivamente. En el presente an\'alisis nos limitaremos a obtener las ecuaciones que gobiernan el comportamiento del cuadric\'optero.\\
     
 
 
@@ -17,7 +17,7 @@ No debe perderse de vista que el cuadric\'optero con el que se trabaja fue dise\
 
 
 \subsection{La Tierra como sistema de referencia inercial}
-La Tierra {\bf no} es un sistema de referencia inercial ya que la misma se encuentra sometida a la traslaci\'on en torno al Sol y a una rotaci\'on en sobre su eje. Supongamos una part\'icula que se encuentra en movimiento relativo a la Tierra. Su aceleraci\'on respecto de un sistema verdaderamente inercial puede escribirse como:
+La Tierra {\bf no} es un sistema de referencia inercial ya que la misma se encuentra sometida a la traslaci\'on y a una rotaci\'on en sobre su eje. Supongamos una part\'icula que se encuentra en movimiento relativo a la Tierra. Su aceleraci\'on respecto de un sistema verdaderamente inercial puede escribirse como:
 \begin{equation}
 \vec{a}=\vec{a^\prime}+\vec{a_T} +\vec{a_C}
 \end{equation}
@@ -45,12 +45,12 @@ Por otra parte sabemos que la Tierra rota sobre su eje una vez cada 24 horas con
 \end{equation}
 Finalmente debemos considerar el radio promedio de la Tierra($R_T=6,731\times10^{6}m$), y notar que las alturas que alcanzar\'a nuestro sistema son despreciables respecto del radio de la Tierra. Por lo tanto,
 \begin{equation}
-a_T \approx 4.18\times10^{-2}m^{s-2}
+a_T \approx 4.18\times10^{-2}ms^{-2}
 \end{equation}
 
 Para que el t\'ermino de la aceleraci\'on de Coriolis sea comparable con la aceleraci\'on de transporte las velocidades del cuadric\'optero relativas a la Tierra deber\'ian ser del orden de cientos de metros por segundo, condici\'on que evidentemente no se cumple, por lo tanto este t\'ermino puede ser despreciado.\\ 
 
-La aceleraci\'on relativa al sistema de la Tierra difiere en aproximadamente $4.18\times10^{-2}ms^{-2}$ de la aceleraci\'on medida en un sistema verdaderamente inercial. Por otra parte la resoluci\'on del aceler\'ometro utilizado es de $4mg\approx 4.81\times10^{-2}ms^{-2}$. Con el sensor elegido para trabajar es imposible distinguir entre ambas aceleraciones, por dicho motivo parece razonable despreciar el t\'ermino de la aceleraci\'on que corresponde a la aceleraci\'on de transporte. Esto nos permite afirmar que la Tierra puede aproximarse como un sistema de referencia inercial y por lo tanto se cumple que:
+La aceleraci\'on relativa al sistema de la Tierra difiere en aproximadamente $4.18\times10^{-2}ms^{-2}$ de la aceleraci\'on medida en un sistema verdaderamente inercial. Por otra parte la resoluci\'on del aceler\'ometro utilizado es de $4mg\approx 3.92\times10^{-2}ms^{-2}$. Con el sensor elegido para trabajar es imposible distinguir entre ambas aceleraciones, por dicho motivo parece razonable despreciar el t\'ermino de la aceleraci\'on que corresponde a la aceleraci\'on de transporte. Esto nos permite afirmar que la Tierra puede aproximarse como un sistema de referencia inercial y por lo tanto se cumple que:
 
 \begin{equation}
 \sum \vec{F_{ext}}=m\vec{a}\approx m\vec{a^\prime}
@@ -59,7 +59,7 @@ La aceleraci\'on relativa al sistema de la Tierra difiere en aproximadamente $4.
 
 
 \subsection{Curvatura de la Tierra}
-El cuadric\'optero no se desplazara una distancia superior a una centena de metros paralelo a la superficie de la Tierra. Consideremos un caso extremo en el cual el cuadric\'optero se desplaza $1km$ en una direcci\'on. Esto corresponde a recorrer un arco de c\'irculo de $\theta = \frac{1km}{6,731\times10^{3}km}\approx 1.5\times 10^{-4}rad$. Si consideramos la superficie terrestre como un plano, la distancia recorrida es: 
+El cuadric\'optero no se desplazar\'a una distancia superior a una centena de metros paralelo a la superficie de la Tierra. Consideremos un caso extremo en el cual el cuadric\'optero se desplaza $1km$ en una direcci\'on. Esto corresponde a recorrer un arco de c\'irculo de $\theta = \frac{1km}{6,731\times10^{3}km}\approx 1.5\times 10^{-4}rad$. Si consideramos la superficie terrestre como un plano, la distancia recorrida es: 
 \begin{equation}
 d=R_T\sin(\theta) \approx 0.999999996km
 \end{equation}
@@ -72,7 +72,7 @@ Todos los objetos se encuentran relacionados entre s\'i por medio de la Fuerza d
 F_G=G\frac{M_Tm}{d^2}=G\frac{M_Tm}{(R_T+h)^2} 
 \end{equation}
 Donde $G$ es la constante gravitacional y h la altura a la cual se encuentra una part\'icula.  
-Como ya se analizo anteriormente las alturas a las cuales se desenvolver\'a el cuadric\'optero son despreciables respecto del radio de la Tierra. Por lo tanto la ecuaci\'on anterior queda:
+Como ya se analiz\'o anteriormente las alturas a las cuales se desenvolver\'a el cuadric\'optero son despreciables respecto del radio de la Tierra. Por lo tanto la ecuaci\'on anterior queda:
 
 \begin{equation}
 F_G\approx\frac{M_Tm}{R_T^2}=gm
@@ -317,7 +317,7 @@ A partir del c\'alculo de esta derivada podemos reescribir la segunda cardinal:
 \section{Fuerzas y momentos involucrados}
 \label{FYT}
 
-Para completar el an\'alisis del sistema es fundamental conocer las expresiones de las fuerzas y los momentos involucrados. Por un lado se debe considerar la acci\'on del peso en el sistema. Adem\'as debemos conocer con precisi\'on las fuerzas y momentos que introducen las h\'elices del cuadric\'optero ya que son estos los elementos sobre los cuales se pueden realizar las acciones de control. Recordamos que las bajas velocidades a las que el sistema se mueve nos permiten despreciar las fuerzas aerodin\'amicas, a excepci\'on de aquellas que tienen como origen el giro de las h\'elices.
+Para completar el an\'alisis del sistema es fundamental conocer las expresiones de las fuerzas y los momentos involucrados. Por un lado se debe considerar la acci\'on del peso en el sistema. Adem\'as debemos conocer con precisi\'on las fuerzas y momentos que introducen las h\'elices del cuadric\'optero ya que son \'estos los elementos sobre los cuales se pueden realizar las acciones de control. Recordamos que las bajas velocidades a las que el sistema se mueve nos permiten despreciar las fuerzas aerodin\'amicas, a excepci\'on de aquellas que tienen como origen el giro de las h\'elices.
 \subsection{Peso}
 Como ya se aclar\'o anteriormente, debido a la peque\~na variaci\'on de la altura, el peso del cuadric\'optero ser\'a considerado constante y de valor
 
@@ -343,7 +343,7 @@ Debido a que el centro de masa se encuentra por debajo del origen de coordenadas
 \end{array}\right)dMg
 \end{equation}
 
-Donde $d$ es la distancia entre el centro de masa del sistema y el origen del sistema $S_q$.
+Donde $d$ es la distancia entre el centro de masa del sistema y el origen del sistema $S_q$. De acuerdo a las estimaciones realizadas la distancia $d$ es aproximadamente $7 cm$.
 \subsection{Fuerzas y momentos de las h\'elices}
 
 La teor\'ia de fluidos que explica el comportamiento de las h\'elices es compleja y ampliamente difundida por lo que no es de inter\'es desarrollarla en profundidad en este trabajo. Diversa bibliograf\'ia puede ser consultada en donde se explican adecuadamente los fen\'omenos involucrados en las fuerzas aerodin\'amicas presentes en una h\'elice. Sin embargo, s\'i parece pertinente realizar un breve resumen de dichas fuerzas. Para el presente an\'alisis consideraremos una h\'elice rotando en sentido antihorario, el razonamiento para una h\'elice rotando en sentido opuesto es an\'alogo. En la figura \ref{fig:helice} \footnote{Imagen tomada de \cite{bib:fuerzas-helices}} se observan dos vistas de la misma h\'elice. En la figura \ref{fig:helice_arriba} puede observarse una hoja de la h\'elice. En la figura \ref{fig:fuerza-helice} se representa una vista transversal de la h\'elice con las fuerzas aerodin\'amicas involucradas.\\ 
@@ -372,9 +372,9 @@ Donde $\rho_A$ es la densidad del aire, $\omega_p$ la velocidad angular de la h\
 
 La fuerza infinitesimal de empuje ($dT$) puede escribirse en funci\'on de las fuerzas de \emph{lift} y de \emph{drag} de la siguiente forma:
 \begin{equation}
-dT=dL\cos\varphi_I-dD\sin\varphi
+dT=dL\cos(\phi+\alpha_i)-dD\sin(\phi+\alpha_i)
 \end{equation}
-Realizando la aproximaci\'on que $\varphi$ es un \'angulo peque\~no y que la fuerza de \emph{lift} es al menos un orden mayor que la de \emph{drag} se puede afirmar que:
+Realizando la aproximaci\'on que $\phi+\alpha_i$ es un \'angulo peque\~no y que la fuerza de \emph{lift} es al menos un orden mayor que la de \emph{drag} se puede afirmar que:
 \begin{equation}
 dT\approx dL
 \end{equation}
@@ -383,7 +383,7 @@ El empuje por lo tanto puede calcularse como la integral de $dT$ respecto de $r$
 \label{eq:fuerza}
 T=\frac{1}{3}\rho_A C_L c R_P^3\omega_p^2
 \end{equation}
-donde $R_P$ es el radio radio de la h\'elice. En todo momento tenemos dos fuerzas (una sobre cada hoja de la h\'elice) en direcci\'on vertical y hacia arriba. Si nos referimos a la configuraci\'on de la figura \ref{fig:fuerza-helice}, el momento de las fuerzas $dT$ es hacia la derecha para la hoja considerada, sin embargo para la otra hoja este momento ser\'a hacia la izquierda. Se puede concluir entonces que el torque neto que aportan estas fuerzas en el plano perpendicular al eje de rotaci\'on de la h\'elice es nulo.\\
+donde $R_P$ es el radio de la h\'elice. En todo momento tenemos dos fuerzas (una sobre cada hoja de la h\'elice) en direcci\'on vertical y hacia arriba. Si nos referimos a la configuraci\'on de la figura \ref{fig:fuerza-helice}, el momento de las fuerzas $dT$ es hacia la derecha para la hoja considerada, sin embargo para la otra hoja este momento ser\'a hacia la izquierda. Se puede concluir entonces que el torque neto que aportan estas fuerzas en el plano perpendicular al eje de rotaci\'on de la h\'elice es nulo.\\
 
 Intentaremos ahora obtener la resultante de las fuerzas horizontales sobre la h\'elice y el torque de dichas fuerzas. Comenzaremos por analizar que sucede con las sumas de las fuerzas, para luego proceder a calcular el momento de las mismas. Consideremos ahora la fuerza $dF$ como la que se muestra en la figura \ref{fig:fuerza-helice}. Como se observa en la figura dicha fuerza es hacia la derecha. Si consideramos la fuerza horizontal sobre la otra hoja de la h\'elice, se obtiene una fuerza hacia la izquierda. Por lo tanto la suma de las fuerzas horizontales es nula. Sin embargo los momentos de las fuerzas en una y otra hoja de la h\'elice no se anulan, el momento que producen ambas es en la direcci\'on de $-\vec{k}_q$. Por lo tanto el momento total ser\'a la suma de los momentos infinitesimales en toda la superficie de una hoja de la h\'elice multiplicado por la cantidad de hojas, es decir 2. 
 
@@ -391,14 +391,14 @@ En primer lugar escribimos la fuerza horizontal como una composici\'on de la fue
 \begin{equation}
 dF=dD\cos\varphi+dL\sin\varphi \approx dD +dL\left(\frac{V}{\omega_p}\right)
 \end{equation} 
-En esta ecuaci\'on $V$ y $\omega_p r$ representan la velocidad del flujo de aire en las direcciones vertical y horizontal respectivamente. Operando se obtiene el momento total de la h\'elice en la direcci\'on entrante:
+En esta ecuaci\'on $V$ y $\omega_p$ representan la velocidad del flujo de aire en las direcciones vertical y horizontal respectivamente. Operando se obtiene el momento total de la h\'elice en la direcci\'on entrante:
 \begin{equation}
 \label{eq:momento}
 Q=\frac{1}{4}\rho_A c R_P^4(C_D+K)\omega_p^2
 \end{equation}
 En resumen, la teor\'ia BET nos permite afirmar que sobre cada h\'elice del cuadric\'optero que rota en sentido antihorario se aplicar\'a una fuerza en la direcci\'on $\vec{k_q}$ cuyo m\'odulo se expres\'o en la ecuaci\'on \ref{eq:fuerza} y un momento en la direcci\'on $-\vec{k_q}$ cuyo m\'odulo es lo expresado en la ecuaci\'on \ref{eq:momento}. Para una h\'elice rotando en sentido horario se obtiene exactamente los mismos resultados excepto que el momento es en sentido opuesto.\\
 
-Hasta aqu\'i sabemos que sucede las fuerzas y momentos aplicados sobre una h\'elice. Nos concentraremos ahora en estudiar como influyen estas fuerzas y momentos en el cuadric\'optero. Para lo que sigue continuaremos trabajando con las convenciones adoptadas en \ref{fig:quad}. 
+Hasta aqu\'i sabemos que sucede con las fuerzas y momentos aplicados sobre una h\'elice. Nos concentraremos ahora en estudiar c\'omo influyen estas fuerzas y momentos en el cuadric\'optero. Para lo que sigue continuaremos trabajando con las convenciones adoptadas en \ref{fig:quad}. 
  
 A partir de lo estudiado anteriormente se deduce trivialmente que el empuje de las h\'elices puede expresarse en el sistema $S_q$ como:
 \begin{equation}
@@ -437,7 +437,7 @@ Se debe aclarar que la elecci\'on realizada del vector de estados se debe exclus
 \end{equation}
 donde ``$x$'', ``$y$'' y ``$z$'' representan la posici\'on en el espacio referenciado al sistema inercial $S_I$, los \'angulos ``$\theta$'',``$\varphi$'',``$\psi$'' son los \'angulos de Euler mostrados anteriormente, ``$v_{q_x}$'', ``$v_{q_y}$'' y ``$v_{q_z}$'' las velocidades lineales en los 3 ejes referenciados a $S_I$ y ``$w_{q_x}$'', ``$w_{q_y}$'' y ``$w_{q_z}$'' las velocidades angulares en los 3 ejes referenciados al cuadric\'optero.\\
 
-Las ecuaciones desarrolladas hasta ahora son las que gobiernan el comportamiento mec\'anico del sistema y son las que ser\'an utilizadas para el desarrollo del simulador. Dichas ecuaciones dependen tanto de la velocidad angular de las h\'elices como de sus derivadas. Para realizar el control resulta m\'as sencillo poder trabajar sin dichas derivadas. La raz\'on es que las velocidades angulares y sus derivadas no son entradas independientes. Por lo tanto no se pueden imponer valores a unas sin considerar el comportamiento de las otras. En este sentido se realiza \'ultima aproximaci\'on. El t\'ermino de las derivadas de las velocidades angulares se encuentra presente exclusivamente en la ecuaci\'on \ref{eq:omegas}. Dicho t\'ermino se encuentra multiplicado por el momento de inercia de los motores. En el cap\'itulo \ref{chap:test_motores} se obtiene el orden de la variaci\'on de la velocidad angular de los motores. Adelantando el resultado de esta variaci\'on de la velocidad angular y el valor del t\'ermino del tensor de inercia de los motores (ver anexo \ref{chap:anexo_tensores}), se puede despreciar el t\'ermino de las derivadas de las velocidades angulares respecto al t\'ermino asociado a los torques en la ecuaci\'on \ref{eq:omegas}.\\
+Las ecuaciones desarrolladas hasta ahora son las que gobiernan el comportamiento mec\'anico del sistema y son las que ser\'an utilizadas para el desarrollo del simulador. Dichas ecuaciones dependen tanto de la velocidad angular de las h\'elices como de sus derivadas. Para realizar el control resulta m\'as sencillo poder trabajar sin dichas derivadas. La raz\'on es que las velocidades angulares y sus derivadas no son entradas independientes. Por lo tanto no se pueden imponer valores a unas sin considerar el comportamiento de las otras. En este sentido se realiza una \'ultima aproximaci\'on. El t\'ermino de las derivadas de las velocidades angulares se encuentra presente exclusivamente en la ecuaci\'on \ref{eq:omegas}. Dicho t\'ermino se encuentra multiplicado por el momento de inercia de los motores. En el cap\'itulo \ref{chap:test_motores} se obtiene el orden de la variaci\'on de la velocidad angular de los motores. Adelantando el resultado de esta variaci\'on de la velocidad angular y el valor del t\'ermino del tensor de inercia de los motores (ver anexo \ref{chap:anexo_tensores}), se puede despreciar el t\'ermino de las derivadas de las velocidades angulares respecto al t\'ermino asociado a los torques en la ecuaci\'on \ref{eq:omegas}.\\
 
 Luego de realizada esta simplificaci\'on tenemos que la entrada est\'a compuesta por el vector:
 \begin{equation}
