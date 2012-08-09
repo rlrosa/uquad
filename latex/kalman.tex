@@ -38,11 +38,11 @@ El filtro de \emph{Kalman extendido (EKF)} es la versión no lineal del filtro d
 
 El sistema dinámico sigue el modelo:
 
-$$\mathbf{x}_{k} = f(\mathbf{x}_{k-1}, \mathbf{u}_{k-1}) + \mathbf{w}_{k-1}$$
+$$\mathbf{x}_{k} = f(\mathbf{x}_{k-1}, \mathbf{u}_{k-1}) + \mathbf{\eta}^w_{k-1}$$
 
-$$\mathbf{z}_{k} = h(\mathbf{x}_{k}) + \mathbf{v}_{k}$$
+$$\mathbf{z}_{k} = h(\mathbf{x}_{k}) + \mathbf{\eta}^{v}_{k}$$
 
-donde $\mathbf{w}_k$ y $\mathbf{v}_k$ son los ruidos de proceso y observación respectivamente. Se asume que son gaussianos y de media nula. Sus matrices de covarianza son $\mathbf{Q}_k$ y $\mathbf{R}_k$ respectivamente.
+donde $\mathbf{\eta}^{w}_{k}$ y $\mathbf{\eta}^{v}_{k}$ son los ruidos de proceso y observación respectivamente. Se asume que son gaussianos y de media nula. Sus matrices de covarianza son $\mathbf{Q}_k$ y $\mathbf{R}_k$ respectivamente.
 
 La función $f$ es utilizada para hallar el estado predicho a partir del estado previo, y de forma análoga la función $h$ se utiliza para hallar la medida predicha a partir del estado. Dicho de otro modo, la función $f$ guarda información sobre la evolución del estado, mientras que la función $h$ representa la transformación entre el vector de estados y la observación ideal (sin ruido). Dada la no linealidad del sistema, las funciones $f$ y $h$ no pueden ser aplicadas directamente a la covarianza. En su lugar se computa su \textbf{Jacobiano}, una matriz de derivadas parciales. Es importante destacar que el filtro de Kalman Extendido no tiene propiedades de optimalidad y su precisión dependerá en gran medida de la precisión de la linealización. Dado que se realiza una linealización dinámica, no hay manera de conocer su performance de antemano (por mayor detalles referirse a \cite{bib:kay}).\\
 Para la predicción del estado se utilizan las ecuaciones del modelo físico del cuadricóptero presentadas en el capítulo \ref{chap:modelo}.\\
@@ -171,7 +171,12 @@ Lo que sucede en esta situación es que la predicción de altura dice que el cua
 
 \subsection{Vuelo real}
 
-Si bien las simulaciones resultan importantes para analizar el comportamiento del filtro en diferentes situaciones, tienen limitaciones importantes al intentar simular situaciones de vuelo reales, ya que las predicciones no serán correctas debido a la influencia de fuerzas externas no consideradas en el modelo físico (y por lo tanto, tampoco en la predicción), como estar apoyado sobre una mesa, etc. Por este motivo, es de vital importancia analizar el comportamiento del filtro sobre una situación real de vuelo.\\
+Si bien las simulaciones resultan importantes para analizar el comportamiento del filtro en diferentes situaciones, tienen limitaciones importantes al intentar simular situaciones de vuelo reales, ya que las predicciones no serán correctas debido a la influencia de fuerzas externas no consideradas en el modelo físico (y por lo tanto, tampoco en la predicción), como estar apoyado sobre una mesa, etc. Por este motivo, es de vital importancia analizar el comportamiento del filtro sobre una situación real de vuelo. Se presentan los resultados obtenidos con las siguientes condiciones:
+\begin{itemize}
+\item $\theta = cte$
+\item $\phi = 0 $
+\item $\psi = 0$
+\end{itemize}
 
 %\begin{figure}[h!]
 %	\centering
@@ -207,7 +212,7 @@ Se realiza una simulación de trayectoria de \emph{Hovering}, introduciendo el f
 		\label{fig:gps_posyvel}
 \end{figure}
 
-Como se puede ver en la figura \ref{fig:gps_posyvel}, se actualiza la posición en ``x'' e ``y'' cada 1 segundo gracias al GPS, corrigiendo el \emph{drift} observado en la figura \ref{fig:pos}. A su vez, las velocidades lineales se acotan notoriamente gracias a la influencia de la realimentación de la posición en el filtro de Kalman.\\
+Como se puede ver en la figura \ref{fig:gps_posyvel}, se actualiza la posición en ``x'' e ``y'' cada un segundo gracias al GPS, corrigiendo el \emph{drift} observado en la figura \ref{fig:pos}. A su vez, las velocidades lineales se acotan notoriamente gracias a la influencia de la realimentación de la posición en el filtro de Kalman.\\
 
 Se obtienen resultados muy satisfactorios para la estimación de estados, logrando suavizar el ruido presente en los sensores, que es mayormente mecánico (y magnético en el magnetómetro), sin retrasar la señal. A su vez la información de todos los sensores es combinada para mejorar la estimación de cada una de las variables de estado, logrando resultados ampliamente mejores que lo que se lograrían utilizando la información de cada sensor por separado.
 
