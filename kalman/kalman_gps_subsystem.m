@@ -1,4 +1,4 @@
-function [x_hat,P] = kalman_gps_subsystem(x_hat,P,Q,R,T,z)
+function [x_hat,P] = kalman_gps_subsystem(x_hat,P,Q,R,T,z,realim)
 
 % -------------------------------------------------------------------------
 % function [x_hat,P] = kalman_gps_subsystem(x_hat,P,Q,R,z)
@@ -33,7 +33,11 @@ x_   = F*x_hat;
 P_   = F*P*F'+Q; 
 
 % Update
-y         = z-H*x_;
+if realim
+    y = z-H*x_;
+else
+    y = zeros(3,1);
+end
 S         = H*P_*H'+R;
 K         = P_*H'*S^-1;
 x_hat     = x_ + K*y;

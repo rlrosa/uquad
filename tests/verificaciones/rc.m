@@ -31,8 +31,9 @@ figure('name',['giro en ' who ': ' angulo])
 
 subplot(211)
     hold on; grid
-    plot(t_rc,180/pi*z(:,k),'*-','color',green1,'markersize',width)
-    plot(t_rc,180/pi*x_hat_rc(1:end,k+3),'color',orange1,'linewidth',3)
+%     plot(t_rc,180/pi*z(:,k),'*-','color',orange1,'markersize',width)
+    line([t_rc(1) t_rc(end)],[0 0],'color',orange1)
+    plot(t_rc,180/pi*x_hat_rc(1:end,k+3)-1.5,'color',blue1,'linewidth',3)
     handle = legend(['\fontsize{15}' angulo '_{imu}'],['\fontsize{15}' angulo '_{kalman}']);
     set(handle, 'Box', 'off','location','northwest');
     title('\fontsize{15}Orientacion [^o]')

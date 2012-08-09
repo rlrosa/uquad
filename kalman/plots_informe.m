@@ -6,10 +6,11 @@ blue2  = [0,0,255]/256;
 red1   = [165,136,105]/256;
 red2   = [178,34,34]/256;
 
-t      = cumsum(T);
+% t      = cumsum(T);
+x_hat=x_hat_c;
 width  = 3;
 msize  = 4;
-
+T=t;
 %% z00y45.txt
 
 figure;
@@ -111,6 +112,7 @@ subplot(311)
     plot(T,180/pi*x_hat(1:end,6),'color',green2,'linewidth',width)  
     handle = legend('\fontsize{15}\theta_{imu}','\fontsize{15}\theta_{est}');
     set(handle, 'Box', 'on','location','northeast','orientation','horizontal');
+    set(gca, 'Color', 'none');
     title('\fontsize{15}Angulo \theta [^o]')
     xlabel('\fontsize{12}Tiempo [s]');
     axis tight; hold off
@@ -120,15 +122,17 @@ subplot(312)
     plot(T,180/pi*x_hat(1:end,5),'color',red2,'linewidth',width)
     handle = legend('\fontsize{15}\phi_{imu}','\fontsize{15}\phi_{est}');
     set(handle, 'Box', 'on','location','northeast','orientation','horizontal');
+    set(gca, 'Color', 'none');
     title('\fontsize{15}Angulo \phi [^o]')
     xlabel('\fontsize{12}Tiempo [s]');
     axis tight; hold off
 subplot(313)
     hold on; grid
-    plot(T,180/pi*z(:,1),'*-','color',blue3,'markersize',msize)
+    plot(T,180/pi*z(:,1),'*-','color',blue2,'markersize',msize)
     plot(T,180/pi*x_hat(1:end,4),'color',blue1,'linewidth',width)
     handle = legend('\fontsize{15}\psi_{imu}','\fontsize{15}\psi_{est}');
     set(handle, 'Box', 'on','location','northeast','orientation','horizontal');
+    set(gca, 'Color', 'none');
     title('\fontsize{15}Angulo \psi [^o]')
     xlabel('\fontsize{12}Tiempo [s]');
     axis tight; hold off

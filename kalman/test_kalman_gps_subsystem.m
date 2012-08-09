@@ -3,8 +3,10 @@
 gps_calib = 10;
 gps       = load('kalman/gps.mat');
 w         = -gps.easting+mean(gps.easting(1:gps_calib));
-n         = gps.northing-mean(gps.northing(1:gps_calib));;
-e         = gps.elevation-mean(gps.elevation(1:gps_calib));;
+n         = gps.northing-mean(gps.northing(1:gps_calib));
+e         = gps.elevation-mean(gps.elevation(1:gps_calib));
+
+w=westing-mean(westing(1:gps_calib)); n=northing-mean(northing(1:gps_calib)); e=elevation;
 
 N     = length(w);
 Ns    = 9; % states
@@ -48,3 +50,6 @@ subplot(313)
     plot(t,x_hat(:,7),'color',blue2)
     title('\fontsize{16}z'); grid
     handle = legend('gps','estimacion'); set(handle, 'Box', 'off');
+    
+figure
+    plot(x_hat(:,1),x_hat(:,4))

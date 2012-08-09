@@ -21,7 +21,7 @@ Las ecuaciones que gobiernan al sistema (Ecuaciones \ref{eq:modelo}\footnote{Se 
 \label{eq:lazo_abierto}
 \dot{X} = f(X,u,t)
 \end{equation}
-Donde $X$ es el vector de estados del sistema definido en el cap\'itulo \ref{chap:modelo}, u el vector de entradas del sistema y t el tiempo. Para la simulaci\'on se utiliza el m\'etodo de resoluci\'on ODE45 (Dormand-Prince). Este m\'etodo de resoluci\'on de ecuaciones diferenciales, se utliza un paso de resoluci\'on variable: el paso m\'aximo y m\'inimo es de 10ms y 1ms respectivamente. La estructura que se eligi\'o para desarrollar esta secci\'on se corresponde con el camino que se recorri\'o para determinar el modelo f\'isico. El lazo abierto consta de tres bloques principales. En primer lugar tenemos un bloque encargado de generar las fuerzas y momentos a partir de las velocidades angulares de las h\'elices. Luego tenemos un bloque que se encarga de resolver la din\'amica del sistema y un tercer bloque encargado de la cinem\'atica. En la figura \ref{fig:lazo_abierto} se observa la estructura global del lazo abierto. En la figura \ref{fig:vista} se observa una captura de pantalla que representa la vista general de la parte encargada de simular el lazo abierto.
+Donde $X$ es el vector de estados del sistema definido en el cap\'itulo \ref{chap:modelo}, u el vector de entradas del sistema y t el tiempo. Para la simulaci\'on se utiliza el m\'etodo de resoluci\'on ODE45 (Dormand-Prince). Este m\'etodo de resoluci\'on de ecuaciones diferenciales, utliza un paso de resoluci\'on variable: el paso m\'aximo y m\'inimo es de 10ms y 1ms respectivamente. La estructura que se eligi\'o para desarrollar esta secci\'on se corresponde con el camino que se recorri\'o para determinar el modelo f\'isico. El lazo abierto consta de tres bloques principales. En primer lugar tenemos un bloque encargado de generar las fuerzas y momentos a partir de las velocidades angulares de las h\'elices. Luego tenemos un bloque que se encarga de resolver la din\'amica del sistema y un tercer bloque encargado de la cinem\'atica. En la figura \ref{fig:lazo_abierto} se observa la estructura global del lazo abierto. En la figura \ref{fig:vista} se observa una captura de pantalla que representa la vista general de la parte encargada de simular el lazo abierto.
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=1\textwidth]{./pics_simulador/lazo_abierto.png}
@@ -86,12 +86,12 @@ En la figura \ref{fig:t_muestreo} se puede observar la misma trayectoria para tr
   \label{fig:t_muestreo}
 \end{figure} 
  
-Se observa claramente un deterioro de la performance en la subida al aumentar el per\'iodo de muestreo y de acci\'on sobre los motores. Por dicho motivo es importante incluir esta variable a la hora de realizar diversas simulaciones ya que el sistema real debe realizar una gran cantidad de operaciones y si bien su capacidad es considerable no es infinita. Esto puede producir que se tenga acotado inferiormente el per\'iodo de muestreo.\\
+Se observa claramente un deterioro de la performance en la subida al aumentar el per\'iodo de muestreo y de acci\'on sobre los motores, es decir que el per\'iodo de muestreo tiene una cota superior. Es importante incluir esta variable a la hora de realizar diversas simulaciones ya que el sistema real debe realizar una gran cantidad de operaciones y si bien su capacidad es considerable no es infinita. Esto puede producir que se tenga acotado inferiormente el per\'iodo de muestreo.\\
 
 \subsubsection*{Restricciones f\'isicas}
-Se agreg\'o una restricci\'on sobre la velocidad angular de los motores ya que esta no puede tener cualquier valor, para esto se agregaron los bloques de saturaci\'on a la entrada del subsistema que representa la din\'amica del cuadric\'optero.\\
+Se agreg\'o una restricci\'on sobre la velocidad angular de los motores ya que \'esta no puede tener cualquier valor; para esto se agregaron los bloques de saturaci\'on a la entrada del subsistema que representa la din\'amica del cuadric\'optero.\\
 
-No se consideraron restricciones adicionales sobre las velocidades ni sobre las aceleraciones del sistema ya que las mismas no fueron caracterizadas. Asimismo tampoco se imponen restricciones en los valores de setpoint del sistema. Estas caracter\'isticas son una debilidad del simulador, sin embargo para realizar simulaciones a bajas velocidades el mismo es adecuado.\\
+No se consideraron restricciones adicionales sobre las velocidades ni sobre las aceleraciones del sistema ya que las mismas no fueron caracterizadas. Asimismo, tampoco se imponen restricciones en los valores de setpoint del sistema. Estas caracter\'isticas son una debilidad del simulador; sin embargo, para realizar simulaciones a bajas velocidades, es adecuado.\\
 
 \subsubsection*{Ruido y no idealidades}
 Se desea incluir la posibilidad de agregar ruido a los estados medidos y perturbaciones en las velocidades angulares de los motores. Las medidas que se obtienen de los sensores no son exactas, por dicho motivo la posibilidad de agregar ruido es muy interesante de modo de testear la robustez del controlador implementado. A cada variable de estado se le puede agregar un ruido de la forma:
@@ -113,11 +113,11 @@ La amplitud y la frecuencia de la componente sinusoidal del ruido y el valor med
 Como se explica en el cap\'itulo \ref{chap:linealizacion}, para tratar las trayectorias circulares en el plano horizontal es necesario introducir un cambio de variables en el sistema. Este cambio de variables consiste en expresar la posici\'on del cuadric\'optero en el sistema $S_q$ solidiario a \'el y considerando como origen el centro de la trayectoria circular, en lugar de expresar la posici\'on en el sistema cartesiano inercial. Esta modificaci\'on implica realizar un cambio en el modelo para trabajar con dichas trayectorias, simplemente se agrega una matriz de rotaci\'on para trabajar con la posci\'on expresada en el sistema solidario al cuadric\'optero.\\ 
 
 \section{Simulaciones}
-En esta secci\'on procedermos a realizar algunas simulaciones a fin de verificar que los resultados arrojados se corresponden con lo esperado a priori. 
+En esta secci\'on procederemos a realizar algunas simulaciones a fin de verificar que los resultados arrojados se corresponden con lo esperado a priori. 
 
 \subsubsection{Ca\'ida libre con velocidad inicial nula}
 
-Se simula una ca\'ida libre con condiciones iniciales nulas excepto la altura que se fija a $100m$. El tiempo de simulaci\'on considerado es de tres segundos. En la figura \ref{fig:clv0} se observa la trayectoria obtenida. En este caso se grafica uno de cada veinte puntos obtenidos. La misma se corresponde con lo que se espera a priori: puntos equiespaciados en el tiempo se encuentran cada vez m\'as apartados a medida que transcurre el tiempo. En la figura \ref{fig:zcl} se representa la altura en funci\'on del tiempo. La altura final es $z_f=55.855m$. La altura en una ca\'ida libre puede calcularse como $z(t)=-\frac{gt^2}{2}+Z_0$. En este caso se obtiene $z(3)=55.855m$.
+Se simula una ca\'ida libre con condiciones iniciales nulas excepto la altura que se fija a $100m$. El tiempo de simulaci\'on considerado es de tres segundos. En la figura \ref{fig:clv0} se observa la trayectoria obtenida. En este caso, se grafica uno de cada veinte puntos obtenidos. Se corresponde con lo que se espera a priori: puntos equiespaciados en el tiempo se encuentran cada vez m\'as apartados a medida que transcurre el tiempo. En la figura \ref{fig:zcl} se representa la altura en funci\'on del tiempo. La altura final es $z_f=55.855m$. La altura en una ca\'ida libre puede calcularse como $z(t)=-\frac{gt^2}{2}+Z_0$. En este caso se obtiene $z(3)=55.855m$.
 
 
 
@@ -135,7 +135,7 @@ Se simula una ca\'ida libre con condiciones iniciales nulas excepto la altura qu
 \end{figure}
 
 \subsubsection{Ca\'ida libre con velocidad inicial}
-Se realiza la misma simulaci\'on que en la secci\'on anterior excepto que se inicia el vuelo con $V_0 = 1ms^{-1}\vec{i}+3ms^{-1}\vec{k}$. Los resultados de la simulaci\'on pueden encontrarse expresados graficamente en la figura \ref{fig:caida_libre_vi}. La coordenada de la posici\'on seg\'un $\vec{i}$ aumenta con el tiempo con pendiente igual a la velocidad inicial. La altura cumple que $z(t)=-\frac{gt^2}{2}+3ms^{-1}t+Z_0$. Por lo tanto la misma aumenta hasta un tiempo  $t_{max} / \dot{z}(t)=0$. Lo cual implica que $t_{max}=\frac{3ms^{-1}}{g}\approx0.31s$. Por otra parte tiempo para el cual se da el m\'aximo en la simulaci\'on es $t_{max_{sim}} = 0.306s$. Considerando que las simulaciones se realizan con un paso variable el cual puede ser de hasta $0.01s$ se considera un resultado aceptable. El siguiente valor para el tiempo simulado es $0.316s$, por lo tanto es razonable que dicho valor se presente en $t_{max_{sim}}$. La altura m\'axima te\'orica vale $z_{max_{teo}}=100.459m$, la altura m\'axima obtenida a trav\'es de la simulaci\'on es igual\footnote{Considerando tres cifras despu\'es de la coma}. A partir de este punto tenemos una ca\'ida libre como la que ya estudiamos en el caso anterior. Las alturas finales, tanto en la simulaci\'on como en la teor\'ia son $64.885m$.
+Se realiza la misma simulaci\'on que en la secci\'on anterior excepto que se inicia el vuelo con $V_0 = 1ms^{-1}\vec{i}+3ms^{-1}\vec{k}$. Los resultados de la simulaci\'on pueden encontrarse expresados graficamente en la figura \ref{fig:caida_libre_vi}. La coordenada de la posici\'on seg\'un $\vec{i}$ aumenta con el tiempo con pendiente igual a la velocidad inicial. La altura cumple que $z(t)=-\frac{gt^2}{2}+3ms^{-1}t+Z_0$. Por lo tanto la misma aumenta hasta un tiempo  $t_{max} / \dot{z}(t)=0$. Lo cual implica que $t_{max}=\frac{3ms^{-1}}{g}\approx0.31s$. Por otra parte tiempo para el cual se da el m\'aximo en la simulaci\'on es $t_{max_{sim}} = 0.306s$. Considerando que las simulaciones se realizan con un paso variable que puede ser de hasta $0.01s$, se considera un resultado aceptable. El siguiente valor para el tiempo simulado es $0.316s$, por lo tanto es razonable que dicho valor se presente en $t_{max_{sim}}$. La altura m\'axima te\'orica vale $z_{max_{teo}}=100.459m$, la altura m\'axima obtenida a trav\'es de la simulaci\'on es igual\footnote{Considerando tres cifras despu\'es de la coma}. A partir de este punto tenemos una ca\'ida libre como la que ya estudiamos en el caso anterior. Las alturas finales, tanto en la simulaci\'on como en la teor\'ia son $64.885m$.
 
 \begin{figure} 
   \centering
@@ -156,7 +156,7 @@ Se realiza la misma simulaci\'on que en la secci\'on anterior excepto que se ini
 
 \subsubsection{Condici\'on de Hovering}
 
-Se aplica una fuerza constante en los cuatro motores tal que la resultante es igual al peso. Las condiciones iniciales son todas nulas, excepto $Z_0=10m$. Se logra el equilibrio mec\'anico. Todas las variables permanecen constantes. Se simula durante diez segundos
+Se aplica una fuerza constante en los cuatro motores tal que la resultante es igual al peso. Las condiciones iniciales son todas nulas, excepto $Z_0=10m$. Se logra el equilibrio mec\'anico. Todas las variables permanecen constantes. Se simula durante diez segundos.
 
 \subsubsection{Escal\'on en los cuatro motores}
 Con condiciones iniciales nulas, en condici\'on de hovering se aumenta la velocidad angular de los motores en $100 rads^{-1}$ en $t=5s$. Se simula durante diez segundos. En la figura \ref{fig:escalon} se presentan gr\'aficamente los resultados obtenidos en la simulaci\'on. La altura m\'axima alcanzada por el cuadric\'optero en la simulaci\'on es de $93.61m$ mientras que en la teor\'ia dicha altura es de $93.78m$. Nuevamente la diferencia entre el valor simulado y el esperado difieren de manera despreciable y es atribuible a aproximaciones realizadas.
@@ -188,7 +188,7 @@ Con condiciones iniciales nulas excepto la altura fijada en $z=10$, se realiza u
   \label{fig:giros}
 \end{figure}
 
-En estos dos casos tambi\'en se obtiene un resultado acorde a lo esperado. En ambos casos el \'angulo aumenta de forma cuadr\'atica en la zona donde el \'angulo es inferior a los dos grados, en esta zona puede despreciarse el momento realizado por el peso, por lo tanto se tiene una aceleraci\'on angular constante, lo cual explica el comportamiento del \'angulo. Para \'angulos superiores dicho torque del peso comienza a ser considerable respecto del torque producido por los motores y se observa que el \'angulo crece con menor pendiente.
+En estos dos casos tambi\'en se obtiene un resultado acorde a lo esperado. En ambos casos el \'angulo aumenta de forma cuadr\'atica en la zona donde el \'angulo es inferior a los dos grados, en esta zona puede despreciarse el momento realizado por el peso, por lo tanto se tiene una aceleraci\'on angular constante, lo cual explica el comportamiento del \'angulo. Para \'angulos superiores, el torque del peso comienza a ser considerable respecto del torque producido por los motores y se observa que el \'angulo crece con menor pendiente.
 
 \subsubsection{Giro seg\'un el eje $\vec{k}$}
 

@@ -51,7 +51,7 @@ donde:
 
 Las l\'ineas \textbf{SDA} y \textbf{SCL} son de drenador abierto, lo que significa que tanto el maestro como los esclavos solamente pueden conducir a nivel bajo estas l\'ineas, o dejarlas abiertas. Si ning\'un dispositivo $i^2c$ est\'a conduciendo hacia abajo la l\'inea, la resistencia de \emph{pull-up} $R_p$ se encarga de llevar la l\'inea a $V_{cc}$.\\
 
-El reloj siempre es generado por el maestro. El bus de datos debe mantenerse estable mientras el reloj está en nivel alto (``1'' lógico) y se le permite cambiar de nivel mientras el reloj está en nivel bajo (``0'' lógico). Se toma como dato válido el valor del bus de datos cuando el reloj está en ``0''.\\
+El reloj siempre es generado por el maestro. El bus de datos debe mantenerse estable mientras el reloj está en nivel alto (``1'' lógico) y se le permite cambiar de nivel mientras el reloj está en nivel bajo (``0'' lógico). Se toma como dato válido el valor del bus de datos cuando el reloj está en ``1''.\\
 
 Cada dispositivo tiene asignada una direcci\'on que lo identifica. Típicamente para establecer una comunicaci\'on el maestro env\'ia una secuencia de comienzo de conexi\'on, seguida de la direcci\'on del esclavo con el cual desea comunicarse. Seguidamente el maestro env\'ia un bit que determina si la acci\'on que desea realizar es escritura o lectura, a lo que el esclavo correspondiente responde con un bit de \emph{acknowledge} (\textbf{Ack}). Luego el maestro env\'ia la direcci\'on de memoria interna del esclavo donde debe ser almacenada la informaci\'on enviada, y por \'ultimo env\'ia los datos. Para finalizar la conexi\'on, el maestro env\'ia una secuencia de fin de conexi\'on.
 
@@ -130,7 +130,7 @@ Se analizan las siguientes situaciones:
 \end{tabular} 
 \end{center}
 \caption{Pruebas realizadas}
-\label{tab:pruebas}
+\label{tab:sniffeo_pruebas}
 \end{table}
 
 Se realiza un an\'alisis de los resultados obtenidos para cada motor, graficando el contenido del byte de datos que se le transmite a cada motor. Se obtienen representaciones como la mostrada en la figura \ref{fig:grafica_motores}. En dicha figura puede observarse que los 4 motores reciben un byte con el valor promedio en $50$, el cual corresponde a la m\'inima potencia entregada a los motores para encenderlos.\\
@@ -143,7 +143,7 @@ Se realiza un an\'alisis de los resultados obtenidos para cada motor, graficando
 \end{figure}
 
 
-Haciendo un an\'alisis similar con el resto de las pruebas detalladas en la tabla \ref{tab:pruebas} se construye la tabla \ref{tab:resumen_snif} donde se muestran los valores enviados a cada motor en promedio en todas las pruebas.\\
+Haciendo un an\'alisis similar con el resto de las pruebas detalladas en la tabla \ref{tab:sniffeo_pruebas} se construye la tabla \ref{tab:resumen_snif} donde se muestran los valores enviados a cada motor en promedio en todas las pruebas.\\
 
 \begin{table}[H]
 \begin{center}
@@ -257,7 +257,7 @@ Se presenta tambi\'en un an\'alisis gr\'afico en la figura \ref{fig:frenado}. En
   \label{fig:frenado}
 \end{figure}
 
-Avalados por la prueba realizada en la secci\'on \ref{sec:MSP} que se ver\'a luego, se puede afirmar que la aparici\'on de otros registros (por ejemplo los n\'umeros 81, 145, etc) son causados por el propio proceso de intervención en los buses de comunicación y no son el comando transmitido a los motores. Analicemos por ejemplo el valor 81. Es claro que el resultado de dividir el valor 162 (correspondiente al conocido registro 0xA2) entre 2 es 81, por lo cual parece probable que haya sido generado por un error del analizador lógico, ya que un corrimiento hacia la derecha de un bit en una palabra binaria es equivalente a realizar una divisi\'on entre 2. Es probable entonces que el sniffer haya incluido un bit en 0 antes de la verdadera palabra y haya descartado el \'ultimo bit, causando una aparente divisi\'on entre 2. M\'as graficamente:\\
+Avalados por la prueba realizada en la secci\'on \ref{sec:MSP} que se ver\'a luego, se puede afirmar que la aparici\'on de otros registros (por ejemplo los n\'umeros 81, 145, etc) son causados por el propio proceso de intervención en los buses de comunicación y no son el comando transmitido a los motores. Analicemos por ejemplo el valor 81. Es claro que el resultado de dividir el valor 162 (correspondiente al conocido registro 0xA2) entre 2 es 81, por lo cual parece probable que haya sido generado por un error del analizador lógico, ya que un corrimiento hacia la derecha de un bit en una palabra binaria es equivalente a realizar una divisi\'on entre 2. Es probable entonces que el sniffer haya incluido un bit en 0 antes de la verdadera palabra y haya descartado el \'ultimo bit, causando una aparente divisi\'on entre 2. M\'as gr\'aficamente:\\
 
 \begin{center} 162 = 10100010 $\rightarrow$ \color{green}0\color{black}1010001\color{red}\xcancel{0}\color{black} = 81\\
 \end{center}
