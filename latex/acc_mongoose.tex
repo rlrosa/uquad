@@ -145,7 +145,7 @@ En la figura \ref{fig:rrtests} pueden observarse los datos crudos obtenidos de l
 En la figura se observa lo que se espera a priori de acuerdo a la posici\'on del aceler\'ometro, dos medidas cercanas al cero y una medida de valor positivo. Esta \'ultima corresponde a la medida de la aceleraci\'on vertical en el sistema de caida libre. De la observaci\'on de esta serie de datos, avalados por características de la tecnología del acelerómetro, podemos afirmar que el ruido observado es asociable a un ruido blanco de media nula y que no existe deriva en las medidas realizadas, como era de esperarse. A partir de dichas constataciones se puede asegurar que es adecuado trabajar con el promedio de las muestras obtenidas en una posici\'on.
 
 
-\subsection{Medias estáticas para el acelerómetro}
+\subsection{Medidas estáticas para el acelerómetro}
 
 Como se aclaró en la sección anterior se trabajará con el promedio de las aceleraciones medidas en una serie de datos. Cada serie de datos es de 20 segundos de duración. Además de variar el ángulo ($\theta$) de la mesa, se rotará el prisma de forma de realizar una medida con cada eje perpendicular al plano de la mesa. Asimismo utilizando una escuadra se lograrán rotaciones de 45º respecto del eje perpendicular a la tapa ($\phi$). Los resultados obtenidos se presentan en la tabla \ref{tab:acc}. Se utiliza la siguiente notación para las orientaciones utilizadas:
 \begin{itemize}
@@ -208,15 +208,15 @@ El tercer eje se deduce sabiendo que la base es directa. La aceleración medida 
 
 Para la calibración se consideran solamente 24 de las 27 medidas realizadas. Esto es útil ya que quedan 3 medidas, que no serán tenidas en cuenta en la calibración, para realizar una validaci\'on de la calibración obtenida.
 
-El problema de calibración consiste en encontrar el vector de parámetros $\theta$ que mejor ajusta las medidas obtenidas a los valores teóricos de aceleración. El vector $\theta$ se compone de los elementos de la diagonal de la matriz $K_a$, de los elementos de $b_a$ y de los $\alpha_{ij}$ de la matriz $T_a^p$. Es decir: 
+El problema de calibración consiste en encontrar el vector de parámetros $\zeta$ que mejor ajusta las medidas obtenidas a los valores teóricos de aceleración. El vector $\zeta$ se compone de los elementos de la diagonal de la matriz $K_a$, de los elementos de $b_a$ y de los $\alpha_{ij}$ de la matriz $T_a^p$. Es decir: 
 \begin{equation}
-\theta =\left[ k_{ax} , k_{ay} , k_{az} ,b_{ax} ,b_{ay} ,b_{az}, \alpha_{yz} , \alpha_{zy} , \alpha_{xz} , \alpha_{zx} , \alpha_{xy} , \alpha_{yx} \right]\end{equation}
+\zeta =\left[ k_{ax} ; k_{ay} ; k_{az} ;b_{ax} ;b_{ay} ;b_{az}; \alpha_{yz} ; \alpha_{zy} ; \alpha_{xz} ; \alpha_{zx} ; \alpha_{xy} ; \alpha_{yx} \right]\end{equation}
 
 Como criterio de ajuste se decide minimizar la suma de los cuadrados de la diferencia entre la aceleración teórica y la aceleración medida. Dicho problema se puede expresar matemáticamente como:
 
 \begin{equation}
 \label{eq:lsqnonlin}
-\theta \quad : \quad  min \left\lbrace \sum_{i=1}^{M} {\vert \vert a_{i}^p-T_a^pK_a^{-1}\left(\tilde{\mathbf{a}}_{i}^a -\mathbf{b}_a \right)\vert \vert} \right\rbrace
+\zeta \quad : \quad  min \left\lbrace \sum_{i=1}^{M} {\vert \vert a_{i}^p-T_a^pK_a^{-1}\left(\tilde{\mathbf{a}}_{i}^a -\mathbf{b}_a \right)\vert \vert} \right\rbrace
 \end{equation}
 
 donde M es la cantidad de medidas realizadas, $a_{i}^p$ los valores de aceleración teóricos en cada eje de la plataforma según la posición y orientación de la IMU y $\tilde{\mathbf{a}}_{i}^a$ los valores obtenidos de la IMU.
@@ -224,14 +224,14 @@ Para resolver dicho problema se utiliza el algoritmo \emph{lsqnonlin} de \emph{M
 
 El rango de aceleraciones manejado en la prueba es de $\pm 16g$. Según la hoja de datos del acelerómetro, se tiene una ganancia de $3.9 mg/LSB$. El valor de la semilla de los t\'erminos que corresponden a la ganancia debe ser entonces $\frac{1}{g \times 3.9 \times 10^{-3}}=26.1376$ para los tres ejes. La IMU expresa las aceleraciones obtenidas en \emph{complemento A2}, por lo que una aceleración de 0 equivale a una lectura de 0, por lo tanto el valor de la semilla de los t\'erminos que corresponden al offset debe ser 0. Finalmente, los ángulos se suponen pequeños, por lo tanto una semilla válida parece ser: 
 \begin{equation}
-\theta_0=\left[ \frac{1}{g \times 3.9 \times 10^{-3}}, \frac{1}{g \times 3.9 \times 10^{-3}}, \frac{1}{g \times 3.9 \times 10^{-3}}, 0, 0, 0, 0, 0, 0, 0, 0, 0 \right]
+\zeta_0=\left[ \frac{1}{g \times 3.9 \times 10^{-3}}; \frac{1}{g \times 3.9 \times 10^{-3}}; \frac{1}{g \times 3.9 \times 10^{-3}}; 0; 0; 0; 0; 0; 0; 0; 0; 0 \right]
 \end{equation}
 
 Los parámetros que minimizan la suma de los errores al cuadrado son los siguientes:
 
 \begin{scriptsize}
 \begin{equation}
-\theta=\left[ 26.7572 \quad 27.0.0599 \quad 25.9838 \quad 16.9374 \quad -0.2446 \quad -47.7863 \quad 0.0005 \quad 0.0025 \quad 0.0149 \quad 0.0023 \quad 0.0000 \quad -0.0077 \quad \right]\end{equation}\end{scriptsize}
+\theta=\left[ 26.7572 ; 27.0.0599 ; 25.9838 ; 16.9374 ; -0.2446 ; -47.7863 ; 0.0005 ; 0.0025 ; 0.0149 ; 0.0023 ; 0.0000 ; -0.0077  \right]\end{equation}\end{scriptsize}
 
 Luego de realizada la minimización se calcula la media del error cometido y la desviación estándar del error.
 $$\mu=-2.0779 \times 10^{-10} ms^{-2}$$ \\

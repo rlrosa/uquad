@@ -9,7 +9,7 @@ El cuadric\'optero adquirido resuelve la comunicaci\'on entre los controladores 
 
 Para el presente proyecto resulta de vital importancia conocer dicho protocolo, ya que se utilizar\'a otro microprocesador que deber\'a comandar a esos mismos ESCs, supliendo el trabajo del anterior. Es entonces imprescindible conocer al detalle el funcionamiento de este protocolo, para luego poder reproducirlo.\\
 
-Dado que no se cuenta con la mínima colaboraci\'on de los fabricantes y la informaci\'on es completamente privativa, es necesario realizar un proceso de ingenier\'ia inversa para poder analizar, decodificar, entender y reproducir el protocolo existente. Dicho proceso de ingenier\'ia inversa se realiza utilizando el hardware existente del cuadric\'optero comercial adquirido y un analizador l\'ogico\footnote{ChronoVu} que es capaz de leer e interpretar las l\'ineas del bus $i^2c$ sin intervenir en las mismas.\\ \\
+Dado que no se cuenta con la mínima colaboraci\'on de los fabricantes y la informaci\'on es completamente privativa, es necesario realizar un proceso de ingenier\'ia inversa para poder analizar, decodificar, entender y reproducir el protocolo existente. Dicho proceso de ingenier\'ia inversa se realiza utilizando el hardware existente del cuadric\'optero comercial adquirido y un analizador l\'ogico\footnote{ChronoVu - \url{www.chronovu.com} - Adquirido en \url{www.ebay.com} debido a las dificultades encontradas al intentar implementar uno.} que es capaz de leer e interpretar las l\'ineas del bus $i^2c$ sin intervenir en las mismas.\\ \\
 
 \begin{wrapfigure}{r}{0.5\textwidth}
 	\vspace{-40pt}
@@ -117,7 +117,7 @@ Se analizan las siguientes situaciones:
 \begin{table}[H]
 \begin{center}
 \begin{tabular}{|p{30pt}|c|c|c|c|p{130pt}|} 
-\hline \cellcolor[gray]{0.8} \centering \textbf{Id} & \cellcolor[gray]{0.8} \textbf{Elev} & \cellcolor[gray]{0.8} \textbf{Ruddle} & \cellcolor[gray]{0.8} \textbf{Aile} & \cellcolor[gray]{0.8} \textbf{Throttle} & \cellcolor[gray]{0.8} \textbf{Movimiento}  \\ \hline
+\hline \cellcolor[gray]{0.8} \centering \textbf{Id} & \cellcolor[gray]{0.8} \textbf{Elev} & \cellcolor[gray]{0.8} \textbf{Rudder} & \cellcolor[gray]{0.8} \textbf{Aile} & \cellcolor[gray]{0.8} \textbf{Throttle} & \cellcolor[gray]{0.8} \textbf{Movimiento}  \\ \hline
 \centering 0 & atr\'as& medio & medio & medio & idle \\ \hline
 \centering 1 & medio & medio & medio & medio & vertical hacia arriba con aceleraci\'on constante \\ \hline
 \centering 2 & adelante & medio & medio & medio & vertical hacia arriba con aceleraci\'on constante \\ \hline

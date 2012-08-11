@@ -7,7 +7,7 @@
 \chapter{Bar\'ometro}
 \label{chap:barometro}
 
-Como instrumento para determinar la altura del cuadric\'optero se pensaba utilizar un GPS, pero la frecuencia de muestreo del GPS y el error en los datos provenientes del mismo lo hacen insuficiente. Se opta por incorporar un bar\'ometro que por sí solo también lo hacen insuficiente, dichos sensores padecen de \textit{otros} problemas. Ambos sensores permiten obtener una buena estimaci\'on de la altura.
+Como instrumento para determinar la altura del cuadric\'optero se pensaba utilizar un GPS, pero la frecuencia de muestreo del GPS y el error en los datos provenientes del mismo lo hacen insuficiente. Se opta por incorporar un bar\'ometro que por sí solo también lo hacen insuficiente, dichos sensores padecen de \textit{otros} problemas. El uso conjunto de ambos sensores permite obtener una buena estimaci\'on de la altura.
 
 El sensor adquirido es un bar\'ometro digital BOSCH BMP085. Permite medir presi\'on absoluta y, conociendo la presi\'on y la temperatura a nivel del mar, permite calcular la altura absoluta.
 
@@ -240,7 +240,6 @@ Las figuras \ref{fig:esc1.pdf} y \ref{fig:esc2.pdf} presentan las medidas obteni
 	\includegraphics[width=.38\textwidth]
         {./pics_barom/metros-err-piso-a-piso.pdf}}
   \caption{Evoluci\'on del error en distancias de varios metros.}
-\label{fig:autocorr}
 \vspace{-15pt}
 \end{figure}
 
