@@ -72,6 +72,11 @@ K = R^{-1}B^TP
 
 Donde P es la soluci\'on a la ecuaci\'on algebraica de Riccati.
 
+\begin{equation}
+  \label{eq:riccati}
+  A^TP + PA - PBR^{-1}B^TP + Q = 0
+\end{equation}
+
 La propiedad escencial del controlador LQR es que la respuesta del sistema en lazo cerrado es asint\'oticamente estable, es decir que la parte real de los valores propios de la matriz $A-BK$ es negativa, mientras se cumplan las siguientes condiciones:
 
 \begin{itemize}
@@ -84,7 +89,7 @@ La propiedad escencial del controlador LQR es que la respuesta del sistema en la
 Como se explic\'o en cap\'itulos anteriores, se tiene una nueva estimaci\'on del vector de estados cada un cierto tiempo $T$\footnote{El per\'iodo elegido en la implementaci\'on final es de $10ms$.}, lo cual nos permite realizar acciones de control con esta misma tasa de muestreo. \\
 % A modo de ejemplo consideremos la variable $\omega_{q_z}$. De acuerdo a las velocidades angulares de los motores que se utilizar\'an ($109 rads^{-1} < w_i < 387 rads^{-1})$ y suponiendo que nos encontramos trabajando a la velocidad angular de equilibrio ($334.28 rads^{-1}$ La aceleraci\'on angular m\'axima que puede darse es de $20.2 rad s^{-2}$. En el tiempo de muestreo implica un cambio en la velocidad angular de $11.5 ^{\circ} s^{-1}$ y un cambio en el \'angulo de Yaw de $0.058^{\circ}$. Estas pequeñas variaciones nos indican que el tiempo de acci\'on escogido es adecuado. Esto ser\'a confirmado posterioremente con las simulaciones realizadas. \\
 
-Al tener un tiempo de respuesta r\'apido (en relaci\'on a las constantes del sistema) se podr\'ia resolver el problema utilizando la t\'ecnica de control LQR pensando en un sistema continuo, por m\'as que el sistema sea discreto. Los algor\'itmos de determinaci\'on de la soluci\'on a la ecuaci\'on algebraica de Ricatti m\'as sencillos que se encontraron corresponden a la soluci\'on de la formulaci\'on discreta del problema planteado en \ref{eq:lqr}. Por otra parte, dicha formulaci\'on corresponde al caso en el cual se trabaja con un horizonte infinito, es decir se busca alcanzar un determinado punto de operaci\'on y el setpoint no ser\'a modificado. Estrictamente, esta no es la situaci\'on que se presenta dado que es de inter\'es concatenar diversas trayectorias, por ende el punto de operaci\'on s\'i debe ser modificado, sin embargo se puede suponer que cada trayectoria se realizar\'a por un tiempo ampliamente superior al tiempo del transitorio entre dos trayectorias. Por dicho motivo, aproximar el problema a un problema de horizonte infinito es acertado ya que simplifica enormemente la formulaci\'on del problema.
+Al tener un tiempo de respuesta r\'apido (en relaci\'on a las constantes del sistema) se podr\'ia resolver el problema utilizando la t\'ecnica de control LQR pensando en un sistema continuo, por m\'as que el sistema sea discreto. Los algor\'itmos de determinaci\'on de la soluci\'on a la ecuaci\'on algebraica de Riccati m\'as sencillos que se encontraron corresponden a la soluci\'on de la formulaci\'on discreta del problema planteado en \ref{eq:lqr}. Por otra parte, dicha formulaci\'on corresponde al caso en el cual se trabaja con un horizonte infinito, es decir se busca alcanzar un determinado punto de operaci\'on y el setpoint no ser\'a modificado. Estrictamente, esta no es la situaci\'on que se presenta dado que es de inter\'es concatenar diversas trayectorias, por ende el punto de operaci\'on s\'i debe ser modificado, sin embargo se puede suponer que cada trayectoria se realizar\'a por un tiempo ampliamente superior al tiempo del transitorio entre dos trayectorias. Por dicho motivo, aproximar el problema a un problema de horizonte infinito es acertado ya que simplifica enormemente la formulaci\'on del problema.
 
 \subsection{Discretizaci\'on del sistema}
 
