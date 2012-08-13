@@ -2,9 +2,11 @@
 
 \begin{document}
 
-\chapter{Costos}
+\chapter{Recursos}
 \label{chap:anexo_costos}
-En el presente anexo se detallan los costos asociados a una unidad de la plataforma dise\~nada. 
+En el presente anexo se detallan los recursos utilizados durante el proyecto. Se realiza un an\'alisis desde el punto de vista del costo econ\'omico y de las horas hombre dedicadas.
+
+\section{Costos}
 
 \begin{table}[H]
 \begin{center}
@@ -121,5 +123,59 @@ Se optó por el Turbo Ace X720, fundamentalmente por la capacidad de carga.
 Hoy en dia es posible adquirir ``esqueletos'' de cuadric\'optero a precios inferiores a los $20USD$\footnote{Ver \url{www.himodel.com}.}. Si se elimina la posibilidad del vuelo a control remoto, se pueden adquirir ESCs, motores y h\'elices por $300 USD$.
 
 Si se desea hacer trabajo de más alto nivel, por ejemplo navegación, localización, etc, y no es de interés trabajar en el sistema de control se puede optar por el Parrot ARDrone\footnote{\url{https://projects.ardrone.org/}}, es una plataforma robusta que se programa utilizando una API abierta, y cuesta alrededor de $300 USD$.
+
+\section{Horas hombre}
+Previo al comienzo del proyecto se realiz\'o una divisi\'on de tareas y una estimaci\'on de la duraci\'on de cada una de ellas. Dicha estimaci\'on fue reformulada al cabo de algunos meses de comenzado el proyecto y se agregaron y reformularon tareas. En la tabla \ref{tab:wbs} se detallan las actividades planificadas, el tiempo estimado y el tiempo que insumieron efectivamente.\\
+
+Se explicara fundamentalmente las razones por las cuales algunas de las tareas insumieron un tiempo muy diferente al estimado inicialmente. En la actividad elecci\'on de hardware se incluye adem\'as la compra de los elementos, en este caso se dilat\'o un poco fundamentalmente debido a la necesidad de coordinar con la contaduria de la Facultad de Ingenier\'ia un horario para realizar las compras.\\
+
+La caracterizaci\'on de los motores fue estimada en mala forma. En primer lugar se debe alcarar que por mal manejo de los componentes se quem\'o un ESC, paralizando por un tiempo dicha actividad. Una vez que se obtuvo un remplazo, el an\'alisis del protocolo para comandar los motores insumi\'o una gran cantidad de tiempo. La raz\'on principal fue la necesidad de un ``sniffer'' para realizar el an\'alisis del protocolo $I^2C$. Al no disponerse de uno se buscaron soluciones alternativas durante varias semanas. Luego de un largo esfuerzo se opt\'o por adquirir uno.\\
+
+La calibraci\'on de la instrumentaci\'on tomo m\'as tiempo de lo deseado. La principal dificultad fue la calibraci\'on del gir\'oscopo, se idearon formas de calibrar el gir\'oscopo que parecian adecuadas, pero su realizaci\'on tom\'o demasiado tiempo. Adem\'as no se obtuvieron resultados acordes.\\
+
+En lo que respecta al generador de rutas, la raz\'on por la cual el tiempo dedicado es muy inferior al estimado es que inicialmente se hab\'ia pensado en un generador eficiente en alg\'un sentido. El generador implementado es muy b\'asico y no es \'optimo en ning\'un sentido.\\
+
+El mayor error en cuanto a la planificaci\'on fue el tiempo dedicado al testeo. Se encontraron diversas dificultades durante esta etapa. En primera instancia exist\'ia un problema con los tiempos de acci\'on del sistema, este problema se detect\'o luego de analizar muchas posibilidades. Una vez corregido el sistema comenz\'o a funcionar en forma m\'as adecuada en las purebas de un s\'olo grado de libertad. A la hora de las pruebas de vuelo el ``glich'' de los ESCs caus\'o la rotura de la plataforma en m\'as de una ocasi\'on. En los 120 d\'ias se incluye el tiempo que tomaron las reparaciones y los ajustes de las matrices de realimentaci\'on y de Kalman, ya que existen diferencias entre las plataformas de las que se dispon\'ia y dichos par\'ametros no funcionaban de igual forma en los dos sistemas.\\ 
+
+\begin{table}
+\begin{tabular}{|p{150pt}|c|c|}
+\hline
+\cellcolor[gray]{0.8} Actividad & \cellcolor[gray]{0.8} Tiempo estimado & \cellcolor[gray]{0.8} Tiempo insumido\\
+\hline
+Definici\'on del hardware a adquirir & 27 d\'ias & 40 d\'ias\\
+\hline
+Caracterizaci\'on de los motores & 9 d\'ias & 30 d\'ias\\
+\hline
+Modulo de comando de los motores & 9 d\'ias &  \\
+\hline
+Programaci\'on del microprocesador para comunicarse con la instrumentaci\'on & 20 d\'ias & \\
+\hline
+Calibraci\'on de la instrumentaci\'on &17 d\'ias & 30 d\'ias \\
+\hline
+Comunicaci\'on WiFi &20 d\'ias & \\
+\hline
+Armado del dispositivo & 9 d\'ias & \\
+\hline
+Modelo f\'isico & 16 d\'ias & 20 d\'ias \\
+\hline
+Estudio de vuelo (linealizaci\'on) & 11 d\'ias & 7 d\'ias \\
+\hline
+Generador de rutas & 30 d\'ias& 3 d\'ias \\
+\hline
+Diseño del simulador &30 d\'ias & 30 d\'ias \\
+\hline
+Diseño de los algorimos de control & 36 d\'ias & 40 d\'ias \\
+\hline
+Simulaci\'on, testeo y debugging de algor\'itmos & 7 d\'ias & 15 d\'ias \\
+\hline
+Programaci\'on del microprocesador & 32 d\'ias & \\ 
+\hline
+Pruebas sobre el sistema real & 15 d\'ias & 120 d\'ias \\
+\hline
+\end{tabular}
+\label{tab:wbs}
+\caption{Actividades planificadas}
+\end{table} 
+
 
 \end{document}
