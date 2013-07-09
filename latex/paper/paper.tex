@@ -354,35 +354,35 @@
 % paper title
 % can use linebreaks \\ within to get better formatting as desired
 \title{\Huge \bf \sc
-Implementation of a quadrotor UAV}
+Design and implementation of sensor fusion and control for an autonomous quadrotor}
 
 
 % author names and affiliations
 % use a multiple column layout for up to three different
 % affiliations
 \author{\IEEEauthorblockN{Santiago Paternain}
-\IEEEauthorblockA{Faculty of Engineering\\
-University of the Republic\\
+\IEEEauthorblockA{Facultad de Ingeniería\\
+Universidad de la República\\
 Montevideo, Uruguay\\
 spaternain@gmail.com}
 \and
 \IEEEauthorblockN{Rodrigo Rosa}
-\IEEEauthorblockA{Faculty of Engineering\\
-University of the Republic\\
+\IEEEauthorblockA{Facultad de Ingeniería\\
+Universidad de la República\\
 Montevideo, Uruguay\\
 rodrigorosa.LG@gmail.com}
 \and
 \IEEEauthorblockN{Mat\'ias Tailani\'an}
-\IEEEauthorblockA{Faculty of Engineering\\
-University of the Republic\\
+\IEEEauthorblockA{Facultad de Ingeniería\\
+Universidad de la República\\
 Montevideo, Uruguay\\
 matias@tailanian.com}
 \and
 \IEEEauthorblockN{Rafael Canetti}
-\IEEEauthorblockA{Faculty of Engineering\\
-University of the Republic\\
+\IEEEauthorblockA{Facultad de Ingeniería\\
+Universidad de la República\\
 Montevideo, Uruguay\\
-canetti@anii.org.uy}
+canetti@fing.edu.uy}
 }
 
 % conference papers do not typically use \thanks and this command
@@ -422,7 +422,8 @@ canetti@anii.org.uy}
 
 \begin{abstract}
 %\boldmath
-This paper describes the design and integration of a control system that allows the autonomous flight of a commercial quadrotor. A mathematical model for the quadrotor is developed, its parameters determined from the characterization of the unit. An external intelligence is integrated to play the rol of the flight controller. A 9 degrees of freedom Inertial Measurement Unit (IMU) equipped with a barometer is calibrated and added to the platform. Data from the IMU is combined with the information provided by a GPS within a Extended Kalman Filter (EKF) to obtain a reliable estimation of the state variables. The control actions are obtained from a proportional-integral controller based on the LQR algorithm. For windless environments, a stable platform is achieved.
+This paper describes the design and integration of an instrumentation and control system that allows the autonomous flight of a quadrotor. A comercial frame is acquired, a mathematical model for the quadrotor is developed and its parameters determined from the characterization of the unit. An external intelligence is integrated to play the role of the flight controller. A 9 degrees of freedom Inertial Measurement Unit (IMU) equipped with a barometer is calibrated and added to the platform. Data from the IMU is combined with the information provided by a GPS within a Extended Kalman Filter (EKF) to obtain a reliable estimation of the state variables. The control actions are obtained from a proportional-integral controller based on the LQR algorithm. As shown in section \refp{sec:results-tests}, a stable autonomous platform is achieved.%For windless environments, a stable platform is achieved.
+% -cambio-
 \end{abstract}
 % IEEEtran.cls defaults to using nonbold math in the Abstract.
 % This preserves the distinction between vectors and scalars. However,
@@ -451,18 +452,16 @@ This paper describes the design and integration of a control system that allows 
 \section{Introduction}
 % no \IEEEPARstart
 
-A quadrotor platform can be imagined performing countless tasks. Many applications are being developed based on such platforms, but how do they fly? An aerial vehicle is inherently unstable, staying still is not a simple task. This paper focuses on the stabilization of a quadrotor, explaining the development of the mathematical model \cite{bib:quadrotor-bible}\cite{bib:curso_quad} to represent the system, the filtering techniques applied for sensor data fusion\cite{bib:kalman}\cite{bib:kalman2} and the control system\cite{bib:quadrotor-bible}\cite{bib:hakas} that allows the quadrotor to fly.
-
-The platform is based on a commercial radio controlled quadrotor, the frame and the electronic speed controllers (ESCs) used for the motores were preserved, the IMU and intelligence were replaced by the flight controller that was developed. A BeagleBoard\footnote{BeagleBoard development board - \url{http://beagleboard.org/}} running Linux\footnote{Angstrom distribution: \url{http://www.angstrom-distribution.org/}} performs the computations requiered to convert raw data received from the IMU\footnote{\textit{Mongoose} IMU - \url{http://store.ckdevices.com/}} over a UART and combine it using an EKF. The EKF overcomes the problems inherent to each sensor and filters out noise, providing a reliable estimation of the state vector. Once the current state is known, the LQR algorithm\cite{bib:lqrnotes}\cite{bib:lqr-discreto} is used to derive the control actions required to bring the system to the desired setpoint.
-
-\begin{figure}
+A quadrotor platform can be imagined performing countless tasks, such as search and rescue, wild fire suppression, or scientific research\cite{bib:apps}. Many applications are being developed based on such platforms, but how do they fly? An aerial vehicle is inherently unstable, staying still is not a simple task. This paper focuses on the stabilization of a quadrotor, explaining the development of the mathematical model \cite{bib:quadrotor-bible}\cite{bib:curso_quad} to represent the system, the filtering techniques applied for sensor data fusion\cite{bib:kalman}\cite{bib:kalman2} and the control system\cite{bib:quadrotor-bible}\cite{bib:lqrnotes} that allows the quadrotor to fly.
+% -cambio-
+The platform is based on the commercial radio controlled quadrotor, shown in figure \refp{fig:commercial_quadrotor}. The length between opposite propelers is $61.5\;cm$, the wheight is $990\;g$, and it has $1300\;g$ of payload. The frame and the electronic speed controllers (ESCs) used for the motores were preserved, whereas the IMU and intelligence were replaced by the flight controller that was developed. A BeagleBoard\footnote{BeagleBoard development board - \url{http://beagleboard.org/}} running Linux\footnote{Angstrom distribution: \url{http://www.angstrom-distribution.org/}} performs the computations requiered to convert raw data received from the IMU\footnote{\textit{Mongoose} IMU - \url{http://store.ckdevices.com/}} over a UART and combine it using an EKF. The EKF overcomes the problems inherent to each sensor and filters out noise, providing a reliable estimation of the state vector. Once the current state is known, the LQR algorithm\cite{bib:lqrnotes}\cite{bib:lqr-discreto} is used to derive the control actions required to bring the system to the desired setpoint.
+% -cambio-
+\begin{figure}[h!]
 	\centering
-	\includegraphics[width=.7\columnwidth]{./pics_paper/quad_coord.jpg}
-	\caption{\textbf{Model of the quadrotor -} The blue arrows represent the intertial reference frame $S_I - \lbrace \hat{i},\hat{j},\hat{k}\rbrace$ ($\lbrace \vec{x},\vec{y},\vec{z}\rbrace$), mapped to  North, West and Up respectively, and the red arrows represent the non-inertial reference frame $S_q - \lbrace \hat{i}_q,\hat{j}_q,\hat{k}_q\rbrace$ ($\lbrace \vec{x}_q,\vec{y}_q,\vec{z}_q\rbrace$) relative to the quadrotor. The cyan ``looped'' arrows indicate the direction of rotation of each motor, which rotate at $\omega_i$ and generate a torque $M_i$ opposite to their direction of rotation. The arrows labeled $T_{[1,2,3,4]}$ represent the thrust of the motors. The semicircle and the two yellow spheres indicate the front of the unit.}
-%        \vspace{-30pt}
-	\label{fig:quad}
+	\includegraphics[width=.6\columnwidth]{./pics_paper/foto_quad.jpg}
+	\caption{\textbf{Commercial quadrotor acquired.}}
+	\label{fig:commercial_quadrotor}
 \end{figure}
-
 
 % You must have at least 2 lines in the paragraph with the drop letter
 % (should never be an issue)
@@ -471,31 +470,23 @@ The platform is based on a commercial radio controlled quadrotor, the frame and 
 %\hfill mds
  
 %\hfill January 11, 2007
-
+The two main goals are to integrate additional sensors and intelligence to the available platform to obtain a state estimation, and design and integrate a control system that using the state estimation achieves the autonomous flight.
 \section{Model of a quadrotor}
 \label{sec:modelo}
 
 \subsection{Definitions}
 \label{sec:modelo-defs}
 
-A diagram of the quadrotor is shown in figure \refp{fig:quad}. Two of the motors rotate clockwise (2 and 4) and the other two (1 and 3) rotate counterclockwise. This configuration allows the quadrotor to rotate, tilt and gain/lose altitud by setting different speeds on each motor. Two frames of reference (figure \ref{fig:quad}) are constantly used through out this paper: An intertial frame $S_I$, relative to the Earth, and a non-intertial frame $S_q$, relative to the quadrotor. The mapping of one frame to the other can be achieved by applying the three rotations shown in figure \refp{fig:rotaciones}. The angles $\lbrace \theta, \varphi, \psi\rbrace$ are known as Euler angles.
+A diagram of the quadrotor is shown in figure \refp{fig:quad}. Two of the motors rotate clockwise (2 and 4) and the other two (1 and 3) rotate counterclockwise. This configuration allows the quadrotor to rotate, tilt and gain/lose altitud by setting different speeds on each motor. Two frames of reference (figure \refp{fig:quad}) are constantly used through out this paper: an intertial frame $S_I - \lbrace \hat{i},\hat{j},\hat{k}\rbrace$ ($\lbrace \vec{x},\vec{y},\vec{z}\rbrace$), relative to the Earth, mapped to  North, West and Up respectively, and a non-intertial frame $S_q - \lbrace \hat{i}_q,\hat{j}_q,\hat{k}_q\rbrace$ ($\lbrace \vec{x}_q,\vec{y}_q,\vec{z}_q\rbrace$) relative to the quadrotor. The mapping of one frame to the other can be achieved by applying the three rotations shown in figure \refp{fig:rotaciones}. The angles $\lbrace \theta, \varphi, \psi\rbrace$ are known as Euler angles.
 
-\begin{figure} [h!]
-  \centering
-  \subfloat[Rotation 1: Axis $\hat{k}$]{\label{fig:angulos_1}
-  		\includegraphics[width=0.3\columnwidth]
-  			{../pics_modelo_fisico/angulos_1.png}}
-  \subfloat[Rotation 2: Axis $\hat{j}$]{\label{fig:angulos_2} 
-  		\includegraphics[width=0.3\columnwidth]
-  			{../pics_modelo_fisico/angulos_2.png}}
-  \subfloat[Rotation 3: Axis $\hat{i}$]{\label{fig:angulos_3} 
-  		\includegraphics[width=0.3\columnwidth]
-  			{../pics_modelo_fisico/angulos_3.png}}
-  \caption{\textbf{Mapping:} Rotations applied on $S_I$ to obtain $S_q$.}
-  \label{fig:rotaciones}
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=.7\columnwidth]{./pics_paper/quad_coord.jpg}
+	\vspace{-5pt}
+	\caption{\textbf{Model of the quadrotor -} The blue arrows represent the intertial reference frame $S_I$, and the red arrows represent the non-inertial reference frame $S_q$. The cyan ``looped'' arrows indicate the direction of rotation of each motor, which rotate at $\omega_i$ and generate a torque $M_i$ opposite to their direction of rotation. The arrows labeled $T_{[1,2,3,4]}$ represent the thrust of the motors. The semicircle and the two yellow spheres indicate the $x_q$ axis of the unit.}
+    \vspace{-10pt}
+	\label{fig:quad}
 \end{figure}
-
-
 \subsection{Dynamics-kinematics of the system}
 \label{sec:modelo-dyn-kin}
 
@@ -511,7 +502,7 @@ where:
 \item $\lbrace v_{q_x},v_{q_y},v_{q_z}\rbrace$ are the linear velocities relative to $S_q$.
 \item $\lbrace w_{q_x},w_{q_y},w_{q_z}\rbrace$ are the angular velocities relative to $S_q$ (right hand rule applied on $\lbrace \hat{i}_q,\hat{j}_q,\hat{k}_q\rbrace$).
 \end{itemize}
-
+\vspace{10pt}
 \begin{equation}
 \small
 \boxed{\begin{aligned}&\dot{x}\!=\!v_{q_x} \cos \varphi \cos \theta \!+\! v_{q_y} ( \cos \theta \sin \varphi \sin \psi\!-\!\cos \varphi \sin \theta )\\
@@ -537,9 +528,24 @@ where:
 \label{eq:modelo}
 \end{equation}
 
+\begin{figure}[h!]
+  \centering
+  \subfloat[Rotation 1: Axis $\hat{k}$]{\label{fig:angulos_1}
+  		\includegraphics[width=0.3\columnwidth]
+  			{../pics_modelo_fisico/angulos_1.png}}
+  \subfloat[Rotation 2: Axis $\hat{j}$]{\label{fig:angulos_2} 
+  		\includegraphics[width=0.3\columnwidth]
+  			{../pics_modelo_fisico/angulos_2.png}}
+  \subfloat[Rotation 3: Axis $\hat{i}$]{\label{fig:angulos_3} 
+  		\includegraphics[width=0.3\columnwidth]
+  			{../pics_modelo_fisico/angulos_3.png}}
+  \caption{\textbf{Mapping -} Rotations applied on $S_I$ to obtain $S_q$.}
+  \label{fig:rotaciones}
+\end{figure}
+
 \section{Sensors}
 
-In order to determine what actions should be taken, the state of the system must be known. The system uses a 9 degrees of freedom IMU and a GPS. This equipment enables direct measurement of most of the state variables. There is no direct measurement of the linear speed of the system $\{v_{q_z},v_{q_y},v_{q_z}\}$, so the model developed in \ref{sec:modelo} is used to estimate them.
+In order to determine what actions should be taken, the state of the system must be known. The system uses a 9 degrees of freedom IMU and a GPS. This equipment enables direct measurement of most of the state variables. There is no direct measurement of the linear speed of the system $\{v_{q_z},v_{q_y},v_{q_z}\}$, so the model developed in \refp{sec:modelo} is used to estimate them.
 
 \subsection{IMU}
 \label{sec:sensors-imu}
@@ -555,11 +561,11 @@ The IMU is equiped with the following sensors:
 
 The equations used to determine the three Euler angles are the following:
   \[
-  \phi = -asin\left(\frac{Acc_x}{\vert\vert\vec{Acc}\vert\vert}\right)
+  \phi = -\arcsin\left(\frac{Acc_x}{\vert\vert\vec{Acc}\vert\vert}\right)
   \]
 
   \[
-  \psi =-atan2\left(\frac{Acc_y}{Acc_z}\right)
+  \psi =- \arctan \left(\frac{Acc_y}{Acc_z}\right)
   \]
       
   \[
@@ -586,7 +592,7 @@ In theory, given some initial position $\{x_0 ,y_0\}$ the accelerometer could be
 \subsection{Sensor Specifications}
 \label{sec:sensors-specifications}
 
-Table \ref{tab:sensors:resumen} shows an outline of the specifications of the sensors used.
+Table \refp{tab:sensors:resumen} shows an outline of the specifications of the sensors used.
 
 \begin{table}[h]
 \begin{center}
@@ -663,7 +669,7 @@ To work directly with equations \refp{eq:modelo}, a non-linear control technique
 
 This restricts the system to: Hovering\footnote{Constant state vector.}, uniform linear trajectories, and uniform circular trajectories around the vertical axis. Working with an LTI greatly simplifies the control system and does it not introduce significant limitations.
 
-The control system is shown in figure (\ref{fig:diagrama_bloques_eng.pdf}). The feedback matrices have many entries, $K_p$ has 48 and $K_i$ has 16. A \textit{root locus} or \textit{pole-zero} analysis on such a system is not a simple task, additional complications are introduced by the fact that $K_p$ and $K_i$ will change when the trayectory changes, they depend on the linearization of the system. A simple and automated solution is achieved by means of the LQR algorithm. The initial design did not include the $K_i$ term, it was introduced to take into consideration errors in the characterization and modelling of the system.
+The control system is shown in figure (\refp{fig:diagrama_bloques_eng.pdf}). The feedback matrices have many entries, $K_p$ has 48 and $K_i$ has 16. A \textit{root locus} or \textit{pole-zero} analysis on such a system is not a simple task, additional complications are introduced by the fact that $K_p$ and $K_i$ will change when the trayectory changes, they depend on the linearization of the system. A simple and automated solution is achieved by means of the LQR algorithm. The initial design did not include the $K_i$ term, it was introduced to take into consideration errors in the characterization and modelling of the system.
 
 \begin{figure}
 \vspace{-60pt}
@@ -677,7 +683,7 @@ The control system is shown in figure (\ref{fig:diagrama_bloques_eng.pdf}). The 
 \subsection{The LQR algorithm}
 \label{sec:lqr}
 
-A a system which is controllable and observable is guaranteed to be stable\cite{bib:hakas}. For this type of system, the LQR algorithm provides an optimal controller\cite{bib:lqrnotes} by minimizing the following cost function:
+A a system which is controllable and observable is guaranteed to be stable and for this type of system, the LQR algorithm provides an optimal controller\cite{bib:lqrnotes} by minimizing the following cost function:
 
 \begin{equation}
 \label{eq:lqr}
@@ -723,7 +729,7 @@ The flight controller is accesed via an \textit{ssh} session over \textit{WiFi}.
 \subsection{Implementation details}
 \label{sec:software-impl}
 
-The code implements a discrete version of the LQR control system mentioned in \ref{sec:control}, based on a discretization of the model described in \ref{sec:modelo}. There are some practical considerations worth mentioning:
+The code implements a discrete version of the LQR control system mentioned in \refp{sec:control}, based on a discretization of the model described in \refp{sec:modelo}. There are some practical considerations worth mentioning:
 \begin{itemize}
 \item \textbf{Saturation:} The integral term saturates it is designed to compensate for small errors in characterization/modelling and should never grow too much. Large diferences between the current state and the setpoint should be handled by the proportional term.
 \item \textbf{Limiting:} The control block sets $\vert \vec{X} - \vec{X}_{sp}\vert < \vert \vec{X}_{th} \vert$ to avoid attempts to perform actions that the system cannot handle.
