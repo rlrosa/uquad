@@ -559,7 +559,7 @@ The IMU is equiped with the following sensors:
 \item \textbf{Magnetometer:} In an area free of magnetic interference this 3-axis sensor will measure $\vec{B}$, the Earth's magnetic field, allowing to determine what direction is North. If the system is horizontal (or the inclination is estimated using other sensors) this sensor can be used to determine the last of the three Euler angles: $\theta$. A calibration based on \cite{bib:bola} and \cite{bib:alain} was performed on this sensor.
 \end{itemize}
 
-The equations used to determine the three Euler angles are the following:
+The equations used to determine the three Euler angles are the following\cite{bib:kalman}:
   \[
   \phi = -\arcsin\left(\frac{Acc_x}{\vert\vert\vec{Acc}\vert\vert}\right)
   \]
@@ -579,7 +579,7 @@ The equations used to determine the three Euler angles are the following:
   \]
 
   \[
-  \theta = -atan2\left( \frac{v[1]}{v[0]}\right)
+  \theta = -\arctan\left( \frac{v[1]}{v[0]}\right)
   \]
 
 
