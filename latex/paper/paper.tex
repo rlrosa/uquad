@@ -361,26 +361,26 @@ Design and implementation of sensor fusion and control for an autonomous quadrot
 % use a multiple column layout for up to three different
 % affiliations
 \author{\IEEEauthorblockN{Santiago Paternain}
-\IEEEauthorblockA{Facultad de Ingeniería\\
-Universidad de la República\\
+\IEEEauthorblockA{Facultad de Ingenier\'ia\\
+Universidad de la Rep\'ublica\\
 Montevideo, Uruguay\\
 spaternain@gmail.com}
 \and
 \IEEEauthorblockN{Rodrigo Rosa}
-\IEEEauthorblockA{Facultad de Ingeniería\\
-Universidad de la República\\
+\IEEEauthorblockA{Facultad de Ingenier\'ia\\
+Universidad de la Rep\'ublica\\
 Montevideo, Uruguay\\
 rodrigorosa.LG@gmail.com}
 \and
 \IEEEauthorblockN{Mat\'ias Tailani\'an}
-\IEEEauthorblockA{Facultad de Ingeniería\\
-Universidad de la República\\
+\IEEEauthorblockA{Facultad de Ingenier\'ia\\
+Universidad de la Rep\'ublica\\
 Montevideo, Uruguay\\
 matias@tailanian.com}
 \and
 \IEEEauthorblockN{Rafael Canetti}
-\IEEEauthorblockA{Facultad de Ingeniería\\
-Universidad de la República\\
+\IEEEauthorblockA{Facultad de Ingenier\'ia\\
+Universidad de la Rep\'ublica\\
 Montevideo, Uruguay\\
 canetti@fing.edu.uy}
 }
@@ -740,6 +740,20 @@ The code implements a discrete version of the LQR control system mentioned in \r
 
 \subsection{Tests}
 \label{sec:results-tests}
+
+
+\begin{figure}[h!]
+  \centering
+  \subfloat[Roll angle deviation]{\label{fig:psimetro_psi}
+  		\includegraphics[width=0.5\columnwidth]
+  			{./pics_paper/psimetro_psi.pdf}} \hspace*{-5pt}
+  \subfloat[Difference between $\omega$ and $\omega_{hover}$ for each motor]{\label{fig:psimetro_w} 
+  		\includegraphics[width=0.5\columnwidth]
+  			{./pics_paper/psimetro_w.pdf}}
+  \caption{\textbf{Stablization experiment -} The Roll angle is deviated from equilibrium and the quadrotor manage to stabilize itself.}
+  \label{fig:rotaciones}
+\end{figure}
+
 
 The testing phase was separated into several parts:
 
