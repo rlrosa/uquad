@@ -469,7 +469,15 @@ In figure \ref{fig:ruido} we can observe that the electrical noise of the device
 Based on the asumption that both sensors have a linear response and considering the non-orthogonality of the axis of the devices we are going to present a standard model for both sensors(see \cite{bib:calib_imu}, \cite{bib:kalman}, \cite{bib:calib_imu_dos}).
 
 \subsection{Accelerometer}
-Due to construction issues the sensibility axis of the device are generaly not orthogonals. Let $\mathbf{a}^a$ be the acceleration measured by the accelerometer and let $\mathbf{a}^p$.
+Due to construction issues the sensibility axis of the device are generaly not orthogonals. Lets define a platform system as shown in figure \ref{fig:mongoose}Let $\mathbf{a}^a$ be the acceleration measured by the accelerometer and let $\mathbf{a}^p$ the acceleration measured in the platform system. We model this fact by the following linear transformation between the two acceleration vectors:
+
+\begin{equation}
+\mathbf{a}^p = \mathbf{T}_a^p\mathbf{a}^a, \; \mathbf{T}_a^p = \left(\begin{array}{ccc}
+1 & - \alpha_{yz} & \alpha_{zy}\\
+\alpha_{xz} & 1 & - \alpha_{zx}\\
+-\alpha_{xy} & \alpha_{yx} & 1
+\end{array}\right)
+\end{equation}
 
 \subsection{Gyroscope}
 
