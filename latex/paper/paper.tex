@@ -885,7 +885,15 @@ Figure \refp{fig:altura.pdf} shows altitude during takeoff from altitude 0m unti
 
 \section{Conclusion}
 
-The main goal of the project was achieved: A quadrotor able to fly on its own. The system was successfully tested. The design and implementation of the sensor fusion was successfully achieved by the integration of all the measurements in an Extended Kalman Filter which is used for denoising purposes without introducing delay. A basic control was implemented, based on LQR algorithm, capable of stabilizing the system. The doors are open for future projects to add additional levels of intelligence allowing the quadrotor to perform tasks such as power line inspection, surveillance, assistance during natural disasters, etc.
+The two main goals of the project were successfuly achieved. First, the design and implementation of the sensor fusion was successfully achieved by the integration of all the measurements in an Extended Kalman Filter which is used for denoising purposes without introducing delay. And then a basic control was implemented, based on LQR algorithm, capable of stabilizing the system. A simplified dynamic model was derived as a first step for both Kalman Filter and controller. \\
+
+The Extended Kalman Filter implemented gave very good results for all the state variables except for the speed of the quadrotor. The main reason is that a speed sensor is not aveilable and the speed can only be infered by integrating the accelerations. Thus, an extra sensor should be used (i.e. a more accurate GPS) or a more sophisticated algorithm should be develped. \\
+
+The controller developed was succesfully tested for the attitude and the height. 
+Control: No usa las velocidades Se implemente un controlador que permite hacer muchas cosas, pero solo se testeo el hover y controlando solo algunas cosas. No nos preocupamso por la posici´on horizontal. 
+
+
+The doors are open for future projects to add additional levels of intelligence allowing the quadrotor to perform tasks such as power line inspection, surveillance, assistance during natural disasters, etc.
 
 \begin{figure}
 	\centering
