@@ -361,26 +361,26 @@ Calibration of an inertial measurement unit}
 % use a multiple column layout for up to three different
 % affiliations
 \author{\IEEEauthorblockN{Santiago Paternain}
-\IEEEauthorblockA{Facultad de Ingenier\'ia\\
+\IEEEauthorblockA{Facultad de Ingeniería\\
 Universidad de la República\\
 Montevideo, Uruguay\\
 spaternain@gmail.com}
 \and
 \IEEEauthorblockN{Rodrigo Rosa}
-\IEEEauthorblockA{Facultad de Ingenier\'ia\\
-Universidad de la Rep\'ublica\\
+\IEEEauthorblockA{Facultad de Ingeniería\\
+Universidad de la República\\
 Montevideo, Uruguay\\
 rodrigorosa.LG@gmail.com}
 \and
 \IEEEauthorblockN{Mat\'ias Tailani\'an}
-\IEEEauthorblockA{Facultad de Ingenier\'ia\\
-Universidad de la Rep\'ublica\\
+\IEEEauthorblockA{Facultad de Ingeniería\\
+Universidad de la República\\
 Montevideo, Uruguay\\
 matias@tailanian.com}
 \and
 \IEEEauthorblockN{Rafael Canetti}
-\IEEEauthorblockA{Facultad de Ingenier\'ia\\
-Universidad de la Rep\'ublica\\
+\IEEEauthorblockA{Facultad de Ingeniería\\
+Universidad de la República\\
 Montevideo, Uruguay\\
 canetti@fing.edu.uy}
 }
@@ -460,23 +460,104 @@ It can be observed(figure \ref{fig:temp}) that the measures given by this sensor
 \label{sec:modelo}
 
 As it was stated before, there exist many error sources in MEMS devices. In \cite{bib:calib_imu} two of this sources are mentioned: the nonlinear response of the sensors and the non-orthogonality of the axis of the sensor. In addition we can observe also that it exist an electric noise in the measures (figure \ref{fig:ruido}) and a dependance of the temperature.\\
+\vspace{-10pt}
+\begin{figure}[h!]
+  \centering
+  \subfloat[Accelerometer data $\hat{k}$]{\label{fig:angulos_1}
+  		\includegraphics[width=1\columnwidth]
+  			{./pics_paper/acc_noise.pdf}}\\[-5pt]
+  			\vspace{-5pt}
+  \subfloat[Gyroscope data $\hat{j}$]{\label{fig:angulos_2} 
+  		\includegraphics[width=1\columnwidth]
+  			{./pics_paper/gyro_noise.pdf}}
+  \caption{Measures from accelerometer and gyroscope in static equilibrium}
+  \label{fig:noise}
+\end{figure}
 
-In the datasheets of the considered sensors(\cite{bib:acc_data} and \cite{bib:gyro_data}) the effect of nonlinearityis negligible since it represents the $\pm 0.5.\%$  of the full scale for the accelerometer and the $\pm 0.2\%$ for the gyroscope. Therefore we will not discuss any further on this issue.\\
-%TODO Esto es medio turbio que sea despreciable... en realidad me da que no habr\'ia que despreciarlo. Capaz que es mejor esconder este punto.
+In the datasheets of the considered sensors(\cite{bib:acc_data} and \cite{bib:gyro_data}) the effect of nonlinearityis negligible since it represents the $\pm 0.5.\%$  of the full scale for the accelerometer and the $\pm 0.2\%$ for the gyroscope. Therefore we will not consider this effect and after the calibration we must verify that the error due to the nonlinear response is negligeable.\\
+%TODO Al final hacer las cuentas para ver que es despreciable.
 
-In figure \ref{fig:ruido} we can observe that the electrical noise of the devices is typically 2 bits, this error (acording the datashets \cite{bib:acc_data} and \cite{bib:gyro_data})correspond to $7.8 mg$ and $0.14 ^{\circ}/s $.  
-%TODO Cuando tengamos la gráfica ver bien cuanto es el ruido y a cuanto corresponde en la vida real. Tampoco se si es tan despreciable. Capaz que hay que decir que se usan muchas muestras normalmente y que variaciones aleatorias de cierta varianza no joden mucho. Pero ahora no me voy a poner a hacer eso xq tengo sueño. 
- 
+In figure \ref{fig:ruido} we can observe that the electrical noise of the devices is typically 2 bits, this error (according to the datashets \cite{bib:acc_data} and \cite{bib:gyro_data})correspond to $7.8 mg$ and $0.14 ^{\circ}/s $. The error is not biased, thus we not need to consider it, because several samples are used in any real application and the effect vanishes.\\
 
+Based on the asumption that both sensors have a linear response and considering the non-orthogonality of the axis of the devices we are going to present a standard model for both sensors(see \cite{bib:calib_imu}, \cite{bib:kalman}, \cite{bib:calib_imu_dos}).
 
 \subsection{Accelerometer}
-\subsection{Gyroscope}
+Due to construction issues the sensitivity axis of the device are generaly not orthogonals. Lets define a platform system as shown in figure \ref{fig:mongoose}. Let $\mathbf{a}^a$ be the true acceleration expressed in the sensitivity axis of the accelerometer and let $\mathbf{a}^p$ be the true acceleration expressed in the platform system. We model this fact by the following linear transformation between the two acceleration vectors:
 
+\begin{equation}
+\mathbf{a}^p = \mathbf{T}_a^p\mathbf{a}^a, \; \mathbf{T}_a^p = \left(\begin{array}{ccc}
+1 & - \alpha_{yz} & \alpha_{zy}\\
+\alpha_{xz} & 1 & - \alpha_{zx}\\
+-\alpha_{xy} & \alpha_{yx} & 1
+\end{array}\right)
+\label{eq:nonorto}
+\end{equation}
+
+In equation \ref{eq:nonorto}, scalars $\alpha_{ij}$ represents the rotation of the $i-th$ sensitivity axis of the acelerometer over the $j-th$ axis of the platform system. In figure \ref{fig:nonorto} this relation can be observed graphically. Since those errors are due to the manufacturing process we will assume that they will remain constant long enough.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=.6\columnwidth]{./pics_paper/ejes_acc.jpg}
+	\caption{\textbf{Rotations of the sensitivity axis of the accelerometer over the axis of the platform system.}}
+	\label{fig:nonorto}
+\end{figure}
+
+As it was stated befor, we are considering a linear model between the accleration measured in the sensitivity axis and the true acceleration in the same system. Thus we have:
+
+\begin{equation}
+\tilde{\mathbf{a}}^a = \mathbf{K}_a\mathbf{a}^a + \mathbf{b}_a
+\label{eq:modlineal}
+\end{equation}
+
+In equation \ref{eq:modlineal}, $\tilde{\mathbf{a}}^a$ is the measure obtained by the accelerometer, $\mathbf{K}_a$ is a diagonal matrix that represents the sensitivity of each axis and $\mathbf{b}_a$ is a vector that represent the bias of each axis. Those parameters may variate as the temperature changes. However, in this stage we are going to consider them constant. Using equations \ref{eq:nonorto} and \ref{eq:modlineal} we can stablish a model of the acelerometer:
+
+\begin{equation}
+\tilde{\mathbf{a}}^a = \mathbf{K}_a\mathbf{T}_p^a\mathbf{a}^p + \mathbf{b}_a = \mathbf{K}_a(\mathbf{T}_a^p)^{-1}\mathbf{a}^p + \mathbf{b}_a 
+\end{equation}
+
+
+\subsection{Gyroscope}
+The error sources consider in the case of the gyroscope are the same that we developed for the acclerometer. Thus, we are going to consider the same model:
+
+\begin{equation}
+\tilde{\mathbf{\omega}}_a = \mathbf{K}_{\omega}(\mathbf{T}_{\omega}^p)^{-1}\mathbf{\omega}^p+\mathbf{b}_{\omega}
+\end{equation}
+%TODO Poner en negrita los omega
 
 
 \section{Calibration method proposed}
+The problem of calibration is to establish the values for the unkwnown parameters of the model that adjust ``the better'' a certain set of data. This criterium will be defined in section \ref{sec:param}. For each sensor we want to estimate 12 parameters. We choose to make 27 different measures of accleration and angular speed (this actually means that we have 81 different values) and use 14 of this measures as a training set and the other 13 as a test set. 
+
+
 \subsection{Static Parameter Calibration}
-\subsubsection{Temperature adjust}
+\label{sec:param}
+
+Let $\mathbf{\theta}_s$ (where the subindex $s$ refers to a sensor) be the parameter vector of a certain sensor. We can define this vector as:
+%TODO thetas en negritas
+\begin{equation}
+\mathbf{\theta} = [k_{sx},k_{sy},k_{sy},b_{sx},b_{sy},b_{sy}, \alpha_{sxy},\alpha_{sxz},\alpha_{syx},\alpha_{syz},\alpha_{szx},\alpha_{szy}]^T
+\label{eq:theta}
+\end{equation}
+
+In equation \ref{eq:theta}, $k_{si}$, with $i=1,2,3$ are the diagonal elements of the matrix $\mathbf{K}_s$, $b_{si}$, with $i = 1,2,3$ are the elements of vector $\mathbf{b}_s$ and $\alpha_{sij}$, with $i = 1,2,3$, $j = 1,2,3$ and $i \neq j$ are the elements outside the diagonal of the matrix $\mathbf{T}_s^p$.\\
+
+As adjust criterium we choose to minimize the sum of the squares of the norms of the diferences between true accleracion and measured acceleration. This problem can be written as follows:
+
+\begin{equation}
+\min_\theta \sum_{i = 1}^M ||\mathbf{s}_i^p - \mathbf{T}_s^p(\mathbf{K_s})^{-1}(\tilde{\mathbf{s}}_i^s-\mathbf{b}_s) ||^2
+\label{eq:calib_problem}
+\end{equation}
+
+In equation \ref{eq:calib_problem}, $M$ is the cardinal of the training set, $\mathbf{s}_i^p$ is the true magnitude (acceleration or angular speed) and $\tilde{\mathbf{s}}_i$ are the values given by the sensor.\\
+
+It is important to consider that the function that we want to minimize will generally have more than one local minimum. Thus, we can only assure that the optimum found by algorithms is a local optimum. To ensure that the solution obtained is the desired one, we need to choose carefully the seed for the algorithm. Tipically we will choose a vector $\mathbf{\theta}_0$ that is close to the values of the unknow parameters.
+
+%TODO Negritas
+\subsubsection{Accelerometer}
+
+\subsubsection{Gyroscope}
+
+\subsection{Temperature adjust}
 
 \section{Results and analysis}
 
