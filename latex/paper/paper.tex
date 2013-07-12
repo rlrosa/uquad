@@ -562,11 +562,11 @@ The IMU is equiped with the following sensors:
 
 The equations used to determine the three Euler angles are the following\cite{bib:kalman}:
   \[
-  \phi = -\arcsin\left(\frac{Acc_x}{\vert\vert\vec{Acc}\vert\vert}\right)
+  \phi = -\arcsin\left(\frac{a_x}{\vert\vert\vec{a}\vert\vert}\right)
   \]
 
   \[
-  \psi =- \arctan \left(\frac{Acc_y}{Acc_z}\right)
+  \psi =- \arctan \left(\frac{a_y}{a_z}\right)
   \]
       
   \[
@@ -576,11 +576,11 @@ The equations used to determine the three Euler angles are the following\cite{bi
   \]
 
   \[
-  \vec{v} = M . \frac{\vec{B}}{\vert \vert \vec{B} \vert \vert}
+  \vec{m} = M \; \vec{B}
   \]
 
   \[
-  \theta = -\arctan\left( \frac{v[1]}{v[0]}\right)
+  \theta = -\arctan\left( \frac{m[1]}{m[0]}\right)
   \]
 
 
@@ -885,32 +885,37 @@ Figure \refp{fig:altura.pdf} shows altitude during takeoff from altitude 0m unti
 
 \section{Conclusion}
 
-The two main goals of the project were successfuly achieved. First, the design and implementation of the sensor fusion was successfully achieved by the integration of all the measurements in an Extended Kalman Filter which is used for denoising purposes without introducing delay. And then a basic control was implemented, based on LQR algorithm, capable of stabilizing the system. A simplified dynamic model was derived as a first step for both Kalman Filter and controller. \\
+The final plataform implemented is shown in figure \refp{fig:tito}. An acrylic box was added in the bottom of the quadrotor to hold the added intelligence. The GPS is attached at the upper part of the quadrotor, so as it has the best satellite visibility. Aluminum protections were added around all motors and propellers so as damages can be prevented.\\
 
-The Extended Kalman Filter implemented gave very good results for all the state variables except for the speed of the quadrotor. The main reason is that a speed sensor is not aveilable and the speed can only be infered by integrating the accelerations. Thus, an extra sensor should be used (i.e. a more accurate GPS) or a more sophisticated algorithm should be develped. \\
+The two main goals were successfuly achieved. First, the design and implementation of the sensor fusion was accomplished by the integration of all the measurements in an Extended Kalman Filter which is used for denoising purposes without introducing delay. In addition a basic controller, capable of stabilizing the system, was implemented based on LQR algorithm. A simplified dynamic model was derived as a first step for both Kalman Filter and controller. \\
 
-The controller developed was succesfully tested for the attitude and the height. 
-Control: No usa las velocidades Se implemente un controlador que permite hacer muchas cosas, pero solo se testeo el hover y controlando solo algunas cosas. No nos preocupamso por la posici´on horizontal. 
+The Extended Kalman Filter implemented gave very good results for all the state variables except for the linear velocities on axes $\{i_q,\;j_q\}$. The main reason is that a velocity sensor is not available, thus, it can only be infered by integrating the accelerations. Therefore, an extra sensor should be used (i.e. a more accurate GPS) or a more sophisticated algorithm should be develped. \\
+
+The controller was successfully tested for attitude and height. Due to lack of precision of mentioned velocities this information is not used. However, several simulations were made assuming that a proper velocity estimation is available and the designed controller proved to work properly. With a similar controller the quadrotor is able to perform some other trajectories. However, if a nonlinear controller is implemented the possibilities are virtually infinity.\\
+
+allowing the quadrotor to perform tasks such as power line inspection, surveillance, assistance during natural disasters, etc.
+
+The doors are open for future projects to add additional levels of intelligence, however it will be necessary to perform a major improvement. The choice of implementing the flight controller on an operating system that does not run in real-time made timing a complicated issue. These issues were overcome, yet assigning additional tasks to the system will surely disrupt timing. Porting the stabilization system, which requires a very fast and steady loop, to a dedicated microprocessor would be a significant improvement. It would allow the code running on top of the operating system to perform higher level tasks, such as Visual Simultaneous Localization and Mapping (VSLAM), navigation, tracking, power line inspection, surveillance, assistance during natural disasters, etc.
+
+ 
+
+%\subsection{Future Work}
+%\begin{itemize}
+%\item The LotusRC ESCs proved to be extremely unreliable\footnote{Several versions were tested, all of then showed the same issues.} and severely delayed the project. Replacing the ESCs is a critical task.
+%\item 
+%\item The fact that the system does not work in a windy environment severly limits the range of possible applications, solving this issue by either reducing the aerodynamic resistance or implementing a different control system would be a significant improvement.
+%TODO paper q dijo el pater del viento.
+%\end{itemize}
 
 
-The doors are open for future projects to add additional levels of intelligence allowing the quadrotor to perform tasks such as power line inspection, surveillance, assistance during natural disasters, etc.
-
-\begin{figure}
+\begin{figure}[h]
 	\centering
 	\includegraphics[width=1\columnwidth]{./pics_paper/tito.png}
 	\caption{\textbf{Final setup -} quadrotor fully equipped whith aluminum protections}
 	\label{fig:tito}
 \end{figure}
 
-The final plataform implemented is shown in figure \refp{fig:tito}. An acrylic box was added in the bottom of the quadrotor to hold the added intelligence. The GPS is attached at the upper part of the quadrotor, so as it has the maximum of satellite visibility. Aluminum protections were added around all motors and propellers so as damages can be prevented.
 
-\subsection{Future Work}
-\begin{itemize}
-\item The LotusRC ESCs proved to be extremely unreliable\footnote{Several versions were tested, all of then showed the same issues.} and severely delayed the project. Replacing the ESCs is a critical task.
-\item The choice of implementing the flight controller on an operating system that does not run in real-time made timing a complicated issue. These issues were dealt with, but assigning additional tasks to the system will surely disrupt timing. Porting the stabilization system, which requires a very fast and steady loop, to a dedicated microprocessor would be a significant improvement. It would allow the code running on top of the operating system to perform higher level tasks, such as Visual Simultaneous Localization and Mapping (VSLAM), navigation, tracking, etc.
-%\item The fact that the system does not work in a windy environment severly limits the range of possible applications, solving this issue by either reducing the aerodynamic resistance or implementing a different control system would be a significant improvement.
-%TODO paper q dijo el pater del viento.
-\end{itemize}
 
 % conference papers do not normally have an appendix
 
