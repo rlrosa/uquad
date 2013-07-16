@@ -421,7 +421,7 @@ canetti@fing.edu.uy}
 %\vspace*{-.5cm}
 \begin{abstract}
 %\boldmath
-This paper describes the design and integration of an instrumentation and control system that allows the autonomous flight of a quadrotor. A comercial frame is acquired, a mathematical model for the quadrotor is developed and its parameters determined from the characterization of the unit. An external intelligence is integrated to play the role of the flight controller. A 9 degrees of freedom Inertial Measurement Unit (IMU) equipped with a barometer is calibrated and added to the platform. Data from the IMU is combined with the information provided by a GPS within a Extended Kalman Filter (EKF) to obtain a reliable estimation of the state variables. The control actions are obtained from a proportional-integral controller based on the LQR algorithm. As shown in section \refp{sec:results-tests}, a stable autonomous platform is achieved.%For windless environments, a stable platform is achieved.
+This paper describes the design and integration of an instrumentation and control system that allows the autonomous flight of a quadrotor. A comercial frame is acquired, a mathematical model for the quadrotor is developed and its parameters determined from the characterization of the unit. An intelligence is integrated to play the role of the flight controller. A 9 degrees of freedom Inertial Measurement Unit (IMU) equipped with a barometer is calibrated and added to the platform. Data from the IMU is combined with the information provided by a GPS within a Extended Kalman Filter (EKF) to obtain a reliable estimation of the state variables. The control actions are obtained from a proportional-integral controller based on the LQR algorithm. As shown in section \refp{sec:results-tests}, a stable autonomous platform is achieved.%For windless environments, a stable platform is achieved.
 % -cambio-
 \end{abstract}
 % IEEEtran.cls defaults to using nonbold math in the Abstract.
@@ -451,9 +451,9 @@ This paper describes the design and integration of an instrumentation and contro
 \section{Introduction}
 % no \IEEEPARstart
 
-A quadrotor platform can be imagined performing countless tasks, such as search and rescue, wild fire suppression, or scientific research\cite{bib:apps}. Many applications are being developed based on such platforms, but how do they fly? An aerial vehicle is inherently unstable, staying still is not a simple task. This paper focuses on the stabilization of a quadrotor, explaining the development of the mathematical model \cite{bib:quadrotor-bible}\cite{bib:curso_quad} to represent the system, the filtering techniques applied for sensor data fusion\cite{bib:kalman}\cite{bib:kalman2} and the control system\cite{bib:quadrotor-bible}\cite{bib:lqrnotes} that allows the quadrotor to fly.
+A quadrotor platform can be imagined performing countless tasks, such as search and rescue, wild fire suppression, or scientific research\cite{bib:apps}. Many applications are being developed based on such platforms, but how do they fly? An aerial vehicle is inherently unstable, staying still is not a simple task. This paper focuses on the stabilization of a quadrotor, explaining the development of the mathematical model to represent the system, the filtering techniques applied for sensor data fusion and the control system that allows the quadrotor to fly.
 % -cambio-
-The platform is based on the commercial radio controlled quadrotor, shown in figure \refp{fig:commercial_quadrotor}. The length between opposite propellers is $61.5\;cm$, the weight is $990\;g$, and it has $1300\;g$ of payload. The frame and the electronic speed controllers (ESCs) used for the motors were preserved, whereas the IMU and intelligence were replaced by the flight controller that was developed. A BeagleBoard\footnote{BeagleBoard development board - \url{http://beagleboard.org/}} running Linux\footnote{Angstrom distribution: \url{http://www.angstrom-distribution.org/}} performs the computations required to convert raw data received from the IMU\footnote{\textit{Mongoose} IMU - \url{http://store.ckdevices.com/}} over a UART and combine it using an EKF. The EKF overcomes the problems inherent to each sensor and filters out noise, providing a reliable estimation of the state vector. Once the current state is known, the LQR algorithm\cite{bib:lqrnotes}\cite{bib:lqr-discreto} is used to derive the control actions required to bring the system to the desired set-point.
+The platform is based on the commercial radio controlled quadrotor, shown in figure \refp{fig:commercial_quadrotor}. The length between opposite propellers is $61.5\;cm$, the weight is $990\;g$, and it has $1300\;g$ of payload. The frame and the electronic speed controllers (ESCs) used for the motors were preserved, whereas the IMU and intelligence were replaced by the flight controller that was developed. A BeagleBoard\footnote{BeagleBoard development board - \url{http://beagleboard.org/}} running Linux\footnote{Angstrom distribution: \url{http://www.angstrom-distribution.org/}} performs the computations required to convert raw data received from the IMU\footnote{\textit{Mongoose} IMU - \url{http://store.ckdevices.com/}} over a UART and combine it using an EKF. The EKF overcomes the problems inherent to each sensor and filters out noise, providing a reliable estimation of the state vector. Once the current state is known, the LQR algorithm is used to derive the control actions required to bring the system to the desired set-point.
 % -cambio-
 \begin{figure}[h!]
 %\vspace{-.8cm}
@@ -544,9 +544,12 @@ where:
   \label{fig:rotaciones}
 \end{figure}
 
+
+The mathematical model developed is similar to others presented in the literature \cite{bib:quadrotor-bible}, \cite{bib:curso_quad}. However, in the named literature, the center of gravity of the quadrotor is assumed to be at the same height that the propellers. To obtain proper results, a momentum produce by the gravity force had to be added. Annother difference that between the model developed and the model from \cite{bib:curso_quad} is that in this paper the linear velocities are relatives to the quadrotor frame, while in the literature are expresed in an inertial frame.  
+
 \section{Sensors}
 
-In order to determine what actions should be taken, the state of the system must be known. The system uses a 9 degrees of freedom IMU and a GPS. This equipment enables direct measurement of most of the state variables. There is no direct measurement of the linear speed of the system $\{v_{q_z},v_{q_y},v_{q_z}\}$, so the model developed in \refp{sec:modelo} is used to estimate them.
+In order to determine what actions should be taken, the state of the system must be known. The system uses a 9 degrees of freedom IMU and a GPS. This equipment enables direct measurement of most of the state variables. There is no direct measurement of the linear speed of the system $\{v_{q_z},v_{q_y},v_{q_z}\}$, so the model developed in \refp{sec:modelo} is used to estimate them. 
 
 \subsection{IMU}
 \label{sec:sensors-imu}
@@ -562,10 +565,7 @@ The IMU is equiped with the following sensors:
 
 The equations used to determine the three Euler angles are the following\cite{bib:kalman}:
   \[
-  \phi = -\arcsin\left(\frac{a_x}{\vert\vert\vec{a}\vert\vert}\right)
-  \]
-
-  \[
+  \phi = -\arcsin\left(\frac{a_x}{\vert\vert\vec{a}\vert\vert}\right), \;  
   \psi =- \arctan \left(\frac{a_y}{a_z}\right)
   \]
       
@@ -576,10 +576,7 @@ The equations used to determine the three Euler angles are the following\cite{bi
   \]
 
   \[
-  \vec{m} = M \; \vec{B}
-  \]
-
-  \[
+  \vec{m} = M \; \vec{B}, \;
   \theta = -\arctan\left( \frac{m[1]}{m[0]}\right)
   \]
 
@@ -628,14 +625,16 @@ GPS  & 1s & - \\
 
 In order to perform adequate control actions, a reliable estimation of the state variables must be available in real time. The Kalman Filter uses the mathematical model for the system to predict what should happen next given the current state, and corrects the prediction with the information read from the sensors, taking into consideration how much confidence is placed on the prediction and how much on the measurements. This weighted prediction-correction technique allows a smooth state estimation without the typical delay introduced by filtering, even small delays can severely affect the performance of the system.
 
-Every sensor has its issues: The gyro drifts over time; the accelerometer is very sensible to the vibrations generated by the motors; the magnetometer is distorted by ferromagnetic materials; the GPS has a very poor accuracy and a slow update rate. Each sensor by itself is very limited, but they can be combined to compensate for their limitations. The filter takes care of this by integrating all sensors in order to obtain a more accurate state estimation. Figure \refp{fig:diagrama_kalman} shows a diagram of how data from the sensors is combined within the filter (EKF), assisted by the model of the system.
+Every sensor has its issues, 
+%The gyro drifts over time; the accelerometer is very sensible to the vibrations generated by the motors; the magnetometer is distorted by ferromagnetic materials; the GPS has a very poor accuracy and a slow update rate. Each sensor by itself is very limited,
+but they can be combined to compensate for their limitations. The filter takes care of this by integrating all sensors in order to obtain a more accurate state estimation. Figure \refp{fig:diagrama_kalman} shows a diagram of how data from the sensors is combined within the filter (EKF), assisted by the model of the system.
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=1\columnwidth]{./pics_paper/diagrama_kalman_eng.png}
 	\caption{\textbf{EKF - } Outline of how sensor data is combined to estimate the state variables.}
 	\label{fig:diagrama_kalman}
 \end{figure}
-Euler angles are primary estimated from the combination of Magnetometer and Accelerometer measurements and used as one of the filter inputs. From that estimation of Euler angles and the Accelerometer measurements can be deduced quadrotor velocities $\{v_{qx},\;v_{qy}\;v_{qz}\}$ by subtracting gravity and an integration, which are also introduced to the filter. Angular velocities referenced to the quadrotor and height can be easily deduced from Gyroscope and Barometer measurements respectively, which are also introduced to the filter. Furthermore the GPS measurements can be also used as filter input. All this primary estimations from sensors are considered as measurements in the Kalman Filter, while the prediction is based, as said, in the dynamic model. The output of the filter is an estimation the all the variables of the state vector.
+Euler angles are primary estimated from the combination of Magnetometer and Accelerometer measurements and used as one of the filter inputs. From that estimation of Euler angles and the Accelerometer measurements can be deduced quadrotor velocities $\{v_{qx},\;v_{qy}\;v_{qz}\}$ by subtracting gravity and an integration, which are also introduced to the filter. Angular velocities referenced to the quadrotor and height can be easily deduced from Gyroscope and Barometer measurements respectively, which are also introduced to the filter. Furthermore the GPS measurements can be also used as filter input. All this primary estimations from sensors are considered as measurements in the Kalman Filter, while the prediction is based, as said, in the dynamic model. The output of the filter is an estimation of all the variables of the state vector.
 
 \subsection{Extended Kalman Filter}
 \label{sec:kalman-ekf}
@@ -669,7 +668,7 @@ To work directly with equations \refp{eq:modelo}, a non-linear control technique
 
 This restricts the system to: Hovering\footnote{Constant state vector.}, uniform linear trajectories, and uniform circular trajectories around the vertical axis. Working with an LTI greatly simplifies the control system and does it not introduce significant limitations.
 
-The control system is shown in figure (\refp{fig:diagrama_bloques_eng.pdf}). The feedback matrices have many entries, $K_p$ has 48 and $K_i$ has 16. A \textit{root locus} or \textit{pole-zero} analysis on such a system is not a simple task, additional complications are introduced by the fact that $K_p$ and $K_i$ will change when the trajectory changes, they depend on the linearization of the system. A simple and automated solution is achieved by means of the LQR algorithm. The initial design did not include the $K_i$ term, it was introduced to take into consideration errors in the characterization and modeling of the system.
+The control system is shown in figure \refp{fig:diagrama_bloques_eng.pdf}. The feedback matrices have many entries, $K_p$ has 48 and $K_i$ has 16. A \textit{root locus} or \textit{pole-zero} analysis on such a system is not a simple task, additional complications are introduced by the fact that $K_p$ and $K_i$ will change when the trajectory changes, they depend on the linearization of the system. A simple, automated and very commun solution is achieved by means of the LQR algorithm\cite{bib:lqr-discreto}. The initial design did not include the $K_i$ term, it was introduced to take into consideration errors in the characterization and modeling of the system.
 
 \begin{figure}
 %	\vspace{-60pt}
@@ -709,8 +708,8 @@ where $P$ is the solution to Riccati's equation:
   A^TP + PA - PBR^{-1}B^TP + Q = 0
 \end{equation}
 
-For the controllability and observability hypothesis to hold, only some state variables may be passed through the integral control block: $\{x,y,z,\theta\}$.
-
+\subsection{Integral effect}
+In this paper an integral effect is added over the LQR controller. For this, an expanded state vector is defined $[X^T, X_I^T]^T$. For the controllability and observability hypothesis to hold, only some state variables may be passed through the integral control block: $\dot{X}_I =[x,y,z,\theta]^T$. After making this definitions, the system is re-written in state variables form. The method to obtain the new matrix is the same that explained in \ref{sec:lqr}
 \section{Software}
 
 \subsection{Architecture}
@@ -741,7 +740,7 @@ The code implements a discrete version of the LQR control system mentioned in \r
 
 \subsection{Basic stability}
 
-During this first stage, the quadrotor was only allowed to move (and correct) one of the following Euler angles: $\{\psi,\phi\}$. The control system was tuned until an acceptable behavior was obtained. This procedure was applied to each angle. Once this stage was completed the quadrotor was able to maintain horizontality by controlling $\{\psi,\phi,\omega_{q_x},\omega_{q_y}\}$. The behavior for the Roll ($\psi$) angle is shown in figure \refp{fig:psimetro}. While in figure \refp{fig:psimetro_psi} is shown the perturbation imposed to the \emph{Roll} angle, the reaction can be observed in figure \refp{fig:psimetro_w}. The system step response for a step of more than $20^o$ shows a overshoot of $3^o$ or $4^o$ and a rise time of about $0.4\;s$, which means an excellent performance, as can be seen in figure \refp{fig:psimetro_psi}.
+During this first stage, the quadrotor was only allowed to move (and correct) one of the following Euler angles: $\{\psi,\phi\}$. The control system was tuned until an acceptable behavior was obtained. This procedure was applied to each angle. Once this stage was completed the quadrotor was able to maintain horizontality by controlling $\{\psi,\phi,\omega_{q_x},\omega_{q_y}\}$. The behavior for the Roll ($\psi$) angle is shown in figure \refp{fig:psimetro}. While in figure \refp{fig:psimetro_psi} is shown the mechanical perturbation imposed to the \emph{Roll} angle, the reaction can be observed in figure \refp{fig:psimetro_w}. From $t_0 = 80.9 s$ to $t_1 =81.3 s$ the perturbation is present. In figure \ref{fig:psimetro_w} the response of the controller is adecuate, yet inefficient because the model considered did not take account of this kind of effect. After this, the controller is working freely. The system step response for a step of more than $20^o$ shows a overshoot of $3^o$ or $4^o$ and a rise time of about $0.4\;s$, which means an excellent performance, as can be seen in figure \refp{fig:psimetro_psi}.
 \begin{figure}[h!]
   \centering
   \subfloat[Roll angle deviation]{\label{fig:psimetro_psi}
@@ -767,7 +766,7 @@ To verify orientation was correctly maintained, the speed of the motors was redu
   \caption{\textbf{Orientation experiment -} The Yaw angle is deviated from equilibrium and the quadrotor manage to stabilize itself.}
   \label{fig:theta_all}
 \end{figure}
-In the figure \refp{fig:theta_all} is shown the system behavior against a perturbation in yaw angle. To rotate, the system must generate a torque in the opposite direction of the perturbation by unbalancing the angular velocity of the motors in pairs: $\omega_1$ and $\omega_3$ in one direction and $\omega_2$ and $\omega_4$ in the other. In this case, the rise time is of about $1.6\;s$, much higher than in the other two Euler angles, which can be permitted as Yaw angle is not such critical for stability. The overshoot obtained is of about 13\% of the step size.
+In the figure \refp{fig:theta_all} is shown the system behavior against a mechanical perturbation (from $t_0 = 59.3 s$ to $t_1 = 60.5 s$) in yaw angle. To rotate, the system must generate a torque in the opposite direction of the perturbation by unbalancing the angular velocity of the motors in pairs: $\omega_1$ and $\omega_3$ in one direction and $\omega_2$ and $\omega_4$ in the other. In this case, the rise time is of about $1.6\;s$, much higher than in the other two Euler angles, which can be permitted as Yaw angle is not such critical for stability. The overshoot obtained is of about 13\% of the step size. 
 
 \subsection{Limited Flying}
 \label{sec:results-system-response}
