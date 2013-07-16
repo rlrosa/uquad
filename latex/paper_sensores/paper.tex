@@ -540,20 +540,20 @@ The problem of calibration is to establish the values for the unkwnown parameter
 
 Let $\boldsymbol{\theta}_s$ (where the subindex $s$ refers to a sensor) be the parameter vector of a certain sensor. We can define this vector as:
 \begin{equation}
-\boldsymbol{\theta} = [k_{sx},k_{sy},k_{sz},b_{sx},b_{sy},b_{sz}, \alpha_{sxy},\alpha_{sxz},\alpha_{syx},\alpha_{syz},\alpha_{szx},\alpha_{szy}]^T
+\boldsymbol{\theta} = [k_{sx},k_{sy},k_{sy},b_{sx},b_{sy},b_{sy}, \alpha_{sxy},\alpha_{sxz},\alpha_{syx},\alpha_{syz},\alpha_{szx},\alpha_{szy}]^T
 \label{eq:theta}
 \end{equation}
 
-In equation \ref{eq:theta}, $k_{si}$, with $i=\{x, y, z\}$ are the diagonal elements of the matrix $\mathbf{K}_s$, $b_{si}$, with $i=\{x, y, z\}$ are the elements of vector $\mathbf{b}_s$ and $\alpha_{sij}$, with $i=\{x, y, z\}$, $j=\{x, y, z\}$ and $i \neq j$ are the elements outside the diagonal of the matrix $\mathbf{T}_s^p$.\\
+In equation \ref{eq:theta}, $k_{si}$, with $i=1,2,3$ are the diagonal elements of the matrix $\mathbf{K}_s$, $b_{si}$, with $i = 1,2,3$ are the elements of vector $\mathbf{b}_s$ and $\alpha_{sij}$, with $i = 1,2,3$, $j = 1,2,3$ and $i \neq j$ are the elements outside the diagonal of the matrix $\mathbf{T}_s^p$.\\
 
-As adjust criterion we choose to minimize the sum of the squares of the norms of the diferences between true acceleration (or angular speed) and measured acceleration (or angular speed). This problem can be written as follows:
+As adjust criterium we choose to minimize the sum of the squares of the norms of the diferences between true accleracion and measured acceleration. This problem can be written as follows:
 
 \begin{equation}
 \min_{\boldsymbol{\theta}} \sum_{i = 1}^M ||\mathbf{s}_i^p - \mathbf{T}_s^p(\mathbf{K_s})^{-1}(\tilde{\mathbf{s}}_i^s-\mathbf{b}_s) ||^2
 \label{eq:calib_problem}
 \end{equation}
 
-In equation \ref{eq:calib_problem}, $M$ is the cardinal of the training set, $\mathbf{s}_i^p$ is the true magnitude (acceleration or angular speed) and $\tilde{\mathbf{s}}_i$ are the values given by the sensor. This problem can be solved with \emph{MatLab} function \emph{lsqnonlin}.\\
+In equation \ref{eq:calib_problem}, $M$ is the cardinal of the training set, $\mathbf{s}_i^p$ is the true magnitude (acceleration or angular speed) and $\tilde{\mathbf{s}}_i$ are the values given by the sensor.\\
 
 It is important to consider that the function that we want to minimize will generally have more than one local minimum. Thus, we can only assure that the optimum found by algorithms is a local optimum. To ensure that the solution obtained is the desired one, we need to choose carefully the seed for the algorithm. Tipically we will choose a vector $\boldsymbol{\theta}_0$ that is close to the values of the unknow parameters. Even if we do not know the exact value of the model's parameters, the datasheet of the different sensors can give us a very good clue about those values.\\
 
@@ -642,7 +642,7 @@ First of all, we atached the platform to a wooden cube. This allows us to perfor
 As it was stated in \ref{sec:modelo} the problem \ref{eq:calib_problem} may have more than one local minimum, thus we need to assure that the seed of the algorithm is ``near'' of the values of the parameters. The proposed way to generate such a seed is to use some information of the sensor's datasheet\cite{bib:acc_data}: 
 
 \begin{itemize}
-\item The typical sensitivity for each axis is $256 bits/g \approx 26.10 ms^{-2}$.
+\item The typical sensitivity for each axis is $256 bits/g \approx 26.10 m^{s-2}$.
 \item The typical offset for each axis is $0 ms^{-2}$.
 \item As the axis should be as orthogonal as posible is reasonable to think that the rotation angles $\alpha_{aij}$ are near zero. 
 \end{itemize}
@@ -657,7 +657,7 @@ The procedure used to calibrate the gyroscope was very similar to the accelerome
 
 In this case the constant angular speed was provided with a turntable ($33 rev/min$). Its angular speed was measured just to be sure that it was working properly. Different orientations were obtained using the wooden cube mentioned in section \ref{subsec:acc},to assure $90^\circ$ rotations and pairs of carpenter's squares to assure $30^\circ$, $45^\circ$ and $60^\circ$ rotations. In figure \ref{fig:setup_gyro} is shown the setup that was mounted over the turntable.\\
 
-As we did for the accelerometer, we are going to choose a seed based on the information in the device's datasheet \cite{bib:gyro_data}: 
+As we did for the accelerometer, we are going to choose a seed based on the information in the device's datacheet \cite{bib:gyro_data}: 
 
 \begin{itemize}
 \item The typical sensitivity for each axis is $14,375 bits/(^\circ s^{-1})\approx 823.63 bits/(rad s^{-1})$.
@@ -710,9 +710,21 @@ The procedure to achieve this adjust was take several samples of acceleration (o
 In equation \ref{eq:calib_temp}, $N$ is the number of samples tooked, $\mathbf{T}_{s0}^p$, $\mathbf{K_{s0}}$ are the matrix obtained in the static parameter calibration (ambiance temperature) and $\mathbf{b}_s(T)$ is the vector defined in \ref{eq:temp}. This last vector includes the variable that we want to estimate.\\
 
 \section{Results and analysis}
+\subsection{Static parameters}
+In this section, the parameters that solve problem \ref{eq:calib_problem} are presented for both accelerometer and gyroscope. In addition, the statistic over the test set is studied and analysed. 
 
-\subsection{Accelerometer}
+\subsubsection{Accelerometer}
+The parameter vector found in this case is:
+\begin{equation}
+\boldsymbol{\theta}_a = \begin{array}{c}
+[26.70, 27.26, 26.02, 16.05, -1.79, -47.99,\\
+ 3,78\times 10^{-4}, 1.40\times 10^{-3}, 1.63 \times 10^{-2},  4,62 \times 10^{-3},\\ -2.30\times 10^{-3}, -6.81 \times 10^{-3}
+\end{array}]^T
+\end{equation}
 
+
+
+\subsection{Temperature adjust}
 
 
 
