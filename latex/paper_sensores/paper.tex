@@ -711,7 +711,7 @@ In equation \ref{eq:calib_temp}, $N$ is the number of samples tooked, $\mathbf{T
 
 \section{Results and analysis}
 \subsection{Static parameters}
-In this section, the parameters that solve problem \ref{eq:calib_problem} are presented for both accelerometer and gyroscope. In addition, the statistic over the test set is studied and analysed. 
+In this section, the parameters that solve problem \ref{eq:calib_problem} are presented for both accelerometer and gyroscope. In addition, the statistic over the test set is studied and analysed. \\
 
 \subsubsection{Accelerometer}
 The parameter vector found in this case is:
@@ -722,6 +722,15 @@ The parameter vector found in this case is:
 \end{array}]^T
 \end{equation}
 
+It is interesting to compare the values obtained with the theoretical values of each parameter. As we can see, comparing the vector obtained with the seed, the values of the gains and the rotations are similar to what is declared in the datasheets. However the offset values obtained differ considerably from the information of the datasheet (see \cite{bib:acc_data}), where is declared that the 0g output deviation from ideal is $\pm 35 mg$ for axes $x$ and $y$ and $\pm 40mg$ for axis $z$. This means that the offsets should be less than $11$ bits.\\
+
+The mean error, and the standar deviation founded with the calibration method proposed in the test set are:
+
+\begin{equation}
+\mu = -0.03ms^{-1}, \; \sigma = 0.06ms^{-1}
+\end{equation}
+
+The mean error obtained correspond to less that a bit of error and the standard deviation to a bit and a half. Therefore we can conlude that a very good calibration has been achived for the static parameters of the accelerometer. 
 
 
 \subsection{Temperature adjust}
