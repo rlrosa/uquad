@@ -448,26 +448,26 @@ This paper presents a way to calibrate different inertial measurement sensors. I
 \IEEEpeerreviewmaketitle
 
 \section{Introduction}
-The development of the Microelectromechanical Systems(MEMS) technology has allowed to manufacture many low-cost chip-sensors, such as accelerometers, gyroscopes and magnetometeres. Those chips have been adopted in many applications, for instance Inertial Navigation Systems (INS)\cite{bib:paper}. However this sensors have many error sources, thus they must be calibrated before being used and they should be re-calibrated peridoically for any precission application. The different sources of error will be analysed in more detail in section \ref{sec:modelo} and the implications of those errors will be derived.\\ 
+The development of the Micro-electromechanical Systems(MEMS) technology has allowed to manufacture many low-cost chip-sensors, such as accelerometers, gyroscopes and magnetometers. Those chips have been adopted in many applications, for instance Inertial Navigation Systems (INS)\cite{bib:paper}. However this sensors have many error sources, thus they must be calibrated before being used and they should be re-calibrated periodically for any precision application. The different sources of error will be analysed in more detail in section \refp{sec:modelo} and the implications of those errors will be derived.\\ 
 
-The calibration proposed in this paper is tested on a 3-axis accelerometer ADXL345 of Analog Devices and a 3-axis gyroscope ITG-3200  of InvenSense, yet the model developed and the methodology can be used in other devices because the model is based on comun characteristics of MEMS sensors. The sensors named before are included in a Inertial Measurment Unit(IMU): The Mongoose (figure \ref{fig:mongoose}). \\
+The calibration proposed in this paper is tested on a 3-axis accelerometer ADXL345 of Analog Devices and a 3-axis gyroscope ITG-3200  of InvenSense, yet the model developed and the methodology can be used in other devices because the model is based on common characteristics of MEMS sensors. The sensors named before are included in a Inertial Measurement Unit(IMU): The Mongoose (figure \refp{fig:mongoose}). \\
 
 
-The first step of the calibration is to obtain the static parameters of the devices for the ambience temperautre. This step is based on knowing the exact orientation of the IMU for the calibration of both sensors and the exact angular speed for the gyroscope calibration. Other related works waive this requirement\cite{bib:calib_imu} and \cite{bib:kalman} and uses the fact that in any position angular speed(for the gyroscope calibration) and gravity vector (for the accelerometer calibration) are constant.\\
+The first step of the calibration is to obtain the static parameters of the devices for the ambiance temperature. This step is based on knowing the exact orientation of the IMU for the calibration of both sensors and the exact angular speed for the gyroscope calibration. Other related works waive this requirement\cite{bib:calib_imu} and \cite{bib:kalman} and uses the fact that in any position angular speed(for the gyroscope calibration) and gravity vector (for the accelerometer calibration) are constant.\\
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=.6\columnwidth]{./pics_paper/mongoose.png}
-	\caption{\textbf{Mongoose -} Inertial Measurement Unit used. Red arrows represent the axis plataform $S - \{\hat{x}, \hat{y}, \hat{z} \}$. }
+	\caption{\textbf{Mongoose -} Inertial Measurement Unit used. Red arrows represent the axis platform $S - \{\hat{x}, \hat{y}, \hat{z} \}$. }
 	\label{fig:mongoose}
 \end{figure}
 
-We take in consideration a fact that is not usually taken into account in the literature (see \cite{bib:calib_imu}, \cite{bib:kalman}, \cite{bib:calib_imu_dos}): the measures given by this sensors are not independant of the temperature. Many devices that uses MEMS sensors need to work properly in a wide temperature range. In other cases, the temperature in operation of the system is different(for instance due to Joule Effect of the wires near the sensors) than the ambiance temperature in which the sensor was calibrated. Therefore a temperature adjust must be made.
+We take in consideration a fact that is not usually taken into account in the literature (see \cite{bib:calib_imu}, \cite{bib:kalman}, \cite{bib:calib_imu_dos}): the measures given by this sensors are not independent of the temperature. Many devices that uses MEMS sensors need to work properly in a wide temperature range. In other cases, the temperature in operation of the system is different(for instance due to Joule Effect of the wires near the sensors) than the ambiance temperature in which the sensor was calibrated. Therefore a temperature adjust must be made.
    
 \section{Model of the sensors}
 \label{sec:modelo}
 
-As it was stated before, there exist many error sources in MEMS devices. In \cite{bib:calib_imu} two of this sources are mentioned: the nonlinear response of the sensors and the non-orthogonality of the axis of the sensor. In addition we can observe also that it exist an electric noise in the measures (figure \ref{fig:ruido}) and a dependance of the temperature.\\
+As it was stated before, there exist many error sources in MEMS devices. In \cite{bib:calib_imu} two of this sources are mentioned: the nonlinear response of the sensors and the non-orthogonality of the axis of the sensor. In addition we can observe also that it exist an electric noise in the measures (figure \ref{fig:noise}) and a dependence of the temperature.\\
 \vspace{-10pt}
 \begin{figure}[h!]
   \centering
@@ -482,15 +482,15 @@ As it was stated before, there exist many error sources in MEMS devices. In \cit
   \label{fig:noise}
 \end{figure}
 
-In the datasheets of the considered sensors(\cite{bib:acc_data} and \cite{bib:gyro_data}) the effect of nonlinearityis negligible since it represents the $\pm 0.5.\%$  of the full scale for the accelerometer and the $\pm 0.2\%$ for the gyroscope. Therefore we will not consider this effect and after the calibration we must verify that the error due to the nonlinear response is negligeable.\\
+In the datasheets of the considered sensors(\cite{bib:acc_data} and \cite{bib:gyro_data}) the effect of nonlinearities negligible since it represents the $\pm 0.5.\%$  of the full scale for the accelerometer and the $\pm 0.2\%$ for the gyroscope. Therefore we will not consider this effect and after the calibration we must verify that the error due to the nonlinear response is negligible.\\
 %TODO Al final hacer las cuentas para ver que es despreciable.
 
-In figure \ref{fig:noise} we can observe that the electrical noise of the devices is typically 2 bits, this error (according to the datashets \cite{bib:acc_data} and \cite{bib:gyro_data}) correspond to $7.8 mg$ and $0.14 ^{\circ}/s $. The error is not biased, thus we not need to consider it, because several samples are used in any real application and the effect vanishes.\\
+In figure \refp{fig:noise} we can observe that the electrical noise of the devices is typically 2 bits, this error (according to the datasheets \cite{bib:acc_data} and \cite{bib:gyro_data}) correspond to $7.8 mg$ and $0.14 ^{\circ}/s $. The error is not biased, thus we not need to consider it, because several samples are used in any real application and the effect vanishes.\\
 
 Based on the asumption that both sensors have a linear response and considering the non-orthogonality of the axis of the devices we are going to present a standard model for both sensors(see \cite{bib:calib_imu}, \cite{bib:kalman}, \cite{bib:calib_imu_dos}).
 
 \subsection{Accelerometer}
-Due to construction issues the sensitivity axis of the device are generaly not orthogonals. Lets define a platform system as shown in figure \ref{fig:mongoose}. Let $\mathbf{a}^a$ be the true acceleration expressed in the sensitivity axis of the accelerometer and let $\mathbf{a}^p$ be the true acceleration expressed in the platform system. We model this fact by the following linear transformation between the two acceleration vectors:
+Due to construction issues the sensitivity axis of the device are generally not orthogonal. Lets define a platform system as shown in figure \refp{fig:mongoose}. Let $\mathbf{a}^a$ be the true acceleration (meaning the theoretical acceleration measured in $ms^{-2}$) expressed in the sensitivity axis of the accelerometer and let $\mathbf{a}^p$ be the theoretical true acceleration (also measured in $ms^{-2}$) expressed in the platform system. We model this fact by the following linear transformation between the two acceleration vectors:
 
 \begin{equation}
 \mathbf{a}^p = \mathbf{T}_a^p\mathbf{a}^a, \; \mathbf{T}_a^p = \left(\begin{array}{ccc}
@@ -501,7 +501,7 @@ Due to construction issues the sensitivity axis of the device are generaly not o
 \label{eq:nonorto}
 \end{equation}
 
-In equation \ref{eq:nonorto}, scalars $\alpha_{ij}$ represents the rotation of the $i-th$ sensitivity axis of the acelerometer over the $j-th$ axis of the platform system. In figure \ref{fig:nonorto} this relation can be observed graphically. Since those errors are due to the manufacturing process we will assume that they will remain constant long enough.
+In equation \refp{eq:nonorto}, scalars $\alpha_{ij}$ represents the rotation of the $i-th$ sensitivity axis of the accelerometer over the $j-th$ axis of the platform system. In figure \refp{fig:nonorto} this relation can be observed graphically. Since those errors are due to the manufacturing process we will assume that they will remain constant long enough.
 
 \begin{figure}
 	\centering
@@ -510,14 +510,14 @@ In equation \ref{eq:nonorto}, scalars $\alpha_{ij}$ represents the rotation of t
 	\label{fig:nonorto}
 \end{figure}
 
-As it was stated befor, we are considering a linear model between the accleration measured in the sensitivity axis and the true acceleration in the same system. Thus we have:
+As it was stated before, we are considering a linear model between the acceleration measured in the sensitivity axis and the true acceleration in the same system. Thus we have:
 
 \begin{equation}
 \tilde{\mathbf{a}}^a = \mathbf{K}_a\mathbf{a}^a + \mathbf{b}_a
 \label{eq:modlineal}
 \end{equation}
 
-In equation \ref{eq:modlineal}, $\tilde{\mathbf{a}}^a$ is the measure obtained by the accelerometer, $\mathbf{K}_a$ is a diagonal matrix that represents the sensitivity of each axis and $\mathbf{b}_a$ is a vector that represent the bias of each axis. Those parameters may variate as the temperature changes. However, in this stage we are going to consider them constant. Using equations \ref{eq:nonorto} and \ref{eq:modlineal} we can stablish a model of the acelerometer:
+In equation \refp{eq:modlineal}, $\tilde{\mathbf{a}}^a$ is the measure obtained by the accelerometer (measured in bits), $\mathbf{K}_a$ is a diagonal matrix that represents the sensitivity of each axis and $\mathbf{b}_a$ is a vector that represent the bias of each axis. Those parameters may variate as the temperature changes. However, in this stage we are going to consider them constant. Using equations \refp{eq:nonorto} and \refp{eq:modlineal} we can establish a model of the accelerometer:
 
 \begin{equation}
 \tilde{\mathbf{a}}^a = \mathbf{K}_a\mathbf{T}_p^a\mathbf{a}^p + \mathbf{b}_a = \mathbf{K}_a(\mathbf{T}_a^p)^{-1}\mathbf{a}^p + \mathbf{b}_a 
@@ -525,14 +525,14 @@ In equation \ref{eq:modlineal}, $\tilde{\mathbf{a}}^a$ is the measure obtained b
 
 
 \subsection{Gyroscope}
-The error sources consider in the case of the gyroscope are the same that we developed for the acclerometer. Thus, we are going to consider the same model:
+The error sources consider in the case of the gyroscope are the same that we developed for the accelerometer. Thus, we are going to consider the same model:
 
 \begin{equation}
 \tilde{\boldsymbol{\omega}}_a = \mathbf{K}_{\omega}(\mathbf{T}_{\omega}^p)^{-1}\boldsymbol{\omega}^p+\mathbf{b}_{\omega}
 \end{equation}
 
 \section{Calibration method proposed}
-The problem of calibration is to establish the values for the unkwnown parameters of the model that adjust ``the better'' a certain set of data. This criterium will be defined in section \ref{sec:param}. 
+The problem of calibration is to establish the values for the unknown parameters of the model that adjust ``the better'' a certain set of data. This criterion will be defined in section \refp{sec:param}. 
 
 
 \subsection{Static Parameter Calibration}
@@ -544,26 +544,26 @@ Let $\boldsymbol{\theta}_s$ (where the subindex $s$ refers to a sensor) be the p
 \label{eq:theta}
 \end{equation}
 
-In equation \ref{eq:theta}, $k_{si}$, with $i=1,2,3$ are the diagonal elements of the matrix $\mathbf{K}_s$, $b_{si}$, with $i = 1,2,3$ are the elements of vector $\mathbf{b}_s$ and $\alpha_{sij}$, with $i = 1,2,3$, $j = 1,2,3$ and $i \neq j$ are the elements outside the diagonal of the matrix $\mathbf{T}_s^p$.\\
+In equation \refp{eq:theta}, $k_{si}$, with $i=1,2,3$ are the diagonal elements of the matrix $\mathbf{K}_s$, $b_{si}$, with $i = 1,2,3$ are the elements of vector $\mathbf{b}_s$ and $\alpha_{sij}$, with $i = 1,2,3$, $j = 1,2,3$ and $i \neq j$ are the elements outside the diagonal of the matrix $\mathbf{T}_s^p$.\\
 
-As adjust criterium we choose to minimize the sum of the squares of the norms of the diferences between true accleracion and measured acceleration. This problem can be written as follows:
+As adjust criterion we choose to minimize the sum of the squares of the norms of the differences between true acceleration and measured acceleration. This problem can be written as follows:
 
 \begin{equation}
 \min_{\boldsymbol{\theta}} \sum_{i = 1}^M ||\mathbf{s}_i^p - \mathbf{T}_s^p(\mathbf{K_s})^{-1}(\tilde{\mathbf{s}}_i^s-\mathbf{b}_s) ||^2
 \label{eq:calib_problem}
 \end{equation}
 
-In equation \ref{eq:calib_problem}, $M$ is the cardinal of the training set, $\mathbf{s}_i^p$ is the true magnitude (acceleration or angular speed) and $\tilde{\mathbf{s}}_i$ are the values given by the sensor.\\
+In equation \refp{eq:calib_problem}, $M$ is the cardinal of the training set, $\mathbf{s}_i^p$ is the true magnitude (acceleration or angular speed) and $\tilde{\mathbf{s}}_i$ are the values given by the sensor.\\
 
-It is important to consider that the function that we want to minimize will generally have more than one local minimum. Thus, we can only assure that the optimum found by algorithms is a local optimum. To ensure that the solution obtained is the desired one, we need to choose carefully the seed for the algorithm. Tipically we will choose a vector $\boldsymbol{\theta}_0$ that is close to the values of the unknow parameters. Even if we do not know the exact value of the model's parameters, the datasheet of the different sensors can give us a very good clue about those values.\\
+It is important to consider that the function that we want to minimize will generally have more than one local minimum. Thus, we can only assure that the optimum found by algorithms is a local optimum. To ensure that the solution obtained is the desired one, we need to choose carefully the seed for the algorithm. Typically we will choose a vector $\boldsymbol{\theta}_0$ that is close to the values of the unknown parameters. Even if we do not know the exact value of the model's parameters, the datasheet of the different sensors can give us a very good clue about those values.\\
 
 \subsubsection{Accelerometer}
 \label{subsec:acc}
-Since an accelerometer measures the acceleration in a free fall referential, in static equilibrium it will meassure an accleration that has as norm the gravitational constant of the  earth ($g = 9.81ms^{-2}$), its direction is colinear with the line defined by the position of the acclerometer and the center of the earth and its sense is from the center of the earth towards the position of the accelerometer, meaning ``up''. This allows us to have an exact expression for the accleration, the procedure proposed consist in measure this magnitude with different orientations of the acceleration and then solve the problem stated in equation \ref{eq:calib_problem}.\\
+Since an accelerometer measures the acceleration in a free fall referential, in static equilibrium it will measure an acceleration that has as norm the gravitational constant of the  earth ($g = 9.81ms^{-2}$), its direction is collinear with the line defined by the position of the accelerometer and the center of the earth and its sense is from the center of the earth towards the position of the accelerometer, meaning ``up''. This allows us to have an exact expression for the acceleration, the procedure proposed consist in measure this magnitude with different orientations of the acceleration and then solve the problem stated in equation \refp{eq:calib_problem}.\\
 
 The 27 measures made were the following:
 \begin{itemize}
-\item Starting position: $x$ axis pointing ``down'': 10 measures were made combining two rotations. First, rotating arround the $z$ axis $\theta =0^\circ, 10^\circ, 20^\circ, 30^\circ, 45^\circ$. Then, for each angle defined(except for $\theta = 0^\circ$), two measures were made rotating arround the $x$ axis $\psi = 0^\circ, -45^\circ$. This set of measures can be expressed in the following way:
+\item Starting position: $x$ axis pointing ``down'': 10 measures were made combining two rotations. First, rotating around the $z$ axis $\theta =0^\circ, 10^\circ, 20^\circ, 30^\circ, 45^\circ$. Then, for each angle defined(except for $\theta = 0^\circ$), two measures were made rotating around the $x$ axis $\psi = 0^\circ, -45^\circ$. This set of measures can be expressed in the following way:
 \begin{scriptsize}
 \begin{equation}
 \mathbf{a}^p = \left(\begin{array}{ccc}
@@ -584,7 +584,7 @@ The 27 measures made were the following:
 \end{scriptsize}
  
 
-\item Starting position: $y$ axis pointing ``up'': 10 measures were made combining two rotations. First, rotating arround the $x$ axis $\psi =0^\circ, 10^\circ, 20^\circ, 30^\circ, 45^\circ$. Then, for each angle defined(except for $\theta = 0^\circ$), two measures were made rotating arround the $y$ axis $\varphi = 0^\circ, 45^\circ$.   
+\item Starting position: $y$ axis pointing ``up'': 10 measures were made combining two rotations. First, rotating around the $x$ axis $\psi =0^\circ, 10^\circ, 20^\circ, 30^\circ, 45^\circ$. Then, for each angle defined(except for $\theta = 0^\circ$), two measures were made rotating around the $y$ axis $\varphi = 0^\circ, 45^\circ$.   
 
 \begin{scriptsize}
 \begin{equation}
@@ -605,7 +605,7 @@ g\\
 \end{equation}
 \end{scriptsize}
 
-\item Starting position: $z$ axis pointing ``up'': 10 measures were combining two rotations. First, rotating arround the $y$ axis: $\phi =0^\circ, -10^\circ, -20^\circ, -30^\circ, -45^\circ$. Then, for each angle defined(except for $\phi = 0^\circ$), two measures were made rotating arround the $z$ axis $\theta = 0^\circ, 45^\circ$.   \end{itemize}
+\item Starting position: $z$ axis pointing ``up'': 10 measures were combining two rotations. First, rotating around the $y$ axis: $\phi =0^\circ, -10^\circ, -20^\circ, -30^\circ, -45^\circ$. Then, for each angle defined(except for $\phi = 0^\circ$), two measures were made rotating around the $z$ axis $\theta = 0^\circ, 45^\circ$.   \end{itemize}
 
 \begin{scriptsize}
 \begin{equation}
@@ -626,11 +626,11 @@ g
 \end{equation}
 \end{scriptsize}
 
-We are not going to use all the 27 measures to do the calibration, instead we use 14 of this measures as a training set and the other 13 as a test set. The 14 measures of accleration give us 42 different acceleration values (3 for each measure corresponding to each axis), since we want to estimate 12 parameters we consider that is sufficient.\\
+We are not going to use all the 27 measures to do the calibration, instead we use 14 of this measures as a training set and the other 13 as a test set. The 14 measures of acceleration give us 42 different acceleration values (3 for each measure corresponding to each axis), since we want to estimate 12 parameters we consider that is sufficient.\\
 
-The delicate issue is knowing the exact orientation of the platform, having solve this is very easy to compute the theoretical acceleration that the device should measure in each axis from equations \ref{eq:acc_x}, \ref{eq:acc_y} and \ref{eq:acc_z}.\\
+The delicate issue is knowing the exact orientation of the platform, having solve this is very easy to compute the theoretical acceleration that the device should measure in each axis from equations \refp{eq:acc_x}, \refp{eq:acc_y} and \refp{eq:acc_z}.\\
 
-First of all, we atached the platform to a wooden cube. This allows us to perform $90^\circ$ rotations, thus if we had an horizontal surface we can take measures with the gravity vector aligned to any of three axis. The horizontal surface was assured using a three leg adjustable table (see figure \ref{fig:mesa}). In addition this table allows us to perform rotations of known angles using a scaled semicircle and a pendulum as it is shown also in figure \ref{fig:mesa}. The rotations over the second axis were made using a carpenter's square, therefore we have a proper $45^\circ$ rotation.\\
+First of all, we attached the platform to a wooden cube. This allows us to perform $90^\circ$ rotations, thus if we had an horizontal surface we can take measures with the gravity vector aligned to any of three axis. The horizontal surface was assured using a three leg adjustable table (see figure \refp{fig:mesa}). In addition this table allows us to perform rotations of known angles using a scaled semicircle and a pendulum as it is shown also in figure \refp{fig:mesa}. The rotations over the second axis were made using a carpenter's square, therefore we have a proper $45^\circ$ rotation.\\
 
 \begin{figure}
 	\centering
@@ -639,15 +639,15 @@ First of all, we atached the platform to a wooden cube. This allows us to perfor
 	\label{fig:mesa}
 \end{figure}
 
-As it was stated in \ref{sec:modelo} the problem \ref{eq:calib_problem} may have more than one local minimum, thus we need to assure that the seed of the algorithm is ``near'' of the values of the parameters. The proposed way to generate such a seed is to use some information of the sensor's datasheet\cite{bib:acc_data}: 
+As it was stated in \refp{sec:modelo} the problem \refp{eq:calib_problem} may have more than one local minimum, thus we need to assure that the seed of the algorithm is ``near'' of the values of the parameters. The proposed way to generate such a seed is to use some information of the sensor's datasheet\cite{bib:acc_data}: 
 
 \begin{itemize}
 \item The typical sensitivity for each axis is $256 bits/g \approx 26.10 m^{s-2}$.
 \item The typical offset for each axis is $0 ms^{-2}$.
-\item As the axis should be as orthogonal as posible is reasonable to think that the rotation angles $\alpha_{aij}$ are near zero. 
+\item As the axis should be as orthogonal as possible is reasonable to think that the rotation angles $\alpha_{aij}$ are near zero. 
 \end{itemize}
 
-After this considerations the choosed seed is:
+After this considerations the chose seed is:
 \begin{equation}
 {\theta}_0 = [26.10, 26.10, 26.10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]^T
 \end{equation}
@@ -655,17 +655,17 @@ After this considerations the choosed seed is:
 
 The procedure used to calibrate the gyroscope was very similar to the accelerometer. The main idea is to obtain a constant and known angular speed vector and then change the orientation of the gyroscope to have different measures in each axis.\\
 
-In this case the constant angular speed was provided with a turntable ($33 rev/min$). Its angular speed was measured just to be sure that it was working properly. Different orientations were obtained using the wooden cube mentioned in section \ref{subsec:acc},to assure $90^\circ$ rotations and pairs of carpenter's squares to assure $30^\circ$, $45^\circ$ and $60^\circ$ rotations. In figure \ref{fig:setup_gyro} is shown the setup that was mounted over the turntable.\\
+In this case the constant angular speed was provided with a turntable ($33 rev/min$). Its angular speed was measured just to be sure that it was working properly. Different orientations were obtained using the wooden cube mentioned in section \refp{subsec:acc},to assure $90^\circ$ rotations and pairs of carpenter's squares to assure $30^\circ$, $45^\circ$ and $60^\circ$ rotations. In figure \refp{fig:setup_gyro} is shown the setup that was mounted over the turntable.\\
 
-As we did for the accelerometer, we are going to choose a seed based on the information in the device's datacheet \cite{bib:gyro_data}: 
+As we did for the accelerometer, we are going to choose a seed based on the information in the device's datasheet \cite{bib:gyro_data}: 
 
 \begin{itemize}
 \item The typical sensitivity for each axis is $14,375 bits/(^\circ s^{-1})\approx 823.63 bits/(rad s^{-1})$.
 \item The typical offset for each axis is $0 rad s^{-1}$.
-\item As the axis should be as orthogonal as posible is reasonable to think that the rotation angles $\alpha_{\omega ij}$ are near zero. 
+\item As the axis should be as orthogonal as possible is reasonable to think that the rotation angles $\alpha_{\omega ij}$ are near zero. 
 \end{itemize}
 
-After this considerations the choosed seed is:
+After this considerations the chose seed is:
 \begin{equation}
 {\theta}_0 = [823.63, 823.63, 823.63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]^T
 \end{equation}
@@ -679,39 +679,40 @@ After this considerations the choosed seed is:
 
 
 \subsection{Temperature adjust}
+\label{sec:param_temp}
 
-In this paper we propose also to realize a temperature adjustment. It is commun that the operating temperature of the system in with a sensor used is different from the calibration temperature. Sensors based in MEMS technology are sensitive to such variations. The variation of the measures is critical in some applications (see \cite{bib:uquad} for example). In INS two of the Euler angles are usually obtained from the accelerometer, therefore if the measures are not certain the stability of the system cannot be guaranteed.\\
+In this paper we also propose to realize a temperature adjustment. The sensors are exposed to the operating temperature of the system, and it is very common that this temperature is different from the calibration temperature. Sensors based in MEMS technology are sensitive to such variations. The variation of the measures is critical in some applications (see \cite{bib:uquad} for example). In INS two of the Euler angles are usually obtained from the accelerometer, therefore if the measures are not certain the stability of the system cannot be guaranteed.\\
 
 It is extremely important to understand which of the parameters are affected based on the information of the sensors' datasheets (\cite{bib:acc_data} and \cite{bib:gyro_data}):
 
 \begin{itemize}
-\item Sensitivity variation of the acclerometer: $\pm 0.01 \%/^\circ C$
-\item Offset variation of the accelererometer: $\pm 1.2mg/^\circ C \approx 0.012m s^{-1}$
-\item Sensitivity variation of the gyroscopoe: No information is provided. 
+\item Sensitivity variation of the accelerometer: $\pm 0.01 \%/^\circ C$
+\item Offset variation of the accelerometer: $\pm 1.2mg/^\circ C \approx 0.012m s^{-1}$
+\item Sensitivity variation of the gyroscope: No information is provided. 
 \item Offset variation of the accelerometer: $\pm 40 ^\circ s^{-1} \approx 0.70 rad s^{-1}$
 \end{itemize}
 
-The conlusion of this sumed up information is that the variations of the temperature do not produce main changes on the gains of the sensors, yet the offsets are modified. Thus, we are going to consider the following temperature adjust:
+The conclusion of this sum up information is that the variations of the temperature do not produce main changes on the gains of the sensors, yet the offsets are modified. Thus, we are going to consider the following temperature adjust:
 
 \begin{equation}
 \mathbf{b}_s(T) = \mathbf{b}_{s0} + \boldsymbol{\alpha}_s (T-T_0)
 \label{eq:temp}
 \end{equation}
 
-In equation \ref{eq:temp} $\mathbf{b}_{s0}$ is the offset vector obtained in the static calibration, $T_0$ is the ambiance temperature in the calibration, $T$ is the working temperature of the system and $\boldsymbol{\alpha}_s$ is the parameter that we need to know to complete the process.\\ 
+In equation \refp{eq:temp} $\mathbf{b}_{s0}$ is the offset vector obtained in the static calibration, $T_0$ is the ambiance temperature in the calibration, $T$ is the working temperature of the system and $\boldsymbol{\alpha}_s$ is the parameter that we need to know to complete the process.\\ 
 
-The procedure to achieve this adjust was take several samples of acceleration (or angular speed) in a fixed position ($z$ axis pointing ``up'' without any rotation), while the sensor was heat up with a hair dryer. The criterium choosed was that $\boldsymbol{\alpha}_s$ must minimize the sum of the squares of the norms of the difference between the true acceleration (or angular speed) and the measured acceleration (or angular speed). Mathematically this means:
+The procedure to achieve this adjust was take several samples of acceleration (or angular speed) in a fixed position ($z$ axis pointing ``up'' without any rotation), while the sensor was heat up with a hair dryer. The criterion chose was that $\boldsymbol{\alpha}_s$ must minimize the sum of the squares of the norms of the difference between the true acceleration (or angular speed) and the measured acceleration (or angular speed). Mathematically this means:
 
 \begin{equation}
 \min_{\boldsymbol{\alpha}_s} = \sum_{k=1}^N ||\mathbf{s}_i^p - \mathbf{T}_{s0}^p(\mathbf{K_{s0}})^{-1}(\tilde{\mathbf{s}}_i^s-\mathbf{b}_s(T))||^2 
 \label{eq:calib_temp}
 \end{equation}
 
-In equation \ref{eq:calib_temp}, $N$ is the number of samples tooked, $\mathbf{T}_{s0}^p$, $\mathbf{K_{s0}}$ are the matrix obtained in the static parameter calibration (ambiance temperature) and $\mathbf{b}_s(T)$ is the vector defined in \ref{eq:temp}. This last vector includes the variable that we want to estimate.\\
+In equation \refp{eq:calib_temp}, $N$ is the number of samples took, $\mathbf{T}_{s0}^p$, $\mathbf{K_{s0}}$ are the matrix obtained in the static parameter calibration (ambiance temperature) and $\mathbf{b}_s(T)$ is the vector defined in \refp{eq:temp}. This last vector includes the variable that we want to estimate.\\
 
 \section{Results and analysis}
 \subsection{Static parameters}
-In this section, the parameters that solve problem \ref{eq:calib_problem} are presented for both accelerometer and gyroscope. In addition, the statistic over the test set is studied and analysed. 
+In this section, the parameters that solve problem \refp{eq:calib_problem} are presented for both accelerometer and gyroscope. In addition, the statistic over the test set is studied and analyzed. 
 
 \subsubsection{Accelerometer}
 The parameter vector found in this case is:
@@ -726,7 +727,19 @@ The parameter vector found in this case is:
 
 \subsection{Temperature adjust}
 
+To evaluate the behavior of the measurement of the accelerometer and compensate the error caused by temperature, the experiment described in Section \refp{sec:param_temp} is carried out. It can be divided in two separate parts, the first is heating up the sensor using a hair dryer up to $48^oC$ and the second part is letting the sensor cool down to normal operating temperature. The two separated parts of the experiment are shown in figure \refp{fig:temp_res}.
 
+\begin{figure}[h!]
+	\subfloat[Accelerometer measurement in\newline z-axis while heating up the sensor.]{\label{fig:resultado_temp} 
+			\includegraphics[width=.5\columnwidth]{./pics_paper/resultado_temp.pdf}}
+	\subfloat[Accelerometer measurements and temperature varying from $35^oC$ to $48^oC$.]{\label{fig:bajada}
+		\includegraphics[width=.5\columnwidth]{./pics_paper/bajada.pdf}}
+	\caption{\textbf{Temperature results -} Accelerometer measurements while temperature is modified.}
+	\label{fig:temp_res}
+\end{figure}
+
+In figure \refp{fig:resultado_temp} is shown the behavior of the calibrated measurement of the accelerometer in z-axis while the sensor is heated up, both with and without temperature compensation. It is clearly shown that the compensated temperature is much more reliable than the other one, that is varying a 3\% of the highest value. Otherwise, in figure \refp{fig:bajada} the second part of the experiment is shown, letting the sensor cool down up to normal operating temperature. Two different magnitudes are shown at the same time: the three accelerations and the temperature, thus two axes are needed to be shown: on left side the acceleration in $ms^{-2}$, and on right side the temperature in $^oC$.\\
+In figure \refp{fig:resultado_temp} can be observed that at about the end of the experiment the sensor output is $9.25ms^{-2}$ instead of $9.81ms^{-2}$, which means an error of $0.56ms^{-2}$. Such an error in acceleration measurements can cause several errors while trying to control the quadrotor, thus is vital that temperature compensation is performed.
 
 
 \section{Conclusion}
