@@ -421,7 +421,7 @@ canetti@fing.edu.uy}
 %\vspace*{-.5cm}
 \begin{abstract}
 %\boldmath
-This paper describes the design and integration of an instrumentation and control system that allows the autonomous flight of a quadrotor. A comercial frame is used, a mathematical model for the quadrotor is developed and its parameters determined from the characterization of the unit. An intelligence is integrated to play the role of the flight controller. A 9 degrees of freedom Inertial Measurement Unit (IMU) equipped with a barometer is calibrated and added to the platform. Data from the IMU is combined with the information provided by a GPS within a modified Extended Kalman Filter (EKF) to obtain a reliable estimation of the state variables. The control actions are obtained from a proportional-integral controller based on an improved LQR algorithm. As shown in section \refp{sec:results-tests}, a stable autonomous platform is achieved.%For windless environments, a stable platform is achieved.
+This paper describes the design and integration of an instrumentation and control system that allows the autonomous flight of a quadrotor. A comercial frame is used, a mathematical model for the quadrotor is developed and its parameters determined from the characterization of the unit. An intelligence is integrated to play the role of the flight controller. A 9 degrees of freedom Inertial Measurement Unit (IMU) equipped with a barometer is calibrated and added to the platform. Data from the IMU is combined with the information provided by a GPS within a modified Extended Kalman Filter (EKF) to obtain a reliable estimation of the state variables. The control actions are obtained from a proportional-integral controller based on an improved Linear Quadratic Regulator (LQR) algorithm. As shown in Section \refp{sec:results-tests}, a stable autonomous platform is achieved.%For windless environments, a stable platform is achieved.
 % -cambio-
 \end{abstract}
 % IEEEtran.cls defaults to using nonbold math in the Abstract.
@@ -451,14 +451,27 @@ This paper describes the design and integration of an instrumentation and contro
 \section{Introduction}
 % no \IEEEPARstart
 
-A quadrotor platform can be imagined performing countless tasks, such as search and rescue, wild fire suppression, or scientific research\cite{bib:apps}. Many applications are being developed based on such platforms, but how do they fly? An aerial vehicle is inherently unstable, staying still is not a simple task. This paper focuses on the stabilization of a quadrotor, explaining the development of the mathematical model to represent the system, the filtering techniques applied for sensor data fusion and the control system that allows the quadrotor to fly.
-The platform is based on the commercial radio controlled quadrotor, shown in figure \refp{fig:commercial_quadrotor}. The length between opposite propellers is $61.5\;cm$, the weight is $990\;g$, and it has $1300\;g$ of payload. The frame and the Electronic Speed Controllers (ESCs) used for the motors were preserved, whereas the IMU and intelligence were replaced by the flight controller that was developed. A BeagleBoard\footnote{BeagleBoard development board - \url{http://beagleboard.org/}} running Linux\footnote{Angstrom distribution: \url{http://www.angstrom-distribution.org/}} performs the computations required to convert raw data received from the IMU\footnote{\textit{Mongoose} IMU - \url{http://store.ckdevices.com/}} over a UART and combine it using an EKF. The EKF overcomes the problems inherent to each sensor and filters out noise, providing a reliable estimation of the state vector. Once the current state is known, the LQR algorithm is used to derive the control actions required to bring the system to the desired set-point.
+A quadrotor platform can be imagined performing countless tasks, such as search and rescue, wild fire suppression, or scientific research\cite{bib:apps}. Many applications are being developed based on such platforms, but how do they fly? An aerial vehicle is inherently unstable, staying still is not a simple task. This paper focuses on the stabilization of a quadrotor, explaining the development of the mathematical model to represent the system, the filtering techniques applied for sensor data fusion and the control system that allows the quadrotor to fly.\\
+STATE OF THE ART\\
+
+\section{System architecture}
+The platform is based on the commercial radio controlled quadrotor shown in Figure \refp{fig:commercial_quadrotor}. The length between opposite propellers is $61.5cm$, the weight is $990g$, and it has $1300g$ of payload. The frame and the Electronic Speed Controllers (ESCs) used for the motors were preserved, whereas the IMU and intelligence were replaced by the flight controller that was developed. A BeagleBoard\footnote{BeagleBoard development board - \url{http://beagleboard.org/}} running Linux\footnote{Angstrom distribution: \url{http://www.angstrom-distribution.org/}} performs the computations required to convert raw data received from the IMU\footnote{\textit{Mongoose} IMU - \url{http://store.ckdevices.com/}} over a UART and combine it using an EKF. The EKF overcomes the problems inherent to each sensor and filters out noise, providing a reliable estimation of the state vector. Once the current state is known, the LQR algorithm is used to derive the control actions required to bring the system to the desired set-point. A complete diagram of the implemented system is shown in Figure \refp{fig:diagrama_tio}.
+
 \begin{figure}[h!]
 %\vspace{-.8cm}
 	\centering
 	\includegraphics[width=.8\columnwidth]{./pics_paper/javi.png}
 	\caption{\textbf{Commercial quadrotor acquired.}}
 	\label{fig:commercial_quadrotor}
+\end{figure}
+
+
+\begin{figure}[h!]
+%\vspace{-.8cm}
+	\centering
+	\includegraphics[width=.8\columnwidth]{./pics_paper/diagrama_tio.png}
+	\caption{\textbf{Complete system block diagram.}}
+	\label{fig:diagrama_tio}
 \end{figure}
 
 % You must have at least 2 lines in the paragraph with the drop letter
@@ -468,14 +481,14 @@ The platform is based on the commercial radio controlled quadrotor, shown in fig
 %\hfill mds
  
 %\hfill January 11, 2007
-The two main goals are to integrate additional sensors and intelligence to the available platform to obtain a state estimation, and design and integrate a control system that using the state estimation achieves the autonomous flight.
+The two main goals are to integrate additional sensors and intelligence to the available platform to obtain a state estimation, and design and integrate a control system that, using the state estimation, achieves the autonomous flight.
 \section{Model of a quadrotor}
 \label{sec:modelo}
 
 \subsection{Definitions}
 \label{sec:modelo-defs}
 
-A diagram of the quadrotor is shown in figure \refp{fig:quad}. Two of the motors rotate clockwise (2 and 4) and the other two (1 and 3) rotate counterclockwise. This configuration allows the quadrotor to rotate, tilt and gain/lose altitud by setting different speeds on each motor. Two frames of reference (figure \refp{fig:quad}) are constantly used through out this paper: an intertial frame $S_I - \lbrace \hat{i},\hat{j},\hat{k}\rbrace$ ($\lbrace \vec{x},\vec{y},\vec{z}\rbrace$), relative to the Earth, mapped to  North, West and Up respectively, and a non-inertial frame $S_q - \lbrace \hat{i}_q,\hat{j}_q,\hat{k}_q\rbrace$ ($\lbrace \vec{x}_q,\vec{y}_q,\vec{z}_q\rbrace$) relative to the quadrotor. The mapping of one frame to the other can be achieved by applying the three rotations shown in figure \refp{fig:rotaciones}. The angles $\lbrace \theta, \varphi, \psi\rbrace$ are known as Euler angles.
+A diagram of the quadrotor is shown in Figure \refp{fig:quad}. Two of the motors rotate clockwise (2 and 4) and the other two (1 and 3) rotate counterclockwise. This configuration allows the quadrotor to rotate, tilt and gain/lose altitud by setting different speeds on each motor. Two frames of reference (Figure \refp{fig:quad}) are constantly used through out this paper: an intertial frame $S_I - \lbrace \hat{i},\hat{j},\hat{k}\rbrace$ ($\lbrace \vec{x},\vec{y},\vec{z}\rbrace$), relative to the Earth, mapped to  North, West and Up respectively, and a non-inertial frame $S_q - \lbrace \hat{i}_q,\hat{j}_q,\hat{k}_q\rbrace$ ($\lbrace \vec{x}_q,\vec{y}_q,\vec{z}_q\rbrace$) relative to the quadrotor. The mapping of one frame to the other can be achieved by applying the three rotations shown in Figure \refp{fig:rotaciones}. The angles $\lbrace \theta, \varphi, \psi\rbrace$ are known as Euler angles.
 
 \subsection{Dynamics-kinematics of the system}
 \label{sec:modelo-dyn-kin}
@@ -488,7 +501,7 @@ From a detailed analysis of the dynamics and kinematics of the quadrotor, the eq
 where:
 \begin{itemize}
 \item $\lbrace x,y,z \rbrace$ represent the position of the center of mass of the system in $S_I$.
-\item $\lbrace\theta,\varphi,\psi\rbrace$ are the Euler angles shown in figure \refp{fig:rotaciones}.
+\item $\lbrace\theta,\varphi,\psi\rbrace$ are the Euler angles shown in Figure \refp{fig:rotaciones}.
 \item $\lbrace v_{q_x},v_{q_y},v_{q_z}\rbrace$ are the linear velocities relative to $S_q$.
 \item $\lbrace w_{q_x},w_{q_y},w_{q_z}\rbrace$ are the angular velocities relative to $S_q$ (right hand rule applied on $\lbrace \hat{i}_q,\hat{j}_q,\hat{k}_q\rbrace$).
 \end{itemize}
@@ -645,11 +658,11 @@ The theory behind a standard Kalman Filter does not hold for a nonlinear system.
 	\label{fig:kalman}
 \end{figure}
 
-In each graphic of figure\refp{fig:kalman} is shown the primary estimation obtained from sensors and the kalman estimation of that state variable for the three Euler angles. As can be seen, the noise is greatly reduced and no delay is introduced.\\
+In each graphic of Figure \refp{fig:kalman} is shown the primary estimation obtained from sensors and the kalman estimation of that state variable for the three Euler angles. As can be seen, the noise is greatly reduced and no delay is introduced.\\
 
 Two different types of data will be available, depending on the availability of GPS information. When no GPS data is available there will be no direct feedback from the sensors to correct the position on the horizontal plane, only through integration, so only the prediction step can be performed for these variables.
 
-%As shown in figure \refp{fig:xyz.pdf}, the estimation will drift until GPS data is available.
+%As shown in Figure \refp{fig:xyz.pdf}, the estimation will drift until GPS data is available.
 
 \section{Control design}
 \label{sec:control}
@@ -662,7 +675,7 @@ To work directly with equations \refp{eq:modelo}, a non-linear control technique
 
 This restricts the system to: Hovering\footnote{Constant state vector.}, uniform linear trajectories, and uniform circular trajectories around the vertical axis. Working with an LTI greatly simplifies the design of the control system and does it not introduce significant limitations.
 
-The control system is shown in figure \refp{fig:diagrama_bloques_eng.pdf}. The feedback matrices have many entries, $K_p$ has 48 and $K_i$ has 16. A \textit{root locus} or \textit{pole-zero} analysis on such a system is not a simple task, additional complications are introduced by the fact that $K_p$ and $K_i$ will change when the trajectory changes, they depend on the linearization of the system. A simple, automated and very commun solution is achieved by means of the LQR algorithm (see e.g.: \cite{bib:lqr-discreto}). In this work an extended state vector that includes the integrals of some state variables was introduce to take into consideration errors in the characterization and modeling of the system.
+The control system is shown in Figure \refp{fig:diagrama_bloques_eng.pdf}. The feedback matrices have many entries, $K_p$ has 48 and $K_i$ has 16. A \textit{root locus} or \textit{pole-zero} analysis on such a system is not a simple task, additional complications are introduced by the fact that $K_p$ and $K_i$ will change when the trajectory changes, they depend on the linearization of the system. A simple, automated and very commun solution is achieved by means of the LQR algorithm (see e.g.: \cite{bib:lqr-discreto}). In this work an extended state vector that includes the integrals of some state variables was introduce to take into consideration errors in the characterization and modeling of the system.
 
 \begin{figure}
 %	\vspace{-60pt}
@@ -685,7 +698,7 @@ A a system which is controllable and observable is guaranteed to be stable and f
 
 where $Q$ and $R$ are positive-definite matrices, weighting the energy of the departure from the objective state and the objective control signal respectively. The choice of $Q$ and $R$ is a trade-off between the error that is tolerated and the energy that the system can use to correct it. In equation \refp{eq:lqr} $\vec{X}_{sp}$ is the objective state and $\vec{U}_{sp}$ is the theoretical control action that is compatible with the state $\vec{X}_{sp}$. Both vectors as well as $\vec{X}$ and $\vec{U}$ are time dependant. 
 
- When the system is a feedback system with known state variables, like the one shown in figure \refp{fig:diagrama_bloques_eng.pdf}, the solution is given by \refp{eq:lqr-sol}:
+ When the system is a feedback system with known state variables, like the one shown in Figure \refp{fig:diagrama_bloques_eng.pdf}, the solution is given by \refp{eq:lqr-sol}:
 
 \begin{equation}
 \begin{array}{c}
@@ -703,7 +716,7 @@ where $P$ is the solution to Riccati's equation:
 \end{equation}
 
 \subsection{Integral effect}
-In this work an integral effect is added over the LQR controller. For this, an expanded state vector is defined $[X^T, X_I^T]^T$. For the controllability and observability hypothesis to hold, only some state variables may be passed through the integral control block: $\dot{X}_I =[x,y,z,\theta]^T$. After making this definitions, the system is re-written in state variables form. The method to obtain the new matrix is the same that explained in \ref{sec:lqr}
+In this work an integral effect is added over the LQR controller. For this, an expanded state vector is defined $[X^T, X_I^T]^T$. For the controllability and observability hypothesis to hold, only some state variables may be passed through the integral control block: $\dot{X}_I =[x,y,z,\theta]^T$. After making this definitions, the system is re-written in state variables form. The method to obtain the new matrix is the same that explained in Section \refp{sec:lqr}
 \section{Software}
 
 \subsection{Architecture}
@@ -734,7 +747,7 @@ The code implements a discrete version of the LQR control system mentioned in \r
 
 \subsection{Basic stability}
 
-During this first stage, the quadrotor was only allowed to move (and correct) one of the following Euler angles: $\{\psi,\phi\}$. The control system was tuned until an acceptable behavior was obtained. This procedure was applied to each angle. Once this stage was completed the quadrotor was able to maintain horizontality by controlling $\{\psi,\phi,\omega_{q_x},\omega_{q_y}\}$. The behavior for the Roll ($\psi$) angle is shown in figure \refp{fig:psimetro}. While in figure \refp{fig:psimetro_psi} is shown the mechanical perturbation imposed to the \emph{Roll} angle, the reaction can be observed in figure \refp{fig:psimetro_w}. From $t_0 = 80.9 s$ to $t_1 =81.3 s$ the perturbation is present. After this, the controller is working freely. The system step response for a step of more than $20^o$ shows a overshoot of $3^o$ or $4^o$ and a rise time of about $0.4\;s$, which means an excellent performance, as can be seen in figure \refp{fig:psimetro_psi}.
+During this first stage, the quadrotor was only allowed to move (and correct) one of the following Euler angles: $\{\psi,\phi\}$. The control system was tuned until an acceptable behavior was obtained. This procedure was applied to each angle. Once this stage was completed the quadrotor was able to maintain horizontality by controlling $\{\psi,\phi,\omega_{q_x},\omega_{q_y}\}$. The behavior for the Roll ($\psi$) angle is shown in Figure \refp{fig:psimetro}. While in Figure \refp{fig:psimetro_psi} is shown the mechanical perturbation imposed to the \emph{Roll} angle, the reaction can be observed in Figure \refp{fig:psimetro_w}. From $t_0 = 80.9 s$ to $t_1 =81.3 s$ the perturbation is present. After this, the controller is working freely. The system step response for a step of more than $20^o$ shows a overshoot of $3^o$ or $4^o$ and a rise time of about $0.4\;s$, which means an excellent performance, as can be seen in Figure \refp{fig:psimetro_psi}.
 \begin{figure}[h!]
   \centering
   \subfloat[Roll angle deviation]{\label{fig:psimetro_psi}
@@ -760,7 +773,7 @@ To verify orientation was correctly maintained, the speed of the motors was redu
   \caption{\textbf{Orientation experiment -} The Yaw angle is deviated from equilibrium and the quadrotor manage to stabilize itself.}
   \label{fig:theta_all}
 \end{figure}
-In the figure \refp{fig:theta_all} is shown the system behavior against a mechanical perturbation (from $t_0 = 59.3 s$ to $t_1 = 60.5 s$) in yaw angle. To rotate, the system must generate a torque in the opposite direction of the perturbation by unbalancing the angular velocity of the motors in pairs: $\omega_1$ and $\omega_3$ in one direction and $\omega_2$ and $\omega_4$ in the other. In this case, the rise time is of about $1.6\;s$, much higher than in the other two Euler angles, which can be permitted as Yaw angle is not such critical for stability. The overshoot obtained is of about 13\% of the step size. 
+In the Figure \refp{fig:theta_all} is shown the system behavior against a mechanical perturbation (from $t_0 = 59.3 s$ to $t_1 = 60.5 s$) in yaw angle. To rotate, the system must generate a torque in the opposite direction of the perturbation by unbalancing the angular velocity of the motors in pairs: $\omega_1$ and $\omega_3$ in one direction and $\omega_2$ and $\omega_4$ in the other. In this case, the rise time is of about $1.6\;s$, much higher than in the other two Euler angles, which can be permitted as Yaw angle is not such critical for stability. The overshoot obtained is of about 13\% of the step size. 
 
 \subsection{Limited Flying}
 \label{sec:results-system-response}
@@ -772,7 +785,7 @@ At this point the three Euler angles are controlled, so a basic level of stabili
 
 
 
-%To ilustrate some results, figure \refp{fig:psi_esc.pdf} shows the step response for $\psi$ during an experiment where this was the only degree of freedom. 
+%To ilustrate some results, Figure \refp{fig:psi_esc.pdf} shows the step response for $\psi$ during an experiment where this was the only degree of freedom. 
 
 Figure \refp{fig:altura.pdf} shows altitude during takeoff from altitude 0m until a target altitude of 1m is achieved. As can be seen, the system presents an overshoot of about a meter, which is considered as acceptable for many applications. 
 
@@ -878,7 +891,7 @@ Figure \refp{fig:altura.pdf} shows altitude during takeoff from altitude 0m unti
 
 \section{Conclusion}
 
-The final plataform implemented is shown in figure \refp{fig:tito}. An acrylic box was added in the bottom of the quadrotor to hold the added intelligence. The GPS is attached at the upper part of the quadrotor, so as it has the best satellite visibility. Aluminum protections were added around all motors and propellers so as damages can be prevented.\\
+The final plataform implemented is shown in Figure \refp{fig:tito}. An acrylic box was added in the bottom of the quadrotor to hold the added intelligence. The GPS is attached at the upper part of the quadrotor, so as it has the best satellite visibility. Aluminum protections were added around all motors and propellers so as damages can be prevented.\\
 
 The two main goals were successfuly achieved. First, the design and implementation of the sensor fusion was accomplished by the integration of all the measurements in a modified Extended Kalman Filter which is used for denoising purposes without introducing delay. In addition a basic controller, capable of stabilizing the system, was implemented based on clasic LQR algorithm and adding extra states to perform also an integral control action. A simplified dynamic model was derived as a first step for both Kalman Filter and controller. \\
 
