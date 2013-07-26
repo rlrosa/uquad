@@ -660,36 +660,36 @@ To work directly with equations \refp{eq:modelo}, a non-linear control technique
   \vec{\dot{X}} = A\vec{X} + B\vec{U}
 \end{equation}
 
-This restricts the system to: Hovering\footnote{Constant state vector.}, uniform linear trajectories, and uniform circular trajectories around the vertical axis. Working with an LTI greatly simplifies the control system and does it not introduce significant limitations.
+This restricts the system to: Hovering\footnote{Constant state vector.}, uniform linear trajectories, and uniform circular trajectories around the vertical axis. Working with an LTI greatly simplifies the design of the control system and does it not introduce significant limitations.
 
-The control system is shown in figure \refp{fig:diagrama_bloques_eng.pdf}. The feedback matrices have many entries, $K_p$ has 48 and $K_i$ has 16. A \textit{root locus} or \textit{pole-zero} analysis on such a system is not a simple task, additional complications are introduced by the fact that $K_p$ and $K_i$ will change when the trajectory changes, they depend on the linearization of the system. A simple, automated and very commun solution is achieved by means of the LQR algorithm\cite{bib:lqr-discreto}. The initial design did not include the $K_i$ term, it was introduced to take into consideration errors in the characterization and modeling of the system.
+The control system is shown in figure \refp{fig:diagrama_bloques_eng.pdf}. The feedback matrices have many entries, $K_p$ has 48 and $K_i$ has 16. A \textit{root locus} or \textit{pole-zero} analysis on such a system is not a simple task, additional complications are introduced by the fact that $K_p$ and $K_i$ will change when the trajectory changes, they depend on the linearization of the system. A simple, automated and very commun solution is achieved by means of the LQR algorithm (see e.g.: \cite{bib:lqr-discreto}). In this work an extended state vector that includes the integrals of some state variables was introduce to take into consideration errors in the characterization and modeling of the system.
 
 \begin{figure}
 %	\vspace{-60pt}
 	\centering
 	\includegraphics[width=1\columnwidth]{./pics_paper/diagrama_bloques_eng.png}
 %	\vspace{-180pt}
-	\caption{\textbf{Control System:} $x_{sp}$ and $u_{sp}$ represent the set-points for the state vector and the speed of each motor. The $K_p$ and $K_i$ blocks are the proportional and integral gain matrices. The output of the system is the current state vector.}
+	\caption{\textbf{Control System:} $X_{sp}$ and $U_{sp}$ represent the set-points for the state vector and the speed of each motor. The $K_p$ and $K_i$ blocks are the proportional and integral gain matrices. The output of the system is the current state vector.}
 	\label{fig:diagrama_bloques_eng.pdf}
 \end{figure}
 
 \subsection{The LQR algorithm}
 \label{sec:lqr}
 
-A a system which is controllable and observable is guaranteed to be stable and for this type of system, the LQR algorithm provides an optimal controller\cite{bib:lqrnotes} by minimizing the following cost function:
+A a system which is controllable and observable is guaranteed to be stable and for this type of system, the LQR algorithm provides an optimal controller (see e.g.: \cite{bib:lqrnotes}) by minimizing the following cost function:
 
 \begin{equation}
 \label{eq:lqr}
-\int_{0}^{\infty}  \vec{X}'(t)Q \vec{X}(t)+\vec{U}'(t)R\vec{U}(t)dt
+\int_{0}^{\infty}  (\vec{X}-\vec{X}_{sp})'Q (\vec{X}-\vec{X}_{sp})+(\vec{U}-\vec{U}_{sp})'R(\vec{U}-\vec{U}_{sp})dt
 \end{equation}
 
-where $Q$ and $R$ are positive-definite matrices, representing the energy of the controlled states and of the control signal, respectively. The choice of $Q$ and $R$ is a trade-off between the error that is tolerated and the energy that the system can use to correct it.
+where $Q$ and $R$ are positive-definite matrices, weighting the energy of the departure from the objective state and the objective control signal respectively. The choice of $Q$ and $R$ is a trade-off between the error that is tolerated and the energy that the system can use to correct it. In equation \refp{eq:lqr} $\vec{X}_{sp}$ is the objective state and $\vec{U}_{sp}$ is the theoretical control action that is compatible with the state $\vec{X}_{sp}$. Both vectors as well as $\vec{X}$ and $\vec{U}$ are time dependant. 
 
  When the system is a feedback system with known state variables, like the one shown in figure \refp{fig:diagrama_bloques_eng.pdf}, the solution is given by \refp{eq:lqr-sol}:
 
 \begin{equation}
 \begin{array}{c}
-\vec{U}(t)-\vec{U}^*(t) = -K(\vec{X}(t)-\vec{X}^*(t))\\
+\vec{U}(t)-\vec{U}_{sp}(t) = -K(\vec{X}(t)-\vec{X}_{sp}(t))\\
 \\
 K = R^{-1}B^TP
 \end{array}
@@ -712,9 +712,9 @@ In this work an integral effect is added over the LQR controller. For this, an e
 The software runs on several independent boards:
 
 \begin{itemize}
-\item \textbf{Flight controller:} Run by an ARM-Cortex-A8. Processes the data from the IMU, calculates the necessary control actions, and sets the desired speed for each motor by sending the appropriate commands, via $I^2C$, to the ESCs. It requires Linux specific \textit{C} functions to handle I/O. It was developed in modules, replacing any part of it should be a straightforward task. The most critical aspect of the flight controller is timing, any delays will severely degrade the performance of the system.
+\item \textbf{Flight controller:} Run by an ARM-Cortex-A8. Processes the data from the IMU, calculates the necessary control actions, and sets the desired speed for each motor by sending the appropriate commands, via $I^2C$, to the ESCs. It requires Linux specific \textit{C} functions to handle I/O. The design of the flight controller is modular, thus replacing any part of it should be a straightforward task. The most critical aspect of the flight controller is timing, any delays will severely degrade the performance of the system.
 \item \textbf{IMU:} Uses an ATMega328p on the IMU. The firmware on the IMU takes care of reading from all the sensors (using $I^2C$) and sending a new frame of data every 10ms over a UART.
-\item \textbf{ESCs:} Four microprocessors\footnote{C8051F330/1 - Silicon Labs.}, one for each motor The code running on the ESCs is not available, but the communication protocol was decoded using a logic analyzer.
+\item \textbf{ESCs:} Four microprocessors\footnote{C8051F330/1 - Silicon Labs.}, one for each motor.
 \end{itemize}
 
 The flight controller is accesed via an \textit{ssh} session over \textit{WiFi}. Once logged in, the flight controller software can be compiled and executed.
@@ -724,7 +724,7 @@ The flight controller is accesed via an \textit{ssh} session over \textit{WiFi}.
 
 The code implements a discrete version of the LQR control system mentioned in \refp{sec:control}, based on a discretization of the model described in \refp{sec:modelo}. There are some practical considerations worth mentioning:
 \begin{itemize}
-\item \textbf{Saturation:} The integral term saturates it is designed to compensate for small errors in characterization/modelling and should never grow too much. Large differences between the current state and the set-point should be handled by the proportional term.
+\item \textbf{Anti-wind-up:} In order to avoid divergency of integral terms an Anti-wind-up algorithm was implemented.
 \item \textbf{Limiting:} The control block sets $\vert \vec{X} - \vec{X}_{sp}\vert < \vert \vec{X}_{th} \vert$ to avoid attempts to perform actions that the system cannot handle.
 \end{itemize}
 
@@ -734,7 +734,7 @@ The code implements a discrete version of the LQR control system mentioned in \r
 
 \subsection{Basic stability}
 
-During this first stage, the quadrotor was only allowed to move (and correct) one of the following Euler angles: $\{\psi,\phi\}$. The control system was tuned until an acceptable behavior was obtained. This procedure was applied to each angle. Once this stage was completed the quadrotor was able to maintain horizontality by controlling $\{\psi,\phi,\omega_{q_x},\omega_{q_y}\}$. The behavior for the Roll ($\psi$) angle is shown in figure \refp{fig:psimetro}. While in figure \refp{fig:psimetro_psi} is shown the mechanical perturbation imposed to the \emph{Roll} angle, the reaction can be observed in figure \refp{fig:psimetro_w}. From $t_0 = 80.9 s$ to $t_1 =81.3 s$ the perturbation is present. In figure \ref{fig:psimetro_w} the response of the controller is adecuate, yet inefficient because the model considered did not take account of this kind of effect. After this, the controller is working freely. The system step response for a step of more than $20^o$ shows a overshoot of $3^o$ or $4^o$ and a rise time of about $0.4\;s$, which means an excellent performance, as can be seen in figure \refp{fig:psimetro_psi}.
+During this first stage, the quadrotor was only allowed to move (and correct) one of the following Euler angles: $\{\psi,\phi\}$. The control system was tuned until an acceptable behavior was obtained. This procedure was applied to each angle. Once this stage was completed the quadrotor was able to maintain horizontality by controlling $\{\psi,\phi,\omega_{q_x},\omega_{q_y}\}$. The behavior for the Roll ($\psi$) angle is shown in figure \refp{fig:psimetro}. While in figure \refp{fig:psimetro_psi} is shown the mechanical perturbation imposed to the \emph{Roll} angle, the reaction can be observed in figure \refp{fig:psimetro_w}. From $t_0 = 80.9 s$ to $t_1 =81.3 s$ the perturbation is present. After this, the controller is working freely. The system step response for a step of more than $20^o$ shows a overshoot of $3^o$ or $4^o$ and a rise time of about $0.4\;s$, which means an excellent performance, as can be seen in figure \refp{fig:psimetro_psi}.
 \begin{figure}[h!]
   \centering
   \subfloat[Roll angle deviation]{\label{fig:psimetro_psi}
@@ -880,16 +880,13 @@ Figure \refp{fig:altura.pdf} shows altitude during takeoff from altitude 0m unti
 
 The final plataform implemented is shown in figure \refp{fig:tito}. An acrylic box was added in the bottom of the quadrotor to hold the added intelligence. The GPS is attached at the upper part of the quadrotor, so as it has the best satellite visibility. Aluminum protections were added around all motors and propellers so as damages can be prevented.\\
 
-The two main goals were successfuly achieved. First, the design and implementation of the sensor fusion was accomplished by the integration of all the measurements in an Extended Kalman Filter which is used for denoising purposes without introducing delay. In addition a basic controller, capable of stabilizing the system, was implemented based on LQR algorithm. A simplified dynamic model was derived as a first step for both Kalman Filter and controller. \\
+The two main goals were successfuly achieved. First, the design and implementation of the sensor fusion was accomplished by the integration of all the measurements in a modified Extended Kalman Filter which is used for denoising purposes without introducing delay. In addition a basic controller, capable of stabilizing the system, was implemented based on clasic LQR algorithm and adding extra states to perform also an integral control action. A simplified dynamic model was derived as a first step for both Kalman Filter and controller. \\
 
 The Extended Kalman Filter implemented gave very good results for all the state variables except for the linear velocities on axes $\{i_q,\;j_q\}$. The main reason is that a velocity sensor is not available, thus, it can only be infered by integrating the accelerations. Therefore, an extra sensor should be used (i.e. a more accurate GPS) or a more sophisticated algorithm should be develped. \\
 
-The controller was successfully tested for attitude and height. Due to lack of precision of mentioned velocities this information is not used. However, several simulations were made assuming that a proper velocity estimation is available and the designed controller proved to work properly. With a similar controller the quadrotor is able to perform some other trajectories. However, if a nonlinear controller is implemented the possibilities are virtually infinity.\\
+The controller was successfully tested for attitude and height. Due to lack of precision of mentioned velocities this information is not used. However, several simulations were made assuming that a proper velocity estimation is available and the designed controller proved to work properly.\\
 
-allowing the quadrotor to perform tasks such as power line inspection, surveillance, assistance during natural disasters, etc.
-
-The doors are open for future projects to add additional levels of intelligence, however it will be necessary to perform a major improvement. The choice of implementing the flight controller on an operating system that does not run in real-time made timing a complicated issue. These issues were overcome, yet assigning additional tasks to the system will surely disrupt timing. Porting the stabilization system, which requires a very fast and steady loop, to a dedicated microprocessor would be a significant improvement. It would allow the code running on top of the operating system to perform higher level tasks, such as Visual Simultaneous Localization and Mapping (VSLAM), navigation, tracking, power line inspection, surveillance, assistance during natural disasters, etc.
-
+An experimental platform for future research was design and built, its modular design is a very important feature in this perspective, since the replacement of any part is a straightforward task.
  
 
 %\subsection{Future Work}
@@ -897,7 +894,7 @@ The doors are open for future projects to add additional levels of intelligence,
 %\item The LotusRC ESCs proved to be extremely unreliable\footnote{Several versions were tested, all of then showed the same issues.} and severely delayed the project. Replacing the ESCs is a critical task.
 %\item 
 %\item The fact that the system does not work in a windy environment severly limits the range of possible applications, solving this issue by either reducing the aerodynamic resistance or implementing a different control system would be a significant improvement.
-%TODO paper q dijo el pater del viento.
+
 %\end{itemize}
 
 

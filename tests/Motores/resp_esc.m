@@ -1,8 +1,8 @@
-close all
+cd ccclose all
 clear all
 clc
 
-F = fopen('escalon.vcd');
+F = fopen('escalon_dos.vcd');
 D = textscan(F,'%s','delimiter','\n');
 fclose(F);
 
@@ -19,6 +19,7 @@ for i=1:length(daux)
 end
 
 subidas = t(1:2:end)*1e-8;  % Tiempos de los flancos de subida
+subidas = subidas(diff(subidas)>3e-3); % Para eliminar ruidos
 rise    = diff(subidas);    % Diferencia entre tiempos de los flacos de subida
 w       = [0;pi./rise];     % Velocidad angular de giro (rad/seg)
 
