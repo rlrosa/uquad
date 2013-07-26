@@ -448,26 +448,26 @@ This paper presents a way to calibrate different inertial measurement sensors. I
 \IEEEpeerreviewmaketitle
 
 \section{Introduction}
-The development of the Microelectromechanical Systems(MEMS) technology has allowed to manufacture many low-cost chip-sensors, such as accelerometers, gyroscopes and magnetometeres. Those chips have been adopted in many applications, for instance Inertial Navigation Systems (INS)\cite{bib:paper}. However this sensors have many error sources, thus they must be calibrated before being used and they should be re-calibrated peridoically for any precission application. The different sources of error will be analysed in more detail in section \ref{sec:modelo} and the implications of those errors will be derived.\\ 
+The development of the Micro-electromechanical Systems(MEMS) technology has allowed to manufacture many low-cost chip-sensors, such as accelerometers, gyroscopes and magnetometers. Those chips have been adopted in many applications, for instance Inertial Navigation Systems (INS)\cite{bib:paper}. However this sensors have many error sources, thus they must be calibrated before being used and they should be re-calibrated periodically for any precision application. The different sources of error will be analysed in more detail in section \refp{sec:modelo} and the implications of those errors will be derived.\\ 
 
-The calibration proposed in this paper is tested on a 3-axis accelerometer ADXL345 of Analog Devices and a 3-axis gyroscope ITG-3200  of InvenSense, yet the model developed and the methodology can be used in other devices because the model is based on comun characteristics of MEMS sensors. The sensors named before are included in a Inertial Measurment Unit(IMU): The Mongoose (figure \ref{fig:mongoose}). \\
+The calibration proposed in this paper is tested on a 3-axis accelerometer ADXL345 of Analog Devices and a 3-axis gyroscope ITG-3200  of InvenSense, yet the model developed and the methodology can be used in other devices because the model is based on common characteristics of MEMS sensors. The sensors named before are included in a Inertial Measurement Unit(IMU): The Mongoose (figure \refp{fig:mongoose}). \\
 
 
-The first step of the calibration is to obtain the static parameters of the devices for the ambience temperautre. This step is based on knowing the exact orientation of the IMU for the calibration of both sensors and the exact angular speed for the gyroscope calibration. Other related works waive this requirement\cite{bib:calib_imu} and \cite{bib:kalman} and uses the fact that in any position angular speed(for the gyroscope calibration) and gravity vector (for the accelerometer calibration) are constant.\\
+The first step of the calibration is to obtain the static parameters of the devices for the ambiance temperature. This step is based on knowing the exact orientation of the IMU for the calibration of both sensors and the exact angular speed for the gyroscope calibration. Other related works waive this requirement\cite{bib:calib_imu} and \cite{bib:kalman} and uses the fact that in any position angular speed(for the gyroscope calibration) and gravity vector (for the accelerometer calibration) are constant.\\
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=.6\columnwidth]{./pics_paper/mongoose.png}
-	\caption{\textbf{Mongoose -} Inertial Measurement Unit used. Red arrows represent the axis plataform $S - \{\hat{x}, \hat{y}, \hat{z} \}$. }
+	\caption{\textbf{Mongoose -} Inertial Measurement Unit used. Red arrows represent the axis platform $S - \{\hat{x}, \hat{y}, \hat{z} \}$. }
 	\label{fig:mongoose}
 \end{figure}
 
-We take in consideration a fact that is not usually taken into account in the literature (see \cite{bib:calib_imu}, \cite{bib:kalman}, \cite{bib:calib_imu_dos}): the measures given by this sensors are not independant of the temperature. Many devices that uses MEMS sensors need to work properly in a wide temperature range. In other cases, the temperature in operation of the system is different(for instance due to Joule Effect of the wires near the sensors) than the ambiance temperature in which the sensor was calibrated. Therefore a temperature adjust must be made.
+We take in consideration a fact that is not usually taken into account in the literature (see \cite{bib:calib_imu}, \cite{bib:kalman}, \cite{bib:calib_imu_dos}): the measures given by this sensors are not independent of the temperature. Many devices that uses MEMS sensors need to work properly in a wide temperature range. In other cases, the temperature in operation of the system is different(for instance due to Joule Effect of the wires near the sensors) than the ambiance temperature in which the sensor was calibrated. Therefore a temperature adjust must be made.
    
 \section{Model of the sensors}
 \label{sec:modelo}
 
-As it was stated before, there exist many error sources in MEMS devices. In \cite{bib:calib_imu} two of this sources are mentioned: the nonlinear response of the sensors and the non-orthogonality of the axis of the sensor. In addition we can observe also that it exist an electric noise in the measures (figure \ref{fig:ruido}) and a dependance of the temperature.\\
+As it was stated before, there exist many error sources in MEMS devices. In \cite{bib:calib_imu} two of this sources are mentioned: the nonlinear response of the sensors and the non-orthogonality of the axis of the sensor. In addition we can observe also that it exist an electric noise in the measures (figure \ref{fig:noise}) and a dependence of the temperature.\\
 \vspace{-10pt}
 \begin{figure}[h!]
   \centering
@@ -482,15 +482,15 @@ As it was stated before, there exist many error sources in MEMS devices. In \cit
   \label{fig:noise}
 \end{figure}
 
-In the datasheets of the considered sensors(\cite{bib:acc_data} and \cite{bib:gyro_data}) the effect of nonlinearityis negligible since it represents the $\pm 0.5.\%$  of the full scale for the accelerometer and the $\pm 0.2\%$ for the gyroscope. Therefore we will not consider this effect and after the calibration we must verify that the error due to the nonlinear response is negligeable.\\
+In the datasheets of the considered sensors(\cite{bib:acc_data} and \cite{bib:gyro_data}) the effect of nonlinearities negligible since it represents the $\pm 0.5.\%$  of the full scale for the accelerometer and the $\pm 0.2\%$ for the gyroscope. Therefore we will not consider this effect and after the calibration we must verify that the error due to the nonlinear response is negligible.\\
 %TODO Al final hacer las cuentas para ver que es despreciable.
 
-In figure \ref{fig:noise} we can observe that the electrical noise of the devices is typically 2 bits, this error (according to the datashets \cite{bib:acc_data} and \cite{bib:gyro_data}) correspond to $7.8 mg$ and $0.14 ^{\circ}/s $. The error is not biased, thus we not need to consider it, because several samples are used in any real application and the effect vanishes.\\
+In figure \refp{fig:noise} we can observe that the electrical noise of the devices is typically 2 bits, this error (according to the datasheets \cite{bib:acc_data} and \cite{bib:gyro_data}) correspond to $7.8 mg$ and $0.14 ^{\circ}/s $. The error is not biased, thus we not need to consider it, because several samples are used in any real application and the effect vanishes.\\
 
 Based on the asumption that both sensors have a linear response and considering the non-orthogonality of the axis of the devices we are going to present a standard model for both sensors(see \cite{bib:calib_imu}, \cite{bib:kalman}, \cite{bib:calib_imu_dos}).
 
 \subsection{Accelerometer}
-Due to construction issues the sensitivity axis of the device are generaly not orthogonals. Lets define a platform system as shown in figure \ref{fig:mongoose}. Let $\mathbf{a}^a$ be the true acceleration expressed in the sensitivity axis of the accelerometer and let $\mathbf{a}^p$ be the true acceleration expressed in the platform system. We model this fact by the following linear transformation between the two acceleration vectors:
+Due to construction issues the sensitivity axis of the device are generally not orthogonal. Lets define a platform system as shown in figure \refp{fig:mongoose}. Let $\mathbf{a}^a$ be the true acceleration (meaning the theoretical acceleration measured in $ms^{-2}$) expressed in the sensitivity axis of the accelerometer and let $\mathbf{a}^p$ be the theoretical true acceleration (also measured in $ms^{-2}$) expressed in the platform system. We model this fact by the following linear transformation between the two acceleration vectors:
 
 \begin{equation}
 \mathbf{a}^p = \mathbf{T}_a^p\mathbf{a}^a, \; \mathbf{T}_a^p = \left(\begin{array}{ccc}
@@ -501,7 +501,7 @@ Due to construction issues the sensitivity axis of the device are generaly not o
 \label{eq:nonorto}
 \end{equation}
 
-In equation \ref{eq:nonorto}, scalars $\alpha_{ij}$ represents the rotation of the $i-th$ sensitivity axis of the acelerometer over the $j-th$ axis of the platform system. In figure \ref{fig:nonorto} this relation can be observed graphically. Since those errors are due to the manufacturing process we will assume that they will remain constant long enough.
+In equation \refp{eq:nonorto}, scalars $\alpha_{ij}$ represents the rotation of the $i-th$ sensitivity axis of the accelerometer over the $j-th$ axis of the platform system. In figure \refp{fig:nonorto} this relation can be observed graphically. Since those errors are due to the manufacturing process we will assume that they will remain constant long enough.
 
 \begin{figure}
 	\centering
@@ -510,14 +510,14 @@ In equation \ref{eq:nonorto}, scalars $\alpha_{ij}$ represents the rotation of t
 	\label{fig:nonorto}
 \end{figure}
 
-As it was stated befor, we are considering a linear model between the accleration measured in the sensitivity axis and the true acceleration in the same system. Thus we have:
+As it was stated before, we are considering a linear model between the acceleration measured in the sensitivity axis and the true acceleration in the same system. Thus we have:
 
 \begin{equation}
 \tilde{\mathbf{a}}^a = \mathbf{K}_a\mathbf{a}^a + \mathbf{b}_a
 \label{eq:modlineal}
 \end{equation}
 
-In equation \ref{eq:modlineal}, $\tilde{\mathbf{a}}^a$ is the measure obtained by the accelerometer, $\mathbf{K}_a$ is a diagonal matrix that represents the sensitivity of each axis and $\mathbf{b}_a$ is a vector that represent the bias of each axis. Those parameters may variate as the temperature changes. However, in this stage we are going to consider them constant. Using equations \ref{eq:nonorto} and \ref{eq:modlineal} we can stablish a model of the acelerometer:
+In equation \refp{eq:modlineal}, $\tilde{\mathbf{a}}^a$ is the measure obtained by the accelerometer (measured in bits), $\mathbf{K}_a$ is a diagonal matrix that represents the sensitivity of each axis and $\mathbf{b}_a$ is a vector that represent the bias of each axis. Those parameters may variate as the temperature changes. However, in this stage we are going to consider them constant. Using equations \refp{eq:nonorto} and \refp{eq:modlineal} we can establish a model of the accelerometer:
 
 \begin{equation}
 \tilde{\mathbf{a}}^a = \mathbf{K}_a\mathbf{T}_p^a\mathbf{a}^p + \mathbf{b}_a = \mathbf{K}_a(\mathbf{T}_a^p)^{-1}\mathbf{a}^p + \mathbf{b}_a 
@@ -555,7 +555,7 @@ As adjust criterium we choose to minimize the sum of the squares of the norms of
 
 In equation \ref{eq:calib_problem}, $M$ is the cardinal of the training set, $\mathbf{s}_i^p$ is the true magnitude (acceleration or angular speed) and $\tilde{\mathbf{s}}_i$ are the values given by the sensor.\\
 
-It is important to consider that the function that we want to minimize will generally have more than one local minimum. Thus, we can only assure that the optimum found by algorithms is a local optimum. To ensure that the solution obtained is the desired one, we need to choose carefully the seed for the algorithm. Tipically we will choose a vector $\boldsymbol{\theta}_0$ that is close to the values of the unknow parameters. Even if we do not know the exact value of the model's parameters, the datasheet of the different sensors can give us a very good clue about those values.\\
+It is important to consider that the function that we want to minimize will generally have more than one local minimum. Thus, we can only assure that the optimum found by algorithms is a local optimum. To ensure that the solution obtained is the desired one, we need to choose carefully the seed for the algorithm. Typically we will choose a vector $\boldsymbol{\theta}_0$ that is close to the values of the unknown parameters. Even if we do not know the exact value of the model's parameters, the datasheet of the different sensors can give us a very good clue about those values.\\
 
 \subsubsection{Accelerometer}
 \label{subsec:acc}
