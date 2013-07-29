@@ -605,7 +605,7 @@ g\\
 \end{equation}
 \end{scriptsize}
 
-\item Starting position: $z$ axis pointing ``up'': 10 measures were combining two rotations. First, rotating around the $y$ axis: $\phi =0^\circ, -10^\circ, -20^\circ, -30^\circ, -45^\circ$. Then, for each angle defined(except for $\phi = 0^\circ$), two measures were made rotating around the $z$ axis $\theta = 0^\circ, 45^\circ$.   \end{itemize}
+\item Starting position: $z$ axis pointing ``up'': 10 measures were made combining two rotations. First, rotating around the $y$ axis: $\phi =0^\circ, -10^\circ, -20^\circ, -30^\circ, -45^\circ$. Then, for each angle defined(except for $\phi = 0^\circ$), two measures were made rotating around the $z$ axis $\theta = 0^\circ, 45^\circ$.   \end{itemize}
 
 \begin{scriptsize}
 \begin{equation}
@@ -728,11 +728,12 @@ It is interesting to compare the values obtained with the theoretical values of 
 The mean error, and the standar deviation founded with the calibration method proposed in the test set are:
 
 \begin{equation}
-\mu = -0.03ms^{-1}, \; \sigma = 0.06ms^{-1}
+\mu = -0.03ms^{-2}, \; \sigma = 0.06ms^{-2}
 \end{equation}
 
-The mean error obtained correspond to less that a bit of error and the standard deviation to a bit and a half. Therefore we can conlude that a very good calibration has been achived for the static parameters of the accelerometer. 
+The mean error obtained correspond to less that a bit of error and the standard deviation to a bit and a half. Therefore we can conlude that a very good calibration has been achived for the static parameters of the accelerometer.\\
 
+At first appearence it does not seems right that the accuracy of the results is comparable with the instrument resultion. However, this fact can be explain because the effect of electrical noise. Let's supose that the true acceleration correspond to $128.2$ bits. If the accelerometer was ideal a constant lecture of $128$ bits would be obtained. However, due to the electrical noise the value of the measure obtained varies typically one or two bits (see Figure \refp{fig:noise}). Those variations are not uniform, on the contrary: they depend on the true value of the acceleration. In the considered case the value $128$ will be more commun that the value $129$, yet if the true acceleration correspond to $128.74$ bits, the opposite would happen. To sum up, the electrical noise behaves in a way that depe0nds on the true value of the acceleration. Thus, taking an average of almost $20000$ samples per measure ($20$ seconds of data), the obtained value is more accurate than the reslution of the instrument is obtained. 
 
 
 \subsection{Temperature adjust}
