@@ -442,12 +442,11 @@ This paper presents a way to calibrate different inertial measurement sensors. I
 \IEEEpeerreviewmaketitle
 
 \section{Introduction}
-The development of the Micro-electromechanical Systems (MEMS) technology has allowed to manufacture many low-cost chip-sensors, such as accelerometers, gyroscopes and magnetometers. Those chips have been adopted in many applications, for instance Inertial Navigation Systems (INS), \cite{bib:paper}. However this sensors have many error sources, thus, they must be calibrated before being used and they should be re-calibrated periodically for any precision application. The different sources of error will be analysed in more detail in Section \refp{sec:modelo} and the implications of those errors will be derived.\\ 
+The development of the Micro-electromechanical Systems (MEMS) technology has allowed to manufacture many low-cost chip-sensors, such as accelerometers, gyroscopes and magnetometers. Those chips have been adopted in many applications, for instance Inertial Navigation Systems (INS), \cite{bib:paper}. However this sensors have many error sources, thus, they must be calibrated before being used and they should be re-calibrated periodically for any precision application. The different sources of error will be analyzed in more detail in Section \refp{sec:modelo} and the implications of those errors will be derived.\\
 
-The calibration proposed in this paper is tested on a 3-axis accelerometer ADXL345 of Analog Devices and a 3-axis gyroscope ITG-3200  of InvenSense, yet the model developed and the methodology can be used in other devices because the model is based on common characteristics of MEMS sensors. The sensors named before are included in a Inertial Measurement Unit(IMU): The Mongoose (Figure \refp{fig:mongoose}). \\
+The calibration proposed in this paper is tested on a 3-axis accelerometer \emph{ADXL345} of \emph{Analog Devices} and a 3-axis gyroscope \emph{ITG-3200} of \emph{InvenSense}, yet the model developed and the methodology can be used in other devices because the model is based on common characteristics of MEMS sensors. The sensors named before are included in a Inertial Measurement Unit (IMU): \emph{The Mongoose} (Figure \refp{fig:mongoose}).\\
 
-
-The first step of the calibration is to obtain the static parameters of the devices for the ambiance temperature. This step is based on knowing the exact orientation of the IMU for the calibration of both sensors and the exact angular speed for the gyroscope calibration. Other related works waive this requirement\cite{bib:calib_imu} and \cite{bib:kalman} and uses the fact that in any position angular speed(for the gyroscope calibration) and gravity vector (for the accelerometer calibration) are constant.\\
+The first step of the calibration is to obtain the static parameters of the devices for the ambiance temperature. This step is based on knowing the exact orientation of the IMU for the calibration of both sensors and the exact angular speed for the gyroscope calibration. Other related works waive this requirement\cite{bib:calib_imu, bib:kalman} and uses the fact that in any position angular speed (for the gyroscope calibration) and gravity vector (for the accelerometer calibration) are constant.\\
 
 \begin{figure}[h]
 	\centering
@@ -481,7 +480,7 @@ In the datasheets of the considered sensors(\cite{bib:acc_data} and \cite{bib:gy
 
 In Figure \refp{fig:noise} we can observe that the electrical noise of the devices is typically 2 bits, this error (according to the datasheets \cite{bib:acc_data} and \cite{bib:gyro_data}) correspond to $7.8 mg$ and $0.14 ^{\circ}/s $. The error is not biased, thus we not need to consider it, because several samples are used in any real application and the effect vanishes.\\
 
-Based on the asumption that both sensors have a linear response and considering the non-orthogonality of the axis of the devices we are going to present a standard model for both sensors(see \cite{bib:calib_imu}, \cite{bib:kalman}, \cite{bib:calib_imu_dos}).
+Based on the assumption that both sensors have a linear response and considering the non-orthogonality of the axis of the devices we are going to present a standard model for both sensors(see \cite{bib:calib_imu}, \cite{bib:kalman}, \cite{bib:calib_imu_dos}).
 
 \subsection{Accelerometer}
 Due to construction issues the sensitivity axis of the device are generally not orthogonal. Lets define a platform system as shown in Figure \refp{fig:mongoose}. Let $\mathbf{a}^a$ be the true acceleration (meaning the theoretical acceleration measured in $ms^{-2}$) expressed in the sensitivity axis of the accelerometer and let $\mathbf{a}^p$ be the theoretical true acceleration (also measured in $ms^{-2}$) expressed in the platform system. We model this fact by the following linear transformation between the two acceleration vectors:
@@ -702,16 +701,15 @@ In equation \refp{eq:calib_temp}, $N$ is the number of samples took, $\mathbf{T}
 
 \section{Results and analysis}
 \subsection{Static parameters}
-In this section, the parameters that solve problem \ref{eq:calib_problem} are presented for both accelerometer and gyroscope. In addition, the statistic over the test set is studied and analysed. \\
+In this section, the parameters that solve problem \ref{eq:calib_problem} are presented for both accelerometer and gyroscope. In addition, the statistic over the test set is studied and analyzed. \\
 
 \subsubsection{Accelerometer}
 The parameter vector found in this case is:
-\begin{equation}
-\boldsymbol{\theta}_a = \begin{array}{c}
-[26.70, 27.26, 26.02, 16.05, -1.79, -47.99,\\
- 3,78\times 10^{-4}, 1.40\times 10^{-3}, 1.63 \times 10^{-2},  4,62 \times 10^{-3},\\ -2.30\times 10^{-3}, -6.81 \times 10^{-3}
-\end{array}]^T
-\end{equation}
+\begin{eqnarray}
+\boldsymbol{\theta}_a &=& [26.70, 27.26, 26.02, 16.05, -1.79, -47.99,\\ \nonumber
+&& 3,78\times 10^{-4}, 1.40\times 10^{-3}, 1.63 \times 10^{-2},  4.62 \times 10^{-3},\\ \nonumber
+&& -2.30\times 10^{-3}, -6.81 \times 10^{-3}]^T \nonumber
+\end{eqnarray}
 
 It is interesting to compare the values obtained with the theoretical values of each parameter. As we can see, comparing the vector obtained with the seed, the values of the gains and the rotations are similar to what is declared in the datasheets. However the offset values obtained differ considerably from the information of the datasheet (see \cite{bib:acc_data}), where is declared that the 0g output deviation from ideal is $\pm 35 mg$ for axes $x$ and $y$ and $\pm 40mg$ for axis $z$. This means that the offsets should be less than $11$ bits, therefore a difference between the results obtained in the calibration and what is stated in the datasheet of the sensor exists.\\
 
@@ -723,7 +721,7 @@ The mean error, and the standar deviation founded with the calibration method pr
 
 The mean error obtained correspond to less that a bit of error and the standard deviation to a bit and a half. Therefore we can conlude that a very good calibration has been achived for the static parameters of the accelerometer.\\
 
-At first appearence it does not seems right that the accuracy of the results is comparable with the instrument resultion. However, this fact can be explain because the effect of electrical noise. Let's supose that the true acceleration correspond to $128.2$ bits. If the accelerometer was ideal a constant lecture of $128$ bits would be obtained. However, due to the electrical noise the value of the measure obtained varies typically one or two bits (see Figure \refp{fig:noise}). Those variations are not uniform, on the contrary, they depend on the true value of the acceleration. In the considered case the value $128$ will be more commun that the value $129$, yet if the true acceleration correspond to $128.74$ bits, the opposite would happen. To sum up, the electrical noise behaves in a way that depe0nds on the true value of the acceleration. Thus, taking an average of almost $20000$ samples per measure ($20$ seconds of data), the obtained value is more accurate than the reslution of the instrument is obtained. \\
+At first appearance it does not seems right that the accuracy of the results is comparable with the instrument resolution. However, this fact can be explain because the effect of electrical noise. Let's suppose that the true acceleration correspond to $128.2$ bits. If the accelerometer was ideal a constant lecture of $128$ bits would be obtained. However, due to the electrical noise the value of the measure obtained varies typically one or two bits (see Figure \refp{fig:noise}). Those variations are not uniform, on the contrary, they depend on the true value of the acceleration. In the considered case the value $128$ will be more common that the value $129$, yet if the true acceleration correspond to $128.74$ bits, the opposite would happen. To sum up, the electrical noise behaves in a way that depends on the true value of the acceleration. Thus, taking an average of almost $20000$ samples per measure ($20$ seconds of data), the obtained value is more accurate than the resolution of the instrument is obtained. \\
 
 
 \subsubsection{Gyroscope}
@@ -759,7 +757,7 @@ To evaluate the behavior of the measurement of the accelerometer and compensate 
 
 \balance
 In Figure \refp{fig:resultado_temp} is shown the behavior of the calibrated measurement of the accelerometer in z-axis while the sensor is heated up, both with and without temperature compensation. It is clearly shown that the compensated temperature is much more reliable than the other one, that is varying a 3\% of the highest value. Otherwise, in Figure \refp{fig:bajada} the second part of the experiment is shown, letting the sensor cool down up to normal operating temperature. Two different magnitudes are shown at the same time: the three accelerations and the temperature, thus two axes are needed to be shown: on left side the acceleration in $ms^{-2}$, and on right side the temperature in $^oC$.\\
-In Figure \refp{fig:resultado_temp} can be observed that at about the end of the experiment the sensor output is $9.25ms^{-2}$ instead of $9.81ms^{-2}$, which means an error of $0.56ms^{-2}$. Such an error in acceleration measurements can cause several errors while trying to control the quadrotor, thus is vital that temperature compensation is performed.
+In Figure \refp{fig:resultado_temp} can be observed that at about the end of the experiment the sensor output is $9.25ms^{-2}$ instead of $9.81ms^{-2}$, which means an error of $0.56ms^{-2}$. Such an error in acceleration measurements can cause several errors in applications where the operating temperature can differ from the calibration temperature, thus, is vital that temperature compensation is performed.
 
 
 \section{Conclusion}
