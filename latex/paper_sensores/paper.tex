@@ -366,6 +366,12 @@ Universidad de la República\\
 Montevideo, Uruguay\\
 spaternain@gmail.com}
 \and
+\IEEEauthorblockN{Rodrigo Rosa}
+\IEEEauthorblockA{Facultad de Ingeniería\\
+Universidad de la República\\
+Montevideo, Uruguay\\
+rodrigorosa.LG@gmail.com}
+\and
 \IEEEauthorblockN{Mat\'ias Tailani\'an}
 \IEEEauthorblockA{Facultad de Ingeniería\\
 Universidad de la República\\
@@ -416,7 +422,7 @@ canetti@fing.edu.uy}
 
 \begin{abstract}
 %\boldmath
-This paper presents a way to calibrate different inertial measurement sensors. In particular we present the calibration of an accelerometer and a gyroscope using least square. A model of the sensors is presented based on the main errors that MEMS devices present, a calibration method is proposed for the static parameters of the model. Finally a temperature adjust is made.  
+This paper presents a way to calibrate different inertial measurement sensors. In particular we present the calibration of an accelerometer and a gyroscope using nonlinear least squares. A model of the sensors is presented based on the main errors that MEMS devices present, a calibration method is proposed for the static parameters of the model. Finally a temperature adjust is made.  
 % -cambio-
 \end{abstract}
 % IEEEtran.cls defaults to using nonbold math in the Abstract.
@@ -442,7 +448,7 @@ This paper presents a way to calibrate different inertial measurement sensors. I
 \IEEEpeerreviewmaketitle
 
 \section{Introduction}
-The development of the Micro-electromechanical Systems(MEMS) technology has allowed to manufacture many low-cost chip-sensors, such as accelerometers, gyroscopes and magnetometers. Those chips have been adopted in many applications, for instance Inertial Navigation Systems (INS)\cite{bib:paper}. However this sensors have many error sources, thus they must be calibrated before being used and they should be re-calibrated periodically for any precision application. The different sources of error will be analysed in more detail in section \refp{sec:modelo} and the implications of those errors will be derived.\\ 
+The development of the Micro-electromechanical Systems (MEMS) technology has allowed to manufacture many low-cost chip-sensors, such as accelerometers, gyroscopes and magnetometers. Those chips have been adopted in many applications, for instance Inertial Navigation Systems  (INS)\cite{bib:un_puto_nuevo}. However this sensors have many error sources, thus they must be calibrated before being used and they should be re-calibrated periodically for any precision application. The different sources of error will be analysed in more detail in section \refp{sec:modelo} and the implications of those errors will be derived.\\ 
 
 The calibration proposed in this paper is tested on a 3-axis accelerometer ADXL345 of Analog Devices and a 3-axis gyroscope ITG-3200  of InvenSense, yet the model developed and the methodology can be used in other devices because the model is based on common characteristics of MEMS sensors. The sensors named before are included in a Inertial Measurement Unit(IMU): The Mongoose (figure \refp{fig:mongoose}). \\
 
