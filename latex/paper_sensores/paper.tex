@@ -446,7 +446,6 @@ The development of the Micro-electromechanical Systems (MEMS) technology has all
 
 The calibration proposed in this paper is tested on a 3-axis accelerometer ADXL345 of Analog Devices and a 3-axis gyroscope ITG-3200  of InvenSense, yet the model developed and the methodology can be used in other devices because the model is based on common characteristics of MEMS sensors. The sensors named before are included in a Inertial Measurement Unit(IMU): The Mongoose (figure \refp{fig:mongoose}). \\
 
-The calibration proposed in this paper is tested on a 3-axis accelerometer \emph{ADXL345} of \emph{Analog Devices} and a 3-axis gyroscope \emph{ITG-3200} of \emph{InvenSense}, yet the model developed and the methodology can be used in other devices because the model is based on common characteristics of MEMS sensors. The sensors named before are included in a Inertial Measurement Unit (IMU): \emph{The Mongoose} (Figure \refp{fig:mongoose}).\\
 
 The first step of the calibration is to obtain the static parameters of the devices for the ambiance temperature. This step is based on knowing the exact orientation of the IMU for the calibration of both sensors and the exact angular speed for the gyroscope calibration. Other related works waive this requirement\cite{bib:calib_imu, bib:kalman} and uses the fact that in any position angular speed (for the gyroscope calibration) and gravity vector (for the accelerometer calibration) are constant.\\
 
@@ -640,7 +639,7 @@ First of all, we attached the platform to a wooden cube. This allows us to perfo
 As it was stated in \refp{sec:modelo} the problem \refp{eq:calib_problem} may have more than one local minimum, thus we need to assure that the seed of the algorithm is ``near'' of the values of the parameters. The proposed way to generate such a seed is to use some information of the sensor's datasheet\cite{bib:acc_data}: 
 
 \begin{itemize}
-\item The typical sensitivity for each axis is $256 bits/g \approx 26.10 m^{s-2}$.
+\item The typical sensitivity for each axis is $256 bits/g \approx 26.10 bits / m^{s-2}$.
 \item The typical offset for each axis is $0 ms^{-2}$.
 \item As the axis should be as orthogonal as possible is reasonable to think that the rotation angles $\alpha_{aij}$ are near zero. 
 \end{itemize}
