@@ -333,7 +333,7 @@
 % \url{my_url_here}.
 
 
-
+\usepackage{balance}
 
 
 % *** Do not adjust lengths that control margins, column widths, etc. ***
@@ -407,12 +407,8 @@ canetti@fing.edu.uy}
 %\IEEEauthorblockA{\IEEEauthorrefmark{4}Tyrell Inc., 123 Replicant Street, Los Angeles, California 90210--4321}}
 
 
-
-
 % use for special paper notices
 %\IEEEspecialpapernotice{(Invited Paper)}
-
-
 
 
 % make the title area
@@ -451,37 +447,40 @@ This paper describes the design and integration of an instrumentation and contro
 \section{Introduction}
 % no \IEEEPARstart
 
-A quadrotor platform can be imagined performing countless tasks, such as search and rescue, wild fire suppression, or scientific research\cite{bib:apps}. Many applications are being developed based on such platforms, but how do they fly? An aerial vehicle is inherently unstable, staying still is not a simple task. This paper focuses on the stabilization of a quadrotor, explaining the development of the mathematical model to represent the system, the filtering techniques applied for sensor data fusion and the control system that allows the quadrotor to fly.\\
-STATE OF THE ART\\
+There is an important growth in the interest about unmanned aerial vehicles (UAV) in relation to its capabilities to perform a wide spectrum of tasks as monitoring, surveillance, aerial photography, exploration, delivery, rescue, remote sensing, etc.
+The continuous advances in low power MEMS sensor devices, low power embedded processors, energy storage through efficient electric batteries and electrical motors technologies have been driving forces in the process of implementation of new and more sophisticated devices of this kind, particularly miniature flying robots. Quadrotors UAV is one of the most popular architectures.
+They emerged also as a typical platform for research. There is much research work about path planning and vision towards navigation in unstructured scenarios (e.g.: \cite{bib:tio_cuatro, bib:tio_cinco, bib:tio_seis}), fault tolerant navigation (e.g.:\cite{bib:tio_tres}), path tracking (e.g.: \cite{bib:tio_ocho}), control techniques for UAV such as neural networks \cite{bib:tio_uno}, gain-schedulling \cite{bib:tio_tres}, feedback linearization (e.g.:\cite{bib:tio_seis, bib:tio_siete}), PI control \cite{bib:tio_ocho}, Adaptive Control \cite{bib:tio_dos}, LQR (e.g.: \cite{bib:tio_cinco, bib:lqrnotes}), backstepping control (e.g.:\cite{bib:tio_cuatro}, \cite{bib:tio_seis}), etc.
+If state estimation, path planning or control techniques are to be experimented in a physical setup, an important issue is to have the possibility to gain access to the different blocks of the navigational system. 
+The purpose of this work is to develop the instrumentation and control of an autonomous quadracopter in which is possible to modify and test different state estimation techniques, path planning algorithms and control laws. The solution was reached using a commercial mechanical platform, and design and build an ad-hoc instrumentation and control navigation system.
+An aerial vehicle is inherently unstable, staying still is not a simple task. This paper focuses on the stabilization of a quadrotor, explaining the development of the mathematical model to represent the system, the filtering techniques applied for sensor data fusion and the control system that allows the quadrotor to fly.
+
+\begin{figure}
+%\vspace{-.8cm}
+	\centering
+	\includegraphics[width=.8\columnwidth]{./pics_paper/javi.png}
+	\caption{\textbf{Commercial quadrotor used.}}
+	\label{fig:commercial_quadrotor}
+\end{figure}
+
+\begin{figure}[h!]
+%\vspace{-.8cm}
+	\centering
+	\hspace{10pt}\includegraphics[width=.8\columnwidth]{./pics_paper/diagrama_general.png}
+	\caption{\textbf{General diagram.}}
+	\label{fig:diagrama_tio}
+\end{figure}
 
 \section{System architecture}
 The platform is based on the commercial radio controlled quadrotor shown in Figure \refp{fig:commercial_quadrotor}. The length between opposite propellers is $61.5cm$, the weight is $990g$, and it has $1300g$ of payload. The frame and the Electronic Speed Controllers (ESCs) used for the motors were preserved, whereas the IMU and intelligence were replaced by the flight controller that was developed. A BeagleBoard\footnote{BeagleBoard development board - \url{http://beagleboard.org/}} running Linux\footnote{Angstrom distribution: \url{http://www.angstrom-distribution.org/}} performs the computations required to convert raw data received from the IMU\footnote{\textit{Mongoose} IMU - \url{http://store.ckdevices.com/}} over a UART and combine it using an EKF. The EKF overcomes the problems inherent to each sensor and filters out noise, providing a reliable estimation of the state vector. Once the current state is known, the LQR algorithm is used to derive the control actions required to bring the system to the desired set-point. A complete diagram of the implemented system is shown in Figure \refp{fig:diagrama_tio}.
 
-\begin{figure}[h!]
-%\vspace{-.8cm}
-	\centering
-	\includegraphics[width=.8\columnwidth]{./pics_paper/javi.png}
-	\caption{\textbf{Commercial quadrotor acquired.}}
-	\label{fig:commercial_quadrotor}
-\end{figure}
-
-
-\begin{figure}[h!]
-%\vspace{-.8cm}
-	\centering
-	\includegraphics[width=.8\columnwidth]{./pics_paper/diagrama_tio.png}
-	\caption{\textbf{Complete system block diagram.}}
-	\label{fig:diagrama_tio}
-\end{figure}
-
 % You must have at least 2 lines in the paragraph with the drop letter
 % (should never be an issue)
 %I wish you the best of success.
-
 %\hfill mds
  
 %\hfill January 11, 2007
 The two main goals are to integrate additional sensors and intelligence to the available platform to obtain a state estimation, and design and integrate a control system that, using the state estimation, achieves the autonomous flight.
+
 \section{Model of a quadrotor}
 \label{sec:modelo}
 
@@ -490,22 +489,20 @@ The two main goals are to integrate additional sensors and intelligence to the a
 
 A diagram of the quadrotor is shown in Figure \refp{fig:quad}. Two of the motors rotate clockwise (2 and 4) and the other two (1 and 3) rotate counterclockwise. This configuration allows the quadrotor to rotate, tilt and gain/lose altitud by setting different speeds on each motor. Two frames of reference (Figure \refp{fig:quad}) are constantly used through out this paper: an intertial frame $S_I - \lbrace \hat{i},\hat{j},\hat{k}\rbrace$ ($\lbrace \vec{x},\vec{y},\vec{z}\rbrace$), relative to the Earth, mapped to  North, West and Up respectively, and a non-inertial frame $S_q - \lbrace \hat{i}_q,\hat{j}_q,\hat{k}_q\rbrace$ ($\lbrace \vec{x}_q,\vec{y}_q,\vec{z}_q\rbrace$) relative to the quadrotor. The mapping of one frame to the other can be achieved by applying the three rotations shown in Figure \refp{fig:rotaciones}. The angles $\lbrace \theta, \varphi, \psi\rbrace$ are known as Euler angles.
 
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=.7\columnwidth]{./pics_paper/quad_coord.jpg}
+	\vspace{-5pt}
+	\caption{\textbf{Model of the quadrotor -} The blue arrows represent the inertial reference frame $S_I$, and the red arrows represent the non-inertial reference frame $S_q$. The cyan ``looped'' arrows indicate the direction of rotation of each motor, which rotate at $\omega_i$ and generate a torque $M_i$ opposite to their direction of rotation. The arrows labeled $T_{[1,2,3,4]}$ represent the thrust of the motors. The semicircle and the two yellow spheres indicate the $x_q$ axis of the unit.}
+    %\vspace{-10pt}
+	\label{fig:quad}
+\end{figure}
+
+
 \subsection{Dynamics-kinematics of the system}
 \label{sec:modelo-dyn-kin}
 
 From a detailed analysis of the dynamics and kinematics of the quadrotor, the equations \refp{eq:modelo} are obtained, and the state vector shown in \refp{eq:sv} is built to describe the system at any given time. The variables with subscript \textit{q} are referenced to the quadrotor frame $S_q$, the rest are relative to $S_I$:
-\begin{equation}
-\vec{X}=\left\lbrace  x,y,z, \theta,\varphi,\psi, v_{q_z},v_{q_y},v_{q_z},\omega_{q_x},\omega_{q_y},\omega_{q_z} \right\rbrace
-\label{eq:sv}
-\end{equation}
-where:
-\begin{itemize}
-\item $\lbrace x,y,z \rbrace$ represent the position of the center of mass of the system in $S_I$.
-\item $\lbrace\theta,\varphi,\psi\rbrace$ are the Euler angles shown in Figure \refp{fig:rotaciones}.
-\item $\lbrace v_{q_x},v_{q_y},v_{q_z}\rbrace$ are the linear velocities relative to $S_q$.
-\item $\lbrace w_{q_x},w_{q_y},w_{q_z}\rbrace$ are the angular velocities relative to $S_q$ (right hand rule applied on $\lbrace \hat{i}_q,\hat{j}_q,\hat{k}_q\rbrace$).
-\end{itemize}
-\vspace{10pt}
 \begin{equation}
 \small
 \boxed{\begin{aligned}&\dot{x}\!=\!v_{q_x} \cos \varphi \cos \theta \!+\! v_{q_y} ( \cos \theta \sin \varphi \sin \psi\!-\!\cos \varphi \sin \theta )\\
@@ -530,18 +527,21 @@ where:
 \end{aligned}}
 \label{eq:modelo}
 \end{equation}
-
-\begin{figure}[h!]
-	\centering
-	\includegraphics[width=.7\columnwidth]{./pics_paper/quad_coord.jpg}
-	\vspace{-5pt}
-	\caption{\textbf{Model of the quadrotor -} The blue arrows represent the inertial reference frame $S_I$, and the red arrows represent the non-inertial reference frame $S_q$. The cyan ``looped'' arrows indicate the direction of rotation of each motor, which rotate at $\omega_i$ and generate a torque $M_i$ opposite to their direction of rotation. The arrows labeled $T_{[1,2,3,4]}$ represent the thrust of the motors. The semicircle and the two yellow spheres indicate the $x_q$ axis of the unit.}
-    %\vspace{-10pt}
-	\label{fig:quad}
-\end{figure}
+\begin{equation}
+\vec{X}=\left\lbrace  x,y,z, \theta,\varphi,\psi, v_{q_z},v_{q_y},v_{q_z},\omega_{q_x},\omega_{q_y},\omega_{q_z} \right\rbrace
+\label{eq:sv}
+\end{equation}
+where:
+\begin{itemize}
+\item $\lbrace x,y,z \rbrace$ represent the position of the center of mass of the system in $S_I$.
+\item $\lbrace\theta,\varphi,\psi\rbrace$ are the Euler angles shown in Figure \refp{fig:rotaciones}.
+\item $\lbrace v_{q_x},v_{q_y},v_{q_z}\rbrace$ are the linear velocities relative to $S_q$.
+\item $\lbrace w_{q_x},w_{q_y},w_{q_z}\rbrace$ are the angular velocities relative to $S_q$ (right hand rule applied on $\lbrace \hat{i}_q,\hat{j}_q,\hat{k}_q\rbrace$).
+\end{itemize}
 
 \begin{figure}[h!]
   \centering
+  \vspace{-20pt}
   \subfloat[Rotation 1: Axis $\hat{k}$]{\label{fig:angulos_1}
   		\includegraphics[width=0.3\columnwidth]
   			{../pics_modelo_fisico/angulos_1.png}}
@@ -555,7 +555,7 @@ where:
   \label{fig:rotaciones}
 \end{figure}
 
-The mathematical model developed is similar to the ones presented in \cite{bib:quadrotor-bible, bib:curso_quad}, but also takes into account that the center of gravity of the quadrotor is not at the same height as the propellers. Thus a momentum produced by the gravity force has to be added. While in \cite{bib:curso_quad} the linear velocities are expressed in an inertial frame, in this work are referenced to the quadrotor frame. This choice simplifies the theoretical development and the interpretation of the data provided by the IMU, which is mounted on the quadrotor and hence provides provides accelerations and angular velocities that are relative to $S_q$
+The mathematical model developed is similar to the ones presented in \cite{bib:quadrotor-bible, bib:curso_quad}, but also takes into account that the center of gravity of the quadrotor is not at the same height as the propellers. Thus a momentum produced by the gravity force has to be added. While in \cite{bib:curso_quad} the linear velocities are expressed in an inertial frame, in this work are referenced to the quadrotor frame. This choice simplifies the theoretical development and the interpretation of the data provided by the IMU, which is mounted on the quadrotor and hence provides provides accelerations and angular velocities that are relative to $S_q$.
 
 \section{Sensors}
 
@@ -890,7 +890,7 @@ Figure \refp{fig:altura.pdf} shows altitude during takeoff from altitude 0m unti
 
 
 \section{Conclusion}
-
+\balance
 The final plataform implemented is shown in Figure \refp{fig:tito}. An acrylic box was added in the bottom of the quadrotor to hold the added intelligence. The GPS is attached at the upper part of the quadrotor, so as it has the best satellite visibility. Aluminum protections were added around all motors and propellers so as damages can be prevented.\\
 
 The two main goals were successfuly achieved. First, the design and implementation of the sensor fusion was accomplished by the integration of all the measurements in a modified Extended Kalman Filter which is used for denoising purposes without introducing delay. In addition a basic controller, capable of stabilizing the system, was implemented based on clasic LQR algorithm and adding extra states to perform also an integral control action. A simplified dynamic model was derived as a first step for both Kalman Filter and controller. \\
