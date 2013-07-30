@@ -482,7 +482,7 @@ According to the datasheets of the devices (\cite{bib:acc_data, bib:gyro_data}),
 
 In Figure \refp{fig:noise} we can observe that the electrical noise of the devices is typically 3 LSB (Least Significant Bit) peak to peak, which (according to the datasheets \cite{bib:acc_data, bib:gyro_data}) correspond to $11.7 mg$ and $0.21 ^{\circ}/s $. The error is not biased, thus, we not need to consider it, because many samples are used in the procedure and the effect vanishes.\\
 
-Based on the assumption that both sensors have a linear response and considering the non-orthogonality of the axis of the devices we are going to present a standard model for both sensors(see \cite{bib:calib_imu}, \cite{bib:kalman}, \cite{bib:calib_imu_dos}).
+Based on the assumption that both sensors have a linear response and considering the non-orthogonality of the axis of the devices we are going to present a standard model for both sensors (see \cite{bib:calib_imu}, \cite{bib:kalman}, \cite{bib:calib_imu_dos}).
 
 \subsection{Accelerometer}
 Due to construction issues the sensitivity axis of the device are generally not orthogonal. Lets define a platform system as shown in Figure \refp{fig:mongoose}. Let $\mathbf{a}^a$ be the true acceleration (meaning the theoretical acceleration measured in $ms^{-2}$) expressed in the sensitivity axis of the accelerometer and let $\mathbf{a}^p$ be the theoretical true acceleration (also measured in $ms^{-2}$) expressed in the platform system. The two acceleration vectors are related according to equation \refp{eq:nonorto}:
@@ -546,11 +546,13 @@ As adjust criterion we choose to minimize the sum of the squares of the norms of
 
 In equation \refp{eq:calib_problem}, $M$ is the cardinal of the training set, $\mathbf{s}_i^p$ is the true magnitude (acceleration or angular speed) and $\tilde{\mathbf{s}}_i$ are the values given by the sensor.\\
 
-It is important to consider that the minimize function will generally have more than one local minimum. To ensure that the solution obtained is the desired one, the seed for the algorithm must be carefully chosen. Typically we will choose a vector $\boldsymbol{\theta}_0$ that is close to the values of the unknown parameters. Even if we do not know the exact value of the model's parameters, the datasheet of the different sensors can give us a very good clue about those values.\\
+It is important to consider that the minimize function will generally have more than one local minimum. To ensure that the solution obtained is the desired one, the seed for the algorithm must be carefully chosen. Thus, datasheet values of the parameters are chosen as seed for the optimization.
+
+Typically we will choose a vector $\boldsymbol{\theta}_0$ that is close to the values of the unknown parameters. Even if we do not know the exact value of the model's parameters, the datasheet of the different sensors can give us a very good clue about those values.\\
 
 \subsubsection{Accelerometer}
 \label{subsec:acc}
-Since an accelerometer measures the acceleration in a free fall referential, in static equilibrium it will measure an acceleration that has as norm the gravitational constant of the  earth ($g = 9.81ms^{-2}$), its direction is collinear with the line defined by the position of the accelerometer and the center of the earth and its sense is from the center of the earth towards the position of the accelerometer, meaning ``up''. This allows us to have an exact expression for the acceleration, the procedure proposed consist in measure this magnitude with different orientations of the acceleration and then solve the problem stated in equation \refp{eq:calib_problem}.\\
+Since an accelerometer measures the acceleration in a free fall referential, in static equilibrium it will measure an acceleration that has as norm the gravitational constant of the  earth ($g = 9.81ms^{-2}$), its direction is collinear with the line defined by the position of the accelerometer and the center of the earth and its sense is from the center of the earth towards the position of the accelerometer, meaning ``up''. This allows to have an exact expression for the acceleration, the procedure used consist in measureing magnitude with different orientations of the acceleration and then solve the problem stated in equation \refp{eq:calib_problem}.\\
 
 The 27 measures made were the following:
 \begin{itemize}
@@ -617,9 +619,9 @@ g
 \end{equation}
 \end{scriptsize}
 
-We are not going to use all the 27 measures to do the calibration, instead we use 14 of this measures as a training set and the other 13 as a test set. The 14 measures of acceleration give us 42 different acceleration values (3 for each measure corresponding to each axis), since we want to estimate 12 parameters we consider that is sufficient.\\
+The 27 measures are separated in two sets: 14 used for optimization and 13 as test set.\\
 
-The delicate issue is knowing the exact orientation of the platform, having solve this is very easy to compute the theoretical acceleration that the device should measure in each axis from equations \refp{eq:acc_x}, \refp{eq:acc_y} and \refp{eq:acc_z}.\\
+The key issue is knowing the orientation of the platform. Having solved this, it is easy to compute the theoretical acceleration that the device should measure in each axis from equations \refp{eq:acc_x}, \refp{eq:acc_y} and \refp{eq:acc_z}.\\
 
 First of all, we attached the platform to a wooden cube. This allows us to perform $90^\circ$ rotations, thus if we had an horizontal surface we can take measures with the gravity vector aligned to any of three axis. The horizontal surface was assured using a three leg adjustable table (see Figure \refp{fig:mesa}). In addition this table allows us to perform rotations of known angles using a scaled semicircle and a pendulum as it is shown also in Figure \refp{fig:mesa}. The rotations over the second axis were made using a carpenter's square, therefore we have a proper $45^\circ$ rotation.\\
 
@@ -637,7 +639,7 @@ First of all, we attached the platform to a wooden cube. This allows us to perfo
 	\label{fig:mesa_esquema}
 \end{figure}
 
-As it was stated in \refp{sec:modelo} the problem \refp{eq:calib_problem} may have more than one local minimum, thus we need to assure that the seed of the algorithm is ``near'' of the values of the parameters. The proposed way to generate such a seed is to use some information of the sensor's datasheet\cite{bib:acc_data}: 
+As it was stated in \refp{sec:modelo} the problem \refp{eq:calib_problem} may have more than one local minimum, thus it is needed to assure that the seed of the algorithm is ``near'' of the values of the parameters. The proposed way to generate such a seed is to use some information of the sensor's datasheet\cite{bib:acc_data}: 
 
 \begin{itemize}
 \item The typical sensitivity for each axis is $256 bits/g \approx 26.10 bits / m^{s-2}$.
@@ -645,7 +647,7 @@ As it was stated in \refp{sec:modelo} the problem \refp{eq:calib_problem} may ha
 \item As the axis should be as orthogonal as possible is reasonable to think that the rotation angles $\alpha_{aij}$ are near zero. 
 \end{itemize}
 
-After this considerations the chose seed is:
+After this considerations the chosen seed is:
 \begin{equation}
 {\theta}_0 = [26.10, 26.10, 26.10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]^T
 \end{equation}
@@ -663,7 +665,7 @@ As we did for the accelerometer, we are going to choose a seed based on the info
 \item As the axis should be as orthogonal as possible is reasonable to think that the rotation angles $\alpha_{\omega ij}$ are near zero. 
 \end{itemize}
 
-After this considerations the chose seed is:
+After this considerations the chosen seed is:
 \begin{equation}
 {\theta}_0 = [823.63, 823.63, 823.63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]^T
 \end{equation}
@@ -699,7 +701,7 @@ The conclusion of this sum up information is that the variations of the temperat
 
 In equation \refp{eq:temp} $\mathbf{b}_{s0}$ is the offset vector obtained in the static calibration, $T_0$ is the ambiance temperature in the calibration, $T$ is the working temperature of the system and $\boldsymbol{\alpha}_s$ is the parameter that we need to know to complete the process.\\ 
 
-The procedure to achieve this adjust was take several samples of acceleration (or angular speed) in a fixed position ($z$ axis pointing ``up'' without any rotation), while the sensor was heat up with a hair dryer. The criterion chose was that $\boldsymbol{\alpha}_s$ must minimize the sum of the squares of the norms of the difference between the true acceleration (or angular speed) and the measured acceleration (or angular speed). Mathematically this means:
+The procedure to achieve this adjust was take several samples of acceleration (or angular speed) in a fixed position ($z$ axis pointing ``up'' without any rotation), while the sensor was heat up with a hair dryer. The criterion chosen was that $\boldsymbol{\alpha}_s$ must minimize the sum of the squares of the norms of the difference between the true acceleration (or angular speed) and the measured acceleration (or angular speed). Mathematically this means:
 
 \begin{equation}
 \min_{\boldsymbol{\alpha}_s} = \sum_{k=1}^N ||\mathbf{s}_i^p - \mathbf{T}_{s0}^p(\mathbf{K_{s0}})^{-1}(\tilde{\mathbf{s}}_i^s-\mathbf{b}_s(T))||^2 
@@ -722,7 +724,7 @@ The parameter vector found in this case is:
 
 It is interesting to compare the values obtained with the theoretical values of each parameter. As we can see, comparing the vector obtained with the seed, the values of the gains and the rotations are similar to what is declared in the datasheets. However the offset values obtained differ considerably from the information of the datasheet (see \cite{bib:acc_data}), where is declared that the 0g output deviation from ideal is $\pm 35 mg$ for axes $x$ and $y$ and $\pm 40mg$ for axis $z$. This means that the offsets should be less than $11$ bits, therefore a difference between the results obtained in the calibration and what is stated in the datasheet of the sensor exists.\\
 
-The mean error, and the standar deviation founded with the calibration method proposed in the test set are:
+The mean error, and the standard deviation founded with the calibration method proposed in the test set are:
 
 \begin{equation}
 \mu_a = -0.03ms^{-2}, \; \sigma_a = 0.06ms^{-2}
@@ -736,13 +738,11 @@ At first appearance it does not seems right that the accuracy of the results is 
 \subsubsection{Gyroscope}
 For the gyroscope the vector of parameters obtained is the following:
 
-\begin{equation}
-\boldsymbol{\theta}_\omega = \begin{array}{c}
-[792.44,\, 808.61, \, 799.44, \, -33.52,  \\
--31.41, \, -1.07, \, 0.02, \, 0.06, \\
- -1.32 \times 10^{-3}, \,  2.59\times 10^{2}, \,  -3.25 \times 10^{-2} \, 6.07\times 10^{-1}
- \end{array}]^T
-\end{equation}
+\begin{eqnarray}
+\boldsymbol{\theta}_\omega &=& [792.44,\, 808.61, \, 799.44, \, -33.52, \, -31.41, \\ \nonumber
+& & -1.07, \, 0.02, \, 0.06, \, -1.32 \times 10^{-3}, \, 2.59\times 10^{2}, \, \\ \nonumber
+& & -3.25 \times 10^{-2}, \, 6.07\times 10^{-1}]^T \nonumber
+\end{eqnarray}
 
 As we can see the gains are very similar to the ones that are declared on the datasheets. The maximum relative error obtained is:
 
@@ -758,21 +758,25 @@ Last but not least, the results over the test set are the following:
 \mu_\omega = 6.67 \times 10^{-3} rad/s\, \sigma_\omega = 7.4 \times 10^{-3} rad/s
 \end{equation}
 
-The mean and the standard deviation obtained both correspond to aproximatelly $6$ bits errors.
+The mean and the standard deviation obtained both correspond to approximately $6$ bits errors.
 
-As we can see the error obtained, in terms of bits, is bigger for the gyroscope than for the accelerometer. The main reason for this to happen is that in this case we are working with a scale that is not optimal, yet the only one available, for the speed of interest. The maximal angular speed measured ($198 ^{\circ} /s$ ) is approximately a tenth of the scale of the gyroscope ($2000^{\circ} /s$) while for the accelermoeter the maximal acceleration measured ($g$) is the half of the scale used ($2 g$). 
+As we can see the error obtained, in terms of bits, is bigger for the gyroscope than for the accelerometer. The main reason for this to happen is that in this case we are working with a scale that is not optimal, yet the only one available, for the speed of interest. The maximal angular speed measured ($198 ^{\circ} /s$ ) is approximately a tenth of the scale of the gyroscope ($2000^{\circ} /s$) while for the accelerometer the maximal acceleration measured ($g$) is the half of the scale used ($2 g$). 
 
 \subsection{Temperature adjust}
 
-To evaluate the behavior of the measurement of the accelerometer and compensate the error caused by temperature, the experiment described in Section \refp{sec:param_temp} is carried out. It can be divided in two separate parts, the first is heating up the sensor using a hair dryer up to $48^oC$ and the second part is letting the sensor cool down to normal operating temperature. The two separated parts of the experiment are shown in Figure \refp{fig:temp_res}.
+To evaluate the behavior of the measurement of the accelerometer and compensate the error caused by temperature, the experiment described in Section \refp{sec:param_temp} is carried out. It can be divided in two separate parts, the first is heating up the sensor using a hair dryer up to $48^oC$ and the second part is letting the sensor cool down to normal operating temperature. The two separated parts of the experiment are shown in Figures \refp{fig:resultado_temp} and \refp{fig:bajada}.
 
-\begin{figure}[h!]
-	\subfloat[Accelerometer measurement in\newline z-axis vs. temperature while heating\newline up the sensor.]{\label{fig:resultado_temp} 
-			\includegraphics[width=.5\columnwidth]{./pics_paper/resultado_temp.png}}
-	\subfloat[Accelerometer measurements and temperature (T) vs. time while T varying from $35^oC$ to $48^oC$.]{\label{fig:bajada}
-		\includegraphics[width=.5\columnwidth]{./pics_paper/bajada.png}}
-	\caption{\textbf{Temperature results -} Accelerometer measurements while temperature is modified.}
-	\label{fig:temp_res}
+\begin{figure}
+	\centering
+	\includegraphics[width=.8\columnwidth]{./pics_paper/resultado_temp.png}
+	\caption{\textbf{Gyroscope setup - }Accelerometer measurement in z-axis vs. temperature while heating up the sensor.}
+	\label{fig:resultado_temp}
+\end{figure}
+\begin{figure}
+	\centering
+	\includegraphics[width=.8\columnwidth]{./pics_paper/bajada.png}
+	\caption{\textbf{Gyroscope setup - }Accelerometer measurements and temperature (T) vs. time while T varying from $35^oC$ to $48^oC$.}
+	\label{fig:bajada}
 \end{figure}
 
 \balance
