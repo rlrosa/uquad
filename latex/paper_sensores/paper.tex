@@ -692,7 +692,7 @@ It is extremely important to understand which of the parameters are affected bas
 \item Sensitivity variation of the accelerometer: $\pm 0.01 \%/^\circ C$
 \item Offset variation of the accelerometer: $\pm 1.2mg/^\circ C \approx 0.012m s^{-1}$
 \item Sensitivity variation of the gyroscope: No information is provided. 
-\item Offset variation of the gyroscope: $\pm 40 ^\circ s^{-1} \approx 0.70 rad s^{-1}$
+\item Offset variation of the gyroscope in the whole operating range ($-40^\circ C$ to $85^\circ C$): $\pm 40 ^\circ s^{-1} \approx 0.70 rad s^{-1}$
 \end{itemize}
 
 The conclusion of this sum up information is that the variations of the temperature do not produce main changes on the gains of the sensors, yet the offsets are modified. Thus, we are going to consider the following temperature adjust:
@@ -786,11 +786,26 @@ To evaluate the behavior of the measurement of the accelerometer and compensate 
 \end{figure}
 
 \balance
-In Figure \refp{fig:resultado_temp} is shown the behavior of the modulus of the calibratedmeasurement of the accelerometer in z-axis while the sensor isheated up, both with and without temperature compensation.It is clearly shown that the compensated temperature is muchmore reliable than the other one, that is varying a 3\% of thehighest value.\\
+In Figure \refp{fig:resultado_temp} is shown the behavior of the modulus of the calibrated
+measurement of the accelerometer in z-axis while the sensor is
+heated up, both with and without temperature compensation.
+It is clearly shown that the compensated temperature is much
+more reliable than the other one, that is varying a 3\% of the
+highest value.\\
 
-In Figure \refp{fig:bajada} two different magnitudesare shown at the same time: the three projections of the acceleration and thetemperature vs. time, thus two axes are needed to be shown: on left sidethe acceleration in ms−2, and on right side the temperature in$^oC$.\\
+In Figure \refp{fig:bajada} two different magnitudes
+are shown at the same time: the three projections of the acceleration and the
+temperature vs. time, thus two axes are needed to be shown: on left side
+the acceleration in $ms{−2}$, and on right side the temperature in
+$^oC$.\\
 
-In Figure \refp{fig:resultado_temp} can be observed that duringthe experiment, the uncompensated estimation of g is $9.25ms^{-2}$ instead of$9.81ms^{-2}$, which means an error of $0.56ms^{-2}$. Such anerror in acceleration measurements can cause severel errorsin applications where the operating temperature can differfrom the calibration temperature, thus, is vital that temperaturecompensation is performed.
+In Figure \refp{fig:resultado_temp} can be observed that during
+the experiment, the uncompensated estimation of g is $9.25ms^{-2}$ instead of
+$9.81ms^{-2}$, which means an error of $0.56ms^{-2}$. Such an
+error in acceleration measurements can cause severel errors
+in applications where the operating temperature can differ
+from the calibration temperature, thus, is vital that temperature
+compensation is performed.
 
 
 \section{Conclusion}
