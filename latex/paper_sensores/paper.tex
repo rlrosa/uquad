@@ -711,8 +711,9 @@ The procedure to achieve this adjust was to take several samples of acceleration
 \label{eq:calib_temp}
 \end{equation}
 
-In equation \refp{eq:calib_temp}, $N$ is the number of samples took, $\mathbf{T}_{s0}^p$, $\mathbf{K_{s0}}$ are the matrix obtained in the static parameter calibration (ambiance temperature) and $\mathbf{b}_s(T)$ is the vector defined in \refp{eq:temp}. This last vector includes the variable that we want to estimate.\\
+In equation \refp{eq:calib_temp}, $N = 22740$\footnote{This number is not needed to be this big, yet all the data of the cooling process was used (see figure \ref{fig:bajada}).} is the number of samples took, $\mathbf{T}_{s0}^p$, $\mathbf{K_{s0}}$ are the matrix obtained in the static parameter calibration (ambiance temperature) and $\mathbf{b}_s(T)$ is the vector defined in \refp{eq:temp}. This last vector includes the variable that we want to estimate.\\
 
+It is important to clarify that to perform a perfect temperature compensation, variations of temperatures should be produced with the sensors in different orientations. However, the one that is the most important is with the platform in horizontal position with the $z$ axis pointing ``up''. This is because this particular position is the main operating situation in the application for which this calibration method was thougth.
 \section{Results and analysis}
 \subsection{Static parameters}
 In this section, the parameters that solve problem \ref{eq:calib_problem} are presented for both accelerometer and gyroscope. In addition, the statistic over the test set is studied and analyzed. \\
@@ -725,7 +726,7 @@ The parameter vector found in this case is:
 && -2.30\times 10^{-3}, -6.81 \times 10^{-3}]^T \nonumber
 \end{eqnarray}
 
-It is interesting to compare the values obtained with the theoretical values of each parameter. As we can see, comparing the vector obtained with the seed, the values of the gains and the rotations are similar to what is declared in the datasheets. However the offset values obtained differ considerably from the information of the datasheet (see \cite{bib:acc_data}), where is declared that the 0g output deviation from ideal is $\pm 35 mg$ for axes $x$ and $y$ and $\pm 40mg$ for axis $z$. This means that the offsets should be less than $11$ bits, therefore a difference between the results obtained in the calibration and what is stated in the datasheet of the sensor exists.\\
+It is interesting to compare the values obtained with the theoretical values of each parameter. As we can see, comparing the vector obtained with the seed, the values of the gains and the rotations are similar to what is declared in the datasheets. However the offset values obtained differ considerably from the information of the datasheet (see \cite{bib:acc_data}), where is declared that the 0g output is $\pm 150 mg$ for axes $x$ and $y$ and $\pm 250mg$ for axis $z$. This correspond to offsets of $39$ bits maximum for $x$ and $y$, and $64$ for $z$. The results obtained are consistent with what is declared in the datasheets. 
 
 The mean error, and the standard deviation founded with the calibration method proposed in the test set are:
 
@@ -760,10 +761,10 @@ On the other hand, the typical offset error is $\pm 40 ^\circ s^{-1}$, this corr
 Last but not least, the results over the test set are the following:
 
 \begin{equation}
-\mu_\omega = 6.67 \times 10^{-3} rad/s\, \sigma_\omega = 7.4 \times 10^{-3} rad/s
+\mu_\omega = -3.50 \times 10^{-3} rad/s\, \sigma_\omega = 4.57 \times 10^{-2} rad/s
 \end{equation}
 
-The mean and the standard deviation obtained both correspond to approximately $6$ bits errors.
+The mean and the standard deviation obtained correspond to an error of approximately $3$ and $30$ bits respectively. 
 
 As can be seen the error obtained, in terms of bits, is bigger for the gyroscope than for the accelerometer. The main reason for this to happen is that in this case the scale of the experiment is far from optimal, yet the only one available, for the speed of interest. The maximal angular speed measured ($198 ^{\circ} /s$ ) is approximately a tenth of the scale of the gyroscope ($2000^{\circ} /s$) while for the accelerometer the maximal acceleration measured ($g$) is the half of the scale used ($2 g$). 
 
@@ -793,6 +794,12 @@ In Figure \refp{fig:resultado_temp} can be observed that duringthe experiment, 
 
 
 \section{Conclusion}
+A very easy, fast and low cost procedure for calibrating inertial measurement sensors was 
+presented. It combines nonlinear least squares adjustment of sensor parameters and misalignment 
+angles, a very simple and inexpensive experimental setup, and a simple adjustment of temperature bias' drift.
+
+It was successfully implemented and tested to perform the calibration of the sensors unit (IMU) 
+used to estimate the state variables of a quadrotor. Experimental results show a very precise determination of the acceleration and angular velocity. This precision is achieved also during a wide variation of operating temperature of the sensors. This allows satisfactory estimation for flight control in a wide range of operating conditions.
 
 % use section* for acknowledgement
 
