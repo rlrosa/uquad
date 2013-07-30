@@ -665,7 +665,7 @@ As we did for the accelerometer, we are going to choose a seed based on the info
 \item As the axis should be as orthogonal as possible is reasonable to think that the rotation angles $\alpha_{\omega ij}$ are near zero. 
 \end{itemize}
 
-After this considerations the chose seed is:
+After this considerations the chosen seed is:
 \begin{equation}
 {\theta}_0 = [823.63, 823.63, 823.63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]^T
 \end{equation}
@@ -701,7 +701,7 @@ The conclusion of this sum up information is that the variations of the temperat
 
 In equation \refp{eq:temp} $\mathbf{b}_{s0}$ is the offset vector obtained in the static calibration, $T_0$ is the ambiance temperature in the calibration, $T$ is the working temperature of the system and $\boldsymbol{\alpha}_s$ is the parameter that we need to know to complete the process.\\ 
 
-The procedure to achieve this adjust was take several samples of acceleration (or angular speed) in a fixed position ($z$ axis pointing ``up'' without any rotation), while the sensor was heat up with a hair dryer. The criterion chose was that $\boldsymbol{\alpha}_s$ must minimize the sum of the squares of the norms of the difference between the true acceleration (or angular speed) and the measured acceleration (or angular speed). Mathematically this means:
+The procedure to achieve this adjust was take several samples of acceleration (or angular speed) in a fixed position ($z$ axis pointing ``up'' without any rotation), while the sensor was heat up with a hair dryer. The criterion chosen was that $\boldsymbol{\alpha}_s$ must minimize the sum of the squares of the norms of the difference between the true acceleration (or angular speed) and the measured acceleration (or angular speed). Mathematically this means:
 
 \begin{equation}
 \min_{\boldsymbol{\alpha}_s} = \sum_{k=1}^N ||\mathbf{s}_i^p - \mathbf{T}_{s0}^p(\mathbf{K_{s0}})^{-1}(\tilde{\mathbf{s}}_i^s-\mathbf{b}_s(T))||^2 
