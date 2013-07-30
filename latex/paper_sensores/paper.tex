@@ -448,7 +448,7 @@ The calibration proposed in this work is tested on a 3-axis accelerometer \emph{
 
 The motivation for this calibration is to have enough precision to estimate the state of an Unmanned Aerial Vehicle (UAV) with quadrotor architecture.\\
 
-The first step of the calibration is to obtain the static parameters of the devices for the ambiance temperature. This step is based on knowing the exact orientation of the IMU for the calibration of both sensors and the exact angular speed for the gyroscope calibration. Other related works waive this requirement\cite{bib:calib_imu, bib:kalman} and uses the fact that in any position angular speed (for the gyroscope calibration) and gravity vector (for the accelerometer calibration) are constant.\\
+The first step of the calibration is to obtain the static parameters of the devices for the ambiance temperature. This step is based on knowing the exact orientation of the IMU for the calibration of both sensors and the exact angular speed for the gyroscope calibration. Other related works waive this requirement \cite{bib:calib_imu, bib:kalman} and uses the fact that in any position angular speed (for the gyroscope calibration) and gravity vector (for the accelerometer calibration) are constant.\\
 
 \begin{figure}[h]
 	\centering
@@ -494,7 +494,7 @@ Due to construction issues the sensitivity axis of the device are generally not 
 \end{array}\right)
 \label{eq:nonorto}
 \end{equation}
-In equation \refp{eq:nonorto}, scalars $\alpha_{ij}$ represents the rotation of the $i-th$ sensitivity axis of the accelerometer over the $j-th$ axis of the platform system. In Figure \refp{fig:nonorto} this relation can be observed graphically. Since those errors are due to the manufacturing process we will assume that they will remain constant long enough.
+In equation \refp{eq:nonorto}, scalars $\alpha_{ij}$ represents the rotation of the $i-th$ sensitivity axis of the accelerometer over the $j-th$ axis of the platform system. In Figure \refp{fig:nonorto}\footnote{Figure taken form \cite{bib:calib_imu}} this relation can be observed graphically. Since those errors are due to the manufacturing process we will assume that they will remain constant long enough.
 
 \begin{figure}
 	\centering
@@ -684,7 +684,7 @@ After this considerations the chosen seed is:
 \subsection{Temperature adjust}
 \label{sec:param_temp}
 
-In this work we also propose to implement a temperature adjustment. The sensors are exposed to the operating temperature of the system, and it is very common that this temperature is different from the calibration temperature. Sensors based in MEMS technology are sensitive to such variations. The variation of the measures is critical in some applications (see \cite{bib:uquad} for example). In INS two of the Euler angles are usually obtained from the accelerometer, therefore if the measures are not certain the stability of the system cannot be guaranteed.\\
+In this work we also propose to implement a temperature adjustment. The sensors are exposed to the operating temperature of the system, and it is very common that this temperature is different from the calibration temperature. The thermometer used in this work is the internal thermometer of the IMU, which indicates very precisely the operating temperature of the sensor. Sensors based in MEMS technology are sensitive to such variations. The variation of the measures is critical in some applications (see \cite{bib:uquad} for example). In INS two of the Euler angles are usually obtained from the accelerometer, therefore if the measures are not certain the stability of the system cannot be guaranteed.\\
 
 It is extremely important to understand which of the parameters are affected based on the information of the sensors' datasheets (\cite{bib:acc_data} and \cite{bib:gyro_data}):
 
@@ -692,7 +692,7 @@ It is extremely important to understand which of the parameters are affected bas
 \item Sensitivity variation of the accelerometer: $\pm 0.01 \%/^\circ C$
 \item Offset variation of the accelerometer: $\pm 1.2mg/^\circ C \approx 0.012m s^{-1}$
 \item Sensitivity variation of the gyroscope: No information is provided. 
-\item Offset variation of the accelerometer: $\pm 40 ^\circ s^{-1} \approx 0.70 rad s^{-1}$
+\item Offset variation of the gyroscope: $\pm 40 ^\circ s^{-1} \approx 0.70 rad s^{-1}$
 \end{itemize}
 
 The conclusion of this sum up information is that the variations of the temperature do not produce main changes on the gains of the sensors, yet the offsets are modified. Thus, we are going to consider the following temperature adjust:
@@ -747,6 +747,8 @@ For the gyroscope the vector of parameters obtained is the following:
 & & -3.25 \times 10^{-2}, \, 6.07\times 10^{-1}]^T \nonumber
 \end{eqnarray}
 
+For the calibration there were used 1934 samples, taken in about 20 seconds.\\
+
 As can be noticed the gains are very similar to the ones that are declared on the datasheets. The maximum relative error obtained is:
 
 \begin{equation}
@@ -772,13 +774,13 @@ To evaluate the behavior of the measurement of the accelerometer and compensate 
 \begin{figure}
 	\centering
 	\includegraphics[width=.8\columnwidth]{./pics_paper/resultado_temp.png}
-	\caption{\textbf{Gyroscope setup - }Accelerometer measurement in z-axis vs. temperature while heating up the sensor.}
+	\caption{\textbf{}Accelerometer measurement in z-axis vs. temperature while heating up the sensor.}
 	\label{fig:resultado_temp}
 \end{figure}
 \begin{figure}
 	\centering
 	\includegraphics[width=.8\columnwidth]{./pics_paper/bajada.png}
-	\caption{\textbf{Gyroscope setup - }Accelerometer measurements and temperature (T) vs. time while T varying from $35^oC$ to $48^oC$.}
+	\caption{\textbf{}Accelerometer measurements and temperature (T) vs. time while T varying from $35^oC$ to $48^oC$.}
 	\label{fig:bajada}
 \end{figure}
 
