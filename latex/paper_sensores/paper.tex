@@ -718,7 +718,7 @@ The procedure to achieve this adjust was to take several samples of acceleration
 \label{eq:calib_temp}
 \end{equation}
 
-In equation \refp{eq:calib_temp}, $N = 22740$\footnote{This number is not needed to be this big, yet all the data of the cooling process was used (see figure \ref{fig:bajada}).} is the number of samples took, $\mathbf{T}_{s0}^p$, $\mathbf{K_{s0}}$ are the matrix obtained in the static parameter calibration (ambiance temperature) and $\mathbf{b}_s(T)$ is the vector defined in \refp{eq:temp}. This last vector includes the variable to be estimated.\\
+In equation \refp{eq:calib_temp}, $\mathbf{T}_{s0}^p$, $\mathbf{K_{s0}}$ are the matrix obtained in the static parameter calibration (ambiance temperature), $\mathbf{b}_s(T)$ is the vector defined in \refp{eq:temp} and $N = 22740$ is the number of measured samples. There is no need of so many samples, yet all the data of the cooling process was used (see figure \ref{fig:bajada}). Vector $\mathbf{b}_s(T)$ includes the variable to be estimated.\\
 
 It is important to clarify that to perform a perfect temperature compensation, variations of temperatures should be produced with the sensors in different orientations. However, the most important is that the platform is in horizontal position with the $z$ axis pointing ``up''. This is because this particular position is the main operating situation in the application for which this calibration method was thougth.
 \section{Results and analysis}
