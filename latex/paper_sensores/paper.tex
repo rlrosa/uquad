@@ -442,7 +442,7 @@ This paper presents a fast and low cost way to calibrate different inertial meas
 \IEEEpeerreviewmaketitle
 
 \section{Introduction}
-The development of the Micro-electromechanical Systems (MEMS) technology has allowed to manufacture many low-cost chip-sensors, such as accelerometers, gyroscopes and magnetometers. Those chips have been adopted in many applications, for instance Inertial Navigation Systems  (INS)\cite{bib:un_puto_nuevo}. However this sensors have many error sources, thus they must be calibrated before being used and they should be re-calibrated periodically for any precision application. The different sources of error will be analysed in more detail in section \refp{sec:modelo} and the implications of those errors will be derived.\\ 
+The development of the Micro-electromechanical Systems (MEMS) technology has allowed to manufacture many low-cost chip-sensors, such as accelerometers, gyroscopes and magnetometers. Those chips have been adopted in many applications, for instance Inertial Navigation Systems  (INS) \cite{bib:un_puto_nuevo}. However this sensors have many error sources, thus they must be calibrated before being used and they should be re-calibrated periodically for any precision application. The different sources of error will be analysed in more detail in section \refp{sec:modelo} and the implications of those errors will be derived.\\ 
 
 The calibration proposed in this work is tested on a 3-axis accelerometer \emph{ADXL345} of \emph{Analog Devices} and a 3-axis gyroscope \emph{ITG-3200} of \emph{InvenSense}, yet the model developed and the methodology can be used in other devices because the model is based on common characteristics of MEMS sensors. The sensors named before are included in a Inertial Measurement Unit(IMU): The Mongoose (figure \refp{fig:mongoose}). \\
 
@@ -457,7 +457,7 @@ The first step of the calibration is to obtain the static parameters of the devi
 	\label{fig:mongoose}
 \end{figure}
 
-We take in consideration a fact that is not usually taken into account in the literature (see \cite{bib:calib_imu}, \cite{bib:kalman}, \cite{bib:calib_imu_dos}): the measures given by this sensors are not independent of the temperature. Many devices that uses MEMS sensors need to work properly in a wide temperature range. In other cases, the temperature in operation of the system is different(for instance due to Joule Effect of the wires near the sensors) than the ambiance temperature in which the sensor was calibrated. Therefore a temperature adjust must be made.
+We take in consideration a fact that is not usually taken into account in the literature (see \cite{bib:calib_imu}, \cite{bib:kalman}, \cite{bib:calib_imu_dos}): the measures given by this sensors are not independent of the temperature. Previous works \cite{bib:ultimo_tio}, considered time varying drifts not depending on temperature but with known dependency on time, and neglecting axis non-orthogonality. Many devices that uses MEMS sensors need to work properly in a wide temperature range. In other cases, the temperature in operation of the system is different(for instance due to Joule Effect of the wires near the sensors) than the ambiance temperature in which the sensor was calibrated. Therefore a temperature adjust must be made.
    
 \section{Model of the sensors}
 \label{sec:modelo}
@@ -618,10 +618,13 @@ g
 \label{eq:acc_z}
 \end{equation}
 \end{scriptsize}
+In order to achieve precision, each measure is obtained as the average of 1717 samples (obtained in less than 20 seconds).\\
 
 The 27 measures are separated in two sets: 14 used for optimization and 13 as test set.\\
 
 The key issue is knowing the orientation of the platform. Having solved this, it is easy to compute the theoretical acceleration that the device should measure in each axis from equations \refp{eq:acc_x}, \refp{eq:acc_y} and \refp{eq:acc_z}.\\
+
+\textbf{Experimental setup:} In order to perform the measures, a very simple experimental setup was developed: an adjustable table with a rotating plane (see Figures \ref{fig:mesa} and \ref{fig:mesa_esquema}).
 
 First of all, we attached the platform to a wooden cube. This allows us to perform $90^\circ$ rotations, thus if we had an horizontal surface we can take measures with the gravity vector aligned to any of three axis. The horizontal surface was assured using a three leg adjustable table (see Figure \refp{fig:mesa}). In addition this table allows us to perform rotations of known angles using a scaled semicircle and a pendulum as it is shown also in Figure \refp{fig:mesa}. The rotations over the second axis were made using a carpenter's square, therefore we have a proper $45^\circ$ rotation.\\
 
@@ -657,7 +660,7 @@ The procedure used to calibrate the gyroscope was very similar to the accelerome
 
 In this case the constant angular speed was provided with a turntable ($33 rev/min$). Its angular speed was measured just to be sure that it was working properly. Different orientations were obtained using the wooden cube mentioned in Section \refp{subsec:acc},to assure $90^\circ$ rotations and pairs of carpenter's squares to assure $30^\circ$, $45^\circ$ and $60^\circ$ rotations. In Figure \refp{fig:setup_gyro} is shown the setup that was mounted over the turntable.\\
 
-As we did for the accelerometer, we are going to choose a seed based on the information in the device's datasheet \cite{bib:gyro_data}: 
+According the information in the device's datasheet \cite{bib:gyro_data}:
 
 \begin{itemize}
 \item The typical sensitivity for each axis is $14,375 bits/(^\circ s^{-1})\approx 823.63 bits/(rad s^{-1})$.
@@ -681,7 +684,7 @@ After this considerations the chosen seed is:
 \subsection{Temperature adjust}
 \label{sec:param_temp}
 
-In this paper we also propose to realize a temperature adjustment. The sensors are exposed to the operating temperature of the system, and it is very common that this temperature is different from the calibration temperature. Sensors based in MEMS technology are sensitive to such variations. The variation of the measures is critical in some applications (see \cite{bib:uquad} for example). In INS two of the Euler angles are usually obtained from the accelerometer, therefore if the measures are not certain the stability of the system cannot be guaranteed.\\
+In this work we also propose to implement a temperature adjustment. The sensors are exposed to the operating temperature of the system, and it is very common that this temperature is different from the calibration temperature. Sensors based in MEMS technology are sensitive to such variations. The variation of the measures is critical in some applications (see \cite{bib:uquad} for example). In INS two of the Euler angles are usually obtained from the accelerometer, therefore if the measures are not certain the stability of the system cannot be guaranteed.\\
 
 It is extremely important to understand which of the parameters are affected based on the information of the sensors' datasheets (\cite{bib:acc_data} and \cite{bib:gyro_data}):
 
@@ -699,9 +702,9 @@ The conclusion of this sum up information is that the variations of the temperat
 \label{eq:temp}
 \end{equation}
 
-In equation \refp{eq:temp} $\mathbf{b}_{s0}$ is the offset vector obtained in the static calibration, $T_0$ is the ambiance temperature in the calibration, $T$ is the working temperature of the system and $\boldsymbol{\alpha}_s$ is the parameter that we need to know to complete the process.\\ 
+In equation \refp{eq:temp} $\mathbf{b}_{s0}$ is the offset vector obtained in the static calibration, $T_0$ is the ambiance temperature in that calibration, $T$ is the working temperature of the system and $\boldsymbol{\alpha}_s$ is the parameter that we need to know to complete the process.\\ 
 
-The procedure to achieve this adjust was take several samples of acceleration (or angular speed) in a fixed position ($z$ axis pointing ``up'' without any rotation), while the sensor was heat up with a hair dryer. The criterion chosen was that $\boldsymbol{\alpha}_s$ must minimize the sum of the squares of the norms of the difference between the true acceleration (or angular speed) and the measured acceleration (or angular speed). Mathematically this means:
+The procedure to achieve this adjust was to take several samples of acceleration (or angular speed) in a fixed position ($z$ axis pointing ``up'' without any rotation), while the sensor was heated up with a hair dryer. The criterion chosen was that $\boldsymbol{\alpha}_s$ must minimize the sum of the squares of the norms of the difference between the true acceleration (or angular speed) and the measured acceleration (or angular speed). Mathematically this means:
 
 \begin{equation}
 \min_{\boldsymbol{\alpha}_s} = \sum_{k=1}^N ||\mathbf{s}_i^p - \mathbf{T}_{s0}^p(\mathbf{K_{s0}})^{-1}(\tilde{\mathbf{s}}_i^s-\mathbf{b}_s(T))||^2 
@@ -732,7 +735,7 @@ The mean error, and the standard deviation founded with the calibration method p
 
 The mean error obtained correspond to less that a bit of error and the standard deviation to a bit and a half. Therefore we can conlude that a very good calibration has been achived for the static parameters of the accelerometer.\\
 
-At first appearance it does not seems right that the accuracy of the results is comparable with the instrument resolution. However, this fact can be explain because the effect of electrical noise. Let's suppose that the true acceleration correspond to $128.2$ bits. If the accelerometer was ideal a constant lecture of $128$ bits would be obtained. However, due to the electrical noise the value of the measure obtained varies typically one or two bits (see Figure \refp{fig:noise}). Those variations are not uniform, on the contrary, they depend on the true value of the acceleration. In the considered case the value $128$ will be more common that the value $129$, yet if the true acceleration correspond to $128.74$ bits, the opposite would happen. To sum up, the electrical noise behaves in a way that depends on the true value of the acceleration. Thus, taking an average of almost $20000$ samples per measure ($20$ seconds of data), the obtained value is more accurate than the resolution of the instrument is obtained. \\
+%At first appearance it does not seems right that the accuracy of the results is comparable with the instrument resolution. However, this fact can be explain because the effect of electrical noise. Let's suppose that the true acceleration correspond to $128.2$ bits. If the accelerometer was ideal a constant lecture of $128$ bits would be obtained. However, due to the electrical noise the value of the measure obtained varies typically one or two bits (see Figure \refp{fig:noise}). Those variations are not uniform, on the contrary, they depend on the true value of the acceleration. In the considered case the value $128$ will be more common that the value $129$, yet if the true acceleration correspond to $128.74$ bits, the opposite would happen. To sum up, the electrical noise behaves in a way that depends on the true value of the acceleration. Thus, taking an average of almost $20000$ samples per measure ($20$ seconds of data), the obtained value is more accurate than the resolution of the instrument is obtained. \\
 
 
 \subsubsection{Gyroscope}
@@ -744,7 +747,7 @@ For the gyroscope the vector of parameters obtained is the following:
 & & -3.25 \times 10^{-2}, \, 6.07\times 10^{-1}]^T \nonumber
 \end{eqnarray}
 
-As we can see the gains are very similar to the ones that are declared on the datasheets. The maximum relative error obtained is:
+As can be noticed the gains are very similar to the ones that are declared on the datasheets. The maximum relative error obtained is:
 
 \begin{equation}
 \varepsilon_{\omega gain} = \frac{|823.63 - 792.44|}{823.63} = 3.8 \%
@@ -760,7 +763,7 @@ Last but not least, the results over the test set are the following:
 
 The mean and the standard deviation obtained both correspond to approximately $6$ bits errors.
 
-As we can see the error obtained, in terms of bits, is bigger for the gyroscope than for the accelerometer. The main reason for this to happen is that in this case we are working with a scale that is not optimal, yet the only one available, for the speed of interest. The maximal angular speed measured ($198 ^{\circ} /s$ ) is approximately a tenth of the scale of the gyroscope ($2000^{\circ} /s$) while for the accelerometer the maximal acceleration measured ($g$) is the half of the scale used ($2 g$). 
+As can be seen the error obtained, in terms of bits, is bigger for the gyroscope than for the accelerometer. The main reason for this to happen is that in this case the scale of the experiment is far from optimal, yet the only one available, for the speed of interest. The maximal angular speed measured ($198 ^{\circ} /s$ ) is approximately a tenth of the scale of the gyroscope ($2000^{\circ} /s$) while for the accelerometer the maximal acceleration measured ($g$) is the half of the scale used ($2 g$). 
 
 \subsection{Temperature adjust}
 
@@ -780,8 +783,11 @@ To evaluate the behavior of the measurement of the accelerometer and compensate 
 \end{figure}
 
 \balance
-In Figure \refp{fig:resultado_temp} is shown the behavior of the calibrated measurement of the accelerometer in z-axis while the sensor is heated up, both with and without temperature compensation. It is clearly shown that the compensated temperature is much more reliable than the other one, that is varying a 3\% of the highest value. Otherwise, in Figure \refp{fig:bajada} the second part of the experiment is shown, letting the sensor cool down up to normal operating temperature. Two different magnitudes are shown at the same time: the three accelerations and the temperature, thus two axes are needed to be shown: on left side the acceleration in $ms^{-2}$, and on right side the temperature in $^oC$.\\
-In Figure \refp{fig:resultado_temp} can be observed that at about the end of the experiment the sensor output is $9.25ms^{-2}$ instead of $9.81ms^{-2}$, which means an error of $0.56ms^{-2}$. Such an error in acceleration measurements can cause several errors in applications where the operating temperature can differ from the calibration temperature, thus, is vital that temperature compensation is performed.
+In Figure \refp{fig:resultado_temp} is shown the behavior of the modulus of the calibratedmeasurement of the accelerometer in z-axis while the sensor isheated up, both with and without temperature compensation.It is clearly shown that the compensated temperature is muchmore reliable than the other one, that is varying a 3\% of thehighest value.\\
+
+In Figure \refp{fig:bajada} two different magnitudesare shown at the same time: the three projections of the acceleration and thetemperature vs. time, thus two axes are needed to be shown: on left sidethe acceleration in ms−2, and on right side the temperature in$^oC$.\\
+
+In Figure \refp{fig:resultado_temp} can be observed that duringthe experiment, the uncompensated estimation of g is $9.25ms^{-2}$ instead of$9.81ms^{-2}$, which means an error of $0.56ms^{-2}$. Such anerror in acceleration measurements can cause severel errorsin applications where the operating temperature can differfrom the calibration temperature, thus, is vital that temperaturecompensation is performed.
 
 
 \section{Conclusion}
