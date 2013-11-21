@@ -350,6 +350,9 @@
 \newcommand{\refp}[1]{(\ref{#1})}
 
 \begin{document}
+\IEEEoverridecommandlockouts
+\IEEEpubid{\makebox[\columnwidth]{978-1-4799-2722-7/13/\$31.00~\copyright~2013 IEEE \hfill} \hspace{\columnsep}\makebox[\columnwidth]{ }}
+
 %
 % paper title
 % can use linebreaks \\ within to get better formatting as desired
@@ -498,7 +501,7 @@ In equation \refp{eq:nonorto}, scalars $\alpha_{ij}$ represents the rotation of 
 
 \begin{figure}
 	\centering
-	\includegraphics[width=.6\columnwidth]{./pics_paper/ejes_acc.jpg}
+	\includegraphics[width=.6\columnwidth]{./pics_paper/ejes_acc_pro.png}
 	\caption{\textbf{Non orthogonality -} Rotations of the sensitivity axis of the accelerometer over the axis of the platform system.}
 	\label{fig:nonorto}
 \end{figure}
@@ -553,7 +556,7 @@ It is important to consider that the minimize function may have more than one lo
 \label{subsec:acc}
 Since an accelerometer measures the acceleration in a free fall referential, in static equilibrium it measures an acceleration that has as norm the gravitational constant of the  earth ($g = 9.81ms^{-2}$), its direction is collinear with the line defined by the position of the accelerometer and the center of the earth and its sense is from the center of the earth towards the position of the accelerometer, meaning ``up''. This allows to have an exact expression for the acceleration, the procedure used consists in measuring magnitude with different orientations of the acceleration and then solve the problem stated in equation \refp{eq:calib_problem}.\\
 
-The 27 measures made were the following:
+We propose 27 measured positions in the following way:
 \begin{itemize}
 \item Starting position: $x$ axis pointing ``down'': 9 measures were made combining two rotations. First, rotating around the $z$ axis $\theta =0^\circ, 10^\circ, 20^\circ, 30^\circ, 45^\circ$. Then, for each angle defined (except for $\theta = 0^\circ$), two measures were made rotating around the $x$ axis $\psi = 0^\circ, -45^\circ$. This set of measures can be expressed in the following way:
 \end{itemize}
@@ -650,7 +653,7 @@ First of all, the platform was attached to a wooden cube. This allows to perform
 As it was stated in \refp{sec:modelo} the problem \refp{eq:calib_problem} may have more than one local minimum, thus it is needed to assure that the seed of the algorithm is ``near'' of the values of the parameters. The proposed way to generate such a seed is to use some information of the sensor's datasheet\cite{bib:acc_data}: 
 
 \begin{itemize}
-\item The typical sensitivity for each axis is $256 bits/g \approx 26.10 bits / m^{s-2}$.
+\item The typical sensitivity for each axis is $256 bits/g \approx 26.10 bits / ms^{-2}$.
 \item The typical offset for each axis is $0 ms^{-2}$.
 \item As the axis should be as orthogonal as possible is reasonable to think that the rotation angles $\alpha_{aij}$ are near zero. 
 \end{itemize}
@@ -720,7 +723,7 @@ The procedure to achieve this adjust was to take several samples of acceleration
 
 In equation \refp{eq:calib_temp} $\mathbf{T}_{s0}^p$ and $\mathbf{K_{s0}}$ are the matrix obtained in the static parameter calibration (ambiance temperature), $\mathbf{b}_s(T)$ is the vector defined in \refp{eq:temp} and $N = 22740$ is the number of measured samples. There is no need of so many samples, yet all the data of the cooling process was used (see figure \ref{fig:bajada}). Vector $\mathbf{b}_s(T)$ includes the variable to be estimated.\\
 
-It is important to clarify that to perform a perfect temperature compensation, variations of temperatures should be produced with the sensors in different orientations. However, the most important is that the platform is in horizontal position with the $z$ axis pointing ``up''. This is because this particular position is the main operating situation in the application for which this calibration method was thougth.
+It is important to clarify that to perform a perfect temperature compensation, variations of temperatures should be produced with the sensors in different orientations. However, the most important is that the platform is in horizontal position with the $z$ axis pointing ``up''. This is because this particular position is the main operating situation in the application for which this calibration method was thought.
 \section{Results and analysis}
 \subsection{Static parameters}
 In this section, the parameters that solve problem \ref{eq:calib_problem} are presented for both accelerometer and gyroscope. In addition, the statistic over the test set is studied and analyzed. \\
@@ -807,7 +810,7 @@ $^oC$.\\
 In Figure \refp{fig:resultado_temp} can be observed that during
 the experiment, the uncompensated estimation of g is $9.25ms^{-2}$ instead of
 $9.81ms^{-2}$, which means an error of $0.56ms^{-2}$. Such an
-error in acceleration measurements can cause severel errors
+error in acceleration measurements can cause several errors
 in applications where the operating temperature can differ
 from the calibration temperature, thus, is vital that temperature
 compensation is performed.
@@ -819,7 +822,7 @@ presented. It combines nonlinear least squares adjustment of sensor parameters a
 angles, a very simple and inexpensive experimental setup, and a simple adjustment of temperature bias' drift.
 
 It was successfully implemented and tested to perform the calibration of the sensors unit (IMU) 
-used to estimate the state variables of a quadrotor. Experimental results show a very precise determination of the acceleration and angular velocity. This precision is achieved also during a wide variation of operating temperature of the sensors. This allows satisfactory estimation for flight control in a wide range of operating conditions.
+used to estimate the state variables of a quadrotor. Experimental results show a very precise determination of the acceleration and angular velocity. This precision is achieved also during a wide variation of operating temperature of the sensors. This allows satisfactory estimation for flight control in a wide range of operating conditions. %\cite{0957-0233-18-7-016}
 
 % use section* for acknowledgement
 

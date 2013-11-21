@@ -1,0 +1,370 @@
+% Doc:
+%http://en.wikibooks.org/wiki/LaTeX/Bibliography_Management
+%
+% Ejemplo:
+%http://amath.colorado.edu/documentation/LaTeX/basics/steps/BIBtex.html
+%
+% Campos requeridos por canetix:
+%Autor - título del trabajo - título de la publicación - fecha - lugar de edición
+%
+% Citar un item:
+% 1. En el archivo .tex que se desea realizar una cita hay que poner el comando /cite como sigue:
+%... en \cite{bib:referencia-a-biblio} se muestra que la idea es una cagada
+% 2. Luego abrir biblio.bib y agregar un bloque nuevo.
+% 3. Para compilar el bibtex:
+%      - Texmaker: Apretar F11 (compilar como BibTex) por lo menos un par de veces para q las referencias queden bien
+%      - emacs:
+%         C-c C-c Bibtex
+%      - Sino desde consola hacer:
+%         bibtex main.aux
+%
+% Las referencias a la bibliografía solo van a quedar bien al compilar el main.tex. Al compilar cada archivo por separado no lo va a entender pero no hay q asustarse. 
+% 4. Compilar el main.tex
+
+% CALIBRACION
+@InProceedings{bib:calib_imu,
+author = {Skog, Isaac  and H\"{a}ndel,Peter},
+title = {Calibration of a MEMS inertial measurement unit},
+booktitle = {XVII Imeko World Congress,
+Metrology for a Sustainable Development},
+year = {2006},
+address = {Rio de Janeiro},
+month = {September}
+}
+@TechReport{bib:bola,
+author = {Christopher Konvalin},
+title = {Compensating for Tilt, Hard Iron and Soft Iron Effects},
+institution = {Memsense},
+year = {2008},
+number = {MTD-0802},
+month = {August}
+}
+@misc{bib:alain,
+author = {Alain Barraud},
+title = {Magnetometers Calibration},
+year = {2009},
+month = {March},
+howpublished = {\url{http://www.mathworks.com/matlabcentral/fileexchange/23398-magnetometers-calibration}}
+}
+ GPS
+@misc{bib:sat-dop-values,
+title="Meaning of DOP values",
+author="Wikipedia",
+year="2012",
+howpublished = {\url{http://en.wikipedia.org/wiki/Dilution_of_precision_%28GPS%29#Meaning_of_DOP_Values}}
+}
+
+@Manual{bib:sat-pos,
+title = {The Impact Of Satellite Geometry},
+organization = {Satellite Navigation and Positioning Lab - UNSW},
+year = {2004},
+url = {http://www.gmat.unsw.edu.au/snap/gps/gps_survey/principles_gps.htm}
+}
+
+% MODELO FISICO
+@Booklet{bib:fuerzas-helices,
+title = {Blade Element Theory},
+author = {Mustafa Cavcar},
+howpublished = {Anadolu University,School of Civil Aviation},
+address = {Eskisehir, Turquía},
+year = {2004}
+}
+
+@misc{bib:curso_quad,
+title = {Quadrotor Modeling},
+author = {Marilena Vendittelli},
+howpublished = {Course: ``Elective in robotics'', Sapienza Universitá Di Roma},
+year = {2011},
+month = {November}
+}
+
+@misc{bib:inercia,
+title="List of moment of inertia tensors",
+author="Wikipedia",
+howpublished = {\url{http://en.wikipedia.org/wiki/List_of_moment_of_inertia_tensors}}
+}
+
+@Manual{bib:alt-press,
+title = {A quick derivation relating altitude to air pressure},
+organization = {Portland State Aerospace Society},
+month = {December},
+year = {2004},
+url={http://psas.pdx.edu/RocketScience/PressureAltitude_Derived.pdf}
+}
+
+@MastersThesis{bib:quadrotor-bible,
+author = {Tommaso Bresciani},
+title = {Modeling, Identification and Control of a Quadrotor Helicopter},
+school = {Lund University},
+year = {2008},
+month = {October}
+}
+
+% CONTROL
+@MastersThesis{bib:lqr-discreto,
+author = {Anders Friis Soslashrensen},
+title = {Autonomous Control of a Miniature Quadrotor Following Fast Trajectories},
+school = {Aalborg University/U.C. Berkeley},
+year = {2009-2010}
+}
+@misc{bib:lqrnotes,
+title={Undergraduate lecture notes on LQG/LQR controller design},
+author={Jo\tilde{a}o P.Hespanha},
+year={2007}
+}
+@misc{bib:hakas,
+title = {Sistemas de Control en Tiempo Discreto},
+author = {Michel Hakas},
+howpublished = {Curso: ``Introducci\'on a la Teor\'ia de Control'', Facultad de Ingenier\'ia Universidad de la Rep\'ublica},
+year = {2005}
+}
+@misc{bib:auion,
+author = {Alonso, Rodrigo and Hernández, Guzmán and Iturralde, Pablo},
+title = {Automatización Del Vuelo De Un Avión},
+howpublished = {\emph{Proyecto de Fin de Carrera de Ingenier\'ia El\'ectrica}, Facultad de Ingenier\'ia, Universidad de la Rep\'ublica},
+year = {2009},
+month = {April}
+}
+%KALMAN
+@Article{bib:kalman,
+author = {He Zhao and Zheyao Wang},
+title = {Motion Measurement Using Inertial Sensors, Ultrasonic Sensors, and Magnetometers with Extended Kalman Filter for Data Fusion},
+journal = {Sensors Journal, IEEE},
+year = {2012},
+volume = {12},
+pages = {943-953},
+month = {May}
+}
+
+@InProceedings{bib:kalman2,
+author = {Tamás, L. and Lazea, Gh. and Robotin, R. and Marcu, C. and Herle, S. and Szekely, Z.},
+title = {State Estimation Based on Kalman Filtering Techniques in Navigation },
+booktitle = {IEEE International Conference on Automation, Quality and Testing,  Robotics},
+pages = {147-152},
+year = {2008},
+month = {May},
+organization = {IEEE}
+}
+@InProceedings{bib:euler_magneto_acc,
+author="Chirag Jagadish, Bor-Chin Chang",
+title = {Diversified Redundancy in the Measurement of Euler Angles Using Accelerometers and Magnetometers},
+booktitle = {46 th IEEE Conference on Decision and Control},
+pages = {2669-2674},
+year = {2007},
+month = {December},
+organization = {IEEE}
+}
+@Book{bib:kay,
+author = {Steven M. Kay},
+ALTeditor = {Alan V. Oppenheim},
+title = {Fundamentals of Statistical Signal Processing: Estimation Theory},
+publisher = {Pearson},
+year = {2011},
+volume = {1},
+series = {Prentice Hall singal processing},
+edition = {2}
+}
+
+
+@InBook{bib:kay2,
+ALTauthor = {Steven M. Kay},
+title = {Fundamentals of Statistical Signal Processing: Estimation Theory},
+chapter = {Kalman Filters},
+year = {2011},
+OPTvolume = {1}
+}
+
+% Kernel
+@misc{bib:oe-capture-changes,
+title="Capture OE source changes",
+author="Brake, Cliff",
+howpublished ={\url{http://bec-systems.com/site/456/capture-oe-source-changes}}
+}
+
+@misc{bib:oe-angstrom-kernel-workflow,
+title="Openembedded Angstrom kernel work flow",
+author="SlimLogic",
+howpublished ={\url{http://www.slimlogic.co.uk/2011/05/openembeddedangstrom-kernel-workflow/}}
+}
+
+% Motores
+@TechReport{bib:brushless,
+author = {Ward Brown},
+title = {Brushless DC Motor Control Made Easy},
+institution = {Microchip Technology Inc.},
+year = {2002},
+number = {},
+month = {},
+}
+
+@InProceedings{bib:apps,
+author="Zak Sarris",
+title = "Survey of UAV Applications In Civil Markets",
+year = {2001},
+month = {June},
+organization = {STN ATLAS-3Sigma AE and Technical University of Crete}
+}
+
+%Datasheets
+@TechReport{bib:acc_data,
+title = "ADXL345 Datasheet",
+institution = {Analog Devices},
+year = {2011},
+}
+
+
+@TechReport{bib:gyro_data,
+title = "ITG-3200 Datasheet",
+institution = {Inven Sense},
+year = {2010},
+}
+
+@Article{bib:tio_uno,
+author = {Dierks, T.; Jagannathan, S.},
+title = {Output Feedback Control of a Quadrotor UAV Using Neural Networks},
+journal = {Neural Networks, IEEE Transactions},
+year = {2010},
+volume = {21},
+pages = {50-66},
+month = {Jan}
+}
+
+@Article{bib:tio_dos,
+author = {Mohammadi, M.; Mohammad Shahri, A.},
+title = {Modelling and decentralized adaptive tracking control of a quadrotor UAV},
+journal = {Robotics and Mechatronics (ICRoM)},
+year = {2013},
+volume = {.},
+pages = {293-300},
+month = {Feb}
+}
+
+@Article{bib:tio_tres,
+author = {Sadeghzadeh I.; Mehta, A.; Chamseddine A.; Youmin Zhang},
+title = {Active Fault Tolerant Control of a quadrotor UAV based on gainscheduled PID control},
+journal = {\em Electrical \& Computer Engineering (CCECE)},
+year = {2012},
+volume = {.},
+pages = {1-4},
+month = {May}
+}
+
+@Article{bib:tio_cuatro,
+author = {Geng Qingbo; Shuai Huan; Hu Qiong},
+title = {Obstacle avoidance approaches for quadrotor UAV based on backstepping technique},
+journal = {\em Control and Decision Conference (CCDC)},
+year = {2013},
+volume = {.},
+pages = {3613-3617},
+month = {May}
+}
+
+@Article{bib:tio_cinco,
+author = {Jongho Park; Youdan Kim},
+title = {Stereo vision based collision avoidance of quadrotor UAV},
+journal = {\em Control, Automation and Systems (ICCAS)},
+year = {2012},
+volume = {.},
+pages = {173-178},
+month = {Oct}
+}
+
+@Article{bib:tio_seis,
+author = {Altug E.; Ostrowski J.P.; Mahony R.},
+title = {Control of a quadrotor helicopter using visual feedback},
+journal = {\em ICRA '02. IEEE International Conference},
+year = {2002},
+volume = {1},
+pages = {72-77},
+month = {.}
+}
+
+@Article{bib:tio_siete,
+author = {Mokhtari, A.; Benallegue, A.},
+title = {Dynamic feedback controller of Euler angles and wind parameters estimation for a quadrotor unmanned aerial vehicle},
+journal = {\em ICRA '04. IEEE International Conference},
+year = {2004},
+volume = {3},
+pages = {2359-2366},
+month = {April}
+}
+
+@Article{bib:tio_ocho,
+author = {Puls, T.; Hein, A},
+title = {3D trajectory control for quadrocopter},
+journal = {Intelligent Robots and Systems (IROS)},
+year = {2010},
+volume = {1},
+pages = {640-645},
+month = {Oct}
+}
+
+
+@Article{bib:un_puto_nuevo,
+author = {Wendel, Jan and  Meister, Oliver and Schlaile, Christian and  Trommer, Gert},
+title = {An integrated GPS/MEMS-IMU navigation system
+for an autonomous helicopter},
+journal = {Aerospace Science and Technology 10 (Elsevier)},
+year = {2006},
+volume = {1},
+pages = {527-533},
+month = {April}
+}
+
+@InProceedings{bib:calib_imu_dos,
+author = {G. Panahandeh and I. Skog and M. Jansson},
+title = {Calibration of the Accelerometer Triad of an Inertial Measurement Unit, Maximum Likelihood Estimation and Cramer-Rao Bound},
+booktitle = {International Conference on Indoor Positioning and Indoor Navigation},
+year = {2010},
+month = {September},
+organization = {IEEE}
+}
+
+@Article{bib:ultimo_tio,
+author = {J. C. Hung and J. R. Thacher and H. V. White},
+title = {Calibration of accelerometer triad of an IMU with drifting Z -accelerometer bias},
+journal = {Aerospace and Electronics Conference},
+year = {1989},
+volume = {1},
+pages = {153-158},
+month = {May}
+}
+
+@article{0957-0233-18-7-016,
+  author={Z F Syed and P Aggarwal and C Goodall and X Niu and N El-Sheimy},
+  title={A new multi-position calibration method for MEMS inertial navigation systems},
+  journal={Measurement Science and Technology},
+  volume={18},
+  number={7},
+  pages={1897},
+  url={http://stacks.iop.org/0957-0233/18/i=7/a=016},
+  year={2007},
+  abstract={The Global Positioning System (GPS) is a worldwide navigation system that requires a clear line of sight to the orbiting satellites. For land vehicle navigation, a clear line of sight cannot be maintained all the time as the vehicle can travel through tunnels, under bridges, forest canopies or within urban canyons. In such situations, the augmentation of GPS with other systems is necessary for continuous navigation. Inertial sensors can determine the motion of a body with respect to an inertial frame of reference. Traditionally, inertial systems are bulky, expensive and controlled by government regulations. Micro-electro mechanical systems (MEMS) inertial sensors are compact, small, inexpensive and most importantly, not controlled by governmental agencies due to their large error characteristics. Consequently, these sensors are the perfect candidate for integrated civilian navigation applications with GPS. However, these sensors need to be calibrated to remove the major part of the deterministic sensor errors before they can be used to accurately and reliably bridge GPS signal gaps. A new multi-position calibration method was designed for MEMS of high to medium quality. The method does not require special aligned mounting and has been adapted to compensate for the primary sensor errors, including the important scale factor and non-orthogonality errors of the gyroscopes. A turntable was used to provide a strong rotation rate signal as reference for the estimation of these errors. Two different quality MEMS IMUs were tested in the study. The calibration results were first compared directly to those from traditional calibration methods, e.g. six-position and rate test. Then the calibrated parameters were applied in three datasets of GPS/INS field tests to evaluate their accuracy indirectly by comparing the position drifts during short-term GPS signal outages.}
+}
+
+@article{NAV:1814512,
+author = {Aggarwal,P. and Syed,Z. and Niu,X. and El-Sheimy,N.},
+title = {A Standard Testing and Calibration Procedure for Low Cost MEMS Inertial Sensors and Units},
+journal = {Journal of Navigation},
+volume = {61},
+issue = {02},
+month = {4},
+year = {2008},
+issn = {1469-7785},
+pages = {323--336},
+numpages = {14},
+doi = {10.1017/S0373463307004560},
+URL = {http://journals.cambridge.org/article_S0373463307004560},
+}
+
+@book{bib:ultimo_momento2,
+    author = {Titterton, D. and Weston, J.},
+    citeulike-article-id = {1526724},
+    edition = {Second},
+    posted-at = {2007-08-01 09:54:22},
+    priority = {0},
+    publisher = {The American Institute of Aeronautics and Astronautics},
+    title = {{Strapdown Inertial Navigation Technology}},
+    year = {2004}
+}
+
